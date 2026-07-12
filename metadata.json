@@ -1,0 +1,6 @@
+{
+  "name": "LINUS住好日",
+  "description": "提供給第一次來日本的人的日本租房與置產買房知識大補帖，搭配 AI 智能解答、租金與房貸預算加減價精算功能。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

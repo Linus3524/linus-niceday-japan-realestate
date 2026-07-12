@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Noto Serif TC", "Playfair Display", "Georgia", "PMingLiU", "MingLiU", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom styles for classic Japanese paper vibe */
+body {
+  font-family: var(--font-serif);
+  background-color: #faf8f5; /* Warm off-white Washi paper vibe */
+  color: #1a1a18; /* Deep soft charcoal */
+}
+
+/* Smooth custom scrollbar with sharp borders */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #faf8f5;
+  border-left: 1px solid #e5e5e0;
+}
+::-webkit-scrollbar-thumb {
+  background: #c3bcaf;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a89f90;
+}
