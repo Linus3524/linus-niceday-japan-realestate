@@ -138,11 +138,11 @@ const regionGrids: Record<string, GridNode[]> = {
 };
 
 const gridConfigs: Record<string, { cols: string; maxW: string }> = {
-  "東京都": { cols: "grid-cols-12", maxW: "max-w-[880px]" },
-  "神奈川": { cols: "grid-cols-5", maxW: "max-w-[500px]" },
-  "埼玉": { cols: "grid-cols-5", maxW: "max-w-[500px]" },
-  "千葉": { cols: "grid-cols-5", maxW: "max-w-[500px]" },
-  "大阪": { cols: "grid-cols-5", maxW: "max-w-[500px]" }
+  "東京都": { cols: "grid-cols-12", maxW: "max-w-[1080px]" },
+  "神奈川": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
+  "埼玉": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
+  "千葉": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
+  "大阪": { cols: "grid-cols-5", maxW: "max-w-[620px]" }
 };
 
 const thresholdsConfig = {
@@ -236,8 +236,8 @@ export const RentMap: React.FC<RentMapProps> = ({
     }
 
     if (isSelected) {
-      // Keep the background heat color, but apply a strong thick black border + shadow + scale
-      border = "border-2 border-[#1a1a18] shadow-[3px_3px_0px_0px_rgba(26,26,24,1)] scale-[1.06] z-10 ring-2 ring-[#b8241d]/20";
+      // Keep the background heat color, but apply a strong thick black border via ring + shadow + scale without reducing content area
+      border = "border-[#1a1a18] shadow-[3px_3px_0px_0px_rgba(26,26,24,1)] scale-[1.06] z-10 ring-2 ring-[#1a1a18]";
     }
 
     return { bg, border, text };
@@ -322,7 +322,7 @@ export const RentMap: React.FC<RentMapProps> = ({
 
       {/* Grid-based Map Layout */}
       <div className="relative overflow-x-auto py-2">
-        <div className="min-w-[660px] mx-auto select-none">
+        <div className="min-w-[780px] mx-auto select-none">
           {/* Main Heatmap Grid */}
           <div className={`grid ${gridConfig.cols} gap-2.5 relative ${gridConfig.maxW} mx-auto transition-all duration-300`}>
             {activeGrid.map((cell) => {
@@ -346,10 +346,10 @@ export const RentMap: React.FC<RentMapProps> = ({
                   onClick={() => onSelectDistrict(cell.name)}
                   onMouseEnter={() => setHoveredWard(rateData)}
                   onMouseLeave={() => setHoveredWard(null)}
-                  className={`p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between h-[72px] rounded-none ${bg} ${border}`}
+                  className={`p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between h-[72px] rounded-none ${bg} ${border}`}
                   title={mode === "buy" ? `${cell.name} - 2026行情: ${val.toLocaleString()}萬円` : `${cell.name} - 2026行情: ${val}萬円/月`}
                 >
-                  <div className="text-[10px] font-bold leading-tight truncate break-all">{cell.name}</div>
+                  <div className="text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{cell.name}</div>
                   <div className={`text-[10px] font-mono font-bold leading-none mt-1.5 ${text}`}>
                     {mode === "buy" ? val.toLocaleString() : val.toFixed(1)} <span className="text-[8px] font-sans">萬</span>
                   </div>

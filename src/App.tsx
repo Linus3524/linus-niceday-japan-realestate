@@ -29,6 +29,10 @@ const rentConflictGroups = [
   [9, 20],   // Elevator vs 4F+ without elevator
   [20, 21],  // 4F+ without elevator vs 1st floor
   [9, 23],   // Auto-lock elevator building vs Wood construction
+  [10, 24],  // 5 years age vs Japanese-style room (Japanese-style room is rare/impossible in brand new buildings)
+  [11, 24],  // 5~10 years age vs Japanese-style room
+  [23, 25],  // Wood construction vs Tower Mansion
+  [20, 25],  // 4F+ without elevator vs Tower Mansion
 ];
 
 const buyConflictGroups = [
@@ -164,7 +168,16 @@ const getDynamicBuyModifierMultiplier = (index: number, district: string) => {
   }
 };
 
-const isRentModifierDisabled = (index: number, selected: number[]) => {
+const isRentModifierDisabled = (index: number, selected: number[], district: string) => {
+  if (index === 25 && !hasTowerMansionSupport(district)) {
+    return true;
+  }
+  if (index === 9 && selected.includes(25)) {
+    return true;
+  }
+  if (index === 21 && selected.includes(25)) {
+    return true;
+  }
   if (selected.includes(index)) return false;
   return rentConflictGroups.some(group => 
     group.includes(index) && group.some(otherIndex => otherIndex !== index && selected.includes(otherIndex))
@@ -205,14 +218,39 @@ export default function App() {
 
   useEffect(() => {
     setCalcStation("none");
+    if (!hasTowerMansionSupport(calcDistrict)) {
+      setCalcModifiers(prev => prev.filter(idx => idx !== 25));
+      setCalcBuyModifiers(prev => prev.filter(idx => idx !== 8));
+    }
   }, [calcDistrict]);
 
   useEffect(() => {
-    setCalcModifiers(prev => prev.filter(idx => {
-      const mod = budgetModifiers[idx];
-      return !mod.applicableLayouts || mod.applicableLayouts.includes(calcRoomType);
-    }));
+    setCalcModifiers(prev => {
+      const filtered = prev.filter(idx => {
+        const mod = budgetModifiers[idx];
+        return !mod.applicableLayouts || mod.applicableLayouts.includes(calcRoomType);
+      });
+      if (filtered.length !== prev.length) {
+        return filtered;
+      }
+      return prev;
+    });
   }, [calcRoomType, budgetModifiers]);
+
+  useEffect(() => {
+    const hasNewAge = calcModifiers.includes(10) || calcModifiers.includes(11);
+    const isLargeSize = (calcRoomType === "ldk1" || calcRoomType === "ldk2") || 
+                        ((calcRoomType === "r1" || calcRoomType === "k1") && (calcModifiers.includes(3) || calcModifiers.includes(4)));
+    
+    if (hasNewAge && isLargeSize && !calcModifiers.includes(0)) {
+      setCalcModifiers(prev => {
+        if (!prev.includes(0)) {
+          return [...prev.filter(idx => idx !== 1 && idx !== 2), 0];
+        }
+        return prev;
+      });
+    }
+  }, [calcModifiers, calcRoomType]);
 
   // AI Chat States
   const [chatInput, setChatInput] = useState("");
@@ -281,10 +319,23 @@ export default function App() {
     }
   };
   
-  const getModifierPrice = (modPrice: number) => {
+  const getModifierPrice = (modPrice: number, index?: number) => {
     const scale = getDistrictScale();
+    let price = modPrice;
+    
+    // Custom dynamic adjustment for Tower Mansion based on RoomType
+    if (index === 25) { // Tower Mansion index
+      if (calcRoomType === "ldk1") {
+        price = 30000;
+      } else if (calcRoomType === "ldk2") {
+        price = 50000;
+      } else {
+        price = 15000;
+      }
+    }
+    
     // Round to nearest 1000
-    return Math.round((modPrice * scale) / 1000) * 1000;
+    return Math.round((price * scale) / 1000) * 1000;
   };
 
   const getCalculatedRent = () => {
@@ -294,7 +345,7 @@ export default function App() {
     
     calcModifiers.forEach(idx => {
       const mod = budgetModifiers[idx];
-      rent += getModifierPrice(mod.price);
+      rent += getModifierPrice(mod.price, idx);
     });
 
     if (calcStation !== "none") {
@@ -318,7 +369,11 @@ export default function App() {
     if (calcModifiers.includes(index)) {
       setCalcModifiers(calcModifiers.filter(i => i !== index));
     } else {
-      setCalcModifiers([...calcModifiers, index]);
+      let nextModifiers = [...calcModifiers, index];
+      if (index === 25) {
+        nextModifiers = nextModifiers.filter(i => i !== 9 && i !== 21);
+      }
+      setCalcModifiers(nextModifiers);
     }
   };
 
@@ -772,7 +827,7 @@ export default function App() {
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      我已將完整大補帖灌輸給 AI 智能助手，支援多輪對話，能快速精準解答。
+                      本系統已將完整大補帖融入 AI 智能助手，支援多輪對話，能快速精準解答。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
@@ -1147,7 +1202,7 @@ export default function App() {
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      我已將完整買房大補帖與 2025 各家銀行放款、民泊新法規則灌輸給 AI，支援直接提問。
+                      本系統已將完整買房大補帖與 2025 各家銀行放款、民泊新法規則整合至 AI 智能助手，支援直接提問。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
@@ -1734,9 +1789,9 @@ export default function App() {
               </div>
 
               {/* Multi-grid calculator interface */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" id="calc-engine-container">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start" id="calc-engine-container">
                 {/* Inputs area (Left 7 Columns) */}
-                <div className="lg:col-span-7 space-y-6">
+                <div className="xl:col-span-7 space-y-6">
                   {/* Step 1: Select District & Size */}
                   <div className="border border-[#1a1a18] bg-white p-6 space-y-4">
                     <h4 className="font-bold text-[#b8241d] text-sm border-b border-zinc-200 pb-2 font-sans">
@@ -1892,7 +1947,8 @@ export default function App() {
                             {budgetModifiers.filter(m => m.type === "plus" && m.text !== "熱門大站 (2條線路以上)" && m.text !== "熱門小站 (1條線路)" && (!m.applicableLayouts || m.applicableLayouts.includes(calcRoomType))).map((mod) => {
                               const originalIdx = budgetModifiers.findIndex(m => m.text === mod.text);
                               const isSelected = calcModifiers.includes(originalIdx);
-                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers);
+                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers, calcDistrict);
+                              const isNoTower = originalIdx === 25 && !hasTowerMansionSupport(calcDistrict);
                               return (
                                 <label 
                                   key={originalIdx} 
@@ -1903,7 +1959,7 @@ export default function App() {
                                         ? "bg-[#fffdfb] border-[#b8241d] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆" : undefined}
+                                  title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -1915,9 +1971,13 @@ export default function App() {
                                   <div className="flex-grow">
                                     <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                                       <span className={isDisabled ? "text-zinc-400 line-through decoration-zinc-300" : "text-zinc-900"}>{mod.text}</span>
-                                      {isDisabled && <span className="text-[9px] bg-zinc-200 text-zinc-500 font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">衝突鎖定</span>}
+                                      {isDisabled && (
+                                        <span className="text-[9px] bg-zinc-200 text-zinc-500 font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
+                                          {isNoTower ? "此區無塔樓" : "衝突鎖定"}
+                                        </span>
+                                      )}
                                     </div>
-                                    <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">+ {getModifierPrice(mod.price).toLocaleString()} 円 / 月</div>
+                                    <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">+ {getModifierPrice(mod.price, originalIdx).toLocaleString()} 円 / 月</div>
                                   </div>
                                 </label>
                               );
@@ -1932,7 +1992,8 @@ export default function App() {
                             {budgetModifiers.filter(m => m.type === "minus" && (!m.applicableLayouts || m.applicableLayouts.includes(calcRoomType))).map((mod) => {
                               const originalIdx = budgetModifiers.findIndex(m => m.text === mod.text);
                               const isSelected = calcModifiers.includes(originalIdx);
-                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers);
+                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers, calcDistrict);
+                              const isTowerFirstFloorConflict = originalIdx === 21 && calcModifiers.includes(25);
                               return (
                                 <label 
                                   key={originalIdx} 
@@ -1943,7 +2004,7 @@ export default function App() {
                                         ? "bg-[#fcfdfa] border-zinc-800 text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆" : undefined}
+                                  title={isDisabled ? (isTowerFirstFloorConflict ? "超高層塔樓住宅 (タワーマンション) 基本上不會有第一樓住宅，已自動防呆鎖定" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -1955,7 +2016,11 @@ export default function App() {
                                   <div className="flex-grow">
                                     <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                                       <span className={isDisabled ? "text-zinc-400 line-through decoration-zinc-300" : "text-zinc-900"}>{mod.text}</span>
-                                      {isDisabled && <span className="text-[9px] bg-zinc-200 text-zinc-500 font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">衝突鎖定</span>}
+                                      {isDisabled && (
+                                        <span className="text-[9px] bg-zinc-200 text-zinc-500 font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
+                                          {isTowerFirstFloorConflict ? "塔樓無一樓" : "衝突鎖定"}
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price)).toLocaleString()} 円 / 月</div>
                                   </div>
@@ -2065,7 +2130,7 @@ export default function App() {
                 </div>
 
                 {/* Calculation Output (Right 5 Columns) - Sticky visual layout */}
-                <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-6">
+                <div className="xl:col-span-5 xl:sticky xl:top-8 space-y-6">
                   {/* Results Display */}
                   <div className="border border-[#1a1a18] bg-white p-6 relative">
                     <div className="absolute top-0 right-4 bg-[#b8241d] text-white px-2 py-0.5 text-xs select-none font-sans">
@@ -2142,7 +2207,7 @@ export default function App() {
                                   const isPlus = mod.type === "plus";
                                   return (
                                     <div key={idx} className="flex justify-between items-start text-zinc-600 gap-2">
-                                      <span className="truncate">
+                                      <span className="break-all">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
                                       <span className={`font-mono shrink-0 ${isPlus ? "text-[#b8241d]" : "text-green-700"}`}>
@@ -2233,7 +2298,7 @@ export default function App() {
                                   const dynamicMult = getDynamicBuyModifierMultiplier(idx, calcDistrict);
                                   return (
                                     <div key={idx} className="flex justify-between items-start text-zinc-600 gap-2">
-                                      <span className="truncate font-sans">
+                                      <span className="break-all font-sans">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
                                       <span className={`font-mono shrink-0 ${isPlus ? "text-[#b8241d]" : "text-green-700"}`}>
@@ -2374,7 +2439,7 @@ export default function App() {
                   <span>Linus 營業係長 ╳ 24小時 AI 智能租屋助手</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  我已經將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整灌輸給 AI 智能房仲。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
+                  本系統已將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整整合至 AI 智能房仲。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
                 </p>
               </div>
 

@@ -461,7 +461,9 @@ export const budgetModifiers: BudgetModifier[] = [
   { text: "4 樓以上無電梯", price: -5000, type: "minus", category: "subtraction" },
   { text: "房間位於一樓", price: -3000, type: "minus", category: "subtraction" },
   { text: "室內空間 15〜18平米", price: -7000, type: "minus", category: "subtraction", applicableLayouts: ["r1", "k1"] },
-  { text: "木造建築", price: -10000, type: "minus", category: "subtraction" }
+  { text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
+  { text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
+  { text: "塔樓建築", price: 15000, type: "plus", category: "building" }
 ];
 
 export const otherQA: QAItem[] = [
