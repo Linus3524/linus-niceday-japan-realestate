@@ -319,14 +319,14 @@ export default function App() {
               </div>
               <h1 className={`font-bold tracking-tight text-[#1A2A22] transition-all duration-300 ${scrolled ? "text-lg md:text-xl mt-0.5" : "text-xl md:text-3xl mt-1"}`}>日本租房買賣知識大補帖</h1>
               <p className={`text-xs text-zinc-600 mt-1 font-sans transition-all duration-300 ${scrolled ? "hidden md:block opacity-75" : "block md:text-sm"}`}>
-                第一次來日本者的最佳指南 ╳ 實務預算精算 ╳ AI 智能問答
+                第一次來日本者的最佳指南 ╳ 實務預算精算 ╳ AI 找房顧問
               </p>
             </div>
           </div>
 
           {/* Quick Line contact top bar */}
           <div className={`items-center gap-4 border-l-0 md:border-l border-zinc-200 md:pl-6 py-1 w-full md:w-auto transition-all duration-300 ${scrolled ? "hidden md:flex" : "flex flex-row justify-between md:flex-col md:items-end gap-1.5 md:text-right font-sans"}`}>
-            {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider hidden md:block">Linus 線上諮詢</div>}
+            {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider hidden md:block">立即聯絡 Linus 線上諮詢</div>}
             <div className="flex items-stretch border border-[#1A2A22] font-sans shadow-[2px_2px_0px_0px_rgba(26,42,34,1)]">
               <a
                 href={`https://line.me/ti/p/~${linusContact.lineId}`}
@@ -420,7 +420,7 @@ export default function App() {
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
                   <Sparkles className="w-4 h-4 shrink-0 text-[#0F8F6D]" />
-                  <span>AI 智能問答</span>
+                  <span>AI 找房顧問</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">

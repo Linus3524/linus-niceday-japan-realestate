@@ -41,7 +41,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房買賣知識大補帖」。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
-                  日本的租房制度有許多與台灣非常不同的一次性費用（如禮金、保證會社費用、換鑰匙費等），稍有不慎可能在初期就要支付大筆冤枉錢。希望本站的分類卡片、即時算命預算計算機與 AI 智能諮詢能幫到您。祝您在日本的生活一切順利，順利成家！❀
+                  日本的租房制度有許多與台灣非常不同的一次性費用（如禮金、保證會社費用、換鑰匙費等），稍有不慎可能在初期就要支付大筆冤枉錢。希望本站的分類卡片、即時算命預算計算機與 AI 找房顧問能幫到您。祝您在日本的生活一切順利，順利成家！❀
                 </p>
                 
                 {/* Visual Quick Actions */}
@@ -68,13 +68,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      本系統已將完整大補帖融入 AI 智能助手，支援多輪對話，能快速精準解答。
+                      本系統已將完整大補帖融入 AI 找房顧問，支援多輪對話，能快速精準解答。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
                       className="mt-3 text-xs font-bold text-[#1A2A22] hover:text-[#0F8F6D] flex items-center gap-1 cursor-pointer"
                     >
-                      <span>開始 AI 智能對話</span> <ArrowRight className="w-3.5 h-3.5" />
+                      <span>開始 AI 找房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   <HelpCircle className="w-12 h-12 text-[#0F8F6D] mx-auto opacity-75" />
                   <div className="space-y-1">
                     <p className="text-base font-bold">找不到符合「{searchQuery}」的項目</p>
-                    <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊右側 AI 智能解答諮詢 Linus！</p>
+                    <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊 AI 找房顧問 諮詢 Linus！</p>
                   </div>
                   <button 
                     onClick={() => {

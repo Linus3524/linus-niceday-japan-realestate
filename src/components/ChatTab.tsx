@@ -26,14 +26,14 @@ export function ChatTab(props: ChatTabProps) {
             >
               <div className="border border-[#1A2A22] bg-white p-6 relative" id="chat-header-card">
                 <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs tracking-widest font-sans">
-                  智能 AI
+                  找房顧問
                 </div>
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-[#0F8F6D]" />
-                  <span>Linus ╳ 24小時 AI 智能租屋助手</span>
+                  <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  本系統已將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整整合至 AI 智能房仲。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
+                  本系統已將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整整合至 AI 找房顧問。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
                 </p>
               </div>
 

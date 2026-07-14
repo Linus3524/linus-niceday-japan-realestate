@@ -56,7 +56,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      本系統已將完整買房大補帖與 2026 各家銀行放款、民泊新法規則整合至 AI 智能助手，支援直接提問。
+                      本系統已將完整買房大補帖與 2026 各家銀行放款、民泊新法規則整合至 AI 找房顧問，支援直接提問。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
