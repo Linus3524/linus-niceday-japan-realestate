@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import {
-  Calculator, Sparkles, Smile, FileText, Building, ExternalLink, ArrowUp
+  Calculator, Sparkles, Smile, FileText, Building, ExternalLink, ArrowUp, Copy, Check
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import {
@@ -327,23 +327,27 @@ export default function App() {
           {/* Quick Line contact top bar */}
           <div className={`items-center gap-4 border-l-0 md:border-l border-zinc-200 md:pl-6 py-1 w-full md:w-auto transition-all duration-300 ${scrolled ? "hidden md:flex" : "flex flex-row justify-between md:flex-col md:items-end gap-1.5 md:text-right font-sans"}`}>
             {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider hidden md:block">Linus 線上諮詢</div>}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-stretch border border-[#1A2A22] font-sans shadow-[2px_2px_0px_0px_rgba(26,42,34,1)]">
               <a
                 href={`https://line.me/ti/p/~${linusContact.lineId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#06C755] hover:bg-[#05A847] text-white px-3 py-1 text-xs font-bold cursor-pointer transition-colors"
+                className="flex items-center gap-1 bg-[#06C755] hover:bg-[#05A847] text-white px-3 py-1.5 text-xs font-bold cursor-pointer transition-colors"
                 id="add-line-btn-top"
               >
                 ＋ 加 LINE 好友
               </a>
-              <span className="text-xs md:text-sm font-semibold bg-[#f4f2ee] px-2.5 py-1 text-zinc-800 border border-zinc-300">{linusContact.lineId}</span>
+              <span className="flex items-center bg-[#f4f2ee] px-2.5 text-xs font-mono font-semibold text-zinc-800 border-l border-[#1A2A22]">
+                {linusContact.lineId}
+              </span>
               <button
                 onClick={handleCopyLine}
-                className="bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-3 py-1 text-xs font-medium cursor-pointer transition-colors"
+                className="flex items-center gap-1 px-2.5 text-xs font-medium bg-white hover:bg-[#F5F8F6] text-zinc-600 hover:text-[#0F8F6D] border-l border-[#1A2A22] cursor-pointer transition-colors"
                 id="copy-line-btn-top"
+                title="複製 LINE ID"
               >
-                {copiedLine ? "已複製" : "複製 ID"}
+                {copiedLine ? <Check className="w-3.5 h-3.5 text-[#0F8F6D]" /> : <Copy className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">{copiedLine ? "已複製" : "複製"}</span>
               </button>
             </div>
           </div>

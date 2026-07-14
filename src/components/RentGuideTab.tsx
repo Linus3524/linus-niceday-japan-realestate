@@ -245,26 +245,72 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-2">
+                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
                         適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租房等待期，好處是落地即入住！
                       </p>
-                      <div className="bg-[#F5F8F6] p-3 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22]">流程順序：</span>
-                        取得簽證貼紙/COE ➔ 線上挑房 ➔ 提交資料 ➔ 保證公司電話照會 ➔ 審查核准 ➔ 海外匯款初期費用 ➔ 入境領在留卡 ➔ 領鑰匙 ➔ 登記住址。
+                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
+                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審查 SOP 完整步驟：</span>
+                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
+                          {[
+                            "領取在留資格認定書／打工渡假簽證貼紙",
+                            "開始找房",
+                            "遞交個人資料",
+                            "申請房子",
+                            "審查",
+                            "繳交初期費用",
+                            "入境日本（在海關那邊領取在留卡）",
+                            "簽約",
+                            "等入居日簽收鑰匙",
+                            "區役所登入地址",
+                            "辦日本門號",
+                            "申請日本郵局銀行帳戶",
+                            "綁定自動扣款"
+                          ].map((step, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
+                              <span className="bg-[#1A2A22] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
+                                {idx + 1}
+                              </span>
+                              <span>{step}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
                     <div className="bg-white p-5 border border-[#1A2A22] relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold">境內審查</div>
+                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold">入境審查</div>
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 抵達日本境內申請流程</span>
                       </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-2">
+                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
                         適合人已在日本，擁有登記過原臨時地址在留卡、日本電話與個人印章的人。可安排實體內見看房，能挑選的房源物件範圍是最多的。
                       </p>
-                      <div className="bg-[#F5F8F6] p-3 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22]">流程順序：</span>
-                        在留卡登錄臨時地址 ➔ 辦日本手機號 ➔ 找房與預約看房 ➔ 遞交申請 ➔ 審查 ➔ 境內匯款 ➔ 簽約重要事項說明 ➔ 領鑰匙。
+                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
+                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 入境審查 SOP 完整步驟：</span>
+                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
+                          {[
+                            "入境領取在留卡",
+                            "區役所登錄地址並申請住民票＆辦保險證",
+                            "辦日本門號",
+                            "開始找房",
+                            "遞交個人資料",
+                            "申請房子",
+                            "審查",
+                            "繳交初期費用",
+                            "簽約",
+                            "等入居日簽收鑰匙",
+                            "轉出轉入新地址",
+                            "申請郵局銀行帳戶",
+                            "綁定自動扣款"
+                          ].map((step, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
+                              <span className="bg-[#0F8F6D] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
+                                {idx + 1}
+                              </span>
+                              <span>{step}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
