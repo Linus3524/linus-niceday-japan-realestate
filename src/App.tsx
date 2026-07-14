@@ -763,7 +763,7 @@ export default function App() {
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
                   <FileText className="w-4 h-4 shrink-0" />
-                  <span>租屋知識圖卡</span>
+                  <span>租屋知識</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
@@ -781,7 +781,7 @@ export default function App() {
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
                   <Building className="w-4 h-4 shrink-0" />
-                  <span>買房知識大補帖</span>
+                  <span>買房知識</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
@@ -799,7 +799,7 @@ export default function App() {
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
                   <Calculator className="w-4 h-4 shrink-0" />
-                  <span>預算加減計算</span>
+                  <span>預算加減算</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
@@ -1255,7 +1255,7 @@ export default function App() {
                   置產 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
-                  <span>日本買房置產大補帖</span>
+                  <span>日本買房置產</span>
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1 font-serif">
