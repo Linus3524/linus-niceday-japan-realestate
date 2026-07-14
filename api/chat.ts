@@ -1,4 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "./rentGuideData.js";
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./buyHouseData.js";
 
@@ -75,14 +77,26 @@ ${JSON.stringify(buyHouseQAs, null, 2)}
 ${JSON.stringify(linusContact, null, 2)}
 `;
 
-// Simple in-memory per-IP rate limit (per serverless instance) to protect the Gemini quota
 const RATE_LIMIT = 10; // requests per window
 const RATE_WINDOW_MS = 60_000;
 const MAX_MESSAGE_CHARS = 1000;
 const MAX_HISTORY_TURNS = 20;
+
+// Preferred limiter: Upstash Redis (shared across all serverless instances).
+// Enabled automatically when UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN are set.
+const upstashLimiter =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(RATE_LIMIT, "60 s"),
+        prefix: "linus-chat",
+      })
+    : null;
+
+// Fallback limiter: per-instance in-memory (used locally or if Upstash is not configured).
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
-function isRateLimited(ip: string): boolean {
+function isRateLimitedInMemory(ip: string): boolean {
   const now = Date.now();
   const bucket = rateBuckets.get(ip);
   if (!bucket || now > bucket.resetAt) {
@@ -94,6 +108,20 @@ function isRateLimited(ip: string): boolean {
   }
   bucket.count++;
   return bucket.count > RATE_LIMIT;
+}
+
+async function isRateLimited(ip: string): Promise<boolean> {
+  if (upstashLimiter) {
+    try {
+      const { success } = await upstashLimiter.limit(ip);
+      return !success;
+    } catch (err) {
+      // If Redis is unreachable, degrade gracefully to in-memory rather than blocking users.
+      console.error("Upstash rate limit error, falling back to in-memory:", err);
+      return isRateLimitedInMemory(ip);
+    }
+  }
+  return isRateLimitedInMemory(ip);
 }
 
 export default async function handler(req: any, res: any) {
@@ -116,7 +144,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket?.remoteAddress || "unknown";
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return res.status(429).json({ error: "訊息傳送太頻繁囉!請稍等一分鐘再試,或直接加 Linus 的 Line (linus0922) 聊聊 ❀" });
     }
 
@@ -156,8 +184,9 @@ export default async function handler(req: any, res: any) {
 【你的專業背景與個性特質】：
 1. 說話口吻極其親切、溫馨、專業、誠實，且富有日本精緻的職人服務精神（例：常以「您好，我是 Linus」、「❀」、「祝您在日本的一切順利！」等點綴，語氣極度謙遜有禮）。
 2. 請嚴格根據下方提供的「日本租屋與買房知識大補帖數據」作為第一手且最權威的回答依據。如果問題能在數據中找到答案，請用溫暖、有條理的方式整理並回答。
-3. 如果用戶詢問的內容在數據中沒有提到（例如東京特定區域的特色、特定生活交通技巧、一般的日本生活問題），請基於你作為東京專業房仲的多年豐富實務經驗給予熱心、真誠、客觀的建議，並加上說明「這是 Linus 個人在不動產界的經驗分享，希望能幫上您喔」。
-4. 若涉及具體案件諮詢，或用戶需要更進一步客製化置產或配對房源，請熱心主動邀請對方添加你的 Line (帳號: linus0922) 或是點擊頁面上的聯繫方式，直接與你聯絡。
+3. 【重要防呆規則】對於「具體事實類」問題——例如審查所需文件的細節、費用金額、簽證與貸款條件、法規天數、印鑑或證明文件的規格等——你「只能」引用下方數據中明確寫出的內容作答。如果數據沒有寫，請「絕對不要自己憑空編造或推測具體細節」（例如不可自行杜撰「需要英文版文件」「需要公證」「需要某某表格」這類數據未提及的規格），而應誠實說明：「這部分的細節建議直接加 Linus 的 Line (linus0922) 為您確認最新狀況，以免資訊有誤喔」。
+4. 只有在「軟性、非事實類」問題上（例如東京某區域的生活氛圍、通勤交通感受、一般日本生活小技巧），才可以基於你作為東京專業房仲的實務經驗給予客觀建議，並加上說明「這是 Linus 個人在不動產界的經驗分享，仍建議以實際狀況為準喔」。
+5. 若涉及具體案件諮詢，或用戶需要更進一步客製化置產或配對房源，請熱心主動邀請對方添加你的 Line (帳號: linus0922) 或是點擊頁面上的聯繫方式，直接與你聯絡。
 
 【租屋與買房知識大補帖數據內容】：
 ${knowledgeBaseContext}

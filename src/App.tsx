@@ -305,13 +305,14 @@ export default function App() {
       {/* Elegant Linear Header */}
       <header className={`sticky top-0 z-40 border-b border-[#DDE3DF] mini-header ${scrolled ? "compact shadow-sm" : "bg-white"}`} id="app-header">
         <div className={`max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 transition-all duration-300 ${scrolled ? "py-2" : "py-4 md:py-6"}`}>
-          <div className="flex items-start gap-3 md:gap-4 w-full md:w-auto">
-            {/* Hanko Stamp Style Logo */}
-            <div className={`border-2 border-[#0F8F6D] text-[#0F8F6D] font-bold text-center leading-tight tracking-widest bg-white select-none shrink-0 transition-all duration-300 ${scrolled ? "px-1.5 py-1 text-xs" : "px-1.5 py-2 text-sm md:px-2 md:py-3 md:text-lg"}`} id="hanko-logo">
-              東京
-              <br />
-              日和
-            </div>
+          <div className="flex items-center gap-2.5 md:gap-3.5 w-full md:w-auto">
+            {/* Brand Illustration Logo */}
+            <img
+              src="/logo.png"
+              alt="LINUS 住好日"
+              className={`object-contain shrink-0 select-none transition-all duration-300 ${scrolled ? "h-16" : "h-16 md:h-28"}`}
+              id="brand-logo"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs bg-[#1A2A22] text-[#F5F8F6] px-1.5 py-0.5 font-sans uppercase tracking-widest select-none">Linus 住好日</span>
@@ -370,7 +371,7 @@ export default function App() {
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  CARDS
+                  RENT
                 </span>
                 {activeTab === "cards" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
               </button>

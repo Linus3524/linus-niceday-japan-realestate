@@ -342,7 +342,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
-                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。</span>
+                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>

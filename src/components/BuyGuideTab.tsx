@@ -41,8 +41,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   <span>日本買房置產</span>
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
-                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1 font-serif">
-                  您好，我是 Linus。近年來隨著日本經濟回溫與日圓匯率相對低檔，許多華人朋友除了在日租屋，也開始規劃「買房自住」或「置產投資民宿與出租套房」。在日本買房雖然不限國籍與簽證，但其產權登記事項、銀行貸款條件、以及東京都各區對民泊民宿（Airbnb）的嚴格規範，實務上細節繁瑣，稍有不慎就會踩到高利息或無法營業的法規地雷。
+                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
+                  近年來隨著日本經濟回溫與日圓匯率相對低點，許多華人朋友除了在日租屋，也開始規劃「買房自住」或「置產投資民宿與出租套房」。在日本買房雖然不限國籍與簽證，但其產權登記事項、銀行貸款條件、以及東京都各區對民泊民宿（Airbnb）的嚴格規範，實務上細節繁瑣，稍有不慎就會踩到高利息或無法營業的法規地雷。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
                   為了協助您精準掌握日本房市脈絡，我特別整理了這份包含「圖紙/規費術語」、「現金與貸款買房完整步驟」、「2026最新台系與日系銀行放款標準」，以及「東京都 23 區最詳盡的民泊民宿新法與旅館業法要求」。歡迎直接查閱或透過 AI 問答隨時向我諮詢！❀
@@ -163,7 +163,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>圖紙專有名詞</span>
-                              <span className="text-[#0F8F6D] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">點擊深入 ➔</span>
                             </div>
                           </div>
                         ))}
@@ -198,7 +198,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>規費與交易術語</span>
-                              <span className="text-[#0F8F6D] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">點擊深入 ➔</span>
                             </div>
                           </div>
                         ))}

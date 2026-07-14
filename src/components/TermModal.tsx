@@ -9,8 +9,19 @@ interface TermModalProps {
   handleSendMessage: (e?: any, customMsg?: string) => void;
 }
 
+// 依項目類型動態決定按鈕文字與帶入 AI 的問句，避免「圖紙用語」也被稱為「費用」的錯置狀況
+function getItemTypeLabel(item: any): string {
+  if (!item) return "名詞";
+  if (item.category === "drawing") return "圖紙用語";
+  if (item.category === "fee") return "費用";
+  if (item.duration !== undefined) return "流程步驟";
+  if (item.warning !== undefined || item.keyPoints !== undefined) return "費用";
+  return "名詞";
+}
+
 export function TermModal(props: TermModalProps) {
   const { selectedFee, setSelectedFee, handleTabChange, handleSendMessage } = props;
+  const itemTypeLabel = getItemTypeLabel(selectedFee);
   return (
     <AnimatePresence>
       {selectedFee && (
@@ -71,14 +82,14 @@ export function TermModal(props: TermModalProps) {
                 <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 font-sans">
                   <button
                     onClick={() => {
-                      const textToAsk = `想深入了解關於 ${selectedFee.name} 的內容與實務細節`;
+                      const textToAsk = `想深入了解關於「${selectedFee.name}」這個${itemTypeLabel}的內容與實務細節`;
                       setSelectedFee(null);
                       handleTabChange("chat");
                       handleSendMessage(undefined, textToAsk);
                     }}
                     className="px-4 py-2 border border-[#1A2A22] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
                   >
-                    向 AI 問答助理諮詢此費用
+                    向 AI 問答助理諮詢此{itemTypeLabel}
                   </button>
                   <button
                     onClick={() => setSelectedFee(null)}
