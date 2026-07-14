@@ -34,7 +34,7 @@ export function ChatTab(props: ChatTabProps) {
                   <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  本系統已將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整整合至 AI 找房顧問。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
+                  AI 找房顧問整合了本站的租屋與買房知識：從敷金、審查與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房或評估日本不動產投資，都可以先從這裡開始。
                 </p>
               </div>
 
@@ -87,7 +87,7 @@ export function ChatTab(props: ChatTabProps) {
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-400 font-sans">Linus 正在調閱日本不動產知識庫...</div>
                         <div className="p-3 bg-[#fffdfa] border border-[#1A2A22] text-xs text-zinc-500 font-sans italic animate-pulse">
-                          正在整理租賃規則中，請稍候片刻...
+                          正在整理租屋與買房資訊，請稍候片刻...
                         </div>
                       </div>
                     </div>
@@ -111,14 +111,17 @@ export function ChatTab(props: ChatTabProps) {
                 </div>
 
                 {/* Quick Recommended Prompt Suggests */}
-                <div className="bg-[#F5F8F6] border-t border-zinc-200 p-3 flex flex-wrap gap-1.5 overflow-x-auto select-none" id="chat-quick-suggestions">
+                <div className="bg-[#F5F8F6] border-t border-zinc-200 p-3 flex flex-wrap items-center gap-1.5 select-none" id="chat-quick-suggestions">
                   <span className="text-[10px] text-zinc-500 font-bold self-center mr-1 font-sans">熱門諮詢：</span>
                   {[
                     "打工度假存款需要準備多少？",
                     "什麼是敷金跟禮金？",
                     "租房如何預約開通水電瓦斯？",
                     "可以跟朋友一起合租公寓嗎？",
-                    "海外審查需要哪些文件？"
+                    "海外審查需要哪些文件？",
+                    "外國人買房需要日本簽證嗎？",
+                    "日本買房的貸款條件有哪些？",
+                    "買房後可以經營民泊嗎？"
                   ].map((p, idx) => (
                     <button
                       key={idx}
@@ -138,7 +141,7 @@ export function ChatTab(props: ChatTabProps) {
                 >
                   <input
                     type="text"
-                    placeholder="向 Linus 提問日本租屋知識 (例如：打工度假租房、退租清潔費等)..."
+                    placeholder="向 Linus 提問日本租屋／買房知識（例如：租屋審查、房貸、民泊）..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     disabled={chatLoading}
