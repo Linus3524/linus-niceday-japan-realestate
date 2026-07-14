@@ -458,8 +458,16 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                           </div>
 
-                          <div className="mt-4 pt-3 border-t border-dashed border-zinc-300 text-[11px] text-zinc-500 leading-relaxed text-justify">
-                            {bank.note}
+                          <div className="mt-4 pt-3 border-t border-dashed border-zinc-300 text-[11px] text-zinc-500 leading-relaxed text-justify space-y-2">
+                            {bank.note.split('\n').filter(line => line.trim()).map((line, lIdx) => {
+                              const cleanedLine = line.replace(/^[•·\-\s\*\u2022\u00b7]+/, '').trim();
+                              return (
+                                <div key={lIdx} className="flex items-start gap-2">
+                                  <span className="text-[#0F8F6D] text-[7px] mt-[4.5px] shrink-0 select-none">●</span>
+                                  <span className="flex-1">{cleanedLine}</span>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       ))}

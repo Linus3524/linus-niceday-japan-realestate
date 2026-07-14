@@ -47,7 +47,7 @@ export function QACard({ question, answer, number }: QACardProps) {
         </summary>
         <div className="border-t border-dashed border-zinc-300 bg-[#F9FBFA] px-4 pb-5 pt-4 md:px-5">
           <div className="mb-3 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-[#0F8F6D]">
-            <Lightbulb className="h-3.5 w-3.5" /> LINUS 實務整理
+            <Lightbulb className="h-3.5 w-3.5" /> LINUS 實務說明
           </div>
           <div className="font-sans text-xs text-justify md:text-sm">
             {blocks.map((block, index) => <AnswerBlock key={index} text={block} />)}

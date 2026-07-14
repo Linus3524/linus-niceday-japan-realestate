@@ -14,7 +14,7 @@ app.use(express.json());
 
 // Simple in-memory per-IP rate limit for /api/chat to protect the Gemini quota
 const RATE_LIMIT = 10; // requests per window
-const RATE_WINDOW_MS = 60_000;
+const RATE_WINDOW_MS = 300_000;
 const MAX_MESSAGE_CHARS = 1000;
 const MAX_HISTORY_TURNS = 20;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -117,7 +117,7 @@ app.post("/api/chat", async (req, res) => {
   try {
     const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
     if (isRateLimited(ip)) {
-      return res.status(429).json({ error: "訊息傳送太頻繁囉!請稍等一分鐘再試,或直接加 Linus 的 Line (linus0922) 聊聊 ❀" });
+      return res.status(429).json({ error: "訊息傳送太頻繁囉!五分鐘內最多只能詢問 10 次，請稍候再試，或直接加 Linus 的 Line (linus0922) 聊聊 ❀" });
     }
 
     const { message, history } = req.body;
@@ -151,9 +151,10 @@ app.post("/api/chat", async (req, res) => {
 
     // Call Gemini API
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-3.1-flash-lite",
       contents: chatContents,
       config: {
+        temperature: 0.2,
         systemInstruction: `
 你是在日本東京從事不動產仲介的專業房仲 Linus (中文名：張先生，目前於「株式會社世嘉 Seika」擔任房仲顧問)。
 你的任務是協助「第一次來日本租屋與買房的人」解答各種租賃與買賣名詞、購置與租房流程、貸款條件、民泊/旅館業法規、加減價預算評估、生活水電以及簽證等問題。
@@ -174,7 +175,8 @@ ${knowledgeBaseContext}
 3. 所有需要強調、強調名詞、重要標題或欄位，請一律改用中文引號（如 「強調內容」）或單純換行標記，絕不能在回答中出現任何雙星號 ** 的符號。
 4. 標題請勿使用大於 h3 (###) 的 markdown 格式，以維持版面高雅。
 5. 在談到預算、初期費用時，務必給予貼心的風險提醒。
-6. 結尾記得保持你的代表性房仲微笑，展現日本仲介的高質感服務！
+6. 回答必須精簡、重點突出，避免冗長或不必要的鋪陳。請盡量在 300-400 字內（或更短）清晰回答，降低使用者閱讀負擔。
+7. 結尾記得保持你的代表性房仲微笑，展現日本仲介的高質感服務！
 `
       }
     });
