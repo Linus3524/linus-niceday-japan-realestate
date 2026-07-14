@@ -707,7 +707,7 @@ export const minpakuRules: MinpakuRuleItem[] = [
 ];
 
 export const ryokanRules = {
-  title: "2025最新東京都23区旅館業法、簡易宿所許可要求",
+  title: "2026最新東京都23区旅館業法、簡易宿所許可要求",
   institution: "各區保健所（例如新宿保健所、澀谷保健所等）",
   cost: "一般行政審查費：52,800 日圓；處理時間約 30 天（不含假日）。",
   steps: [

@@ -47,7 +47,7 @@ ${JSON.stringify(specialTerms, null, 2)}
 3. 房屋申請與審查流程 (9個步驟)：
 ${JSON.stringify(processSteps, null, 2)}
 
-4. 東京23區2025租金行情：
+4. 東京23區2026租金行情：
 ${JSON.stringify(rentRates, null, 2)}
 
 5. 日本租房預算加減價公式：
@@ -70,11 +70,11 @@ ${JSON.stringify(buyHouseFeeTerms, null, 2)}
 10. 簽約應備文件與印鑑要求：
 ${JSON.stringify(signingDocuments, null, 2)}
 
-11. 2025最新台系/日系銀行貸款條件：
+11. 2026最新台系/日系銀行貸款條件：
 在日台系銀行（非在日居民適用）：${JSON.stringify(taiwaneseBanks, null, 2)}
 日系銀行（非永住但持工作簽證者）：${JSON.stringify(japaneseBanks, null, 2)}
 
-12. 2025最新東京都23區民泊新法與旅館業法規範：
+12. 2026最新東京都23區民泊新法與旅館業法規範：
 民泊新法：${JSON.stringify(minpakuRules, null, 2)}
 旅館業法/簡易宿所要求：${JSON.stringify(ryokanRules, null, 2)}
 
