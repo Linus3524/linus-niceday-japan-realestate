@@ -172,7 +172,7 @@ export default function App() {
       setChatMessages(prev => [...prev, { role: "model" as const, text: data.reply }]);
     } catch (err: any) {
       console.error(err);
-      setChatError(err.message || "網路傳輸異常，請稍後再試。如果您急於找房，可以直接添加 Linus 的 Line: linus0922 進行即時諮詢！");
+      setChatError("AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。");
     } finally {
       setChatLoading(false);
     }
@@ -557,7 +557,7 @@ export default function App() {
 
           <div className="bg-[#F5F8F6] border border-zinc-200 p-4 text-[10px] text-zinc-500 leading-relaxed text-justify font-sans">
             <p>
-              以上網站及圖卡所有內容均為 <strong>株式会社世嘉 Seika Linus Chang</strong> 個人實務撰寫，未經授權許可請勿以任何形式轉載、拷貝或做其他商業用途。上述資訊會不定期根據日本國土交通省法規、東京租賃紛爭防止條例與保證會社最新制度更新。如有刊登、翻譯錯誤或有圖片授權疑慮，請致信聯絡至 r352410@gmail.com 將盡速於一個工作日內處理。
+              本站內容由 <strong>株式会社世嘉 Seika Linus Chang</strong> 依公開資料與仲介實務整理，供一般資訊與預算規劃參考，不構成法律、稅務、金融、簽證或投資建議。法令、契約與金融方案可能更新，請以主管機關及服務提供者的最新書面資料為準。未經授權請勿作商業轉載；若發現錯誤或授權疑慮，請聯絡 r352410@gmail.com。
             </p>
           </div>
         </div>

@@ -115,7 +115,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
-                          <span>打工度假租房成功率 100% / 協助水電網路開通</span>
+                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通</span>
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
@@ -221,7 +221,7 @@ export function ContactTab(props: ContactTabProps) {
                       <div className="space-y-2">
                         <span className="font-bold text-[#0F8F6D] block">📋 諮詢買房時建議先準備好以下資料：</span>
                         <p className="text-zinc-600 leading-normal text-justify">
-                          很高興為您服務，為了讓 Linus 協助匹配合適的房產物件與試算貸款，歡迎填寫以下買房條件傳送給 Linus 喔！
+                          為了讓 Linus 協助媒合合適物件並進行情境試算，歡迎填寫以下買房條件。貸款結果仍以金融機構正式審查為準。
                         </p>
                         
                         <div className="bg-[#1A2A22] text-white p-4 text-[11px] leading-relaxed select-all border border-[#1A2A22] font-mono whitespace-pre-line">
@@ -238,7 +238,7 @@ export function ContactTab(props: ContactTabProps) {
                         <div className="bg-red-50 p-3 border-l-2 border-[#0F8F6D] space-y-1.5 text-[11px] leading-relaxed">
                           <span className="font-bold text-[#0F8F6D] block">貸款注意事項⚠️</span>
                           <p className="text-zinc-700 text-justify">
-                            在日本貸款實務上條件比較嚴格，請先幫我確認您的條件是否有達到以下其一：
+                            日本房貸依申請人、居留身分、收入、資產與物件個別審查。以下問題僅供初步分流，不代表核貸門檻或保證條件：
                           </p>
                           <ul className="list-disc pl-4 space-y-1.5 text-zinc-600">
                             <li><strong>在日居民：</strong>在日本是否有工作簽證，且同一份工作超過 3 年且年薪 300 萬日圓以上？或來日一年以上年收 400 萬以上，且任職公司在日本登記超過 5 年。</li>

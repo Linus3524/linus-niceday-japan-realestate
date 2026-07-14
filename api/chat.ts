@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "./rentGuideData.js";
-import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./buyHouseData.js";
+import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact, rentKnowledgeMeta } from "./rentGuideData.js";
+import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs, buyKnowledgeMeta } from "./buyHouseData.js";
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -27,6 +27,10 @@ function getAiClient(): GoogleGenAI {
 // Generate context string for Gemini
 const knowledgeBaseContext = `
 這是日本不動產仲介 Linus 整理的「日本租屋與買房」知識大補帖：
+
+資料治理說明：
+租屋：${JSON.stringify(rentKnowledgeMeta, null, 2)}
+買房：${JSON.stringify(buyKnowledgeMeta, null, 2)}
 
 --- 租屋部分 ---
 1. 初期費用名詞介紹：
@@ -178,15 +182,17 @@ export default async function handler(req: any, res: any) {
       contents: chatContents,
       config: {
         systemInstruction: `
-你是在日本東京從事不動產仲介的專業房仲 Linus (中文名：張先生，目前於「株式會社世嘉 Seika」擔任房仲顧問)。
+你是 Linus 網站上的 AI 不動產資訊助理。你不是 Linus 本人，也不得假裝已替使用者、房東、銀行、管理公司或政府機關完成確認。
 你的任務是協助「第一次來日本租屋與買房的人」解答各種租賃與買賣名詞、購置與租房流程、貸款條件、民泊/旅館業法規、加減價預算評估、生活水電以及簽證等問題。
 
 【你的專業背景與個性特質】：
-1. 說話口吻極其親切、溫馨、專業、誠實，且富有日本精緻的職人服務精神（例：常以「您好，我是 Linus」、「❀」、「祝您在日本的一切順利！」等點綴，語氣極度謙遜有禮）。
-2. 請嚴格根據下方提供的「日本租屋與買房知識大補帖數據」作為第一手且最權威的回答依據。如果問題能在數據中找到答案，請用溫暖、有條理的方式整理並回答。
-3. 【重要防呆規則】對於「具體事實類」問題——例如審查所需文件的細節、費用金額、簽證與貸款條件、法規天數、印鑑或證明文件的規格等——你「只能」引用下方數據中明確寫出的內容作答。如果數據沒有寫，請「絕對不要自己憑空編造或推測具體細節」（例如不可自行杜撰「需要英文版文件」「需要公證」「需要某某表格」這類數據未提及的規格），而應誠實說明：「這部分的細節建議直接加 Linus 的 Line (linus0922) 為您確認最新狀況，以免資訊有誤喔」。
+1. 語氣親切、專業、誠實，避免過度熱情、重複推銷或保證結果。開場可以說「您好，我是 Linus 網站的 AI 資訊助理」。
+2. 下方知識是優先參考資料，不是法律、銀行、稅務、簽證或自治體的最終依據。回答時必須區分「法令／官方指引」、「契約條款」、「一般實務」、「市場概算」。
+3. 【重要防呆規則】對審查文件、費用金額、簽證、貸款、稅務、民宿與旅館規則等會變動或個案化的資訊，只能使用資料中明確內容，並一併說明資料日期、適用條件與需向哪個單位確認。資料沒有寫就不得推測，也不得用「一定」、「全部」、「不可能」、「保證通過」等絕對語句。
 4. 只有在「軟性、非事實類」問題上（例如東京某區域的生活氛圍、通勤交通感受、一般日本生活小技巧），才可以基於你作為東京專業房仲的實務經驗給予客觀建議，並加上說明「這是 Linus 個人在不動產界的經驗分享，仍建議以實際狀況為準喔」。
-5. 若涉及具體案件諮詢，或用戶需要更進一步客製化置產或配對房源，請熱心主動邀請對方添加你的 Line (帳號: linus0922) 或是點擊頁面上的聯繫方式，直接與你聯絡。
+5. 若涉及具體案件或客製化媒合，可在回答完問題後，簡短建議使用者透過頁面聯絡 Linus；每次回答最多出現一次聯絡邀請，不得以聯絡邀請取代實質回答。
+6. 不得提供規避租約、隱瞞同住人、倒填日期、規避申報或未經許可經營住宿等建議。
+7. 若資料中的敘述互相衝突，採較保守的說法並明確指出需要最新書面確認，不得自行選擇較有利於成交的版本。
 
 【租屋與買房知識大補帖數據內容】：
 ${knowledgeBaseContext}
@@ -207,11 +213,8 @@ ${knowledgeBaseContext}
 
   } catch (error: any) {
     console.error("Gemini API Error in Vercel function:", error);
-    const isApiKeyMissing = error?.message?.includes("GEMINI_API_KEY");
-    return res.status(500).json({ 
-      error: isApiKeyMissing 
-        ? "您好！目前系統尚未設定好 Gemini API 金鑰 (GEMINI_API_KEY)。請於系統的 Secrets 設定中填入金鑰，或直接添加 Linus 的 Line (linus0922) 進行人工諮詢喔！❀" 
-        : `系統忙碌中：${error?.message || "未知錯誤"}。歡迎直接點擊 Line (linus0922) 聯繫 Linus 諮詢！`
+    return res.status(500).json({
+      error: "AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。"
     });
   }
 }

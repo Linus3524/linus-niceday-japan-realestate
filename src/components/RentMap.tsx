@@ -420,7 +420,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                       )}
                     </span>
                     <span className="text-[10px] text-zinc-500 font-bold">
-                      {mode === "buy" ? "2026年 預估中古公寓總價" : "2026年 官方家賃相場"}
+                      {mode === "buy" ? "2026年 預估中古公寓總價" : "2026年 家賃相場"}
                     </span>
                   </div>
                   <div className="grid grid-cols-4 gap-1 text-center font-mono">

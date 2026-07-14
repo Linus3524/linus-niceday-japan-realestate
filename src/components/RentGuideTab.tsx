@@ -1,7 +1,28 @@
 import { motion } from "motion/react";
+import type { ReactNode } from "react";
 import { Search, Calculator, ArrowRight, Bot, FileText, X, HelpCircle } from "lucide-react";
 import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
 import { renderFormattedText } from "../lib/format";
+import { QACard } from "./QACard";
+import { JapaneseRuby } from "./JapaneseRuby";
+
+function renderTermDetail(detail: string) {
+  const nodes: ReactNode[] = [];
+  const labelPattern = /(^|\|\s*)([^|：:]+[：:])/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let index = 0;
+
+  while ((match = labelPattern.exec(detail)) !== null) {
+    if (match.index > lastIndex) nodes.push(detail.slice(lastIndex, match.index));
+    nodes.push(match[1]);
+    nodes.push(<strong key={`${match[2]}-${index++}`} className="font-semibold text-[#1A2A22]">{match[2]}</strong>);
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < detail.length) nodes.push(detail.slice(lastIndex));
+  return nodes;
+}
 
 interface RentGuideTabProps {
   kbCategory: string;
@@ -38,10 +59,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
-                  大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房買賣知識大補帖」。
+                  大家好，我是 Linus，目前在日本東京從事不動產仲介工作。來到日本留學、打工度假或就職，找一個能安心落腳的家，往往是最先面對的大事。為了協助大家在初來乍到時，用較短時間看懂日本租屋的制度與常見費用、少走冤枉路，我整理了這份「日本租屋知識大補帖」。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
-                  日本的租房制度有許多與台灣非常不同的一次性費用（如禮金、保證會社費用、換鑰匙費等），稍有不慎可能在初期就要支付大筆冤枉錢。希望本站的分類卡片、即時算命預算計算機與 AI 找房顧問能幫到您。祝您在日本的生活一切順利，順利成家！❀
+                  日本租屋有許多和台灣不同的一次性費用，例如禮金、保證公司費用與鑰匙更換費；契約條款也會因物件與管理公司而不同。希望這份租屋知識整理、租金預算計算機與 AI 找房顧問，能幫您在申請前看懂條件、做好預算。祝您在日本的生活一切順利！❀
                 </p>
                 
                 {/* Visual Quick Actions */}
@@ -157,7 +178,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.fees.length > 0 && (
                 <section className="space-y-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>【初期費用名詞介紹】</span>
+                    <span>初期費用名詞介紹</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.fees.length} 項</span>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -169,7 +190,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       >
                         <div>
                           <div className="flex justify-between items-start gap-2 mb-2">
-                            <h4 className="font-bold text-base text-[#1A2A22]">{fee.name}</h4>
+                            <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={fee.name} /></h4>
                             {fee.jpName && (
                               <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{fee.jpName}</span>
                             )}
@@ -198,20 +219,20 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.terms.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>【其他重要專有名詞與房屋資訊】</span>
+                    <span>其他重要專有名詞與房屋資訊</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.terms.length} 項</span>
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
                       <div key={idx} className="border border-[#1A2A22] bg-white p-6">
-                        <div className="flex justify-between items-center mb-3">
-                          <h4 className="text-base font-bold text-[#0F8F6D] flex items-center gap-2">
-                            <span>{term.name}</span>
+                        <div className="flex justify-between items-start gap-3 mb-3">
+                          <h4 className="min-w-0 text-base font-bold text-[#0F8F6D] flex flex-wrap items-center gap-2">
+                            <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
                             {term.jpName && (
                               <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
                             )}
                           </h4>
-                          <span className="text-xs text-zinc-400 font-sans">專有名詞</span>
+                          <span className="shrink-0 text-xs text-zinc-400 font-sans">專有名詞</span>
                         </div>
                         <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
                         
@@ -220,7 +241,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                             {term.details.map((detail, dIdx) => (
                               <div key={dIdx} className="text-xs text-zinc-800 leading-relaxed flex items-start gap-2 font-sans">
                                 <span className="text-[#0F8F6D] font-bold shrink-0">✦</span>
-                                <span className="text-justify">{detail}</span>
+                                <span className="text-justify">{renderTermDetail(detail)}</span>
                               </div>
                             ))}
                           </div>
@@ -235,7 +256,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.steps.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3">
-                    <span>【日本租屋正式申請與引渡流程 SOP】</span>
+                    <span>日本租屋正式申請與引渡流程 SOP</span>
                   </h3>
                   
                   {/* General / Overseas SOP highlight banner */}
@@ -319,7 +340,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   <div className="border border-[#1A2A22] bg-[#F5F8F6] p-6 relative">
                     <h4 className="text-sm md:text-base font-bold text-[#1A2A22] border-b border-zinc-300 pb-3 mb-4 flex items-center gap-2">
                       <FileText className="w-4 h-4 text-[#0F8F6D]" />
-                      <span>【審查所需資料與準備文件對照】</span>
+                      <span>審查所需資料與準備文件對照</span>
                     </h4>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -362,7 +383,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
-                            <span><strong>在留卡 (正反面)：</strong>背面必須蓋有向日本區役所登錄地址的章。若剛入境可借用親友、飯店或短租地址登錄。</span>
+                            <span><strong>在留卡（正反面）：</strong>住居地欄位及申報狀態依個案確認；不得把沒有實際居住的親友、飯店或短租地址當成自己的住址申報。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
@@ -411,9 +432,12 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       ))}
                     </div>
                     
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-6 font-sans">
-                      <span className="font-bold text-[#0F8F6D]">★ Linus 實務小提醒：</span>
-                      在日本不看房直接找房，建議至少在預計入住日前 1.5 個月前著手挑選；如果要安排親自到場看房，則建議在預計入居日前 1 個月內開始，因為日本房源基本上是無法付訂金保留的，一上架便會迅速成交。
+                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-6 font-sans space-y-2">
+                      <span className="font-bold text-[#0F8F6D] block">★ Linus 實務小提醒：</span>
+                      <ul className="space-y-1.5">
+                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>不內見找房建議於預計入住日前約 1.5 個月開始；若需要內見，建議確定入住日期後，於入住前 1 個月內開始找房即可。因為日本房源基本上是無法付訂金保留的，熱門物件一上架便會很快被租走。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>若在留卡首次登錄的地址只是暫時住所，建議等入住正式租屋處並完成住址變更後，再辦理郵局或銀行帳戶，可避免後續因地址變更而需重新辦理相關手續。</span></li>
+                      </ul>
                     </div>
                   </div>
                 </section>
@@ -423,24 +447,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.qa.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>【常見租屋問題 Q&A 集錦】</span>
+                    <span>常見租屋問題 Q&A 集錦</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>
                   <div className="space-y-4">
-                    {filtered.qa.map((qa, idx) => (
-                      <div key={idx} className="border border-[#1A2A22] bg-white p-6">
-                        <div className="flex items-start gap-3 mb-3">
-                          <span className="bg-[#0F8F6D] text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
-                          <h4 className="text-sm md:text-base font-bold text-[#1A2A22]">
-                            {qa.question}
-                          </h4>
-                        </div>
-                        <div className="flex items-start gap-3 pl-8">
-                          <div className="bg-zinc-800 text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</div>
-                          <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">{renderFormattedText(qa.answer)}</div>
-                        </div>
-                      </div>
-                    ))}
+                    {filtered.qa.map((qa, idx) => <QACard key={qa.id} question={qa.question} answer={qa.answer} number={idx + 1} />)}
                   </div>
                 </section>
               )}

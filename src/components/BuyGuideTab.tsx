@@ -5,6 +5,8 @@ import {
   japaneseBanks, minpakuRules, ryokanRules, BuyHouseTermItem, BuyHouseQAItem
 } from "../data/buyHouseData";
 import { renderFormattedText } from "../lib/format";
+import { QACard } from "./QACard";
+import { JapaneseRuby } from "./JapaneseRuby";
 
 interface BuyGuideTabProps {
   buyCategory: string;
@@ -17,6 +19,11 @@ interface BuyGuideTabProps {
   setSelectedFee: (fee: any) => void;
   handleTabChange: (tab: any) => void;
 }
+
+const minpakuWardOrder = [
+  "千代田區", "中央區", "港區", "新宿區", "文京區", "台東區", "墨田區", "江東區", "品川區", "目黑區", "大田區", "世田谷區",
+  "澀谷區", "中野區", "杉並區", "豐島區", "北區", "荒川區", "板橋區", "練馬區", "足立區", "葛飾區", "江戶川區"
+];
 
 export function BuyGuideTab(props: BuyGuideTabProps) {
   const { buyCategory, setBuyCategory, buySearchQuery, setBuySearchQuery, buyFiltered, selectedFlowType, setSelectedFlowType, setSelectedFee, handleTabChange } = props;
@@ -42,10 +49,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
-                  近年來隨著日本經濟回溫與日圓匯率相對低點，許多華人朋友除了在日租屋，也開始規劃「買房自住」或「置產投資民宿與出租套房」。在日本買房雖然不限國籍與簽證，但其產權登記事項、銀行貸款條件、以及東京都各區對民泊民宿（Airbnb）的嚴格規範，實務上細節繁瑣，稍有不慎就會踩到高利息或無法營業的法規地雷。
+                  許多華人朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
-                  為了協助您精準掌握日本房市脈絡，我特別整理了這份包含「圖紙/規費術語」、「現金與貸款買房完整步驟」、「2026最新台系與日系銀行放款標準」，以及「東京都 23 區最詳盡的民泊民宿新法與旅館業法要求」。歡迎直接查閱或透過 AI 問答隨時向我諮詢！❀
+                  為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
                 </p>
 
                 {/* Visual Quick Actions */}
@@ -56,7 +63,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      本系統已將完整買房大補帖與 2026 各家銀行放款、民泊新法規則整合至 AI 找房顧問，支援直接提問。
+                      AI 會優先參考本站整理資料，並在貸款、稅務與住宿法規問題中提示適用條件及確認單位。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
@@ -152,7 +159,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           >
                             <div>
                               <div className="flex justify-between items-start gap-2 mb-2">
-                                <h4 className="font-bold text-sm md:text-base text-[#1A2A22]">{term.name}</h4>
+                                <h4 className="font-bold text-sm md:text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={term.name} /></h4>
                                 {term.jpName && (
                                   <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
                                 )}
@@ -187,7 +194,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           >
                             <div>
                               <div className="flex justify-between items-start gap-2 mb-2">
-                                <h4 className="font-bold text-sm md:text-base text-[#1A2A22]">{term.name}</h4>
+                                <h4 className="font-bold text-sm md:text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={term.name} /></h4>
                                 {term.jpName && (
                                   <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
                                 )}
@@ -355,49 +362,62 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
                         <Landmark className="w-5 h-5 text-[#0F8F6D]" />
-                        <span>2026 最新在日台系銀行放款條件比較（非日本居民專用）</span>
+                        <span>海外買方融資方案整理</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-1">
-                        如果您不持有日本長期居留簽證（例如居住在台灣的投資買方），則需要透過以下 5 家台系銀行進行購屋貸款申請：
+                        若不持有日本長期居留資格，可諮詢提供海外買方方案的金融機構。以下為本站蒐集的方案示例，不代表完整名單或目前一定受理：
                       </p>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-5">
                       {taiwaneseBanks.map((bank, bIdx) => (
                         <div key={bIdx} className="border border-[#1A2A22] bg-white hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all overflow-hidden">
-                          {/* Card Header */}
-                          <div className="bg-[#1A2A22] text-[#F5F8F6] px-4 py-3 flex justify-between items-center flex-wrap gap-2">
-                            <h4 className="font-bold text-sm md:text-base font-serif">{bank.name}</h4>
-                            <span className="text-[10px] bg-[#0F8F6D] text-white px-2 py-0.5 uppercase tracking-wide font-sans">
-                              利率約 {bank.interestRate}
-                            </span>
+                          <div className="bg-[#1A2A22] text-[#F5F8F6] px-5 py-4 flex justify-between items-center flex-wrap gap-3">
+                            <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif">{bank.name}</h4>
+                            <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
                           </div>
-                          
-                          {/* Card Body */}
-                          <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 font-sans text-xs text-zinc-700">
-                            <div className="space-y-3">
-                              <p><strong>◉ 申貸資格對象：</strong> {bank.object}</p>
-                              <p><strong>◉ 年齡限制條件：</strong> {bank.ageLimit}</p>
-                              <p><strong>◉ 財力收入與淨資產門檻：</strong> <span className="text-[#0F8F6D] font-semibold">{bank.incomeAsset}</span></p>
-                              <p><strong>◉ 對保與開戶要求：</strong> {bank.signingReq}</p>
-                              <p><strong>◉ 償還與租金專戶：</strong> {bank.rentAccount}</p>
-                              <p><strong>◉ 抵押物件與屋齡要求：</strong> {bank.propertyReq}</p>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-zinc-200 font-sans">
+                            <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
+                              <p className="text-[10px] font-bold tracking-wide text-zinc-500">申貸對象</p>
+                              <p className="mt-1 text-xs font-semibold leading-relaxed text-[#1A2A22]">{bank.object}</p>
                             </div>
-                            <div className="space-y-3">
-                              <p><strong>◉ 承作範圍限制：</strong> {bank.areaLimit}</p>
-                              <p><strong>◉ 起貸金額與最高成數：</strong> {bank.amountLimit}</p>
-                              <p><strong>◉ 最長貸款期限：</strong> {bank.termLimit}</p>
-                              <p><strong>◉ 清償還款方式：</strong> {bank.repayment}</p>
-                              <p><strong>◉ 提前還款違約手續費：</strong> {bank.prepayFee}</p>
+                            <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
+                              <p className="text-[10px] font-bold tracking-wide text-zinc-500">起貸金額／最高成數</p>
+                              <p className="mt-1 text-xs font-semibold leading-relaxed text-[#0F8F6D]">{bank.amountLimit}</p>
+                            </div>
+                            <div className="p-4 bg-[#F5F8F6]">
+                              <p className="text-[10px] font-bold tracking-wide text-zinc-500">最長貸款期限</p>
+                              <p className="mt-1 text-xs font-semibold leading-relaxed text-[#1A2A22]">{bank.termLimit}</p>
                             </div>
                           </div>
 
-                          {/* Bank Pro/Con Notes */}
-                          <div className="bg-[#F5F8F6] p-4 border-t border-zinc-200 font-sans text-xs space-y-1.5">
-                            <span className="font-bold text-[#0F8F6D] block">★ Linus 實務分析與點評：</span>
+                          <div className="p-5 grid grid-cols-1 lg:grid-cols-2 gap-5 font-sans text-xs">
+                            <div className="border border-zinc-200">
+                              <p className="bg-[#F5F8F6] px-3 py-2 font-bold text-[#1A2A22]">申請人條件</p>
+                              <dl className="divide-y divide-zinc-100">
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">年齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.ageLimit}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">收入／資產</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.incomeAsset}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">對保／開戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.signingReq}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">還款／租金帳戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.rentAccount}</dd></div>
+                              </dl>
+                            </div>
+                            <div className="border border-zinc-200">
+                              <p className="bg-[#F5F8F6] px-3 py-2 font-bold text-[#1A2A22]">物件與貸款條件</p>
+                              <dl className="divide-y divide-zinc-100">
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">物件／屋齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.propertyReq}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">承作區域</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.areaLimit}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">還款方式</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.repayment}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">提前清償費</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.prepayFee}</dd></div>
+                              </dl>
+                            </div>
+                          </div>
+
+                          <div className="bg-amber-50 p-4 border-t border-amber-100 font-sans text-xs space-y-1.5">
+                            <span className="font-bold text-amber-900 block">實務提醒</span>
                             {bank.others.map((other, oIdx) => (
-                              <div key={oIdx} className="flex items-start gap-1.5 text-zinc-600 leading-relaxed text-justify">
-                                <span className="text-[#0F8F6D] font-bold">•</span>
+                              <div key={oIdx} className="flex items-start gap-1.5 text-amber-950 leading-relaxed text-justify">
+                                <span className="text-amber-700 font-bold">•</span>
                                 <span>{other}</span>
                               </div>
                             ))}
@@ -412,7 +432,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
                         <Percent className="w-5 h-5 text-[#0F8F6D]" />
-                        <span>2026 最新日系銀行放款條件比較（非永住長期工作簽證者）</span>
+                        <span>在日工作者融資方案整理</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-1">
                         如果您持有日本長期工作簽證（如技術人文知識國際業務、高度人才），在日本有穩定正社員工作與繳稅紀錄：
@@ -451,47 +471,62 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: MINPAKU & RYOKAN */}
               {(buyCategory === "all" || buyCategory === "minpaku") && (
                 <div className="space-y-8">
-                  {/* Minpaku District Table */}
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8 space-y-6">
-                    <div>
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Map className="w-5 h-5 text-[#0F8F6D]" />
-                        <span>2026 最新東京都 23 區民泊新法營運規範一覽（非旅館業法經營）</span>
+                  {/* Minpaku District Rules */}
+                  <section className="border border-[#1A2A22] bg-white p-5 md:p-8 space-y-6">
+                    <div className="border-b border-zinc-200 pb-5">
+                      <h3 className="text-xl font-bold flex items-start gap-2">
+                        <Map className="w-5 h-5 mt-0.5 shrink-0 text-[#0F8F6D]" />
+                        <span>東京都 23 區住宅宿泊事業條例整理</span>
                       </h3>
-                      <p className="text-xs text-zinc-500 font-sans mt-1">
-                        在日本經營 Airbnb/民宿，主要依照《住宅宿泊事業法（民泊新法）》。日本中央法規限制一年最多只能營業 180 天。然而，東京都各特別區為了維護居住安寧與治安，紛紛設立了極為嚴厲的「區條例（上乗せ条例）」，實質上讓某些區域的平日完全禁業：
+                      <p className="text-xs text-zinc-500 font-sans mt-2 leading-relaxed">
+                        適用《住宅宿泊事業法（民泊新法）》的物件，不是旅館業許可。中央法規上限為一年 180 天；各區可再加上區域、星期與管理限制。
                       </p>
                     </div>
 
-                    <div className="overflow-x-auto border border-zinc-300 font-sans">
-                      <table className="w-full text-xs text-left text-zinc-700 border-collapse">
-                        <thead className="bg-[#1A2A22] text-[#F5F8F6] uppercase tracking-wider text-[10px]">
-                          <tr>
-                            <th className="py-3 px-4 border-r border-zinc-700">行政區</th>
-                            <th className="py-3 px-4 border-r border-zinc-700">實質限制營業天數 / 年</th>
-                            <th className="py-3 px-4 border-r border-zinc-700">區域條例禁令（營業時間規範）</th>
-                            <th className="py-3 px-4 border-r border-zinc-700">受限制區域</th>
-                            <th className="py-3 px-4">業主不在型管理要求</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-200">
-                          {minpakuRules.map((item, idx) => (
-                            <tr key={idx} className="hover:bg-zinc-50 transition-colors">
-                              <td className="py-3 px-4 font-bold text-zinc-900 border-r border-zinc-200 bg-[#F5F8F6]">{item.district}</td>
-                              <td className="py-3 px-4 font-semibold text-[#0F8F6D] border-r border-zinc-200">{item.daysLimit}</td>
-                              <td className="py-3 px-4 border-r border-zinc-200 leading-relaxed text-justify">{item.rules}</td>
-                              <td className="py-3 px-4 border-r border-zinc-200 text-zinc-600">{item.areaLimit}</td>
-                              <td className="py-3 px-4 text-zinc-500 leading-normal">{item.managerReq}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 border border-zinc-200 font-sans text-xs">
+                      <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
+                        <p className="text-zinc-500">全國共同上限</p>
+                        <p className="mt-1 text-lg font-bold text-[#1A2A22]">180 天／年</p>
+                      </div>
+                      <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
+                        <p className="text-zinc-500">本表怎麼看</p>
+                        <p className="mt-1 font-medium text-zinc-800 leading-relaxed">先看「營業限制」，再確認受限區域與管理／周知要求。</p>
+                      </div>
+                      <div className="p-4 bg-amber-50">
+                        <p className="text-amber-700">重要提醒</p>
+                        <p className="mt-1 font-medium text-amber-900 leading-relaxed">家主居住型與不在型，適用規則可能不同。</p>
+                      </div>
                     </div>
 
-                    <div className="bg-red-50 p-4 border-l-4 border-[#0F8F6D] text-xs text-[#0F8F6D] leading-relaxed font-sans">
-                      <strong>⚠️ Linus 關鍵買房叮嚀：</strong>
-                      <br />
-                      若您的目標是「100% 靠民宿投資回收成本」，千萬不要購入位於「平日禁止民泊」的住居專用區（如中央區、目黑區等只能營業104天的地區）！在買房前務必委託專業房仲為您查詢物件所屬的「土地用途地域分區（用途地域）」以避開法規雷區。
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 font-sans">
+                      {[...minpakuRules].sort((a, b) => minpakuWardOrder.indexOf(a.district) - minpakuWardOrder.indexOf(b.district)).map((item) => (
+                        <article key={item.district} className="border border-zinc-200 bg-white overflow-hidden transition-shadow hover:shadow-sm">
+                          <div className="flex items-start justify-between gap-3 bg-[#1A2A22] px-4 py-3">
+                            <h4 className="text-base font-bold text-white">{item.district}</h4>
+                            <span className="max-w-[75%] bg-[#DDF3EA] px-2 py-1 text-right text-[11px] font-bold leading-snug text-[#087154]">
+                              {item.daysLimit}
+                            </span>
+                          </div>
+                          <dl className="divide-y divide-zinc-100 text-xs leading-relaxed">
+                            <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
+                              <dt className="font-bold text-[#0F8F6D]">營業限制</dt>
+                              <dd className="text-zinc-700">{item.rules}</dd>
+                            </div>
+                            <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#F9FBFA]">
+                              <dt className="font-bold text-zinc-600">受限區域</dt>
+                              <dd className="text-zinc-600">{item.areaLimit}</dd>
+                            </div>
+                            <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
+                              <dt className="font-bold text-zinc-600">管理／周知</dt>
+                              <dd className="text-zinc-600">{item.managerReq}</dd>
+                            </div>
+                          </dl>
+                        </article>
+                      ))}
+                    </div>
+
+                    <div className="bg-amber-50 p-4 border-l-4 border-amber-500 text-xs text-amber-950 leading-relaxed font-sans">
+                      <strong>投資前必查：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
                     </div>
                   </section>
 
@@ -503,7 +538,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <span>{ryokanRules.title}</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-1">
-                        如果您希望「全年 365 天不受天數限制」合法經營民宿，則必須向保健所申請難度極高的「簡易宿所（或旅館業營業許可）」：
+                        如果您希望合法全年經營、且不受住宅宿泊事業 180 天上限限制，可評估向保健所申請「簡易宿所」等旅館業營業許可；但須先完成用途、建築、消防與所在地自治體的個案確認：
                       </p>
                     </div>
 
@@ -563,20 +598,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {buyFiltered.qa.map((qa, idx) => (
-                        <div key={idx} className="border border-[#1A2A22] bg-white p-6">
-                          <div className="flex items-start gap-3 mb-3">
-                            <span className="bg-[#0F8F6D] text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
-                            <h4 className="text-sm md:text-base font-bold text-[#1A2A22] font-serif">
-                              {qa.question}
-                            </h4>
-                          </div>
-                          <div className="flex items-start gap-3 pl-8">
-                            <span className="bg-zinc-800 text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</span>
-                            <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">{renderFormattedText(qa.answer)}</div>
-                          </div>
-                        </div>
-                      ))}
+                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} number={idx + 1} />)}
                     </div>
                   )}
                 </section>

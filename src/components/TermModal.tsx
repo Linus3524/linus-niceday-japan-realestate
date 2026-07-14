@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { renderFormattedText } from "../lib/format";
+import { JapaneseRuby } from "./JapaneseRuby";
 
 interface TermModalProps {
   selectedFee: any | null;
@@ -17,6 +18,24 @@ function getItemTypeLabel(item: any): string {
   if (item.duration !== undefined) return "流程步驟";
   if (item.warning !== undefined || item.keyPoints !== undefined) return "費用";
   return "名詞";
+}
+
+function splitTermName(name: string) {
+  const match = name.match(/^(.*?)(（[^（）]*[\u3400-\u9FFF][^（）]*）)$/);
+  return match ? { japanese: match[1], translation: match[2] } : { japanese: name, translation: undefined };
+}
+
+function shouldMoveTranslation(translation?: string) {
+  return translation ? Array.from(translation.replace(/[（）]/g, "")).length >= 10 : false;
+}
+
+function splitReading(reading: string) {
+  return reading.split(/([・／/])/).reduce<string[]>((chunks, part) => {
+    if (!part) return chunks;
+    if (/^[・／/]$/.test(part) && chunks.length > 0) chunks[chunks.length - 1] += part;
+    else chunks.push(part);
+    return chunks;
+  }, []);
 }
 
 export function TermModal(props: TermModalProps) {
@@ -48,10 +67,26 @@ export function TermModal(props: TermModalProps) {
               </button>
 
               <div className="space-y-4">
-                <div className="flex items-center gap-2 border-b border-zinc-200 pb-2.5">
-                  <h4 className="text-xl font-bold text-[#1A2A22]">{selectedFee.name}</h4>
+                <div className="flex items-start justify-between gap-3 pr-10 border-b border-zinc-200 pb-2.5">
+                  <h4 className="min-w-0 flex flex-1 flex-wrap items-baseline gap-x-0 gap-y-1 text-xl font-bold text-[#1A2A22]">
+                    {(() => {
+                      const term = splitTermName(selectedFee.name);
+                      return <>
+                        <span className="whitespace-nowrap"><JapaneseRuby text={term.japanese} /></span>
+                        {term.translation && (
+                          <span className={shouldMoveTranslation(term.translation) ? "basis-full whitespace-nowrap" : "whitespace-nowrap"}>
+                            {term.translation}
+                          </span>
+                        )}
+                      </>;
+                    })()}
+                  </h4>
                   {selectedFee.jpName && (
-                    <span className="text-xs bg-[#0F8F6D] text-white px-1.5 py-0.5 font-sans">{selectedFee.jpName}</span>
+                    <span className="shrink-0 bg-[#0F8F6D] text-white px-2 py-1 font-sans text-xs leading-snug">
+                      <span className="flex flex-col items-end gap-y-0">
+                        {splitReading(selectedFee.jpName).map((word, index) => <span key={`${word}-${index}`} className="whitespace-nowrap">{word}</span>)}
+                      </span>
+                    </span>
                   )}
                 </div>
 

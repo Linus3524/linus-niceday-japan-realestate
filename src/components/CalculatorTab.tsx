@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "motion/react";
-import { Calculator, MapPin, Info, Smile, Building, Landmark } from "lucide-react";
+import { Calculator, MapPin, Info, Smile, Building, Landmark, ChevronDown } from "lucide-react";
 import { rentRates, budgetModifiers } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 import { districtStations } from "../data/stationData";
@@ -28,6 +29,9 @@ interface CalculatorTabProps {
 
 export function CalculatorTab(props: CalculatorTabProps) {
   const { calcMode, setCalcMode, calcDistrict, setCalcDistrict, calcRoomType, setCalcRoomType, calcModifiers, setCalcModifiers, calcBuyModifiers, setCalcBuyModifiers, calcStation, setCalcStation, handleTabChange, handleSendMessage } = props;
+  const [loanRatio, setLoanRatio] = useState(70);
+  const [annualRate, setAnnualRate] = useState(2.2);
+  const [loanYears, setLoanYears] = useState(20);
 
   // Calculator Logic
   const getSelectedDistrictData = () => {
@@ -170,11 +174,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
   };
 
   const getMonthlyPayment = (price: number) => {
-    const loanRatio = 0.7;
-    const loanAmount = price * loanRatio;
-    const annualRate = 2.2;
-    const years = 20;
-    const n = years * 12;
+    const loanAmount = price * (loanRatio / 100);
+    const n = loanYears * 12;
     const r = (annualRate / 100) / 12;
     if (r === 0) return loanAmount / n;
     const monthly = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
@@ -256,16 +257,16 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-4 text-[#1A2A22] flex items-center gap-2 font-sans">
                   <Calculator className="w-5 h-5 text-[#0F8F6D]" />
                   {calcMode === "rent" ? (
-                    <span>2026 關東/關西地區 租屋行情估算 ╳ 條件增減 (SUUMO/HOME'S 最新行情)</span>
+                    <span>關東／關西租屋預算概算 ╳ 條件調整</span>
                   ) : (
-                    <span>2026 關東/關西地區 買房行情大數據 ╳ 條件折溢價估算 (SUUMO/HOME'S 實價參考)</span>
+                    <span>關東／關西買房條件式概算 ╳ 貸款情境試算</span>
                   )}
                 </h3>
                 <p className="text-sm text-zinc-700 leading-relaxed text-justify font-sans">
                   {calcMode === "rent" ? (
-                    "不知道自己的預算能租到什麼樣的房子嗎？Linus 根據 2026 最新市場行情，特別整理了「加減價估算系統」。您只需在下方選擇「希望區域、格局大小」，並勾選希望的房間「增減價條件（如獨立洗面台、屋齡新舊等）」，即可算出適合您的租屋建議預算。"
+                    "想知道自己的預算在日本大概能住到哪裡、能挑什麼樣的房子嗎？選擇想住的區域、格局與房屋條件，先幫你抓出找房時最實用的月租範圍。行情以 AI 彙整的 SUUMO、LIFULL HOME'S 等日本租房網站資料為基礎；實際租金仍以各物件當下的募集資料為準。"
                   ) : (
-                    "想要在日本置產買房，但不清楚各個地區與不同格局的行情嗎？Linus 結合 2026 日本中古公寓（中古マンション）實價登錄與 SUUMO/HOME'S 買賣交易大數據，開發了這款「購屋預算加減價與貸款試算系統」。您只需在下方選擇希望區域、格局大小，並勾選希望的房屋條件（如是否全新、有無現代化翻修、空室或帶租約），即可立刻算出合理預估總價、過戶初期諸費用與每月貸款本息負擔額！"
+                    "這是以區域租金基準、假設投報率與 Linus 實務調整係數推算的預算工具，不是鑑價或成交價預測。請選擇區域、格局與物件條件，查看概算中心值、合理波動區間及不同貸款參數下的每月還款情境。"
                   )}
                 </p>
               </div>
@@ -284,35 +285,38 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       {/* District Picker */}
                       <div className="space-y-1.5 font-sans">
                         <label className="text-xs font-bold text-zinc-700">選擇希望區域：</label>
-                        <select 
-                          value={calcDistrict}
-                          onChange={(e) => {
-                            setCalcDistrict(e.target.value);
-                            setCalcModifiers([]); // reset rent modifiers
-                            setCalcBuyModifiers([]); // reset buy modifiers
-                          }}
-                          className="w-full bg-white border border-[#1A2A22] py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
-                        >
-                          {Array.from(new Set(rentRates.map(r => r.region))).map(region => (
-                            <optgroup key={region} label={region} className="font-sans font-bold">
-                              {rentRates.filter(r => r.region === region).map(item => (
-                                <option key={item.district} value={item.district} className="font-sans">
-                                  {calcMode === "rent" ? (
-                                    `${item.district} (1K均價: ${item.k1} 萬円/月)`
-                                  ) : (
-                                    `${item.district} (1K估計: ${getDistrictBuyPrice(item.district, "k1").toLocaleString()} 萬円)`
-                                  )}
-                                </option>
-                              ))}
-                            </optgroup>
-                          ))}
-                        </select>
+                        <div className="relative">
+                          <select
+                            value={calcDistrict}
+                            onChange={(e) => {
+                              setCalcDistrict(e.target.value);
+                              setCalcModifiers([]); // reset rent modifiers
+                              setCalcBuyModifiers([]); // reset buy modifiers
+                            }}
+                            className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
+                          >
+                            {Array.from(new Set(rentRates.map(r => r.region))).map(region => (
+                              <optgroup key={region} label={region} className="font-sans font-bold">
+                                {rentRates.filter(r => r.region === region).map(item => (
+                                  <option key={item.district} value={item.district} className="font-sans">
+                                    {calcMode === "rent" ? (
+                                      `${item.district} (1K均價: ${item.k1} 萬円/月)`
+                                    ) : (
+                                      `${item.district} (1K估計: ${getDistrictBuyPrice(item.district, "k1").toLocaleString()} 萬円)`
+                                    )}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            ))}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1A2A22]" aria-hidden="true" />
+                        </div>
                       </div>
 
                       {/* Room Type Picker */}
                       <div className="space-y-1.5 font-sans">
                         <label className="text-xs font-bold text-zinc-700">選擇格局大小 (套房/1LDK/2LDK)：</label>
-                        <div className="grid grid-cols-4 border border-[#1A2A22]">
+                        <div className="grid h-12 grid-cols-4 border border-[#1A2A22]">
                           {[
                             { id: "r1", label: "1R" },
                             { id: "k1", label: "1K" },
@@ -322,7 +326,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <button
                               key={type.id}
                               onClick={() => setCalcRoomType(type.id as any)}
-                              className={`py-2 text-xs font-bold cursor-pointer transition-colors ${
+                              className={`h-full border-r border-[#1A2A22] last:border-r-0 text-xs font-bold cursor-pointer transition-colors ${
                                 calcRoomType === type.id 
                                   ? "bg-[#1A2A22] text-white" 
                                   : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
@@ -346,11 +350,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <MapPin className="w-3.5 h-3.5 text-[#0F8F6D]" />
                             選擇物件周邊特定車站（鐵路、地下鐵或路面電車）：
                           </label>
-                          <select
-                            value={calcStation}
-                            onChange={(e) => setCalcStation(e.target.value)}
-                            className="w-full bg-white border border-[#1A2A22] py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
-                          >
+                          <div className="relative">
+                            <select
+                              value={calcStation}
+                              onChange={(e) => setCalcStation(e.target.value)}
+                              className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
+                            >
                             <option value="none">基準 (行政區平均行情基礎 — 適合廣域搜房)</option>
                             {majorStations.length > 0 && (
                               <optgroup label="🚇 熱門大站 / 多線共構 / 快速急行停靠 (行情溢價約 +1.0 萬円/月)">
@@ -379,9 +384,11 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 ))}
                               </optgroup>
                             )}
-                          </select>
+                            </select>
+                            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1A2A22]" aria-hidden="true" />
+                          </div>
                           <p className="text-[10px] text-zinc-500 leading-normal">
-                            * 站點溢折價由關東與關西鐵路路網特徵自動計算（不含巴士）。偏遠或各停小站因通勤便利度關係，周邊租金通常相對實惠，系統會自動套用調減；熱門多線大站則會套用溢價修正。
+                            * 車站分類是本站的簡化估算標籤，部分為行政區邊界周邊常用車站，不代表車站地址一定位於該行政區；實際租金仍受步行距離、路線、急行停靠與街區差異影響。
                           </p>
                         </div>
                       );
@@ -634,7 +641,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">日圓 / 月</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            (約合 <strong>{(getCalculatedRent() / 10000).toFixed(2)}</strong> 萬日圓/月。本估值對應東京該條件的合理市場中位數行情。)
+                            （約合 <strong>{(getCalculatedRent() / 10000).toFixed(2)}</strong> 萬日圓／月；此為固定係數概算，不是即時市場中位數。）
                           </div>
                         </div>
 
@@ -708,19 +715,19 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-[#0F8F6D] font-bold block mb-1">🗂 估算初期費用區間：</span>
                             <div className="bg-[#F5F8F6] p-3 border border-zinc-200 space-y-1.5">
                               <div className="flex justify-between font-bold text-zinc-800 font-sans text-[11px] md:text-xs">
-                                <span>4 倍租金 (0禮金 0押金):</span>
+                                <span>較精簡情境（租金 × 4）：</span>
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 4).toLocaleString()} 円</span>
                               </div>
                               <div className="flex justify-between font-bold text-[#0F8F6D] font-sans text-[11px] md:text-xs">
-                                <span>正常 5 倍平均 (0禮金或0押金之一):</span>
+                                <span>一般預算情境（租金 × 5）：</span>
                                 <span className="font-mono text-xs text-[#0F8F6D]">{(getCalculatedRent() * 5).toLocaleString()} 円</span>
                               </div>
                               <div className="flex justify-between font-bold text-zinc-800 font-sans text-[11px] md:text-xs">
-                                <span>6 倍頂格上限 (完整禮金押金等):</span>
+                                <span>費用較多情境（租金 × 6）：</span>
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 6).toLocaleString()} 円</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-2.5 text-justify leading-relaxed border-t border-zinc-200/60 pt-2 font-sans">
-                                💡 說明：日本租房通常會要求預付不足月日割租金、翌月房租、保證會社費用、禮金押金與換鑰匙等。建議攜帶預算抓在「5倍房租」的金額（約 {(getCalculatedRent() * 5).toLocaleString()} 円）會最為安全踏實！
+                                💡 這是快速準備預算的倍數概算，不是費用報價。是否有禮金、押金、預付租金、保證費、保險與鑰匙費，均以特定物件精算書為準。
                               </p>
                             </div>
                           </div>
@@ -744,13 +751,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                         {/* Rent Disclaimer */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 免責與安全提示：本系統之租金推估結果，係結合 2026 年東京租賃大數據與常規演算法計算得出之合理市場中位數參考值。實際租金與管理費，將依物件之建材結構、座向、設備規格，以及個別房東與管理公司之審查標準等實際狀況而有所差異，請以最終簽約條件為準。
+                          * 方法與限制：租金概算採網站整理的行政區／格局基準值，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
                         </div>
                       </>
                     ) : (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          2026市場推估物件總價：
+                          條件式預算概算中心值：
                         </h4>
                         
                         {/* The Big Number */}
@@ -762,7 +769,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">萬日圓</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            (約合日幣 <strong>{getCalculatedBuyPrice().toLocaleString()}</strong> 円 / 折合台幣約 <strong>{(getCalculatedBuyPrice() / 10000 * 0.215).toFixed(0)}</strong> 萬元。本估值對應 2026 實價登錄合理中古大樓成交中位數。)
+                            （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心值不是鑑價或成交保證。）
                           </div>
                         </div>
 
@@ -820,20 +827,31 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           <div className="pt-3 border-t border-dashed border-zinc-200">
                             <span className="text-[#0F8F6D] font-bold block mb-1">🏦 銀行貸款與月還款額試算：</span>
                             <div className="bg-zinc-50 p-3 border border-zinc-200 space-y-1.5">
-                              <div className="flex justify-between font-medium text-zinc-600 text-[11px]">
-                                <span>首期自備款 (30%):</span>
-                                <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * 0.3 / 10000).toFixed(0)} 萬日圓</span>
+                              <div className="grid grid-cols-3 gap-2 pb-2 mb-2 border-b border-dashed border-zinc-200">
+                                <label className="text-[10px] text-zinc-600">貸款成數 (%)
+                                  <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={e => setLoanRatio(Math.min(100, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+                                </label>
+                                <label className="text-[10px] text-zinc-600">年利率 (%)
+                                  <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={e => setAnnualRate(Math.min(20, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+                                </label>
+                                <label className="text-[10px] text-zinc-600">貸款年限
+                                  <input type="number" min="1" max="50" step="1" value={loanYears} onChange={e => setLoanYears(Math.min(50, Math.max(1, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+                                </label>
                               </div>
                               <div className="flex justify-between font-medium text-zinc-600 text-[11px]">
-                                <span>銀行貸款金額 (70%):</span>
-                                <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * 0.7 / 10000).toFixed(0)} 萬日圓</span>
+                                <span>首期自備款 ({100 - loanRatio}%):</span>
+                                <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * (1 - loanRatio / 100) / 10000).toFixed(0)} 萬日圓</span>
+                              </div>
+                              <div className="flex justify-between font-medium text-zinc-600 text-[11px]">
+                                <span>銀行貸款金額 ({loanRatio}%):</span>
+                                <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * loanRatio / 100 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
                               <div className="flex justify-between font-bold text-[#0F8F6D] text-[11px] md:text-xs border-t border-dashed border-zinc-200 pt-1.5 mt-1">
-                                <span>估計每月還款 (利率2.2% 20年):</span>
+                                <span>每月本息試算 ({annualRate}%／{loanYears}年):</span>
                                 <span className="font-mono text-[#0F8F6D]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-1 text-justify">
-                                說明：以台資銀行日本分行常規貸款規格試算：年息 2.2%、貸款成數 7 成、分 20 年（240 期）本息均攤，無寬限期。
+                                本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審查。
                               </p>
                             </div>
                           </div>
@@ -856,7 +874,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                         {/* Buy Disclaimer */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 免責與安全提示：本系統之物件總價與貸款試算結果，係結合 2026 年日本中古公寓實價登錄大數據與常規貸款規格計算得出之參考值。實際成交價格、過戶規費，及銀行放款額度、利率與審查條件，將依物件個別狀況與金融機構之審核結果為準。
+                          * 方法與限制：總價以區域租金基準 ÷ 假設表面投報率，再套用實務折溢價係數估算，並非直接對實價登錄逐筆統計或銀行鑑價。±15% 僅為閱讀概算的波動帶；實際價格還會受面積、樓層、座向、權利、管理、修繕、災害風險及交易背景影響。
                         </div>
                       </>
                     )}

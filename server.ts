@@ -184,12 +184,8 @@ ${knowledgeBaseContext}
 
   } catch (error: any) {
     console.error("Gemini API Error in /api/chat:", error);
-    // Graceful error propagation to client
-    const isApiKeyMissing = error?.message?.includes("GEMINI_API_KEY");
-    return res.status(500).json({ 
-      error: isApiKeyMissing 
-        ? "您好！目前系統尚未設定好 Gemini API 金鑰 (GEMINI_API_KEY)。請於系統的 Secrets 設定中填入金鑰，或直接添加 Linus 的 Line (linus0922) 進行人工諮詢喔！❀" 
-        : `系統忙碌中：${error?.message || "未知錯誤"}。歡迎直接點擊 Line (linus0922) 聯繫 Linus 諮詢！`
+    return res.status(500).json({
+      error: "AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。"
     });
   }
 });

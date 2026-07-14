@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Send, Bot } from "lucide-react";
 import { formatMessageText } from "../lib/format";
+import { linusContact } from "../data/rentGuideData";
 
 interface ChatTabProps {
   chatMessages: Array<{ role: "user" | "model"; text: string }>;
@@ -94,8 +95,17 @@ export function ChatTab(props: ChatTabProps) {
 
                   {/* Error Notification */}
                   {chatError && (
-                    <div className="p-4 border border-red-200 bg-red-50 text-red-700 text-xs font-sans leading-relaxed">
-                      <strong>發生錯誤：</strong> {chatError}
+                    <div className="p-4 border border-amber-200 bg-amber-50 text-amber-950 text-xs font-sans leading-relaxed" role="alert">
+                      <span>AI 顧問目前暫時無法回覆，請稍後再試，或</span>
+                      <a
+                        href={`https://line.me/ti/p/~${linusContact.lineId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-1 inline-flex items-center font-bold text-[#087154] underline underline-offset-2 hover:text-[#05A847]"
+                      >
+                        透過 LINE 聯絡 Linus
+                      </a>
+                      <span>。</span>
                     </div>
                   )}
                 </div>
