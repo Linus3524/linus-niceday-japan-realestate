@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
-import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "../src/data/rentGuideData";
-import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "../src/data/buyHouseData";
+import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "../src/data/rentGuideData.ts";
+import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "../src/data/buyHouseData.ts";
 
 let aiClient: GoogleGenAI | null = null;
 
