@@ -835,7 +835,7 @@ export default function App() {
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
                   <Smile className="w-4 h-4 shrink-0" />
-                  <span>聯絡 Linus 房仲</span>
+                  <span>聯絡 Linus</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
@@ -871,7 +871,7 @@ export default function App() {
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
                   <span>致所有來日本打拼的人</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 房仲顧問</span>
+                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房知識大補帖」。
@@ -1256,7 +1256,7 @@ export default function App() {
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
                   <span>日本買房置產大補帖</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 房仲顧問</span>
+                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1 font-serif">
                   您好，我是 Linus。近年來隨著日本經濟回溫與日圓匯率相對低檔，許多華人朋友除了在日租屋，也開始規劃「買房自住」或「置產投資民宿與出租套房」。在日本買房雖然不限國籍與簽證，但其產權登記事項、銀行貸款條件、以及東京都各區對民泊民宿（Airbnb）的嚴格規範，實務上細節繁瑣，稍有不慎就會踩到高利息或無法營業的法規地雷。
@@ -3029,7 +3029,7 @@ export default function App() {
 
           <div className="bg-[#F5F8F6] border border-zinc-200 p-4 text-[10px] text-zinc-500 leading-relaxed text-justify font-sans">
             <p>
-              以上網站及圖卡所有內容均為 <strong>株式会社世嘉 Seika 房仲顧問 Linus Chang</strong> 個人實務撰寫，未經授權許可請勿以任何形式轉載、拷貝或做其他商業用途。上述資訊會不定期根據日本國土交通省法規、東京租賃紛爭防止條例與保證會社最新制度更新。如有刊登、翻譯錯誤或有圖片授權疑慮，請致信聯絡至 r352410@gmail.com 將盡速於一個工作日內處理。
+              以上網站及圖卡所有內容均為 <strong>株式会社世嘉 Seika Linus Chang</strong> 個人實務撰寫，未經授權許可請勿以任何形式轉載、拷貝或做其他商業用途。上述資訊會不定期根據日本國土交通省法規、東京租賃紛爭防止條例與保證會社最新制度更新。如有刊登、翻譯錯誤或有圖片授權疑慮，請致信聯絡至 r352410@gmail.com 將盡速於一個工作日內處理。
             </p>
           </div>
         </div>
