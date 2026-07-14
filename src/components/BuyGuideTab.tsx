@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { Search, MapPin, ArrowRight, Bot, Smile, FileText, X, Building, Landmark, Percent, Map } from "lucide-react";
+import { useState } from "react";
+import { Search, MapPin, ArrowRight, Smile, FileText, X, Building, Landmark, Percent, Map, ChevronDown } from "lucide-react";
 import {
   buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks,
   japaneseBanks, minpakuRules, ryokanRules, BuyHouseTermItem, BuyHouseQAItem
@@ -25,8 +26,41 @@ const minpakuWardOrder = [
   "澀谷區", "中野區", "杉並區", "豐島區", "北區", "荒川區", "板橋區", "練馬區", "足立區", "葛飾區", "江戶川區"
 ];
 
+const getMinpakuLimitLabel = (daysLimit: string) => {
+  if (/週末|週五正午|週六正午|104 天/.test(daysLimit)) return "週末為主";
+  if (/假期|指定期間/.test(daysLimit)) return "指定期間營業";
+  if (/個案確認|依.*確認|需.*確認/.test(daysLimit)) return "依區域個別確認";
+  if (/限制/.test(daysLimit)) return "180 天＋區域限制";
+  return "最多 180 天／年";
+};
+
+const getMinpakuAreaLabel = (areaLimit: string) => {
+  if (/^全區/.test(areaLimit)) return "全區";
+  if (/商業地域除外/.test(areaLimit)) return "商業區以外";
+  if (/學校/.test(areaLimit) && /住居|文教/.test(areaLimit)) return "住宅區／學校周邊";
+  if (/文教/.test(areaLimit) && /住居/.test(areaLimit)) return "住宅區／文教區";
+  if (/住居專用/.test(areaLimit)) return "住居專用區";
+  if (/文教/.test(areaLimit)) return "文教區";
+  return "依物件所在地確認";
+};
+
 export function BuyGuideTab(props: BuyGuideTabProps) {
   const { buyCategory, setBuyCategory, buySearchQuery, setBuySearchQuery, buyFiltered, selectedFlowType, setSelectedFlowType, setSelectedFee, handleTabChange } = props;
+  const [expandedBanks, setExpandedBanks] = useState<Set<string>>(new Set());
+  const [expandedMinpakuWards, setExpandedMinpakuWards] = useState<Set<string>>(new Set());
+  const [ryokanExpanded, setRyokanExpanded] = useState(false);
+  const toggleBank = (key: string) => setExpandedBanks(current => {
+    const next = new Set(current);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    return next;
+  });
+  const toggleMinpakuWard = (district: string) => setExpandedMinpakuWards(current => {
+    const next = new Set(current);
+    if (next.has(district)) next.delete(district);
+    else next.add(district);
+    return next;
+  });
 
   return (
             <motion.div
@@ -45,6 +79,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   置產 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
+                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#0F8F6D]" aria-hidden="true">real_estate_agent</span>
                   <span>日本買房置產</span>
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
@@ -59,7 +94,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
-                      <Bot className="w-4 h-4" />
+                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
@@ -372,11 +407,21 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div className="space-y-5">
                       {taiwaneseBanks.map((bank, bIdx) => (
                         <div key={bIdx} className="border border-[#1A2A22] bg-white hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all overflow-hidden">
-                          <div className="bg-[#1A2A22] text-[#F5F8F6] px-5 py-4 flex justify-between items-center flex-wrap gap-3">
+                          <button
+                            type="button"
+                            onClick={() => toggleBank(`overseas-${bIdx}`)}
+                            aria-expanded={expandedBanks.has(`overseas-${bIdx}`)}
+                            className="w-full bg-[#1A2A22] text-[#F5F8F6] px-5 py-4 flex justify-between items-center flex-wrap gap-3 text-left"
+                          >
                             <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif">{bank.name}</h4>
-                            <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
-                          </div>
+                            <span className="flex items-center gap-3">
+                              <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
+                              <span className="text-xs font-bold font-sans">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "查看條件"}</span>
+                              <ChevronDown className={`h-4 w-4 transition-transform ${expandedBanks.has(`overseas-${bIdx}`) ? "rotate-180" : ""}`} />
+                            </span>
+                          </button>
 
+                          {expandedBanks.has(`overseas-${bIdx}`) && (<>
                           <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-zinc-200 font-sans">
                             <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
                               <p className="text-[10px] font-bold tracking-wide text-zinc-500">申貸對象</p>
@@ -422,6 +467,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               </div>
                             ))}
                           </div>
+                          </>)}
                         </div>
                       ))}
                     </div>
@@ -439,15 +485,27 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
+                    <div className="grid grid-cols-1 items-start gap-5 font-sans md:grid-cols-2 xl:grid-cols-3">
                       {japaneseBanks.map((bank, idx) => (
-                        <div key={idx} className="border border-zinc-200 bg-[#F5F8F6] p-5 flex flex-col justify-between hover:border-[#1A2A22] transition-colors">
-                          <div className="space-y-4">
-                            <div className="border-b border-zinc-300 pb-2">
-                              <h4 className="font-bold text-sm text-[#0F8F6D] leading-normal">{bank.name}</h4>
-                              <div className="text-lg font-extrabold text-[#1A2A22] mt-1">{bank.rate}</div>
-                            </div>
-                            
+                        <article key={idx} className="w-full border border-zinc-300 bg-[#F5F8F6] transition-[border-color,box-shadow] hover:border-[#1A2A22] hover:shadow-[2px_2px_0px_0px_rgba(26,42,34,0.18)]">
+                          <button
+                            type="button"
+                            onClick={() => toggleBank(`japan-${idx}`)}
+                            aria-expanded={expandedBanks.has(`japan-${idx}`)}
+                            className="grid min-h-[132px] w-full grid-cols-[1fr_auto] items-center gap-4 p-5 text-left"
+                          >
+                            <span className="min-w-0 self-center">
+                              <h4 className="line-clamp-2 min-h-10 font-bold text-sm leading-5 text-[#0F8F6D]">{bank.name}</h4>
+                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#1A2A22]">{bank.rate}</div>
+                            </span>
+                            <span className="flex shrink-0 flex-col items-center gap-1.5 text-[10px] font-bold text-[#3F5147]">
+                              <span>{expandedBanks.has(`japan-${idx}`) ? "收合" : "詳情"}</span>
+                              <ChevronDown className={`h-4 w-4 transition-transform ${expandedBanks.has(`japan-${idx}`) ? "rotate-180" : ""}`} />
+                            </span>
+                          </button>
+
+                          {expandedBanks.has(`japan-${idx}`) && (
+                          <div className="border-t border-zinc-300 p-5 pt-4 md:min-h-[420px] xl:min-h-[470px]">
                             <div className="space-y-2 text-xs text-zinc-600">
                               <p><strong>在留簽證：</strong>{bank.visaReq}</p>
                               <p><strong>工作年資：</strong>{bank.workYears}</p>
@@ -456,9 +514,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               <p><strong>放貸額度：</strong>{bank.amountLimit}</p>
                               <p><strong>年齡限制：</strong>{bank.ageLimit}</p>
                             </div>
-                          </div>
-
-                          <div className="mt-4 pt-3 border-t border-dashed border-zinc-300 text-[11px] text-zinc-500 leading-relaxed text-justify space-y-2">
+                            <div className="mt-4 pt-3 border-t border-dashed border-zinc-300 text-[11px] text-zinc-500 leading-relaxed text-justify space-y-2">
                             {bank.note.split('\n').filter(line => line.trim()).map((line, lIdx) => {
                               const cleanedLine = line.replace(/^[•·\-\s\*\u2022\u00b7]+/, '').trim();
                               return (
@@ -468,8 +524,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                                 </div>
                               );
                             })}
+                            </div>
                           </div>
-                        </div>
+                          )}
+                        </article>
                       ))}
                     </div>
                   </section>
@@ -506,29 +564,49 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 font-sans">
+                    <div className="columns-1 gap-4 font-sans xl:columns-2">
                       {[...minpakuRules].sort((a, b) => minpakuWardOrder.indexOf(a.district) - minpakuWardOrder.indexOf(b.district)).map((item) => (
-                        <article key={item.district} className="border border-zinc-200 bg-white overflow-hidden transition-shadow hover:shadow-sm">
-                          <div className="flex items-start justify-between gap-3 bg-[#1A2A22] px-4 py-3">
+                        <article key={item.district} className="mb-4 inline-block w-full break-inside-avoid border border-zinc-300 bg-white align-top overflow-hidden transition-[border-color,box-shadow] hover:border-[#1A2A22] hover:shadow-[2px_2px_0px_0px_rgba(26,42,34,0.18)]">
+                          <button
+                            type="button"
+                            onClick={() => toggleMinpakuWard(item.district)}
+                            aria-expanded={expandedMinpakuWards.has(item.district)}
+                            className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#1A2A22] px-4 py-2.5 text-left"
+                          >
                             <h4 className="text-base font-bold text-white">{item.district}</h4>
-                            <span className="max-w-[75%] bg-[#DDF3EA] px-2 py-1 text-right text-[11px] font-bold leading-snug text-[#087154]">
-                              {item.daysLimit}
+                            <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#DDF3EA] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#087154]">
+                              {getMinpakuLimitLabel(item.daysLimit)}
                             </span>
-                          </div>
-                          <dl className="divide-y divide-zinc-100 text-xs leading-relaxed">
+                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-white">
+                              <span>{expandedMinpakuWards.has(item.district) ? "收合" : "詳情"}</span>
+                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${expandedMinpakuWards.has(item.district) ? "rotate-180" : ""}`} />
+                            </span>
+                          </button>
+                          {expandedMinpakuWards.has(item.district) && (
+                          <dl className="divide-y divide-zinc-200 border-t border-[#1A2A22] text-xs leading-relaxed">
+                            <div className="grid grid-cols-[76px_1fr] gap-3 bg-[#F2F8F5] px-4 py-3">
+                              <dt className="font-bold text-[#087154]">營業天數</dt>
+                              <dd className="font-medium text-zinc-700">{item.daysLimit}</dd>
+                            </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
                               <dt className="font-bold text-[#0F8F6D]">營業限制</dt>
                               <dd className="text-zinc-700">{item.rules}</dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#F9FBFA]">
                               <dt className="font-bold text-zinc-600">受限區域</dt>
-                              <dd className="text-zinc-600">{item.areaLimit}</dd>
+                              <dd className="min-w-0 text-zinc-600">
+                                <span className="inline-flex bg-[#E9F3EE] px-2 py-1 font-bold leading-none text-[#315E50]">
+                                  {getMinpakuAreaLabel(item.areaLimit)}
+                                </span>
+                                <p className="mt-2 leading-relaxed">{item.areaLimit}</p>
+                              </dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
                               <dt className="font-bold text-zinc-600">管理／周知</dt>
                               <dd className="text-zinc-600">{item.managerReq}</dd>
                             </div>
                           </dl>
+                          )}
                         </article>
                       ))}
                     </div>
@@ -540,16 +618,29 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                   {/* Ryokan requirements */}
                   <section className="border border-[#1A2A22] bg-white p-6 md:p-8 space-y-6">
-                    <div className="border-b border-zinc-200 pb-3">
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Building className="w-5 h-5 text-[#0F8F6D]" />
-                        <span>{ryokanRules.title}</span>
-                      </h3>
-                      <p className="text-xs text-zinc-500 font-sans mt-1">
-                        如果您希望合法全年經營、且不受住宅宿泊事業 180 天上限限制，可評估向保健所申請「簡易宿所」等旅館業營業許可；但須先完成用途、建築、消防與所在地自治體的個案確認：
-                      </p>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setRyokanExpanded(current => !current)}
+                      aria-expanded={ryokanExpanded}
+                      className={`flex w-full items-start justify-between gap-4 text-left ${ryokanExpanded ? "border-b border-zinc-200 pb-3" : ""}`}
+                    >
+                      <span className="flex items-start gap-2">
+                        <Building className="mt-0.5 h-5 w-5 shrink-0 text-[#0F8F6D]" />
+                        <span>
+                          <span className="block text-xl font-bold text-[#1A2A22]">{ryokanRules.title}</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">全年經營所需的用途、建築、消防與許可確認重點</span>
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D] font-sans">
+                        {ryokanExpanded ? "收合" : "展開查看"}
+                        <ChevronDown className={`h-4 w-4 transition-transform ${ryokanExpanded ? "rotate-180" : ""}`} />
+                      </span>
+                    </button>
 
+                    {ryokanExpanded && (<>
+                    <p className="text-xs text-zinc-500 font-sans leading-relaxed">
+                      如果您希望合法全年經營、且不受住宅宿泊事業 180 天上限限制，可評估向保健所申請「簡易宿所」等旅館業營業許可；但須先完成用途、建築、消防與所在地自治體的個案確認：
+                    </p>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 font-sans">
                       {/* Left side Steps */}
                       <div className="md:col-span-7 space-y-4">
@@ -588,6 +679,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </div>
                       ))}
                     </div>
+                    </>)}
                   </section>
                 </div>
               )}
@@ -606,7 +698,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} number={idx + 1} />)}
+                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} number={idx + 1} />)}
                     </div>
                   )}
                 </section>

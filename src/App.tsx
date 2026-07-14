@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import {
-  Calculator, Bot, Smile, FileText, Building, ExternalLink, ArrowUp, Copy, Check
+  ExternalLink, ArrowUp, Copy, Check, Smile
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import {
@@ -29,7 +29,9 @@ export default function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      // Use hysteresis so the header's own height transition cannot repeatedly
+      // cross the same scroll threshold and toggle compact mode back and forth.
+      setScrolled(current => current ? window.scrollY > 20 : window.scrollY > 120);
       setShowToTop(window.scrollY > 600);
       
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -304,7 +306,7 @@ export default function App() {
 
       {/* Elegant Linear Header */}
       <header className={`sticky top-0 z-40 border-b border-[#DDE3DF] mini-header ${scrolled ? "compact shadow-sm" : "bg-white"}`} id="app-header">
-        <div className={`max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 transition-all duration-300 ${scrolled ? "py-2" : "py-4 md:py-6"}`}>
+        <div className={`max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 transition-all duration-300 ${scrolled ? "py-2" : "py-5 md:py-7"}`}>
           <div className="flex items-center gap-2.5 md:gap-3.5 w-full md:w-auto">
             {/* Brand Illustration Logo */}
             <img
@@ -318,9 +320,9 @@ export default function App() {
                 <span className="text-xs bg-[#1A2A22] text-[#F5F8F6] px-1.5 py-0.5 font-sans uppercase tracking-widest select-none">Linus 住好日</span>
                 <span className="text-xs border border-[#0F8F6D] text-[#0F8F6D] px-1.5 py-0.5 select-none font-sans">東京2026新版</span>
               </div>
-              <h1 className={`font-bold tracking-tight text-[#1A2A22] transition-all duration-300 ${scrolled ? "text-lg md:text-xl mt-0.5" : "text-xl md:text-3xl mt-1"}`}>日本租房買賣知識大補帖</h1>
-              <p className={`text-xs text-zinc-600 mt-1 font-sans transition-all duration-300 ${scrolled ? "hidden md:block opacity-75" : "block md:text-sm"}`}>
-                第一次來日本者的最佳指南 ╳ 實務預算精算 ╳ AI 找房顧問
+              <h1 className={`font-bold leading-[1.2] text-[#1A2A22] transition-all duration-300 ${scrolled ? "mt-1 text-lg tracking-[0.02em] md:text-xl" : "mt-2 text-xl tracking-[0.025em] md:text-3xl md:tracking-[0.045em]"}`}>日本租房買賣知識大補帖</h1>
+              <p className={`mt-2 text-xs leading-relaxed tracking-[0.035em] text-zinc-600 font-sans transition-all duration-300 ${scrolled ? "hidden md:block opacity-75" : "block md:text-sm md:tracking-[0.055em]"}`}>
+                日本租屋買房一次看懂 ╳ 實用預算規劃 ╳ AI 找房諮詢
               </p>
             </div>
           </div>
@@ -357,16 +359,16 @@ export default function App() {
         {/* Elegant Navigation Menu with sharp borders */}
         <nav className="border-t border-[#1A2A22] bg-[#FFFFFF] relative overflow-visible" id="primary-nav">
           <div className="max-w-6xl mx-auto px-4 overflow-visible">
-            <div className="grid grid-cols-5 text-center overflow-visible">
+            <div className="grid grid-cols-5 overflow-visible text-center font-sans">
               <button 
                 onClick={() => handleTabChange("cards")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-medium md:tracking-wide border-r border-[#1A2A22] first:border-l hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
+                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] first:border-l hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
                   activeTab === "cards" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
                 }`}
                 id="nav-tab-cards"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <FileText className="w-4 h-4 shrink-0" />
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">key</span>
                   <span>租屋知識</span>
                 </div>
                 {/* Tooltip */}
@@ -378,13 +380,13 @@ export default function App() {
 
               <button 
                 onClick={() => handleTabChange("buyHouse")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-medium md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
+                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
                   activeTab === "buyHouse" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
                 }`}
                 id="nav-tab-buyhouse"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Building className="w-4 h-4 shrink-0" />
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">real_estate_agent</span>
                   <span>買房知識</span>
                 </div>
                 {/* Tooltip */}
@@ -396,13 +398,13 @@ export default function App() {
 
               <button 
                 onClick={() => handleTabChange("calculator")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-medium md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
+                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
                   activeTab === "calculator" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
                 }`}
                 id="nav-tab-calc"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Calculator className="w-4 h-4 shrink-0" />
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">calculate</span>
                   <span>預算加減算</span>
                 </div>
                 {/* Tooltip */}
@@ -414,13 +416,13 @@ export default function App() {
 
               <button 
                 onClick={() => handleTabChange("chat")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-medium md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
+                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
                   activeTab === "chat" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
                 }`}
                 id="nav-tab-chat"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Bot className="w-4 h-4 shrink-0 text-[#0F8F6D]" />
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
                   <span>AI 找房顧問</span>
                 </div>
                 {/* Tooltip */}
@@ -432,13 +434,13 @@ export default function App() {
 
               <button 
                 onClick={() => handleTabChange("contact")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-medium md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
+                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
                   activeTab === "contact" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
                 }`}
                 id="nav-tab-contact"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Smile className="w-4 h-4 shrink-0" />
+                  <Smile className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
                   <span>聯絡 Linus</span>
                 </div>
                 {/* Tooltip */}

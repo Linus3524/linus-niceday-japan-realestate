@@ -27,6 +27,11 @@ export interface RentRate {
   k1: string; // 1K/1DK Average Rent (in万円)
   ldk1: string; // 1LDK/2K/2DK Average Rent (in万円)
   ldk2: string; // 2LDK Average Rent (in万円)
+  areaGroup?: "北海道" | "東北" | "關東" | "中部" | "關西" | "中國" | "九州";
+  sourceDate?: string;
+  confidence?: "high" | "medium" | "limited";
+  verificationStatus?: "verified_source" | "modeled_unverified" | "researched_limited";
+  sourceNote?: string;
 }
 
 export interface BudgetModifier {
@@ -451,8 +456,27 @@ export const rentRates: RentRate[] = [
   { region: "大阪", district: "箕面市", r1: "5.2", k1: "5.8", ldk1: "9.0", ldk2: "13.2" },
   { region: "大阪", district: "高槻市", r1: "5.3", k1: "6.0", ldk1: "9.2", ldk2: "13.5" },
   { region: "大阪", district: "枚方市", r1: "4.6", k1: "5.2", ldk1: "8.0", ldk2: "11.0" },
-  { region: "大阪", district: "八尾市", r1: "4.5", k1: "5.1", ldk1: "7.8", ldk2: "10.8" }
+  { region: "大阪", district: "八尾市", r1: "4.5", k1: "5.1", ldk1: "7.8", ldk2: "10.8" },
+
+  // 全國主要租屋城市第一階段。以 At Home 2026/03「賃料＋管理費・共益費」面積帶平均為基準。
+  { region: "北海道", district: "札幌市（市平均）", r1: "4.2", k1: "4.4", ldk1: "6.4", ldk2: "9.8", areaGroup: "北海道", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 札幌市募集家賃（面積帶平均）" },
+  { region: "宮城", district: "仙台市（市平均）", r1: "5.0", k1: "5.2", ldk1: "8.1", ldk2: "10.1", areaGroup: "東北", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 仙台市募集家賃（面積帶平均）" },
+  { region: "愛知", district: "名古屋市（市平均）", r1: "6.2", k1: "6.5", ldk1: "8.5", ldk2: "10.5", areaGroup: "中部", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 名古屋市募集家賃（面積帶平均）" },
+  { region: "京都", district: "京都市（市平均）", r1: "5.6", k1: "5.9", ldk1: "9.1", ldk2: "12.4", areaGroup: "關西", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 京都市募集家賃（面積帶平均）" },
+  { region: "兵庫", district: "神戶市（市平均）", r1: "6.0", k1: "6.3", ldk1: "8.2", ldk2: "9.9", areaGroup: "關西", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 神戶市募集家賃（面積帶平均）" },
+  { region: "廣島", district: "廣島市（市平均）", r1: "4.5", k1: "4.8", ldk1: "6.7", ldk2: "8.4", areaGroup: "中國", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 廣島市募集家賃（面積帶平均）" },
+  { region: "福岡", district: "福岡市（市平均）", r1: "6.2", k1: "6.6", ldk1: "9.3", ldk2: "13.7", areaGroup: "九州", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 福岡市募集家賃（面積帶平均）" }
 ];
+
+export const rentAreaGroups: Record<string, string[]> = {
+  "北海道": ["北海道"],
+  "東北": ["宮城"],
+  "關東": ["東京都", "神奈川", "埼玉", "千葉"],
+  "中部": ["愛知"],
+  "關西": ["京都", "大阪", "兵庫"],
+  "中國": ["廣島"],
+  "九州": ["福岡"]
+};
 
 export const budgetModifiers: BudgetModifier[] = [
   { text: "同時具備獨立洗面台與免治馬桶", price: 10000, type: "plus", category: "equipment" },
@@ -485,7 +509,8 @@ export const budgetModifiers: BudgetModifier[] = [
   { text: "室內空間 15〜18平米", price: -7000, type: "minus", category: "subtraction", applicableLayouts: ["r1", "k1"] },
   { text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
   { text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
-  { text: "塔樓建築", price: 15000, type: "plus", category: "building" }
+  { text: "塔樓建築", price: 15000, type: "plus", category: "building" },
+  { text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" }
 ];
 
 export const otherQA: QAItem[] = [
@@ -571,7 +596,7 @@ export const otherQA: QAItem[] = [
     id: "q13b",
     category: "screening",
     question: "財力證明（存款餘額證明）要怎麼準備？需要英文版嗎？",
-    answer: "其實非常簡單，不需要特別去銀行開立正式文件，也不需要英文版本：\n\n1. 最簡便的做法：直接提供您海外存款帳戶（如台灣的銀行）的「網路銀行餘額截圖」即可，截圖上務必包含「帳號」與「餘額」，再附上「存摺封面」的照片就完成了。\n2. 正式版本也可以：如果您手邊有銀行臨櫃開立的「存款餘額證明」正本，當然也完全適用，但這並非必要，不用為此特地跑一趟銀行。\n3. 金額建議：帳戶餘額建議至少達到等值 12 至 15 個月房租的水準（換算成日圓計算），資料越充足，保證會社與房東越安心，能承租的物件範圍也越廣。\n\n★ 小提醒：帳戶餘額為「台幣或日幣」都可以，Linus 會協助您換算成日圓後再提交給保證會社與房東，不需要您先換匯或準備英文/日文翻譯件。如果不確定自己的存款是否足夠，歡迎直接把金額告訴 Linus 幫您評估喔！"
+    answer: "【適用範圍】只有在特定管理公司明確要求財力證明，或申請人尚無日本穩定工作、屬打工度假／海外審查等情境時，才進一步準備；不可因申請人是外國籍就一律要求。持工作簽證且已有工作者，通常先依物件要求確認在職／雇用及收入相關資料，具體文件由管理公司與保證公司個案指定。\n\n若個案確實被要求提供財力證明，可先詢問管理公司接受的格式，不應在尚未確認簽證、就業狀態與物件規定前，直接要求存款截圖或套用固定的房租月數。"
   },
   {
     id: "q14",
@@ -641,8 +666,16 @@ export const linusContact = {
   companyName: "株式会社世嘉 Seika",
   licenseNo: "東京都知事免許（１）第１１１９４０号",
   address: "東京都千代田區東神田 ２−６−２ タカラビル ９ 階",
-  workingHours: "11:00～18:00 (每週水、日曜日定休)",
+  workingHours: "10:30～18:00",
+  closedDays: "水曜日・日曜日",
   phone: "090-7222-5965",
+  companyPhone: "03-5829-5881",
+  fax: "03-5829-5882",
+  memberships: [
+    "（公社）東京都宅地建物取引業協会会員",
+    "（公社）首都圏不動産公正取引協議会加盟"
+  ],
+  guaranteeAssociation: "（公社）全国宅地建物取引業保証協会",
   stations: [
     "JR山手線／秋葉原駅 徒歩11分",
     "JR山手線／神田駅 徒歩約13分",

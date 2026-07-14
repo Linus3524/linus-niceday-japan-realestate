@@ -28,10 +28,10 @@ export function ContactTab(props: ContactTabProps) {
               <div className="border border-[#1A2A22] bg-white p-6" id="contact-intro">
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
                   <Smile className="w-5 h-5 text-[#0F8F6D]" />
-                  <span>世嘉 專業台灣仲介為您服務</span>
+                  <span>專業台灣仲介 Linus，陪您安心找到日本的家</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify font-sans">
-                  租屋與買房知識只是起點。若您已經準備好來日本體驗生活，或者對特定的東京都房源感到好奇、想進行詳細內見(看房)，歡迎直接聯繫 Linus。我們擁有第一手未公開物件、不問國籍審查物件，並提供「全中文、台灣仲介」一對一完整服務。
+                  無論您正準備赴日工作、留學或長期定居，想租屋、購屋置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審查條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
                 </p>
               </div>
 
@@ -115,11 +115,11 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
-                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通</span>
+                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通！</span>
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
-                          <span>買房貸款協助、資料準備與總價議價完整支援</span>
+                          <span>買房貸款協助、資料準備與總價議價完整支援！</span>
                         </div>
                       </div>
                     </div>
@@ -253,26 +253,40 @@ export function ContactTab(props: ContactTabProps) {
                 {/* Company Details (Right 7 Columns) */}
                 <div className="md:col-span-7 border border-[#1A2A22] bg-white p-6 space-y-6">
                   <div>
-                    <h4 className="font-bold text-base text-[#1A2A22] border-b border-[#1A2A22] pb-2 mb-4">
+                    <h4 className="mb-4 border-b border-[#1A2A22] pb-2 text-base font-bold text-[#1A2A22]">
                       🎌 不動產會社基本資料
                     </h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs leading-relaxed text-zinc-700">
-                      <div className="space-y-1">
-                        <span className="text-zinc-400 block uppercase">公司名稱</span>
-                        <strong className="text-zinc-900">{linusContact.companyName}</strong>
+
+                    <div className="overflow-hidden border border-zinc-300 font-sans text-xs leading-relaxed text-zinc-700">
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold tracking-wide text-[#315E50]">商号</span>
+                        <strong className="px-4 py-3 text-sm text-zinc-900">{linusContact.companyName}</strong>
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-zinc-400 block uppercase">東京都知事免許編號</span>
-                        <strong className="text-zinc-900">{linusContact.licenseNo}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold tracking-wide text-zinc-600">免許番号</span>
+                        <strong className="px-4 py-3 text-zinc-900">{linusContact.licenseNo}</strong>
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-zinc-400 block uppercase">營業時間與定休日</span>
-                        <strong className="text-zinc-900">{linusContact.workingHours}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">営業時間</span>
+                        <strong className="px-4 py-3 text-zinc-900">{linusContact.workingHours}</strong>
                       </div>
-                      <div className="space-y-1">
-                        <span className="text-zinc-400 block uppercase">公司官方電話</span>
-                        <strong className="text-zinc-900">{linusContact.phone}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold text-zinc-600">定休日</span>
+                        <strong className="px-4 py-3 text-zinc-900">{linusContact.closedDays}</strong>
+                      </div>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">電話／FAX</span>
+                        <strong className="px-4 py-3 font-mono text-zinc-900">{linusContact.companyPhone}／{linusContact.fax}</strong>
+                      </div>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold text-zinc-600">所属団体</span>
+                        <div className="space-y-1 px-4 py-3 font-semibold text-zinc-800">
+                          {linusContact.memberships.map((membership) => <p key={membership}>{membership}</p>)}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">保証協会</span>
+                        <strong className="px-4 py-3 text-zinc-900">{linusContact.guaranteeAssociation}</strong>
                       </div>
                     </div>
                   </div>
@@ -302,7 +316,7 @@ export function ContactTab(props: ContactTabProps) {
                         id="office-google-map"
                       ></iframe>
                       <div className="mt-2 flex justify-between items-center text-xs font-sans">
-                        <span className="text-[10px] text-zinc-500">📍 株式會社世嘉 Seika 本部大樓 9 樓</span>
+                        <span className="text-[10px] text-zinc-500">📍 株式會社世嘉 Seika・タカラビル 9 階</span>
                         <a 
                           href="https://maps.app.goo.gl/g8nHrYEdikTvvCLWA" 
                           target="_blank" 

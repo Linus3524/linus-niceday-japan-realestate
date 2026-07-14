@@ -1,10 +1,70 @@
 import { motion } from "motion/react";
-import type { ReactNode } from "react";
-import { Search, Calculator, ArrowRight, Bot, FileText, X, HelpCircle } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Search, ArrowRight, FileText, X, HelpCircle, ChevronDown } from "lucide-react";
 import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
 import { renderFormattedText } from "../lib/format";
 import { QACard } from "./QACard";
 import { JapaneseRuby } from "./JapaneseRuby";
+
+interface ScreeningDocumentProfile {
+  profile: string;
+  documents: string[];
+  availability: "多" | "一般" | "最少" | "不一定";
+}
+
+const overseasScreeningDocuments: ScreeningDocumentProfile[] = [
+  { profile: "工作簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "僱傭契約書"], availability: "一般" },
+  { profile: "留學簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "入學通知書"], availability: "一般" },
+  { profile: "打工度假簽證", documents: ["護照照片頁", "日本簽證貼紙", "銀行財力或餘額證明"], availability: "最少" }
+];
+
+const domesticScreeningDocuments: ScreeningDocumentProfile[] = [
+  { profile: "尚未入職", documents: ["護照照片頁", "在留卡正反面", "僱傭契約書"], availability: "多" },
+  { profile: "入職未滿三個月", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "已有的薪資明細", "僱傭條件通知書"], availability: "多" },
+  { profile: "入職三個月以上", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "現有公司源泉票", "三個月薪資明細", "僱傭條件通知書"], availability: "多" },
+  { profile: "轉職中", documents: ["在留卡正反面", "護照照片頁", "新公司內定通知書", "新公司僱傭條件通知書", "舊公司三個月薪資明細（視個案）"], availability: "多" },
+  { profile: "留學簽證", documents: ["護照照片頁", "在留卡正反面", "學生證", "銀行財力或餘額證明"], availability: "一般" },
+  { profile: "打工度假簽證", documents: ["護照照片頁", "在留卡正反面", "銀行財力或餘額證明"], availability: "最少" },
+  { profile: "法人契約（社員入住）", documents: ["公司登記簿謄本", "公司決算書影本", "公司印鑑證明書", "代表者印鑑證明書", "入住者在留卡與護照", "社員證或在職證明", "公司簡介或業務資料"], availability: "不一定" }
+];
+
+const availabilityStyle = {
+  "多": "bg-[#EAF3EE] text-[#0A6D52] border-[#A8D5C2]",
+  "一般": "bg-[#FFF9ED] text-[#7A5A1F] border-[#DCC8A1]",
+  "最少": "bg-[#FBDFD2] text-[#B13818] border-[#E94E2B]",
+  "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
+};
+
+function VisaDocumentMatrix() {
+  const [screeningMode, setScreeningMode] = useState<"overseas" | "domestic">("overseas");
+  const profiles = screeningMode === "overseas" ? overseasScreeningDocuments : domesticScreeningDocuments;
+  return (
+    <div className="space-y-5 font-sans">
+      <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
+        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審查</button>
+        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#0F8F6D] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審查</button>
+      </div>
+      {screeningMode === "domestic" && (
+        <div className="border-l-4 border-[#0F8F6D] bg-[#EAF3EE] p-4 text-sm leading-7 text-[#3F5147]">境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。</div>
+      )}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {profiles.map(profile => (
+          <article key={profile.profile} className="flex h-full flex-col border border-[#DDE3DF] bg-white p-5 md:p-6">
+            <div className="flex items-start justify-between gap-3 border-b border-[#DDE3DF] pb-3">
+              <h6 className="text-base font-bold leading-6 text-[#1A2A22]">{profile.profile}</h6>
+              <span className={`shrink-0 border px-2.5 py-1 text-[11px] font-bold ${availabilityStyle[profile.availability]}`}>房源量：{profile.availability}</span>
+            </div>
+            <p className="mt-4 text-xs font-bold tracking-wider text-[#66736C]">申請時建議先準備</p>
+            <ul className="mt-3 space-y-2.5">
+              {profile.documents.map(document => <li key={document} className="flex gap-3 text-sm leading-6 text-[#3F5147]"><span className="mt-0.5 font-bold text-[#0F8F6D]">✓</span><span>{document}</span></li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+      <div className="border border-[#DCC8A1] bg-[#FFF9ED] p-4 text-xs leading-6 text-[#66583D] md:text-sm">以上為 Linus 的申請準備對照，不是所有物件一律要求的固定清單。管理公司、保證公司、簽證狀態與個別案件可能追加、減少或改用其他文件，送件前請以該物件最新書面要求為準。</div>
+    </div>
+  );
+}
 
 function renderTermDetail(detail: string) {
   const nodes: ReactNode[] = [];
@@ -37,6 +97,7 @@ interface RentGuideTabProps {
 
 export function RentGuideTab(props: RentGuideTabProps) {
   const { kbCategory, setKbCategory, searchQuery, setSearchQuery, filtered, hasNoResults, setSelectedFee, handleTabChange } = props;
+  const [documentsExpanded, setDocumentsExpanded] = useState(false);
 
   return (
             <motion.div
@@ -55,6 +116,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   前言 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
+                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#0F8F6D]" aria-hidden="true">key</span>
                   <span>致所有來日本打拼的人</span>
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
@@ -69,7 +131,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
-                      <Calculator className="w-4 h-4" />
+                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">calculate</span>
                       <span>需要估算理想房租預算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
@@ -85,7 +147,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
-                      <Bot className="w-4 h-4" />
+                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
@@ -338,12 +400,32 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                   {/* Required Documents Section for Overseas vs Domestic Screenings */}
                   <div className="border border-[#1A2A22] bg-[#F5F8F6] p-6 relative">
-                    <h4 className="text-sm md:text-base font-bold text-[#1A2A22] border-b border-zinc-300 pb-3 mb-4 flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-[#0F8F6D]" />
-                      <span>審查所需資料與準備文件對照</span>
-                    </h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <button
+                      type="button"
+                      onClick={() => setDocumentsExpanded(current => !current)}
+                      aria-expanded={documentsExpanded}
+                      aria-controls="screening-document-matrix"
+                      className={`flex w-full items-center justify-between gap-4 text-left ${documentsExpanded ? "border-b border-zinc-300 pb-3 mb-4" : ""}`}
+                    >
+                      <span className="flex min-w-0 items-start gap-3">
+                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#0F8F6D]" />
+                        <span>
+                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審查所需資料與準備文件對照</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審查與目前身份，查看建議先準備的文件</span>
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D]">
+                        {documentsExpanded ? "收合" : "展開查看"}
+                        <ChevronDown className={`h-4 w-4 transition-transform ${documentsExpanded ? "rotate-180" : ""}`} />
+                      </span>
+                    </button>
+
+                    {documentsExpanded && (
+                      <div id="screening-document-matrix">
+                        <VisaDocumentMatrix />
+                      </div>
+                    )}
+                    <div className="hidden" aria-hidden="true">
                       <div className="bg-white p-5 border border-zinc-300 space-y-3">
                         <h5 className="font-bold text-[#0F8F6D] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
                           <span>✈ 海外審查需要資料</span>
@@ -419,7 +501,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
                           {/* Circle node indicator */}
-                          <div className="absolute -left-[31px] top-1.5 w-4 h-4 bg-white border-2 border-[#0F8F6D] group-hover:bg-[#0F8F6D] transition-colors" />
+                          <div className="absolute -left-[33px] top-1.5 w-4 h-4 bg-white border-2 border-[#0F8F6D] group-hover:bg-[#0F8F6D] transition-colors" />
                           
                           <div className="flex flex-col md:flex-row justify-between items-start gap-2 mb-1.5">
                             <h5 className="font-bold text-sm text-[#0F8F6D]">{step.name}</h5>

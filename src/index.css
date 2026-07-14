@@ -57,11 +57,9 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 
 /* Header Compact and Blur state */
 .mini-header {
-  transition: padding 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), backdrop-filter 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: background-color 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), backdrop-filter 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .mini-header.compact {
-  padding-top: 10px;
-  padding-bottom: 10px;
   background-color: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(4px);
 }

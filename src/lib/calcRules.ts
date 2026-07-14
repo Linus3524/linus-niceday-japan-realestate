@@ -1,4 +1,4 @@
-import { rentRates } from "../data/rentGuideData";
+import { rentRates } from "../data/housingMarket";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 
 // 東京都下（多摩地區）城市清單 — 全站共用，判斷是否屬於東京 23 區以外的都下區域

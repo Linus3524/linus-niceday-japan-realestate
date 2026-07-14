@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { rentRates, RentRate } from "../data/rentGuideData";
+import type { RentRate } from "../data/rentGuideData";
+import { rentRates } from "../data/housingMarket";
 import { MapPin, Info } from "lucide-react";
 
 interface RentMapProps {
@@ -139,10 +140,10 @@ const regionGrids: Record<string, GridNode[]> = {
 
 const gridConfigs: Record<string, { cols: string; maxW: string }> = {
   "東京都": { cols: "grid-cols-12", maxW: "max-w-[1080px]" },
-  "神奈川": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
-  "埼玉": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
-  "千葉": { cols: "grid-cols-5", maxW: "max-w-[620px]" },
-  "大阪": { cols: "grid-cols-5", maxW: "max-w-[620px]" }
+  "神奈川": { cols: "grid-cols-5", maxW: "max-w-[520px]" },
+  "埼玉": { cols: "grid-cols-5", maxW: "max-w-[520px]" },
+  "千葉": { cols: "grid-cols-5", maxW: "max-w-[520px]" },
+  "大阪": { cols: "grid-cols-5", maxW: "max-w-[520px]" }
 };
 
 const thresholdsConfig = {
@@ -201,12 +202,14 @@ export const RentMap: React.FC<RentMapProps> = ({
 }) => {
   const [hoveredWard, setHoveredWard] = useState<RentRate | null>(null);
   const [activeRegion, setActiveRegion] = useState<string>("東京都");
+  const [activeAreaGroup, setActiveAreaGroup] = useState<string>("關東");
 
   // Sync region selector when district is selected from parent (dropdown)
   useEffect(() => {
     const found = rentRates.find(r => r.district === selectedDistrict);
     if (found && found.region !== activeRegion) {
       setActiveRegion(found.region);
+      setActiveAreaGroup(found.areaGroup || "其他");
     }
   }, [selectedDistrict]);
 
@@ -236,8 +239,8 @@ export const RentMap: React.FC<RentMapProps> = ({
     }
 
     if (isSelected) {
-      // Keep the background heat color, but apply a strong thick black border via ring + shadow + scale without reducing content area
-      border = "border-[#1A2A22] shadow-[3px_3px_0px_0px_rgba(26, 42, 34,1)] scale-[1.06] z-10 ring-2 ring-[#1A2A22]";
+      // Keep selection emphasis inside the tile so edge items are never clipped by the scroll viewport.
+      border = "border-[#1A2A22] shadow-[2px_2px_0px_0px_rgba(26,42,34,1)] z-10 ring-2 ring-inset ring-[#1A2A22]";
     }
 
     return { bg, border, text };
@@ -247,8 +250,19 @@ export const RentMap: React.FC<RentMapProps> = ({
     return parseFloat(ward[roomType] || "0");
   };
 
-  const activeGrid = regionGrids[activeRegion] || regionGrids["東京都"];
-  const gridConfig = gridConfigs[activeRegion] || gridConfigs["東京都"];
+  const activeGrid = regionGrids[activeRegion] || rentRates
+    .filter(rate => rate.region === activeRegion)
+    .map((rate, index) => ({ name: rate.district, col: index % 5, row: Math.floor(index / 5) }));
+  const gridConfig = gridConfigs[activeRegion] || { cols: "grid-cols-5", maxW: "max-w-[520px]" };
+  const isTokyoMap = activeRegion === "東京都";
+  const availableRegions = Array.from(new Set(rentRates.map(rate => rate.region)));
+  const areaGroupOrder = ["北海道", "東北", "關東", "中部", "關西", "中國", "九州"];
+  const availableAreaGroups = areaGroupOrder.filter(group => rentRates.some(rate => rate.areaGroup === group));
+  const visibleRegions = availableRegions.filter(region => rentRates.some(rate => rate.region === region && rate.areaGroup === activeAreaGroup));
+  const regionDisplayName = (region: string) => ({
+    "東京都": "東京都", "神奈川": "神奈川縣", "埼玉": "埼玉縣", "千葉": "千葉縣", "大阪": "大阪府",
+    "北海道": "北海道", "宮城": "宮城縣", "愛知": "愛知縣", "京都": "京都府", "兵庫": "兵庫縣", "廣島": "廣島縣", "福岡": "福岡縣"
+  }[region] || `${region}縣`);
 
   return (
     <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
@@ -259,8 +273,8 @@ export const RentMap: React.FC<RentMapProps> = ({
             <MapPin className="w-4 h-4 text-[#0F8F6D]" />
             <span>
               {mode === "buy"
-                ? "2026 關東/關西熱門區域房價行情地圖 (SUUMO/HOME'S & 實價登錄最新推估)"
-                : "2026 關東/關西熱門區域家賃行情地圖 (SUUMO/HOME'S 最新租金)"}
+                ? "2026 日本主要租屋市場房價行情地圖"
+                : "2026 日本主要租屋市場家賃行情地圖"}
             </span>
           </h4>
           <p className="text-[10px] text-zinc-500">
@@ -288,14 +302,28 @@ export const RentMap: React.FC<RentMapProps> = ({
         </div>
       </div>
 
-      {/* Region Switcher Tabs */}
+      {/* Area and prefecture switcher tabs */}
+      <div className="grid grid-cols-4 gap-1 border border-[#DDE3DF] bg-[#F5F8F6] p-1 sm:grid-cols-7">
+        {availableAreaGroups.map(group => (
+          <button
+            key={group}
+            onClick={() => {
+              setActiveAreaGroup(group);
+              const firstRegion = availableRegions.find(region => rentRates.some(rate => rate.region === region && rate.areaGroup === group));
+              if (!firstRegion) return;
+              setActiveRegion(firstRegion);
+              const firstDistrict = rentRates.find(rate => rate.region === firstRegion);
+              if (firstDistrict) onSelectDistrict(firstDistrict.district);
+            }}
+            className={`min-h-9 px-2 text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:bg-[#EAF3EE]"}`}
+          >
+            {group}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-wrap gap-1 border-b border-dashed border-zinc-200 pb-3">
-        {["東京都", "神奈川", "埼玉", "千葉", "大阪"].map((reg) => {
-          const displayName = reg === "東京都" ? "東京都" :
-                              reg === "神奈川" ? "神奈川縣" :
-                              reg === "埼玉" ? "埼玉縣" :
-                              reg === "千葉" ? "千葉縣" : "大阪府";
-          
+        {visibleRegions.map((reg) => {
+          const displayName = regionDisplayName(reg);
           const isActive = activeRegion === reg;
           return (
             <button
@@ -321,10 +349,10 @@ export const RentMap: React.FC<RentMapProps> = ({
       </div>
 
       {/* Grid-based Map Layout */}
-      <div className="relative overflow-x-auto py-2">
-        <div className="min-w-[780px] mx-auto select-none">
+      <div className="relative overflow-x-auto px-1 py-3">
+        <div className={`${isTokyoMap ? "min-w-[780px]" : "min-w-[480px]"} mx-auto select-none`}>
           {/* Main Heatmap Grid */}
-          <div className={`grid ${gridConfig.cols} gap-2.5 relative ${gridConfig.maxW} mx-auto transition-all duration-300`}>
+          <div className={`grid ${gridConfig.cols} ${isTokyoMap ? "gap-2.5" : "gap-2"} relative ${gridConfig.maxW} mx-auto transition-all duration-300`}>
             {activeGrid.map((cell) => {
               const rateData = rentRates.find(r => r.district === cell.name);
               if (!rateData) return null;
@@ -346,7 +374,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                   onClick={() => onSelectDistrict(cell.name)}
                   onMouseEnter={() => setHoveredWard(rateData)}
                   onMouseLeave={() => setHoveredWard(null)}
-                  className={`p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between h-[72px] rounded-none ${bg} ${border}`}
+                  className={`${isTokyoMap ? "h-[72px]" : "h-[56px]"} p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between rounded-none ${bg} ${border}`}
                   title={mode === "buy" ? `${cell.name} - 2026行情: ${val.toLocaleString()}萬円` : `${cell.name} - 2026行情: ${val}萬円/月`}
                 >
                   <div className="text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{cell.name}</div>

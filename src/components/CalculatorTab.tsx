@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Calculator, MapPin, Info, Smile, Building, Landmark, ChevronDown } from "lucide-react";
-import { rentRates, budgetModifiers } from "../data/rentGuideData";
+import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, AlertTriangle } from "lucide-react";
+import { budgetModifiers } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
-import { districtStations } from "../data/stationData";
+import { rentRates, districtStations } from "../data/housingMarket";
 import { RentMap } from "./RentMap";
 import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
+import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes } from "../lib/rentAnalysis";
+import { RentMarketReports } from "./RentMarketReports";
+import { RequirementAssessment } from "./RequirementAssessment";
 
 interface CalculatorTabProps {
   calcMode: "rent" | "buy";
@@ -27,11 +30,135 @@ interface CalculatorTabProps {
   handleSendMessage: (e?: any, customMsg?: string) => void;
 }
 
+type RentSearchFilter = "pets" | "freeInternet" | "balcony" | "secondFloor" | "twoBurners" | "cityGas";
+
+const rentSearchFilterOptions: Array<{ key: RentSearchFilter; label: string; note: string; pressure: number }> = [
+  { key: "pets", label: "可養寵物／貓", note: "物件規約與追加敷金須逐間確認", pressure: 3 },
+  { key: "freeInternet", label: "免費網路／網路費包含", note: "確認速度、線路、初裝費與另簽約要求", pressure: 1.5 },
+  { key: "balcony", label: "附陽台", note: "只篩選房源，不直接推定租金溢價", pressure: 1 },
+  { key: "secondFloor", label: "房間位於 2 樓以上", note: "排除一樓房源，不直接增加租金", pressure: 1.5 },
+  { key: "twoBurners", label: "瓦斯爐 2 口以上", note: "確認爐具類型、是否附設及廚房空間", pressure: 1.5 },
+  { key: "cityGas", label: "都市瓦斯指定", note: "排除 LP 瓦斯物件；實際費率仍依供應商與契約確認", pressure: 2 }
+];
+
+const modifierAvailabilityImpact: Record<number, { supply: number; competition: number }> = {
+  0: { supply: 1.5, competition: 0.5 }, 1: { supply: 0.6, competition: 0.2 }, 2: { supply: 0.6, competition: 0.2 },
+  3: { supply: 1, competition: 0.3 }, 4: { supply: 1.8, competition: 0.5 }, 5: { supply: 1, competition: 0.3 },
+  6: { supply: 1.8, competition: 0.5 }, 7: { supply: 1.2, competition: 0.4 }, 8: { supply: 2, competition: 0.7 },
+  9: { supply: 1.2, competition: 0.5 }, 10: { supply: 1.8, competition: 1.5 }, 11: { supply: 1, competition: 0.8 },
+  12: { supply: 0.8, competition: 2 }, 13: { supply: 0.4, competition: 1 }, 14: { supply: 1.3, competition: 1.6 },
+  15: { supply: 2, competition: 0.5 }, 16: { supply: -1, competition: -0.2 }, 17: { supply: -1.6, competition: -0.4 },
+  18: { supply: -1.2, competition: -0.2 }, 19: { supply: -1.8, competition: -0.3 }, 20: { supply: -0.8, competition: -0.2 },
+  21: { supply: -0.8, competition: -0.1 }, 22: { supply: -1.5, competition: -0.2 }, 23: { supply: -1.2, competition: -0.2 },
+  24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 }
+};
+
+const AI_ANALYSIS_LIMIT = 3;
+const AI_ANALYSIS_WINDOW_MS = 5 * 60 * 1000;
+const AI_ANALYSIS_STORAGE_KEY = "rent-ai-analysis-attempts";
+
+function reserveClientAnalysisAttempt() {
+  try {
+    const now = Date.now();
+    const attempts = (JSON.parse(localStorage.getItem(AI_ANALYSIS_STORAGE_KEY) || "[]") as number[])
+      .filter(timestamp => now - timestamp < AI_ANALYSIS_WINDOW_MS);
+    if (attempts.length >= AI_ANALYSIS_LIMIT) {
+      return Math.max(1, Math.ceil((AI_ANALYSIS_WINDOW_MS - (now - attempts[0])) / 60000));
+    }
+    localStorage.setItem(AI_ANALYSIS_STORAGE_KEY, JSON.stringify([...attempts, now]));
+    return 0;
+  } catch {
+    return 0;
+  }
+}
+
 export function CalculatorTab(props: CalculatorTabProps) {
   const { calcMode, setCalcMode, calcDistrict, setCalcDistrict, calcRoomType, setCalcRoomType, calcModifiers, setCalcModifiers, calcBuyModifiers, setCalcBuyModifiers, calcStation, setCalcStation, handleTabChange, handleSendMessage } = props;
   const [loanRatio, setLoanRatio] = useState(70);
   const [annualRate, setAnnualRate] = useState(2.2);
   const [loanYears, setLoanYears] = useState(20);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiResult, setAiResult] = useState<{ criteria: RentSearchCriteria; recommendations: RentRecommendation[]; reality: string } | null>(null);
+  const [appliedNotice, setAppliedNotice] = useState<string | null>(null);
+  const [rentSearchFilters, setRentSearchFilters] = useState<RentSearchFilter[]>([]);
+
+  const analyzeRentBrief = async () => {
+    if (!aiPrompt.trim() || aiLoading) return;
+    const waitMinutes = reserveClientAnalysisAttempt();
+    if (waitMinutes > 0) {
+      setAiError(`AI 分析每 5 分鐘最多使用 3 次，請約 ${waitMinutes} 分鐘後再試。`);
+      return;
+    }
+    setAiLoading(true);
+    setAiError(null);
+    setAppliedNotice(null);
+    try {
+      const response = await fetch("/api/rent-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: aiPrompt })
+      });
+      const responseText = await response.text();
+      let data: any = null;
+      if (responseText.trim()) {
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error(response.ok
+            ? "分析服務回傳格式異常，請重新整理頁面後再試。"
+            : `分析服務暫時無法使用（HTTP ${response.status}）。`);
+        }
+      }
+      if (!response.ok) throw new Error(data?.error || `分析服務暫時無法使用（HTTP ${response.status}）。`);
+      if (!data?.criteria || !Array.isArray(data?.recommendations)) {
+        throw new Error("分析服務沒有回傳完整結果，請重新整理頁面後再試。");
+      }
+      setAiResult(data);
+    } catch (error: any) {
+      setAiError(error.message || "AI 暫時無法分析，請稍後再試。");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const applyRecommendationToCalculator = (item: RentRecommendation, criteria: RentSearchCriteria) => {
+    const availableStations = districtStations[item.district] || [];
+    const selectedStation = item.station && availableStations.some(station => station.name === item.station)
+      ? item.station
+      : "none";
+    const modifiers = getRentModifierIndexes(criteria).filter(index =>
+      (index !== 25 || hasTowerMansionSupport(item.district)) &&
+      !(index === 26 && criteria.cityGasRequired)
+    );
+
+    setCalcMode("rent");
+    setCalcDistrict(item.district);
+    setCalcRoomType(criteria.roomType);
+    setCalcStation(selectedStation);
+    setCalcModifiers(modifiers);
+    setRentSearchFilters([
+      criteria.petsAllowed ? "pets" : null,
+      criteria.freeInternet ? "freeInternet" : null,
+      criteria.balcony ? "balcony" : null,
+      criteria.floorMin && criteria.floorMin >= 2 ? "secondFloor" : null,
+      criteria.gasBurnersMin && criteria.gasBurnersMin >= 2 ? "twoBurners" : null,
+      criteria.cityGasRequired ? "cityGas" : null
+    ].filter(Boolean) as RentSearchFilter[]);
+    setAppliedNotice(`已將「${item.district}${selectedStation !== "none" ? `・${selectedStation}站` : ""}」與 ${modifiers.length} 項需求帶入下方計算器。`);
+
+    window.requestAnimationFrame(() => {
+      document.getElementById("calc-engine-container")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
+  const toggleRentSearchFilter = (filter: RentSearchFilter) => {
+    if (filter === "cityGas" && !rentSearchFilters.includes("cityGas")) {
+      setCalcModifiers(calcModifiers.filter(index => index !== 26));
+    }
+    setRentSearchFilters(current => current.includes(filter) ? current.filter(item => item !== filter) : [...current, filter]);
+  };
 
   // Calculator Logic
   const getSelectedDistrictData = () => {
@@ -106,10 +233,64 @@ export function CalculatorTab(props: CalculatorTabProps) {
     return Math.max(rent, 20000); // Ensure rent doesn't go below 20,000 yen
   };
 
+  const getAvailabilityAssessment = () => {
+    const selectedFilters = rentSearchFilterOptions.filter(option => rentSearchFilters.includes(option.key));
+    const filterPressure = selectedFilters.reduce((total, option) => total + option.pressure, 0);
+    const modifierPressure = calcModifiers.reduce((total, index) => total + (modifierAvailabilityImpact[index]?.supply || 0), 0);
+    const modifierCompetition = calcModifiers.reduce((total, index) => total + (modifierAvailabilityImpact[index]?.competition || 0), 0);
+    const roomPressure = calcRoomType === "ldk2" ? 2 : calcRoomType === "ldk1" ? 1 : 0;
+    const hardFilterFloor = rentSearchFilters.includes("pets") ? 3 : rentSearchFilters.includes("cityGas") ? 2 : 0;
+    const supplyPressure = Math.max(hardFilterFloor, filterPressure + modifierPressure + roomPressure, 0);
+    const supply = supplyPressure >= 8
+      ? { label: "房源稀少", tone: "text-[#B13818]", width: "w-[18%]" }
+      : supplyPressure >= 5
+        ? { label: "房源偏少", tone: "text-[#B13818]", width: "w-[35%]" }
+        : supplyPressure >= 2.5
+          ? { label: "房源一般", tone: "text-[#7A5A1F]", width: "w-[60%]" }
+          : { label: "選擇較多", tone: "text-[#0A6D52]", width: "w-[88%]" };
+
+    const station = calcStation === "none" ? null : (districtStations[calcDistrict] || []).find(item => item.name === calcStation);
+    const districtRent = parseFloat(getSelectedDistrictData().k1);
+    const locationPressure = districtRent >= 11 ? 2.5 : districtRent >= 8 ? 1.5 : 0.5;
+    const stationPressure = station?.type === "major" ? 2.5 : station?.type === "regular" ? 1.25 : station ? 0.5 : 0;
+    const competitionScore = Math.max(0, locationPressure + stationPressure + modifierCompetition + Math.min(3, supplyPressure * 0.35));
+    const competition = competitionScore >= 6
+      ? { label: "競爭激烈", tone: "text-[#B13818]", width: "w-[92%]" }
+      : competitionScore >= 4
+        ? { label: "競爭偏高", tone: "text-[#B13818]", width: "w-[70%]" }
+        : competitionScore >= 2.5
+          ? { label: "競爭一般", tone: "text-[#7A5A1F]", width: "w-[48%]" }
+          : { label: "競爭較低", tone: "text-[#0A6D52]", width: "w-[25%]" };
+
+    const restrictiveModifiers = calcModifiers
+      .filter(index => (modifierAvailabilityImpact[index]?.supply || 0) > 0)
+      .map(index => ({ label: budgetModifiers[index].text, pressure: modifierAvailabilityImpact[index].supply }));
+    const expandingConditions = calcModifiers
+      .filter(index => (modifierAvailabilityImpact[index]?.supply || 0) < 0)
+      .sort((a, b) => modifierAvailabilityImpact[a].supply - modifierAvailabilityImpact[b].supply)
+      .slice(0, 3)
+      .map(index => budgetModifiers[index].text);
+    const limitingConditions = [
+      ...selectedFilters.map(option => ({ label: option.label, pressure: option.pressure })),
+      ...restrictiveModifiers
+    ]
+      .sort((a, b) => b.pressure - a.pressure)
+      .slice(0, 3)
+      .map(option => option.label);
+    const advice = supplyPressure >= 5
+      ? `目前條件疊加後會大幅縮小選擇。建議將「${limitingConditions[0] || "設備條件"}」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。`
+      : supplyPressure >= 2.5
+        ? "目前仍有搜尋空間，但符合全部條件的物件不會平均出現在每個車站；建議預先排好條件優先順序。"
+        : "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。";
+
+    return { supply, competition, limitingConditions, expandingConditions, advice, selectedCount: selectedFilters.length, modifierCount: calcModifiers.length };
+  };
+
   const toggleModifier = (index: number) => {
     if (calcModifiers.includes(index)) {
       setCalcModifiers(calcModifiers.filter(i => i !== index));
     } else {
+      if (index === 26) setRentSearchFilters(current => current.filter(filter => filter !== "cityGas"));
       let nextModifiers = [...calcModifiers, index];
       if (index === 25) {
         nextModifiers = nextModifiers.filter(i => i !== 9 && i !== 21);
@@ -254,22 +435,105 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
               {/* Preface Intro for Calc */}
               <div className="border border-[#1A2A22] bg-white p-6" id="calc-intro">
-                <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-4 text-[#1A2A22] flex items-center gap-2 font-sans">
-                  <Calculator className="w-5 h-5 text-[#0F8F6D]" />
+                <h3 className="text-base font-bold border-b border-[#1A2A22] pb-2.5 mb-3 text-[#1A2A22] flex items-center gap-2 font-sans">
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">calculate</span>
                   {calcMode === "rent" ? (
-                    <span>關東／關西租屋預算概算 ╳ 條件調整</span>
+                    <span>日本租屋預算與條件可行性評估</span>
                   ) : (
-                    <span>關東／關西買房條件式概算 ╳ 貸款情境試算</span>
+                    <span>日本購屋總價與貸款情境評估</span>
                   )}
                 </h3>
-                <p className="text-sm text-zinc-700 leading-relaxed text-justify font-sans">
+                <p className="text-xs md:text-[13px] text-zinc-600 leading-6 text-justify font-sans">
                   {calcMode === "rent" ? (
-                    "想知道自己的預算在日本大概能住到哪裡、能挑什麼樣的房子嗎？選擇想住的區域、格局與房屋條件，先幫你抓出找房時最實用的月租範圍。行情以 AI 彙整的 SUUMO、LIFULL HOME'S 等日本租房網站資料為基礎；實際租金仍以各物件當下的募集資料為準。"
+                    "在日本找房前，先了解自己的預算能換到什麼樣的生活。這套工具參考 SUUMO、LIFULL HOME’S、At Home 等主要租屋平台的公開募集資訊與市場報告，並結合 Linus 的實務經驗，協助您整理地區、格局與設備之間的取捨。選好條件後，我們會估算月租、初期費用、房源供給與競爭程度，讓您更有方向地找到真正負擔得起的房子。樣本較少的城市會標示為模型參考；實際租金與空室狀況仍以當期募集內容為準。"
                   ) : (
-                    "這是以區域租金基準、假設投報率與 Linus 實務調整係數推算的預算工具，不是鑑價或成交價預測。請選擇區域、格局與物件條件，查看概算中心值、合理波動區間及不同貸款參數下的每月還款情境。"
+                    "準備在日本購屋，我們會依您選擇的地區、格局與物件條件，整理總價概算、初期資金及不同貸款情境下的每月還款，協助您在看房前先掌握負擔範圍。實際成交價與核貸條件仍以個別物件及金融機構審查為準。"
                   )}
                 </p>
               </div>
+
+              {calcMode === "rent" && (
+                <section className="border border-[#1A2A22] bg-white" aria-labelledby="ai-rent-title">
+                  <div className="grid grid-cols-1 lg:grid-cols-12">
+                    <div className="lg:col-span-5 bg-[#EAF3EE] p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-[#1A2A22]">
+                      <div className="flex items-center gap-2 text-[#0F8F6D] text-xs font-bold tracking-[0.16em] uppercase mb-3 font-sans">
+                        <Sparkles className="w-4 h-4" /> AI Market Reality Check
+                      </div>
+                      <h3 id="ai-rent-title" className="text-xl md:text-2xl font-bold text-[#1A2A22] leading-snug mb-3">
+                        說出理想生活，找到真正住得起的選擇
+                      </h3>
+                      <p className="text-sm text-[#3F5147] leading-relaxed mb-5 font-sans">
+                        告訴我們您的預算、通勤地點與理想條件，我們會整理合適的地區與車站，並估算合理租金區間。若條件與預算有落差，也會清楚說明如何調整，讓找房更接近理想生活。
+                      </p>
+                      <textarea
+                        value={aiPrompt}
+                        onChange={event => setAiPrompt(event.target.value)}
+                        maxLength={1000}
+                        rows={6}
+                        placeholder="例如：預算含管理費 10 萬円，想住東急東橫線，1K 25㎡以上，要獨立洗面台、電梯，走路 10 分鐘內。"
+                        className="w-full resize-y border border-[#1A2A22] bg-white p-4 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:outline-none focus:ring-2 focus:ring-[#0F8F6D]/30 font-sans"
+                      />
+                      <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                        <button
+                          onClick={analyzeRentBrief}
+                          disabled={!aiPrompt.trim() || aiLoading}
+                          className="flex-1 min-h-12 bg-[#1A2A22] text-white px-5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#0F8F6D] disabled:opacity-45 disabled:cursor-not-allowed transition-colors font-sans"
+                        >
+                          {aiLoading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                          {aiLoading ? "正在對標市場…" : "AI 分析適合地區與預算"}
+                        </button>
+                        <button
+                          onClick={() => setAiPrompt("預算含管理費 10 萬円，想住東急東橫線沿線，1K、25㎡以上，需要獨立洗面台和電梯，車站步行 10 分鐘內。")}
+                          className="min-h-12 border border-[#1A2A22] bg-white px-4 text-xs font-bold text-[#1A2A22] hover:bg-[#F5F8F6] font-sans"
+                        >
+                          套用範例
+                        </button>
+                      </div>
+                      <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 5 分鐘最多分析 3 次。</p>
+                      {aiError && <p className="mt-3 text-xs text-[#B13818] bg-[#FBDFD2] p-3 font-sans">{aiError}</p>}
+                      {aiResult && (
+                        <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />
+                      )}
+                    </div>
+
+                    <div className="lg:col-span-7 p-6 md:p-8 min-h-[360px] flex flex-col">
+                      {!aiResult ? (
+                        <div className="h-full flex-1 flex items-center justify-center text-center py-10">
+                          <div className="max-w-sm">
+                            <div className="w-12 h-12 mx-auto mb-4 border border-[#A8D5C2] bg-[#F5F8F6] flex items-center justify-center">
+                              <MapPin className="w-5 h-5 text-[#0F8F6D]" />
+                            </div>
+                            <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 6 個搜尋方向</p>
+                            <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心值、合理波動區間，以及與預算的落差。</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {criteriaSummary(aiResult.criteria).map(label => (
+                              <span key={label} className="bg-[#EAF3EE] border border-[#A8D5C2] px-2.5 py-1 text-[11px] font-bold text-[#0A6D52] font-sans">{label}</span>
+                            ))}
+                          </div>
+                          <div className={`mb-5 p-3 border flex gap-2 text-xs leading-relaxed font-sans ${aiResult.recommendations.some(item => item.fit === "預算內") ? "border-[#A8D5C2] bg-[#F5F8F6] text-[#3F5147]" : "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"}`}>
+                            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                            <span>{aiResult.reality}</span>
+                          </div>
+                          <RentMarketReports
+                            recommendations={aiResult.recommendations}
+                            criteria={aiResult.criteria}
+                            onApply={(item) => applyRecommendationToCalculator(item, aiResult.criteria)}
+                          />
+                          {appliedNotice && (
+                            <p className="mt-3 border border-[#A8D5C2] bg-[#EAF3EE] px-3 py-2 text-xs font-bold text-[#0A6D52] font-sans" role="status">
+                              {appliedNotice}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </section>
+              )}
 
               {/* Multi-grid calculator interface */}
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start" id="calc-engine-container">
@@ -410,6 +674,22 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         </span>
                       )}
                     </div>
+                    {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
+                      <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
+                        <strong className="text-[#B13818]">待查證參考：</strong>此城市尚未完成當地募集行情的逐項查證，目前僅以鄰近主要城市建立模型參考，不應視為當地實際平均租金。
+                      </div>
+                    )}
+                    {getSelectedDistrictData().verificationStatus === "researched_limited" && (
+                      <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
+                        <strong className="text-[#B13818]">樣本有限：</strong>此區域已查找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
+                      </div>
+                    )}
+                    {getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
+                      <div className="text-[10px] text-[#3F5147] bg-[#EAF3EE] border border-[#A8D5C2] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
+                        <span>資料基準：{getSelectedDistrictData().sourceNote}</span>
+                        <span className="font-mono">{getSelectedDistrictData().sourceDate} · 含管理費／共益費</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Interactive Rent Map heatmap */}
@@ -424,11 +704,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   {/* Step 2: Modifiers checklist */}
                   <div className="border border-[#1A2A22] bg-white p-6 space-y-4">
                     <h4 className="font-bold text-[#0F8F6D] text-sm border-b border-zinc-200 pb-2 font-sans">
-                      {calcMode === "rent" ? "步驟二：勾選想要的附加條件 (租房增減價項目)" : "步驟二：勾選想要的附加條件 (買房折溢價項目)"}
+                      {calcMode === "rent" ? "步驟二：租金加減價與房源篩選" : "步驟二：勾選想要的附加條件 (買房折溢價項目)"}
                     </h4>
                     
                     {calcMode === "rent" ? (
                       <div className="space-y-4 font-sans text-xs">
+                        <div className="bg-[#F5F8F6] border-l-4 border-[#0F8F6D] px-3 py-2.5">
+                          <span className="font-bold text-[#1A2A22]">A. 會影響租金的加減價條件</span>
+                          <p className="mt-1 text-[10px] text-[#66736C]">依地區行情尺度換算後，直接反映在下方月租估算。</p>
+                        </div>
                         {/* Plus Modifiers */}
                         <div className="space-y-2.5">
                           <span className="font-bold text-zinc-800 block text-xs tracking-wider">★ 加價升級條件 (配備新穎或位置佳)：</span>
@@ -512,7 +796,32 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       )}
                                     </div>
                                     <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price)).toLocaleString()} 円 / 月</div>
+                                    {originalIdx === 26 && (
+                                      <div className="mt-1 text-[9px] leading-relaxed text-[#B13818]">租金折讓情境估算；LP 瓦斯使用費可能較高，總居住成本不一定下降。</div>
+                                    )}
                                   </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 border-t border-dashed border-[#DDE3DF] pt-5">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-bold text-[#1A2A22] text-xs tracking-wider">B. 只影響房源數量的篩選條件</span>
+                            <span className="bg-[#F2F8FA] border border-[#D6EAF0] px-2 py-1 text-[9px] font-bold text-[#3F626D]">不直接計入租金</span>
+                          </div>
+                          <p className="text-[10px] leading-relaxed text-[#66736C]">這些條件不直接加入月租，但會即時反映在右側「房源供給與競爭評估」，讓您看見條件疊加後的找房難度。</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            {rentSearchFilterOptions.map(option => {
+                              const isSelected = rentSearchFilters.includes(option.key);
+                              return (
+                                <label key={option.key} className={`p-2.5 border flex items-start gap-2.5 cursor-pointer transition-colors ${isSelected ? "border-[#0F8F6D] bg-[#EAF3EE]" : "border-[#DDE3DF] bg-white hover:border-[#A8D5C2]"}`}>
+                                  <input type="checkbox" checked={isSelected} onChange={() => toggleRentSearchFilter(option.key)} className="mt-0.5 accent-[#0F8F6D]" />
+                                  <span>
+                                    <span className="block font-semibold text-[#1A2A22]">{option.label}</span>
+                                    <span className="mt-0.5 block text-[9px] leading-relaxed text-[#66736C]">{option.note}</span>
+                                  </span>
                                 </label>
                               );
                             })}
@@ -710,6 +1019,62 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             </div>
                           )}
 
+                          {/* Relative listing supply and competition assessment */}
+                          {(() => {
+                            const assessment = getAvailabilityAssessment();
+                            return (
+                              <div className="border-t border-dashed border-zinc-300 pt-4">
+                                <div className="mb-3 flex items-end justify-between gap-3">
+                                  <div>
+                                    <span className="block font-bold text-[#0F8F6D]">房源供給與競爭評估</span>
+                                    <span className="mt-0.5 block text-[10px] leading-relaxed text-[#66736C]">依地區熱度、房型與已勾選條件推估相對找房難度</span>
+                                  </div>
+                                  <span className="shrink-0 border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-1 text-[9px] font-bold text-[#3F5147]">篩選 {assessment.selectedCount}・租金條件 {assessment.modifierCount}</span>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                  <div className="border border-[#DDE3DF] bg-white p-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className="text-[10px] font-bold text-[#66736C]">符合條件的房源量</span>
+                                      <span className={`text-xs font-bold ${assessment.supply.tone}`}>{assessment.supply.label}</span>
+                                    </div>
+                                    <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
+                                      <div className={`h-full bg-[#0F8F6D] ${assessment.supply.width}`} />
+                                    </div>
+                                    <p className="mt-1.5 text-[9px] text-[#8A9590]">長條越長，代表可選房源相對較多</p>
+                                  </div>
+                                  <div className="border border-[#DDE3DF] bg-white p-3">
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className="text-[10px] font-bold text-[#66736C]">熱門物件競爭程度</span>
+                                      <span className={`text-xs font-bold ${assessment.competition.tone}`}>{assessment.competition.label}</span>
+                                    </div>
+                                    <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
+                                      <div className={`h-full bg-[#E94E2B] ${assessment.competition.width}`} />
+                                    </div>
+                                    <p className="mt-1.5 text-[9px] text-[#8A9590]">綜合地區租金、站點熱度與條件稀缺性</p>
+                                  </div>
+                                </div>
+                                {assessment.limitingConditions.length > 0 && (
+                                  <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                                    <span className="mr-1 text-[10px] font-bold text-[#3F5147]">主要限縮條件</span>
+                                    {assessment.limitingConditions.map(condition => (
+                                      <span key={condition} className="border border-[#DCC8A1] bg-[#FFF9ED] px-2 py-1 text-[9px] font-bold text-[#7A5A1F]">{condition}</span>
+                                    ))}
+                                  </div>
+                                )}
+                                {assessment.expandingConditions.length > 0 && (
+                                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                                    <span className="mr-1 text-[10px] font-bold text-[#3F5147]">擴大供給條件</span>
+                                    {assessment.expandingConditions.map(condition => (
+                                      <span key={condition} className="border border-[#A8D5C2] bg-[#EAF3EE] px-2 py-1 text-[9px] font-bold text-[#0A6D52]">{condition}</span>
+                                    ))}
+                                  </div>
+                                )}
+                                <p className="mt-3 border-l-2 border-[#0F8F6D] bg-[#F5F8F6] px-3 py-2.5 text-[10px] leading-relaxed text-[#3F5147]">{assessment.advice}</p>
+                                <p className="mt-2 text-[9px] leading-relaxed text-[#8A9590]">此為條件組合的相對難度評估，不是即時空室數量或成交速度保證。</p>
+                              </div>
+                            );
+                          })()}
+
                           {/* Estimation of Initial Fees */}
                           <div className="pt-4 border-t border-dashed border-zinc-300">
                             <span className="text-[#0F8F6D] font-bold block mb-1">🗂 估算初期費用區間：</span>
@@ -737,15 +1102,19 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <div className="mt-6 pt-2 font-sans">
                           <button 
                             onClick={() => {
-                              const stationPart = calcStation !== "none" ? `（靠近 ${calcStation}站）` : "";
-                              const messageText = `您好，我剛才使用了您的預算計算機，想在 ${calcDistrict}${stationPart} 租房。預估的月租預算大約在 ${getCalculatedRent().toLocaleString()} 日圓左右。請問有推薦的外國人可用房源嗎？`;
+                              const roomTypeLabel = ({ r1: "1R", k1: "1K／1DK", ldk1: "1LDK／2K／2DK", ldk2: "2LDK" } as const)[calcRoomType];
+                              const stationPart = calcStation !== "none" ? `${calcStation}站附近` : "尚未指定車站";
+                              const upgradeConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "plus").map(index => budgetModifiers[index].text).join("、");
+                              const compromiseConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "minus").map(index => budgetModifiers[index].text).join("、");
+                              const searchFilters = rentSearchFilterOptions.filter(option => rentSearchFilters.includes(option.key)).map(option => option.label).join("、");
+                              const messageText = `您好，我剛才使用租金預算計算器，請依以下完整條件協助我找房：\n- 地區：${calcDistrict}\n- 車站：${stationPart}\n- 格局：${roomTypeLabel}\n- 推估月租：¥${getCalculatedRent().toLocaleString()}\n${upgradeConditions ? `- 希望條件：${upgradeConditions}\n` : ""}${compromiseConditions ? `- 可接受的妥協：${compromiseConditions}\n` : ""}${searchFilters ? `- 房源篩選條件：${searchFilters}\n` : ""}請分析這組條件的找房難度、應優先保留與可放寬的項目，並告訴我還需要補充哪些資料。若要推薦即時房源，請先確認我的簽證、工作、收入、入住日期與居住人數，不要自行假設。`;
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}
                             className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
-                            帶入此預算諮詢 AI 房仲 ➔
+                            帶入此條件找 AI 找房顧問 ➔
                           </button>
                         </div>
 
@@ -861,14 +1230,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <div className="mt-6 pt-2 font-sans">
                           <button 
                             onClick={() => {
-                              const messageText = `您好，我剛才使用了您的預算計算機，預估 ${calcDistrict} 買房。物件估計總價 ${(getCalculatedBuyPrice() / 10000).toFixed(0)} 萬日圓左右。我想諮詢關於該區中古大樓與申請房貸的相關流程，請問現在有推薦的合規物件嗎？`;
+                              const buyConditions = calcBuyModifiers.map(index => buyBudgetModifiers[index]?.text).filter(Boolean).join("、");
+                              const messageText = `您好，我剛才使用購屋預算計算器，請依以下完整條件協助我評估：\n- 地區：${calcDistrict}\n- 估計物件總價：${(getCalculatedBuyPrice() / 10000).toFixed(0)} 萬日圓\n- 預計貸款比例：${loanRatio}%\n- 試算利率與年期：${annualRate}%／${loanYears} 年\n${buyConditions ? `- 已選條件：${buyConditions}\n` : ""}請分析這組條件的購屋可行性、貸款與初期費用風險，以及我還需要補充哪些個人與物件資料。`;
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}
                             className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
-                            帶入此預算諮詢 AI 房仲 ➔
+                            帶入此條件找 AI 找房顧問 ➔
                           </button>
                         </div>
 

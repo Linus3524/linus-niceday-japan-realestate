@@ -6,6 +6,7 @@ interface QACardProps {
   question: string;
   answer: string;
   number: number;
+  sources?: Array<{ label: string; url: string }>;
 }
 
 const getSummary = (answer: string) => {
@@ -30,7 +31,7 @@ const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
   return <div className="mt-3 text-zinc-700 leading-relaxed">{renderFormattedText(trimmed)}</div>;
 };
 
-export function QACard({ question, answer, number }: QACardProps) {
+export function QACard({ question, answer, number, sources }: QACardProps) {
   const blocks = answer.split(/\n\s*\n/).filter(Boolean);
   const isLong = answer.length > 260 || blocks.length > 1;
 
@@ -52,6 +53,18 @@ export function QACard({ question, answer, number }: QACardProps) {
           <div className="font-sans text-xs text-justify md:text-sm">
             {blocks.map((block, index) => <AnswerBlock key={index} text={block} />)}
           </div>
+          {sources && sources.length > 0 && (
+            <div className="mt-5 border-t border-zinc-200 pt-3 font-sans">
+              <p className="text-[10px] font-bold tracking-wide text-zinc-500">官方依據</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {sources.map(source => (
+                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#A8D5C2] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#0A6D52] underline-offset-2 hover:underline">
+                    {source.label} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </details>
     </article>

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Send, Bot } from "lucide-react";
+import { Send, ExternalLink } from "lucide-react";
 import { formatMessageText } from "../lib/format";
 import { linusContact } from "../data/rentGuideData";
 
@@ -14,6 +14,7 @@ interface ChatTabProps {
 
 export function ChatTab(props: ChatTabProps) {
   const { chatMessages, chatInput, setChatInput, chatLoading, chatError, handleSendMessage } = props;
+  const lineFriendUrl = `https://line.me/ti/p/~${linusContact.lineId}`;
 
   return (
             <motion.div
@@ -30,7 +31,7 @@ export function ChatTab(props: ChatTabProps) {
                   找房顧問
                 </div>
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-[#0F8F6D]" />
+                  <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
                   <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
@@ -73,6 +74,18 @@ export function ChatTab(props: ChatTabProps) {
                             : "bg-[#fffdfa] border-[#1A2A22] text-zinc-900 shadow-[2px_2px_0px_0px_rgba(26, 42, 34,1)]"
                         }`}>
                           {formatMessageText(msg.text)}
+                          {msg.role === "model" && /line/i.test(msg.text) && msg.text.includes(linusContact.lineId) && (
+                            <a
+                              href={lineFriendUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-4 flex w-fit items-center gap-2 border border-[#0F8F6D] bg-[#0F8F6D] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
+                              aria-label={`開啟 LINE 並加入 ${linusContact.name} 為好友`}
+                            >
+                              <span>LINE：{linusContact.lineId}・一鍵加好友</span>
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -98,7 +111,7 @@ export function ChatTab(props: ChatTabProps) {
                     <div className="p-4 border border-amber-200 bg-amber-50 text-amber-950 text-xs font-sans leading-relaxed" role="alert">
                       <span>AI 顧問目前暫時無法回覆，請稍後再試，或</span>
                       <a
-                        href={`https://line.me/ti/p/~${linusContact.lineId}`}
+                        href={lineFriendUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="ml-1 inline-flex items-center font-bold text-[#087154] underline underline-offset-2 hover:text-[#05A847]"

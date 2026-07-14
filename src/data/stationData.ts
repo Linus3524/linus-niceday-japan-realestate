@@ -858,5 +858,40 @@ export const districtStations: Record<string, StationInfo[]> = {
     { name: "志紀", type: "regular", lines: ["JR大和路線各停"] },
     { name: "河內山本", type: "minor", lines: ["近鐵大阪線", "近鐵信貴線各停"] },
     { name: "高安", type: "minor", lines: ["近鐵大阪線各停車輛基地"] }
+  ],
+  "札幌市（市平均）": [
+    { name: "札幌", type: "major", lines: ["JR函館本線", "JR千歲線", "札幌地下鐵南北線", "札幌地下鐵東豐線"] },
+    { name: "大通", type: "major", lines: ["札幌地下鐵南北線", "東西線", "東豐線"] },
+    { name: "琴似", type: "regular", lines: ["JR函館本線", "札幌地下鐵東西線"] }
+  ],
+  "仙台市（市平均）": [
+    { name: "仙台", type: "major", lines: ["JR東北本線", "JR仙石線", "仙台地下鐵南北線", "東西線"] },
+    { name: "長町", type: "regular", lines: ["JR東北本線", "仙台地下鐵南北線"] },
+    { name: "泉中央", type: "regular", lines: ["仙台地下鐵南北線"] }
+  ],
+  "名古屋市（市平均）": [
+    { name: "名古屋", type: "major", lines: ["JR東海道本線", "JR中央本線", "名古屋地下鐵東山線", "櫻通線", "新幹線"] },
+    { name: "金山", type: "major", lines: ["JR東海道本線", "名鐵名古屋本線", "名城線", "名港線"] },
+    { name: "今池", type: "regular", lines: ["名古屋地下鐵東山線", "櫻通線"] }
+  ],
+  "京都市（市平均）": [
+    { name: "京都", type: "major", lines: ["JR京都線", "JR奈良線", "京都地下鐵烏丸線", "近鐵京都線", "新幹線"] },
+    { name: "烏丸御池", type: "major", lines: ["京都地下鐵烏丸線", "東西線"] },
+    { name: "山科", type: "regular", lines: ["JR琵琶湖線", "京都地下鐵東西線", "京阪京津線"] }
+  ],
+  "神戶市（市平均）": [
+    { name: "三之宮", type: "major", lines: ["JR神戶線", "阪急神戶線", "阪神本線", "神戶地下鐵西神山手線"] },
+    { name: "神戶", type: "major", lines: ["JR神戶線", "神戶高速線"] },
+    { name: "新長田", type: "regular", lines: ["JR神戶線", "神戶地下鐵西神山手線", "海岸線"] }
+  ],
+  "廣島市（市平均）": [
+    { name: "廣島", type: "major", lines: ["JR山陽本線", "JR藝備線", "廣島電鐵", "新幹線"] },
+    { name: "橫川", type: "regular", lines: ["JR山陽本線", "JR可部線", "廣島電鐵"] },
+    { name: "西廣島", type: "regular", lines: ["JR山陽本線", "廣島電鐵宮島線"] }
+  ],
+  "福岡市（市平均）": [
+    { name: "博多", type: "major", lines: ["JR鹿兒島本線", "福岡地下鐵機場線", "七隈線", "新幹線"] },
+    { name: "天神", type: "major", lines: ["福岡地下鐵機場線", "西鐵天神大牟田線"] },
+    { name: "西新", type: "regular", lines: ["福岡地下鐵機場線"] }
   ]
 };
