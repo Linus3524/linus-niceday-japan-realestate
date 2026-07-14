@@ -2209,7 +2209,7 @@ export default function App() {
                     {calcMode === "rent" ? (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          LINUS 獨家估計房租預算：
+                          2026市場推估房租預算：
                         </h4>
                         
                         {/* The Big Number */}
@@ -2328,11 +2328,16 @@ export default function App() {
                             帶入此預算諮詢 AI 房仲 ➔
                           </button>
                         </div>
+
+                        {/* Rent Disclaimer */}
+                        <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
+                          * 免責與安全提示：本系統之租金推估結果，係結合 2026 年東京租賃大數據與常規演算法計算得出之合理市場中位數參考值。實際租金與管理費，將依物件之建材結構、座向、設備規格，以及個別房東與管理公司之審查標準等實際狀況而有所差異，請以最終簽約條件為準。
+                        </div>
                       </>
                     ) : (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          LINUS 獨家估計物件總價：
+                          2026市場推估物件總價：
                         </h4>
                         
                         {/* The Big Number */}
@@ -2434,6 +2439,11 @@ export default function App() {
                           >
                             帶入此預算諮詢 AI 房仲 ➔
                           </button>
+                        </div>
+
+                        {/* Buy Disclaimer */}
+                        <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
+                          * 免責與安全提示：本系統之物件總價與貸款試算結果，係結合 2026 年日本中古公寓實價登錄大數據與常規貸款規格計算得出之參考值。實際成交價格、過戶規費，及銀行放款額度、利率與審查條件，將依物件個別狀況與金融機構之審核結果為準。
                         </div>
                       </>
                     )}
@@ -2638,10 +2648,10 @@ export default function App() {
               <div className="border border-[#1A2A22] bg-white p-6" id="contact-intro">
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
                   <Smile className="w-5 h-5 text-[#0F8F6D]" />
-                  <span>東京日和 精英華人房仲團隊為您服務</span>
+                  <span>世嘉 專業台灣仲介為您服務</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify font-sans">
-                  租屋知識只是起點。若您已經準備好來日本大展身手，或者對特定的東京都房源感到好奇、想進行詳細內見(看房)，歡迎直接聯繫 Linus 團隊。我們擁有第一手未公開物件、不問國籍審查物件，並提供「全中文、台籍仲介」一對一完整服務。
+                  租屋與買房知識只是起點。若您已經準備好來日本體驗生活，或者對特定的東京都房源感到好奇、想進行詳細內見(看房)，歡迎直接聯繫 Linus。我們擁有第一手未公開物件、不問國籍審查物件，並提供「全中文、台灣仲介」一對一完整服務。
                 </p>
               </div>
 
@@ -2656,8 +2666,10 @@ export default function App() {
                     <div className="space-y-5 mt-2 relative z-10">
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
-                        <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
-                        <div className="text-xs font-bold text-[#0F8F6D] font-sans">{linusContact.title}</div>
+                        <div className="flex items-baseline gap-2">
+                          <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
+                          <span className="text-xs font-bold text-[#0F8F6D] font-sans">營業係長</span>
+                        </div>
                       </div>
 
                       <div className="space-y-3.5 text-xs text-zinc-700 font-sans border-t border-zinc-200 pt-4">
@@ -2713,10 +2725,22 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div className="text-[10px] text-zinc-400 font-sans pt-3 border-t border-dashed border-zinc-300 leading-relaxed mt-4">
-                        執照號碼：{linusContact.licenseNo}
-                        <br />
-                        地址：{linusContact.address}
+                      <div className="text-[10px] text-zinc-600 font-sans pt-3 border-t border-dashed border-[#1A2A22]/20 leading-relaxed mt-4 space-y-1">
+                        <div className="font-bold text-[#0F8F6D] mb-1">
+                          在日台灣人仲介 ╳ 租屋買房一條龍 🇹🇼
+                        </div>
+                        <div className="flex items-start gap-1">
+                          <span className="text-[#0F8F6D] shrink-0">✔️</span>
+                          <span>誠實仲介 ╳ 專業把關，找我介紹物件最放心！</span>
+                        </div>
+                        <div className="flex items-start gap-1">
+                          <span className="text-[#0F8F6D] shrink-0">✔️</span>
+                          <span>打工度假租房成功率 100% / 協助水電網路開通</span>
+                        </div>
+                        <div className="flex items-start gap-1">
+                          <span className="text-[#0F8F6D] shrink-0">✔️</span>
+                          <span>買房貸款協助、資料準備與總價議價完整支援</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2791,7 +2815,7 @@ export default function App() {
                       <div className="space-y-2">
                         <span className="font-bold text-[#0F8F6D] block">📋 諮詢租房時建議先準備好以下資料：</span>
                         <p className="text-zinc-600 leading-normal text-justify">
-                          為了讓 Linus 能更快速地幫您向管理公司卡位優質好房，歡迎直接複製並填寫以下諮詢表傳送給 Linus 喔！
+                          為了讓 Linus 能更快速地協助您媒合合適房源並向管理公司諮詢，歡迎直接複製並填寫以下諮詢表傳送給 Linus 喔！
                         </p>
                         
                         <div className="bg-[#1A2A22] text-white p-4 text-[11px] leading-relaxed select-all border border-[#1A2A22] font-mono whitespace-pre-line">

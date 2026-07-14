@@ -585,7 +585,7 @@ export const otherQA: QAItem[] = [
 
 export const linusContact = {
   name: "Linus Chang (張先生)",
-  title: "株式會社世嘉 Seika 房仲顧問",
+  title: "株式會社世嘉 Seika 營業係長",
   lineId: "linus0922",
   wechatId: "linus352410",
   threads: "https://www.threads.net/@linus3524",
@@ -596,7 +596,7 @@ export const linusContact = {
   licenseNo: "東京都知事免許（１）第１１１９４０号",
   address: "東京都千代田區東神田 ２−６−２ タカラビル ９ 階",
   workingHours: "11:00～18:00 (每週水、日曜日定休)",
-  phone: "03-5829-5881",
+  phone: "090-7222-5965",
   stations: [
     "JR山手線／秋葉原駅 徒歩11分",
     "JR山手線／神田駅 徒歩約13分",
