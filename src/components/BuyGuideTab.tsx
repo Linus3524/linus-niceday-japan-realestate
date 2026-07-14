@@ -72,7 +72,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       <span>需要直接進行日本物件配對？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      直接聯絡 Linus 團隊，我們將為您在東京日和內部篩選未公開的優質房源。
+                      直接聯絡 Linus，我們將為您在尋找在網上公開或未公開的獨家優質房源。
                     </p>
                     <button 
                       onClick={() => handleTabChange("contact")}

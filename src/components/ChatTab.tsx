@@ -54,7 +54,7 @@ export function ChatTab(props: ChatTabProps) {
                           ? "bg-zinc-800 text-[#F5F8F6] border-zinc-800" 
                           : "bg-[#0F8F6D] text-white border-[#0F8F6D]"
                       }`}>
-                        {msg.role === "user" ? "客" : "林"}
+                        {msg.role === "user" ? "客" : "L"}
                       </div>
                       
                       <div className="space-y-1.5">
@@ -81,7 +81,7 @@ export function ChatTab(props: ChatTabProps) {
                   {chatLoading && (
                     <div className="flex gap-3.5 max-w-[80%] mr-auto">
                       <div className="w-8 h-8 flex items-center justify-center bg-[#0F8F6D] text-white border border-[#0F8F6D] font-sans text-xs shrink-0 animate-pulse">
-                        林
+                        L
                       </div>
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-400 font-sans">Linus 正在調閱日本不動產知識庫...</div>
