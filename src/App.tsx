@@ -194,6 +194,31 @@ const isBuyModifierDisabled = (index: number, selected: number[], district: stri
   );
 };
 
+const renderFormattedText = (text: string) => {
+  if (!text) return null;
+  const lines = text.split("\n");
+  return lines.map((line, index) => {
+    const trimmed = line.trim();
+    // Match bullet points like •, -, *, or numbered lists like 1., 2.
+    const match = trimmed.match(/^(\d+\.|[•\-\*])\s+(.*)/);
+    if (match) {
+      const bullet = match[1];
+      const content = match[2];
+      return (
+        <div key={index} className="flex items-start gap-1.5 pl-4 mt-1">
+          <span className="shrink-0 font-bold text-[#0F8F6D] font-sans">{bullet}</span>
+          <span className="flex-grow">{content}</span>
+        </div>
+      );
+    }
+    return (
+      <div key={index} className={line === "" ? "h-3" : (index > 0 ? "mt-1.5" : "")}>
+        {line}
+      </div>
+    );
+  });
+};
+
 export default function App() {
   // Navigation tabs: 'cards' (租屋知識圖卡), 'buyHouse' (買房知識大補帖), 'calculator' (預算估算), 'chat' (AI問答), 'contact' (聯絡Linus)
   const [activeTab, setActiveTab] = useState<"cards" | "buyHouse" | "calculator" | "chat" | "contact">("cards");
@@ -692,7 +717,7 @@ export default function App() {
         <div className={`max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 transition-all duration-300 ${scrolled ? "py-2" : "py-6"}`}>
           <div className="flex items-start gap-4">
             {/* Hanko Stamp Style Logo */}
-            <div className={`border-2 border-[#0F8F6D] text-[#0F8F6D] font-bold text-center leading-tight tracking-widest bg-white select-none shrink-0 transition-all duration-300 ${scrolled ? "px-1.5 py-1 text-xs" : "px-2 py-3 text-lg"}`} id="hanko-logo">
+            <div className={`border-2 border-[#E94E2B] text-[#E94E2B] font-bold text-center leading-tight tracking-widest bg-white select-none shrink-0 transition-all duration-300 ${scrolled ? "px-1.5 py-1 text-xs" : "px-2 py-3 text-lg"}`} id="hanko-logo">
               東京
               <br />
               日和
@@ -711,7 +736,7 @@ export default function App() {
           
           {/* Quick Line contact top bar */}
           <div className={`flex items-center gap-4 border-l-0 md:border-l border-zinc-200 md:pl-6 py-1 w-full md:w-auto transition-all duration-300 ${scrolled ? "hidden md:flex" : "flex flex-col items-end gap-1.5 text-right font-sans"}`}>
-            {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider">張係長 Linus 線上諮詢</div>}
+            {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider">Linus 線上諮詢</div>}
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold bg-[#f4f2ee] px-2.5 py-1 text-zinc-800 border border-zinc-300">LINE ID: {linusContact.lineId}</span>
               <button 
@@ -732,7 +757,7 @@ export default function App() {
               <button 
                 onClick={() => handleTabChange("cards")}
                 className={`py-3 md:py-4 text-xs md:text-sm font-medium tracking-wide border-r border-[#1A2A22] first:border-l hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "cards" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
+                  activeTab === "cards" ? "bg-white font-bold text-[#1F5A8F]" : "text-zinc-700"
                 }`}
                 id="nav-tab-cards"
               >
@@ -744,7 +769,7 @@ export default function App() {
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
                   CARDS
                 </span>
-                {activeTab === "cards" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
+                {activeTab === "cards" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1F5A8F]" />}
               </button>
 
               <button 
@@ -768,7 +793,7 @@ export default function App() {
               <button 
                 onClick={() => handleTabChange("calculator")}
                 className={`py-3 md:py-4 text-xs md:text-sm font-medium tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "calculator" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
+                  activeTab === "calculator" ? "bg-white font-bold text-[#8A6B2F]" : "text-zinc-700"
                 }`}
                 id="nav-tab-calc"
               >
@@ -780,31 +805,31 @@ export default function App() {
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
                   CALC
                 </span>
-                {activeTab === "calculator" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
+                {activeTab === "calculator" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#8A6B2F]" />}
               </button>
 
               <button 
                 onClick={() => handleTabChange("chat")}
                 className={`py-3 md:py-4 text-xs md:text-sm font-medium tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "chat" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
+                  activeTab === "chat" ? "bg-white font-bold text-[#5E3B9C]" : "text-zinc-700"
                 }`}
                 id="nav-tab-chat"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Sparkles className="w-4 h-4 shrink-0 text-[#0F8F6D]" />
+                  <Sparkles className="w-4 h-4 shrink-0 text-[#5E3B9C]" />
                   <span>AI 智能問答</span>
                 </div>
                 {/* Tooltip */}
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
                   CHAT
                 </span>
-                {activeTab === "chat" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
+                {activeTab === "chat" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5E3B9C]" />}
               </button>
 
               <button 
                 onClick={() => handleTabChange("contact")}
                 className={`py-3 md:py-4 text-xs md:text-sm font-medium tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "contact" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
+                  activeTab === "contact" ? "bg-white font-bold text-[#B13818]" : "text-zinc-700"
                 }`}
                 id="nav-tab-contact"
               >
@@ -816,7 +841,7 @@ export default function App() {
                 <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
                   CONTACT
                 </span>
-                {activeTab === "contact" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
+                {activeTab === "contact" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B13818]" />}
               </button>
             </div>
           </div>
@@ -841,12 +866,12 @@ export default function App() {
               {/* Preface Section */}
               <div className="border border-[#1A2A22] bg-white p-6 md:p-8 relative" id="cards-preface">
                 {/* Traditional Japanese Ribbon Flag decoration */}
-                <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
+                <div className="absolute top-0 right-8 bg-[#E94E2B] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
                   前言 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
                   <span>致所有來日本打拼的人</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 營業係長</span>
+                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 房仲顧問</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房知識大補帖」。
@@ -982,7 +1007,7 @@ export default function App() {
                           <div className="flex justify-between items-start gap-2 mb-2">
                             <h4 className="font-bold text-base text-[#1A2A22]">{fee.name}</h4>
                             {fee.jpName && (
-                              <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{fee.jpName}</span>
+                              <span className="text-xs bg-[#D6EAF0] text-[#1F5A8F] px-1.5 py-0.5 border border-[#a3d4e5] font-sans font-medium">{fee.jpName}</span>
                             )}
                           </div>
                           <p className="text-sm text-zinc-700 leading-relaxed line-clamp-3">
@@ -991,7 +1016,7 @@ export default function App() {
                         </div>
                         
                         {fee.warning && (
-                          <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200 text-xs text-[#0F8F6D] line-clamp-1 font-sans">
+                          <div className="mt-3 pt-2.5 border-t border-dashed border-[#FBDFD2] bg-[#fffaf8] px-2 py-1 text-xs text-[#E94E2B] line-clamp-1 font-sans">
                             {fee.warning}
                           </div>
                         )}
@@ -1024,9 +1049,7 @@ export default function App() {
                           </h4>
                           <span className="text-xs text-zinc-400 font-sans">專有名詞</span>
                         </div>
-                        <p className="text-sm text-zinc-700 leading-relaxed mb-4">
-                          {term.description}
-                        </p>
+                        <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
                         
                         {term.details && term.details.length > 0 && (
                           <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
@@ -1055,7 +1078,7 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
                     <div className="bg-white p-5 border border-[#1A2A22] relative">
                       <div className="absolute top-0 right-0 bg-[#1A2A22] text-white px-2 py-0.5 font-bold">海外審查</div>
-                      <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
+                      <h4 className="font-bold text-sm text-[#0A6D52] mb-2 flex items-center gap-1.5">
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
                       <p className="text-zinc-600 leading-relaxed text-justify mb-2">
@@ -1068,8 +1091,8 @@ export default function App() {
                     </div>
 
                     <div className="bg-white p-5 border border-[#1A2A22] relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold">境內審查</div>
-                      <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
+                      <div className="absolute top-0 right-0 bg-[#FBDFD2] text-[#B13818] px-2 py-0.5 font-bold">境內審查</div>
+                      <h4 className="font-bold text-sm text-[#0A6D52] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 抵達日本境內申請流程</span>
                       </h4>
                       <p className="text-zinc-600 leading-relaxed text-justify mb-2">
@@ -1165,22 +1188,20 @@ export default function App() {
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
                           {/* Circle node indicator */}
-                          <div className="absolute -left-[31px] top-1.5 w-4 h-4 bg-white border-2 border-[#0F8F6D] group-hover:bg-[#0F8F6D] transition-colors" />
+                          <div className="absolute -left-[31px] top-1.5 w-4 h-4 bg-white border-2 border-[#1F5A8F] group-hover:bg-[#1F5A8F] transition-colors" />
                           
                           <div className="flex flex-col md:flex-row justify-between items-start gap-2 mb-1.5">
-                            <h5 className="font-bold text-sm text-[#0F8F6D]">{step.name}</h5>
-                            <span className="text-xs bg-[#F5F8F6] border border-zinc-300 text-zinc-600 px-2 py-0.5 font-sans shrink-0">
+                            <h5 className="font-bold text-sm text-[#1F5A8F]">{step.name}</h5>
+                            <span className="text-xs bg-[#D6EAF0] text-[#1F5A8F] border border-[#b8dfeb] px-2 py-0.5 font-sans shrink-0">
                               時程估計: {step.duration}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-700 leading-relaxed text-justify font-sans">
-                            {step.description}
-                          </p>
+                          <div className="text-xs text-zinc-700 leading-relaxed text-justify font-sans">{renderFormattedText(step.description)}</div>
                         </div>
                       ))}
                     </div>
                     
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-6 font-sans">
+                    <div className="bg-[#EAF3EE] p-4 border border-[#A8D5C2] text-xs text-[#3F5147] leading-relaxed mt-6 font-sans">
                       <span className="font-bold text-[#0F8F6D]">★ Linus 實務小提醒：</span>
                       在日本不看房直接找房，建議至少在預計入住日前 1.5 個月前著手挑選；如果要安排親自到場看房，則建議在預計入居日前 1 個月內開始，因為日本房源基本上是無法付訂金保留的，一上架便會迅速成交。
                     </div>
@@ -1199,16 +1220,14 @@ export default function App() {
                     {filtered.qa.map((qa, idx) => (
                       <div key={idx} className="border border-[#1A2A22] bg-white p-6">
                         <div className="flex items-start gap-3 mb-3">
-                          <span className="bg-[#0F8F6D] text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
+                          <span className="bg-[#D6EAF0] text-[#1F5A8F] font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
                           <h4 className="text-sm md:text-base font-bold text-[#1A2A22]">
                             {qa.question}
                           </h4>
                         </div>
                         <div className="flex items-start gap-3 pl-8">
-                          <div className="bg-zinc-800 text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</div>
-                          <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">
-                            {qa.answer}
-                          </div>
+                          <div className="bg-[#EAF3EE] text-[#0A6D52] font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</div>
+                          <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">{renderFormattedText(qa.answer)}</div>
                         </div>
                       </div>
                     ))}
@@ -1237,7 +1256,7 @@ export default function App() {
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
                   <span>日本買房置產大補帖</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 營業係長</span>
+                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus 房仲顧問</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1 font-serif">
                   您好，我是 Linus。近年來隨著日本經濟回溫與日圓匯率相對低檔，許多華人朋友除了在日租屋，也開始規劃「買房自住」或「置產投資民宿與出租套房」。在日本買房雖然不限國籍與簽證，但其產權登記事項、銀行貸款條件、以及東京都各區對民泊民宿（Airbnb）的嚴格規範，實務上細節繁瑣，稍有不慎就會踩到高利息或無法營業的法規地雷。
@@ -1270,7 +1289,7 @@ export default function App() {
                       <span>需要直接進行日本物件配對？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      直接聯絡張係長 Linus 團隊，我們將為您在東京日和內部篩選未公開的優質房源。
+                      直接聯絡 Linus 團隊，我們將為您在東京日和內部篩選未公開的優質房源。
                     </p>
                     <button 
                       onClick={() => handleTabChange("contact")}
@@ -1352,7 +1371,7 @@ export default function App() {
                               <div className="flex justify-between items-start gap-2 mb-2">
                                 <h4 className="font-bold text-sm md:text-base text-[#1A2A22]">{term.name}</h4>
                                 {term.jpName && (
-                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
+                                  <span className="text-[10px] md:text-xs bg-[#FBDFD2] text-[#B13818] px-1.5 py-0.5 border border-[#f7c8b2] font-sans font-medium">{term.jpName}</span>
                                 )}
                               </div>
                               <p className="text-xs md:text-sm text-zinc-700 leading-relaxed line-clamp-3">
@@ -1361,7 +1380,7 @@ export default function App() {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>圖紙專有名詞</span>
-                              <span className="text-[#0F8F6D] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
+                              <span className="text-[#1F5A8F] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
                             </div>
                           </div>
                         ))}
@@ -1387,7 +1406,7 @@ export default function App() {
                               <div className="flex justify-between items-start gap-2 mb-2">
                                 <h4 className="font-bold text-sm md:text-base text-[#1A2A22]">{term.name}</h4>
                                 {term.jpName && (
-                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
+                                  <span className="text-[10px] md:text-xs bg-[#FBDFD2] text-[#B13818] px-1.5 py-0.5 border border-[#f7c8b2] font-sans font-medium">{term.jpName}</span>
                                 )}
                               </div>
                               <p className="text-xs md:text-sm text-zinc-700 leading-relaxed line-clamp-3">
@@ -1396,7 +1415,7 @@ export default function App() {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>規費與交易術語</span>
-                              <span className="text-[#0F8F6D] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
+                              <span className="text-[#1F5A8F] hover:underline flex items-center gap-0.5">點擊詳情 ❀</span>
                             </div>
                           </div>
                         ))}
@@ -1513,7 +1532,7 @@ export default function App() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#0F8F6D] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                        <h4 className="font-bold text-sm text-[#0A6D52] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
                           <span className="w-2 h-2 bg-[#0F8F6D]"></span>
                           <span>{signingDocuments.residenceGroup.title}</span>
                         </h4>
@@ -1622,7 +1641,7 @@ export default function App() {
                         <div key={idx} className="border border-zinc-200 bg-[#F5F8F6] p-5 flex flex-col justify-between hover:border-[#1A2A22] transition-colors">
                           <div className="space-y-4">
                             <div className="border-b border-zinc-300 pb-2">
-                              <h4 className="font-bold text-sm text-[#0F8F6D] leading-normal">{bank.name}</h4>
+                              <h4 className="font-bold text-sm text-[#0A6D52] leading-normal">{bank.name}</h4>
                               <div className="text-lg font-extrabold text-[#1A2A22] mt-1">{bank.rate}</div>
                             </div>
                             
@@ -1715,7 +1734,7 @@ export default function App() {
                               <span className="font-bold text-[#0F8F6D] shrink-0 text-sm font-sans">0{sIdx+1}</span>
                               <div className="space-y-0.5">
                                 <strong className="text-zinc-800 text-[13px]">{step.name}</strong>
-                                <p className="text-zinc-500 leading-relaxed text-justify">{step.desc}</p>
+                                <div className="text-zinc-500 leading-relaxed text-justify">{renderFormattedText(step.desc)}</div>
                               </div>
                             </div>
                           ))}
@@ -1764,16 +1783,14 @@ export default function App() {
                       {buyFiltered.qa.map((qa, idx) => (
                         <div key={idx} className="border border-[#1A2A22] bg-white p-6">
                           <div className="flex items-start gap-3 mb-3">
-                            <span className="bg-[#0F8F6D] text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
+                            <span className="bg-[#D6EAF0] text-[#1F5A8F] font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">Q</span>
                             <h4 className="text-sm md:text-base font-bold text-[#1A2A22] font-serif">
                               {qa.question}
                             </h4>
                           </div>
                           <div className="flex items-start gap-3 pl-8">
-                            <span className="bg-zinc-800 text-white font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</span>
-                            <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">
-                              {qa.answer}
-                            </div>
+                            <span className="bg-[#EAF3EE] text-[#0A6D52] font-sans text-xs font-bold w-5 h-5 flex items-center justify-center shrink-0">A</span>
+                            <div className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify whitespace-pre-line font-sans">{renderFormattedText(qa.answer)}</div>
                           </div>
                         </div>
                       ))}
@@ -2427,9 +2444,9 @@ export default function App() {
                     <h5 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5">
                       <Smile className="w-4.5 h-4.5 text-[#0F8F6D]" />
                       {calcMode === "rent" ? (
-                        <span>Linus 係長實務租房提示</span>
+                        <span>Linus 實務租房提示</span>
                       ) : (
-                        <span>Linus 係長實務置產提示</span>
+                        <span>Linus 實務置產提示</span>
                       )}
                     </h5>
                     <div className="text-xs text-zinc-600 space-y-2.5 font-sans leading-relaxed">
@@ -2488,7 +2505,7 @@ export default function App() {
                 </div>
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-[#0F8F6D]" />
-                  <span>Linus 營業係長 ╳ 24小時 AI 智能租屋助手</span>
+                  <span>Linus ╳ 24小時 AI 智能租屋助手</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
                   本系統已將日本租房大補帖（敷金、禮金、保證更新料、審查步驟、東京23區行情增減等規則）完整整合至 AI 智能房仲。歡迎直接向他提問！您可以請他幫您評估打工度假所需的存款餘額、或是解釋退租回復原狀的爭議、甚至是介紹東京合租的限制。
@@ -2520,7 +2537,7 @@ export default function App() {
                         <div className={`text-[10px] text-zinc-400 font-sans ${
                           msg.role === "user" ? "text-right" : "text-left"
                         }`}>
-                          {msg.role === "user" ? "您的提問" : "Linus 張係長"}
+                          {msg.role === "user" ? "您的提問" : "Linus"}
                         </div>
                         
                         {/* Message content text */}
@@ -2940,15 +2957,13 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3">
-                  <p className="text-sm text-zinc-800 leading-relaxed text-justify">
-                    {selectedFee.description}
-                  </p>
+                  <div className="text-sm text-zinc-800 leading-relaxed text-justify">{renderFormattedText(selectedFee.description)}</div>
 
                   {selectedFee.warning && (
                     <div className="bg-red-50 border-l-4 border-[#0F8F6D] p-3 text-xs text-[#0F8F6D] leading-relaxed font-sans">
                       <strong>⚠️ 注意及風險提醒：</strong>
                       <br />
-                      {selectedFee.warning}
+                      renderFormattedText(selectedFee.warning)
                     </div>
                   )}
 
@@ -3014,7 +3029,7 @@ export default function App() {
 
           <div className="bg-[#F5F8F6] border border-zinc-200 p-4 text-[10px] text-zinc-500 leading-relaxed text-justify font-sans">
             <p>
-              以上網站及圖卡所有內容均為 <strong>株式会社世嘉 Seika 營業係長 Linus Chang</strong> 個人實務撰寫，未經授權許可請勿以任何形式轉載、拷貝或做其他商業用途。上述資訊會不定期根據日本國土交通省法規、東京租賃紛爭防止條例與保證會社最新制度更新。如有刊登、翻譯錯誤或有圖片授權疑慮，請致信聯絡至 r352410@gmail.com 將盡速於一個工作日內處理。
+              以上網站及圖卡所有內容均為 <strong>株式会社世嘉 Seika 房仲顧問 Linus Chang</strong> 個人實務撰寫，未經授權許可請勿以任何形式轉載、拷貝或做其他商業用途。上述資訊會不定期根據日本國土交通省法規、東京租賃紛爭防止條例與保證會社最新制度更新。如有刊登、翻譯錯誤或有圖片授權疑慮，請致信聯絡至 r352410@gmail.com 將盡速於一個工作日內處理。
             </p>
           </div>
         </div>

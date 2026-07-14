@@ -585,7 +585,7 @@ export const otherQA: QAItem[] = [
 
 export const linusContact = {
   name: "Linus Chang (張先生)",
-  title: "株式會社世嘉 Seika 營業係長",
+  title: "株式會社世嘉 Seika 房仲顧問",
   lineId: "linus0922",
   wechatId: "linus352410",
   threads: "https://www.threads.net/@linus3524",
