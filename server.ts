@@ -7,10 +7,31 @@ import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoan
 
 // Initialize express app
 const app = express();
-const PORT = 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 
 // Body parser
 app.use(express.json());
+
+// Simple in-memory per-IP rate limit for /api/chat to protect the Gemini quota
+const RATE_LIMIT = 10; // requests per window
+const RATE_WINDOW_MS = 60_000;
+const MAX_MESSAGE_CHARS = 1000;
+const MAX_HISTORY_TURNS = 20;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(ip);
+  if (!bucket || now > bucket.resetAt) {
+    if (rateBuckets.size > 5000) {
+      for (const [k, v] of rateBuckets) if (now > v.resetAt) rateBuckets.delete(k);
+    }
+    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  bucket.count++;
+  return bucket.count > RATE_LIMIT;
+}
 
 // Lazy-initialized Gemini Client to prevent crash on startup if GEMINI_API_KEY is not defined
 let aiClient: GoogleGenAI | null = null;
@@ -94,10 +115,18 @@ app.get("/api/health", (req, res) => {
 // Q&A and Chat endpoint
 app.post("/api/chat", async (req, res) => {
   try {
+    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ error: "訊息傳送太頻繁囉!請稍等一分鐘再試,或直接加 Linus 的 Line (linus0922) 聊聊 ❀" });
+    }
+
     const { message, history } = req.body;
-    
-    if (!message) {
+
+    if (!message || typeof message !== "string") {
       return res.status(400).json({ error: "Message is required." });
+    }
+    if (message.length > MAX_MESSAGE_CHARS) {
+      return res.status(400).json({ error: `訊息太長囉,請將問題精簡到 ${MAX_MESSAGE_CHARS} 字以內再送出 ❀` });
     }
 
     // Lazy load the AI client
@@ -107,10 +136,10 @@ app.post("/api/chat", async (req, res) => {
     // history structure: Array of { role: 'user' | 'model', parts: [{ text: string }] }
     const chatContents = [];
     if (history && Array.isArray(history)) {
-      for (const turn of history) {
+      for (const turn of history.slice(-MAX_HISTORY_TURNS)) {
         chatContents.push({
-          role: turn.role,
-          parts: [{ text: turn.text || turn.content || "" }]
+          role: turn.role === "model" ? "model" : "user",
+          parts: [{ text: String(turn.text || turn.content || "").slice(0, MAX_MESSAGE_CHARS * 4) }]
         });
       }
     }

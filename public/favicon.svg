@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0F8F6D"/>
+  <rect x="8" y="8" width="48" height="48" rx="6" fill="none" stroke="#F5F8F6" stroke-width="3"/>
+  <text x="32" y="30" font-family="'Hiragino Mincho ProN','Noto Serif TC',serif" font-size="20" font-weight="bold" fill="#F5F8F6" text-anchor="middle">東京</text>
+  <text x="32" y="52" font-family="'Hiragino Mincho ProN','Noto Serif TC',serif" font-size="20" font-weight="bold" fill="#F5F8F6" text-anchor="middle">日和</text>
+</svg>
