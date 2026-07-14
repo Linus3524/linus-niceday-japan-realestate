@@ -727,7 +727,7 @@ export default function App() {
                 <span className="text-xs bg-[#1A2A22] text-[#F5F8F6] px-1.5 py-0.5 font-sans uppercase tracking-widest select-none">Linus 住好日</span>
                 <span className="text-xs border border-[#0F8F6D] text-[#0F8F6D] px-1.5 py-0.5 select-none font-sans">東京2026新版</span>
               </div>
-              <h1 className={`font-bold tracking-tight text-[#1A2A22] transition-all duration-300 ${scrolled ? "text-xl mt-0.5" : "text-3xl mt-1"}`}>日本租房知識大補帖</h1>
+              <h1 className={`font-bold tracking-tight text-[#1A2A22] transition-all duration-300 ${scrolled ? "text-xl mt-0.5" : "text-3xl mt-1"}`}>日本租房買賣知識大補帖</h1>
               <p className={`text-xs text-zinc-600 mt-1 font-sans transition-all duration-300 ${scrolled ? "hidden md:block opacity-75" : "text-sm block"}`}>
                 第一次來日本者的最佳指南 ╳ 實務預算精算 ╳ AI 智能問答
               </p>
@@ -874,7 +874,7 @@ export default function App() {
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
-                  大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房知識大補帖」。
+                  大家好，我是 Linus，目前在日本東京從事不動產仲介工作。隨著疫情結束，加上日圓匯率的優勢，越來越多台灣與華人朋友選擇來到日本留學、打工度假或就職。為了協助大家在初來乍到之際，能用最短時間掌握日本租房市場的特殊潛規則與避開昂貴收費的陷阱，我精心整理了這份「日本租房買賣知識大補帖」。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
                   日本的租房制度有許多與台灣非常不同的一次性費用（如禮金、保證會社費用、換鑰匙費等），稍有不慎可能在初期就要支付大筆冤枉錢。希望本站的分類卡片、即時算命預算計算機與 AI 智能諮詢能幫到您。祝您在日本的生活一切順利，順利成家！❀
@@ -2963,7 +2963,7 @@ export default function App() {
                     <div className="bg-red-50 border-l-4 border-[#0F8F6D] p-3 text-xs text-[#0F8F6D] leading-relaxed font-sans">
                       <strong>⚠️ 注意及風險提醒：</strong>
                       <br />
-                      renderFormattedText(selectedFee.warning)
+                      {renderFormattedText(selectedFee.warning)}
                     </div>
                   )}
 
@@ -3010,7 +3010,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div className="space-y-1">
-              <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租房知識大補帖</strong>
+              <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租房買賣知識大補帖</strong>
               <p className="text-xs text-zinc-500 font-sans">
                 版權所有 © 2026 LINUS Nice Day Japan All Rights Reserved. 株式会社世嘉 Seika (東京都知事免許第111940号)
               </p>
