@@ -588,7 +588,7 @@ export const linusContact = {
   title: "株式會社世嘉 Seika 營業係長",
   lineId: "linus0922",
   wechatId: "linus352410",
-  threads: "https://www.threads.net/@linus3524",
+  threads: "https://www.threads.com/@linus3524",
   facebook: "https://www.facebook.com/r352410/",
   portfolio: "https://www.google.com",
   email: "r352410@gmail.com",

@@ -2713,7 +2713,7 @@ export default function App() {
                               <Instagram className="w-5 h-5" />
                             </a>
                             <a 
-                              href="https://www.threads.net/@linus3524" 
+                              href="https://www.threads.com/@linus3524" 
                               target="_blank" 
                               rel="noopener noreferrer" 
                               className="text-zinc-600 hover:text-[#0F8F6D] hover:scale-110 transition-transform p-1"
@@ -3041,7 +3041,7 @@ export default function App() {
             </div>
             
             <div className="flex gap-4 text-xs font-sans">
-              <a href="https://www.threads.net" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-[#0F8F6D] flex items-center gap-0.5">
+              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-[#0F8F6D] flex items-center gap-0.5">
                 <span>Threads 專頁</span> <ExternalLink className="w-3 h-3" />
               </a>
               <span className="text-zinc-300">|</span>
