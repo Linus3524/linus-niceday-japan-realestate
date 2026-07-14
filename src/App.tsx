@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import {
-  Calculator, Sparkles, Smile, FileText, Building, ExternalLink, ArrowUp, Copy, Check
+  Calculator, Bot, Smile, FileText, Building, ExternalLink, ArrowUp, Copy, Check
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import {
@@ -420,7 +420,7 @@ export default function App() {
                 id="nav-tab-chat"
               >
                 <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Sparkles className="w-4 h-4 shrink-0 text-[#0F8F6D]" />
+                  <Bot className="w-4 h-4 shrink-0 text-[#0F8F6D]" />
                   <span>AI 找房顧問</span>
                 </div>
                 {/* Tooltip */}

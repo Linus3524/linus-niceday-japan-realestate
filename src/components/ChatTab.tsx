@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Bot } from "lucide-react";
 import { formatMessageText } from "../lib/format";
 
 interface ChatTabProps {
@@ -29,7 +29,7 @@ export function ChatTab(props: ChatTabProps) {
                   找房顧問
                 </div>
                 <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#0F8F6D]" />
+                  <Bot className="w-5 h-5 text-[#0F8F6D]" />
                   <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">

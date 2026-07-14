@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Search, MapPin, ArrowRight, Sparkles, Smile, FileText, X, Building, Landmark, Percent, Map } from "lucide-react";
+import { Search, MapPin, ArrowRight, Bot, Smile, FileText, X, Building, Landmark, Percent, Map } from "lucide-react";
 import {
   buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks,
   japaneseBanks, minpakuRules, ryokanRules, BuyHouseTermItem, BuyHouseQAItem
@@ -52,7 +52,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
-                      <Sparkles className="w-4 h-4" />
+                      <Bot className="w-4 h-4" />
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">

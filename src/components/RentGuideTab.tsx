@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Search, Calculator, ArrowRight, Sparkles, FileText, X, HelpCircle } from "lucide-react";
+import { Search, Calculator, ArrowRight, Bot, FileText, X, HelpCircle } from "lucide-react";
 import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
 import { renderFormattedText } from "../lib/format";
 
@@ -64,7 +64,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
-                      <Sparkles className="w-4 h-4" />
+                      <Bot className="w-4 h-4" />
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
