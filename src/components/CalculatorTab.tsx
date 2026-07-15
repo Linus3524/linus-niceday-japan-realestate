@@ -438,18 +438,29 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 <h3 className="text-base font-bold border-b border-[#DDE3DF] pb-2.5 mb-3 text-[#0a6d52] flex items-center gap-2 font-sans">
                   <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">calculate</span>
                   {calcMode === "rent" ? (
-                    <span>日本租屋預算與條件可行性評估</span>
+                    <span>日本租屋預算與條件評估</span>
                   ) : (
-                    <span>日本購屋總價與貸款情境評估</span>
+                    <span>日本購屋總價與貸款評估</span>
                   )}
                 </h3>
-                <p className="text-xs md:text-[13px] text-zinc-600 leading-6 text-justify font-sans">
-                  {calcMode === "rent" ? (
-                    "在日本找房前，先了解自己的預算能換到什麼樣的生活。這套工具參考 SUUMO、LIFULL HOME’S、At Home 等主要租屋平台的公開募集資訊與市場報告，並結合 Linus 的實務經驗，協助您整理地區、格局與設備之間的取捨。選好條件後，我們會估算月租、初期費用、房源供給與競爭程度，讓您更有方向地找到真正負擔得起的房子。樣本較少的城市會標示為模型參考；實際租金與空室狀況仍以當期募集內容為準。"
-                  ) : (
-                    "準備在日本購屋，我們會依您選擇的地區、格局與物件條件，整理總價概算、初期資金及不同貸款情境下的每月還款，協助您在看房前先掌握負擔範圍。實際成交價與核貸條件仍以個別物件及金融機構審査為準。"
-                  )}
-                </p>
+                {calcMode === "rent" ? (
+                  <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
+                    <p>在開始找房之前，先知道自己的預算能找到什麼樣的房子。</p>
+                    <p>本工具參考 SUUMO、LIFULL HOME'S、At Home 等主要租屋平台公開資訊，結合市場資料與 Linus 的第一線租屋經驗，分析不同地區、格局、設備與預算之間的取捨。</p>
+                    <p>完成條件設定後，將估算月租金、初期費用、房源供給與市場競爭程度，協助您更有效率地規劃找房方向。</p>
+                    <p className="text-[11px] text-zinc-400 pt-1 leading-normal">
+                      部分房源樣本較少的地區將以模型推估呈現；實際租金與空室狀況仍以當期募集資訊為準。
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
+                    <p>準備在日本買房前，先了解自己的預算能負擔到哪裡。</p>
+                    <p>依據您選擇的地區、物件類型與購屋條件，估算購屋總價、初期資金、各項稅費，以及不同貸款成數、利率與年限下的每月還款金額，協助您在看房前建立合理的預算規劃。</p>
+                    <p className="text-[11px] text-zinc-400 pt-1 leading-normal">
+                      實際成交價格、貸款利率與核貸結果，仍以個別物件及金融機構審査為準。
+                    </p>
+                  </div>
+                )}
               </div>
 
               {calcMode === "rent" && (

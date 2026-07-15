@@ -362,11 +362,11 @@ export default function App() {
           {/* Right side: Contact Card */}
           <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-4 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 flex flex-col gap-3 max-w-xs w-full lg:ml-auto">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 shrink-0 rounded-full border border-[#0F8F6D] flex items-center justify-center bg-[#EAF3EE]">
-                <svg className="w-5 h-5 text-[#0F8F6D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="Logo" 
+                className="w-10 h-10 shrink-0 rounded-full border border-[#DDE3DF] object-cover" 
+              />
               <div>
                 <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
