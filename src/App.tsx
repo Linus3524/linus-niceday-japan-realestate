@@ -365,7 +365,7 @@ export default function App() {
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="w-10 h-10 shrink-0 rounded-full border border-[#DDE3DF] object-cover" 
+                className="w-16 h-16 shrink-0 object-contain" 
               />
               <div>
                 <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
