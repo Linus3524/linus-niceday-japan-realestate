@@ -689,7 +689,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {(buyCategory === "all" || buyCategory === "qa") && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>常見日本買房與投資問題 Q&A 集錦</span>
+                    <span>常見日本買房與投資問題 Q&A</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
                   </h3>
                   

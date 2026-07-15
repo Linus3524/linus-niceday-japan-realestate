@@ -172,7 +172,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     { id: "initial", label: "初期費用與契約" },
                     { id: "terms", label: "房屋與設備" },
                     { id: "steps", label: "房屋申請步驟" },
-                    { id: "qa", label: "常見問答集" }
+                    { id: "qa", label: "租屋問答集" }
                   ].map(cat => (
                     <button
                       key={cat.id}
@@ -488,31 +488,88 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </div>
                   </div>
 
+                  {/* Application route comparison */}
+                  <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
+                    <div className="mb-4 flex flex-col gap-1 border-b border-zinc-200 pb-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
+                        <p className="mt-1 text-xs leading-relaxed text-zinc-600 font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
+                      </div>
+                      <span className="text-xs font-bold text-[#0F8F6D] font-sans">三種申請方式</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3 font-sans">
+                      {[
+                        {
+                          title: "一般申請",
+                          condition: "已退房・已內見",
+                          body: "看過屋況後送件，走標準審查與契約流程，通常不需要簽未內見同意書。",
+                          note: "最能掌握實際屋況"
+                        },
+                        {
+                          title: "先行申請",
+                          condition: "未退房・未內見",
+                          body: "少數管理公司可先送審；通過後待退房再內見，確認屋況後才決定是否繼續契約流程。",
+                          note: "內見後仍有決定空間"
+                        },
+                        {
+                          title: "先行契約",
+                          condition: "未退房・未內見",
+                          body: "多數管理公司優先採用。審查通過後即進入簽約，通常須簽未內見同意書，入住前未必能再看房。",
+                          note: "簽約前務必確認可承擔風險"
+                        }
+                      ].map((route, index) => (
+                        <div key={route.title} className="border border-[#DDE3DF] p-4">
+                          <div className="mb-3 flex items-start justify-between gap-2">
+                            <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
+                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#EAF3EE] text-[#0A6D52]"}`}>{route.condition}</span>
+                          </div>
+                          <p className="text-xs leading-relaxed text-zinc-700">{route.body}</p>
+                          <p className={`mt-3 border-t border-zinc-100 pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#0F8F6D]"}`}>{route.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Vertical Linear Steps Timeline */}
                   <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <div className="absolute top-0 right-6 bg-[#0F8F6D] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
                       9個核心步驟
                     </div>
                     <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
-                      日本房屋審査、付款與交屋步驟分解：
+                      日本租屋審查、付款與交屋步驟分解
+                      <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
                     </h4>
                     
                     <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
-                          {/* Circle node indicator */}
-                          <div className="absolute -left-[33px] top-1.5 w-4 h-4 bg-white border-2 border-[#0F8F6D] group-hover:bg-[#0F8F6D] transition-colors" />
+                          {/* Single numbered timeline node: the title itself no longer repeats the step number. */}
+                          <div className="absolute -left-[38px] top-0.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#0F8F6D] bg-white text-xs font-bold text-[#0F8F6D] font-sans transition-colors group-hover:bg-[#0F8F6D] group-hover:text-white">
+                            {step.id}
+                          </div>
                           
                           <div className="flex flex-col md:flex-row justify-between items-start gap-2 mb-1.5">
-                            <h5 className="font-bold text-sm text-[#0F8F6D]">
-                              <span>{step.name.charAt(0)}</span>
-                              <span className="text-[#1A2A22]">{step.name.slice(1)}</span>
+                            <h5 className="font-bold text-sm text-[#1A2A22]">
+                              {step.name.replace(/^[①②③④⑤⑥⑦⑧⑨]\s*/, "")}
                             </h5>
                             <span className="text-xs bg-[#F5F8F6] border border-zinc-300 text-zinc-600 px-2 py-0.5 font-sans shrink-0">
-                              時程估計: {step.duration}
+                              作業天數：{step.duration}
                             </span>
                           </div>
-                          <div className="text-xs text-zinc-700 leading-relaxed text-justify font-sans">{renderFormattedText(step.description)}</div>
+                          <div className="border-l-2 border-[#A8D5C2] pl-3 text-xs text-zinc-700 leading-relaxed text-justify font-sans">
+                            <span className="mr-2 text-[10px] font-bold tracking-wide text-[#0F8F6D]">作業重點</span>
+                            {renderFormattedText(step.description)}
+                          </div>
+                          {step.details && step.details.length > 0 && (
+                            <ul className="mt-3 space-y-1.5 pl-3 text-xs leading-relaxed text-zinc-600 font-sans">
+                              {step.details.map((detail, detailIndex) => (
+                                <li key={detailIndex} className="flex gap-2">
+                                  <span className="shrink-0 text-[#0F8F6D]">•</span>
+                                  <span>{detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -522,6 +579,9 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       <ul className="space-y-1.5">
                         <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>不內見找房建議於預計入住日前約 1.5 個月開始；若需要內見，建議確定入住日期後，於入住前 1 個月內開始找房即可。因為日本房源基本上是無法付訂金保留的，熱門物件一上架便會很快被租走。</span></li>
                         <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>若在留卡首次登錄的地址只是暫時住所，建議等入住正式租屋處並完成住址變更後，再辦理郵局或銀行帳戶，可避免後續因地址變更而需重新辦理相關手續。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>審查期間收到水電、瓦斯或網路代辦業者的電話、簡訊或 Email，通常是管理公司合作的生活服務代辦，和仲介未必有關；不需要時可直接婉拒，但指定供應商仍應以物件條件為準。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>初期精算書是依當下條件製作的參考；保證公司初期費、月額費與火災保險的付款方式，可能在審查或最終契約條件確定後調整，請以正式文件為準。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>第一次房租自動扣款若來不及扣到，可能改由保證公司通知匯款，或寄送帳單至住處超商繳費；收到通知後請在期限內處理。</span></li>
                       </ul>
                     </div>
                   </div>
@@ -532,7 +592,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.qa.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>常見租屋問題 Q&A 集錦</span>
+                    <span>常見租屋問題 Q&A</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>
                   <div className="space-y-4">

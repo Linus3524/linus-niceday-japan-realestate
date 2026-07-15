@@ -193,7 +193,7 @@ export const municipalities: MunicipalityRecord[] = marketSeedRates.map(rate => 
 
 export const rentSnapshots: RentSnapshotRecord[] = marketSeedRates.flatMap(rate => {
   const municipalityId = stableId("mun", rate.region, rate.district);
-  const effectiveDate = rate.sourceDate ? `${rate.sourceDate}-01` : "2026-01-01";
+  const effectiveDate = rate.sourceDate ? `${rate.sourceDate}-01` : "2026-07-01";
   const isAtHomeCityAverage = Boolean(rate.sourceDate) && rate.confidence !== "limited";
   const layouts: LayoutCode[] = ["r1", "k1", "ldk1", "ldk2"];
   return layouts.map(layout => ({
@@ -203,7 +203,7 @@ export const rentSnapshots: RentSnapshotRecord[] = marketSeedRates.flatMap(rate 
     monthlyRentYen: Math.round(parseFloat(rate[layout]) * 10000),
     includesManagementFee: isAtHomeCityAverage ? true : null,
     effectiveDate,
-    sourceLabel: rate.sourceNote || "Linus 租金行情整理",
+    sourceLabel: rate.sourceNote || "SUUMO、LIFULL HOME'S、At Home 等日本租屋平台公開資訊",
     sourceUrl: isAtHomeCityAverage ? AT_HOME_2026_URL : null,
     confidence: rate.confidence || "medium",
     verificationStatus: rate.verificationStatus || "verified_source",
