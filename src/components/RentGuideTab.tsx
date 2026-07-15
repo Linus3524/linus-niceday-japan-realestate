@@ -247,7 +247,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     {filtered.fees.map((fee, idx) => (
                       <div 
                         key={idx} 
-                        className="border border-[#1A2A22] bg-white p-5 flex flex-col justify-between hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all cursor-pointer relative"
+                        className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                         onClick={() => setSelectedFee(fee)}
                       >
                         <div>
@@ -286,7 +286,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
-                      <div key={idx} className="border border-[#1A2A22] bg-white p-6">
+                      <div key={idx} className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
                         <div className="flex justify-between items-start gap-3 mb-3">
                           <h4 className="min-w-0 text-base font-bold text-[#0F8F6D] flex flex-wrap items-center gap-2">
                             <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
@@ -323,8 +323,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   
                   {/* General / Overseas SOP highlight banner */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
-                    <div className="bg-white p-5 border border-[#1A2A22] relative">
-                      <div className="absolute top-0 right-0 bg-[#1A2A22] text-white px-2 py-0.5 font-bold">海外審查</div>
+                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
+                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">海外審查</div>
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
@@ -360,8 +360,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 border border-[#1A2A22] relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold">入境審查</div>
+                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
+                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">入境審查</div>
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 抵達日本境內申請流程</span>
                       </h4>
@@ -399,7 +399,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </div>
 
                   {/* Required Documents Section for Overseas vs Domestic Screenings */}
-                  <div className="border border-[#1A2A22] bg-[#F5F8F6] p-6 relative">
+                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setDocumentsExpanded(current => !current)}
@@ -489,7 +489,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </div>
 
                   {/* Vertical Linear Steps Timeline */}
-                  <div className="border border-[#1A2A22] bg-white p-6 relative">
+                  <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <div className="absolute top-0 right-6 bg-[#0F8F6D] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
                       9個核心步驟
                     </div>
@@ -497,7 +497,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       日本房屋審查、付款與交屋步驟分解：
                     </h4>
                     
-                    <div className="relative border-l-2 border-[#1A2A22] ml-3 pl-6 space-y-8 py-2">
+                    <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
                           {/* Circle node indicator */}

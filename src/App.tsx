@@ -301,158 +301,119 @@ export default function App() {
         }}
       />
 
-      {/* Top Banner Accent Line */}
-      <div className="h-1.5 bg-[#0F8F6D] w-full" id="top-accent-line" />
-
-      {/* Elegant Linear Header */}
-      <header className={`sticky top-0 z-40 border-b border-[#DDE3DF] mini-header ${scrolled ? "compact shadow-sm" : "bg-white"}`} id="app-header">
-        <div className={`max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 transition-all duration-300 ${scrolled ? "py-2" : "py-5 md:py-7"}`}>
-          <div className="flex items-center gap-2.5 md:gap-3.5 w-full md:w-auto">
-            {/* Brand Illustration Logo */}
-            <img
-              src="/logo.png"
-              alt="LINUS 住好日"
-              className={`object-contain shrink-0 select-none transition-all duration-300 ${scrolled ? "h-16" : "h-16 md:h-28"}`}
-              id="brand-logo"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-[#1A2A22] text-[#F5F8F6] px-1.5 py-0.5 font-sans uppercase tracking-widest select-none">Linus 住好日</span>
-                <span className="text-xs border border-[#0F8F6D] text-[#0F8F6D] px-1.5 py-0.5 select-none font-sans">東京2026新版</span>
-              </div>
-              <h1 className={`font-bold leading-[1.2] text-[#1A2A22] transition-all duration-300 ${scrolled ? "mt-1 text-lg tracking-[0.02em] md:text-xl" : "mt-2 text-xl tracking-[0.025em] md:text-3xl md:tracking-[0.045em]"}`}>日本租房買賣知識大補帖</h1>
-              <p className={`mt-2 text-xs leading-relaxed tracking-[0.035em] text-zinc-600 font-sans transition-all duration-300 ${scrolled ? "hidden md:block opacity-75" : "block md:text-sm md:tracking-[0.055em]"}`}>
-                日本租屋買房一次看懂 ╳ 實用預算規劃 ╳ AI 找房諮詢
-              </p>
+      {/* Top sticky header */}
+      <header className="sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
+        <div className="max-w-[1280px] mx-auto flex justify-between items-center">
+          {/* Left: L square box and name */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-[#0F8F6D] text-white flex items-center justify-center font-jost font-bold text-base leading-none select-none">
+              L
             </div>
+            <span className="font-serif font-extrabold text-[17px] tracking-[1.5px] text-[#1A2A22]">LINUS 住好日</span>
+            <span className="hidden sm:inline text-[9px] border border-[#0F8F6D] bg-[#EAF3EE] text-[#0F8F6D] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">東京2026最新校對版</span>
+          </div>
+          {/* Right: City & LINE */}
+          <div className="font-jost text-[11px] tracking-[0.18em] text-zinc-500 uppercase flex items-center gap-3">
+            <span>Tokyo, Japan</span>
+            <span className="text-zinc-300">|</span>
+            <span>LINE: {linusContact.lineId}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Banner Section */}
+      <section className="hero-banner bg-white py-12 border-b border-[#DDE3DF] relative" id="hero-banner">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          {/* Left side: Heading */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="inline-block bg-[#1A2A22] text-white text-[9px] font-jost font-bold tracking-[0.24em] px-2.5 py-0.5 select-none uppercase">
+              2026 TOKYO EDITION
+            </div>
+            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22]">
+              日本租房買賣
+            </h1>
+            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#0F8F6D]">
+              知識大補帖
+            </h1>
+            <p className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide pt-2">
+              日本租屋一次看懂 ╳ 實用預算規劃 ╳ AI 找房諮詢
+            </p>
           </div>
 
-          {/* Quick Line contact top bar */}
-          <div className={`items-center gap-4 border-l-0 md:border-l border-zinc-200 md:pl-6 py-1 w-full md:w-auto transition-all duration-300 ${scrolled ? "hidden md:flex" : "flex flex-row justify-between md:flex-col md:items-end gap-1.5 md:text-right font-sans"}`}>
-            {!scrolled && <div className="text-xs text-zinc-500 uppercase tracking-wider hidden md:block">立即聯絡 Linus 線上諮詢</div>}
-            <div className="flex items-stretch border border-[#1A2A22] font-sans shadow-[2px_2px_0px_0px_rgba(26,42,34,1)]">
+          {/* Right side: Contact Card */}
+          <div className="lg:col-span-5 bg-white border border-[#DDE3DF] p-5 shadow-colored-soft flex items-start gap-4">
+            {/* Avatar icon */}
+            <div className="w-14 h-14 shrink-0 rounded-full border-2 border-[#0F8F6D] flex items-center justify-center bg-[#EAF3EE]">
+              <svg className="w-8 h-8 text-[#0F8F6D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+            </div>
+            
+            <div className="flex-1 space-y-2">
+              <span className="block text-[10px] text-zinc-400 font-sans tracking-wider">立即聯絡 LINUS 線上諮詢</span>
+              
               <a
                 href={`https://line.me/ti/p/~${linusContact.lineId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 bg-[#06C755] hover:bg-[#05A847] text-white px-3 py-1.5 text-xs font-bold cursor-pointer transition-colors"
-                id="add-line-btn-top"
+                className="w-full bg-[#0F8F6D] hover:bg-[#0A6D52] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
+                id="add-line-btn-hero"
               >
                 ＋ 加 LINE 好友
               </a>
-              <span className="flex items-center bg-[#f4f2ee] px-2.5 text-xs font-mono font-semibold text-zinc-800 border-l border-[#1A2A22]">
-                {linusContact.lineId}
-              </span>
-              <button
-                onClick={handleCopyLine}
-                className="flex items-center gap-1 px-2.5 text-xs font-medium bg-white hover:bg-[#F5F8F6] text-zinc-600 hover:text-[#0F8F6D] border-l border-[#1A2A22] cursor-pointer transition-colors"
-                id="copy-line-btn-top"
-                title="複製 LINE ID"
-              >
-                {copiedLine ? <Check className="w-3.5 h-3.5 text-[#0F8F6D]" /> : <Copy className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">{copiedLine ? "已複製" : "複製"}</span>
-              </button>
+
+              <div className="flex items-stretch font-sans text-xs">
+                <input
+                  type="text"
+                  readOnly
+                  value={linusContact.lineId}
+                  className="flex-1 bg-white border border-[#DDE3DF] px-3 py-1.5 font-mono text-zinc-700 focus:outline-none"
+                  aria-label="LINE ID"
+                />
+                <button
+                  onClick={handleCopyLine}
+                  className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-xs px-4 py-1.5 cursor-pointer font-bold transition-colors select-none shrink-0"
+                >
+                  {copiedLine ? "已複製" : "複製"}
+                </button>
+              </div>
             </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
+      <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] py-2 px-6 overflow-x-auto select-none scrollbar-none" id="primary-nav">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-center">
+          <div className="flex items-center gap-1 md:gap-2">
+            {[
+              { id: "cards" as const, label: "租屋", en: "RENT" },
+              { id: "buyHouse" as const, label: "買房", en: "BUY" },
+              { id: "calculator" as const, label: "預算", en: "CALC" },
+              { id: "chat" as const, label: "AI 顧問", en: "CHAT" },
+              { id: "contact" as const, label: "聯絡", en: "CONTACT" }
+            ].map((tab, idx) => (
+              <button 
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`relative py-2 px-5.5 flex items-baseline gap-1.5 md:gap-2 font-serif text-sm md:text-[15px] tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent ${
+                  activeTab === tab.id ? "text-[#0a6d52] font-bold" : "text-[#1a2a22] hover:text-[#0a6d52]"
+                }`}
+                id={`nav-tab-${tab.id.toLowerCase()}`}
+              >
+                <span className="font-jost text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#0F8F6D] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
+                <span>{tab.label}</span>
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-[-10px] left-5.5 right-5.5 h-[2px] bg-[#0F8F6D]" />
+                )}
+              </button>
+            ))}
           </div>
         </div>
-
-        {/* Elegant Navigation Menu with sharp borders */}
-        <nav className="border-t border-[#1A2A22] bg-[#FFFFFF] relative overflow-visible" id="primary-nav">
-          <div className="max-w-6xl mx-auto px-4 overflow-visible">
-            <div className="grid grid-cols-5 overflow-visible text-center font-sans">
-              <button 
-                onClick={() => handleTabChange("cards")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] first:border-l hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "cards" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
-                }`}
-                id="nav-tab-cards"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">key</span>
-                  <span>租屋知識</span>
-                </div>
-                {/* Tooltip */}
-                <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  RENT
-                </span>
-                {activeTab === "cards" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
-              </button>
-
-              <button 
-                onClick={() => handleTabChange("buyHouse")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "buyHouse" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
-                }`}
-                id="nav-tab-buyhouse"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">real_estate_agent</span>
-                  <span>買房知識</span>
-                </div>
-                {/* Tooltip */}
-                <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  BUY
-                </span>
-                {activeTab === "buyHouse" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
-              </button>
-
-              <button 
-                onClick={() => handleTabChange("calculator")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "calculator" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
-                }`}
-                id="nav-tab-calc"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none" aria-hidden="true">calculate</span>
-                  <span>預算加減算</span>
-                </div>
-                {/* Tooltip */}
-                <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  CALC
-                </span>
-                {activeTab === "calculator" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
-              </button>
-
-              <button 
-                onClick={() => handleTabChange("chat")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "chat" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
-                }`}
-                id="nav-tab-chat"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
-                  <span>AI 找房顧問</span>
-                </div>
-                {/* Tooltip */}
-                <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  CHAT
-                </span>
-                {activeTab === "chat" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
-              </button>
-
-              <button 
-                onClick={() => handleTabChange("contact")}
-                className={`py-3 md:py-4 px-0.5 text-[11px] md:text-sm font-semibold md:tracking-wide border-r border-[#1A2A22] hover:bg-[#F5F8F6] transition-colors relative cursor-pointer group overflow-visible ${
-                  activeTab === "contact" ? "bg-white font-bold text-[#0F8F6D]" : "text-zinc-700"
-                }`}
-                id="nav-tab-contact"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-center gap-1.5">
-                  <Smile className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
-                  <span>聯絡 Linus</span>
-                </div>
-                {/* Tooltip */}
-                <span className="absolute bottom-[-24px] left-1/2 transform -translate-x-1/2 translate-y-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-y-0 bg-[#1A2A22] text-[#F5F8F6] text-[8px] font-sans px-1.5 py-0.5 rounded transition-all duration-200 pointer-events-none select-none z-30 uppercase shadow-sm">
-                  CONTACT
-                </span>
-                {activeTab === "contact" && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0F8F6D]" />}
-              </button>
-            </div>
-          </div>
-        </nav>
-      </header>
+      </nav>
 
       {/* Main Content Area */}
       <main className="flex-grow max-w-6xl w-full mx-auto px-4 py-8" id="main-content">

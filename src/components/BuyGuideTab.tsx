@@ -73,12 +73,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               id="pane-buy-house"
             >
               {/* Preface Section */}
-              <div className="border border-[#1A2A22] bg-white p-6 md:p-8 relative" id="buy-house-preface">
+              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="buy-house-preface">
                 {/* Traditional Japanese Ribbon Flag decoration */}
                 <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
                   置產 ❀
                 </div>
-                <h3 className="text-xl font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
                   <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#0F8F6D]" aria-hidden="true">real_estate_agent</span>
                   <span>日本買房置產</span>
                   <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
@@ -89,7 +89,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
                   為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
                 </p>
-
+ 
                 {/* Visual Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
@@ -102,12 +102,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
-                      className="mt-3 text-xs font-bold text-[#1A2A22] hover:text-[#0F8F6D] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
                     >
                       <span>開始 AI 買房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
-
+ 
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                     <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
                       <Smile className="w-4 h-4" />
@@ -118,16 +118,16 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("contact")}
-                      className="mt-3 text-xs font-bold text-[#1A2A22] hover:text-[#0F8F6D] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
                     >
                       <span>取得 Linus 聯繫管道</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
               </div>
-
+ 
               {/* Grid Control & Search Block */}
-              <div className="border border-[#1A2A22] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center" id="buy-filter-bar">
+              <div className="border border-[#DDE3DF] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center" id="buy-filter-bar">
                 {/* Horizontal Category selectors */}
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
@@ -143,15 +143,15 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       onClick={() => setBuyCategory(cat.id as any)}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         buyCategory === cat.id 
-                          ? "bg-[#1A2A22] text-white border-[#1A2A22]" 
-                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#1A2A22]"
+                          ? "bg-[#0F8F6D] text-white border-[#0F8F6D]" 
+                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#0F8F6D]"
                       }`}
                     >
                       {cat.label}
                     </button>
                   ))}
                 </div>
-
+ 
                 {/* Filter Search Field */}
                 {(buyCategory === "all" || buyCategory === "terms" || buyCategory === "qa") && (
                   <div className="relative w-full md:w-72 font-sans">
@@ -161,7 +161,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       placeholder="搜尋買房指南 (如：表面利回り)..."
                       value={buySearchQuery}
                       onChange={(e) => setBuySearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#1A2A22] focus:outline-none focus:ring-1 focus:ring-[#0F8F6D]"
+                      className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] hover:border-[#0F8F6D] focus:outline-none focus:ring-1 focus:ring-[#0F8F6D]"
                     />
                     {buySearchQuery && (
                       <button 
@@ -189,7 +189,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         {buyFiltered.drawing.map((term, idx) => (
                           <div 
                             key={idx} 
-                            className="border border-[#1A2A22] bg-white p-5 flex flex-col justify-between hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all cursor-pointer relative"
+                            className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                             onClick={() => setSelectedFee(term)}
                           >
                             <div>
@@ -224,7 +224,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         {buyFiltered.fee.map((term, idx) => (
                           <div 
                             key={idx} 
-                            className="border border-[#1A2A22] bg-white p-5 flex flex-col justify-between hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all cursor-pointer relative"
+                            className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                             onClick={() => setSelectedFee(term)}
                           >
                             <div>

@@ -408,12 +408,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
               id="pane-calculator"
             >
               {/* Rent vs Buy switcher */}
-              <div className="flex border border-[#1A2A22] bg-[#F5F8F6] p-1 gap-1" id="calc-mode-switcher font-sans">
+              <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1" id="calc-mode-switcher font-sans">
                 <button
                   onClick={() => setCalcMode("rent")}
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "rent"
-                      ? "bg-[#1A2A22] text-white"
+                      ? "bg-[#0F8F6D] text-white"
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
@@ -434,8 +434,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
               </div>
 
               {/* Preface Intro for Calc */}
-              <div className="border border-[#1A2A22] bg-white p-6" id="calc-intro">
-                <h3 className="text-base font-bold border-b border-[#1A2A22] pb-2.5 mb-3 text-[#1A2A22] flex items-center gap-2 font-sans">
+              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="calc-intro">
+                <h3 className="text-base font-bold border-b border-[#DDE3DF] pb-2.5 mb-3 text-[#0a6d52] flex items-center gap-2 font-sans">
                   <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">calculate</span>
                   {calcMode === "rent" ? (
                     <span>日本租屋預算與條件可行性評估</span>

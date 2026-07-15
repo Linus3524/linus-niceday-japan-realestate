@@ -36,19 +36,21 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
   const isLong = answer.length > 260 || blocks.length > 1;
 
   return (
-    <article className="border border-[#1A2A22] bg-white transition-shadow hover:shadow-[3px_3px_0px_0px_rgba(26,42,34,1)]">
+    <article className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-colored-soft">
       <details className="group" open={!isLong}>
         <summary className="flex cursor-pointer list-none items-start gap-3 p-4 marker:hidden md:p-5">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#0F8F6D] text-xs font-bold text-white">Q{number}</span>
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#0F8F6D] text-xs font-bold text-white font-jost">Q{number}</span>
           <div className="min-w-0 flex-1">
             <h4 className="pr-4 text-sm font-bold leading-relaxed text-[#1A2A22] md:text-base">{question}</h4>
             {isLong && <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{getSummary(answer)}</p>}
           </div>
           <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[#0F8F6D] transition-transform group-open:rotate-180" />
         </summary>
-        <div className="border-t border-dashed border-zinc-300 bg-[#F9FBFA] px-4 pb-5 pt-4 md:px-5">
-          <div className="mb-3 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-[#0F8F6D]">
-            <Lightbulb className="h-3.5 w-3.5" /> LINUS 實務說明
+        <div className="border-t border-dashed border-zinc-200 bg-[#F5F8F6] px-4 pb-5 pt-4 md:px-5">
+          <div className="mb-4 flex">
+            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#A8D5C2] border border-[#0F8F6D] text-[#0A6D52] px-2.5 py-0.5 select-none">
+              <Lightbulb className="h-3.5 w-3.5 shrink-0" /> LINUS 實務說明
+            </span>
           </div>
           <div className="font-sans text-xs text-justify md:text-sm">
             {blocks.map((block, index) => <AnswerBlock key={index} text={block} />)}
