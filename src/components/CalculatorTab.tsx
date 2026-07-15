@@ -473,9 +473,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       <h3 id="ai-rent-title" className="text-xl md:text-2xl font-bold text-[#1A2A22] leading-snug mb-3">
                         說出理想生活，找到真正住得起的選擇
                       </h3>
-                      <p className="text-sm text-[#3F5147] leading-relaxed mb-5 font-sans">
-                        告訴我們您的預算、通勤地點與理想條件，我們會整理合適的地區與車站，並估算合理租金區間。若條件與預算有落差，也會清楚說明如何調整，讓找房更接近理想生活。
-                      </p>
+                      <div className="text-sm text-[#3F5147] leading-relaxed mb-5 font-sans space-y-3">
+                        <p>告訴我們您的預算、通勤地點與理想條件，我們會整理適合的地區與車站，並估算合理的租金範圍。</p>
+                        <p>當條件與預算出現落差，也會清楚指出可以調整的方向，協助您在理想、通勤與負擔能力之間，找到最適合自己的平衡。</p>
+                      </div>
                       <textarea
                         value={aiPrompt}
                         onChange={event => setAiPrompt(event.target.value)}
