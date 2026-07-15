@@ -495,7 +495,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           {aiLoading ? "正在對標市場…" : "AI 分析適合地區與預算"}
                         </button>
                         <button
-                          onClick={() => setAiPrompt("預算含管理費 10 萬円，想住東急東橫線沿線，1K、25㎡以上，需要獨立洗面台和電梯，車站步行 10 分鐘內。")}
+                          onClick={() => setAiPrompt("簽證種類：技人國簽證，5年\n期望預算：¥20萬以下（含管理費）\n期望地區：目黑區／世田谷區、超市 10 分鐘內\n期望車站：東急東橫線沿線 (武蔵小杉、元住吉、日吉)、車站徒步 10 分鐘內\n房型設備：1LDK，RC/SRC造、25平米以上、一樓自動門、獨立洗面台、溫水清淨便器\n通勤地點：惠比壽車站\n其他條件：2 樓以上、陽台、瓦斯爐2個以上、可養貓")}
                           className="min-h-12 border border-[#1A2A22] bg-white px-4 text-xs font-bold text-[#1A2A22] hover:bg-[#F5F8F6] font-sans"
                         >
                           套用範例
