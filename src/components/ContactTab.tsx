@@ -132,7 +132,7 @@ export function ContactTab(props: ContactTabProps) {
                       href={`https://line.me/ti/p/~${linusContact.lineId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-[#06C755] hover:bg-[#05A847] text-white px-4 py-2.5 font-bold cursor-pointer transition-colors"
+                      className="flex items-center justify-center gap-2 bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-4 py-2.5 font-bold cursor-pointer transition-colors"
                       id="add-line-btn-contact"
                     >
                       ＋ 一鍵加 Linus 為 LINE 好友
