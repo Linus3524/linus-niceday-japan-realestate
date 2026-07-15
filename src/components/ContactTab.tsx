@@ -31,7 +31,7 @@ export function ContactTab(props: ContactTabProps) {
                   <span>專業台灣仲介 Linus，陪您安心找到日本的家</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify font-sans">
-                  無論您正準備赴日工作、留學或長期定居，想租屋、購屋置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審查條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
+                  無論您正準備赴日工作、留學或長期定居，想租屋、購屋置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審査條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
                 </p>
               </div>
 
@@ -115,7 +115,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
-                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通！</span>
+                          <span>熟悉打工度假與外國人租屋審査／協助生活服務開通！</span>
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#0F8F6D] shrink-0">✔️</span>
@@ -221,7 +221,7 @@ export function ContactTab(props: ContactTabProps) {
                       <div className="space-y-2">
                         <span className="font-bold text-[#0F8F6D] block">📋 諮詢買房時建議先準備好以下資料：</span>
                         <p className="text-zinc-600 leading-normal text-justify">
-                          為了讓 Linus 協助媒合合適物件並進行情境試算，歡迎填寫以下買房條件。貸款結果仍以金融機構正式審查為準。
+                          為了讓 Linus 協助媒合合適物件並進行情境試算，歡迎填寫以下買房條件。貸款結果仍以金融機構正式審査為準。
                         </p>
                         
                         <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
@@ -238,7 +238,7 @@ export function ContactTab(props: ContactTabProps) {
                         <div className="bg-red-50 p-3 border-l-2 border-[#0F8F6D] space-y-1.5 text-[11px] leading-relaxed">
                           <span className="font-bold text-[#0F8F6D] block">貸款注意事項⚠️</span>
                           <p className="text-zinc-700 text-justify">
-                            日本房貸依申請人、居留身分、收入、資產與物件個別審查。以下問題僅供初步分流，不代表核貸門檻或保證條件：
+                            日本房貸依申請人、居留身分、收入、資產與物件個別審査。以下問題僅供初步分流，不代表核貸門檻或保證條件：
                           </p>
                           <ul className="list-disc pl-4 space-y-1.5 text-zinc-600">
                             <li><strong>在日居民：</strong>在日本是否有工作簽證，且同一份工作超過 3 年且年薪 300 萬日圓以上？或來日一年以上年收 400 萬以上，且任職公司在日本登記超過 5 年。</li>

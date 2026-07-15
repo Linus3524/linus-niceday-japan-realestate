@@ -35,7 +35,7 @@ export function ChatTab(props: ChatTabProps) {
                   <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  AI 找房顧問整合了本站 of 租屋與買房知識：從敷金、審查與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房 或 評估日本不動產投資，都可以先從這裡開始。
+                  AI 找房顧問整合了本站 of 租屋與買房知識：從敷金、審査與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房 或 評估日本不動產投資，都可以先從這裡開始。
                 </p>
               </div>
 
@@ -131,7 +131,7 @@ export function ChatTab(props: ChatTabProps) {
                     "什麼是敷金跟禮金？",
                     "租房如何預約開通水電瓦斯？",
                     "可以跟朋友一起合租公寓嗎？",
-                    "海外審查需要哪些文件？",
+                    "海外審査需要哪些文件？",
                     "外國人買房需要日本簽證嗎？",
                     "日本買房的貸款條件有哪些？",
                     "買房後可以經營民泊嗎？"
@@ -154,7 +154,7 @@ export function ChatTab(props: ChatTabProps) {
                 >
                   <input
                     type="text"
-                    placeholder="向 Linus 提問日本租屋／買房知識（例如：租屋審查、房貸、民泊）..."
+                    placeholder="向 Linus 提問日本租屋／買房知識（例如：租屋審査、房貸、民泊）..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     disabled={chatLoading}

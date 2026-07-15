@@ -159,7 +159,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <div className="text-right"><div className="font-mono font-bold text-lg text-[#0F8F6D]">{yen(item.estimate)}</div><div className="text-[10px] text-[#8A9590]">月租中心值</div></div>
+            <div className="text-right"><div className="font-mono font-bold text-lg text-[#0F8F6D]">{yen(item.estimate)}</div><div className="text-[10px] text-[#8A9590]">月租中心値</div></div>
             <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
           </div>
         </div>
@@ -193,12 +193,12 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
           </div>
 
           <div className="bg-[#EAF3EE] border-l-4 border-[#0F8F6D] p-4 text-xs text-[#3F5147] leading-relaxed font-sans">
-            <strong className="text-[#1A2A22]">市場判讀：</strong> 此區條件中心值約 {yen(item.estimate)}。若希望降低預算，優先比較屋齡 20 年以上、步行 11-15 分鐘或非熱門大站；若保留電梯、獨立洗面台與面積要求，需以區間上緣準備較穩妥。
+            <strong className="text-[#1A2A22]">市場判讀：</strong> 此區條件中心値約 {yen(item.estimate)}。若希望降低預算，優先比較屋齡 20 年以上、步行 11-15 分鐘或非熱門大站；若保留電梯、獨立洗面台與面積要求，需以區間上緣準備較穩妥。
           </div>
           <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
             <div className="max-w-xl">
               <p className="text-[9px] text-[#8A9590] leading-relaxed">圖表為本站行政區／格局基準與固定條件係數的情境比較，不是即時空室統計、標準差或實際成交分佈。</p>
-              <p className="mt-1 text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把這個地區、車站、格局及 AI 讀到的設備／面積等需求帶入下方計算器，讓你繼續增減條件並查看月租明細。</p>
+              <p className="mt-1 text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把這個地區、車站、格局及 AI 讀到的設備／面積等需求帶入下方計算器，讓你繼續增減條件並査看月租明細。</p>
             </div>
             <button onClick={onApply} className="bg-[#1A2A22] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#0F8F6D] whitespace-nowrap">套用此方案到下方計算器</button>
           </div>

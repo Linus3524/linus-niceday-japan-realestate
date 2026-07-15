@@ -172,7 +172,7 @@ const secondStageRates: RentRate[] = secondStageMarketSpecs.flatMap(spec => {
     sourceDate: "2026-03",
     confidence: "limited",
     verificationStatus: "modeled_unverified",
-    sourceNote: `尚未完成當地行情查證，暫以${spec.referenceDistrict.replace("（市平均）", "")}行情建立模型參考`
+    sourceNote: `尚未完成當地行情査證，暫以${spec.referenceDistrict.replace("（市平均）", "")}行情建立模型參考`
   }];
 });
 

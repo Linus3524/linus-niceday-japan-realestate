@@ -447,7 +447,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   {calcMode === "rent" ? (
                     "在日本找房前，先了解自己的預算能換到什麼樣的生活。這套工具參考 SUUMO、LIFULL HOME’S、At Home 等主要租屋平台的公開募集資訊與市場報告，並結合 Linus 的實務經驗，協助您整理地區、格局與設備之間的取捨。選好條件後，我們會估算月租、初期費用、房源供給與競爭程度，讓您更有方向地找到真正負擔得起的房子。樣本較少的城市會標示為模型參考；實際租金與空室狀況仍以當期募集內容為準。"
                   ) : (
-                    "準備在日本購屋，我們會依您選擇的地區、格局與物件條件，整理總價概算、初期資金及不同貸款情境下的每月還款，協助您在看房前先掌握負擔範圍。實際成交價與核貸條件仍以個別物件及金融機構審查為準。"
+                    "準備在日本購屋，我們會依您選擇的地區、格局與物件條件，整理總價概算、初期資金及不同貸款情境下的每月還款，協助您在看房前先掌握負擔範圍。實際成交價與核貸條件仍以個別物件及金融機構審査為準。"
                   )}
                 </p>
               </div>
@@ -504,7 +504,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <MapPin className="w-5 h-5 text-[#0F8F6D]" />
                             </div>
                             <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 6 個搜尋方向</p>
-                            <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心值、合理波動區間，以及與預算的落差。</p>
+                            <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心値、合理波動區間，以及與預算的落差。</p>
                           </div>
                         </div>
                       ) : (
@@ -676,12 +676,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     </div>
                     {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
-                        <strong className="text-[#B13818]">待查證參考：</strong>此城市尚未完成當地募集行情的逐項查證，目前僅以鄰近主要城市建立模型參考，不應視為當地實際平均租金。
+                        <strong className="text-[#B13818]">待査證參考：</strong>此城市尚未完成當地募集行情的逐項査證，目前僅以鄰近主要城市建立模型參考，不應視為當地實際平均租金。
                       </div>
                     )}
                     {getSelectedDistrictData().verificationStatus === "researched_limited" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
-                        <strong className="text-[#B13818]">樣本有限：</strong>此區域已查找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
+                        <strong className="text-[#B13818]">樣本有限：</strong>此區域已査找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
                       </div>
                     )}
                     {getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
@@ -732,7 +732,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
+                                  title={isDisabled ? (isNoTower ? "該地區目前査無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -850,7 +850,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
+                                  title={isDisabled ? (isNoTower ? "該地區目前査無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -870,7 +870,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
                                     <div className="text-[10px] text-[#0F8F6D] font-bold mt-1 font-mono">
-                                      +{(dynamicMult * 100).toFixed(0)}% 估值溢價
+                                      +{(dynamicMult * 100).toFixed(0)}% 估値溢價
                                     </div>
                                   </div>
                                 </label>
@@ -914,7 +914,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
                                     <div className="text-[10px] text-green-700 font-bold mt-1 font-mono">
-                                      {Math.abs(dynamicMult * 100).toFixed(0)}% 估值折價
+                                      {Math.abs(dynamicMult * 100).toFixed(0)}% 估値折價
                                     </div>
                                   </div>
                                 </label>
@@ -1120,13 +1120,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                         {/* Rent Disclaimer */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 方法與限制：租金概算採網站整理的行政區／格局基準值，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
+                          * 方法與限制：租金概算採網站整理的行政區／格局基準値，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
                         </div>
                       </>
                     ) : (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          條件式預算概算中心值：
+                          條件式預算概算中心値：
                         </h4>
                         
                         {/* The Big Number */}
@@ -1138,7 +1138,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">萬日圓</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心值不是鑑價或成交保證。）
+                            （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心値不是鑑價或成交保證。）
                           </div>
                         </div>
 
@@ -1220,7 +1220,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span className="font-mono text-[#0F8F6D]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-1 text-justify">
-                                本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審查。
+                                本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審査。
                               </p>
                             </div>
                           </div>

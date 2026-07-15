@@ -41,8 +41,8 @@ function VisaDocumentMatrix() {
   return (
     <div className="space-y-5 font-sans">
       <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
-        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審查</button>
-        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#0F8F6D] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審查</button>
+        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審査</button>
+        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#0F8F6D] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
       </div>
       {screeningMode === "domestic" && (
         <div className="border-l-4 border-[#0F8F6D] bg-[#EAF3EE] p-4 text-sm leading-7 text-[#3F5147]">境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。</div>
@@ -324,7 +324,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   {/* General / Overseas SOP highlight banner */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
                     <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">海外審查</div>
+                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">海外審査</div>
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
@@ -332,14 +332,14 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租房等待期，好處是落地即入住！
                       </p>
                       <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審查 SOP 完整步驟：</span>
+                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
                         <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
                           {[
                             "領取在留資格認定書／打工渡假簽證貼紙",
                             "開始找房",
                             "遞交個人資料",
                             "申請房子",
-                            "審查",
+                            "審査",
                             "繳交初期費用",
                             "入境日本（在海關那邊領取在留卡）",
                             "簽約",
@@ -361,7 +361,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </div>
 
                     <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">入境審查</div>
+                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">入境審査</div>
                       <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 抵達日本境內申請流程</span>
                       </h4>
@@ -369,7 +369,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         適合人已在日本，擁有登記過原臨時地址在留卡、日本電話與個人印章的人。可安排實體內見看房，能挑選的房源物件範圍是最多的。
                       </p>
                       <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 入境審查 SOP 完整步驟：</span>
+                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 入境審査 SOP 完整步驟：</span>
                         <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
                           {[
                             "入境領取在留卡",
@@ -378,7 +378,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                             "開始找房",
                             "遞交個人資料",
                             "申請房子",
-                            "審查",
+                            "審査",
                             "繳交初期費用",
                             "簽約",
                             "等入居日簽收鑰匙",
@@ -410,12 +410,12 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       <span className="flex min-w-0 items-start gap-3">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#0F8F6D]" />
                         <span>
-                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審查所需資料與準備文件對照</span>
-                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審查與目前身份，查看建議先準備的文件</span>
+                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審査所需資料與準備文件對照</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，査看建議先準備的文件</span>
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D]">
-                        {documentsExpanded ? "收合" : "展開查看"}
+                        {documentsExpanded ? "收合" : "展開査看"}
                         <ChevronDown className={`h-4 w-4 transition-transform ${documentsExpanded ? "rotate-180" : ""}`} />
                       </span>
                     </button>
@@ -428,7 +428,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     <div className="hidden" aria-hidden="true">
                       <div className="bg-white p-5 border border-zinc-300 space-y-3">
                         <h5 className="font-bold text-[#0F8F6D] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
-                          <span>✈ 海外審查需要資料</span>
+                          <span>✈ 海外審査需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
@@ -445,7 +445,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
-                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
+                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等値 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
@@ -456,7 +456,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                       <div className="bg-white p-5 border border-zinc-300 space-y-3">
                         <h5 className="font-bold text-[#0F8F6D] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
-                          <span>🇯🇵 境內審查需要資料</span>
+                          <span>🇯🇵 境內審査需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
@@ -469,7 +469,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
-                            <span><strong>日本手機門號：</strong>保證會社審查時會撥打電話照會，必須能正常通話與接聽。</span>
+                            <span><strong>日本手機門號：</strong>保證會社審査時會撥打電話照會，必須能正常通話與接聽。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
@@ -494,7 +494,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       9個核心步驟
                     </div>
                     <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
-                      日本房屋審查、付款與交屋步驟分解：
+                      日本房屋審査、付款與交屋步驟分解：
                     </h4>
                     
                     <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
