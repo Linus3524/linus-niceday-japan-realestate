@@ -313,7 +313,7 @@ export function ContactTab(props: ContactTabProps) {
                     <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-2 relative">
                       <iframe 
                         title="Seika Office Google Map"
-                        src="https://maps.google.com/maps?q=東京都千代田区東神田2-6-2&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                        src="https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E6%9D%B1%E7%A5%9E%E7%94%B02-6-2&t=&z=15&ie=UTF8&iwloc=&output=embed"
                         width="100%" 
                         height="260" 
                         style={{ border: 0 }} 

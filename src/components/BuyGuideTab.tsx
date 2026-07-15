@@ -496,8 +496,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             className="grid min-h-[132px] w-full grid-cols-[1fr_auto] items-center gap-4 p-5 text-left border-none cursor-pointer bg-transparent"
                           >
                             <span className="min-w-0 self-center">
-                              <h4 className="line-clamp-2 min-h-10 font-bold text-sm leading-5 text-[#0F8F6D]">{bank.name}</h4>
-                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#0a6d52]">{bank.rate}</div>
+                              <h4 className="line-clamp-2 min-h-10 font-bold text-sm leading-5 text-[#1A2A22]">{bank.name}</h4>
+                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#0F8F6D]">{bank.rate}</div>
                             </span>
                             <span className="flex shrink-0 flex-col items-center gap-1.5 text-[10px] font-bold text-[#3F5147]">
                               <span>{expandedBanks.has(`japan-${idx}`) ? "收合" : "詳情"}</span>

@@ -48,7 +48,7 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
         </summary>
         <div className="border-t border-dashed border-zinc-200 bg-[#F5F8F6] px-4 pb-5 pt-4 md:px-5">
           <div className="mb-4 flex">
-            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#fef9c3] border border-[#facc15] text-[#854d0e] px-2.5 py-0.5 select-none">
+            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#EAF3EE] border border-[#A8D5C2] text-[#0A6D52] px-2.5 py-0.5 select-none">
               <Lightbulb className="h-3.5 w-3.5 shrink-0" /> LINUS 實務說明
             </span>
           </div>
