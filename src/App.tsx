@@ -528,7 +528,7 @@ export default function App() {
             <div className="space-y-1">
               <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租屋買房知識大補帖</strong>
               <p className="text-xs text-zinc-500 font-sans">
-                版權所有 © 2026 LINUS Nice Day Japan All Rights Reserved. 株式会社世嘉 Seika (東京都知事免許第111940号)
+                版權所有 © 2026 LINUS Nice Day Japan (CHANG CHIN WEI) @linus3524 All Rights Reserved.
               </p>
             </div>
             
