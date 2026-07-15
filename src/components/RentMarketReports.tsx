@@ -12,17 +12,22 @@ interface Props {
 const yen = (value: number) => `¥${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 function LayoutTiles({ items }: { items: Array<{ label: string; value: number }> }) {
-  // Unify with map colors:
-  // 1R (cheapest) -> Green (#dcfce7)
-  // 1K -> Yellow (#fef9c3)
-  // 1LDK -> Orange (#ffedd5)
-  // 2LDK (most expensive) -> Red (#fee2e2)
-  const colors = ["#dcfce7", "#fef9c3", "#ffedd5", "#fee2e2"];
+  // Unify with map colors & hovers:
+  // 1R (cheapest) -> Green (#dcfce7 -> #bbf7d0)
+  // 1K -> Yellow (#fef9c3 -> #fef08a)
+  // 1LDK -> Orange (#ffedd5 -> #fed7aa)
+  // 2LDK (most expensive) -> Red (#fee2e2 -> #fca5a5)
+  const colors = [
+    "bg-[#dcfce7] hover:bg-[#bbf7d0]",
+    "bg-[#fef9c3] hover:bg-[#fef08a]",
+    "bg-[#ffedd5] hover:bg-[#fed7aa]",
+    "bg-[#fee2e2] hover:bg-[#fca5a5]"
+  ];
   const baseline = items[0]?.value || 1;
   return (
     <div className="grid min-h-[230px] grid-cols-2 gap-2 font-sans">
       {items.map((item, index) => (
-        <div key={item.label} className="flex min-h-[108px] flex-col justify-between border border-[#DDE3DF] p-3" style={{ backgroundColor: colors[index] }}>
+        <div key={item.label} className={`flex min-h-[108px] flex-col justify-between border border-[#DDE3DF] p-3 transition-colors duration-200 cursor-pointer ${colors[index]}`}>
           <div className="flex items-start justify-between gap-2">
             <span className="text-base font-black text-[#1A2A22]">{item.label}</span>
             <span className="text-[9px] font-bold text-[#3F5147]">{index === 0 ? "基準" : `+${Math.round((item.value / baseline - 1) * 100)}%`}</span>
@@ -36,13 +41,19 @@ function LayoutTiles({ items }: { items: Array<{ label: string; value: number }>
 }
 
 function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  // Unify with map colors:
-  // 築 5 年內 (+12%, highest price) -> Red (#fee2e2)
-  // 築 6-10 年 (+6%) -> Orange (#ffedd5)
-  // 築 11-20 年 (0%) -> Yellow (#fef9c3)
-  // 築 21-30 年 (-6%) -> Green (#dcfce7)
-  // 築 30 年+ (-12%) -> Blue/Light grey (#F2F8FA)
-  const colors = ["#fee2e2", "#ffedd5", "#fef9c3", "#dcfce7", "#F2F8FA"];
+  // Unify with map colors & hovers:
+  // 築 5 年內 (+12%, highest price) -> Red (#fee2e2 -> #fca5a5)
+  // 築 6-10 年 (+6%) -> Orange (#ffedd5 -> #fed7aa)
+  // 築 11-20 年 (0%) -> Yellow (#fef9c3 -> #fef08a)
+  // 築 21-30 年 (-6%) -> Green (#dcfce7 -> #bbf7d0)
+  // 築 30 年+ (-12%) -> Blue/Light grey (#F2F8FA -> #D6EAF0)
+  const colors = [
+    "bg-[#fee2e2] hover:bg-[#fca5a5]",
+    "bg-[#ffedd5] hover:bg-[#fed7aa]",
+    "bg-[#fef9c3] hover:bg-[#fef08a]",
+    "bg-[#dcfce7] hover:bg-[#bbf7d0]",
+    "bg-[#F2F8FA] hover:bg-[#D6EAF0]"
+  ];
   return (
     <div className="relative flex min-h-[230px] flex-col justify-between py-1 font-sans">
       <div className="absolute bottom-3 left-[92px] top-3 w-px bg-[#DDE3DF]" />
@@ -51,7 +62,7 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
         return (
           <div key={entry.label} className="relative grid grid-cols-[76px_20px_1fr] items-center gap-2">
             <span className="text-right text-[10px] font-bold text-[#3F5147]">{entry.label}</span>
-            <span className="z-10 h-4 w-4 rotate-45 border-2 border-white" style={{ backgroundColor: colors[index] }} />
+            <span className={`z-10 h-4 w-4 rotate-45 border-2 border-white transition-colors duration-200 cursor-pointer ${colors[index]}`} />
             <div className="flex items-center justify-between gap-2 border-b border-dashed border-[#ECEFEC] py-2">
               <span className="font-mono text-xs font-bold text-[#1A2A22]">{yen(entry.value)}</span>
               <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#EAF3EE] text-[#0A6D52]" : difference < 0 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
@@ -64,13 +75,19 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
 }
 
 function BuildingRange({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  // Unify with map colors:
-  // 01 (木造/最便宜) -> Blue/Light grey (#F2F8FA)
-  // 02 (鐵骨/RC) -> Green (#dcfce7)
-  // 03 (RC/SRC/電梯) -> Yellow (#fef9c3)
-  // 04 (RC/SRC/新築) -> Orange (#ffedd5)
-  // 05 (塔樓/最貴) -> Red (#fee2e2)
-  const colors = ["#F2F8FA", "#dcfce7", "#fef9c3", "#ffedd5", "#fee2e2"];
+  // Unify with map colors & hovers:
+  // 01 (木造/最便宜) -> Blue/Light grey (#F2F8FA -> #D6EAF0)
+  // 02 (鐵骨/RC) -> Green (#dcfce7 -> #bbf7d0)
+  // 03 (RC/SRC/電梯) -> Yellow (#fef9c3 -> #fef08a)
+  // 04 (RC/SRC/新築) -> Orange (#ffedd5 -> #fed7aa)
+  // 05 (塔樓/最貴) -> Red (#fee2e2 -> #fca5a5)
+  const colors = [
+    "bg-[#F2F8FA] hover:bg-[#D6EAF0]",
+    "bg-[#dcfce7] hover:bg-[#bbf7d0]",
+    "bg-[#fef9c3] hover:bg-[#fef08a]",
+    "bg-[#ffedd5] hover:bg-[#fed7aa]",
+    "bg-[#fee2e2] hover:bg-[#fca5a5]"
+  ];
   const textColors = ["text-[#3F626D]", "text-[#15803d]", "text-[#854d0e]", "text-[#c2410c]", "text-[#991b1b]"];
   const min = Math.min(...items.map(item => item.value));
   const max = Math.max(...items.map(item => item.value));
@@ -81,7 +98,7 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
           <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2" style={{ background: "linear-gradient(90deg, #dcfce7 0%, #fef9c3 30%, #ffedd5 65%, #fee2e2 100%)" }} />
           {items.map((entry, index) => {
             const position = 4 + (entry.value - min) / Math.max(max - min, 1) * 92;
-            return <span key={entry.label} className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_#8A9590]" style={{ left: `${position}%`, backgroundColor: colors[index] }} />;
+            return <span key={entry.label} className={`absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_#8A9590] transition-colors duration-200 cursor-pointer ${colors[index]}`} style={{ left: `${position}%` }} />;
           })}
         </div>
         <div className="mt-1 flex justify-between text-[8px] font-mono font-bold text-[#66736C]"><span>{yen(min)}</span><span>租金級距</span><span>{yen(max)}</span></div>
@@ -91,7 +108,7 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
           const difference = Math.round((entry.value / baseline - 1) * 100);
           return (
             <div key={entry.label} className={`grid min-h-[34px] grid-cols-[26px_1fr_66px_40px] items-center gap-2 px-2 py-1.5 ${index % 2 ? "bg-[#FAFCFB]" : "bg-white"}`}>
-              <span className={`flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold ${textColors[index]}`} style={{ backgroundColor: colors[index] }}>0{index + 1}</span>
+              <span className={`flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold transition-colors duration-200 cursor-pointer ${textColors[index]} ${colors[index]}`}>0{index + 1}</span>
               <span className="text-[9px] font-bold leading-tight text-[#3F5147]">{entry.label}</span>
               <span className="text-right font-mono text-[10px] font-bold text-[#1A2A22]">{yen(entry.value)}</span>
               <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#0A6D52]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
@@ -104,12 +121,17 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
 }
 
 function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  // Unify with map colors:
-  // 5分內 (+8%, highest price) -> Red (#fee2e2)
-  // 6-10分 (+3%) -> Orange (#ffedd5)
-  // 11-15分 (-3%) -> Yellow (#fef9c3)
-  // 16分+ (-8%) -> Green (#dcfce7)
-  const colors = ["#fee2e2", "#ffedd5", "#fef9c3", "#dcfce7"];
+  // Unify with map colors & hovers:
+  // 5分內 (+8%, highest price) -> Red (#fee2e2 -> #fca5a5)
+  // 6-10分 (+3%) -> Orange (#ffedd5 -> #fed7aa)
+  // 11-15分 (-3%) -> Yellow (#fef9c3 -> #fef08a)
+  // 16分+ (-8%) -> Green (#dcfce7 -> #bbf7d0)
+  const colors = [
+    "bg-[#fee2e2] hover:bg-[#fca5a5]",
+    "bg-[#ffedd5] hover:bg-[#fed7aa]",
+    "bg-[#fef9c3] hover:bg-[#fef08a]",
+    "bg-[#dcfce7] hover:bg-[#bbf7d0]"
+  ];
   const textColors = ["text-[#991b1b]", "text-[#c2410c]", "text-[#854d0e]", "text-[#15803d]"];
   return (
     <div className="font-sans">
@@ -125,7 +147,7 @@ function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; 
           return (
             <div key={entry.label} className="flex h-full flex-col justify-end text-center">
               <span className="mb-1 text-[9px] font-mono font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <div className="flex flex-col justify-between border border-[#DDE3DF] px-1 py-2" style={{ height: blockHeight, backgroundColor: colors[index] }}>
+              <div className={`flex flex-col justify-between border border-[#DDE3DF] px-1 py-2 transition-colors duration-200 cursor-pointer ${colors[index]}`} style={{ height: blockHeight }}>
                 <span className={`text-xs font-mono font-bold ${textColors[index]}`}>{difference > 0 ? "+" : ""}{difference}%</span>
                 <span className={`text-[9px] font-bold leading-tight ${textColors[index]}`}>{entry.label.replace("步行 ", "")}</span>
               </div>
