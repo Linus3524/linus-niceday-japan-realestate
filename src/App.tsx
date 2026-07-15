@@ -377,7 +377,7 @@ export default function App() {
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
               </div>
 
-              <div className="space-y-1.5 max-w-[150px]">
+              <div className="space-y-1.5 w-[160px]">
                 <a
                   href={`https://line.me/ti/p/~${linusContact.lineId}`}
                   target="_blank"
@@ -388,12 +388,12 @@ export default function App() {
                   ＋ 加 LINE 好友
                 </a>
 
-                <div className="flex items-stretch font-sans text-xs">
+                <div className="flex items-stretch font-sans text-xs w-full">
                   <input
                     type="text"
                     readOnly
                     value={linusContact.lineId}
-                    className="flex-1 bg-white border border-[#DDE3DF] px-2 py-1 font-mono text-zinc-700 focus:outline-none text-[10px]"
+                    className="flex-1 bg-white border border-[#DDE3DF] px-2 py-1 font-mono text-zinc-700 focus:outline-none text-[10px] min-w-0"
                     aria-label="LINE ID"
                   />
                   <button
