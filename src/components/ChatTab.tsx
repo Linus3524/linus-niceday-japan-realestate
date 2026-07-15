@@ -26,21 +26,21 @@ export function ChatTab(props: ChatTabProps) {
               className="space-y-6"
               id="pane-chat"
             >
-              <div className="border border-[#1A2A22] bg-white p-6 relative" id="chat-header-card">
+              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="chat-header-card">
                 <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs tracking-widest font-sans">
                   找房顧問
                 </div>
-                <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
+                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#0a6d52] flex items-center gap-2">
                   <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
                   <span>Linus ╳ 24小時 AI 找房顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  AI 找房顧問整合了本站的租屋與買房知識：從敷金、審查與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房或評估日本不動產投資，都可以先從這裡開始。
+                  AI 找房顧問整合了本站 of 租屋與買房知識：從敷金、審查與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房 或 評估日本不動產投資，都可以先從這裡開始。
                 </p>
               </div>
 
               {/* Chat Dialog Grid Container */}
-              <div className="border border-[#1A2A22] bg-white h-[600px] flex flex-col justify-between overflow-hidden" id="chat-box-interface">
+              <div className="border border-[#DDE3DF] bg-white h-[600px] flex flex-col justify-between overflow-hidden shadow-colored-soft" id="chat-box-interface">
                 {/* Message list area */}
                 <div className="flex-grow overflow-y-auto p-4 md:p-6 bg-[#fafcfb] space-y-6" id="chat-messages-scroll-area">
                   {chatMessages.map((msg, index) => (
@@ -70,8 +70,8 @@ export function ChatTab(props: ChatTabProps) {
                         {/* Message content text */}
                         <div className={`p-4 text-xs md:text-sm leading-relaxed text-justify whitespace-pre-wrap border ${
                           msg.role === "user" 
-                            ? "bg-white border-zinc-400 text-zinc-800" 
-                            : "bg-[#fffdfa] border-[#1A2A22] text-zinc-900 shadow-[2px_2px_0px_0px_rgba(26, 42, 34,1)]"
+                            ? "bg-white border-zinc-300 text-zinc-800" 
+                            : "bg-[#fffdfa] border-[#DDE3DF] text-zinc-900 shadow-sm transition-colors"
                         }`}>
                           {formatMessageText(msg.text)}
                           {msg.role === "model" && /line/i.test(msg.text) && msg.text.includes(linusContact.lineId) && (
@@ -99,7 +99,7 @@ export function ChatTab(props: ChatTabProps) {
                       </div>
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-400 font-sans">Linus 正在調閱日本不動產知識庫...</div>
-                        <div className="p-3 bg-[#fffdfa] border border-[#1A2A22] text-xs text-zinc-500 font-sans italic animate-pulse">
+                        <div className="p-3 bg-white border border-[#DDE3DF] text-xs text-zinc-500 font-sans italic animate-pulse">
                           正在整理租屋與買房資訊，請稍候片刻...
                         </div>
                       </div>
@@ -149,7 +149,7 @@ export function ChatTab(props: ChatTabProps) {
                 {/* Input box form panel */}
                 <form 
                   onSubmit={handleSendMessage}
-                  className="border-t border-[#1A2A22] bg-white p-3 flex gap-2 font-sans"
+                  className="border-t border-[#DDE3DF] bg-white p-3 flex gap-2 font-sans"
                   id="chat-send-form"
                 >
                   <input
@@ -158,12 +158,12 @@ export function ChatTab(props: ChatTabProps) {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     disabled={chatLoading}
-                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#1A2A22] focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] disabled:bg-zinc-100 disabled:text-zinc-400"
+                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#0F8F6D] disabled:bg-zinc-100 disabled:text-zinc-400"
                   />
                   <button
                     type="submit"
                     disabled={chatLoading || !chatInput.trim()}
-                    className="bg-[#1A2A22] hover:bg-[#0F8F6D] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-zinc-300 disabled:text-zinc-500 flex items-center gap-1 cursor-pointer shrink-0"
+                    className="bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-zinc-300 disabled:text-zinc-500 flex items-center gap-1 cursor-pointer shrink-0"
                     id="chat-submit-btn"
                   >
                     <span>發送</span>

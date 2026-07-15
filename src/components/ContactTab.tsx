@@ -25,8 +25,8 @@ export function ContactTab(props: ContactTabProps) {
               id="pane-contact"
             >
               {/* Preface section */}
-              <div className="border border-[#1A2A22] bg-white p-6" id="contact-intro">
-                <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-3 text-[#1A2A22] flex items-center gap-2">
+              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="contact-intro">
+                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#0a6d52] flex items-center gap-2">
                   <Smile className="w-5 h-5 text-[#0F8F6D]" />
                   <span>專業台灣仲介 Linus，陪您安心找到日本的家</span>
                 </h3>
@@ -39,7 +39,7 @@ export function ContactTab(props: ContactTabProps) {
                 {/* Business Card (Left 5 Columns) */}
                 <div className="md:col-span-5 space-y-4">
                   {/* Elegant Business Card Front */}
-                  <div className="border-2 border-[#1A2A22] bg-white p-6 relative shadow-[6px_6px_0px_0px_rgba(26, 42, 34,1)]" id="meishi-card">
+                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="meishi-card">
                     {/* Double linear inner accent border */}
                     <div className="absolute inset-1.5 border border-dashed border-zinc-200 pointer-events-none" />
 
@@ -47,32 +47,32 @@ export function ContactTab(props: ContactTabProps) {
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
                         <div className="flex items-baseline gap-2">
-                          <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
+                          <h4 className="text-xl font-bold tracking-tight text-[#0a6d52]">{linusContact.name}</h4>
                           <span className="text-xs font-bold text-[#0F8F6D] font-sans">營業係長</span>
                         </div>
                       </div>
 
                       <div className="space-y-3.5 text-xs text-zinc-700 font-sans border-t border-zinc-200 pt-4">
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#1A2A22] w-20 shrink-0 tracking-wider">LINE ID</span>
+                          <span className="font-bold text-[#0a6d52] w-20 shrink-0 tracking-wider">LINE ID</span>
                           <span className="font-mono bg-zinc-100 px-2 py-0.5 border border-zinc-200 font-semibold">{linusContact.lineId}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#1A2A22] w-20 shrink-0 tracking-wider">WECHAT</span>
+                          <span className="font-bold text-[#0a6d52] w-20 shrink-0 tracking-wider">WECHAT</span>
                           <span className="font-mono bg-zinc-100 px-2 py-0.5 border border-zinc-200 font-semibold">{linusContact.wechatId}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#1A2A22] w-20 shrink-0 tracking-wider">EMAIL</span>
+                          <span className="font-bold text-[#0a6d52] w-20 shrink-0 tracking-wider">EMAIL</span>
                           <span className="font-mono text-zinc-600">{linusContact.email}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#1A2A22] w-20 shrink-0 tracking-wider">PHONE</span>
+                          <span className="font-bold text-[#0a6d52] w-20 shrink-0 tracking-wider">PHONE</span>
                           <span className="font-mono text-zinc-600">{linusContact.phone}</span>
                         </div>
                         
                         {/* Wireframe Social Icons */}
                         <div className="flex items-center gap-3 pt-3.5 border-t border-dashed border-zinc-300">
-                          <span className="font-bold text-[#1A2A22] w-20 shrink-0 tracking-wider">SOCIALS</span>
+                          <span className="font-bold text-[#0a6d52] w-20 shrink-0 tracking-wider">SOCIALS</span>
                           <div className="flex items-center gap-4">
                             <a 
                               href="https://www.facebook.com/r352410/" 
@@ -105,7 +105,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                       </div>
 
-                      <div className="text-[10px] text-zinc-600 font-sans pt-3 border-t border-dashed border-[#1A2A22]/20 leading-relaxed mt-4 space-y-1">
+                      <div className="text-[10px] text-zinc-600 font-sans pt-3 border-t border-dashed border-[#DDE3DF] leading-relaxed mt-4 space-y-1">
                         <div className="font-bold text-[#0F8F6D] mb-1">
                           在日台灣人仲介 ╳ 租屋買房一條龍 🇹🇼
                         </div>
@@ -126,8 +126,8 @@ export function ContactTab(props: ContactTabProps) {
                   </div>
 
                   {/* Copy Line block */}
-                  <div className="border border-[#1A2A22] bg-white p-4 space-y-3 font-sans text-xs">
-                    <span className="font-bold text-[#1A2A22] block">直接添加 LINE 諮詢：</span>
+                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 space-y-3 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
+                    <span className="font-bold text-zinc-800 block">直接添加 LINE 諮詢：</span>
                     <a
                       href={`https://line.me/ti/p/~${linusContact.lineId}`}
                       target="_blank"
@@ -155,8 +155,8 @@ export function ContactTab(props: ContactTabProps) {
                   </div>
 
                   {/* Copy WeChat block */}
-                  <div className="border border-[#1A2A22] bg-white p-4 space-y-3 font-sans text-xs">
-                    <span className="font-bold text-[#1A2A22] block">直接添加 WeChat 諮詢：</span>
+                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 space-y-3 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
+                    <span className="font-bold text-zinc-800 block">直接添加 WeChat 諮詢：</span>
                     <div className="flex gap-2">
                       <div className="bg-zinc-100 flex-grow px-3 py-2 border border-zinc-300 font-mono font-bold text-center select-all">
                         {linusContact.wechatId}
@@ -175,15 +175,15 @@ export function ContactTab(props: ContactTabProps) {
                   </div>
 
                   {/* Submission Info Checklist Table with Toggle Switch */}
-                  <div className="border border-[#1A2A22] bg-white p-4 font-sans text-xs space-y-4">
+                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 font-sans text-xs space-y-4 transition-all duration-300 hover:shadow-colored-soft">
                     {/* Toggle Selector */}
-                    <div className="flex border border-[#1A2A22] text-[11px] font-bold">
+                    <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 text-[11px] font-bold">
                       <button
                         onClick={() => setContactFormType("rent")}
                         className={`flex-1 py-2 cursor-pointer transition-colors text-center ${
                           contactFormType === "rent"
-                            ? "bg-[#1A2A22] text-white"
-                            : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
+                            ? "bg-[#0F8F6D] text-white"
+                            : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                         }`}
                       >
                         🏠 租房諮詢問卷
@@ -192,8 +192,8 @@ export function ContactTab(props: ContactTabProps) {
                         onClick={() => setContactFormType("buy")}
                         className={`flex-1 py-2 cursor-pointer transition-colors text-center ${
                           contactFormType === "buy"
-                            ? "bg-[#1A2A22] text-white"
-                            : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
+                            ? "bg-[#0F8F6D] text-white"
+                            : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                         }`}
                       >
                         🏢 買房諮詢問卷
@@ -207,12 +207,12 @@ export function ContactTab(props: ContactTabProps) {
                           為了讓 Linus 能更快速地協助您媒合合適房源並向管理公司諮詢，歡迎直接複製並填寫以下諮詢表傳送給 Linus 喔！
                         </p>
                         
-                        <div className="bg-[#1A2A22] text-white p-4 text-[11px] leading-relaxed select-all border border-[#1A2A22] font-mono whitespace-pre-line">
+                        <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
                           {`1. 期望入住日期：
 2. 入境日期（機票時間）或目前在日本何處：
 3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
 4. 每月租房預算範圍：
-5. 通勤目的地和可接受交通時間（學校或公司名稱、靠近的車站）：
+5. 通勤目的地 and 可接受交通時間（學校或公司名稱、靠近的車站）：
 6. 是否為自己住／有無同居人：
 7. 其他對房子的核心條件（如：獨立洗面台、屋齡限制等）：`}
                         </div>
@@ -224,7 +224,7 @@ export function ContactTab(props: ContactTabProps) {
                           為了讓 Linus 協助媒合合適物件並進行情境試算，歡迎填寫以下買房條件。貸款結果仍以金融機構正式審查為準。
                         </p>
                         
-                        <div className="bg-[#1A2A22] text-white p-4 text-[11px] leading-relaxed select-all border border-[#1A2A22] font-mono whitespace-pre-line">
+                        <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
                           {`【買房條件問卷】
 1. 全款現金或貸款：
 2. 在日本有簽證／無簽證在台灣（有預計什麼時候來日本看房，或是線上看直接決定）：
@@ -251,9 +251,9 @@ export function ContactTab(props: ContactTabProps) {
                 </div>
 
                 {/* Company Details (Right 7 Columns) */}
-                <div className="md:col-span-7 border border-[#1A2A22] bg-white p-6 space-y-6">
+                <div className="md:col-span-7 border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                   <div>
-                    <h4 className="mb-4 border-b border-[#1A2A22] pb-2 text-base font-bold text-[#1A2A22]">
+                    <h4 className="mb-4 border-b border-[#DDE3DF] pb-2 text-base font-bold text-[#0a6d52]">
                       🎌 不動產會社基本資料
                     </h4>
 
@@ -285,7 +285,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">保証協会</span>
+                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">保証協會</span>
                         <strong className="px-4 py-3 text-zinc-900">{linusContact.guaranteeAssociation}</strong>
                       </div>
                     </div>
@@ -293,7 +293,7 @@ export function ContactTab(props: ContactTabProps) {
 
                   <div className="border-t border-zinc-200 pt-4 space-y-4">
                     <div>
-                      <h4 className="font-bold text-sm text-[#1A2A22] mb-2 font-sans uppercase tracking-wider">
+                      <h4 className="font-bold text-sm text-[#0a6d52] mb-2 font-sans uppercase tracking-wider">
                         📍 公司所在地及交涉站點：
                       </h4>
                       <p className="text-xs text-zinc-600 mb-3 font-sans">
@@ -302,7 +302,7 @@ export function ContactTab(props: ContactTabProps) {
                     </div>
 
                     {/* Google Maps Embed Iframe */}
-                    <div className="border border-[#1A2A22] bg-[#F5F8F6] p-2 relative">
+                    <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-2 relative">
                       <iframe 
                         title="Seika Office Google Map"
                         src="https://maps.google.com/maps?q=東京都千代田区東神田2-6-2&t=&z=15&ie=UTF8&iwloc=&output=embed"

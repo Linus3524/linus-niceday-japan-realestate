@@ -253,8 +253,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: STEPS & FLOWS */}
               {(buyCategory === "all" || buyCategory === "steps") && (
                 <div className="space-y-8">
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#1A2A22] pb-4 mb-6 gap-4">
+                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#DDE3DF] pb-4 mb-6 gap-4">
                       <div>
                         <h3 className="text-xl font-bold flex items-center gap-2">
                           <MapPin className="w-5 h-5 text-[#0F8F6D]" />
@@ -266,23 +266,23 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </div>
                       
                       {/* Flow Type Switcher */}
-                      <div className="flex border border-[#1A2A22] font-sans text-xs">
+                      <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans text-xs">
                         <button
                           onClick={() => setSelectedFlowType("cash")}
-                          className={`px-4 py-2 font-bold cursor-pointer transition-colors ${
+                          className={`px-4 py-2 font-bold cursor-pointer transition-all ${
                             selectedFlowType === "cash" 
-                              ? "bg-[#1A2A22] text-white" 
-                              : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
+                              ? "bg-[#0F8F6D] text-white" 
+                              : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                           }`}
                         >
                           現金全款交易流程
                         </button>
                         <button
                           onClick={() => setSelectedFlowType("loan")}
-                          className={`px-4 py-2 font-bold cursor-pointer transition-colors ${
+                          className={`px-4 py-2 font-bold cursor-pointer transition-all ${
                             selectedFlowType === "loan" 
-                              ? "bg-[#1A2A22] text-white" 
-                              : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
+                              ? "bg-[#0F8F6D] text-white" 
+                              : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                           }`}
                         >
                           銀行貸款交易流程
@@ -349,8 +349,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Signing documents requirements */}
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8">
-                    <h3 className="text-lg font-bold border-b border-[#1A2A22] pb-3 mb-4 flex items-center gap-2">
+                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
+                    <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
                       <FileText className="w-5 h-5 text-[#0F8F6D]" />
                       <span>{signingDocuments.title}</span>
                     </h3>
@@ -372,8 +372,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </div>
 
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#1A2A22] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
-                          <span className="w-2 h-2 bg-[#1A2A22]"></span>
+                        <h4 className="font-bold text-sm text-[#0F8F6D] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                          <span className="w-2 h-2 bg-[#0F8F6D]"></span>
                           <span>{signingDocuments.nonResidenceGroup.title}</span>
                         </h4>
                         <ul className="space-y-2 text-xs text-zinc-700">
@@ -393,7 +393,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: LOAN COMPARISON */}
               {(buyCategory === "all" || buyCategory === "loans") && (
                 <div className="space-y-8">
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8 space-y-6">
+                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
                         <Landmark className="w-5 h-5 text-[#0F8F6D]" />
@@ -406,18 +406,18 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="space-y-5">
                       {taiwaneseBanks.map((bank, bIdx) => (
-                        <div key={bIdx} className="border border-[#1A2A22] bg-white hover:shadow-[4px_4px_0px_0px_rgba(26, 42, 34,1)] transition-all overflow-hidden">
+                        <div key={bIdx} className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white transition-all duration-300 hover:shadow-colored-soft overflow-hidden">
                           <button
                             type="button"
                             onClick={() => toggleBank(`overseas-${bIdx}`)}
                             aria-expanded={expandedBanks.has(`overseas-${bIdx}`)}
-                            className="w-full bg-[#1A2A22] text-[#F5F8F6] px-5 py-4 flex justify-between items-center flex-wrap gap-3 text-left"
+                            className="w-full bg-[#F5F8F6] hover:bg-[#EAF3EE] text-[#1A2A22] px-5 py-4 flex justify-between items-center flex-wrap gap-3 text-left border-none cursor-pointer transition-colors"
                           >
-                            <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif">{bank.name}</h4>
+                            <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif text-[#1A2A22]">{bank.name}</h4>
                             <span className="flex items-center gap-3">
                               <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
-                              <span className="text-xs font-bold font-sans">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "查看條件"}</span>
-                              <ChevronDown className={`h-4 w-4 transition-transform ${expandedBanks.has(`overseas-${bIdx}`) ? "rotate-180" : ""}`} />
+                              <span className="text-xs font-bold font-sans text-zinc-500">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "查看條件"}</span>
+                              <ChevronDown className={`h-4 w-4 text-zinc-500 transition-transform ${expandedBanks.has(`overseas-${bIdx}`) ? "rotate-180" : ""}`} />
                             </span>
                           </button>
 
@@ -474,7 +474,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Japanese Banks */}
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8 space-y-6">
+                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
                         <Percent className="w-5 h-5 text-[#0F8F6D]" />
@@ -487,16 +487,16 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="grid grid-cols-1 items-start gap-5 font-sans md:grid-cols-2 xl:grid-cols-3">
                       {japaneseBanks.map((bank, idx) => (
-                        <article key={idx} className="w-full border border-zinc-300 bg-[#F5F8F6] transition-[border-color,box-shadow] hover:border-[#1A2A22] hover:shadow-[2px_2px_0px_0px_rgba(26,42,34,0.18)]">
+                        <article key={idx} className="w-full border border-[#DDE3DF] bg-[#F5F8F6] transition-all duration-300 hover:border-[#0F8F6D] hover:shadow-colored-soft overflow-hidden">
                           <button
                             type="button"
                             onClick={() => toggleBank(`japan-${idx}`)}
                             aria-expanded={expandedBanks.has(`japan-${idx}`)}
-                            className="grid min-h-[132px] w-full grid-cols-[1fr_auto] items-center gap-4 p-5 text-left"
+                            className="grid min-h-[132px] w-full grid-cols-[1fr_auto] items-center gap-4 p-5 text-left border-none cursor-pointer bg-transparent"
                           >
                             <span className="min-w-0 self-center">
                               <h4 className="line-clamp-2 min-h-10 font-bold text-sm leading-5 text-[#0F8F6D]">{bank.name}</h4>
-                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#1A2A22]">{bank.rate}</div>
+                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#0a6d52]">{bank.rate}</div>
                             </span>
                             <span className="flex shrink-0 flex-col items-center gap-1.5 text-[10px] font-bold text-[#3F5147]">
                               <span>{expandedBanks.has(`japan-${idx}`) ? "收合" : "詳情"}</span>
@@ -538,7 +538,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {(buyCategory === "all" || buyCategory === "minpaku") && (
                 <div className="space-y-8">
                   {/* Minpaku District Rules */}
-                  <section className="border border-[#1A2A22] bg-white p-5 md:p-8 space-y-6">
+                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div className="border-b border-zinc-200 pb-5">
                       <h3 className="text-xl font-bold flex items-start gap-2">
                         <Map className="w-5 h-5 mt-0.5 shrink-0 text-[#0F8F6D]" />
@@ -552,7 +552,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-3 border border-zinc-200 font-sans text-xs">
                       <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
                         <p className="text-zinc-500">全國共同上限</p>
-                        <p className="mt-1 text-lg font-bold text-[#1A2A22]">180 天／年</p>
+                        <p className="mt-1 text-lg font-bold text-[#0F8F6D]">180 天／年</p>
                       </div>
                       <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
                         <p className="text-zinc-500">本表怎麼看</p>
@@ -566,24 +566,24 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="columns-1 gap-4 font-sans xl:columns-2">
                       {[...minpakuRules].sort((a, b) => minpakuWardOrder.indexOf(a.district) - minpakuWardOrder.indexOf(b.district)).map((item) => (
-                        <article key={item.district} className="mb-4 inline-block w-full break-inside-avoid border border-zinc-300 bg-white align-top overflow-hidden transition-[border-color,box-shadow] hover:border-[#1A2A22] hover:shadow-[2px_2px_0px_0px_rgba(26,42,34,0.18)]">
+                        <article key={item.district} className="mb-4 inline-block w-full break-inside-avoid border border-[#DDE3DF] bg-white align-top overflow-hidden transition-all duration-300 hover:border-[#0F8F6D] hover:shadow-colored-soft">
                           <button
                             type="button"
                             onClick={() => toggleMinpakuWard(item.district)}
                             aria-expanded={expandedMinpakuWards.has(item.district)}
-                            className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#1A2A22] px-4 py-2.5 text-left"
+                            className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#F5F8F6] hover:bg-[#EAF3EE] px-4 py-2.5 text-left border-none cursor-pointer transition-colors"
                           >
-                            <h4 className="text-base font-bold text-white">{item.district}</h4>
+                            <h4 className="text-base font-bold text-[#1A2A22]">{item.district}</h4>
                             <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#DDF3EA] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#087154]">
                               {getMinpakuLimitLabel(item.daysLimit)}
                             </span>
-                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-white">
+                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500">
                               <span>{expandedMinpakuWards.has(item.district) ? "收合" : "詳情"}</span>
-                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${expandedMinpakuWards.has(item.district) ? "rotate-180" : ""}`} />
+                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform text-zinc-500 ${expandedMinpakuWards.has(item.district) ? "rotate-180" : ""}`} />
                             </span>
                           </button>
                           {expandedMinpakuWards.has(item.district) && (
-                          <dl className="divide-y divide-zinc-200 border-t border-[#1A2A22] text-xs leading-relaxed">
+                          <dl className="divide-y divide-zinc-200 border-t border-[#DDE3DF] text-xs leading-relaxed">
                             <div className="grid grid-cols-[76px_1fr] gap-3 bg-[#F2F8F5] px-4 py-3">
                               <dt className="font-bold text-[#087154]">營業天數</dt>
                               <dd className="font-medium text-zinc-700">{item.daysLimit}</dd>

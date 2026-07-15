@@ -55,12 +55,12 @@ export function TermModal(props: TermModalProps) {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white border-2 border-[#1A2A22] w-full max-w-lg p-6 relative rounded-none shadow-[8px_8px_0px_0px_rgba(26, 42, 34,1)]"
+              className="bg-white border border-[#DDE3DF] hover:border-[#0F8F6D] w-full max-w-lg p-6 relative rounded-none shadow-colored-soft transition-all duration-300"
               id="term-modal-content"
             >
               <button 
                 onClick={() => setSelectedFee(null)}
-                className="absolute top-4 right-4 text-zinc-500 hover:text-[#1A2A22] cursor-pointer"
+                className="absolute top-4 right-4 text-zinc-500 hover:text-[#0F8F6D] cursor-pointer"
                 id="term-modal-close"
               >
                 <X className="w-5 h-5" />
@@ -68,7 +68,7 @@ export function TermModal(props: TermModalProps) {
 
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3 pr-10 border-b border-zinc-200 pb-2.5">
-                  <h4 className="min-w-0 flex flex-1 flex-wrap items-baseline gap-x-0 gap-y-1 text-xl font-bold text-[#1A2A22]">
+                  <h4 className="min-w-0 flex flex-1 flex-wrap items-baseline gap-x-0 gap-y-1 text-xl font-bold text-[#0a6d52]">
                     {(() => {
                       const term = splitTermName(selectedFee.name);
                       return <>
@@ -122,13 +122,13 @@ export function TermModal(props: TermModalProps) {
                       handleTabChange("chat");
                       handleSendMessage(undefined, textToAsk);
                     }}
-                    className="px-4 py-2 border border-[#1A2A22] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
+                    className="px-4 py-2 border border-[#DDE3DF] hover:border-[#0F8F6D] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
                   >
                     向 AI 問答助理諮詢此{itemTypeLabel}
                   </button>
                   <button
                     onClick={() => setSelectedFee(null)}
-                    className="px-4 py-2 bg-[#1A2A22] text-white hover:bg-[#0F8F6D] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
+                    className="px-4 py-2 bg-[#0F8F6D] hover:bg-[#0a6d52] text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
                   >
                     關閉視窗
                   </button>
