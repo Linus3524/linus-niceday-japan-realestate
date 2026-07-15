@@ -62,7 +62,21 @@ function buildRows(criteria: RentSearchCriteria, recommendations: RentRecommenda
         : "難度高";
   const areaThreshold = criteria.roomType === "ldk2" ? 50 : criteria.roomType === "ldk1" ? 35 : 25;
   const areaDifficulty: Difficulty = criteria.areaMin && criteria.areaMin >= areaThreshold ? "需要取捨" : "條件合理";
-  const equipmentDifficulty: Difficulty = criteria.tower || equipment.length >= 4 ? "難度高" : equipment.length >= 2 ? "需要取捨" : equipment.length ? "條件合理" : "資料不足";
+  
+  // Real estate market logic: Premium equipment (Auto-lock, separate vanity, washlet, multiple burners, etc.)
+  // is standard configuration in larger layouts (1LDK / 2LDK or larger).
+  const isLargeLayout = criteria.roomType === "ldk1" || criteria.roomType === "ldk2";
+  const adjustedMaxCount = isLargeLayout ? 6 : 4;
+  const adjustedMidCount = isLargeLayout ? 3 : 2;
+  const equipmentDifficulty: Difficulty = criteria.tower
+    ? "難度高"
+    : equipment.length >= adjustedMaxCount
+      ? "難度高"
+      : equipment.length >= adjustedMidCount
+        ? "需要取捨"
+        : equipment.length
+          ? "條件合理"
+          : "資料不足";
 
   return [
     {
@@ -124,7 +138,11 @@ function buildRows(criteria: RentSearchCriteria, recommendations: RentRecommenda
       detail: equipment.length ? equipment.join("・") : "未指定特殊設備",
       difficulty: equipmentDifficulty,
       explanation: criteria.analysisNotes?.equipment || (equipment.length
-        ? `目前有 ${equipment.length} 項設備要求，同時滿足會明顯減少候選房源。建議分成「入住必須」與「有最好」兩組；預算不足時先捨棄後者，不要等到看房階段才臨時決定。${criteria.lpGasAccepted ? " 接受 LP 瓦斯可能增加選擇，但請一併比較每月瓦斯費。" : ""}${criteria.cityGasRequired ? " 若堅持都市瓦斯，請把它視為必要篩選條件並接受房源數量下降。" : ""}`
+        ? `目前有 ${equipment.length} 項設備要求。${
+            isLargeLayout
+              ? "由於您選擇了 1LDK 或更寬敞的格局，這類物件在市場上普遍將獨立洗面台、自動門、免治馬桶、2口瓦斯爐等項目列為標準配備，因此即使設備條件較多，在 1LDK / 2LDK 中的尋找難度也會顯著降低。"
+              : "同時滿足所有項目會明顯減少小坪數單身房源（如 1R/1K）的選擇。建議分成「入住必須」與「有最好」兩組，預算不足時優先捨棄後者。"
+          }${criteria.lpGasAccepted ? " 接受 LP 瓦斯可能增加選擇，但請一併比較每月瓦斯費。" : ""}${criteria.cityGasRequired ? " 若堅持都市瓦斯，請把它視為必要篩選條件並接受房源數量下降。" : ""}`
         : `目前設備選擇較有彈性。建議先列出兩至三項真正不能少的設備，其餘保留彈性，會比完全不設條件更容易有效比較房源。`)
     },
     {
