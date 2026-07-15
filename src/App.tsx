@@ -354,9 +354,9 @@ export default function App() {
             <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
               <span>SINCE 2021</span>
               <span>•</span>
-              <span>TOKYO, JAPAN</span>
+              <span>REAL ESTATE GUIDE</span>
               <span>•</span>
-              <span>LINE: LINUS0922</span>
+              <span>TOKYO</span>
             </div>
           </div>
 
