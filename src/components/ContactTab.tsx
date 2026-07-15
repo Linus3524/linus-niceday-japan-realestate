@@ -47,7 +47,7 @@ export function ContactTab(props: ContactTabProps) {
                       <div className="space-y-1">
                         <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
                         <div className="flex items-baseline gap-2">
-                          <h4 className="text-xl font-bold tracking-tight text-[#0a6d52]">{linusContact.name}</h4>
+                          <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
                           <span className="text-xs font-bold text-[#0F8F6D] font-sans">營業係長</span>
                         </div>
                       </div>
