@@ -377,7 +377,7 @@ export default function App() {
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 max-w-[150px]">
                 <a
                   href={`https://line.me/ti/p/~${linusContact.lineId}`}
                   target="_blank"
