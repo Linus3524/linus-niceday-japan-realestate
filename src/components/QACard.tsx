@@ -37,7 +37,7 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
 
   return (
     <article className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-colored-soft">
-      <details className="group" open={!isLong}>
+      <details className="group">
         <summary className="flex cursor-pointer list-none items-start gap-3 p-4 marker:hidden md:p-5">
           <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#0F8F6D] text-xs font-bold text-white font-jost">Q{number}</span>
           <div className="min-w-0 flex-1">
