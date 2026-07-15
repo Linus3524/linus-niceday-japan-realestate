@@ -339,7 +339,7 @@ export default function App() {
             </h1>
 
             <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
-              台灣人仲介專門把關，日本租屋、買房與置產的大補帖。
+              台灣人仲介帶你看懂日本租屋、買房與置產。
             </h2>
 
             <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
