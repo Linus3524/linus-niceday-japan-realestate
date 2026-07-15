@@ -137,16 +137,20 @@ export function ContactTab(props: ContactTabProps) {
                     >
                       ＋ 一鍵加 Linus 為 LINE 好友
                     </a>
-                    <div className="flex gap-2">
-                      <div className="bg-zinc-100 flex-grow px-3 py-2 border border-zinc-300 font-mono font-bold text-center select-all">
-                        {linusContact.lineId}
-                      </div>
+                    <div className="flex items-stretch font-sans text-xs">
+                      <input
+                        type="text"
+                        readOnly
+                        value={linusContact.lineId}
+                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-zinc-700 focus:outline-none text-[12px] text-center"
+                        aria-label="LINE ID"
+                      />
                       <button
                         onClick={handleCopyLine}
-                        className="bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-4 py-2 font-bold cursor-pointer transition-colors shrink-0"
+                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
                         id="copy-line-btn-contact"
                       >
-                        {copiedLine ? "已複製" : "複製 ID"}
+                        {copiedLine ? "已複製" : "複製"}
                       </button>
                     </div>
                     <p className="text-[10px] text-zinc-500 leading-relaxed text-justify">
@@ -157,16 +161,20 @@ export function ContactTab(props: ContactTabProps) {
                   {/* Copy WeChat block */}
                   <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 space-y-3 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
                     <span className="font-bold text-zinc-800 block">直接添加 WeChat 諮詢：</span>
-                    <div className="flex gap-2">
-                      <div className="bg-zinc-100 flex-grow px-3 py-2 border border-zinc-300 font-mono font-bold text-center select-all">
-                        {linusContact.wechatId}
-                      </div>
+                    <div className="flex items-stretch font-sans text-xs">
+                      <input
+                        type="text"
+                        readOnly
+                        value={linusContact.wechatId}
+                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-zinc-700 focus:outline-none text-[12px] text-center"
+                        aria-label="WeChat ID"
+                      />
                       <button
                         onClick={handleCopyWechat}
-                        className="bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-4 py-2 font-bold cursor-pointer transition-colors shrink-0"
+                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
                         id="copy-wechat-btn-contact"
                       >
-                        {copiedWechat ? "已複製" : "複製 ID"}
+                        {copiedWechat ? "已複製" : "複製"}
                       </button>
                     </div>
                     <p className="text-[10px] text-zinc-500 leading-relaxed text-justify">
