@@ -526,7 +526,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div className="space-y-1">
-              <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租房買賣知識大補帖</strong>
+              <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租屋買房知識大補帖</strong>
               <p className="text-xs text-zinc-500 font-sans">
                 版權所有 © 2026 LINUS Nice Day Japan All Rights Reserved. 株式会社世嘉 Seika (東京都知事免許第111940号)
               </p>
