@@ -34,7 +34,8 @@ function buildRows(criteria: RentSearchCriteria, recommendations: RentRecommenda
     ...(criteria.districts || []), criteria.district,
     criteria.line,
     ...(criteria.stations || []).map(station => `${station}站`),
-    criteria.station ? `${criteria.station}站` : null
+    criteria.station ? `${criteria.station}站` : null,
+    criteria.commuteStation ? `通勤至 ${criteria.commuteStation}${criteria.commuteMinutes ? `・${criteria.commuteMinutes} 分鐘內` : ""}` : criteria.locationPreference
   ].filter(Boolean).join("・");
   const equipment = [
     criteria.washbasin ? "獨立洗面台" : null,
@@ -68,9 +69,9 @@ function buildRows(criteria: RentSearchCriteria, recommendations: RentRecommenda
       category: "身份簽證",
       detail: criteria.visaType ? `${criteria.visaType}${criteria.visaYears ? `・在留期間 ${criteria.visaYears} 年` : ""}` : "未提供簽證資料",
       difficulty: criteria.visaType ? "條件合理" : "資料不足",
-      explanation: criteria.visaType
+      explanation: criteria.analysisNotes?.visa || (criteria.visaType
         ? `已具備進一步準備租屋申請的基本資訊。接下來請備妥在留卡、護照，以及能說明工作與收入的文件；實際送件資料會依物件與保證公司要求調整。`
-        : `請先補上簽證類型、在留期限與工作狀態，才能判斷應優先準備僱傭資料、薪資資料或財力文件，避免看中房源後才發現無法送件。`
+        : `請先補上簽證類型、在留期限與工作狀態，才能判斷應優先準備僱傭資料、薪資資料或財力文件，避免看中房源後才發現無法送件。`)
     },
     {
       category: "期望預算",
@@ -82,57 +83,57 @@ function buildRows(criteria: RentSearchCriteria, recommendations: RentRecommenda
       category: "地點交通",
       detail: location || "未指定線路、車站或行政區",
       difficulty: location ? (recommendations.some(item => item.station || item.lines.length) ? "條件合理" : "需要取捨") : "資料不足",
-      explanation: location
-        ? `目前會以指定範圍作為找房主軸${criteria.commuteStation ? `，並優先兼顧前往 ${criteria.commuteStation} 的通勤便利性` : ""}。若租金超出預算，請先保留最重要的通勤方向，再擴大相鄰車站與可接受行政區，選擇會增加得最明顯。`
-        : `請至少提供上班地點或一條偏好的鐵路線；有明確通勤目的地後，才能排除租金便宜但每天移動負擔過高的區域。`
+      explanation: criteria.analysisNotes?.location || (location
+        ? `目前會以指定範圍作為找房主軸${criteria.commuteStation ? `，並優先兼顧前往 ${criteria.commuteStation}${criteria.commuteMinutes ? `、約 ${criteria.commuteMinutes} 分鐘內` : ""}的通勤便利性` : ""}。若租金超出預算，請先保留最重要的通勤方向，再擴大相鄰車站與可接受行政區，選擇會增加得最明顯。`
+        : `請至少提供上班地點或一條偏好的鐵路線；有明確通勤目的地後，才能排除租金便宜但每天移動負擔過高的區域。`)
     },
     {
       category: "周邊機能",
       detail: criteria.nearbyAmenity ? `${criteria.nearbyAmenity}${criteria.amenityWalkMinutes ? `步行 ${criteria.amenityWalkMinutes} 分鐘內` : ""}` : "未指定生活機能",
       difficulty: criteria.nearbyAmenity ? "需要取捨" : "資料不足",
-      explanation: criteria.nearbyAmenity
+      explanation: criteria.analysisNotes?.amenity || (criteria.nearbyAmenity
         ? `這項需求合理，但會在最後篩選階段淘汰部分地址。建議先找到租金與通勤合適的候選物件，再逐間確認實際步行路線、營業時間與店鋪規模。`
-        : `可補充最常使用的生活設施，例如超市、醫院或學校，並只保留一至兩項真正需要每天使用的條件，避免房源範圍縮得過小。`
+        : `可補充最常使用的生活設施，例如超市、醫院或學校，並只保留一至兩項真正需要每天使用的條件，避免房源範圍縮得過小。`)
     },
     {
       category: "格局面積",
       detail: `${roomLabel(criteria.roomType)}${criteria.areaMin ? `・${criteria.areaMin}㎡以上` : "・面積未指定"}`,
       difficulty: areaDifficulty,
-      explanation: criteria.areaMin
+      explanation: criteria.analysisNotes?.layout || (criteria.areaMin
         ? `${roomLabel(criteria.roomType)} 與 ${criteria.areaMin}㎡以上必須同時符合，選擇會比只指定格局更少。若預算壓力偏高，可比較縮小面積、改看 1DK，或保留格局但移往相鄰車站，確認哪一種取捨最能接受。`
-        : `建議補上真正能接受的最低面積。同樣格局可能有很大的室內大小差異，只看房型容易低估實際租金。`
+        : `建議補上真正能接受的最低面積。同樣格局可能有很大的室內大小差異，只看房型容易低估實際租金。`)
     },
     {
       category: "建物條件",
       detail: [criteria.structure, criteria.buildingAgeMax ? `屋齡 ${criteria.buildingAgeMax} 年內` : null, criteria.floorMin ? `${criteria.floorMin} 樓以上` : null].filter(Boolean).join("・") || "未限制結構、屋齡或樓層",
       difficulty: criteria.buildingAgeMax && criteria.buildingAgeMax <= 5 ? "難度高" : criteria.buildingAgeMax && criteria.buildingAgeMax <= 10 ? "需要取捨" : "條件合理",
-      explanation: criteria.buildingAgeMax || criteria.structure || criteria.floorMin
+      explanation: criteria.analysisNotes?.building || (criteria.buildingAgeMax || criteria.structure || criteria.floorMin
         ? `結構、屋齡與樓層疊加後會排除不少物件。若這些都是必要條件，就需要接受較高租金；若預算固定，建議優先放寬屋齡，再比較翻新狀況、隔音與管理品質。`
-        : `目前建物選擇較有彈性。實際看房時可優先比較隔音、耐震、翻新狀況與公共區域管理，不必只用新舊判斷居住品質。`
+        : `目前建物選擇較有彈性。實際看房時可優先比較隔音、耐震、翻新狀況與公共區域管理，不必只用新舊判斷居住品質。`)
     },
     {
       category: "步行距離",
       detail: criteria.walkMinutes ? `車站步行 ${criteria.walkMinutes} 分鐘內` : "未限制車站步行時間",
       difficulty: criteria.walkMinutes && criteria.walkMinutes <= 5 ? "難度高" : criteria.walkMinutes && criteria.walkMinutes <= 10 ? "需要取捨" : "條件合理",
-      explanation: criteria.walkMinutes
+      explanation: criteria.analysisNotes?.walking || (criteria.walkMinutes
         ? `${criteria.walkMinutes} 分鐘內屬於通勤方便的範圍，熱門車站附近通常租金更高、競爭也更快。預算不足時，建議與設備、屋齡及車站範圍一起放寬，而不是只調整其中一項。`
-        : `請設定每天真的願意走的時間上限。完全不限制雖然房源較多，但可能得到租金合適、實際通勤卻無法長期接受的結果。`
+        : `請設定每天真的願意走的時間上限。完全不限制雖然房源較多，但可能得到租金合適、實際通勤卻無法長期接受的結果。`)
     },
     {
       category: "設備條件",
       detail: equipment.length ? equipment.join("・") : "未指定特殊設備",
       difficulty: equipmentDifficulty,
-      explanation: equipment.length
+      explanation: criteria.analysisNotes?.equipment || (equipment.length
         ? `目前有 ${equipment.length} 項設備要求，同時滿足會明顯減少候選房源。建議分成「入住必須」與「有最好」兩組；預算不足時先捨棄後者，不要等到看房階段才臨時決定。${criteria.lpGasAccepted ? " 接受 LP 瓦斯可能增加選擇，但請一併比較每月瓦斯費。" : ""}${criteria.cityGasRequired ? " 若堅持都市瓦斯，請把它視為必要篩選條件並接受房源數量下降。" : ""}`
-        : `目前設備選擇較有彈性。建議先列出兩至三項真正不能少的設備，其餘保留彈性，會比完全不設條件更容易有效比較房源。`
+        : `目前設備選擇較有彈性。建議先列出兩至三項真正不能少的設備，其餘保留彈性，會比完全不設條件更容易有效比較房源。`)
     },
     {
       category: "寵物與特殊條件",
       detail: criteria.petsAllowed ? `可養${criteria.petType || "寵物"}` : "未指定寵物條件",
       difficulty: criteria.petsAllowed ? "難度高" : "條件合理",
-      explanation: criteria.petsAllowed
+      explanation: criteria.analysisNotes?.special || (criteria.petsAllowed
         ? `可養貓是本次找房的重要限制，房源會明顯變少，也可能增加敷金或清潔費。若確實會帶貓入住，這項不能妥協；應改從提高預算、擴大地區、放寬屋齡與設備著手。`
-        : `目前沒有寵物限制，可保留較多選擇。若未來可能飼養寵物，請在申請前提出，不能入住後再自行飼養。`
+        : `目前沒有寵物限制，可保留較多選擇。若未來可能飼養寵物，請在申請前提出，不能入住後再自行飼養。`)
     }
   ];
 }

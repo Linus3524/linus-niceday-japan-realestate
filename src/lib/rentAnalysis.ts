@@ -17,6 +17,9 @@ export interface RentSearchCriteria {
   line?: string | null;
   walkMinutes?: number | null;
   commuteStation?: string | null;
+  commuteStations?: string[];
+  commuteMinutes?: number | null;
+  locationPreference?: string | null;
   nearbyAmenity?: string | null;
   amenityWalkMinutes?: number | null;
   buildingAgeMax?: number | null;
@@ -37,6 +40,16 @@ export interface RentSearchCriteria {
   elevator?: boolean;
   furnished?: boolean;
   tower?: boolean;
+  analysisNotes?: {
+    visa?: string | null;
+    location?: string | null;
+    amenity?: string | null;
+    layout?: string | null;
+    building?: string | null;
+    walking?: string | null;
+    equipment?: string | null;
+    special?: string | null;
+  } | null;
 }
 
 export interface RentRecommendation {
@@ -109,6 +122,22 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     enriched.petsAllowed = true;
     if (!enriched.petType) enriched.petType = "寵物";
   }
+  const commuteLine = prompt.split(/\n/).find(line => /通勤|車程|上班|工作地點|目的地|希望.*(?:分鐘|分內)/i.test(line));
+  if (commuteLine) {
+    const normalizedLine = normalize(commuteLine);
+    const inferredDestinations = [...new Map(
+      Object.values(districtStations).flat()
+        .filter(station => normalize(station.name).length >= 2 && normalizedLine.includes(normalize(station.name)))
+        .map(station => [normalize(station.name), station.name] as const)
+    ).values()];
+    if (!(enriched.commuteStations || []).length && inferredDestinations.length) enriched.commuteStations = inferredDestinations;
+    if (!enriched.commuteStation && inferredDestinations.length) enriched.commuteStation = inferredDestinations.join("／");
+    if (!enriched.locationPreference) enriched.locationPreference = commuteLine.replace(/^\s*\d+[.、．]?\s*/, "").trim();
+  }
+  if (!enriched.commuteMinutes && commuteLine) {
+    const commuteMinutes = commuteLine.match(/(\d{1,3})\s*分鐘/i);
+    if (commuteMinutes?.[1]) enriched.commuteMinutes = Number(commuteMinutes[1]);
+  }
   return enriched;
 }
 
@@ -162,11 +191,12 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(value => normalize(value));
   const wantedStations = [...(criteria.stations || []), criteria.station].filter(Boolean).map(value => normalize(value));
   const wantedLine = criteria.line || "";
-  const commuteStations = criteria.commuteStation
-    ? Object.values(districtStations).flat().filter(station => {
-      const wanted = normalize(criteria.commuteStation);
-      return normalize(station.name).includes(wanted) || wanted.includes(normalize(station.name));
-    })
+  const commuteTargets = [...(criteria.commuteStations || []), ...(criteria.commuteStation?.split(/[、,，/／或|・]/) || [])]
+    .map(value => normalize(value)).filter(Boolean);
+  const commuteStations = commuteTargets.length
+    ? Object.values(districtStations).flat().filter(station => commuteTargets.some(wanted =>
+      normalize(station.name).includes(wanted) || wanted.includes(normalize(station.name))
+    ))
     : [];
 
   const candidates = rentRates.flatMap(rate => {

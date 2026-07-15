@@ -174,6 +174,9 @@ app.post("/api/rent-analysis", async (req, res) => {
             line: { type: Type.STRING, nullable: true },
             walkMinutes: { type: Type.NUMBER, nullable: true },
             commuteStation: { type: Type.STRING, nullable: true },
+            commuteStations: { type: Type.ARRAY, items: { type: Type.STRING } },
+            commuteMinutes: { type: Type.NUMBER, nullable: true },
+            locationPreference: { type: Type.STRING, nullable: true },
             nearbyAmenity: { type: Type.STRING, nullable: true },
             amenityWalkMinutes: { type: Type.NUMBER, nullable: true },
             buildingAgeMax: { type: Type.NUMBER, nullable: true },
@@ -194,10 +197,25 @@ app.post("/api/rent-analysis", async (req, res) => {
             elevator: { type: Type.BOOLEAN },
             furnished: { type: Type.BOOLEAN },
             tower: { type: Type.BOOLEAN }
+            ,analysisNotes: {
+              type: Type.OBJECT,
+              nullable: true,
+              properties: {
+                visa: { type: Type.STRING, nullable: true },
+                location: { type: Type.STRING, nullable: true },
+                amenity: { type: Type.STRING, nullable: true },
+                layout: { type: Type.STRING, nullable: true },
+                building: { type: Type.STRING, nullable: true },
+                walking: { type: Type.STRING, nullable: true },
+                equipment: { type: Type.STRING, nullable: true },
+                special: { type: Type.STRING, nullable: true }
+              },
+              required: ["visa", "location", "amenity", "layout", "building", "walking", "equipment", "special"]
+            }
           },
-          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower"]
+          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "analysisNotes"]
         },
-        systemInstruction: "你是日本租屋條件解析器。只從使用者文字擷取明確條件，不可自行補充。未指定格局時以 k1 作為搜尋基準。完整保留多個行政區與車站；辨識簽證、通勤地、生活機能、建物結構、自動門（オートロック）、樓層、陽台、爐具、免費網路（インターネット無料／網路費包含）、瓦斯與寵物條件。只有使用者明確表示可接受 LP 瓦斯時 lpGasAccepted 才可為 true；表示希望都市瓦斯、都市ガス限定、不要或不接受 LP 瓦斯時 cityGasRequired 為 true。兩者不可同時為 true。繁簡中文、日本漢字與常見日文站名均保留原意。只輸出符合 schema 的 JSON。"
+        systemInstruction: "你是日本租屋需求理解器。使用者會用自由、模糊或口語的方式描述生活圈與通勤需求；請保留原意並合理結構化，不要要求固定句型，也不可自行捏造條件。未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；通勤時間放入 commuteMinutes；無法化成單一車站但仍有意義的描述保留在 locationPreference，絕不可因此判定為未指定地點。analysisNotes 要依本次原文逐項寫給租客看的個人化分析，每項一至兩句，必須連結使用者實際提出的入住時間、人數、簽證、通勤、格局或設備；不要出現『本站』『模型』『已辨識』『需逐間確認』等開發者口吻，也不可自行編造租金數字。未提到的項目可回傳 null。辨識簽證、生活機能、建物結構、自動門、樓層、陽台、爐具、免費網路、瓦斯與寵物條件。只輸出符合 schema 的 JSON。"
       }
     });
     const criteria = enrichRentCriteriaFromPrompt(JSON.parse(response.text || "{}") as RentSearchCriteria, prompt);
