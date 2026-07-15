@@ -360,7 +360,7 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-3 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[auto_1fr] gap-3 items-center max-w-[330px] w-full lg:ml-auto">
+          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-3 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[auto_1fr] gap-3 items-center w-fit lg:ml-auto">
             {/* Left: Logo alone */}
             <div className="shrink-0">
               <img 
