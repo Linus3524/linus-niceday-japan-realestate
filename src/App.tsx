@@ -313,7 +313,7 @@ export default function App() {
             <span className="hidden sm:inline text-[9px] border border-[#0F8F6D] bg-[#EAF3EE] text-[#0F8F6D] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">東京2026最新校對版</span>
           </div>
           {/* Right: City & LINE */}
-          <div className="font-jost text-[11px] tracking-[0.18em] text-zinc-500 uppercase flex items-center gap-3">
+          <div className="hidden sm:flex font-jost text-[11px] tracking-[0.18em] text-zinc-500 uppercase items-center gap-3">
             <span>Tokyo, Japan</span>
             <span className="text-zinc-300">|</span>
             <span>LINE: {linusContact.lineId}</span>
@@ -411,9 +411,9 @@ export default function App() {
       </section>
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
-      <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] py-2 px-6 overflow-x-auto select-none scrollbar-none" id="primary-nav">
-        <div className="max-w-[1280px] mx-auto flex items-center justify-center">
-          <div className="flex items-center gap-1 md:gap-2">
+      <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] select-none" id="primary-nav">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-center px-2 sm:px-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex items-center gap-0 sm:gap-1 md:gap-2 py-2">
             {[
               { id: "cards" as const, label: "租屋指南", en: "RENT" },
               { id: "buyHouse" as const, label: "買房置產", en: "BUY" },
@@ -424,15 +424,15 @@ export default function App() {
               <button 
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`relative py-2 px-5.5 flex items-baseline gap-1.5 md:gap-2 font-serif text-sm md:text-[15px] tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent ${
+                className={`relative py-2 px-3 sm:px-4 md:px-5.5 flex items-baseline gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
                   activeTab === tab.id ? "text-[#0a6d52] font-bold" : "text-[#1a2a22] hover:text-[#0a6d52]"
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >
-                <span className="font-jost text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#0F8F6D] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
+                <span className="font-jost text-[8px] sm:text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#0F8F6D] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
                 <span>{tab.label}</span>
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-[-10px] left-5.5 right-5.5 h-[2px] bg-[#0F8F6D]" />
+                  <div className="absolute bottom-[-10px] left-3 right-3 sm:left-4 sm:right-4 md:left-5.5 md:right-5.5 h-[2px] bg-[#0F8F6D]" />
                 )}
               </button>
             ))}
