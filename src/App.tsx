@@ -343,10 +343,9 @@ export default function App() {
             </h2>
 
             <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
-              <p>我是 Linus — 在東京做不動產仲介的台灣人。</p>
-              <p>這裡分享在日租屋眉角、購屋步驟、日本生活與貸款規劃，</p>
-              <p>並提供 24 小時 AI 智慧顧問與線上諮詢，</p>
-              <p>像一本陪伴您在日本安居的實用大補帖。</p>
+              <p>我是 Linus，在東京從事不動產仲介。</p>
+              <p>分享日本租屋、買房、貸款規劃與在日生活的第一線實務，並提供 24 小時 AI 智慧顧問與線上諮詢。</p>
+              <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
             </div>
 
             <div className="border-t border-[#DDE3DF] my-6"></div>
