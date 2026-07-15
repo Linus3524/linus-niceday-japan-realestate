@@ -12,7 +12,12 @@ interface Props {
 const yen = (value: number) => `¥${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 function LayoutTiles({ items }: { items: Array<{ label: string; value: number }> }) {
-  const colors = ["#D6EAF0", "#A8D5C2", "#DCC8A1", "#FBDFD2"];
+  // Unify with map colors:
+  // 1R (cheapest) -> Green (#dcfce7)
+  // 1K -> Yellow (#fef9c3)
+  // 1LDK -> Orange (#ffedd5)
+  // 2LDK (most expensive) -> Red (#fee2e2)
+  const colors = ["#dcfce7", "#fef9c3", "#ffedd5", "#fee2e2"];
   const baseline = items[0]?.value || 1;
   return (
     <div className="grid min-h-[230px] grid-cols-2 gap-2 font-sans">
@@ -31,7 +36,13 @@ function LayoutTiles({ items }: { items: Array<{ label: string; value: number }>
 }
 
 function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  const colors = ["#0A6D52", "#0F8F6D", "#A8D5C2", "#DCC8A1", "#FBDFD2"];
+  // Unify with map colors:
+  // 築 5 年內 (+12%, highest price) -> Red (#fee2e2)
+  // 築 6-10 年 (+6%) -> Orange (#ffedd5)
+  // 築 11-20 年 (0%) -> Yellow (#fef9c3)
+  // 築 21-30 年 (-6%) -> Green (#dcfce7)
+  // 築 30 年+ (-12%) -> Blue/Light grey (#F2F8FA)
+  const colors = ["#fee2e2", "#ffedd5", "#fef9c3", "#dcfce7", "#F2F8FA"];
   return (
     <div className="relative flex min-h-[230px] flex-col justify-between py-1 font-sans">
       <div className="absolute bottom-3 left-[92px] top-3 w-px bg-[#DDE3DF]" />
@@ -53,14 +64,21 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
 }
 
 function BuildingRange({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  const colors = ["#D6EAF0", "#A8D5C2", "#DCC8A1", "#FBDFD2", "#E94E2B"];
+  // Unify with map colors:
+  // 01 (木造/最便宜) -> Blue/Light grey (#F2F8FA)
+  // 02 (鐵骨/RC) -> Green (#dcfce7)
+  // 03 (RC/SRC/電梯) -> Yellow (#fef9c3)
+  // 04 (RC/SRC/新築) -> Orange (#ffedd5)
+  // 05 (塔樓/最貴) -> Red (#fee2e2)
+  const colors = ["#F2F8FA", "#dcfce7", "#fef9c3", "#ffedd5", "#fee2e2"];
+  const textColors = ["text-[#3F626D]", "text-[#15803d]", "text-[#854d0e]", "text-[#c2410c]", "text-[#991b1b]"];
   const min = Math.min(...items.map(item => item.value));
   const max = Math.max(...items.map(item => item.value));
   return (
     <div className="min-h-[230px] font-sans">
       <div className="mb-3 border border-[#DDE3DF] bg-[#FAFCFB] px-3 pb-2 pt-3">
         <div className="relative h-5">
-          <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2" style={{ background: "linear-gradient(90deg, #D6EAF0 0%, #A8D5C2 28%, #DCC8A1 58%, #FBDFD2 78%, #E94E2B 100%)" }} />
+          <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2" style={{ background: "linear-gradient(90deg, #dcfce7 0%, #fef9c3 30%, #ffedd5 65%, #fee2e2 100%)" }} />
           {items.map((entry, index) => {
             const position = 4 + (entry.value - min) / Math.max(max - min, 1) * 92;
             return <span key={entry.label} className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_#8A9590]" style={{ left: `${position}%`, backgroundColor: colors[index] }} />;
@@ -73,7 +91,7 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
           const difference = Math.round((entry.value / baseline - 1) * 100);
           return (
             <div key={entry.label} className={`grid min-h-[34px] grid-cols-[26px_1fr_66px_40px] items-center gap-2 px-2 py-1.5 ${index % 2 ? "bg-[#FAFCFB]" : "bg-white"}`}>
-              <span className="flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold text-[#1A2A22]" style={{ backgroundColor: colors[index] }}>0{index + 1}</span>
+              <span className={`flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold ${textColors[index]}`} style={{ backgroundColor: colors[index] }}>0{index + 1}</span>
               <span className="text-[9px] font-bold leading-tight text-[#3F5147]">{entry.label}</span>
               <span className="text-right font-mono text-[10px] font-bold text-[#1A2A22]">{yen(entry.value)}</span>
               <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#0A6D52]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
@@ -86,13 +104,19 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
 }
 
 function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; value: number }>; baseline: number }) {
-  const colors = ["#0A6D52", "#0F8F6D", "#A8D5C2", "#D6EAF0"];
+  // Unify with map colors:
+  // 5分內 (+8%, highest price) -> Red (#fee2e2)
+  // 6-10分 (+3%) -> Orange (#ffedd5)
+  // 11-15分 (-3%) -> Yellow (#fef9c3)
+  // 16分+ (-8%) -> Green (#dcfce7)
+  const colors = ["#fee2e2", "#ffedd5", "#fef9c3", "#dcfce7"];
+  const textColors = ["text-[#991b1b]", "text-[#c2410c]", "text-[#854d0e]", "text-[#15803d]"];
   return (
     <div className="font-sans">
       <div className="mb-3 flex items-center justify-between gap-2 text-[9px] font-bold">
-        <span className="bg-[#EAF3EE] px-2 py-1 text-[#0A6D52]">近站溢價 +8%</span>
+        <span className="bg-[#FBDFD2] px-2 py-1 text-[#B13818]">近站溢價 +8%</span>
         <span className="text-[#8A9590]">距離增加，租金逐階下降 →</span>
-        <span className="bg-[#F2F8FA] px-2 py-1 text-[#3F626D]">遠站折讓 −8%</span>
+        <span className="bg-[#EAF3EE] px-2 py-1 text-[#0A6D52]">遠站折讓 −8%</span>
       </div>
       <div className="grid h-[210px] grid-cols-4 items-end gap-2 border-b border-[#DDE3DF] px-1" role="img" aria-label="不同車站步行距離的租金階梯比較">
         {items.map((entry, index) => {
@@ -102,8 +126,8 @@ function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; 
             <div key={entry.label} className="flex h-full flex-col justify-end text-center">
               <span className="mb-1 text-[9px] font-mono font-bold text-[#1A2A22]">{yen(entry.value)}</span>
               <div className="flex flex-col justify-between border border-[#DDE3DF] px-1 py-2" style={{ height: blockHeight, backgroundColor: colors[index] }}>
-                <span className={`text-xs font-mono font-bold ${index < 2 ? "text-white" : "text-[#1A2A22]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
-                <span className={`text-[9px] font-bold leading-tight ${index < 2 ? "text-white" : "text-[#1A2A22]"}`}>{entry.label.replace("步行 ", "")}</span>
+                <span className={`text-xs font-mono font-bold ${textColors[index]}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+                <span className={`text-[9px] font-bold leading-tight ${textColors[index]}`}>{entry.label.replace("步行 ", "")}</span>
               </div>
             </div>
           );
