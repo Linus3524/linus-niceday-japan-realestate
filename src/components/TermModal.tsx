@@ -55,7 +55,7 @@ export function TermModal(props: TermModalProps) {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white border border-[#DDE3DF] hover:border-[#0F8F6D] w-full max-w-lg p-6 relative rounded-none shadow-colored-soft transition-all duration-300"
+              className="bg-white border border-[#DDE3DF] hover:border-[#0F8F6D] w-full max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:p-6 relative rounded-none shadow-colored-soft transition-all duration-300"
               id="term-modal-content"
             >
               <button 
@@ -67,14 +67,14 @@ export function TermModal(props: TermModalProps) {
               </button>
 
               <div className="space-y-4">
-                <div className="flex items-start justify-between gap-3 pr-10 border-b border-zinc-200 pb-2.5">
-                  <h4 className="min-w-0 flex flex-1 flex-wrap items-baseline gap-x-0 gap-y-1 text-xl font-bold text-[#0a6d52]">
+                <div className="flex flex-col items-stretch gap-2 pr-9 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:pr-10 border-b border-zinc-200 pb-3">
+                  <h4 className="min-w-0 w-full flex flex-wrap items-baseline gap-x-0 gap-y-1 text-[clamp(1.1rem,5vw,1.25rem)] leading-[1.45] font-bold text-[#0a6d52]">
                     {(() => {
                       const term = splitTermName(selectedFee.name);
                       return <>
-                        <span className="whitespace-nowrap"><JapaneseRuby text={term.japanese} /></span>
+                        <span className="min-w-0 break-keep"><JapaneseRuby text={term.japanese} /></span>
                         {term.translation && (
-                          <span className={shouldMoveTranslation(term.translation) ? "basis-full whitespace-nowrap" : "whitespace-nowrap"}>
+                          <span className={shouldMoveTranslation(term.translation) ? "basis-full break-keep" : "break-keep"}>
                             {term.translation}
                           </span>
                         )}
@@ -82,7 +82,7 @@ export function TermModal(props: TermModalProps) {
                     })()}
                   </h4>
                   {selectedFee.jpName && (
-                    <span className="shrink-0 bg-[#0F8F6D] text-white px-2 py-1 font-sans text-xs leading-snug">
+                    <span className="self-end shrink-0 bg-[#0F8F6D] text-white px-2 py-1 font-sans text-xs leading-snug sm:self-auto">
                       <span className="flex flex-col items-end gap-y-0">
                         {splitReading(selectedFee.jpName).map((word, index) => <span key={`${word}-${index}`} className="whitespace-nowrap">{word}</span>)}
                       </span>
@@ -114,7 +114,7 @@ export function TermModal(props: TermModalProps) {
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 font-sans">
+                <div className="pt-4 border-t border-zinc-100 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3 font-sans">
                   <button
                     onClick={() => {
                       const textToAsk = `想深入了解關於「${selectedFee.name}」這個${itemTypeLabel}的內容與實務細節`;
@@ -122,13 +122,13 @@ export function TermModal(props: TermModalProps) {
                       handleTabChange("chat");
                       handleSendMessage(undefined, textToAsk);
                     }}
-                    className="px-4 py-2 border border-[#DDE3DF] hover:border-[#0F8F6D] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
+                    className="w-full px-4 py-2 border border-[#DDE3DF] hover:border-[#0F8F6D] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
                   >
                     向 AI 顧問諮詢此{itemTypeLabel}
                   </button>
                   <button
                     onClick={() => setSelectedFee(null)}
-                    className="px-4 py-2 bg-[#0F8F6D] hover:bg-[#0a6d52] text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
+                    className="w-full px-4 py-2 bg-[#0F8F6D] hover:bg-[#0a6d52] text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
                   >
                     關閉視窗
                   </button>
