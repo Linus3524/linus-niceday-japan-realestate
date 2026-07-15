@@ -28,14 +28,14 @@ export function ChatTab(props: ChatTabProps) {
             >
               <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="chat-header-card">
                 <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs tracking-widest font-sans">
-                  找房顧問
+                  AI 顧問
                 </div>
                 <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#0a6d52] flex items-center gap-2">
                   <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
-                  <span>Linus ╳ 24小時 AI 找房顧問</span>
+                  <span>Linus ╳ 24 小時 AI 顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  AI 找房顧問整合了本站 of 租屋與買房知識：從敷金、審査與找房預算，到購屋流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房 或 評估日本不動產投資，都可以先從這裡開始。
+                  AI 顧問整合了本站的租屋與買房知識：從敷金、審査與找房預算，到買房流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房或評估日本不動產投資，都可以先從這裡開始。
                 </p>
               </div>
 
@@ -129,7 +129,7 @@ export function ChatTab(props: ChatTabProps) {
                   {[
                     "打工度假存款需要準備多少？",
                     "什麼是敷金跟禮金？",
-                    "租房如何預約開通水電瓦斯？",
+                    "租屋如何預約開通水電瓦斯？",
                     "可以跟朋友一起合租公寓嗎？",
                     "海外審査需要哪些文件？",
                     "外國人買房需要日本簽證嗎？",

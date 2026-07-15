@@ -124,7 +124,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。來到日本留學、打工度假或就職，找一個能安心落腳的家，往往是最先面對的大事。為了協助大家在初來乍到時，用較短時間看懂日本租屋的制度與常見費用、少走冤枉路，我整理了這份「日本租屋知識大補帖」。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
-                  日本租屋有許多和台灣不同的一次性費用，例如禮金、保證公司費用與鑰匙更換費；契約條款也會因物件與管理公司而不同。希望這份租屋知識整理、租金預算計算機與 AI 找房顧問，能幫您在申請前看懂條件、做好預算。祝您在日本的生活一切順利！❀
+                  日本租屋有許多和台灣不同的一次性費用，例如禮金、保證公司費用與鑰匙更換費；契約條款也會因物件與管理公司而不同。希望這份租屋知識整理、租金預算計算機與 AI 顧問，能幫您在申請前看懂條件、做好預算。祝您在日本的生活一切順利！❀
                 </p>
                 
                 {/* Visual Quick Actions */}
@@ -151,7 +151,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
                     <p className="text-xs text-zinc-600 mt-1">
-                      本系統已將完整大補帖融入 AI 找房顧問，支援多輪對話，能快速精準解答。
+                      本系統已將完整大補帖融入 AI 顧問，支援多輪對話，能快速精準解答。
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
@@ -222,7 +222,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   <HelpCircle className="w-12 h-12 text-[#0F8F6D] mx-auto opacity-75" />
                   <div className="space-y-1">
                     <p className="text-base font-bold">找不到符合「{searchQuery}」的項目</p>
-                    <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊 AI 找房顧問 諮詢 Linus！</p>
+                    <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊 AI 顧問諮詢 Linus！</p>
                   </div>
                   <button 
                     onClick={() => {
@@ -329,7 +329,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
                       <p className="text-zinc-600 leading-relaxed text-justify mb-3">
-                        適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租房等待期，好處是落地即入住！
+                        適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租屋等待期，好處是落地即入住！
                       </p>
                       <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
                         <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
@@ -411,11 +411,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#0F8F6D]" />
                         <span>
                           <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審査所需資料與準備文件對照</span>
-                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，査看建議先準備的文件</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，查看建議先準備的文件</span>
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D]">
-                        {documentsExpanded ? "收合" : "展開査看"}
+                        {documentsExpanded ? "收合" : "展開查看"}
                         <ChevronDown className={`h-4 w-4 transition-transform ${documentsExpanded ? "rotate-180" : ""}`} />
                       </span>
                     </button>
@@ -445,7 +445,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>
-                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等値 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
+                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#0F8F6D] font-bold">•</span>

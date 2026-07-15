@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Noto Sans JP", "Noto Serif TC", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Shippori Mincho", "Noto Serif TC", serif;
+  --font-sans: "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Noto Serif TC", "Shippori Mincho", serif;
   --font-jost: "Jost", "Noto Sans JP", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 

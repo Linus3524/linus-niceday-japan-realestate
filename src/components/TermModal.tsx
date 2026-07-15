@@ -124,7 +124,7 @@ export function TermModal(props: TermModalProps) {
                     }}
                     className="px-4 py-2 border border-[#DDE3DF] hover:border-[#0F8F6D] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
                   >
-                    向 AI 問答助理諮詢此{itemTypeLabel}
+                    向 AI 顧問諮詢此{itemTypeLabel}
                   </button>
                   <button
                     onClick={() => setSelectedFee(null)}

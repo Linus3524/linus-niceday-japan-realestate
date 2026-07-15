@@ -75,7 +75,7 @@ export function buildMarketReality(criteria: RentSearchCriteria, recommendations
 
   const withinBudget = recommendations.filter(item => item.estimate <= budget).length;
   if (withinBudget > 0) {
-    return `目前有 ${withinBudget} 個推薦方向的估算中心値落在預算內。整體條件具備可行性，但仍請預留管理費、旺季競爭與個別物件行情差異。`;
+    return `目前有 ${withinBudget} 個推薦方向的估算中心值落在預算內。整體條件具備可行性，但仍請預留管理費、旺季競爭與個別物件行情差異。`;
   }
 
   const closestEstimate = Math.min(...recommendations.map(item => item.estimate));
@@ -238,7 +238,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       districtMatch ? "位於指定行政區範圍" : null,
       requestedLineMatch ? `符合指定的 ${criteria.line}` : null,
       directCommute ? `與 ${criteria.commuteStation} 有共同直達線路` : criteria.commuteStation ? `前往 ${criteria.commuteStation} 的轉乘需另行確認` : null,
-      gap !== null ? (gap <= 0 ? "估算中心値在預算內" : gap <= Math.max(10000, criteria.maxBudget! * .1) ? "估算接近預算上限" : "需要調整條件或預算") : "依條件估算市場租金"
+      gap !== null ? (gap <= 0 ? "估算中心值在預算內" : gap <= Math.max(10000, criteria.maxBudget! * .1) ? "估算接近預算上限" : "需要調整條件或預算") : "依條件估算市場租金"
     ].filter(Boolean) as string[];
     const fit: RentRecommendation["fit"] = gap === null || gap <= 0 ? "預算內" : gap <= Math.max(10000, criteria.maxBudget! * 0.1) ? "接近預算" : "需調整";
     const commuteFit: RentRecommendation["commuteFit"] = !criteria.commuteStation ? "未指定通勤地" : directCommute ? "直達線路" : "需確認轉乘";

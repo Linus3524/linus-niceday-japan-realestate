@@ -87,7 +87,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   許多華人朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
-                  為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接査閱或透過 AI 顧問向我諮詢！❀
+                  為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
                 </p>
  
                 {/* Visual Quick Actions */}
@@ -416,7 +416,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif text-[#1A2A22]">{bank.name}</h4>
                             <span className="flex items-center gap-3">
                               <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
-                              <span className="text-xs font-bold font-sans text-zinc-500">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "査看條件"}</span>
+                              <span className="text-xs font-bold font-sans text-zinc-500">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "查看條件"}</span>
                               <ChevronDown className={`h-4 w-4 text-zinc-500 transition-transform ${expandedBanks.has(`overseas-${bIdx}`) ? "rotate-180" : ""}`} />
                             </span>
                           </button>
@@ -612,7 +612,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </div>
 
                     <div className="bg-amber-50 p-4 border-l-4 border-amber-500 text-xs text-amber-950 leading-relaxed font-sans">
-                      <strong>投資前必査：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
+                      <strong>投資前必查：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
                     </div>
                   </section>
 
@@ -632,7 +632,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D] font-sans">
-                        {ryokanExpanded ? "收合" : "展開査看"}
+                        {ryokanExpanded ? "收合" : "展開查看"}
                         <ChevronDown className={`h-4 w-4 transition-transform ${ryokanExpanded ? "rotate-180" : ""}`} />
                       </span>
                     </button>

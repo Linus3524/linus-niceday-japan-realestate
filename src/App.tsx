@@ -106,7 +106,7 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "model"; text: string }>>([
     {
       role: "model",
-      text: "您好！我是 Linus ❀ \n\n歡迎來到日本租屋與買房知識大補帖！不論您是想在東京租下第一個溫馨小窩，還是看好日本房地產想在東京置產投資、申請房貸或經營民宿，我都能為您提供最專業的解答喔！\n\n您可以在下方輸入任何問題，例如：\n- 「海外人士可以在日本貸款買房嗎？」\n- 「民泊新法在東京都 23 區有哪些營業限制？」\n- 「租房子初期費用大概要準備多少？」\n\n我會隨時線上為您解答！"
+      text: "您好！我是 Linus ❀ \n\n歡迎來到日本租屋與買房知識大補帖！不論您是想在東京租下第一個溫馨小窩，還是看好日本房地產想在東京置產投資、申請房貸或經營民宿，我都能為您提供最專業的解答喔！\n\n您可以在下方輸入任何問題，例如：\n- 「海外人士可以在日本貸款買房嗎？」\n- 「民泊新法在東京都 23 區有哪些營業限制？」\n- 「租屋初期費用大概要準備多少？」\n\n我會隨時線上為您解答！"
     }
   ]);
   const [chatLoading, setChatLoading] = useState(false);
@@ -119,10 +119,12 @@ export default function App() {
   const [copiedLine, setCopiedLine] = useState(false);
   const [copiedWechat, setCopiedWechat] = useState(false);
 
-  // Scroll to top when changing tab
+  // Keep the tab navigation visible and move to the selected content, not the site header.
   const handleTabChange = (tab: "cards" | "buyHouse" | "calculator" | "chat" | "contact") => {
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    requestAnimationFrame(() => {
+      document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
 
   // Copy Line ID
@@ -344,8 +346,8 @@ export default function App() {
 
             <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
               <p>我是 Linus，在東京從事不動產仲介。</p>
-              <p>分享日本租屋、買房、貸款規劃與在日生活的第一線實務，並提供 24 小時 AI 智慧顧問與線上諮詢。</p>
-              <p>從找房到安居，希望成為你在日本最値得信賴的指南。</p>
+              <p>分享日本租屋、買房、貸款規劃與在日生活的第一線實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
+              <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
             </div>
 
             <div className="border-t border-[#DDE3DF] my-6"></div>
@@ -360,24 +362,24 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-4 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[auto_1fr] gap-3 items-center w-fit lg:ml-auto">
+          <div className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[112px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:p-4">
             {/* Left: Logo alone */}
             <div className="shrink-0">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="w-20 h-20 object-contain" 
+                className="h-28 w-28 object-contain lg:h-20 lg:w-20"
               />
             </div>
             
             {/* Right: Text & Actions */}
-            <div className="space-y-2.5">
+            <div className="w-full space-y-2.5">
               <div>
                 <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
               </div>
 
-              <div className="space-y-1.5 w-[160px]">
+              <div className="w-full space-y-1.5 lg:w-[160px]">
                 <a
                   href={`https://line.me/ti/p/~${linusContact.lineId}`}
                   target="_blank"
@@ -412,8 +414,8 @@ export default function App() {
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
       <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] select-none" id="primary-nav">
-        <div className="max-w-[1280px] mx-auto flex items-center justify-center px-2 sm:px-6 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <div className="flex items-center gap-0 sm:gap-1 md:gap-2 py-2">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-start px-2 sm:justify-center sm:px-6 overflow-x-auto overscroll-x-contain touch-pan-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex min-w-max items-center gap-0 py-2 sm:min-w-0 sm:gap-1 md:gap-2">
             {[
               { id: "cards" as const, label: "租屋指南", en: "RENT" },
               { id: "buyHouse" as const, label: "買房置產", en: "BUY" },
@@ -441,7 +443,7 @@ export default function App() {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-grow max-w-6xl w-full mx-auto px-4 py-8" id="main-content">
+      <main className="scroll-mt-[108px] flex-grow max-w-6xl w-full mx-auto px-4 py-8" id="main-content">
         <AnimatePresence mode="wait">
           
           {activeTab === "cards" && (

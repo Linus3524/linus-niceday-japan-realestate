@@ -280,7 +280,7 @@ export const RentMap: React.FC<RentMapProps> = ({
           <p className="text-[10px] text-zinc-500">
             💡 {mode === "buy"
               ? "點擊下方地圖的區塊，可自動將該區房價行情代入左側置產預算計算機中！"
-              : "點擊下方地圖的區塊，可自動將該區租金行情代入左側租房預算計算機中！"}
+              : "點擊下方地圖的區塊，可自動將該區租金行情代入左側租屋預算計算機中！"}
           </p>
         </div>
 

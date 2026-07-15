@@ -31,7 +31,7 @@ export function ContactTab(props: ContactTabProps) {
                   <span>專業台灣仲介 Linus，陪您安心找到日本的家</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify font-sans">
-                  無論您正準備赴日工作、留學或長期定居，想租屋、購屋置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審査條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
+                  無論您正準備赴日工作、留學或長期定居，想租屋、買房置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審査條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
                 </p>
               </div>
 
@@ -194,7 +194,7 @@ export function ContactTab(props: ContactTabProps) {
                             : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                         }`}
                       >
-                        🏠 租房諮詢問卷
+                        🏠 租屋諮詢問卷
                       </button>
                       <button
                         onClick={() => setContactFormType("buy")}
@@ -210,7 +210,7 @@ export function ContactTab(props: ContactTabProps) {
 
                     {contactFormType === "rent" ? (
                       <div className="space-y-2">
-                        <span className="font-bold text-[#0F8F6D] block">📋 諮詢租房時建議先準備好以下資料：</span>
+                        <span className="font-bold text-[#0F8F6D] block">📋 諮詢租屋時建議先準備好以下資料：</span>
                         <p className="text-zinc-600 leading-normal text-justify">
                           為了讓 Linus 能更快速地協助您媒合合適房源並向管理公司諮詢，歡迎直接複製並填寫以下諮詢表傳送給 Linus 喔！
                         </p>
@@ -219,7 +219,7 @@ export function ContactTab(props: ContactTabProps) {
                           {`1. 期望入住日期：
 2. 入境日期（機票時間）或目前在日本何處：
 3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
-4. 每月租房預算範圍：
+4. 每月租屋預算範圍：
 5. 通勤目的地 and 可接受交通時間（學校或公司名稱、靠近的車站）：
 6. 是否為自己住／有無同居人：
 7. 其他對房子的核心條件（如：獨立洗面台、屋齡限制等）：`}

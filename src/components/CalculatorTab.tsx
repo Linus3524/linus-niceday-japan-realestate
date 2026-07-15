@@ -418,7 +418,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   }`}
                 >
                   <Building className="w-4 h-4 shrink-0" />
-                  租房行情加減價估算
+                  租屋行情加減價估算
                 </button>
                 <button
                   onClick={() => setCalcMode("buy")}
@@ -440,7 +440,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   {calcMode === "rent" ? (
                     <span>日本租屋預算與條件評估</span>
                   ) : (
-                    <span>日本購屋總價與貸款評估</span>
+                    <span>日本買房總價與貸款評估</span>
                   )}
                 </h3>
                 {calcMode === "rent" ? (
@@ -455,7 +455,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 ) : (
                   <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
                     <p>準備在日本買房前，先了解自己的預算能負擔到哪裡。</p>
-                    <p>依據您選擇的地區、物件類型與購屋條件，估算購屋總價、初期資金、各項稅費，以及不同貸款成數、利率與年限下的每月還款金額，協助您在看房前建立合理的預算規劃。</p>
+                    <p>依據您選擇的地區、物件類型與買房條件，估算買房總價、初期資金、各項稅費，以及不同貸款成數、利率與年限下的每月還款金額，協助您在看房前建立合理的預算規劃。</p>
                     <p className="text-[11px] text-zinc-400 pt-1 leading-normal">
                       實際成交價格、貸款利率與核貸結果，仍以個別物件及金融機構審査為準。
                     </p>
@@ -516,7 +516,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <MapPin className="w-5 h-5 text-[#0F8F6D]" />
                             </div>
                             <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 6 個搜尋方向</p>
-                            <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心値、合理波動區間，以及與預算的落差。</p>
+                            <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心值、合理波動區間，以及與預算的落差。</p>
                           </div>
                         </div>
                       ) : (
@@ -688,12 +688,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     </div>
                     {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
-                        <strong className="text-[#B13818]">待査證參考：</strong>此城市尚未完成當地募集行情的逐項査證，目前僅以鄰近主要城市建立模型參考，不應視為當地實際平均租金。
+                        <strong className="text-[#B13818]">待查證參考：</strong>此城市尚未完成當地募集行情的逐項查證，目前僅以鄰近主要城市建立模型參考，不應視為當地實際平均租金。
                       </div>
                     )}
                     {getSelectedDistrictData().verificationStatus === "researched_limited" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2.5 text-xs leading-relaxed text-[#66583D] font-sans">
-                        <strong className="text-[#B13818]">樣本有限：</strong>此區域已査找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
+                        <strong className="text-[#B13818]">樣本有限：</strong>此區域已查找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
                       </div>
                     )}
                     {getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
@@ -744,7 +744,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? (isNoTower ? "該地區目前査無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
+                                  title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -862,7 +862,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
-                                  title={isDisabled ? (isNoTower ? "該地區目前査無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
+                                  title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
                                 >
                                   <input
                                     type="checkbox"
@@ -882,7 +882,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
                                     <div className="text-[10px] text-[#0F8F6D] font-bold mt-1 font-mono">
-                                      +{(dynamicMult * 100).toFixed(0)}% 估値溢價
+                                      +{(dynamicMult * 100).toFixed(0)}% 估值溢價
                                     </div>
                                   </div>
                                 </label>
@@ -926,7 +926,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
                                     <div className="text-[10px] text-green-700 font-bold mt-1 font-mono">
-                                      {Math.abs(dynamicMult * 100).toFixed(0)}% 估値折價
+                                      {Math.abs(dynamicMult * 100).toFixed(0)}% 估值折價
                                     </div>
                                   </div>
                                 </label>
@@ -1126,19 +1126,19 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
-                            帶入此條件找 AI 找房顧問 ➔
+                            帶入此條件諮詢 AI 顧問 ➔
                           </button>
                         </div>
 
                         {/* Rent Disclaimer */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 方法與限制：租金概算採網站整理的行政區／格局基準値，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
+                          * 方法與限制：租金概算採網站整理的行政區／格局基準值，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
                         </div>
                       </>
                     ) : (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          條件式預算概算中心値：
+                          條件式預算概算中心值：
                         </h4>
                         
                         {/* The Big Number */}
@@ -1150,7 +1150,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">萬日圓</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心値不是鑑價或成交保證。）
+                            （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心值不是鑑價或成交保證。）
                           </div>
                         </div>
 
@@ -1243,14 +1243,14 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           <button 
                             onClick={() => {
                               const buyConditions = calcBuyModifiers.map(index => buyBudgetModifiers[index]?.text).filter(Boolean).join("、");
-                              const messageText = `您好，我剛才使用購屋預算計算器，請依以下完整條件協助我評估：\n- 地區：${calcDistrict}\n- 估計物件總價：${(getCalculatedBuyPrice() / 10000).toFixed(0)} 萬日圓\n- 預計貸款比例：${loanRatio}%\n- 試算利率與年期：${annualRate}%／${loanYears} 年\n${buyConditions ? `- 已選條件：${buyConditions}\n` : ""}請分析這組條件的購屋可行性、貸款與初期費用風險，以及我還需要補充哪些個人與物件資料。`;
+                              const messageText = `您好，我剛才使用買房預算計算器，請依以下完整條件協助我評估：\n- 地區：${calcDistrict}\n- 估計物件總價：${(getCalculatedBuyPrice() / 10000).toFixed(0)} 萬日圓\n- 預計貸款比例：${loanRatio}%\n- 試算利率與年期：${annualRate}%／${loanYears} 年\n${buyConditions ? `- 已選條件：${buyConditions}\n` : ""}請分析這組條件的買房可行性、貸款與初期費用風險，以及我還需要補充哪些個人與物件資料。`;
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}
                             className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
-                            帶入此條件找 AI 找房顧問 ➔
+                            帶入此條件諮詢 AI 顧問 ➔
                           </button>
                         </div>
 
@@ -1267,7 +1267,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     <h5 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5">
                       <Smile className="w-4.5 h-4.5 text-[#0F8F6D]" />
                       {calcMode === "rent" ? (
-                        <span>Linus 實務租房提示</span>
+                        <span>Linus 實務租屋提示</span>
                       ) : (
                         <span>Linus 實務置產提示</span>
                       )}
