@@ -360,44 +360,49 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-4 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 flex flex-col gap-3 max-w-xs w-full lg:ml-auto">
-            <div className="flex items-center gap-2.5">
+          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-4.5 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[auto_1fr] gap-4 items-center max-w-sm w-full lg:ml-auto">
+            {/* Left: Logo alone */}
+            <div className="shrink-0">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="w-16 h-16 shrink-0 object-contain" 
+                className="w-20 h-20 object-contain" 
               />
+            </div>
+            
+            {/* Right: Text & Actions */}
+            <div className="space-y-2.5">
               <div>
                 <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <a
-                href={`https://line.me/ti/p/~${linusContact.lineId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-[#0F8F6D] hover:bg-[#0A6D52] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
-                id="add-line-btn-hero"
-              >
-                ＋ 加 LINE 好友
-              </a>
 
-              <div className="flex items-stretch font-sans text-xs">
-                <input
-                  type="text"
-                  readOnly
-                  value={linusContact.lineId}
-                  className="flex-1 bg-white border border-[#DDE3DF] px-2.5 py-1.5 font-mono text-zinc-700 focus:outline-none text-[11px]"
-                  aria-label="LINE ID"
-                />
-                <button
-                  onClick={handleCopyLine}
-                  className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[11px] px-3 py-1.5 cursor-pointer font-bold transition-colors select-none shrink-0"
+              <div className="space-y-1.5">
+                <a
+                  href={`https://line.me/ti/p/~${linusContact.lineId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-[#0F8F6D] hover:bg-[#0A6D52] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
+                  id="add-line-btn-hero"
                 >
-                  {copiedLine ? "已複製" : "複製"}
-                </button>
+                  ＋ 加 LINE 好友
+                </a>
+
+                <div className="flex items-stretch font-sans text-xs">
+                  <input
+                    type="text"
+                    readOnly
+                    value={linusContact.lineId}
+                    className="flex-1 bg-white border border-[#DDE3DF] px-2 py-1 font-mono text-zinc-700 focus:outline-none text-[10px]"
+                    aria-label="LINE ID"
+                  />
+                  <button
+                    onClick={handleCopyLine}
+                    className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[10px] px-2.5 py-1 cursor-pointer font-bold transition-colors select-none shrink-0"
+                  >
+                    {copiedLine ? "已複製" : "複製"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
