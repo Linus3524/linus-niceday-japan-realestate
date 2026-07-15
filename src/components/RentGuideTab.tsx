@@ -169,8 +169,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
                     { id: "all", label: "全部內容" },
-                    { id: "initial", label: "初期費用名詞" },
-                    { id: "terms", label: "其他專有名詞" },
+                    { id: "initial", label: "初期費用與契約" },
+                    { id: "terms", label: "房屋與設備" },
                     { id: "steps", label: "房屋申請步驟" },
                     { id: "qa", label: "常見問答集" }
                   ].map(cat => (
@@ -240,10 +240,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.fees.length > 0 && (
                 <section className="space-y-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>初期費用名詞介紹</span>
+                    <span>初期費用與契約術語</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.fees.length} 項</span>
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filtered.fees.map((fee, idx) => (
                       <div 
                         key={idx} 
@@ -268,8 +268,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </div>
                         )}
                         <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans">
-                          <span>租屋核心術語</span>
-                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">點擊深入 ➔</span>
+                          <span>初期費用／契約</span>
+                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
                         </div>
                       </div>
                     ))}
@@ -281,20 +281,20 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {filtered.terms.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>其他重要專有名詞與房屋資訊</span>
+                    <span>房屋與設備術語</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.terms.length} 項</span>
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
                       <div key={idx} className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
                         <div className="flex justify-between items-start gap-3 mb-3">
-                          <h4 className="min-w-0 text-base font-bold text-[#0F8F6D] flex flex-wrap items-center gap-2">
+                          <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
                             <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
                             {term.jpName && (
                               <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
                             )}
                           </h4>
-                          <span className="shrink-0 text-xs text-zinc-400 font-sans">專有名詞</span>
+                          <span className="shrink-0 text-xs text-zinc-400 font-sans">房屋／設備</span>
                         </div>
                         <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
                         
@@ -504,7 +504,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           <div className="absolute -left-[33px] top-1.5 w-4 h-4 bg-white border-2 border-[#0F8F6D] group-hover:bg-[#0F8F6D] transition-colors" />
                           
                           <div className="flex flex-col md:flex-row justify-between items-start gap-2 mb-1.5">
-                            <h5 className="font-bold text-sm text-[#0F8F6D]">{step.name}</h5>
+                            <h5 className="font-bold text-sm text-[#0F8F6D]">
+                              <span>{step.name.charAt(0)}</span>
+                              <span className="text-[#1A2A22]">{step.name.slice(1)}</span>
+                            </h5>
                             <span className="text-xs bg-[#F5F8F6] border border-zinc-300 text-zinc-600 px-2 py-0.5 font-sans shrink-0">
                               時程估計: {step.duration}
                             </span>

@@ -132,7 +132,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
                     { id: "all", label: "全部內容" },
-                    { id: "terms", label: "圖紙/規費名詞" },
+                    { id: "drawing", label: "圖紙與物件" },
+                    { id: "fee", label: "交易與費用" },
                     { id: "steps", label: "買房流程與文件" },
                     { id: "loans", label: "在日貸款條件" },
                     { id: "minpaku", label: "民宿與旅館法規" },
@@ -153,7 +154,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 </div>
  
                 {/* Filter Search Field */}
-                {(buyCategory === "all" || buyCategory === "terms" || buyCategory === "qa") && (
+                {(buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee" || buyCategory === "qa") && (
                   <div className="relative w-full md:w-72 font-sans">
                     <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
                     <input
@@ -176,16 +177,16 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               </div>
 
               {/* SECTION: TERMS */}
-              {(buyCategory === "all" || buyCategory === "terms") && (
+              {(buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") && (
                 <div className="space-y-8">
                   {/* Drawing terms */}
                   {buyFiltered.drawing.length > 0 && (
                     <section className="space-y-4">
                       <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                        <span>【買賣圖紙專有名詞】</span>
+                        <span>圖紙與物件術語</span>
                         <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.drawing.length} 項</span>
                       </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.drawing.map((term, idx) => (
                           <div 
                             key={idx} 
@@ -204,8 +205,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               </p>
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
-                              <span>圖紙專有名詞</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">點擊深入 ➔</span>
+                              <span>圖紙／物件</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
                             </div>
                           </div>
                         ))}
@@ -217,10 +218,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {buyFiltered.fee.length > 0 && (
                     <section className="space-y-4">
                       <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                        <span>【買賣交易與規費名詞】</span>
+                        <span>交易與費用術語</span>
                         <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.fee.length} 項</span>
                       </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.fee.map((term, idx) => (
                           <div 
                             key={idx} 
@@ -239,8 +240,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               </p>
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
-                              <span>規費與交易術語</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">點擊深入 ➔</span>
+                              <span>交易／費用</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
                             </div>
                           </div>
                         ))}
@@ -688,7 +689,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {(buyCategory === "all" || buyCategory === "qa") && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
-                    <span>【常見日本買房與投資問題 Q&A 集錦】</span>
+                    <span>常見日本買房與投資問題 Q&A 集錦</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
                   </h3>
                   

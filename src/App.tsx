@@ -53,7 +53,7 @@ export default function App() {
   const [selectedFee, setSelectedFee] = useState<InitialFeeItem | BuyHouseTermItem | any | null>(null);
 
   // Buy House Tab States
-  const [buyCategory, setBuyCategory] = useState<"all" | "terms" | "steps" | "loans" | "minpaku" | "qa">("all");
+  const [buyCategory, setBuyCategory] = useState<"all" | "drawing" | "fee" | "steps" | "loans" | "minpaku" | "qa">("all");
   const [buySearchQuery, setBuySearchQuery] = useState("");
   const [selectedFlowType, setSelectedFlowType] = useState<"cash" | "loan">("cash");
 
@@ -251,8 +251,12 @@ export default function App() {
     let matchedFee = buyHouseFeeTerms;
     let matchedQA = buyHouseQAs;
     
-    if (buyCategory === "terms") {
-      // Show terms only
+    if (buyCategory === "drawing") {
+      matchedFee = [];
+      matchedQA = [];
+    } else if (buyCategory === "fee") {
+      matchedDrawing = [];
+      matchedQA = [];
     } else if (buyCategory === "qa") {
       matchedDrawing = [];
       matchedFee = [];
@@ -263,7 +267,7 @@ export default function App() {
     }
     
     if (q) {
-      if (buyCategory === "all" || buyCategory === "terms") {
+      if (buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") {
         matchedDrawing = matchedDrawing.filter(
           t => t.name.toLowerCase().includes(q) || 
                (t.jpName && t.jpName.toLowerCase().includes(q)) || 
