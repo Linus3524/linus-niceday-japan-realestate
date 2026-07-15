@@ -326,33 +326,55 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left side: Heading */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="inline-block bg-[#1A2A22] text-white text-[9px] font-jost font-bold tracking-[0.24em] px-2.5 py-0.5 select-none uppercase">
-              2026 TOKYO EDITION
+          <div className="lg:col-span-8 space-y-4 pr-0 lg:pr-10">
+            <div className="flex items-center gap-2 text-[11px] text-[#0F8F6D] font-jost font-semibold tracking-wider uppercase select-none">
+              <span className="w-6 h-[1px] bg-[#0F8F6D] inline-block"></span>
+              <span>VOL.001 · 2026 EDITION</span>
             </div>
-            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22]">
-              日本租房買賣
+            
+            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
+              日本で、<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">住まいを</span>
+              <br />
+              <span className="text-[#0F8F6D]">探す日々。</span>
             </h1>
-            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#0F8F6D]">
-              知識大補帖
-            </h1>
-            <p className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide pt-2">
-              日本租屋一次看懂 ╳ 實用預算規劃 ╳ AI 找房諮詢
-            </p>
+
+            <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
+              台灣人仲介專門把關，日本租屋、買房與置產的大補帖。
+            </h2>
+
+            <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
+              <p>我是 Linus — 在東京做不動產仲介的台灣人。</p>
+              <p>這裡記錄租屋眉角、購屋步驟、日本生活與貸款規劃，</p>
+              <p>並提供 24 小時 AI 智慧顧問與線上諮詢，</p>
+              <p>像一本陪伴您在日本安居的實用小雜誌。</p>
+            </div>
+
+            <div className="border-t border-[#DDE3DF] my-6"></div>
+
+            <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
+              <span>SINCE 2021</span>
+              <span>•</span>
+              <span>TOKYO, JAPAN</span>
+              <span>•</span>
+              <span>LINE: LINUS0922</span>
+            </div>
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-5 bg-white border border-[#DDE3DF] p-5 shadow-colored-soft flex items-start gap-4">
-            {/* Avatar icon */}
-            <div className="w-14 h-14 shrink-0 rounded-full border-2 border-[#0F8F6D] flex items-center justify-center bg-[#EAF3EE]">
-              <svg className="w-8 h-8 text-[#0F8F6D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
+          <div className="lg:col-span-4 bg-white border border-[#DDE3DF] p-4 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 flex flex-col gap-3 max-w-xs w-full lg:ml-auto">
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 shrink-0 rounded-full border border-[#0F8F6D] flex items-center justify-center bg-[#EAF3EE]">
+                <svg className="w-5 h-5 text-[#0F8F6D]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+              </div>
+              <div>
+                <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
+                <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
+              </div>
             </div>
             
-            <div className="flex-1 space-y-2">
-              <span className="block text-[10px] text-zinc-400 font-sans tracking-wider">立即聯絡 LINUS 線上諮詢</span>
-              
+            <div className="space-y-2">
               <a
                 href={`https://line.me/ti/p/~${linusContact.lineId}`}
                 target="_blank"
@@ -368,18 +390,17 @@ export default function App() {
                   type="text"
                   readOnly
                   value={linusContact.lineId}
-                  className="flex-1 bg-white border border-[#DDE3DF] px-3 py-1.5 font-mono text-zinc-700 focus:outline-none"
+                  className="flex-1 bg-white border border-[#DDE3DF] px-2.5 py-1.5 font-mono text-zinc-700 focus:outline-none text-[11px]"
                   aria-label="LINE ID"
                 />
                 <button
                   onClick={handleCopyLine}
-                  className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-xs px-4 py-1.5 cursor-pointer font-bold transition-colors select-none shrink-0"
+                  className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[11px] px-3 py-1.5 cursor-pointer font-bold transition-colors select-none shrink-0"
                 >
                   {copiedLine ? "已複製" : "複製"}
                 </button>
               </div>
             </div>
-
           </div>
 
         </div>
