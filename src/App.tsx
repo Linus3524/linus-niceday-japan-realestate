@@ -522,8 +522,8 @@ export default function App() {
       />
 
       {/* Footer copyright block */}
-      <footer className="border-t border-[#1A2A22] bg-white mt-12 py-12 px-4" id="app-footer">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <footer className="border-t border-[#1A2A22] bg-white mt-12 py-12" id="app-footer">
+        <div className="max-w-6xl mx-auto px-4 space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div className="space-y-1">
               <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租屋買房知識大補帖</strong>
