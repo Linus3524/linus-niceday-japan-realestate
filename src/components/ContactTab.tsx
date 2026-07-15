@@ -137,7 +137,7 @@ export function ContactTab(props: ContactTabProps) {
                     >
                       ＋ 一鍵加 Linus 為 LINE 好友
                     </a>
-                    <div className="flex gap-2 max-w-[220px]">
+                    <div className="flex gap-2">
                       <div className="bg-zinc-100 flex-grow px-3 py-2 border border-zinc-300 font-mono font-bold text-center select-all">
                         {linusContact.lineId}
                       </div>
@@ -157,7 +157,7 @@ export function ContactTab(props: ContactTabProps) {
                   {/* Copy WeChat block */}
                   <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 space-y-3 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
                     <span className="font-bold text-zinc-800 block">直接添加 WeChat 諮詢：</span>
-                    <div className="flex gap-2 max-w-[220px]">
+                    <div className="flex gap-2">
                       <div className="bg-zinc-100 flex-grow px-3 py-2 border border-zinc-300 font-mono font-bold text-center select-all">
                         {linusContact.wechatId}
                       </div>
