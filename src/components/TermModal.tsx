@@ -38,9 +38,15 @@ function splitReading(reading: string) {
   }, []);
 }
 
+function shouldStackHeader(name: string) {
+  // 手機上保留短詞的左右節奏；只有長名稱才讓日文標籤另起一行，避免和關閉鈕互相擠壓。
+  return Array.from(name.replace(/[（）・／/\s]/g, "")).length >= 10;
+}
+
 export function TermModal(props: TermModalProps) {
   const { selectedFee, setSelectedFee, handleTabChange, handleSendMessage } = props;
   const itemTypeLabel = getItemTypeLabel(selectedFee);
+  const stackHeader = selectedFee ? shouldStackHeader(selectedFee.name) : false;
   return (
     <AnimatePresence>
       {selectedFee && (
@@ -67,8 +73,8 @@ export function TermModal(props: TermModalProps) {
               </button>
 
               <div className="space-y-4">
-                <div className="flex flex-col items-stretch gap-2 pr-9 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:pr-10 border-b border-zinc-200 pb-3">
-                  <h4 className="min-w-0 w-full flex flex-wrap items-baseline gap-x-0 gap-y-1 text-[clamp(1.1rem,5vw,1.25rem)] leading-[1.45] font-bold text-[#0a6d52]">
+                <div className={`${stackHeader ? "flex flex-col items-stretch gap-2" : "flex items-start justify-between gap-3"} pr-9 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:pr-10 border-b border-zinc-200 pb-3`}>
+                  <h4 className={`min-w-0 ${stackHeader ? "w-full" : "flex-1"} flex flex-wrap items-baseline gap-x-0 gap-y-1 text-[clamp(1.1rem,5vw,1.25rem)] leading-[1.45] font-bold text-[#1A2A22]`}>
                     {(() => {
                       const term = splitTermName(selectedFee.name);
                       return <>
@@ -82,7 +88,7 @@ export function TermModal(props: TermModalProps) {
                     })()}
                   </h4>
                   {selectedFee.jpName && (
-                    <span className="self-end shrink-0 bg-[#0F8F6D] text-white px-2 py-1 font-sans text-xs leading-snug sm:self-auto">
+                    <span className={`${stackHeader ? "self-end" : "self-auto"} shrink-0 bg-[#0F8F6D] text-white px-2 py-1 font-sans text-xs leading-snug sm:self-auto`}>
                       <span className="flex flex-col items-end gap-y-0">
                         {splitReading(selectedFee.jpName).map((word, index) => <span key={`${word}-${index}`} className="whitespace-nowrap">{word}</span>)}
                       </span>

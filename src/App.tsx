@@ -312,7 +312,7 @@ export default function App() {
               L
             </div>
             <span className="font-serif font-extrabold text-[17px] tracking-[1.5px] text-[#1A2A22]">LINUS 住好日</span>
-            <span className="hidden sm:inline text-[9px] border border-[#0F8F6D] bg-[#EAF3EE] text-[#0F8F6D] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">日本租屋買房知識大補帖</span>
+            <span className="inline-block shrink-0 text-[9px] border border-[#0F8F6D] bg-[#EAF3EE] text-[#0F8F6D] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">日本租屋買房知識大補帖</span>
           </div>
           {/* Right: City & LINE */}
           <div className="hidden sm:flex font-jost text-[11px] tracking-[0.18em] text-zinc-500 uppercase items-center gap-3">
