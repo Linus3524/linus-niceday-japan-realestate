@@ -333,7 +333,7 @@ export default function App() {
           <div className="lg:col-span-8 space-y-4 pr-0 lg:pr-10">
             <div className="flex items-center gap-2 text-[11px] text-[#00a174] font-jost font-semibold tracking-wider uppercase select-none">
               <span className="w-6 h-[1px] bg-[#00a174] inline-block"></span>
-              <span>VOL.001 · 2026 EDITION</span>
+              <span>HAVE A NICE DAY IN JAPAN</span>
             </div>
             
             <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
