@@ -17,7 +17,7 @@ const getSummary = (answer: string) => {
 
 const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
   const trimmed = text.trim();
-  if (/^【.+】$/.test(trimmed)) return <h5 className="mt-5 mb-2 text-xs font-bold text-[#0F8F6D]">{trimmed}</h5>;
+  if (/^【.+】$/.test(trimmed)) return <h5 className="mt-5 mb-2 text-xs font-bold text-[#00a174]">{trimmed}</h5>;
 
   if (/^(⚠|★)/.test(trimmed)) {
     return (
@@ -36,19 +36,19 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
   const isLong = answer.length > 260 || blocks.length > 1;
 
   return (
-    <article className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-colored-soft">
+    <article className="border border-[#DDE3DF] hover:border-[#00a174] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-colored-soft">
       <details className="group">
         <summary className="flex cursor-pointer list-none items-start gap-3 p-4 marker:hidden md:p-5">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#0F8F6D] text-xs font-bold text-white font-jost">Q{number}</span>
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#00a174] text-xs font-bold text-white font-jost">Q{number}</span>
           <div className="min-w-0 flex-1">
             <h4 className="pr-4 text-sm font-bold leading-relaxed text-[#1A2A22] md:text-base">{question}</h4>
             {isLong && <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{getSummary(answer)}</p>}
           </div>
-          <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[#0F8F6D] transition-transform group-open:rotate-180" />
+          <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[#00a174] transition-transform group-open:rotate-180" />
         </summary>
         <div className="border-t border-dashed border-zinc-200 bg-[#F5F8F6] px-4 pb-5 pt-4 md:px-5">
           <div className="mb-4 flex">
-            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#EAF3EE] border border-[#A8D5C2] text-[#0A6D52] px-2.5 py-0.5 select-none">
+            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#e6f6f1] border border-[#9ee2cf] text-[#007d5a] px-2.5 py-0.5 select-none">
               <Lightbulb className="h-3.5 w-3.5 shrink-0" /> LINUS 實務說明
             </span>
           </div>
@@ -60,7 +60,7 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
               <p className="text-[10px] font-bold tracking-wide text-zinc-500">官方依據</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {sources.map(source => (
-                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#A8D5C2] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#0A6D52] underline-offset-2 hover:underline">
+                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#9ee2cf] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#007d5a] underline-offset-2 hover:underline">
                     {source.label} ↗
                   </a>
                 ))}

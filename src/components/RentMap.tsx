@@ -270,7 +270,7 @@ export const RentMap: React.FC<RentMapProps> = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-zinc-200 pb-3">
         <div className="space-y-1">
           <h4 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5 font-sans">
-            <MapPin className="w-4 h-4 text-[#0F8F6D]" />
+            <MapPin className="w-4 h-4 text-[#00a174]" />
             <span>
               {mode === "buy"
                 ? "2026 日本主要租屋市場房價行情地圖"
@@ -292,7 +292,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               onClick={() => onSelectRoomType(type)}
               className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
                 roomType === type
-                  ? "bg-white text-[#0F8F6D] border-b border-zinc-200"
+                  ? "bg-white text-[#00a174] border-b border-zinc-200"
                   : "text-zinc-500 hover:text-zinc-800"
               }`}
             >
@@ -315,7 +315,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               const firstDistrict = rentRates.find(rate => rate.region === firstRegion);
               if (firstDistrict) onSelectDistrict(firstDistrict.district);
             }}
-            className={`min-h-9 px-2 text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:bg-[#EAF3EE]"}`}
+            className={`min-h-9 px-2 text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:bg-[#e6f6f1]"}`}
           >
             {group}
           </button>
@@ -338,7 +338,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               }}
               className={`px-2.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
                 isActive
-                  ? "bg-[#0F8F6D] text-white border-[#0F8F6D]"
+                  ? "bg-[#00a174] text-white border-[#00a174]"
                   : "bg-white text-zinc-700 border-zinc-300 hover:border-zinc-400 hover:text-zinc-900"
               }`}
             >
@@ -439,12 +439,12 @@ export const RentMap: React.FC<RentMapProps> = ({
               return (
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
-                    <span className="font-bold text-[#0F8F6D] flex items-center gap-1">
+                    <span className="font-bold text-[#00a174] flex items-center gap-1">
                       <span>📍 {activeWard.district}</span>
                       {hoveredWard ? (
                         <span className="text-[9px] bg-zinc-800 text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
                       ) : (
-                        <span className="text-[9px] bg-[#0F8F6D] text-white px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
+                        <span className="text-[9px] bg-[#00a174] text-white px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
                       )}
                     </span>
                     <span className="text-[10px] text-zinc-500 font-bold">
@@ -458,9 +458,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                         {mode === "buy" ? getDistrictBuyPrice(activeWard, "r1").toLocaleString() : activeWard.r1} 萬円
                       </div>
                     </div>
-                    <div className="bg-white p-1 border border-zinc-200 ring-1 ring-[#0F8F6D]/10">
-                      <div className="text-[9px] text-[#0F8F6D] font-sans font-bold">1K/1DK</div>
-                      <div className="text-xs font-bold text-[#0F8F6D]">
+                    <div className="bg-white p-1 border border-zinc-200 ring-1 ring-[#00a174]/10">
+                      <div className="text-[9px] text-[#00a174] font-sans font-bold">1K/1DK</div>
+                      <div className="text-xs font-bold text-[#00a174]">
                         {mode === "buy" ? getDistrictBuyPrice(activeWard, "k1").toLocaleString() : activeWard.k1} 萬円
                       </div>
                     </div>

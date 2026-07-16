@@ -29,7 +29,7 @@ const domesticScreeningDocuments: ScreeningDocumentProfile[] = [
 ];
 
 const availabilityStyle = {
-  "多": "bg-[#EAF3EE] text-[#0A6D52] border-[#A8D5C2]",
+  "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
   "一般": "bg-[#FFF9ED] text-[#7A5A1F] border-[#DCC8A1]",
   "最少": "bg-[#FBDFD2] text-[#B13818] border-[#E94E2B]",
   "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
@@ -42,10 +42,10 @@ function VisaDocumentMatrix() {
     <div className="space-y-5 font-sans">
       <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
         <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審査</button>
-        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#0F8F6D] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
+        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
       </div>
       {screeningMode === "domestic" && (
-        <div className="border-l-4 border-[#0F8F6D] bg-[#EAF3EE] p-4 text-sm leading-7 text-[#3F5147]">境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。</div>
+        <div className="border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 text-sm leading-7 text-[#3F5147]">境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。</div>
       )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {profiles.map(profile => (
@@ -56,7 +56,7 @@ function VisaDocumentMatrix() {
             </div>
             <p className="mt-4 text-xs font-bold tracking-wider text-[#66736C]">申請時建議先準備</p>
             <ul className="mt-3 space-y-2.5">
-              {profile.documents.map(document => <li key={document} className="flex gap-3 text-sm leading-6 text-[#3F5147]"><span className="mt-0.5 font-bold text-[#0F8F6D]">✓</span><span>{document}</span></li>)}
+              {profile.documents.map(document => <li key={document} className="flex gap-3 text-sm leading-6 text-[#3F5147]"><span className="mt-0.5 font-bold text-[#00a174]">✓</span><span>{document}</span></li>)}
             </ul>
           </article>
         ))}
@@ -110,17 +110,17 @@ export function RentGuideTab(props: RentGuideTabProps) {
               id="pane-cards"
             >
               {/* Preface Section */}
-              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="cards-preface">
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="cards-preface">
                 {/* Traditional Japanese Ribbon Flag decoration */}
-                <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
+                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
                   前言 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#0F8F6D]" aria-hidden="true">key</span>
+                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#00a174]" aria-hidden="true">key</span>
                   <span>致所有來日本打拼的人</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
+                  <span className="text-[#00a174] text-sm font-normal">By Linus</span>
                 </h3>
-                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
+                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#00a174] first-letter:mr-1">
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。來到日本留學、打工度假或就職，找一個能安心落腳的家，往往是最先面對的大事。為了協助大家在初來乍到時，用較短時間看懂日本租屋的制度與常見費用、少走冤枉路，我整理了這份「日本租屋知識大補帖」。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
@@ -129,8 +129,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 
                 {/* Visual Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
-                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-colors">
-                    <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
+                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
                       <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">calculate</span>
                       <span>需要估算理想房租預算嗎？</span>
                     </h4>
@@ -139,14 +139,14 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("calculator")}
-                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
                     >
                       <span>前往預算計算機</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
-                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-colors">
-                    <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
+                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
                       <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                       <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                     </h4>
@@ -155,7 +155,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
-                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
                     >
                       <span>開始 AI 找房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -164,7 +164,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               </div>
 
               {/* Grid Control & Search Block */}
-              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="kb-filter-bar">
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="kb-filter-bar">
                 {/* Horizontal Category selectors */}
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
@@ -179,8 +179,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       onClick={() => setKbCategory(cat.id as any)}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         kbCategory === cat.id 
-                          ? "bg-[#0F8F6D] text-white border-[#0F8F6D]" 
-                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#0F8F6D]"
+                          ? "bg-[#00a174] text-white border-[#00a174]" 
+                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#00a174]"
                       }`}
                     >
                       {cat.label}
@@ -196,7 +196,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     placeholder="在知識庫中搜尋 (如：敷金)..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#0F8F6D]"
+                    className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#00a174]"
                   />
                   {searchQuery && (
                     <button 
@@ -219,7 +219,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* NO RESULTS VIEW */}
               {hasNoResults && (
                 <div className="border border-dashed border-zinc-300 bg-white py-12 text-center space-y-4">
-                  <HelpCircle className="w-12 h-12 text-[#0F8F6D] mx-auto opacity-75" />
+                  <HelpCircle className="w-12 h-12 text-[#00a174] mx-auto opacity-75" />
                   <div className="space-y-1">
                     <p className="text-base font-bold">找不到符合「{searchQuery}」的項目</p>
                     <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊 AI 顧問諮詢 Linus！</p>
@@ -229,7 +229,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       setSearchQuery("");
                       handleTabChange("chat");
                     }}
-                    className="px-4 py-2 bg-[#1A2A22] text-white text-xs tracking-wider uppercase font-sans font-bold hover:bg-[#0F8F6D] cursor-pointer"
+                    className="px-4 py-2 bg-[#1A2A22] text-white text-xs tracking-wider uppercase font-sans font-bold hover:bg-[#00a174] cursor-pointer"
                   >
                     開啟 AI 對話諮詢
                   </button>
@@ -239,7 +239,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* CARD SECTOR: INITIAL FEES */}
               {filtered.fees.length > 0 && (
                 <section className="space-y-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>初期費用與契約術語</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.fees.length} 項</span>
                   </h3>
@@ -247,7 +247,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     {filtered.fees.map((fee, idx) => (
                       <div 
                         key={idx} 
-                        className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
+                        className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                         onClick={() => setSelectedFee(fee)}
                       >
                         <div>
@@ -263,13 +263,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         </div>
                         
                         {fee.warning && (
-                          <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200 text-xs text-[#0F8F6D] line-clamp-1 font-sans">
+                          <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200 text-xs text-[#00a174] line-clamp-1 font-sans">
                             {fee.warning}
                           </div>
                         )}
                         <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans">
                           <span>初期費用／契約</span>
-                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
+                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
                         </div>
                       </div>
                     ))}
@@ -280,13 +280,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* CARD SECTOR: SPECIAL TERMS */}
               {filtered.terms.length > 0 && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>房屋與設備術語</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.terms.length} 項</span>
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
-                      <div key={idx} className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
+                      <div key={idx} className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
                         <div className="flex justify-between items-start gap-3 mb-3">
                           <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
                             <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
@@ -302,7 +302,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
                             {term.details.map((detail, dIdx) => (
                               <div key={dIdx} className="text-xs text-zinc-800 leading-relaxed flex items-start gap-2 font-sans">
-                                <span className="text-[#0F8F6D] font-bold shrink-0">✦</span>
+                                <span className="text-[#00a174] font-bold shrink-0">✦</span>
                                 <span className="text-justify">{renderTermDetail(detail)}</span>
                               </div>
                             ))}
@@ -317,15 +317,15 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* CARD SECTOR: PROCESS STEPS */}
               {filtered.steps.length > 0 && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3">
+                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3">
                     <span>日本租屋正式申請與引渡流程 SOP</span>
                   </h3>
                   
                   {/* General / Overseas SOP highlight banner */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
-                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">海外審査</div>
-                      <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
+                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#00a174] transition-all duration-300 hover:shadow-colored-soft relative">
+                      <div className="absolute top-0 right-0 bg-[#00a174] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">海外審査</div>
+                      <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
                         <span>✈ 飛日前提前申請流程</span>
                       </h4>
                       <p className="text-zinc-600 leading-relaxed text-justify mb-3">
@@ -360,9 +360,9 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       </div>
                     </div>
 
-                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#0F8F6D] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#0F8F6D] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">入境審査</div>
-                      <h4 className="font-bold text-sm text-[#0F8F6D] mb-2 flex items-center gap-1.5">
+                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#00a174] transition-all duration-300 hover:shadow-colored-soft relative">
+                      <div className="absolute top-0 right-0 bg-[#00a174] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">入境審査</div>
+                      <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 抵達日本境內申請流程</span>
                       </h4>
                       <p className="text-zinc-600 leading-relaxed text-justify mb-3">
@@ -387,7 +387,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                             "綁定自動扣款"
                           ].map((step, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <span className="bg-[#0F8F6D] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
+                              <span className="bg-[#00a174] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
                                 {idx + 1}
                               </span>
                               <span>{step}</span>
@@ -399,7 +399,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </div>
 
                   {/* Required Documents Section for Overseas vs Domestic Screenings */}
-                  <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
+                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setDocumentsExpanded(current => !current)}
@@ -408,13 +408,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       className={`flex w-full items-center justify-between gap-4 text-left ${documentsExpanded ? "border-b border-zinc-300 pb-3 mb-4" : ""}`}
                     >
                       <span className="flex min-w-0 items-start gap-3">
-                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#0F8F6D]" />
+                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
                         <span>
                           <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審査所需資料與準備文件對照</span>
                           <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，查看建議先準備的文件</span>
                         </span>
                       </span>
-                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D]">
+                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#00a174]">
                         {documentsExpanded ? "收合" : "展開查看"}
                         <ChevronDown className={`h-4 w-4 transition-transform ${documentsExpanded ? "rotate-180" : ""}`} />
                       </span>
@@ -427,60 +427,60 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     )}
                     <div className="hidden" aria-hidden="true">
                       <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#0F8F6D] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
+                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
                           <span>✈ 海外審査需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>護照影本：</strong>個人照片頁、簽證貼紙頁（若已核發）。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>在留資格認定證明書 (COE)：</strong>或打工度假簽證證明。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>入學許可書 / 內定通知書：</strong>學生提供學校錄取書；就職者提供公司給予的內定通知/薪資證明。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>緊急聯絡人：</strong>通常需要兩位，一位為母國二親等內家長（能提供戶籍謄本佐證親屬關係較佳），另一位為日本在留者（部分保證會社要求，若無可向仲介諮詢協助）。</span>
                           </li>
                         </ul>
                       </div>
 
                       <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#0F8F6D] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
+                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
                           <span>🇯🇵 境內審査需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>護照影本：</strong>個人照片頁、日本入境章戳頁。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>在留卡（正反面）：</strong>住居地欄位及申報狀態依個案確認；不得把沒有實際居住的親友、飯店或短租地址當成自己的住址申報。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>日本手機門號：</strong>保證會社審査時會撥打電話照會，必須能正常通話與接聽。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>日本銀行帳戶 & 提款卡/存摺：</strong>合約通過後綁定每個月房租自動扣款使用。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>所得證明 / 學生證：</strong>在日就職者需提供近期的源泉徵收票、課稅證明書或薪資單；學生需提供在學證明或學生證影本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
-                            <span className="text-[#0F8F6D] font-bold">•</span>
+                            <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>在日緊急聯絡人：</strong>通常要求必須是居住在日本境內、且能用日文進行基本電話溝通的朋友或長輩。</span>
                           </li>
                         </ul>
@@ -495,7 +495,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-600 font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
                       </div>
-                      <span className="text-xs font-bold text-[#0F8F6D] font-sans">三種申請方式</span>
+                      <span className="text-xs font-bold text-[#00a174] font-sans">三種申請方式</span>
                     </div>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-3 font-sans">
                       {[
@@ -521,10 +521,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <div key={route.title} className="border border-[#DDE3DF] p-4">
                           <div className="mb-3 flex items-start justify-between gap-2">
                             <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
-                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#EAF3EE] text-[#0A6D52]"}`}>{route.condition}</span>
+                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#e6f6f1] text-[#007d5a]"}`}>{route.condition}</span>
                           </div>
                           <p className="text-xs leading-relaxed text-zinc-700">{route.body}</p>
-                          <p className={`mt-3 border-t border-zinc-100 pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#0F8F6D]"}`}>{route.note}</p>
+                          <p className={`mt-3 border-t border-zinc-100 pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
                         </div>
                       ))}
                     </div>
@@ -532,7 +532,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                   {/* Vertical Linear Steps Timeline */}
                   <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="absolute top-0 right-6 bg-[#0F8F6D] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
+                    <div className="absolute top-0 right-6 bg-[#00a174] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
                       9個核心步驟
                     </div>
                     <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
@@ -544,7 +544,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
                           {/* Single numbered timeline node: the title itself no longer repeats the step number. */}
-                          <div className="absolute -left-[38px] top-0.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#0F8F6D] bg-white text-xs font-bold text-[#0F8F6D] font-sans transition-colors group-hover:bg-[#0F8F6D] group-hover:text-white">
+                          <div className="absolute -left-[38px] top-0.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#00a174] bg-white text-xs font-bold text-[#00a174] font-sans transition-colors group-hover:bg-[#00a174] group-hover:text-white">
                             {step.id}
                           </div>
                           
@@ -556,15 +556,15 @@ export function RentGuideTab(props: RentGuideTabProps) {
                               作業天數：{step.duration}
                             </span>
                           </div>
-                          <div className="border-l-2 border-[#A8D5C2] pl-3 text-xs text-zinc-700 leading-relaxed text-justify font-sans">
-                            <span className="mr-2 text-[10px] font-bold tracking-wide text-[#0F8F6D]">作業重點</span>
+                          <div className="border-l-2 border-[#9ee2cf] pl-3 text-xs text-zinc-700 leading-relaxed text-justify font-sans">
+                            <span className="mr-2 text-[10px] font-bold tracking-wide text-[#00a174]">作業重點</span>
                             {renderFormattedText(step.description)}
                           </div>
                           {step.details && step.details.length > 0 && (
                             <ul className="mt-3 space-y-1.5 pl-3 text-xs leading-relaxed text-zinc-600 font-sans">
                               {step.details.map((detail, detailIndex) => (
                                 <li key={detailIndex} className="flex gap-2">
-                                  <span className="shrink-0 text-[#0F8F6D]">•</span>
+                                  <span className="shrink-0 text-[#00a174]">•</span>
                                   <span>{detail}</span>
                                 </li>
                               ))}
@@ -575,13 +575,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </div>
                     
                     <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed mt-6 font-sans space-y-2">
-                      <span className="font-bold text-[#0F8F6D] block">★ Linus 實務小提醒：</span>
+                      <span className="font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
                       <ul className="space-y-1.5">
-                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>不內見找房建議於預計入住日前約 1.5 個月開始；若需要內見，建議確定入住日期後，於入住前 1 個月內開始找房即可。因為日本房源基本上是無法付訂金保留的，熱門物件一上架便會很快被租走。</span></li>
-                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>若在留卡首次登錄的地址只是暫時住所，建議等入住正式租屋處並完成住址變更後，再辦理郵局或銀行帳戶，可避免後續因地址變更而需重新辦理相關手續。</span></li>
-                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>審查期間收到水電、瓦斯或網路代辦業者的電話、簡訊或 Email，通常是管理公司合作的生活服務代辦，和仲介未必有關；不需要時可直接婉拒，但指定供應商仍應以物件條件為準。</span></li>
-                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>初期精算書是依當下條件製作的參考；保證公司初期費、月額費與火災保險的付款方式，可能在審查或最終契約條件確定後調整，請以正式文件為準。</span></li>
-                        <li className="flex gap-2"><span className="shrink-0 text-[#0F8F6D]">•</span><span>第一次房租自動扣款若來不及扣到，可能改由保證公司通知匯款，或寄送帳單至住處超商繳費；收到通知後請在期限內處理。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#00a174]">•</span><span>不內見找房建議於預計入住日前約 1.5 個月開始；若需要內見，建議確定入住日期後，於入住前 1 個月內開始找房即可。因為日本房源基本上是無法付訂金保留的，熱門物件一上架便會很快被租走。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#00a174]">•</span><span>若在留卡首次登錄的地址只是暫時住所，建議等入住正式租屋處並完成住址變更後，再辦理郵局或銀行帳戶，可避免後續因地址變更而需重新辦理相關手續。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#00a174]">•</span><span>審查期間收到水電、瓦斯或網路代辦業者的電話、簡訊或 Email，通常是管理公司合作的生活服務代辦，和仲介未必有關；不需要時可直接婉拒，但指定供應商仍應以物件條件為準。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#00a174]">•</span><span>初期精算書是依當下條件製作的參考；保證公司初期費、月額費與火災保險的付款方式，可能在審查或最終契約條件確定後調整，請以正式文件為準。</span></li>
+                        <li className="flex gap-2"><span className="shrink-0 text-[#00a174]">•</span><span>第一次房租自動扣款若來不及扣到，可能改由保證公司通知匯款，或寄送帳單至住處超商繳費；收到通知後請在期限內處理。</span></li>
                       </ul>
                     </div>
                   </div>
@@ -591,7 +591,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* CARD SECTOR: Q&A */}
               {filtered.qa.length > 0 && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見租屋問題 Q&A</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>

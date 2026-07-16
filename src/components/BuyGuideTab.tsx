@@ -73,17 +73,17 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               id="pane-buy-house"
             >
               {/* Preface Section */}
-              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="buy-house-preface">
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="buy-house-preface">
                 {/* Traditional Japanese Ribbon Flag decoration */}
-                <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
+                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
                   置產 ❀
                 </div>
                 <h3 className="text-xl font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#0F8F6D]" aria-hidden="true">real_estate_agent</span>
+                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#00a174]" aria-hidden="true">real_estate_agent</span>
                   <span>日本買房置產</span>
-                  <span className="text-[#0F8F6D] text-sm font-normal">By Linus</span>
+                  <span className="text-[#00a174] text-sm font-normal">By Linus</span>
                 </h3>
-                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#0F8F6D] first-letter:mr-1">
+                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#00a174] first-letter:mr-1">
                   許多華人朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
@@ -93,7 +93,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 {/* Visual Quick Actions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                    <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
+                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
                       <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                       <span>需要為您評估買房方案或試算嗎？</span>
                     </h4>
@@ -102,14 +102,14 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("chat")}
-                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
                     >
                       <span>開始 AI 買房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
  
                   <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                    <h4 className="font-bold text-[#0F8F6D] flex items-center gap-2 text-sm">
+                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
                       <Smile className="w-4 h-4" />
                       <span>需要直接進行日本物件配對？</span>
                     </h4>
@@ -118,7 +118,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </p>
                     <button 
                       onClick={() => handleTabChange("contact")}
-                      className="mt-3 text-xs font-bold text-[#0F8F6D] hover:text-[#0A6D52] flex items-center gap-1 cursor-pointer"
+                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
                     >
                       <span>取得 Linus 聯繫管道</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -144,8 +144,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       onClick={() => setBuyCategory(cat.id as any)}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         buyCategory === cat.id 
-                          ? "bg-[#0F8F6D] text-white border-[#0F8F6D]" 
-                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#0F8F6D]"
+                          ? "bg-[#00a174] text-white border-[#00a174]" 
+                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#00a174]"
                       }`}
                     >
                       {cat.label}
@@ -162,7 +162,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       placeholder="搜尋買房指南 (如：表面利回り)..."
                       value={buySearchQuery}
                       onChange={(e) => setBuySearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] hover:border-[#0F8F6D] focus:outline-none focus:ring-1 focus:ring-[#0F8F6D]"
+                      className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] hover:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174]"
                     />
                     {buySearchQuery && (
                       <button 
@@ -182,7 +182,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {/* Drawing terms */}
                   {buyFiltered.drawing.length > 0 && (
                     <section className="space-y-4">
-                      <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                      <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>圖紙與物件術語</span>
                         <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.drawing.length} 項</span>
                       </h3>
@@ -190,7 +190,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         {buyFiltered.drawing.map((term, idx) => (
                           <div 
                             key={idx} 
-                            className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
+                            className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                             onClick={() => setSelectedFee(term)}
                           >
                             <div>
@@ -206,7 +206,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>圖紙／物件</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
                             </div>
                           </div>
                         ))}
@@ -217,7 +217,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {/* Fee terms */}
                   {buyFiltered.fee.length > 0 && (
                     <section className="space-y-4">
-                      <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                      <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>交易與費用術語</span>
                         <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.fee.length} 項</span>
                       </h3>
@@ -225,7 +225,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         {buyFiltered.fee.map((term, idx) => (
                           <div 
                             key={idx} 
-                            className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
+                            className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
                             onClick={() => setSelectedFee(term)}
                           >
                             <div>
@@ -241,7 +241,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>交易／費用</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#0F8F6D]">查看說明 →</span>
+                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
                             </div>
                           </div>
                         ))}
@@ -254,11 +254,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: STEPS & FLOWS */}
               {(buyCategory === "all" || buyCategory === "steps") && (
                 <div className="space-y-8">
-                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#DDE3DF] pb-4 mb-6 gap-4">
                       <div>
                         <h3 className="text-xl font-bold flex items-center gap-2">
-                          <MapPin className="w-5 h-5 text-[#0F8F6D]" />
+                          <MapPin className="w-5 h-5 text-[#00a174]" />
                           <span>日本買房交易完整流程</span>
                         </h3>
                         <p className="text-xs text-zinc-500 font-sans mt-0.5">
@@ -272,7 +272,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           onClick={() => setSelectedFlowType("cash")}
                           className={`px-4 py-2 font-bold cursor-pointer transition-all ${
                             selectedFlowType === "cash" 
-                              ? "bg-[#0F8F6D] text-white" 
+                              ? "bg-[#00a174] text-white" 
                               : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                           }`}
                         >
@@ -282,7 +282,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           onClick={() => setSelectedFlowType("loan")}
                           className={`px-4 py-2 font-bold cursor-pointer transition-all ${
                             selectedFlowType === "loan" 
-                              ? "bg-[#0F8F6D] text-white" 
+                              ? "bg-[#00a174] text-white" 
                               : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                           }`}
                         >
@@ -297,18 +297,18 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                           {buyHouseCashSteps.map((step, sIdx) => (
                             <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
-                              <span className="absolute top-4 right-4 text-3xl font-bold text-[#0F8F6D]/15 select-none font-sans">
+                              <span className="absolute top-4 right-4 text-3xl font-bold text-[#00a174]/15 select-none font-sans">
                                 {step.step}
                               </span>
                               <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
-                                <span className="text-[#0F8F6D] font-sans font-bold">{step.step}</span>
+                                <span className="text-[#00a174] font-sans font-bold">{step.step}</span>
                                 <span>{step.title}</span>
                               </h4>
                               <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
                                 {step.description}
                               </p>
                               {step.warning && (
-                                <p className="mt-2 text-[11px] text-[#0F8F6D] bg-red-50 p-2 border-l-2 border-[#0F8F6D] leading-normal font-sans">
+                                <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
                                   {step.warning}
                                 </p>
                               )}
@@ -320,11 +320,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {buyHouseLoanSteps.map((step, sIdx) => (
                               <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
-                                <span className="absolute top-4 right-4 text-3xl font-bold text-[#0F8F6D]/15 select-none font-sans">
+                                <span className="absolute top-4 right-4 text-3xl font-bold text-[#00a174]/15 select-none font-sans">
                                   {step.step}
                                 </span>
                                 <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
-                                  <span className="text-[#0F8F6D] font-sans font-bold">{step.step}</span>
+                                  <span className="text-[#00a174] font-sans font-bold">{step.step}</span>
                                   <span>{step.title}</span>
                                 </h4>
                                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
@@ -332,12 +332,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                                 </p>
                                 {step.points && step.points.map((pt, pIdx) => (
                                   <p key={pIdx} className="mt-1.5 text-xs text-zinc-500 font-sans flex items-start gap-1">
-                                    <span className="text-[#0F8F6D] font-bold">•</span>
+                                    <span className="text-[#00a174] font-bold">•</span>
                                     <span>{pt}</span>
                                   </p>
                                 ))}
                                 {step.warning && (
-                                  <p className="mt-2 text-[11px] text-[#0F8F6D] bg-red-50 p-2 border-l-2 border-[#0F8F6D] leading-normal font-sans">
+                                  <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
                                     {step.warning}
                                   </p>
                                 )}
@@ -350,22 +350,22 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Signing documents requirements */}
-                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
                     <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-[#0F8F6D]" />
+                      <FileText className="w-5 h-5 text-[#00a174]" />
                       <span>{signingDocuments.title}</span>
                     </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#0F8F6D] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
-                          <span className="w-2 h-2 bg-[#0F8F6D]"></span>
+                        <h4 className="font-bold text-sm text-[#00a174] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                          <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.residenceGroup.title}</span>
                         </h4>
                         <ul className="space-y-2 text-xs text-zinc-700">
                           {signingDocuments.residenceGroup.items.map((item, idx) => (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                              <span className="text-[#0F8F6D] font-bold">✓</span>
+                              <span className="text-[#00a174] font-bold">✓</span>
                               <span>{item}</span>
                             </li>
                           ))}
@@ -373,14 +373,14 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </div>
 
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#0F8F6D] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
-                          <span className="w-2 h-2 bg-[#0F8F6D]"></span>
+                        <h4 className="font-bold text-sm text-[#00a174] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                          <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.nonResidenceGroup.title}</span>
                         </h4>
                         <ul className="space-y-2 text-xs text-zinc-700">
                           {signingDocuments.nonResidenceGroup.items.map((item, idx) => (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                              <span className="text-[#0F8F6D] font-bold">✓</span>
+                              <span className="text-[#00a174] font-bold">✓</span>
                               <span>{item}</span>
                             </li>
                           ))}
@@ -394,10 +394,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: LOAN COMPARISON */}
               {(buyCategory === "all" || buyCategory === "loans") && (
                 <div className="space-y-8">
-                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Landmark className="w-5 h-5 text-[#0F8F6D]" />
+                        <Landmark className="w-5 h-5 text-[#00a174]" />
                         <span>海外買方融資方案整理</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-1">
@@ -407,16 +407,16 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="space-y-5">
                       {taiwaneseBanks.map((bank, bIdx) => (
-                        <div key={bIdx} className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white transition-all duration-300 hover:shadow-colored-soft overflow-hidden">
+                        <div key={bIdx} className="border border-[#DDE3DF] hover:border-[#00a174] bg-white transition-all duration-300 hover:shadow-colored-soft overflow-hidden">
                           <button
                             type="button"
                             onClick={() => toggleBank(`overseas-${bIdx}`)}
                             aria-expanded={expandedBanks.has(`overseas-${bIdx}`)}
-                            className="w-full bg-[#F5F8F6] hover:bg-[#EAF3EE] text-[#1A2A22] px-5 py-4 flex justify-between items-center flex-wrap gap-3 text-left border-none cursor-pointer transition-colors"
+                            className="w-full bg-[#F5F8F6] hover:bg-[#e6f6f1] text-[#1A2A22] px-5 py-4 flex justify-between items-center flex-wrap gap-3 text-left border-none cursor-pointer transition-colors"
                           >
                             <h4 className="font-extrabold text-base md:text-lg leading-tight font-serif text-[#1A2A22]">{bank.name}</h4>
                             <span className="flex items-center gap-3">
-                              <span className="bg-[#0F8F6D] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
+                              <span className="bg-[#00a174] text-white px-2.5 py-1 text-xs font-bold font-sans">利率約 {bank.interestRate}</span>
                               <span className="text-xs font-bold font-sans text-zinc-500">{expandedBanks.has(`overseas-${bIdx}`) ? "收合" : "查看條件"}</span>
                               <ChevronDown className={`h-4 w-4 text-zinc-500 transition-transform ${expandedBanks.has(`overseas-${bIdx}`) ? "rotate-180" : ""}`} />
                             </span>
@@ -430,7 +430,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
                               <p className="text-[10px] font-bold tracking-wide text-zinc-500">起貸金額／最高成數</p>
-                              <p className="mt-1 text-xs font-semibold leading-relaxed text-[#0F8F6D]">{bank.amountLimit}</p>
+                              <p className="mt-1 text-xs font-semibold leading-relaxed text-[#00a174]">{bank.amountLimit}</p>
                             </div>
                             <div className="p-4 bg-[#F5F8F6]">
                               <p className="text-[10px] font-bold tracking-wide text-zinc-500">最長貸款期限</p>
@@ -442,19 +442,19 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             <div className="border border-zinc-200">
                               <p className="bg-[#F5F8F6] px-3 py-2 font-bold text-[#1A2A22]">申請人條件</p>
                               <dl className="divide-y divide-zinc-100">
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">年齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.ageLimit}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">收入／資產</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.incomeAsset}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">對保／開戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.signingReq}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">還款／租金帳戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.rentAccount}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">年齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.ageLimit}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">收入／資產</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.incomeAsset}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">對保／開戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.signingReq}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">還款／租金帳戶</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.rentAccount}</dd></div>
                               </dl>
                             </div>
                             <div className="border border-zinc-200">
                               <p className="bg-[#F5F8F6] px-3 py-2 font-bold text-[#1A2A22]">物件與貸款條件</p>
                               <dl className="divide-y divide-zinc-100">
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">物件／屋齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.propertyReq}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">承作區域</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.areaLimit}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">還款方式</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.repayment}</dd></div>
-                                <div className="px-3 py-2.5"><dt className="font-bold text-[#0F8F6D]">提前清償費</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.prepayFee}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">物件／屋齡</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.propertyReq}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">承作區域</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.areaLimit}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">還款方式</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.repayment}</dd></div>
+                                <div className="px-3 py-2.5"><dt className="font-bold text-[#00a174]">提前清償費</dt><dd className="mt-1 leading-relaxed text-zinc-600">{bank.prepayFee}</dd></div>
                               </dl>
                             </div>
                           </div>
@@ -475,10 +475,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Japanese Banks */}
-                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div>
                       <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Percent className="w-5 h-5 text-[#0F8F6D]" />
+                        <Percent className="w-5 h-5 text-[#00a174]" />
                         <span>在日工作者融資方案整理</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-1">
@@ -488,7 +488,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="grid grid-cols-1 items-start gap-5 font-sans md:grid-cols-2 xl:grid-cols-3">
                       {japaneseBanks.map((bank, idx) => (
-                        <article key={idx} className="w-full border border-[#DDE3DF] bg-[#F5F8F6] transition-all duration-300 hover:border-[#0F8F6D] hover:shadow-colored-soft overflow-hidden">
+                        <article key={idx} className="w-full border border-[#DDE3DF] bg-[#F5F8F6] transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft overflow-hidden">
                           <button
                             type="button"
                             onClick={() => toggleBank(`japan-${idx}`)}
@@ -497,7 +497,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           >
                             <span className="min-w-0 self-center">
                               <h4 className="line-clamp-2 min-h-10 font-bold text-sm leading-5 text-[#1A2A22]">{bank.name}</h4>
-                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#0F8F6D]">{bank.rate}</div>
+                              <div className="mt-2 line-clamp-2 min-h-12 text-lg font-extrabold leading-6 text-[#00a174]">{bank.rate}</div>
                             </span>
                             <span className="flex shrink-0 flex-col items-center gap-1.5 text-[10px] font-bold text-[#3F5147]">
                               <span>{expandedBanks.has(`japan-${idx}`) ? "收合" : "詳情"}</span>
@@ -520,7 +520,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               const cleanedLine = line.replace(/^[•·\-\s\*\u2022\u00b7]+/, '').trim();
                               return (
                                 <div key={lIdx} className="flex items-start gap-2">
-                                  <span className="text-[#0F8F6D] text-[7px] mt-[4.5px] shrink-0 select-none">●</span>
+                                  <span className="text-[#00a174] text-[7px] mt-[4.5px] shrink-0 select-none">●</span>
                                   <span className="flex-1">{cleanedLine}</span>
                                 </div>
                               );
@@ -539,10 +539,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {(buyCategory === "all" || buyCategory === "minpaku") && (
                 <div className="space-y-8">
                   {/* Minpaku District Rules */}
-                  <section className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-5 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div className="border-b border-zinc-200 pb-5">
                       <h3 className="text-xl font-bold flex items-start gap-2">
-                        <Map className="w-5 h-5 mt-0.5 shrink-0 text-[#0F8F6D]" />
+                        <Map className="w-5 h-5 mt-0.5 shrink-0 text-[#00a174]" />
                         <span>東京都 23 區住宅宿泊事業條例整理</span>
                       </h3>
                       <p className="text-xs text-zinc-500 font-sans mt-2 leading-relaxed">
@@ -553,7 +553,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-3 border border-zinc-200 font-sans text-xs">
                       <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
                         <p className="text-zinc-500">全國共同上限</p>
-                        <p className="mt-1 text-lg font-bold text-[#0F8F6D]">180 天／年</p>
+                        <p className="mt-1 text-lg font-bold text-[#00a174]">180 天／年</p>
                       </div>
                       <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
                         <p className="text-zinc-500">本表怎麼看</p>
@@ -567,12 +567,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                     <div className="columns-1 gap-4 font-sans xl:columns-2">
                       {[...minpakuRules].sort((a, b) => minpakuWardOrder.indexOf(a.district) - minpakuWardOrder.indexOf(b.district)).map((item) => (
-                        <article key={item.district} className="mb-4 inline-block w-full break-inside-avoid border border-[#DDE3DF] bg-white align-top overflow-hidden transition-all duration-300 hover:border-[#0F8F6D] hover:shadow-colored-soft">
+                        <article key={item.district} className="mb-4 inline-block w-full break-inside-avoid border border-[#DDE3DF] bg-white align-top overflow-hidden transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
                           <button
                             type="button"
                             onClick={() => toggleMinpakuWard(item.district)}
                             aria-expanded={expandedMinpakuWards.has(item.district)}
-                            className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#F5F8F6] hover:bg-[#EAF3EE] px-4 py-2.5 text-left border-none cursor-pointer transition-colors"
+                            className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#F5F8F6] hover:bg-[#e6f6f1] px-4 py-2.5 text-left border-none cursor-pointer transition-colors"
                           >
                             <h4 className="text-base font-bold text-[#1A2A22]">{item.district}</h4>
                             <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#DDF3EA] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#087154]">
@@ -590,7 +590,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                               <dd className="font-medium text-zinc-700">{item.daysLimit}</dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
-                              <dt className="font-bold text-[#0F8F6D]">營業限制</dt>
+                              <dt className="font-bold text-[#00a174]">營業限制</dt>
                               <dd className="text-zinc-700">{item.rules}</dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#F9FBFA]">
@@ -626,13 +626,13 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       className={`flex w-full items-start justify-between gap-4 text-left ${ryokanExpanded ? "border-b border-zinc-200 pb-3" : ""}`}
                     >
                       <span className="flex items-start gap-2">
-                        <Building className="mt-0.5 h-5 w-5 shrink-0 text-[#0F8F6D]" />
+                        <Building className="mt-0.5 h-5 w-5 shrink-0 text-[#00a174]" />
                         <span>
                           <span className="block text-xl font-bold text-[#1A2A22]">{ryokanRules.title}</span>
                           <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">全年經營所需的用途、建築、消防與許可確認重點</span>
                         </span>
                       </span>
-                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#0F8F6D] font-sans">
+                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#00a174] font-sans">
                         {ryokanExpanded ? "收合" : "展開查看"}
                         <ChevronDown className={`h-4 w-4 transition-transform ${ryokanExpanded ? "rotate-180" : ""}`} />
                       </span>
@@ -649,7 +649,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <div className="space-y-3 text-xs">
                           {ryokanRules.steps.map((step, sIdx) => (
                             <div key={sIdx} className="bg-[#F5F8F6] p-3 border border-zinc-200 flex gap-3">
-                              <span className="font-bold text-[#0F8F6D] shrink-0 text-sm font-sans">0{sIdx+1}</span>
+                              <span className="font-bold text-[#00a174] shrink-0 text-sm font-sans">0{sIdx+1}</span>
                               <div className="space-y-0.5">
                                 <strong className="text-zinc-800 text-[13px]">{step.name}</strong>
                                 <div className="text-zinc-500 leading-relaxed text-justify">{renderFormattedText(step.desc)}</div>
@@ -665,7 +665,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <div className="bg-[#F5F8F6] p-5 border border-zinc-200 space-y-4 text-xs">
                           {ryokanRules.requirements.map((req, rIdx) => (
                             <div key={rIdx} className="flex items-start gap-2 text-zinc-700 leading-relaxed text-justify">
-                              <span className="text-[#0F8F6D] font-bold">✓</span>
+                              <span className="text-[#00a174] font-bold">✓</span>
                               <span>{req}</span>
                             </div>
                           ))}
@@ -688,7 +688,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: QA */}
               {(buyCategory === "all" || buyCategory === "qa") && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#0F8F6D] pl-3 flex items-center justify-between">
+                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見日本買房與投資問題 Q&A</span>
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
                   </h3>

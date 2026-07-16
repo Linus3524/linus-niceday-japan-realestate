@@ -10,7 +10,7 @@ export const renderFormattedText = (text: string) => {
       const content = match[2];
       return (
         <div key={index} className="flex items-start gap-1.5 pl-4 mt-1">
-          <span className="shrink-0 font-bold text-[#0F8F6D] font-sans">{bullet}</span>
+          <span className="shrink-0 font-bold text-[#00a174] font-sans">{bullet}</span>
           <span className="flex-grow">{content}</span>
         </div>
       );

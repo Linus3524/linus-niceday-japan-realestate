@@ -100,7 +100,7 @@ export function JapaneseRuby({ text }: { text: string }) {
     if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index));
     nodes.push(
       <ruby key={`${match[0]}-${index++}`} className="whitespace-nowrap [ruby-position:over]">
-        {match[0]}<rt className="relative -top-[0.08em] select-none font-sans text-[0.5em] font-semibold tracking-normal text-[#0F8F6D]">{toHiragana(readings[match[0]])}</rt>
+        {match[0]}<rt className="relative -top-[0.08em] select-none font-sans text-[0.5em] font-semibold tracking-normal text-[#00a174]">{toHiragana(readings[match[0]])}</rt>
       </ruby>
     );
     lastIndex = match.index + match[0].length;

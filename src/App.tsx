@@ -303,7 +303,7 @@ export default function App() {
       <div 
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] transition-all duration-75"
         style={{
-          background: 'linear-gradient(90deg, var(--color-primary, #0F8F6D), var(--color-orange, #E94E2B))',
+          background: 'linear-gradient(90deg, var(--color-primary, #00a174), var(--color-orange, #E94E2B))',
           width: `${scrollProgress}%`
         }}
       />
@@ -311,13 +311,14 @@ export default function App() {
       {/* Top sticky header */}
       <header className="sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
         <div className="max-w-[1280px] mx-auto flex justify-between items-center">
-          {/* Left: L square box and name */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-[#0F8F6D] text-white flex items-center justify-center font-jost font-bold text-base leading-none select-none">
-              L
-            </div>
-            <span className="font-serif font-extrabold text-[17px] tracking-[1.5px] text-[#1A2A22]">LINUS 住好日</span>
-            <span className="inline-block shrink-0 text-[9px] border border-[#0F8F6D] bg-[#EAF3EE] text-[#0F8F6D] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">日本租屋買房知識大補帖</span>
+          {/* Left: SVG logo */}
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo-text.svg" 
+              alt="LINUS 住好日" 
+              className="h-6 w-auto select-none"
+            />
+            <span className="inline-block shrink-0 text-[9px] border border-[#00a174] bg-[#e6f6f1] text-[#00a174] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">日本租屋買房知識大補帖</span>
           </div>
           {/* Right: 令和日期時間 & 東京天氣 */}
           <HeaderInfoBar />
@@ -330,15 +331,15 @@ export default function App() {
           
           {/* Left side: Heading */}
           <div className="lg:col-span-8 space-y-4 pr-0 lg:pr-10">
-            <div className="flex items-center gap-2 text-[11px] text-[#0F8F6D] font-jost font-semibold tracking-wider uppercase select-none">
-              <span className="w-6 h-[1px] bg-[#0F8F6D] inline-block"></span>
+            <div className="flex items-center gap-2 text-[11px] text-[#00a174] font-jost font-semibold tracking-wider uppercase select-none">
+              <span className="w-6 h-[1px] bg-[#00a174] inline-block"></span>
               <span>VOL.001 · 2026 EDITION</span>
             </div>
             
             <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
               日本で、<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">住まいを</span>
               <br />
-              <span className="text-[#0F8F6D]">探す日々。</span>
+              <span className="text-[#00a174]">探す日々。</span>
             </h1>
 
             <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
@@ -363,20 +364,20 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#0F8F6D] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[112px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:p-4">
+          <div className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
             {/* Left: Logo alone */}
             <div className="shrink-0">
               <img 
                 src="/logo.png" 
                 alt="Logo" 
-                className="h-28 w-28 object-contain lg:h-20 lg:w-20"
+                className="h-32 w-32 object-contain lg:h-[110px] lg:w-[110px]"
               />
             </div>
             
             {/* Right: Text & Actions */}
             <div className="w-full space-y-2.5">
               <div>
-                <span className="block text-[9px] text-[#0F8F6D] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
+                <span className="block text-[9px] text-[#00a174] font-jost tracking-wider uppercase font-semibold">Contact Linus</span>
                 <span className="block text-xs font-bold text-[#1A2A22] font-serif">立即聯絡線上諮詢</span>
               </div>
 
@@ -385,7 +386,7 @@ export default function App() {
                   href={`https://line.me/ti/p/~${linusContact.lineId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-[#0F8F6D] hover:bg-[#0A6D52] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
+                  className="w-full bg-[#00a174] hover:bg-[#007d5a] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
                   id="add-line-btn-hero"
                 >
                   ＋ 加 LINE 好友
@@ -401,7 +402,7 @@ export default function App() {
                   />
                   <button
                     onClick={handleCopyLine}
-                    className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#EAF3EE] text-zinc-700 text-[10px] px-2.5 py-1 cursor-pointer font-bold transition-colors select-none shrink-0"
+                    className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-zinc-700 text-[10px] px-2.5 py-1 cursor-pointer font-bold transition-colors select-none shrink-0"
                   >
                     {copiedLine ? "已複製" : "複製"}
                   </button>
@@ -428,14 +429,14 @@ export default function App() {
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
                 className={`relative py-2 px-3 sm:px-4 md:px-5.5 flex items-baseline gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
-                  activeTab === tab.id ? "text-[#0a6d52] font-bold" : "text-[#1a2a22] hover:text-[#0a6d52]"
+                  activeTab === tab.id ? "text-[#007d5a] font-bold" : "text-[#1a2a22] hover:text-[#007d5a]"
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >
-                <span className="font-jost text-[8px] sm:text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#0F8F6D] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
+                <span className="font-jost text-[8px] sm:text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#00a174] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
                 <span>{tab.label}</span>
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-[-10px] left-3 right-3 sm:left-4 sm:right-4 md:left-5.5 md:right-5.5 h-[2px] bg-[#0F8F6D]" />
+                  <div className="absolute bottom-[-10px] left-3 right-3 sm:left-4 sm:right-4 md:left-5.5 md:right-5.5 h-[2px] bg-[#00a174]" />
                 )}
               </button>
             ))}
@@ -536,11 +537,11 @@ export default function App() {
             </div>
             
             <div className="flex gap-4 text-xs font-sans">
-              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-[#0F8F6D] flex items-center gap-0.5">
+              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-[#00a174] flex items-center gap-0.5">
                 <span>Threads 專頁</span> <ExternalLink className="w-3 h-3" />
               </a>
               <span className="text-zinc-300">|</span>
-              <a href={`mailto:${linusContact.email}`} className="text-zinc-600 hover:text-[#0F8F6D]">
+              <a href={`mailto:${linusContact.email}`} className="text-zinc-600 hover:text-[#00a174]">
                 電子信箱
               </a>
             </div>
@@ -557,7 +558,7 @@ export default function App() {
       {showToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#0F8F6D] hover:bg-[#0A6D52] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
+          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#00a174] hover:bg-[#007d5a] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
           aria-label="Back to Top"
         >
           <ArrowUp className="w-5 h-5" />

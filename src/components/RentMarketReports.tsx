@@ -65,7 +65,7 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
             <span className={`z-10 h-4 w-4 rotate-45 border-2 border-white transition-colors duration-200 cursor-pointer ${colors[index]}`} />
             <div className="flex items-center justify-between gap-2 border-b border-dashed border-[#ECEFEC] py-2">
               <span className="font-mono text-xs font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#EAF3EE] text-[#0A6D52]" : difference < 0 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#e6f6f1] text-[#007d5a]" : difference < 0 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
             </div>
           </div>
         );
@@ -111,7 +111,7 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
               <span className={`flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold transition-colors duration-200 cursor-pointer ${textColors[index]} ${colors[index]}`}>0{index + 1}</span>
               <span className="text-[9px] font-bold leading-tight text-[#3F5147]">{entry.label}</span>
               <span className="text-right font-mono text-[10px] font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#0A6D52]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+              <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#007d5a]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
             </div>
           );
         })}
@@ -138,7 +138,7 @@ function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; 
       <div className="mb-3 flex items-center justify-between gap-2 text-[9px] font-bold">
         <span className="bg-[#FBDFD2] px-2 py-1 text-[#B13818]">近站溢價 +8%</span>
         <span className="text-[#8A9590]">距離增加，租金逐階下降 →</span>
-        <span className="bg-[#EAF3EE] px-2 py-1 text-[#0A6D52]">遠站折讓 −8%</span>
+        <span className="bg-[#e6f6f1] px-2 py-1 text-[#007d5a]">遠站折讓 −8%</span>
       </div>
       <div className="grid h-[210px] grid-cols-4 items-end gap-2 border-b border-[#DDE3DF] px-1" role="img" aria-label="不同車站步行距離的租金階梯比較">
         {items.map((entry, index) => {
@@ -189,23 +189,23 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
   const pos = (value: number) => Math.max(0, Math.min(100, (value - scaleMin) / (scaleMax - scaleMin) * 100));
 
   return (
-    <article className={`border ${expanded ? "border-[#0F8F6D]" : "border-[#DDE3DF]"} bg-white`}>
+    <article className={`border ${expanded ? "border-[#00a174]" : "border-[#DDE3DF]"} bg-white`}>
       <button onClick={onToggle} className="w-full text-left p-4 hover:bg-[#F5F8F6] transition-colors font-sans" aria-expanded={expanded}>
         <div className="flex justify-between items-start gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-mono text-[#8A9590]">AREA {String(index + 1).padStart(2, "0")}</span>
               <span className="border border-[#D6EAF0] bg-[#F2F8FA] px-2 py-0.5 text-[10px] font-bold text-[#3F626D]">{item.recommendationType || "市場推薦"}</span>
-              <span className={`text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "bg-[#EAF3EE] text-[#0A6D52]" : item.fit === "接近預算" ? "bg-[#D6EAF0]" : "bg-[#FBDFD2] text-[#B13818]"}`}>{item.fit}</span>
+              <span className={`text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "bg-[#e6f6f1] text-[#007d5a]" : item.fit === "接近預算" ? "bg-[#D6EAF0]" : "bg-[#FBDFD2] text-[#B13818]"}`}>{item.fit}</span>
             </div>
             <h4 className="font-bold text-base text-[#1A2A22] mt-1">{item.district}{item.station ? ` · ${item.station}站` : ""}</h4>
             <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.join("・") || `${item.region}行政區行情`}</p>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-              {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#0F8F6D] before:content-['✓']">{reason}</span>)}
+              {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{reason}</span>)}
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <div className="text-right"><div className="font-mono font-bold text-lg text-[#0F8F6D]">{yen(item.estimate)}</div><div className="text-[10px] text-[#8A9590]">月租中心值</div></div>
+            <div className="text-right"><div className="font-mono font-bold text-lg text-[#00a174]">{yen(item.estimate)}</div><div className="text-[10px] text-[#8A9590]">月租中心值</div></div>
             <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
           </div>
         </div>
@@ -213,10 +213,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
       {expanded && (
         <div className="border-t border-[#DDE3DF] p-4 md:p-5 bg-[#FAFCFB] space-y-5">
           <section className="border border-[#DDE3DF] bg-white p-4">
-            <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#0F8F6D]" /> 客戶預算 vs. 市場合理區間</div>
+            <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#00a174]" /> 客戶預算 vs. 市場合理區間</div>
             <div className="relative h-12 mx-3">
               <div className="absolute left-0 right-0 top-5 h-2 bg-[#ECEFEC]" />
-              <div className="absolute top-5 h-2 bg-[#A8D5C2]" style={{ left: `${pos(item.rangeLow)}%`, width: `${pos(item.rangeHigh) - pos(item.rangeLow)}%` }} />
+              <div className="absolute top-5 h-2 bg-[#9ee2cf]" style={{ left: `${pos(item.rangeLow)}%`, width: `${pos(item.rangeHigh) - pos(item.rangeLow)}%` }} />
               <div className="absolute top-1 bottom-1 w-0.5 bg-[#E94E2B]" style={{ left: `${pos(budget)}%` }}><span className="absolute -top-1 -translate-x-1/2 -translate-y-full whitespace-nowrap text-[9px] text-[#B13818] font-bold">預算 {yen(budget)}</span></div>
               <span className="absolute top-8 -translate-x-1/2 text-[9px] text-[#3F5147]" style={{ left: `${pos(item.rangeLow)}%` }}>{yen(item.rangeLow)}</span>
               <span className="absolute top-8 -translate-x-1/2 text-[9px] text-[#3F5147]" style={{ left: `${pos(item.rangeHigh)}%` }}>{yen(item.rangeHigh)}</span>
@@ -224,21 +224,21 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
           </section>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <section className="border border-[#DDE3DF] bg-white p-4"><div className="flex items-center gap-2 font-bold text-xs mb-4"><Home className="w-4 h-4 text-[#0F8F6D]" /> 格局行情卡</div><LayoutTiles items={layouts} /></section>
-            <section className="border border-[#DDE3DF] bg-white p-4"><div className="flex items-center gap-2 font-bold text-xs mb-4"><Building2 className="w-4 h-4 text-[#0F8F6D]" /> 屋齡租金時間軸</div><AgeTimeline items={ages} baseline={item.estimate} /></section>
+            <section className="border border-[#DDE3DF] bg-white p-4"><div className="flex items-center gap-2 font-bold text-xs mb-4"><Home className="w-4 h-4 text-[#00a174]" /> 格局行情卡</div><LayoutTiles items={layouts} /></section>
+            <section className="border border-[#DDE3DF] bg-white p-4"><div className="flex items-center gap-2 font-bold text-xs mb-4"><Building2 className="w-4 h-4 text-[#00a174]" /> 屋齡租金時間軸</div><AgeTimeline items={ages} baseline={item.estimate} /></section>
             <section className="border border-[#DDE3DF] bg-white p-4">
-              <div className="flex items-center gap-2 font-bold text-xs mb-3"><Footprints className="w-4 h-4 text-[#0F8F6D]" /> 步行距離租金階梯</div>
+              <div className="flex items-center gap-2 font-bold text-xs mb-3"><Footprints className="w-4 h-4 text-[#00a174]" /> 步行距離租金階梯</div>
               <WalkDistanceSteps items={walks} baseline={item.estimate} />
               <p className="mt-1 text-[9px] leading-relaxed text-[#66736C] font-sans">以本站固定距離係數呈現近站溢價的方向性趨勢，不是實際物件分佈或統計迴歸曲線。</p>
             </section>
             <section className="border border-[#DDE3DF] bg-white p-4">
-              <div className="flex items-center gap-2 font-bold text-xs mb-4"><SlidersHorizontal className="w-4 h-4 text-[#0F8F6D]" /> 建物規格租金級距</div>
+              <div className="flex items-center gap-2 font-bold text-xs mb-4"><SlidersHorizontal className="w-4 h-4 text-[#00a174]" /> 建物規格租金級距</div>
               <BuildingRange items={equipment} baseline={item.estimate} />
               <p className="mt-3 border-t border-dashed border-[#DDE3DF] pt-2 text-[9px] leading-relaxed text-[#66736C] font-sans">上圖為常見規格組合的租金情境，不代表同結構物件一定具備相同設備。木造／輕量鐵骨也包含新築物件，本圖不以結構推定屋齡。</p>
             </section>
           </div>
 
-          <div className="bg-[#EAF3EE] border-l-4 border-[#0F8F6D] p-4 text-xs text-[#3F5147] leading-relaxed font-sans">
+          <div className="bg-[#e6f6f1] border-l-4 border-[#00a174] p-4 text-xs text-[#3F5147] leading-relaxed font-sans">
             <strong className="text-[#1A2A22]">市場判讀：</strong> 此區條件中心值約 {yen(item.estimate)}。若希望降低預算，優先比較屋齡 20 年以上、步行 11-15 分鐘或非熱門大站；若保留電梯、獨立洗面台與面積要求，需以區間上緣準備較穩妥。
           </div>
           <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
@@ -246,7 +246,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
               <p className="text-[9px] text-[#8A9590] leading-relaxed">圖表為本站行政區／格局基準與固定條件係數的情境比較，不是即時空室統計、標準差或實際成交分佈。</p>
               <p className="mt-1 text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把這個地區、車站、格局及 AI 讀到的設備／面積等需求帶入下方計算器，讓你繼續增減條件並查看月租明細。</p>
             </div>
-            <button onClick={onApply} className="bg-[#1A2A22] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#0F8F6D] whitespace-nowrap">套用此方案到下方計算器</button>
+            <button onClick={onApply} className="bg-[#1A2A22] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#00a174] whitespace-nowrap">套用此方案到下方計算器</button>
           </div>
         </div>
       )}

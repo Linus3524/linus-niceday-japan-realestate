@@ -20,7 +20,7 @@ const roomLabel = (roomType: RentSearchCriteria["roomType"]) => ({
 const yen = (value: number) => `${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const badgeStyle: Record<Difficulty, string> = {
-  "條件合理": "border-[#A8D5C2] bg-[#EAF3EE] text-[#0A6D52]",
+  "條件合理": "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
   "需要取捨": "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
   "難度高": "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]",
   "資料不足": "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"
@@ -166,7 +166,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
     <section className="mt-6 border border-[#1A2A22] bg-white" aria-labelledby="requirement-assessment-title">
       <div className="border-b border-[#1A2A22] bg-[#F5F8F6] p-4">
         <div className="flex items-center gap-2">
-          <ClipboardCheck className="h-4 w-4 text-[#0F8F6D]" />
+          <ClipboardCheck className="h-4 w-4 text-[#00a174]" />
           <h4 id="requirement-assessment-title" className="text-base font-bold text-[#1A2A22]">綜合評估報告</h4>
         </div>
         <p className="mt-1 text-xs leading-relaxed text-[#66736C] font-sans">逐項看懂哪些條件容易實現、哪些需要提高預算或重新取捨</p>
@@ -181,7 +181,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
               </div>
               <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-bold ${badgeStyle[row.difficulty]}`}>{row.difficulty}</span>
             </div>
-            <p className="mt-2 border-l-2 border-[#A8D5C2] pl-2 text-[10px] leading-relaxed text-[#66736C]">{row.explanation}</p>
+            <p className="mt-2 border-l-2 border-[#9ee2cf] pl-2 text-[10px] leading-relaxed text-[#66736C]">{row.explanation}</p>
           </div>
         ))}
       </div>

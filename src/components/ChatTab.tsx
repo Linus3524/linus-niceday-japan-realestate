@@ -26,12 +26,12 @@ export function ChatTab(props: ChatTabProps) {
               className="space-y-6"
               id="pane-chat"
             >
-              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="chat-header-card">
-                <div className="absolute top-0 right-8 bg-[#0F8F6D] text-white px-3 py-1 text-xs tracking-widest font-sans">
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="chat-header-card">
+                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs tracking-widest font-sans">
                   AI 顧問
                 </div>
-                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#0a6d52] flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#0F8F6D]" aria-hidden="true">smart_toy</span>
+                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#007d5a] flex items-center gap-2">
+                  <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#00a174]" aria-hidden="true">smart_toy</span>
                   <span>Linus ╳ 24 小時 AI 顧問</span>
                 </h3>
                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
@@ -54,7 +54,7 @@ export function ChatTab(props: ChatTabProps) {
                       <div className={`w-8 h-8 flex items-center justify-center shrink-0 font-sans text-xs border ${
                         msg.role === "user" 
                           ? "bg-zinc-800 text-[#F5F8F6] border-zinc-800" 
-                          : "bg-[#0F8F6D] text-white border-[#0F8F6D]"
+                          : "bg-[#00a174] text-white border-[#00a174]"
                       }`}>
                         {msg.role === "user" ? "客" : "L"}
                       </div>
@@ -79,7 +79,7 @@ export function ChatTab(props: ChatTabProps) {
                               href={lineFriendUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="mt-4 flex w-fit items-center gap-2 border border-[#0F8F6D] bg-[#0F8F6D] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
+                              className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
                               aria-label={`開啟 LINE 並加入 ${linusContact.name} 為好友`}
                             >
                               <span>LINE：{linusContact.lineId}・一鍵加好友</span>
@@ -94,7 +94,7 @@ export function ChatTab(props: ChatTabProps) {
                   {/* AI Loading indicator */}
                   {chatLoading && (
                     <div className="flex gap-3.5 max-w-[80%] mr-auto">
-                      <div className="w-8 h-8 flex items-center justify-center bg-[#0F8F6D] text-white border border-[#0F8F6D] font-sans text-xs shrink-0 animate-pulse">
+                      <div className="w-8 h-8 flex items-center justify-center bg-[#00a174] text-white border border-[#00a174] font-sans text-xs shrink-0 animate-pulse">
                         L
                       </div>
                       <div className="space-y-1">
@@ -139,7 +139,7 @@ export function ChatTab(props: ChatTabProps) {
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(undefined, p)}
-                      className="bg-white hover:bg-[#fffdfb] border border-zinc-300 hover:border-[#0F8F6D] text-[11px] text-zinc-700 hover:text-[#0F8F6D] px-2.5 py-1 transition-colors cursor-pointer font-sans"
+                      className="bg-white hover:bg-[#fffdfb] border border-zinc-300 hover:border-[#00a174] text-[11px] text-zinc-700 hover:text-[#00a174] px-2.5 py-1 transition-colors cursor-pointer font-sans"
                     >
                       {p}
                     </button>
@@ -158,12 +158,12 @@ export function ChatTab(props: ChatTabProps) {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     disabled={chatLoading}
-                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#0F8F6D] disabled:bg-zinc-100 disabled:text-zinc-400"
+                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#00a174] disabled:bg-zinc-100 disabled:text-zinc-400"
                   />
                   <button
                     type="submit"
                     disabled={chatLoading || !chatInput.trim()}
-                    className="bg-[#0F8F6D] hover:bg-[#0A6D52] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-zinc-300 disabled:text-zinc-500 flex items-center gap-1 cursor-pointer shrink-0"
+                    className="bg-[#00a174] hover:bg-[#007d5a] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-zinc-300 disabled:text-zinc-500 flex items-center gap-1 cursor-pointer shrink-0"
                     id="chat-submit-btn"
                   >
                     <span>發送</span>

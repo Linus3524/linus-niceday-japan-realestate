@@ -8,9 +8,9 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Brand Colors from Specifications */
-  --color-primary: #0F8F6D;
-  --color-primary-deep: #0A6D52;
-  --color-primary-soft: #A8D5C2;
+  --color-primary: #00a174;
+  --color-primary-deep: #007d5a;
+  --color-primary-soft: #9ee2cf;
   
   --color-orange: #E94E2B;
   --color-orange-deep: #B13818;
@@ -28,7 +28,7 @@
 
   --color-bg-pure: #FFFFFF;
   --color-bg-off: #F5F8F6;
-  --color-bg-tint: #EAF3EE;
+  --color-bg-tint: #e6f6f1;
 
   /* Custom Transitions & Shadows */
   --shadow-colored-soft: 0 1px 0 rgba(15, 143, 109, 0.04), 0 20px 40px -24px rgba(15, 143, 109, 0.18);

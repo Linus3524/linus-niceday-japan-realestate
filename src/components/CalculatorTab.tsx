@@ -247,7 +247,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
         ? { label: "房源偏少", tone: "text-[#B13818]", width: "w-[35%]" }
         : supplyPressure >= 2.5
           ? { label: "房源一般", tone: "text-[#7A5A1F]", width: "w-[60%]" }
-          : { label: "選擇較多", tone: "text-[#0A6D52]", width: "w-[88%]" };
+          : { label: "選擇較多", tone: "text-[#007d5a]", width: "w-[88%]" };
 
     const station = calcStation === "none" ? null : (districtStations[calcDistrict] || []).find(item => item.name === calcStation);
     const districtRent = parseFloat(getSelectedDistrictData().k1);
@@ -260,7 +260,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
         ? { label: "競爭偏高", tone: "text-[#B13818]", width: "w-[70%]" }
         : competitionScore >= 2.5
           ? { label: "競爭一般", tone: "text-[#7A5A1F]", width: "w-[48%]" }
-          : { label: "競爭較低", tone: "text-[#0A6D52]", width: "w-[25%]" };
+          : { label: "競爭較低", tone: "text-[#007d5a]", width: "w-[25%]" };
 
     const restrictiveModifiers = calcModifiers
       .filter(index => (modifierAvailabilityImpact[index]?.supply || 0) > 0)
@@ -413,7 +413,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   onClick={() => setCalcMode("rent")}
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "rent"
-                      ? "bg-[#0F8F6D] text-white"
+                      ? "bg-[#00a174] text-white"
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
@@ -424,7 +424,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   onClick={() => setCalcMode("buy")}
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "buy"
-                      ? "bg-[#0F8F6D] text-white"
+                      ? "bg-[#00a174] text-white"
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
@@ -434,9 +434,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
               </div>
 
               {/* Preface Intro for Calc */}
-              <div className="border border-[#DDE3DF] hover:border-[#0F8F6D] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="calc-intro">
-                <h3 className="text-base font-bold border-b border-[#DDE3DF] pb-2.5 mb-3 text-[#0a6d52] flex items-center gap-2 font-sans">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#0F8F6D]" aria-hidden="true">calculate</span>
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="calc-intro">
+                <h3 className="text-base font-bold border-b border-[#DDE3DF] pb-2.5 mb-3 text-[#007d5a] flex items-center gap-2 font-sans">
+                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#00a174]" aria-hidden="true">calculate</span>
                   {calcMode === "rent" ? (
                     <span>日本租屋預算與條件評估</span>
                   ) : (
@@ -466,8 +466,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
               {calcMode === "rent" && (
                 <section className="border border-[#1A2A22] bg-white" aria-labelledby="ai-rent-title">
                   <div className="grid grid-cols-1 lg:grid-cols-12">
-                    <div className="lg:col-span-5 bg-[#EAF3EE] p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-[#1A2A22]">
-                      <div className="flex items-center gap-2 text-[#0F8F6D] text-xs font-bold tracking-[0.16em] uppercase mb-3 font-sans">
+                    <div className="lg:col-span-5 bg-[#e6f6f1] p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-[#1A2A22]">
+                      <div className="flex items-center gap-2 text-[#00a174] text-xs font-bold tracking-[0.16em] uppercase mb-3 font-sans">
                         <Sparkles className="w-4 h-4" /> AI Market Reality Check
                       </div>
                       <h3 id="ai-rent-title" className="text-xl md:text-2xl font-bold text-[#1A2A22] leading-snug mb-3">
@@ -483,13 +483,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         maxLength={1000}
                         rows={6}
                         placeholder="例如：預算含管理費 10 萬円，想住東急東橫線，1K 25㎡以上，要獨立洗面台、電梯，走路 10 分鐘內。"
-                        className="w-full resize-y border border-[#1A2A22] bg-white p-4 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:outline-none focus:ring-2 focus:ring-[#0F8F6D]/30 font-sans"
+                        className="w-full resize-y border border-[#1A2A22] bg-white p-4 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:outline-none focus:ring-2 focus:ring-[#00a174]/30 font-sans"
                       />
                       <div className="mt-3 flex flex-col sm:flex-row gap-2">
                         <button
                           onClick={analyzeRentBrief}
                           disabled={!aiPrompt.trim() || aiLoading}
-                          className="flex-1 min-h-12 bg-[#1A2A22] text-white px-5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#0F8F6D] disabled:opacity-45 disabled:cursor-not-allowed transition-colors font-sans"
+                          className="flex-1 min-h-12 bg-[#1A2A22] text-white px-5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#00a174] disabled:opacity-45 disabled:cursor-not-allowed transition-colors font-sans"
                         >
                           {aiLoading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                           {aiLoading ? "正在對標市場…" : "AI 分析適合地區與預算"}
@@ -512,8 +512,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       {!aiResult ? (
                         <div className="h-full flex-1 flex items-center justify-center text-center py-10">
                           <div className="max-w-sm">
-                            <div className="w-12 h-12 mx-auto mb-4 border border-[#A8D5C2] bg-[#F5F8F6] flex items-center justify-center">
-                              <MapPin className="w-5 h-5 text-[#0F8F6D]" />
+                            <div className="w-12 h-12 mx-auto mb-4 border border-[#9ee2cf] bg-[#F5F8F6] flex items-center justify-center">
+                              <MapPin className="w-5 h-5 text-[#00a174]" />
                             </div>
                             <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 6 個搜尋方向</p>
                             <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心值、合理波動區間，以及與預算的落差。</p>
@@ -523,10 +523,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <>
                           <div className="flex flex-wrap gap-2 mb-4">
                             {criteriaSummary(aiResult.criteria).map(label => (
-                              <span key={label} className="bg-[#EAF3EE] border border-[#A8D5C2] px-2.5 py-1 text-[11px] font-bold text-[#0A6D52] font-sans">{label}</span>
+                              <span key={label} className="bg-[#e6f6f1] border border-[#9ee2cf] px-2.5 py-1 text-[11px] font-bold text-[#007d5a] font-sans">{label}</span>
                             ))}
                           </div>
-                          <div className={`mb-5 p-3 border flex gap-2 text-xs leading-relaxed font-sans ${aiResult.recommendations.some(item => item.fit === "預算內") ? "border-[#A8D5C2] bg-[#F5F8F6] text-[#3F5147]" : "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"}`}>
+                          <div className={`mb-5 p-3 border flex gap-2 text-xs leading-relaxed font-sans ${aiResult.recommendations.some(item => item.fit === "預算內") ? "border-[#9ee2cf] bg-[#F5F8F6] text-[#3F5147]" : "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"}`}>
                             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                             <span>{aiResult.reality}</span>
                           </div>
@@ -536,7 +536,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onApply={(item) => applyRecommendationToCalculator(item, aiResult.criteria)}
                           />
                           {appliedNotice && (
-                            <p className="mt-3 border border-[#A8D5C2] bg-[#EAF3EE] px-3 py-2 text-xs font-bold text-[#0A6D52] font-sans" role="status">
+                            <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#007d5a] font-sans" role="status">
                               {appliedNotice}
                             </p>
                           )}
@@ -553,7 +553,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 <div className="xl:col-span-7 space-y-6">
                   {/* Step 1: Select District & Size */}
                   <div className="border border-[#1A2A22] bg-white p-6 space-y-4">
-                    <h4 className="font-bold text-[#0F8F6D] text-sm border-b border-zinc-200 pb-2 font-sans">
+                    <h4 className="font-bold text-[#00a174] text-sm border-b border-zinc-200 pb-2 font-sans">
                       步驟一：選擇地區與格局
                     </h4>
                     
@@ -569,7 +569,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               setCalcModifiers([]); // reset rent modifiers
                               setCalcBuyModifiers([]); // reset buy modifiers
                             }}
-                            className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
+                            className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
                           >
                             {Array.from(new Set(rentRates.map(r => r.region))).map(region => (
                               <optgroup key={region} label={region} className="font-sans font-bold">
@@ -623,14 +623,14 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       return (
                         <div className="space-y-1.5 font-sans pt-3 border-t border-dashed border-zinc-200">
                           <label className="text-xs font-bold text-zinc-700 flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-[#0F8F6D]" />
+                            <MapPin className="w-3.5 h-3.5 text-[#00a174]" />
                             選擇物件周邊特定車站（鐵路、地下鐵或路面電車）：
                           </label>
                           <div className="relative">
                             <select
                               value={calcStation}
                               onChange={(e) => setCalcStation(e.target.value)}
-                              className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#0F8F6D] rounded-none cursor-pointer font-sans"
+                              className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
                             >
                             <option value="none">基準 (行政區平均行情基礎 — 適合廣域搜房)</option>
                             {majorStations.length > 0 && (
@@ -671,7 +671,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     })()}
 
                     <div className="text-xs text-zinc-500 flex items-center gap-1.5 bg-[#F5F8F6] p-3 border border-zinc-200 leading-normal font-sans">
-                      <Info className="w-4 h-4 text-[#0F8F6D] shrink-0" />
+                      <Info className="w-4 h-4 text-[#00a174] shrink-0" />
                       {calcMode === "rent" ? (
                         <span>
                           當前選定：<strong>{calcDistrict}</strong> 區域，該格局規格下的合理市場平均月租金約為 <strong>
@@ -697,7 +697,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       </div>
                     )}
                     {getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
-                      <div className="text-[10px] text-[#3F5147] bg-[#EAF3EE] border border-[#A8D5C2] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
+                      <div className="text-[10px] text-[#3F5147] bg-[#e6f6f1] border border-[#9ee2cf] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
                         <span>資料基準：{getSelectedDistrictData().sourceNote}</span>
                         <span className="font-mono">{getSelectedDistrictData().sourceDate} · 含管理費／共益費</span>
                       </div>
@@ -715,13 +715,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                   {/* Step 2: Modifiers checklist */}
                   <div className="border border-[#1A2A22] bg-white p-6 space-y-4">
-                    <h4 className="font-bold text-[#0F8F6D] text-sm border-b border-zinc-200 pb-2 font-sans">
+                    <h4 className="font-bold text-[#00a174] text-sm border-b border-zinc-200 pb-2 font-sans">
                       {calcMode === "rent" ? "步驟二：租金加減價與房源篩選" : "步驟二：勾選想要的附加條件 (買房折溢價項目)"}
                     </h4>
                     
                     {calcMode === "rent" ? (
                       <div className="space-y-4 font-sans text-xs">
-                        <div className="bg-[#F5F8F6] border-l-4 border-[#0F8F6D] px-3 py-2.5">
+                        <div className="bg-[#F5F8F6] border-l-4 border-[#00a174] px-3 py-2.5">
                           <span className="font-bold text-[#1A2A22]">A. 會影響租金的加減價條件</span>
                           <p className="mt-1 text-[10px] text-[#66736C]">依地區行情尺度換算後，直接反映在下方月租估算。</p>
                         </div>
@@ -741,7 +741,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
                                       : isSelected 
-                                        ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
+                                        ? "bg-[#fffdfb] border-[#00a174] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
                                   title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
@@ -751,7 +751,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     checked={isSelected}
                                     disabled={isDisabled}
                                     onChange={() => !isDisabled && toggleModifier(originalIdx)}
-                                    className="mt-0.5 accent-[#0F8F6D]"
+                                    className="mt-0.5 accent-[#00a174]"
                                   />
                                   <div className="flex-grow">
                                     <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
@@ -828,8 +828,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             {rentSearchFilterOptions.map(option => {
                               const isSelected = rentSearchFilters.includes(option.key);
                               return (
-                                <label key={option.key} className={`p-2.5 border flex items-start gap-2.5 cursor-pointer transition-colors ${isSelected ? "border-[#0F8F6D] bg-[#EAF3EE]" : "border-[#DDE3DF] bg-white hover:border-[#A8D5C2]"}`}>
-                                  <input type="checkbox" checked={isSelected} onChange={() => toggleRentSearchFilter(option.key)} className="mt-0.5 accent-[#0F8F6D]" />
+                                <label key={option.key} className={`p-2.5 border flex items-start gap-2.5 cursor-pointer transition-colors ${isSelected ? "border-[#00a174] bg-[#e6f6f1]" : "border-[#DDE3DF] bg-white hover:border-[#9ee2cf]"}`}>
+                                  <input type="checkbox" checked={isSelected} onChange={() => toggleRentSearchFilter(option.key)} className="mt-0.5 accent-[#00a174]" />
                                   <span>
                                     <span className="block font-semibold text-[#1A2A22]">{option.label}</span>
                                     <span className="mt-0.5 block text-[9px] leading-relaxed text-[#66736C]">{option.note}</span>
@@ -859,7 +859,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
                                       : isSelected 
-                                        ? "bg-[#fffdfb] border-[#0F8F6D] text-zinc-900 cursor-pointer" 
+                                        ? "bg-[#fffdfb] border-[#00a174] text-zinc-900 cursor-pointer" 
                                         : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
                                   }`}
                                   title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
@@ -869,7 +869,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     checked={isSelected}
                                     disabled={isDisabled}
                                     onChange={() => !isDisabled && toggleBuyModifier(originalIdx)}
-                                    className="mt-1 accent-[#0F8F6D]"
+                                    className="mt-1 accent-[#00a174]"
                                   />
                                   <div className="flex-grow">
                                     <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
@@ -881,7 +881,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       )}
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
-                                    <div className="text-[10px] text-[#0F8F6D] font-bold mt-1 font-mono">
+                                    <div className="text-[10px] text-[#00a174] font-bold mt-1 font-mono">
                                       +{(dynamicMult * 100).toFixed(0)}% 估值溢價
                                     </div>
                                   </div>
@@ -943,7 +943,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 <div className="xl:col-span-5 xl:sticky xl:top-8 space-y-6">
                   {/* Results Display */}
                   <div className="border border-[#1A2A22] bg-white p-6 relative">
-                    <div className="absolute top-0 right-4 bg-[#0F8F6D] text-white px-2 py-0.5 text-xs select-none font-sans">
+                    <div className="absolute top-0 right-4 bg-[#00a174] text-white px-2 py-0.5 text-xs select-none font-sans">
                       精算結果 ❀
                     </div>
                     
@@ -956,7 +956,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         {/* The Big Number */}
                         <div className="border-b border-[#1A2A22] pb-4 mb-4">
                           <div className="flex items-baseline gap-1 font-sans">
-                            <span className="text-3xl md:text-4xl font-extrabold text-[#0F8F6D] tracking-tight font-mono">
+                            <span className="text-3xl md:text-4xl font-extrabold text-[#00a174] tracking-tight font-mono">
                               {getCalculatedRent().toLocaleString()}
                             </span>
                             <span className="text-base font-bold text-[#1A2A22]">日圓 / 月</span>
@@ -988,7 +988,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 
                                 const adjustedPrice = getModifierPrice(price);
                                 return (
-                                  <span className={`font-bold font-mono ${adjustedPrice >= 0 ? "text-[#0F8F6D]" : "text-green-700"}`}>
+                                  <span className={`font-bold font-mono ${adjustedPrice >= 0 ? "text-[#00a174]" : "text-green-700"}`}>
                                     {adjustedPrice >= 0 ? "+" : ""}
                                     {adjustedPrice.toLocaleString()} 円
                                   </span>
@@ -1003,7 +1003,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span className="text-zinc-500">條件調整小計：</span>
                                 <span className={`font-bold font-mono ${
                                   calcModifiers.reduce((acc, cur) => acc + getModifierPrice(budgetModifiers[cur].price), 0) >= 0 
-                                    ? "text-[#0F8F6D]" 
+                                    ? "text-[#00a174]" 
                                     : "text-green-700"
                                 }`}>
                                   {calcModifiers.reduce((acc, cur) => acc + getModifierPrice(budgetModifiers[cur].price), 0) >= 0 ? "+" : ""}
@@ -1020,7 +1020,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       <span className="break-all">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
-                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#0F8F6D]" : "text-green-700"}`}>
+                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#00a174]" : "text-green-700"}`}>
                                         {isPlus ? "+" : ""}
                                         {adjustedPrice.toLocaleString()} 円
                                       </span>
@@ -1038,7 +1038,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <div className="border-t border-dashed border-zinc-300 pt-4">
                                 <div className="mb-3 flex items-end justify-between gap-3">
                                   <div>
-                                    <span className="block font-bold text-[#0F8F6D]">房源供給與競爭評估</span>
+                                    <span className="block font-bold text-[#00a174]">房源供給與競爭評估</span>
                                     <span className="mt-0.5 block text-[10px] leading-relaxed text-[#66736C]">依地區熱度、房型與已勾選條件推估相對找房難度</span>
                                   </div>
                                   <span className="shrink-0 border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-1 text-[9px] font-bold text-[#3F5147]">篩選 {assessment.selectedCount}・租金條件 {assessment.modifierCount}</span>
@@ -1050,7 +1050,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       <span className={`text-xs font-bold ${assessment.supply.tone}`}>{assessment.supply.label}</span>
                                     </div>
                                     <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
-                                      <div className={`h-full bg-[#0F8F6D] ${assessment.supply.width}`} />
+                                      <div className={`h-full bg-[#00a174] ${assessment.supply.width}`} />
                                     </div>
                                     <p className="mt-1.5 text-[9px] text-[#8A9590]">長條越長，代表可選房源相對較多</p>
                                   </div>
@@ -1077,11 +1077,11 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
                                     <span className="mr-1 text-[10px] font-bold text-[#3F5147]">擴大供給條件</span>
                                     {assessment.expandingConditions.map(condition => (
-                                      <span key={condition} className="border border-[#A8D5C2] bg-[#EAF3EE] px-2 py-1 text-[9px] font-bold text-[#0A6D52]">{condition}</span>
+                                      <span key={condition} className="border border-[#9ee2cf] bg-[#e6f6f1] px-2 py-1 text-[9px] font-bold text-[#007d5a]">{condition}</span>
                                     ))}
                                   </div>
                                 )}
-                                <p className="mt-3 border-l-2 border-[#0F8F6D] bg-[#F5F8F6] px-3 py-2.5 text-[10px] leading-relaxed text-[#3F5147]">{assessment.advice}</p>
+                                <p className="mt-3 border-l-2 border-[#00a174] bg-[#F5F8F6] px-3 py-2.5 text-[10px] leading-relaxed text-[#3F5147]">{assessment.advice}</p>
                                 <p className="mt-2 text-[9px] leading-relaxed text-[#8A9590]">此為條件組合的相對難度評估，不是即時空室數量或成交速度保證。</p>
                               </div>
                             );
@@ -1089,15 +1089,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Estimation of Initial Fees */}
                           <div className="pt-4 border-t border-dashed border-zinc-300">
-                            <span className="text-[#0F8F6D] font-bold block mb-1">🗂 估算初期費用區間：</span>
+                            <span className="text-[#00a174] font-bold block mb-1">🗂 估算初期費用區間：</span>
                             <div className="bg-[#F5F8F6] p-3 border border-zinc-200 space-y-1.5">
                               <div className="flex justify-between font-bold text-zinc-800 font-sans text-[11px] md:text-xs">
                                 <span>較精簡情境（租金 × 4）：</span>
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 4).toLocaleString()} 円</span>
                               </div>
-                              <div className="flex justify-between font-bold text-[#0F8F6D] font-sans text-[11px] md:text-xs">
+                              <div className="flex justify-between font-bold text-[#00a174] font-sans text-[11px] md:text-xs">
                                 <span>一般預算情境（租金 × 5）：</span>
-                                <span className="font-mono text-xs text-[#0F8F6D]">{(getCalculatedRent() * 5).toLocaleString()} 円</span>
+                                <span className="font-mono text-xs text-[#00a174]">{(getCalculatedRent() * 5).toLocaleString()} 円</span>
                               </div>
                               <div className="flex justify-between font-bold text-zinc-800 font-sans text-[11px] md:text-xs">
                                 <span>費用較多情境（租金 × 6）：</span>
@@ -1123,7 +1123,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}
-                            className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
+                            className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#00a174] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
                             帶入此條件諮詢 AI 顧問 ➔
@@ -1144,7 +1144,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         {/* The Big Number */}
                         <div className="border-b border-[#1A2A22] pb-4 mb-4">
                           <div className="flex items-baseline gap-1 font-sans">
-                            <span className="text-3xl md:text-4xl font-extrabold text-[#0F8F6D] tracking-tight font-mono">
+                            <span className="text-3xl md:text-4xl font-extrabold text-[#00a174] tracking-tight font-mono">
                               {(getCalculatedBuyPrice() / 10000).toLocaleString()}
                             </span>
                             <span className="text-base font-bold text-[#1A2A22]">萬日圓</span>
@@ -1176,7 +1176,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       <span className="break-all font-sans">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
-                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#0F8F6D]" : "text-green-700"}`}>
+                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#00a174]" : "text-green-700"}`}>
                                         {isPlus ? "+" : "-"}{Math.abs(dynamicMult * 100).toFixed(0)}%
                                       </span>
                                     </div>
@@ -1188,7 +1188,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Initial purchase fees section */}
                           <div className="pt-3 border-t border-dashed border-zinc-200">
-                            <span className="text-[#0F8F6D] font-bold block mb-1">🗂 估算初期過戶費用 (諸費用 - 一次性)：</span>
+                            <span className="text-[#00a174] font-bold block mb-1">🗂 估算初期過戶費用 (諸費用 - 一次性)：</span>
                             <div className="bg-[#F5F8F6] p-3 border border-zinc-200 space-y-1.5">
                               <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
                                 <span>現金一括買 (房價約 7%):</span>
@@ -1206,7 +1206,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Loan payments section */}
                           <div className="pt-3 border-t border-dashed border-zinc-200">
-                            <span className="text-[#0F8F6D] font-bold block mb-1">🏦 銀行貸款與月還款額試算：</span>
+                            <span className="text-[#00a174] font-bold block mb-1">🏦 銀行貸款與月還款額試算：</span>
                             <div className="bg-zinc-50 p-3 border border-zinc-200 space-y-1.5">
                               <div className="grid grid-cols-3 gap-2 pb-2 mb-2 border-b border-dashed border-zinc-200">
                                 <label className="text-[10px] text-zinc-600">貸款成數 (%)
@@ -1227,9 +1227,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>銀行貸款金額 ({loanRatio}%):</span>
                                 <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * loanRatio / 100 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
-                              <div className="flex justify-between font-bold text-[#0F8F6D] text-[11px] md:text-xs border-t border-dashed border-zinc-200 pt-1.5 mt-1">
+                              <div className="flex justify-between font-bold text-[#00a174] text-[11px] md:text-xs border-t border-dashed border-zinc-200 pt-1.5 mt-1">
                                 <span>每月本息試算 ({annualRate}%／{loanYears}年):</span>
-                                <span className="font-mono text-[#0F8F6D]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
+                                <span className="font-mono text-[#00a174]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-1 text-justify">
                                 本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審査。
@@ -1247,7 +1247,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}
-                            className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#0F8F6D] cursor-pointer text-xs uppercase transition-colors"
+                            className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#00a174] cursor-pointer text-xs uppercase transition-colors"
                             id="calc-send-to-ai"
                           >
                             帶入此條件諮詢 AI 顧問 ➔
@@ -1265,7 +1265,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   {/* Calculator Guide Card */}
                   <div className="bg-white border border-[#1A2A22] p-5 space-y-3 font-sans">
                     <h5 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5">
-                      <Smile className="w-4.5 h-4.5 text-[#0F8F6D]" />
+                      <Smile className="w-4.5 h-4.5 text-[#00a174]" />
                       {calcMode === "rent" ? (
                         <span>Linus 實務租屋提示</span>
                       ) : (
@@ -1284,7 +1284,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <li>+10,000 円 (屋齡5年新房)</li>
                             <li>+10,000 円 (獨洗+免治馬桶)</li>
                           </ul>
-                          <p className="border-t border-zinc-200 pt-2 text-[#0F8F6D] font-bold">
+                          <p className="border-t border-zinc-200 pt-2 text-[#00a174] font-bold">
                             精算預算 = 133,000 日圓 / 月
                           </p>
                           <p className="text-[10px]">
