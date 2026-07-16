@@ -263,22 +263,29 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     .map(({ score: _score, ...item }) => item);
 }
 
-export function criteriaSummary(criteria: RentSearchCriteria) {
-  const labels: string[] = [criteria.roomType.toUpperCase()];
-  if (criteria.areaMin) labels.push(`${criteria.areaMin}㎡以上`);
-  if (criteria.washbasin) labels.push("獨立洗面台");
-  if (criteria.bidet) labels.push("免治馬桶");
-  if (criteria.elevator) labels.push("電梯");
-  if (criteria.furnished) labels.push("家具家電");
-  if (criteria.walkMinutes) labels.push(`步行${criteria.walkMinutes}分內`);
-  if (criteria.line) labels.push(criteria.line);
-  if (criteria.station) labels.push(`${criteria.station}站`);
-  if (criteria.stations?.length) labels.push(criteria.stations.map(station => `${station}站`).join("・"));
-  if (criteria.commuteStation) labels.push(`通勤至${criteria.commuteStation}`);
-  if (criteria.freeInternet) labels.push("免費網路");
-  if (criteria.lpGasAccepted) labels.push("可接受LP瓦斯");
-  if (criteria.cityGasRequired) labels.push("都市瓦斯指定");
-  if (criteria.petsAllowed) labels.push(criteria.petType ? `可養${criteria.petType}` : "可養寵物");
-  if (criteria.maxBudget) labels.push(`上限 ${(criteria.maxBudget / 10000).toFixed(1)}萬円`);
+export type CriteriaSummaryCategory = "layout" | "equipment" | "transport" | "special" | "budget";
+
+export interface CriteriaSummaryItem {
+  label: string;
+  category: CriteriaSummaryCategory;
+}
+
+export function criteriaSummary(criteria: RentSearchCriteria): CriteriaSummaryItem[] {
+  const labels: CriteriaSummaryItem[] = [{ label: criteria.roomType.toUpperCase(), category: "layout" }];
+  if (criteria.areaMin) labels.push({ label: `${criteria.areaMin}㎡以上`, category: "layout" });
+  if (criteria.washbasin) labels.push({ label: "獨立洗面台", category: "equipment" });
+  if (criteria.bidet) labels.push({ label: "免治馬桶", category: "equipment" });
+  if (criteria.elevator) labels.push({ label: "電梯", category: "equipment" });
+  if (criteria.furnished) labels.push({ label: "家具家電", category: "equipment" });
+  if (criteria.walkMinutes) labels.push({ label: `步行${criteria.walkMinutes}分內`, category: "transport" });
+  if (criteria.line) labels.push({ label: criteria.line, category: "transport" });
+  if (criteria.station) labels.push({ label: `${criteria.station}站`, category: "transport" });
+  if (criteria.stations?.length) labels.push({ label: criteria.stations.map(station => `${station}站`).join("・"), category: "transport" });
+  if (criteria.commuteStation) labels.push({ label: `通勤至${criteria.commuteStation}`, category: "transport" });
+  if (criteria.freeInternet) labels.push({ label: "免費網路", category: "equipment" });
+  if (criteria.lpGasAccepted) labels.push({ label: "可接受LP瓦斯", category: "equipment" });
+  if (criteria.cityGasRequired) labels.push({ label: "都市瓦斯指定", category: "equipment" });
+  if (criteria.petsAllowed) labels.push({ label: criteria.petType ? `可養${criteria.petType}` : "可養寵物", category: "special" });
+  if (criteria.maxBudget) labels.push({ label: `上限 ${(criteria.maxBudget / 10000).toFixed(1)}萬円`, category: "budget" });
   return labels;
 }

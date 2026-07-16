@@ -13,6 +13,14 @@ import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifie
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 
+const criteriaTagStyle = {
+  layout: "border-[#facc15] bg-[#fef9c3] text-[#854D0E]",
+  equipment: "border-[#86efac] bg-[#dcfce7] text-[#166534]",
+  transport: "border-[#7DD3FC] bg-[#E0F2FE] text-[#075985]",
+  special: "border-[#fb923c] bg-[#ffedd5] text-[#9A3412]",
+  budget: "border-[#f87171] bg-[#fee2e2] text-[#991B1B]"
+} as const;
+
 interface CalculatorTabProps {
   calcMode: "rent" | "buy";
   setCalcMode: (m: "rent" | "buy") => void;
@@ -522,8 +530,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       ) : (
                         <>
                           <div className="flex flex-wrap gap-2 mb-4">
-                            {criteriaSummary(aiResult.criteria).map(label => (
-                              <span key={label} className="bg-[#e6f6f1] border border-[#9ee2cf] px-2.5 py-1 text-[11px] font-bold text-[#007d5a] font-sans">{label}</span>
+                            {criteriaSummary(aiResult.criteria).map(item => (
+                              <span key={item.label} className={`border px-2.5 py-1 text-[11px] font-bold font-sans ${criteriaTagStyle[item.category]}`}>{item.label}</span>
                             ))}
                           </div>
                           <div className={`mb-5 p-3 border flex gap-2 text-xs leading-relaxed font-sans ${aiResult.recommendations.some(item => item.fit === "預算內") ? "border-[#9ee2cf] bg-[#F5F8F6] text-[#3F5147]" : "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"}`}>
