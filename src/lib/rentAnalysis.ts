@@ -1,7 +1,7 @@
-import { budgetModifiers } from "../data/rentGuideData";
-import type { StationInfo } from "../data/stationData";
-import { rentRates, districtStations } from "../data/housingMarket";
-import { TAMA_CITIES } from "./calcRules";
+import { budgetModifiers } from "../data/rentGuideData.js";
+import type { StationInfo } from "../data/stationData.js";
+import { rentRates, districtStations } from "../data/housingMarket.js";
+import { TAMA_CITIES } from "./calcRules.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
 

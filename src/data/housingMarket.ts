@@ -1,5 +1,5 @@
-import { rentRates as legacyRentRates, RentRate } from "./rentGuideData";
-import { districtStations as legacyDistrictStations, StationInfo } from "./stationData";
+import { rentRates as legacyRentRates, RentRate } from "./rentGuideData.js";
+import { districtStations as legacyDistrictStations, StationInfo } from "./stationData.js";
 
 export type DataConfidence = "high" | "medium" | "limited";
 export type DataVerificationStatus = "verified_source" | "modeled_unverified" | "researched_limited";

@@ -1,5 +1,5 @@
-import { rentRates } from "../data/housingMarket";
-import { buyBudgetModifiers } from "../data/buyHouseData";
+import { rentRates } from "../data/housingMarket.js";
+import { buyBudgetModifiers } from "../data/buyHouseData.js";
 
 // 東京都下（多摩地區）城市清單 — 全站共用，判斷是否屬於東京 23 區以外的都下區域
 export const TAMA_CITIES = ["武藏野市", "三鷹市", "立川市", "八王子市", "日野市", "府中市", "調布市", "町田市", "西東京市", "小平市", "多摩市", "狛江市"];
