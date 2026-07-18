@@ -61,8 +61,8 @@ const modifierAvailabilityImpact: Record<number, { supply: number; competition: 
   24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 }
 };
 
-const AI_ANALYSIS_LIMIT = 3;
-const AI_ANALYSIS_WINDOW_MS = 5 * 60 * 1000;
+const AI_ANALYSIS_LIMIT = 5;
+const AI_ANALYSIS_WINDOW_MS = 3 * 60 * 1000;
 const AI_ANALYSIS_STORAGE_KEY = "rent-ai-analysis-attempts";
 
 function reserveClientAnalysisAttempt() {
@@ -96,7 +96,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
     if (!aiPrompt.trim() || aiLoading) return;
     const waitMinutes = reserveClientAnalysisAttempt();
     if (waitMinutes > 0) {
-      setAiError(`AI 分析每 5 分鐘最多使用 3 次，請約 ${waitMinutes} 分鐘後再試。`);
+      setAiError(`AI 分析每 3 分鐘最多使用 5 次，請約 ${waitMinutes} 分鐘後再試。`);
       return;
     }
     setAiLoading(true);
@@ -509,7 +509,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           套用範例
                         </button>
                       </div>
-                      <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 5 分鐘最多分析 3 次。</p>
+                      <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 3 分鐘最多分析 5 次。</p>
                       {aiError && <p className="mt-3 text-xs text-[#B13818] bg-[#FBDFD2] p-3 font-sans">{aiError}</p>}
                       {aiResult && (
                         <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />

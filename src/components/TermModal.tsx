@@ -50,8 +50,12 @@ export function TermModal(props: TermModalProps) {
   return (
     <AnimatePresence>
       {selectedFee && (
-          <div 
-            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs select-text font-serif"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 sm:backdrop-blur-xs select-text font-serif"
             id="term-modal-backdrop"
             onClick={(e) => {
               if (e.target === e.currentTarget) setSelectedFee(null);
@@ -141,7 +145,7 @@ export function TermModal(props: TermModalProps) {
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
       )}
     </AnimatePresence>
   );
