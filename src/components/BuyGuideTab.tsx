@@ -699,7 +699,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} number={idx + 1} />)}
+                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />)}
                     </div>
                   )}
                 </section>

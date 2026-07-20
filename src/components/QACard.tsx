@@ -1,4 +1,4 @@
-import { ChevronDown, Lightbulb, ShieldAlert } from "lucide-react";
+import { ChevronDown, Lightbulb } from "lucide-react";
 import { renderFormattedText } from "../lib/format";
 
 interface QACardProps {
@@ -7,6 +7,13 @@ interface QACardProps {
   answer: string;
   number: number;
   sources?: Array<{ label: string; url: string }>;
+  table?: {
+    caption: string;
+    cornerLabel?: string;
+    columns: string[];
+    rows: Array<{ label: string; cells: string[] }>;
+    notes?: string[];
+  };
 }
 
 const getSummary = (answer: string) => {
@@ -17,41 +24,34 @@ const getSummary = (answer: string) => {
 
 const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
   const trimmed = text.trim();
-  if (/^【.+】$/.test(trimmed)) return <h5 className="mt-5 mb-2 text-xs font-bold text-[#00a174]">{trimmed}</h5>;
-
-  if (/^(⚠|★)/.test(trimmed)) {
-    return (
-      <div className="mt-4 flex gap-2 border-l-2 border-amber-500 bg-amber-50 px-3 py-2.5 text-amber-950">
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
-        <div>{renderFormattedText(trimmed)}</div>
-      </div>
-    );
-  }
+  const standaloneHeading = trimmed.match(/^【(.+)】$/);
+  if (standaloneHeading) return <div className="mt-4 mb-2 font-bold text-zinc-800">{renderFormattedText(standaloneHeading[1])}</div>;
 
   const lines = trimmed.split("\n").map(line => line.trim()).filter(Boolean);
 
   return (
     <div className="mt-3 space-y-2 text-zinc-700 leading-relaxed">
       {lines.map((line, index) => {
-        if (/^【.+】$/.test(line)) {
-          return <h5 key={index} className="pt-2 text-xs font-bold text-[#00a174]">{line}</h5>;
+        const heading = line.match(/^【(.+)】$/);
+        if (heading) {
+          return <div key={index} className="pt-2 font-bold text-zinc-800">{renderFormattedText(heading[1])}</div>;
         }
 
         const orderedItem = line.match(/^(\d+)[.、]\s*(.+)$/);
         if (orderedItem) {
           return (
             <div key={index} className="grid grid-cols-[1.5rem_1fr] items-start gap-1">
-              <span className="font-bold text-[#00a174]">{orderedItem[1]}.</span>
+              <span className="text-zinc-700">{orderedItem[1]}.</span>
               <div>{renderFormattedText(orderedItem[2])}</div>
             </div>
           );
         }
 
-        const bulletItem = line.match(/^[•・\-]\s*(.+)$/);
+        const bulletItem = line.match(/^[•・\-●▪︎]\s*(.+)$/);
         if (bulletItem) {
           return (
             <div key={index} className="grid grid-cols-[1rem_1fr] items-start gap-1">
-              <span className="font-bold text-[#00a174]">•</span>
+              <span className="text-zinc-700">•</span>
               <div>{renderFormattedText(bulletItem[1])}</div>
             </div>
           );
@@ -63,7 +63,7 @@ const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
   );
 };
 
-export function QACard({ question, answer, number, sources }: QACardProps) {
+export function QACard({ question, answer, number, sources, table }: QACardProps) {
   const blocks = answer.split(/\n\s*\n/).filter(Boolean);
   const isLong = answer.length > 260 || blocks.length > 1;
 
@@ -87,6 +87,51 @@ export function QACard({ question, answer, number, sources }: QACardProps) {
           <div className="font-sans text-xs text-justify md:text-sm">
             {blocks.map((block, index) => <AnswerBlock key={index} text={block} />)}
           </div>
+          {table && (
+            <div className="mt-5 font-sans">
+              <h5 className="mb-2 font-bold text-zinc-800">{table.caption}</h5>
+              <div className="overflow-x-auto border border-[#DDE3DF] bg-white">
+                <table className="min-w-[900px] w-full table-fixed border-collapse text-left text-[11px] leading-relaxed">
+                  <thead>
+                    <tr className="bg-[#E6F6F1] text-[#1A2A22]">
+                      <th className="w-[180px] whitespace-normal break-words border-b border-r border-[#BFD8CF] px-3 py-2.5">{table.cornerLabel || "項目"}</th>
+                      {table.columns.map(column => (
+                        <th key={column} className="whitespace-normal break-words border-b border-r border-[#BFD8CF] px-3 py-2.5 last:border-r-0">{column}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {table.rows.map((row, rowIndex) => (
+                      <tr key={row.label} className={rowIndex % 2 === 0 ? "bg-white" : "bg-[#F7FAF8]"}>
+                        <th className="whitespace-normal break-words border-b border-r border-[#DDE3DF] px-3 py-2.5 font-bold text-zinc-800">{row.label}</th>
+                        {row.cells.map((cell, cellIndex) => {
+                          const limited = cell.startsWith("僅");
+                          const worldwide = cell.startsWith("國內外全部財產");
+                          return (
+                            <td
+                              key={`${row.label}-${cellIndex}`}
+                              className={`whitespace-normal break-words border-b border-r border-[#DDE3DF] px-3 py-2.5 last:border-r-0 ${
+                                limited
+                                  ? "bg-[#F4F5F5] text-zinc-600"
+                                  : worldwide
+                                    ? "bg-[#DDF4EB] font-bold text-[#006B4E]"
+                                    : "text-zinc-700"
+                              }`}
+                            >
+                              {cell}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-2 space-y-1 text-[10px] leading-relaxed text-zinc-500">
+                {table.notes?.map(note => <p key={note}>• {note}</p>)}
+              </div>
+            </div>
+          )}
           {sources && sources.length > 0 && (
             <div className="mt-5 border-t border-zinc-200 pt-3 font-sans">
               <p className="text-[10px] font-bold tracking-wide text-zinc-500">官方依據</p>
