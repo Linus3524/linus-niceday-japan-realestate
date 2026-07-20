@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { renderFormattedText } from "../lib/format";
@@ -45,6 +46,17 @@ function shouldStackHeader(name: string) {
 
 export function TermModal(props: TermModalProps) {
   const { selectedFee, setSelectedFee, handleTabChange, handleSendMessage } = props;
+
+  // 彈窗開啟時鎖定背景捲動，避免手機上背景頁面跳動造成畫面閃爍
+  useEffect(() => {
+    if (!selectedFee) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedFee]);
+
   const itemTypeLabel = getItemTypeLabel(selectedFee);
   const stackHeader = selectedFee ? shouldStackHeader(selectedFee.name) : false;
   return (
@@ -54,18 +66,19 @@ export function TermModal(props: TermModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.12, ease: "easeOut" }}
-            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 sm:backdrop-blur-xs select-text font-serif"
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 sm:backdrop-blur-xs select-text font-serif overscroll-contain"
             id="term-modal-backdrop"
             onClick={(e) => {
               if (e.target === e.currentTarget) setSelectedFee(null);
             }}
           >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white border border-[#DDE3DF] hover:border-[#00a174] w-full max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:p-6 relative rounded-none shadow-colored-soft transition-all duration-300"
+            <motion.div
+              initial={{ scale: 0.96, y: 12, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.97, y: 8, opacity: 0 }}
+              transition={{ type: "tween", duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border border-[#DDE3DF] w-full max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:p-6 relative rounded-none shadow-colored-soft will-change-transform"
               id="term-modal-content"
             >
               <button 
