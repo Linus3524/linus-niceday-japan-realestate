@@ -28,7 +28,39 @@ const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
     );
   }
 
-  return <div className="mt-3 text-zinc-700 leading-relaxed">{renderFormattedText(trimmed)}</div>;
+  const lines = trimmed.split("\n").map(line => line.trim()).filter(Boolean);
+
+  return (
+    <div className="mt-3 space-y-2 text-zinc-700 leading-relaxed">
+      {lines.map((line, index) => {
+        if (/^【.+】$/.test(line)) {
+          return <h5 key={index} className="pt-2 text-xs font-bold text-[#00a174]">{line}</h5>;
+        }
+
+        const orderedItem = line.match(/^(\d+)[.、]\s*(.+)$/);
+        if (orderedItem) {
+          return (
+            <div key={index} className="grid grid-cols-[1.5rem_1fr] items-start gap-1">
+              <span className="font-bold text-[#00a174]">{orderedItem[1]}.</span>
+              <div>{renderFormattedText(orderedItem[2])}</div>
+            </div>
+          );
+        }
+
+        const bulletItem = line.match(/^[•・\-]\s*(.+)$/);
+        if (bulletItem) {
+          return (
+            <div key={index} className="grid grid-cols-[1rem_1fr] items-start gap-1">
+              <span className="font-bold text-[#00a174]">•</span>
+              <div>{renderFormattedText(bulletItem[1])}</div>
+            </div>
+          );
+        }
+
+        return <div key={index}>{renderFormattedText(line)}</div>;
+      })}
+    </div>
+  );
 };
 
 export function QACard({ question, answer, number, sources }: QACardProps) {

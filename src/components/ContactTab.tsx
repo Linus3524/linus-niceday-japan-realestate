@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { ExternalLink, Smile, Instagram, Facebook, AtSign } from "lucide-react";
+import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 
 interface ContactTabProps {
@@ -135,7 +135,8 @@ export function ContactTab(props: ContactTabProps) {
                       className="flex items-center justify-center gap-2 bg-[#00a174] hover:bg-[#007d5a] text-white px-4 py-2.5 font-bold cursor-pointer transition-colors"
                       id="add-line-btn-contact"
                     >
-                      ＋ 一鍵加 Linus 為 LINE 好友
+                      點我加 LINE 好友
+                      <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />
                     </a>
                     <div className="flex items-stretch font-sans text-xs">
                       <input
@@ -221,7 +222,7 @@ export function ContactTab(props: ContactTabProps) {
 3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
 4. 每月租屋預算範圍：
 5. 通勤目的地 and 可接受交通時間（學校或公司名稱、靠近的車站）：
-6. 是否為自己住／有無同居人：
+6. 是否為自己住／有無同居人（代問或代找請表明）：
 7. 其他對房子的核心條件（如：獨立洗面台、屋齡限制等）：`}
                         </div>
                       </div>
@@ -229,29 +230,31 @@ export function ContactTab(props: ContactTabProps) {
                       <div className="space-y-2">
                         <span className="font-bold text-[#00a174] block">📋 諮詢買房時建議先準備好以下資料：</span>
                         <p className="text-zinc-600 leading-normal text-justify">
-                          為了讓 Linus 協助媒合合適物件並進行情境試算，歡迎填寫以下買房條件。貸款結果仍以金融機構正式審査為準。
+                          很高興為您服務，請先幫我填寫以下買房條件。
                         </p>
                         
                         <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
-                          {`【買房條件問卷】
-1. 全款現金或貸款：
-2. 在日本有簽證／無簽證在台灣（有預計什麼時候來日本看房，或是線上看直接決定）：
+                          {`1. 全款現金或貸款：
+2. 在日本有簽證／無簽證在台灣的話，有預計什麼時候來日本看房，或是線上看直接決定：
 3. 目標什麼時候買房：
 4. 預算範圍：
 5. 投資或自住：
 6. 地區／車站距離：
-7. 其他房子的要求（屋齡／大小／樓層）：`}
+7. 其他房子的要求／屋齡／大小／樓層：`}
                         </div>
 
                         <div className="bg-red-50 p-3 border-l-2 border-[#00a174] space-y-1.5 text-[11px] leading-relaxed">
                           <span className="font-bold text-[#00a174] block">貸款注意事項⚠️</span>
                           <p className="text-zinc-700 text-justify">
-                            日本房貸依申請人、居留身分、收入、資產與物件個別審査。以下問題僅供初步分流，不代表核貸門檻或保證條件：
+                            在日本貸款實務上條件比較嚴格，請先幫我確認以下問卷是否有達到：
                           </p>
                           <ul className="list-disc pl-4 space-y-1.5 text-zinc-600">
-                            <li><strong>在日居民：</strong>在日本是否有工作簽證，且同一份工作超過 3 年且年薪 300 萬日圓以上？或來日一年以上年收 400 萬以上，且任職公司在日本登記超過 5 年。</li>
-                            <li><strong>非在日居民 (純海外買方)：</strong>若無簽證在台灣，在台灣現在有沒有任何貸款？淨資產有無 3000 萬日圓（約新台幣 640 萬元）以上？且年收入有無達 1000 萬日圓（約新台幣 215 萬元）以上？</li>
+                            <li>在日本是否有工作簽證，且同一份工作超過 3 年、年薪 300 萬日圓以上？或來日一年以上、年收 400 萬日圓以上，任職公司在日本登記超過 5 年。</li>
+                            <li>如果沒有簽證，在台灣目前有沒有任何貸款？淨資產有無 3000 萬日圓以上？或去年年收入有沒有超過 1000 萬日圓？</li>
                           </ul>
+                          <p className="text-zinc-700 text-justify">
+                            如果這兩者條件都沒有，依目前實際台日系銀行的審查條件，貸款難度很高。建議採取在台灣完成增貸的方式，以現金購買日本房產，會是比較方便、容易的選擇。
+                          </p>
                         </div>
                       </div>
                     )}

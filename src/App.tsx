@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import {
-  ExternalLink, ArrowUp, Copy, Check, Smile
+  ExternalLink, ArrowUp, Copy, Check, Smile, MousePointerClick
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import {
@@ -389,7 +389,8 @@ export default function App() {
                   className="w-full bg-[#00a174] hover:bg-[#007d5a] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
                   id="add-line-btn-hero"
                 >
-                  ＋ 加 LINE 好友
+                  點我加 LINE 好友
+                  <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </a>
 
                 <div className="flex items-stretch font-sans text-xs w-full">

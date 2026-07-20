@@ -618,7 +618,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Ryokan requirements */}
-                  <section className="border border-[#1A2A22] bg-white p-6 md:p-8 space-y-6">
+                  <section className="border border-[#DDE3DF] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setRyokanExpanded(current => !current)}

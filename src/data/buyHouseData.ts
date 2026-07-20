@@ -768,13 +768,13 @@ export const japaneseBanks: JapaneseBankItem[] = [
 export const minpakuRules: MinpakuRuleItem[] = [
   {
     district: "千代田區",
-    rules: "2026/7/1 起規則依營業型態與區域細分。家主居住型在文教地區及學校周邊，週日正午至週五正午不得實施；家主不在型在文教地區、學校周邊及人口密集區的限制更嚴格，部分情況全年不得實施。",
-    daysLimit: "最多 180 天／年；限制區域與型態可能另有週間或全年限制",
+    rules: "2026/7/1 起，家主居住型在文教地區與學校周邊，週日正午至週五正午不得營業；家主不在型無論採管理者常駐或駆け付け，在文教地區、學校周邊及人口密集區均全年不得營業。2026/6/30 前受理的設施適用改正前規定。",
+    daysLimit: "家主居住型依區域適用週間限制或 180 天／年上限；家主不在型在文教地區、學校周邊及人口密集區全年禁止",
     areaLimit: "文教地區、學校周邊（約 100 公尺）、人口密集區及人口非密集區，依型態適用不同限制",
-    managerReq: "家主不在型須符合管理者常駐或駆け付け等區別；應依千代田區現行指南確認。",
+    managerReq: "家主不在型須委託住宅宿泊管理業者；2026/7/1 起，管理者常駐與駆け付け型在限制區域均適用全年禁止。",
     verification: "official",
     sourceUrl: "https://www.city.chiyoda.lg.jp/koho/kurashi/jutakushukuhakujigyo/jorei.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "中央區",
@@ -784,7 +784,7 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "須於申報 7 天前對周邊住民周知，並建立可迅速駆け付け處理苦情的體制。",
     verification: "official",
     sourceUrl: "https://www.city.chuo.lg.jp/a0030/kenkouiryou/eisei/seikatsueisei/minpaku/jyutakujyukuhakujigyojyorei.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "港區",
@@ -794,37 +794,37 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "家主不在型需依住宅宿泊事業法及港區指引配置管理；申請前向港區確認。",
     verification: "official",
     sourceUrl: "https://www.city.minato.tokyo.jp/kankyoueiseishidou/minpaku2.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "新宿區",
     rules: "住居專用地域：僅週五正午～週一正午可營業（平日禁）。其他商業用途地域無平日禁令。",
-    daysLimit: "住居專用區實質約 104 天/年；商業區最多 180 天/年",
-    areaLimit: "住居專用地域（第一/二種低層、中高層、住居地域）受限",
+    daysLimit: "住居專用地域主要可於週五正午～週一正午營業，仍受 180 天／年上限；其他區域最多 180 天／年",
+    areaLimit: "第一、二種低層住居專用地域及第一、二種中高層住居專用地域",
     managerReq: "需於提出申報 7 天前，以書面向鄰近居民周知。",
     verification: "official",
     sourceUrl: "https://www.city.shinjuku.lg.jp/kenkou/eisei03_002086.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "墨田區",
-    rules: "2026/4/1 起適用修訂後的區條例與執行指引；具體可營業期間、周知與管理要求應依該區最新指南及物件所在地確認。",
-    daysLimit: "最多 180 天／年；區條例可能再限制，需個案確認",
-    areaLimit: "依墨田區現行條例與指南確認",
-    managerReq: "依墨田區現行指南辦理事前周知與管理安排。",
+    rules: "2026/4/1 起受理的新申報，原則上週日正午至週五正午不得營業；若管理者常駐於申報住宅內、同棟建物、同一基地或相鄰建物，則不受此週間限制。2026/3/31 前已完成申報的既有設施適用經過措施。",
+    daysLimit: "新申報且無管理者常駐者，主要可於週五正午～週日正午營業；常駐型及既有設施另依適用規定，均受 180 天／年上限",
+    areaLimit: "全區",
+    managerReq: "申報前須辦理周邊住民說明；適用常駐例外時，管理者須位於申報住宅內、同棟、同一基地或相鄰建物。",
     verification: "official",
     sourceUrl: "https://www.city.sumida.lg.jp/kenko_fukushi/eisei/juutaku_syukuhaku/kunotorikumi/kiseikentou.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "台東區",
-    rules: "現行規則與 2026/10/1 起的新規則適用範圍不同。自 2026/10/1 起受理的新申報，家主居住型與不在型都將受平日限制；既有設施是否適用請依台東區公告確認。",
-    daysLimit: "最多 180 天／年；平日限制與既存設施例外需依申報日確認",
-    areaLimit: "全區；新舊規則的適用依申報受理日區分",
+    rules: "2026/10/1 起受理的新申報，家主居住型與家主不在型在全區均不得於平日營業，僅能在星期六、日、國定假日及年末年初營業。2026/9/30 前已受理的既有設施不適用這項新限制。",
+    daysLimit: "2026/10/1 起的新申報限星期六、日、國定假日及年末年初，並受 180 天／年上限；既有設施適用原規定",
+    areaLimit: "全區；新限制適用於 2026/10/1 起受理的新申報",
     managerReq: "申報前至少 15 天向周邊住民及學校等周知，並依區規定建立管理體制。",
     verification: "official",
     sourceUrl: "https://www.city.taito.lg.jp/kenchiku/jutaku/eisei/jutakulaw/minpanku20180613_003.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "江東區",
@@ -834,7 +834,7 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "須依江東區條例對鄰近住民進行書面事前周知，並完成申報程序。",
     verification: "official",
     sourceUrl: "https://www.city.koto.lg.jp/260403/fukushi/ese/kankyo/minpaku_index.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "目黑區",
@@ -844,47 +844,47 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "須於申報日前至少 15 天，張貼並以書面向周邊住民周知；苦情處理紀錄須保存 3 年。",
     verification: "official",
     sourceUrl: "https://www.city.meguro.tokyo.jp/seikatsueisei/kenkoufukushi/eisei/minpaku.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "豐島區",
-    rules: "區條例已於 2025/12/15 改正並施行，現行限制區域、限制期間及申報附件已變更；應以豐島區最新說明與物件所在地確認，不以舊版「寒暑假限定」概括。",
-    daysLimit: "最多 180 天／年；另依豐島區現行限制區域與期間確認",
-    areaLimit: "依豐島區改正後條例及現行申報說明確認",
-    managerReq: "依現行條例、施行細則與申報說明辦理周知、標識及管理安排。",
+    rules: "目前尚未實施區域與營業期間限制。2026/12/16 起，全區每年僅可在春假 3/15～4/10、暑假 7/1～8/31、冬假 12/15～1/14 營業；其中住居專用地域、住居地域、準工業地域及文教地區將全年禁止。",
+    daysLimit: "目前依中央上限最多 180 天／年；2026/12/16 起，全區縮減為春、夏、冬假合計 120 天／年",
+    areaLimit: "2026/12/16 起，住居專用地域、住居地域、準工業地域及文教地區全年禁止，約占豐島區 70％",
+    managerReq: "目前已要求舉辦周邊住民事前說明會；海外居住的事業者須指定日本國內代理人，並辦理町會加入協議及相關申報附件。",
     verification: "official",
     sourceUrl: "https://www.city.toshima.lg.jp/214/kurashi/ese/kankyoese/minpaku/kaisei.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "大田區",
     rules: "家主不在型在指定用途地域、特別用途地區、流通業務地區及部分地區計畫範圍受區域限制；新申報且位於中小學校用地周邊 100 公尺內者，週一正午至週五正午不得實施。家主居住型原則上不適用這些區域與期間限制。",
     daysLimit: "最多 180 天／年；另依家主是否不在、用途地域與學校周邊條件限制",
     areaLimit: "指定住居專用地域、工業地域、文教／特別業務地區、流通業務地區及部分地區計畫範圍",
-    managerReq: "應依大田區條例、規則與 2026/4 修訂指引確認；特區民泊為不同制度，不能與住宅宿泊事業混用。",
+    managerReq: "2026/4 起，住宅宿泊事業的緊急駆け付け、垃圾處理、周邊說明與標識等管理要求已加強。大田區特區民泊另有獨立的認定條件與手續。",
     verification: "official",
     sourceUrl: "https://www.city.ota.tokyo.jp/seikatsu/hoken/eisei/riyoubiyou/minpaku_shinpou.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "澀谷區",
-    rules: "2026/3 公布的改正擴大了限制區域，並調整限制期間與例外條件；新申報物件應依澀谷區最新條例、規則及實施要綱逐案判斷。",
-    daysLimit: "最多 180 天／年；限制區域與特例是否適用依現行規定確認",
-    areaLimit: "文教地區、住居專用地域及改正後新增的住居地域／準住居地域等，依物件所在地確認",
-    managerReq: "申報、管理業者變更與住民周知要求依澀谷區最新文件辦理。",
+    rules: "2026/7/1 起受理的新申報，在文教地區、住居專用地域、第一／二種住居地域及準住居地域，4/5～7/20、8/29～10月第二個星期一前一週的星期三、10月第二個星期一前一週的星期六～12/25、1/7～3/25 不得營業。",
+    daysLimit: "限制區域的新申報，每年主要可營業約 63 天；符合家主居住型等個人例外條件者最多 180 天／年",
+    areaLimit: "第一、二種文教地區；第一、二種低層及中高層住居專用地域；第一、二種住居地域；準住居地域",
+    managerReq: "2026/7/1 起的新申報須在申報 60 日前完成周邊住民等事前周知；限制例外限個人、管理居室 5 室以下，且符合家主居住或近鄰自主管理條件。",
     verification: "official",
     sourceUrl: "https://www.city.shibuya.tokyo.jp/kenko/eisei/kankyo/minpaku.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "世田谷區",
-    rules: "住居專用地域原則上於週一正午至週六正午不得實施；法定假日的正午至隔日正午為例外，另有條例規定的變更可能。",
-    daysLimit: "最多 180 天／年；住居專用地域另受週間限制",
+    rules: "住居專用地域原則上於週一正午至週六正午不得營業；國定假日正午至翌日正午可營業。",
+    daysLimit: "住居專用地域主要可於週六正午～週一正午及國定假日營業；其他區域最多 180 天／年",
     areaLimit: "住居專用地域",
     managerReq: "申報前須依世田谷區手引完成消防等事前諮詢與必要紀錄，並依區指引建立管理與廢棄物處理安排。",
     verification: "official",
     sourceUrl: "https://www.city.setagaya.lg.jp/02245/3247.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "文京區",
@@ -892,29 +892,29 @@ export const minpakuRules: MinpakuRuleItem[] = [
     daysLimit: "受限區域僅週五正午～週日正午可營業；其他區域最多 180 天／年",
     areaLimit: "住居專用地域、住居地域、準工業地域及文教地區",
     managerReq: "須事前以書面向周邊住民說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.bunkyo.lg.jp/b026/p003114/index.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "品川區",
-    rules: "非文教用途地域最多 180 天／年、無額外週間禁令；包含文教地區等受限區域，僅週六正午至週一正午可營業。",
-    daysLimit: "非受限區域最多 180 天／年；受限區域僅週末可營業",
-    areaLimit: "依用途地域判斷；文教地區及特殊住居區受限",
+    rules: "近鄰商業地域與商業地域（文教地區除外）可在 180 天上限內營業；其他區域僅可於週六正午至週一正午營業，平日遇國定假日也不開放。",
+    daysLimit: "近鄰商業地域與商業地域（文教地區除外）最多 180 天／年；其他區域主要限週末",
+    areaLimit: "近鄰商業地域與商業地域中的文教地區，以及其餘用途地域均受週間限制",
     managerReq: "須向鄰里周知，並建立可迅速處理投訴的體制。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.shinagawa.tokyo.jp/PC/kenkou/kenkou-eisei/kenkou-eisei-kankyo/hpg000033251.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "中野區",
-    rules: "住居專用地域於週一正午至週五正午不得實施；其他區域依中央法上限辦理。",
-    daysLimit: "受限區域僅週五正午～週日正午可營業；其他區域最多 180 天／年",
+    rules: "住居專用地域僅可於星期五、六、日及國定假日營業；符合家主同居型條件者，可向中野區申請許可後於平日營業。",
+    daysLimit: "受限區域限星期五、六、日及國定假日；其他區域最多 180 天／年",
     areaLimit: "住居專用地域",
-    managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    managerReq: "申報 7 日前須完成書面周知；限制區域內的家主不在型還須在鄰近區設施舉辦周邊住民說明會。",
+    verification: "official",
+    sourceUrl: "https://www.city.tokyo-nakano.lg.jp/kenko_hukushi/pet-eisei/kankyoueisei/jyutakusyukuhaku.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "杉並區",
@@ -922,39 +922,39 @@ export const minpakuRules: MinpakuRuleItem[] = [
     daysLimit: "受限情況僅週末可營業；其他情況最多 180 天／年",
     areaLimit: "第一、二種低層住居專用地域及第一、二種中高層住居專用地域",
     managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.suginami.tokyo.jp/s046/871.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "北區",
-    rules: "文教地區及住居專用地域於 1/11～3/20、4/11～7/10、9/1～12/20 不得實施；原始表格記載僅春假、暑假、冬假可營業。",
-    daysLimit: "受限區域依學校假期的指定期間營業；其他區域最多 180 天／年",
-    areaLimit: "文教地區及住居專用地域",
-    managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    rules: "目前尚無北區條例設定的區域或營業期間限制，依住宅宿泊事業法每年最多 180 天。北區正在推進新的住宅宿泊事業條例，正式公布與施行前仍適用現行規則。",
+    daysLimit: "目前最多 180 天／年",
+    areaLimit: "目前無區域限制",
+    managerReq: "開始前須向周邊住民等進行書面事前說明並保存周知紀錄；另須依北區指南辦理安全、衛生、垃圾及管理事項。",
+    verification: "official",
+    sourceUrl: "https://www.city.kita.lg.jp/socialcare-health/hygiene/1008979/1008980/1008989/1008992.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "荒川區",
-    rules: "全區週一正午至週六正午不得實施。",
-    daysLimit: "僅週六正午～週一正午可營業，另受 180 天／年上限",
+    rules: "全區週一正午至週六正午不得營業；國定假日正午至翌日正午為例外。",
+    daysLimit: "主要可於週六正午～週一正午及國定假日營業，另受 180 天／年上限",
     areaLimit: "全區",
     managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.arakawa.tokyo.jp/a032/jigyousha/toroku/kekka.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "板橋區",
-    rules: "住居專用地域於週日正午至週五正午不得實施。",
+    rules: "住居專用地域於週日正午至週五正午不得營業，國定假日前日正午至翌日正午為例外；家主居住型等能即時處理苦情的型態不受此限制。",
     daysLimit: "受限區域僅週五正午～週日正午可營業；其他區域最多 180 天／年",
     areaLimit: "住居專用地域",
     managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.itabashi.tokyo.jp/kenko/eisei/kankyo/ryokan/1003882.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "練馬區",
@@ -962,9 +962,9 @@ export const minpakuRules: MinpakuRuleItem[] = [
     daysLimit: "受限區域僅週末及假日前後可營業；其他區域最多 180 天／年",
     areaLimit: "住居專用地域",
     managerReq: "家主不在型須配置常駐管理者。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.nerima.tokyo.jp/hokenfukushi/eisei/minpaku/minnpaku.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "足立區",
@@ -972,9 +972,9 @@ export const minpakuRules: MinpakuRuleItem[] = [
     daysLimit: "受限區域依週間、例假日及年末年初限制；其他區域最多 180 天／年",
     areaLimit: "住居專用地域",
     managerReq: "須向鄰里周知說明。",
-    verification: "user-provided",
-    sourceUrl: "https://app.notion.com/p/295189b7866b800ca1f1d52830f772c7",
-    verifiedAt: "2025-10-23"
+    verification: "official",
+    sourceUrl: "https://www.city.adachi.tokyo.jp/sekatsuese/minpakujourei.html",
+    verifiedAt: "2026-07-20"
   },
   {
     district: "葛飾區",
@@ -984,7 +984,7 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "例外須由業者或住宅宿泊管理業者常駐於物件內、同棟、同一基地或相鄰建物；申報前也須向規定範圍的周邊住民周知。",
     verification: "official",
     sourceUrl: "https://www.city.katsushika.lg.jp/_res/projects/default_project/_page_/001/039/684/08032500.pdf",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   },
   {
     district: "江戶川區",
@@ -994,7 +994,7 @@ export const minpakuRules: MinpakuRuleItem[] = [
     managerReq: "業者須已連續 3 個月居住於物件同棟、同一基地或相鄰住宅，且住客期間不得離開；另須事前向周邊住民周知並處理苦情。",
     verification: "official",
     sourceUrl: "https://www.city.edogawa.tokyo.jp/e055/kenko/eisei/kankyo/syukuhakujigyoho/juutakusyukuhakujigyou-kaishi.html",
-    verifiedAt: "2026-07-14"
+    verifiedAt: "2026-07-20"
   }
 ];
 
@@ -1004,9 +1004,9 @@ export const ryokanRules = {
   cost: "申請費與審査期間依設施所在地自治體及案件補正情況而異，應在規劃初期向轄區保健所確認。",
   steps: [
     { name: "事前諮詢", desc: "在簽約、施工或變更用途前，持設計圖向轄區保健所、消防署確認；同時由建築士查核用途地域、建築基準法、既存不適格與用途變更程序。" },
-    { name: "標識與周知", desc: "標識設置、周邊住民周知及等待期間依所在地自治體規定辦理，不能以單一全東京天數概括。例如新宿區新規許可申請前須設置標識至少 14 天。" },
+    { name: "標識與周知", desc: "標識設置、周邊住民周知及等待期間由各自治體分別規定。例如新宿區的新規許可申請，須事前設置標識至少 14 天；其他地區請依轄區規定安排。" },
     { name: "正式提出申請", desc: "向轄區保健所提出旅館業營業許可申請，通常需附構造設備概要、客室資料、周邊圖、建築／設備圖、權原文件及法人文件等；實際清單依各區而異。" },
-    { name: "現場與消防確認", desc: "保健所會進行現場檢查；消防法令適合性也須經轄區消防署確認。兩者的時程與檢查方式依案件及自治體安排，勿假設一定是聯合檢查。" },
+    { name: "現場與消防確認", desc: "保健所會進行現場檢查，消防法令適合性則由轄區消防署確認。兩者可能分別安排，實際時程與檢查方式依案件及自治體通知。" },
     { name: "獲得許可與開業", desc: "通過檢查後，核發「旅館業營業許可證」，即可全年 365 天營運，不受 180 天天數限制。" }
   ],
   requirements: [
@@ -1017,8 +1017,8 @@ export const ryokanRules = {
     "營業場所須在公眾易見處掲示設施名稱；若提供餐飲、設置共用浴池等，還可能另涉食品衛生或公眾浴場等規範。"
   ],
   warnings: [
-    "⚠️ 土地用途地域：旅館或簡易宿所能否設置，須依用途地域、自治體條例、建築基準法與既有建物用途逐案確認；不可只憑住宅或商業區名稱判斷。購入前應由建築士、保健所與消防單位進行事前確認。",
-    "⚠️ 建築物用途變更：住宅改作旅館時，是否須辦理確認申請取決於用途、規模、改修內容與既有建物狀態；特殊建築物的用途變更達 200㎡以上通常涉及確認申請，但未滿 200㎡也不代表可免除建築或消防法規。建築士資格種類亦依案件而定，並非一律限定一級建築士。"
+    "⚠️ 土地用途地域：旅館或簡易宿所能否設置，須查看物件的用途地域、自治體條例、建築基準法與既有建物用途。購入前可由建築士查核，並持物件資料向保健所與消防單位事前諮詢。",
+    "⚠️ 建築物用途變更：住宅改作旅館時，確認申請程序會依用途、規模、改修內容與既有建物狀態決定。特殊建築物用途變更達 200㎡以上通常需要確認申請；未滿 200㎡仍須符合建築及消防規定。負責建築士的資格種類依案件規模與工作內容安排。"
   ]
 };
 
@@ -1034,7 +1034,7 @@ const buyHouseQAItems: BuyHouseQAItem[] = [
   },
   {
     question: "台灣父母出錢，讓在日本工作的子女買房，台灣和日本都可能有贈與稅嗎？",
-    answer: "有可能，不能只看錢從哪個國家匯出。台灣方面，若贈與人屬於經常居住台灣的中華民國國民，贈與境內外財產均可能進入台灣贈與稅判斷；目前每位贈與人每年免稅額為新台幣 244 萬元，不是每位子女各有 244 萬。超過免稅額或涉及特定申報情形時，應先向台灣國稅局確認。\n\n日本方面，是否課到海外資金要依贈與當時父母與子女的住所、國籍、在留資格及過去居住期間判斷，不能用所得稅的「非永久居住者」概念直接下結論。若父母直接替子女支付日本房款、但產權登記在子女名下，仍可能被視為子女取得經濟利益。簽約前應由台灣稅務專業人士與日本稅理士共同判定。",
+    answer: "有可能同時涉及台灣與日本的贈與稅。\n\n【台灣的判斷】\n若贈與人屬於經常居住台灣的中華民國國民，境內外贈與財產都可能納入判斷。目前每位贈與人每年免稅額為新台幣 244 萬元；超過免稅額或涉及申報情形時，可先向台灣國稅局確認。\n\n【日本的判斷】\n日本會依贈與當時父母與子女的住所、國籍、在留資格及過去居住期間判斷課稅範圍。父母直接支付日本房款、產權卻登記在子女名下時，子女可能被認定取得贈與利益。\n\n跨境贈與的判斷條件較多，建議在簽約及匯款前，先由台灣稅務專業人士與日本稅理士共同確認資金安排。",
     sources: [
       { label: "台灣財政部：每年贈與免稅額", url: "https://www.etax.nat.gov.tw/etwmain/tax-info/understanding/tax-saving-secret/o2Q68JR" },
       { label: "日本國稅廳：跨境受贈課稅範圍", url: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4432.htm" }
@@ -1124,18 +1124,18 @@ const buyHouseQAItems: BuyHouseQAItem[] = [
   },
   {
     question: "貸款的「假審査」和「本審査」通過後，還可以隨意更換想買的物件嗎？",
-    answer: "事前審査與正式審査通常都是針對申請人及特定物件條件進行；更換物件後，金融機構可能要求重新審査或補件。若已簽買賣契約，能否取消及手付金如何處理，須依融資特約、解除期限與其他契約條款判斷，不能只因貸款或物件改變就假設一定可無條件解除。"
+    answer: "更換物件後，金融機構通常會重新確認價格、屋齡、地點、結構及擔保價值，可能要求重新審査或補件。\n\n【事前審査通過後】\n若新物件與原本送審條件相近，銀行可能只要求補充資料；差異較大時，通常需要重新進行事前審査。\n\n【正式審査通過後】\n正式審査是針對特定物件進行，更換物件通常需要重新申請。若已簽買賣契約，還要依融資特約、解除期限及契約條款確認能否取消，以及手付金如何處理。"
   },
   {
     question: "登記簿上有賣方設定的抵押權，買房會有風險嗎？",
-    answer: "賣方曾以房屋辦理貸款，因此登記簿上仍有抵押權，是中古屋交易常見的情況；但買方不能只因常見就忽略。簽約前應確認抵押權人、債權範圍及賣方是否能在決算日完成清償與塗銷。\n\n一般會在交屋決算時，由司法書士確認賣方貸款的清償安排、金融機構出具的解除或弁濟文件，以及所有權移轉所需文件，安排抵押權塗銷與所有權移轉登記。若文件、清償金額或塗銷安排無法確認，不應只依口頭承諾支付尾款。\n\n實際交易可能還有根抵押權、差押或其他權利限制，應以最新登記事項證明書、重要事項說明與司法書士確認結果為準。",
+    answer: "中古屋的賣方若仍有房貸，登記簿上留有抵押權是常見情況。購買前需要確認抵押權人、債權範圍，以及賣方能否在交屋決算日完成清償與塗銷。\n\n【交屋時如何處理】\n司法書士會確認賣方貸款的清償安排、金融機構提供的塗銷文件及所有權移轉文件，再安排抵押權塗銷與所有權移轉登記。買方會在這些安排確認後支付尾款。\n\n若登記簿另有根抵押權、差押或其他權利限制，處理方式會不同。簽約前應查看最新登記事項證明書，並由仲介與司法書士在重要事項說明中確認。",
     sources: [
       { label: "法務局：住宅貸款清償後的抵押權抹消程序", url: "https://houmukyoku.moj.go.jp/homu/static/info-net_00001.html" }
     ]
   },
   {
     question: "手付解除、融資特約解除和違約解除有什麼不同？",
-    answer: "三者的原因、期限與金錢結果不同，不能只用「取消買房」概括。\n\n1. 手付解除：在契約或法律允許的期間內，買方通常以放棄手付金、賣方通常以返還手付金並另付同額的方式解除；是否已進入履行、契約有無另定期限，都會影響能否使用。\n2. 融資特約解除：契約明確約定的貸款未獲核准，且買方已依約誠實申請並在解除期限內辦理時，才可能依特約白紙解除並取回已付手付金。申請其他銀行、貸款金額不足、逾期通知或自行撤回申請，不一定符合條件。\n3. 違約解除：一方未履行契約義務時，依契約及法律處理解除、違約金或損害賠償，並不是單純放棄手付金就一定能結束。\n\n簽約前應逐字確認指定金融機構、申請金額、承認取得期限、解除期限、通知方式及違約金條款。",
+    answer: "【手付解除】\n在契約或法律允許的期間內，買方通常以放棄手付金的方式解除；賣方解除時，通常返還手付金並另付同額。能否使用仍要確認解除期限及雙方是否已開始履行契約。\n\n【融資特約解除】\n契約指定的貸款未獲核准，且買方已依約申請並在期限內通知時，可能依融資特約解除契約並取回手付金。適用的銀行、貸款金額、審査期限與通知方式都會寫在契約中。\n\n【違約解除】\n一方未履行契約義務時，會依契約處理解除、違約金或損害賠償。\n\n簽約前請確認指定金融機構、申請金額、貸款核准期限、解除期限、通知方式及違約金條款。",
     sources: [
       { label: "不動產適正交易推進機構：手付解除", url: "https://www.retio.or.jp/info/qa/qa4/" },
       { label: "不動產適正交易推進機構：貸款特約", url: "https://www.retio.or.jp/info/qa/qa6/" }
@@ -1143,11 +1143,11 @@ const buyHouseQAItems: BuyHouseQAItem[] = [
   },
   {
     question: "想買一間自住公寓，但沒有長期簽證不能一直待在日本，空置時可以經營 Airbnb 民宿嗎？",
-    answer: "是否可行須同時確認管理規約、住宅宿泊事業法、自治體條例、用途地域、建築與消防要求，不能只看房屋類型。區分所有大樓常限制住宿營業，但比例會依地區與社區而異，不宜用 99% 概括。屋主不在型通常涉及委託住宅宿泊管理業者；簡易宿所則是另一套許可制度，並非只要獨棟住宅就能經營。"
+    answer: "理論上可以，但公寓型物件實際上很難經營 Airbnb。購買前最先要確認的不是房間本身，而是整棟大樓的「管理規約」。日本許多區分所有公寓為了住戶安全、門禁、噪音與公共空間管理，會在規約中直接禁止民宿或短期住宿營業；只要管理規約禁止，即使房屋是自己持有，也不能拿來經營 Airbnb。\n\n【購買公寓前的確認順序】\n1. 向管理公司索取最新管理規約，確認是否明文允許住宅宿泊事業、民宿或短期住宿。\n2. 確認管理組合是否另有使用細則、住戶決議或申請程序。\n3. 確認所在地自治體的民泊條例、可營業區域、星期與期間限制。\n4. 確認建物用途、消防設備、避難動線與住宅宿泊事業申報條件。\n\n【屋主不在日本時】\n若住宿期間屋主不在物件內，通常屬於「家主不在型」，需要委託依法登錄的住宅宿泊管理業者，負責旅客管理、緊急聯絡、垃圾與鄰里問題等工作。\n\n【適合的物件方向】\n如果買房目的包含 Airbnb 經營，應在出價前就以「管理規約明確允許民宿」作為必要篩選條件。一般自住型公寓的選擇非常有限，相較之下，可合法申報且符合地方條例、建築及消防要求的獨棟住宅，通常較有機會規劃，但仍需逐案確認。\n\n若希望全年營業，也可另外評估旅館業法下的「簡易宿所」；這是不同的許可制度，對用途地域、建築與消防設備的要求也更高。Linus 可在購買前協助調閱管理規約並確認物件是否具備民宿經營的基本條件。"
   },
   {
     question: "想買一戶建經營民宿，哪種民宿經營的法源最適合我？",
-    answer: "在日本經營民宿主要有三大法律框架：\n\n1. 住宅宿泊事業法 (民泊新法)：全國適用，手續為申報制，住居專用區可營運，但「一年限制營運最多 180 天」，且屋主不在需委託合格管理業者。適合自住為主、空置期偶爾出租的買主。\n2. 旅館業法 (簡易宿所)：手續為許可制，無營運天數限制 (365天)，但「住居專用區絕對禁止開設」，且硬體消防設施 (自動火報、連動煙感、指示燈、面積等) 審査極嚴苛。適合純投資、全年營運追求最大租金回報的買主。\n3. 國家戰略特區民泊：手續為認定制，無營運天數限制，但僅限特定特區（如大田區），且規定「最低住宿天數必須在 2 晚 3 天以上」。"
+    answer: "一戶建可依營業方式評估三種制度，適合哪一種主要取決於所在地、預計營業天數、屋主是否同住，以及建築與消防條件。\n\n【住宅宿泊事業法（民泊新法）】\n• 採申報制，每年最多營業 180 天，各自治體還可能限制營業區域、星期或期間。\n• 屋主不在時，通常需要委託住宅宿泊管理業者。\n• 適合自住為主，在空置期間偶爾提供短期住宿的買主。\n\n【旅館業法（簡易宿所）】\n• 採許可制，取得許可後可規劃全年營業。\n• 需要確認用途地域、建物用途、客房條件、避難動線與消防設備，通常也需要事前向保健所、建築及消防單位諮詢。\n• 適合以住宿營業為主要投資目的，且願意負擔較高改裝與申請成本的買主。\n\n【國家戰略特區民泊】\n• 採認定制，只適用於指定特區，例如東京都大田區。\n• 營業及最低住宿天數等條件依特區規定辦理。\n• 適合物件位於特區範圍，且營運方式符合當地規定的買主。\n\n決定購買前，建議先帶著物件地址與圖面向所在地窗口確認可採用的制度，再估算消防、改裝、管理委託與營運成本。"
   }
 ];
 
