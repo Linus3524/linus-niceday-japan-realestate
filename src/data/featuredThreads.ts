@@ -173,7 +173,7 @@ export const threadCategories: ThreadCategory[] = [
     ],
   },
   {
-    label: "租房審查",
+    label: "租屋審查",
     threads: [
       { url: "https://www.threads.com/@linus3524/post/C6SdDiFPDAs" },
       { url: "https://www.threads.com/@linus3524/post/C6vnRuWvCd1" },
