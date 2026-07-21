@@ -338,9 +338,9 @@ export default function App() {
             </div>
             
             <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
-              日本で、<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">住まいを</span>
+              日本での<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">暮らしを</span>、
               <br />
-              <span className="text-[#00a174]">探す日々。</span>
+              <span className="text-[#00a174]">好日へ。</span>
             </h1>
 
             <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
@@ -348,15 +348,16 @@ export default function App() {
             </h2>
 
             <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
-              <p>我是 Linus，在東京從事不動產仲介的台灣平面設計師。</p>
+              <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
               <p>分享日本租屋、買房、貸款規劃與在日生活的第一線實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
-              <p>從找房到安居，希望成為你在日本最值得信賴的指南，一起在日本住好日！</p>
+              <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
+              <p>Linus 住好日，一起在日本住好日！</p>
             </div>
 
             <div className="border-t border-[#DDE3DF] my-6"></div>
 
             <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
-              <span>SINCE 2021</span>
+              <span>SINCE 2024</span>
               <span>•</span>
               <span>REAL ESTATE GUIDE</span>
               <span>•</span>

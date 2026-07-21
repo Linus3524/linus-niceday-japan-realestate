@@ -1,55 +1,236 @@
-// LINUS 精選 Threads 文章
-//
-// 只要把你想精選的 Threads 貼文「連結」貼進下面的陣列即可，
-// 網站會自動抓出該貼文的縮圖與內文，點擊會直接開啟 Threads App 或網頁。
-//
-// 取得連結方式：在 Threads App／網頁點該篇貼文右上角「…」→「複製連結」。
-// 貼上來後，網址「?」後面的追蹤參數可留可刪（建議刪掉保持乾淨），
-// 只要保留 https://www.threads.com/@帳號/post/XXXXXXXXX 這段即可。
-//
-// theme 可省略；想要深色卡片時可加 theme: "dark"。
+// LINUS Threads 文章分類
+// 分類與貼文順序依照 Linus 提供的清單維護；網址僅保留永久連結，移除分享追蹤參數。
 
 export interface FeaturedThread {
-  /** Threads 貼文連結（必填） */
   url: string;
-  /** 卡片主題，可省略。"dark" = 深色卡片 */
   theme?: "light" | "dark";
-  /**
-   * 這張卡片要顯示的高度（像素），可省略，預設 360。
-   * ─ 純文字短貼文：想矮一點就調小，例如 300。
-   * ─ 有圖片的貼文：Threads 是「文字在上、圖片在下」，想露出圖片就調高，
-   *   例如 480 ~ 560，數字越大露出越多。
-   */
-  height?: number;
 }
 
-export const featuredThreads: FeaturedThread[] = [
-  // 日本租房網路上看得到、租不到
-  { url: "https://www.threads.com/@linus3524/post/DOxJh3zkq2V" },
-  // 想在日本租房看房可能沒機會
-  { url: "https://www.threads.com/@linus3524/post/DMwXuccSd40" },
-  // 保證會社、什麼是初期保證料
-  { url: "https://www.threads.com/@linus3524/post/DP0yW9REpWJ" },
-  // 日本租房申請到審查流程
-  { url: "https://www.threads.com/@linus3524/post/DLrIPCwSJLw" },
-  // 日本租房取消申請
-  { url: "https://www.threads.com/@linus3524/post/DKYkqrQyLcL" },
-  // 水電瓦斯知識
-  { url: "https://www.threads.com/@linus3524/post/DLcBEMeOFwp" },
-  // 瓦斯電力代開注意
-  { url: "https://www.threads.com/@linus3524/post/DVfqKaXkzSa" },
-  // 入居檢查、原狀回復
-  { url: "https://www.threads.com/@linus3524/post/DYwX2kyk97_" },
-  // 日本租房平面圖尺寸（示範：這篇有圖，調高一點露出圖片）
-  { url: "https://www.threads.com/@linus3524/post/DYd73ZcEa0h", height: 520 },
-  // 日本租房可能沒有免費網路
-  { url: "https://www.threads.com/@linus3524/post/DXRInxEk55A" },
-  // 日本租房可能沒有燈
-  { url: "https://www.threads.com/@linus3524/post/DW6Y-n-ky51" },
-  // 日本租房 10 個懶人須知
-  { url: "https://www.threads.com/@linus3524/post/DXPEpkKk11-" },
-  // 日本開啟水道小知識
-  { url: "https://www.threads.com/@linus3524/post/DV_T53FE3qK" },
-  // 為什麼日本租房都先匯款後簽約
-  { url: "https://www.threads.com/@linus3524/post/DUkBCbOksVf" },
+export interface ThreadCategory {
+  label: string;
+  threads: FeaturedThread[];
+}
+
+export const threadCategories: ThreadCategory[] = [
+  {
+    label: "日本租屋買房生活知識系列",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/DMwXuccSd40" },
+      { url: "https://www.threads.com/@linus3524/post/DOxJh3zkq2V" },
+      { url: "https://www.threads.com/@linus3524/post/DP0yW9REpWJ" },
+      { url: "https://www.threads.com/@linus3524/post/DQUgTZpkj74" },
+      { url: "https://www.threads.com/@linus3524/post/DRNI70GEip4" },
+      { url: "https://www.threads.com/@linus3524/post/DTU4R1lkgy1" },
+      { url: "https://www.threads.com/@linus3524/post/DVGCxEhEtt5" },
+      { url: "https://www.threads.com/@linus3524/post/DWGh7Fyk6ag" },
+      { url: "https://www.threads.com/@linus3524/post/DW09dktEx81" },
+      { url: "https://www.threads.com/@linus3524/post/DXRInxEk55A" },
+      { url: "https://www.threads.com/@linus3524/post/DYwX2kyk97_" },
+      { url: "https://www.threads.com/@linus3524/post/DZt6_hKEymN" },
+      { url: "https://www.threads.com/@linus3524/post/DaJ5NIDkww9" },
+    ],
+  },
+  {
+    label: "日本賃貸完全解析",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/DHG4OI9yVw5" },
+      { url: "https://www.threads.com/@linus3524/post/DKYkqrQyLcL" },
+      { url: "https://www.threads.com/@linus3524/post/DLrGoG_SzVO" },
+    ],
+  },
+  {
+    label: "文化迷思",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C_hoZuVTW4G" },
+      { url: "https://www.threads.com/@linus3524/post/C_mQriiTjHF" },
+      { url: "https://www.threads.com/@linus3524/post/DDM-hCDTlMi" },
+      { url: "https://www.threads.com/@linus3524/post/DEFAwpwzVFx" },
+      { url: "https://www.threads.com/@linus3524/post/DFU8NLNzth0" },
+      { url: "https://www.threads.com/@linus3524/post/DGYkdTdSM4D" },
+      { url: "https://www.threads.com/@linus3524/post/DIQ5WIDySKl" },
+      { url: "https://www.threads.com/@linus3524/post/DI3RtzDSM-d" },
+      { url: "https://www.threads.com/@linus3524/post/DJ8c20qynYf" },
+      { url: "https://www.threads.com/@linus3524/post/DLhKNliycEi" },
+      { url: "https://www.threads.com/@linus3524/post/DL2kYj0yWOe" },
+      { url: "https://www.threads.com/@linus3524/post/DNn6aNGS0DR" },
+      { url: "https://www.threads.com/@linus3524/post/DN8d7bAEjav" },
+      { url: "https://www.threads.com/@linus3524/post/DSR1VDDkjC1" },
+      { url: "https://www.threads.com/@linus3524/post/DTrz3swEpPs" },
+      { url: "https://www.threads.com/@linus3524/post/DUcrNhikpBh" },
+      { url: "https://www.threads.com/@linus3524/post/DVqkRG6E4eo" },
+      { url: "https://www.threads.com/@linus3524/post/DW6Y-n-ky51" },
+      { url: "https://www.threads.com/@linus3524/post/DYd73ZcEa0h" },
+      { url: "https://www.threads.com/@linus3524/post/DZB-BOuE5EN" },
+      { url: "https://www.threads.com/@linus3524/post/Dac20-VExtv" },
+      { url: "https://www.threads.com/@linus3524/post/DauNyUnk2z5" },
+    ],
+  },
+  {
+    label: "仲介趣事",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C68g6rxP8-H" },
+      { url: "https://www.threads.com/@linus3524/post/C7ON5H3O7CS" },
+      { url: "https://www.threads.com/@linus3524/post/C7djHKFv3BI" },
+      { url: "https://www.threads.com/@linus3524/post/C8O22OkvWa7" },
+      { url: "https://www.threads.com/@linus3524/post/C8tdyA6Oqgb" },
+      { url: "https://www.threads.com/@linus3524/post/C862Skuvjal" },
+      { url: "https://www.threads.com/@linus3524/post/C9tcGNozgOh" },
+      { url: "https://www.threads.com/@linus3524/post/C-6qsB2zPgn" },
+      { url: "https://www.threads.com/@linus3524/post/DATRTeazF_G" },
+      { url: "https://www.threads.com/@linus3524/post/DBnM_18zS4U" },
+      { url: "https://www.threads.com/@linus3524/post/DC4ZchLTWdb" },
+      { url: "https://www.threads.com/@linus3524/post/DFWcd6lTATk" },
+      { url: "https://www.threads.com/@linus3524/post/DGcUXl_yAfg" },
+      { url: "https://www.threads.com/@linus3524/post/DHkrXTvSlIF" },
+      { url: "https://www.threads.com/@linus3524/post/DIK63t3SuMQ" },
+      { url: "https://www.threads.com/@linus3524/post/DOiFEu4EvjZ" },
+      { url: "https://www.threads.com/@linus3524/post/DQqdTXMklf-" },
+      { url: "https://www.threads.com/@linus3524/post/DRRgn3PkiiQ" },
+      { url: "https://www.threads.com/@linus3524/post/DUXEgGxknN3" },
+      { url: "https://www.threads.com/@linus3524/post/DUrni63Ek7T" },
+      { url: "https://www.threads.com/@linus3524/post/DXPEpkKk11-" },
+      { url: "https://www.threads.com/@linus3524/post/DXgRQ81E6QW" },
+      { url: "https://www.threads.com/@linus3524/post/DZmdPV7E0V2" },
+      { url: "https://www.threads.com/@linus3524/post/DZugcCDk3UZ" },
+    ],
+  },
+  {
+    label: "租屋提醒",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/DAC5lsMzfYy" },
+      { url: "https://www.threads.com/@linus3524/post/DAF3hvRTKEA" },
+      { url: "https://www.threads.com/@linus3524/post/DArxwa9zYeG" },
+      { url: "https://www.threads.com/@linus3524/post/DArz_7szNeg" },
+      { url: "https://www.threads.com/@linus3524/post/DCWdbZRTZWh" },
+      { url: "https://www.threads.com/@linus3524/post/DDDr42uzend" },
+      { url: "https://www.threads.com/@linus3524/post/DDbAi2pzsLd" },
+      { url: "https://www.threads.com/@linus3524/post/DFktS04Ttg2" },
+      { url: "https://www.threads.com/@linus3524/post/DGDWduZSpEm" },
+      { url: "https://www.threads.com/@linus3524/post/DGP9d_hyVVU" },
+      { url: "https://www.threads.com/@linus3524/post/DHAiFz6yLpc" },
+      { url: "https://www.threads.com/@linus3524/post/DJJBdxjym4o" },
+      { url: "https://www.threads.com/@linus3524/post/DLcBEMeOFwp" },
+      { url: "https://www.threads.com/@linus3524/post/DLj01-nyFbR" },
+      { url: "https://www.threads.com/@linus3524/post/DPSm8oOEiLz" },
+      { url: "https://www.threads.com/@linus3524/post/DTuKzYqEuTS" },
+      { url: "https://www.threads.com/@linus3524/post/DUXvU3ZEjYa" },
+      { url: "https://www.threads.com/@linus3524/post/DU4bd-yEuHQ" },
+      { url: "https://www.threads.com/@linus3524/post/DVfqKaXkzSa" },
+      { url: "https://www.threads.com/@linus3524/post/DV_T53FE3qK" },
+      { url: "https://www.threads.com/@linus3524/post/Dafi2AHEyfF" },
+      { url: "https://www.threads.com/@linus3524/post/Dawytmfk4Ot" },
+    ],
+  },
+  {
+    label: "租屋行情",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C7bnBQnvAzp" },
+      { url: "https://www.threads.com/@linus3524/post/C7bpZlyvbnO" },
+      { url: "https://www.threads.com/@linus3524/post/C7bsZDWvqi2" },
+      { url: "https://www.threads.com/@linus3524/post/C71et8bvjxe" },
+      { url: "https://www.threads.com/@linus3524/post/C8g5z8mv6gT" },
+      { url: "https://www.threads.com/@linus3524/post/C97bNhJzvhO" },
+      { url: "https://www.threads.com/@linus3524/post/C-w6FjuzCOc" },
+      { url: "https://www.threads.com/@linus3524/post/C_vZ9-AveQs" },
+      { url: "https://www.threads.com/@linus3524/post/DEozQGBTP4E" },
+      { url: "https://www.threads.com/@linus3524/post/DFC34p4zNId" },
+      { url: "https://www.threads.com/@linus3524/post/DFNOWSzTnYg" },
+      { url: "https://www.threads.com/@linus3524/post/DWVdbguk44F" },
+    ],
+  },
+  {
+    label: "東京寶藏地",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/DF44HWSSBGE" },
+      { url: "https://www.threads.com/@linus3524/post/DF7pdh0SYGR" },
+      { url: "https://www.threads.com/@linus3524/post/DGASNBLy7Xu" },
+      { url: "https://www.threads.com/@linus3524/post/DGUty9wyfwm" },
+      { url: "https://www.threads.com/@linus3524/post/DTuikgVkt8U" },
+    ],
+  },
+  {
+    label: "租屋文化",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C6T8Ra6vI3b" },
+      { url: "https://www.threads.com/@linus3524/post/C6VhduEOnaa" },
+      { url: "https://www.threads.com/@linus3524/post/C6P-oE4Pimc" },
+      { url: "https://www.threads.com/@linus3524/post/C8D8aOgvNlx" },
+      { url: "https://www.threads.com/@linus3524/post/C8JKO4SvPcB" },
+      { url: "https://www.threads.com/@linus3524/post/C8pMuGMPWZ1" },
+      { url: "https://www.threads.com/@linus3524/post/C9v5BrPTP-f" },
+      { url: "https://www.threads.com/@linus3524/post/C981PBZzGvE" },
+      { url: "https://www.threads.com/@linus3524/post/C_RuLyOTn3M" },
+      { url: "https://www.threads.com/@linus3524/post/DHxJwStynj7" },
+      { url: "https://www.threads.com/@linus3524/post/DO5bWnjkg7X" },
+      { url: "https://www.threads.com/@linus3524/post/DSUd9NVEj_-" },
+      { url: "https://www.threads.com/@linus3524/post/DScQxQskoZp" },
+      { url: "https://www.threads.com/@linus3524/post/DV0Sb5mk42D" },
+      { url: "https://www.threads.com/@linus3524/post/DWDufWpk4Vl" },
+      { url: "https://www.threads.com/@linus3524/post/DZCj-s5EzU6" },
+      { url: "https://www.threads.com/@linus3524/post/DZCsK8TE8JS" },
+      { url: "https://www.threads.com/@linus3524/post/DaR-TnYk_lu" },
+      { url: "https://www.threads.com/@linus3524/post/DaVEYlVE1qp" },
+    ],
+  },
+  {
+    label: "租房審查",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C6SdDiFPDAs" },
+      { url: "https://www.threads.com/@linus3524/post/C6vnRuWvCd1" },
+      { url: "https://www.threads.com/@linus3524/post/C7Q39JiOlZh" },
+      { url: "https://www.threads.com/@linus3524/post/C7q2j7BupuX" },
+      { url: "https://www.threads.com/@linus3524/post/C-ccO2fTkf3" },
+      { url: "https://www.threads.com/@linus3524/post/DTQHfS7EicD" },
+      { url: "https://www.threads.com/@linus3524/post/DUkBCbOksVf" },
+      { url: "https://www.threads.com/@linus3524/post/DZW8KoBk-YZ" },
+      { url: "https://www.threads.com/@linus3524/post/DZ4HQmGE4SC" },
+    ],
+  },
+  {
+    label: "打工度假",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C6yPC6avlLb" },
+      { url: "https://www.threads.com/@linus3524/post/C7bvacLPaZ6" },
+      { url: "https://www.threads.com/@linus3524/post/DTckzVCEsK9" },
+      { url: "https://www.threads.com/@linus3524/post/DUDOmFhErWU" },
+      { url: "https://www.threads.com/@linus3524/post/DUktauiEvnr" },
+      { url: "https://www.threads.com/@linus3524/post/DaC_GzlkxfU" },
+    ],
+  },
+  {
+    label: "日本買房",
+    threads: [
+      { url: "https://www.threads.com/@linus3524/post/C6VMV8mvR6F" },
+      { url: "https://www.threads.com/@linus3524/post/C93p-ZTzge9" },
+      { url: "https://www.threads.com/@linus3524/post/C-AT1BWP2Di" },
+      { url: "https://www.threads.com/@linus3524/post/DBBSQk-z-3w" },
+      { url: "https://www.threads.com/@linus3524/post/DBkoecbTD9x" },
+      { url: "https://www.threads.com/@linus3524/post/DBsKR0ITnxk" },
+      { url: "https://www.threads.com/@linus3524/post/DBxq1eJT_Zu" },
+      { url: "https://www.threads.com/@linus3524/post/DCWWRfqTpv8" },
+      { url: "https://www.threads.com/@linus3524/post/DCZZBXzzIb9" },
+      { url: "https://www.threads.com/@linus3524/post/DEGwdshTVtM" },
+      { url: "https://www.threads.com/@linus3524/post/DEHS1gZTDDf" },
+      { url: "https://www.threads.com/@linus3524/post/DEHditRzhrQ" },
+      { url: "https://www.threads.com/@linus3524/post/DE71sO1znme" },
+      { url: "https://www.threads.com/@linus3524/post/DGepjl-S1bu" },
+      { url: "https://www.threads.com/@linus3524/post/DIa74CESmBY" },
+      { url: "https://www.threads.com/@linus3524/post/DJcQxPbz6Cw" },
+      { url: "https://www.threads.com/@linus3524/post/DKJH92RyUkB" },
+      { url: "https://www.threads.com/@linus3524/post/DKqW9wVyGRo" },
+      { url: "https://www.threads.com/@linus3524/post/DLPznIhyc4H" },
+      { url: "https://www.threads.com/@linus3524/post/DL6r4qGysFK" },
+      { url: "https://www.threads.com/@linus3524/post/DMILMV-yiAe" },
+      { url: "https://www.threads.com/@linus3524/post/DMrzFaiStSy" },
+      { url: "https://www.threads.com/@linus3524/post/DN0W_nI5JIx" },
+      { url: "https://www.threads.com/@linus3524/post/DQRKTuVkiYx" },
+      { url: "https://www.threads.com/@linus3524/post/DSjn0dWknJf" },
+      { url: "https://www.threads.com/@linus3524/post/DUpxf86Ek5I" },
+      { url: "https://www.threads.com/@linus3524/post/DU8EcPjkkj4" },
+      { url: "https://www.threads.com/@linus3524/post/DZ2VD2sE2Ay" },
+      { url: "https://www.threads.com/@linus3524/post/DaKY3lnE-NX" },
+      { url: "https://www.threads.com/@linus3524/post/Da5ZFqrkyIZ" },
+      { url: "https://www.threads.com/@linus3524/post/Da79czTE8H1" },
+    ],
+  },
 ];

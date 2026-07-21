@@ -57,6 +57,22 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 }
 
 /* Threads 精選輪播：卡片由 embed 腳本注入，樣式寫在此處供 innerHTML 使用 */
+.threads-category-tabs {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.threads-category-tabs::-webkit-scrollbar {
+  display: none;
+}
+.threads-track {
+  cursor: grab;
+}
+.threads-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  user-select: none;
+}
 .threads-slide {
   position: relative;
   flex: 0 0 auto;
@@ -67,7 +83,18 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   background: #fff;
   scroll-snap-align: start;
   overflow: hidden;
+  animation: threads-slide-enter 420ms ease;
   transition: border-color 300ms ease, transform 300ms ease, box-shadow 300ms ease;
+}
+@keyframes threads-slide-enter {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 .threads-slide:hover {
   border-color: #00a174;
@@ -176,10 +203,16 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   height: 100% !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 10px !important;
-  background: #ffffff !important;
+  background: linear-gradient(100deg, #f5f8f6 30%, #e8f2ed 48%, #f5f8f6 66%) !important;
+  background-size: 240% 100% !important;
+  animation: threads-embed-loading 1.4s ease-in-out infinite !important;
   box-sizing: border-box !important;
   margin: 0 !important;
   padding: 24px !important;
+}
+@keyframes threads-embed-loading {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 @media (min-width: 1024px) {
@@ -190,6 +223,9 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 }
 
 @media (max-width: 639px) {
+  #threads-featured .threads-track {
+    overflow-x: auto;
+  }
   .threads-slide {
     width: calc(100vw - 52px);
     height: 450px;
