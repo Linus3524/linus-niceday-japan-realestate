@@ -129,6 +129,48 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   transform: scale(0.92) !important;
   transform-origin: top left !important;
 }
+/* Threads iframe 會吃掉滑鼠／觸控事件，蓋一層透明遮罩把手勢交還給輪播，
+   讓滑鼠拖曳、觸控滑動都能作用；單純點擊則由 JS 開啟該篇貼文。 */
+.threads-drag-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: grab;
+}
+.threads-track.is-dragging .threads-drag-shield {
+  cursor: grabbing;
+}
+/* 點一下卡片後解鎖：遮罩讓開，Threads 貼文內的圖片與連結恢復可互動 */
+.threads-drag-shield.is-unlocked {
+  pointer-events: none;
+}
+.threads-shield-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(26, 42, 34, 0.82);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.threads-slide:hover .threads-shield-hint {
+  opacity: 1;
+}
+.threads-drag-shield.is-unlocked .threads-shield-hint {
+  opacity: 0 !important;
+}
+/* 觸控裝置沒有 hover，提示改為常駐但淡一點 */
+@media (hover: none) {
+  .threads-shield-hint {
+    opacity: 0.75;
+  }
+}
 .threads-slide .text-post-media {
   min-width: 0 !important;
   max-width: 100% !important;
@@ -167,9 +209,9 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 
 /* 桌機滑鼠可直接在卡片內上下捲動；觸控裝置維持單一頁面捲動，避免 scroll trap。 */
 @media (hover: hover) and (pointer: fine) {
-  /* 桌機外層文章改由箭頭控制，把水平拖曳手勢留給 iframe 內的 Threads 圖片。 */
+  /* 桌機保留原生橫向捲動，妙控滑鼠／觸控板的左右手勢才有慣性可用。 */
   #threads-featured .threads-track {
-    overflow-x: hidden;
+    overflow-x: auto;
   }
   .threads-post-frame {
     overflow-x: hidden;

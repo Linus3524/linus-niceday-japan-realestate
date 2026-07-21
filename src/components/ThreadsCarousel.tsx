@@ -3,7 +3,6 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
-  type WheelEvent as ReactWheelEvent,
 } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { threadCategories, type FeaturedThread } from "../data/featuredThreads";
@@ -39,6 +38,9 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
                 在 Threads 查看這篇精選貼文 ↗
               </a>
             </blockquote>
+            <div class="threads-drag-shield" data-thread-url="${url}" aria-hidden="true">
+              <span class="threads-shield-hint">點一下可滑動圖片</span>
+            </div>
             </div>
           </div>
           <a href="${url}" target="_blank" rel="noopener noreferrer" class="threads-read-more">
@@ -55,7 +57,9 @@ export function ThreadsCarousel() {
   const isPointerInsideRef = useRef(false);
   const isUserInteractingRef = useRef(false);
   const manualPauseUntilRef = useRef(0);
-  const dragStateRef = useRef({ active: false, pointerId: -1, startX: 0, startScrollLeft: 0 });
+  const dragStateRef = useRef({ active: false, pointerId: -1, startX: 0, startScrollLeft: 0, moved: 0 });
+  const unlockedShieldRef = useRef<HTMLElement | null>(null);
+  const pressedShieldRef = useRef<HTMLElement | null>(null);
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeSlide, setActiveSlide] = useState(1);
   const currentCategory = threadCategories[activeCategory];
@@ -72,6 +76,7 @@ export function ThreadsCarousel() {
     const needsDesktopLoopBuffer = window.innerWidth >= 1024 && currentThreads.length <= 3;
     track.innerHTML = needsDesktopLoopBuffer ? initialSlides + initialSlides : initialSlides;
     renderedCountRef.current = initialCount;
+    unlockedShieldRef.current = null;
     track.scrollLeft = 0;
     setActiveSlide(1);
 
@@ -163,6 +168,9 @@ export function ThreadsCarousel() {
 
   const startDragging = (event: ReactPointerEvent<HTMLDivElement>) => {
     isUserInteractingRef.current = true;
+    // 先記住按在哪張卡的遮罩上：一旦 track 取得 pointer capture，之後的 click 會被
+    // 重新指向 track，屆時 event.target 不再是遮罩，因此不能等到 click 才判斷。
+    pressedShieldRef.current = (event.target as HTMLElement).closest<HTMLElement>(".threads-drag-shield");
     if (event.pointerType !== "mouse" || event.button !== 0) return;
 
     dragStateRef.current = {
@@ -170,15 +178,20 @@ export function ThreadsCarousel() {
       pointerId: event.pointerId,
       startX: event.clientX,
       startScrollLeft: event.currentTarget.scrollLeft,
+      moved: 0,
     };
-    event.currentTarget.setPointerCapture(event.pointerId);
-    event.currentTarget.classList.add("is-dragging");
   };
 
   const dragCarousel = (event: ReactPointerEvent<HTMLDivElement>) => {
     const drag = dragStateRef.current;
     if (!drag.active || drag.pointerId !== event.pointerId) return;
     event.preventDefault();
+    drag.moved = Math.max(drag.moved, Math.abs(event.clientX - drag.startX));
+    // 超過門檻才真正進入拖曳並捕獲指標，單純點擊就不會被重新指向而吃掉 click。
+    if (drag.moved > 4 && !event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.classList.add("is-dragging");
+    }
     event.currentTarget.scrollLeft = drag.startScrollLeft + (drag.startX - event.clientX);
 
     const firstSlide = event.currentTarget.querySelector<HTMLElement>(".threads-slide");
@@ -206,7 +219,25 @@ export function ThreadsCarousel() {
     }
   };
 
-  const scrollWithHorizontalWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+  const relockCards = () => {
+    const shield = unlockedShieldRef.current;
+    if (!shield) return;
+    shield.classList.remove("is-unlocked");
+    unlockedShieldRef.current = null;
+  };
+
+  // 點一下卡片 → 解除該張的拖曳遮罩，把控制權交還 Threads，使用者就能滑貼文內的圖片。
+  // 有實際拖動過（位移超過 6px）視為滑動，不解鎖。一次只開放一張。
+  const unlockCardInteraction = () => {
+    const shield = pressedShieldRef.current;
+    pressedShieldRef.current = null;
+    if (!shield || dragStateRef.current.moved > 6) return;
+    relockCards();
+    shield.classList.add("is-unlocked");
+    unlockedShieldRef.current = shield;
+  };
+
+  const scrollWithHorizontalWheel = (event: WheelEvent) => {
     const horizontalDelta = event.deltaX;
     if (Math.abs(horizontalDelta) < 2 || Math.abs(horizontalDelta) <= Math.abs(event.deltaY) * 0.65) return;
 
@@ -253,6 +284,42 @@ export function ThreadsCarousel() {
       isUserInteractingRef.current = false;
     }, 120);
   };
+
+  // React 的 onWheel 會以 passive 方式註冊，preventDefault 無效（觸控板／妙控滑鼠的
+  // 橫向手勢會被瀏覽器接管）。改用原生 non-passive 監聽確保攔得到。
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.addEventListener("wheel", scrollWithHorizontalWheel, { passive: false });
+    return () => track.removeEventListener("wheel", scrollWithHorizontalWheel);
+  }, [activeCategory]);
+
+  // 解鎖後自動歸位：游標移出該卡片（桌機）或在別處按下（手機）就把遮罩裝回去，
+  // 讓輪播恢復可拖曳。註：游標停在 iframe 上時 document 收不到 pointermove，
+  // 因此收得到事件本身就代表已離開 iframe，判斷才成立。
+  useEffect(() => {
+    const isOutsideUnlockedSlide = (clientX: number, clientY: number) => {
+      const slide = unlockedShieldRef.current?.closest<HTMLElement>(".threads-slide");
+      if (!slide) return false;
+      const rect = slide.getBoundingClientRect();
+      return clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom;
+    };
+
+    const handleMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      if (isOutsideUnlockedSlide(event.clientX, event.clientY)) relockCards();
+    };
+    const handleDown = (event: PointerEvent) => {
+      if (isOutsideUnlockedSlide(event.clientX, event.clientY)) relockCards();
+    };
+
+    document.addEventListener("pointermove", handleMove, { passive: true });
+    document.addEventListener("pointerdown", handleDown, { passive: true });
+    return () => {
+      document.removeEventListener("pointermove", handleMove);
+      document.removeEventListener("pointerdown", handleDown);
+    };
+  }, []);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -329,10 +396,10 @@ export function ThreadsCarousel() {
               LINUS SOCIAL JOURNAL
             </p>
             <h2 className="font-serif text-xl font-bold leading-snug text-[#1A2A22] sm:text-2xl">
-              在 Threads 繼續讀
+              在 Threads，繼續住好日
             </h2>
             <p className="mt-2 max-w-xl font-sans text-xs leading-relaxed text-zinc-600 sm:text-sm">
-              精選日本租屋、買房與生活實務短文。滑動瀏覽摘要，點入 Threads 閱讀完整內容。
+              日本租屋、買房與生活實務，從第一線經驗說給你聽。
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end">
@@ -410,7 +477,7 @@ export function ThreadsCarousel() {
           onPointerMove={dragCarousel}
           onPointerUp={stopDragging}
           onPointerCancel={stopDragging}
-          onWheel={scrollWithHorizontalWheel}
+          onClick={unlockCardInteraction}
           onKeyDown={(event) => {
             if (event.key === "ArrowLeft") scrollByCard(-1);
             if (event.key === "ArrowRight") scrollByCard(1);
