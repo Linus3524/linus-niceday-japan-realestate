@@ -17,6 +17,7 @@ import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
 import { ContactTab } from "./components/ContactTab";
 import { TermModal } from "./components/TermModal";
+import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 
 export default function App() {
@@ -414,6 +415,9 @@ export default function App() {
 
         </div>
       </section>
+
+      {/* Featured Threads posts carousel */}
+      <ThreadsCarousel />
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
       <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] select-none" id="primary-nav">

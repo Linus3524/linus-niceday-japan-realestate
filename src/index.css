@@ -56,6 +56,177 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-jost);
 }
 
+/* Threads 精選輪播：卡片由 embed 腳本注入，樣式寫在此處供 innerHTML 使用 */
+.threads-slide {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(82vw, 368px);
+  height: 470px;
+  padding: 10px 10px 0;
+  border: 1px solid #d8e0dc;
+  background: #fff;
+  scroll-snap-align: start;
+  overflow: hidden;
+  transition: border-color 300ms ease, transform 300ms ease, box-shadow 300ms ease;
+}
+.threads-slide:hover {
+  border-color: #00a174;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-colored-soft);
+}
+.threads-card-number {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 28px;
+  background: #1a2a22;
+  color: #fff;
+  font-family: var(--font-jost), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.threads-post-frame {
+  position: relative;
+  height: 410px;
+  overflow: hidden;
+  outline: none;
+}
+.threads-content-box {
+  position: relative;
+  width: 108.7% !important;
+  min-height: 108.7% !important;
+  transform: scale(0.92) !important;
+  transform-origin: top left !important;
+}
+.threads-slide .text-post-media {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+.threads-slide iframe {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+/* Threads SDK 會保留原始 blockquote；iframe 已生成後隱藏它，避免卡片底部出現空白佔位。 */
+.threads-content-box:has(iframe) > blockquote,
+.threads-content-box iframe ~ blockquote {
+  display: none !important;
+}
+.threads-read-more {
+  position: absolute;
+  z-index: 4;
+  right: 10px;
+  bottom: 0;
+  left: 10px;
+  display: flex;
+  height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #dde3df;
+  background: #fff;
+  color: #007d5a;
+  font-family: var(--font-jost), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+.threads-read-more:hover {
+  color: #00a174;
+}
+
+/* 桌機滑鼠可直接在卡片內上下捲動；觸控裝置維持單一頁面捲動，避免 scroll trap。 */
+@media (hover: hover) and (pointer: fine) {
+  /* 桌機外層文章改由箭頭控制，把水平拖曳手勢留給 iframe 內的 Threads 圖片。 */
+  #threads-featured .threads-track {
+    overflow-x: hidden;
+  }
+  .threads-post-frame {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: #9ee2cf transparent;
+    scrollbar-width: thin;
+  }
+  .threads-post-frame:focus-visible {
+    box-shadow: inset 0 0 0 1px #9ee2cf;
+  }
+  .threads-post-frame::-webkit-scrollbar {
+    width: 5px;
+  }
+  .threads-post-frame::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .threads-post-frame::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #9ee2cf;
+  }
+}
+
+/* Fallback 狀態下的 blockquote 佔位卡片樣式 */
+.threads-slide blockquote {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 24px !important;
+}
+
+@media (min-width: 1024px) {
+  .threads-slide {
+    width: calc((100% - 32px) / 3);
+    min-width: 350px;
+  }
+}
+
+@media (max-width: 639px) {
+  .threads-slide {
+    width: calc(100vw - 52px);
+    height: 450px;
+  }
+  .threads-post-frame {
+    height: 390px;
+  }
+}
+
+/* Fallback 狀態下的綠色按鈕：在 iframe 載入完成前顯示 */
+.threads-fallback-btn {
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #00a174 !important;
+  color: #fff !important;
+  font-family: var(--font-jost), sans-serif;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.05em !important;
+  padding: 10px 24px !important;
+  border-radius: 9999px !important;
+  text-decoration: none !important;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease !important;
+  box-shadow: 0 3px 8px rgba(0, 161, 116, 0.25) !important;
+  cursor: pointer !important;
+}
+.threads-fallback-btn:hover {
+  background-color: #008761 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(0, 161, 116, 0.35) !important;
+}
+.threads-fallback-btn:active {
+  transform: translateY(0);
+}
+
 /* Blog-styled CSS components */
 .mini-mark {
   width: 44px;
