@@ -313,6 +313,160 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   transform: translateY(0);
 }
 
+/* ===== 首圖背景與人物圖層 ===== */
+/* 拉高首圖範圍，讓 16:9 的背景圖能完整顯示（底部斑馬線不被裁掉） */
+.hero-banner {
+  min-height: clamp(430px, 50vw, 680px);
+  display: flex;
+  align-items: center;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-bg {
+  /* 最終不透明度抽成變數：動畫的 to 會讀它，改一個值就能調各斷點的濃度 */
+  --hero-bg-opacity: 1;
+  position: absolute;
+  /* 靠左右各 0 再配 margin-inline:auto 置中；寬度由 aspect-ratio 推得，
+     元素框剛好等於圖片框，遮罩才會貼著圖片邊緣淡出而不是落在空白區。 */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-inline: auto;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: 2400 / 1350;
+  object-fit: contain;
+  filter: saturate(0.94);
+  /* 左右兩側白色漸層淡出：中央維持原色，往左右邊緣溶進白色頁面。
+     上下保持完整，底部的斑馬線才不會被切掉。
+     用 mask 而非整張降低不透明度，中心才不會被洗白。 */
+  --hero-mask: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 10%,
+    rgba(0, 0, 0, 0.3) 20%,
+    rgba(0, 0, 0, 0.58) 30%,
+    rgba(0, 0, 0, 0.85) 39%,
+    #000 48%,
+    #000 74%,
+    rgba(0, 0, 0, 0.7) 85%,
+    rgba(0, 0, 0, 0.32) 94%,
+    transparent 100%
+  );
+  -webkit-mask-image: var(--hero-mask);
+  mask-image: var(--hero-mask);
+  animation: hero-bg-in 1700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 只保護左側文字區的白色漸層，往右很快收乾淨，
+   中央的東京鐵塔與人物維持原色，不是整張淡化。 */
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.9) 24%,
+    rgba(255, 255, 255, 0.72) 38%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.16) 60%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+/* 只動 opacity 與 transform，交給合成執行緒處理，不觸發重排 */
+@keyframes hero-bg-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: var(--hero-bg-opacity);
+    transform: scale(1);
+  }
+}
+
+.hero-character {
+  position: absolute;
+  /* 放在「左側介紹文字」與「右側 LINE 卡片」之間的空白帶，並貼齊底部，
+     高度控制在卡片下緣以下，臉才不會被卡片蓋住。 */
+  left: 48%;
+  bottom: 0;
+  height: clamp(180px, 30vw, 380px);
+  width: auto;
+  animation: hero-character-in 950ms cubic-bezier(0.22, 1, 0.36, 1) 420ms both;
+}
+
+@keyframes hero-character-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  /* 手機是直式長版面，16:9 橫圖用 contain 只會在底部縮成一條窄帶，
+     改用 cover 並錨定底部填滿，優先保住畫面下緣的斑馬線。
+     （正解是另外做一張直式裁切圖，見 docs/HERO_BACKGROUND_GUIDE.md） */
+  /* 手機改為「獨立區塊」排在加好友卡片下方，不再當背景疊在內容底下，
+     結構上就不可能被卡片擋住。 */
+  .hero-banner {
+    flex-direction: column;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .hero-media {
+    position: relative;
+    order: 2;
+    margin-top: 28px;
+  }
+  .hero-bg {
+    --hero-bg-opacity: 1;
+    position: relative;
+    margin-inline: 0;
+    aspect-ratio: auto;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    object-fit: contain;
+    /* 單獨出現、不壓在文字上，就不需要淡出遮罩 */
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  /* 同理，白色保護層在手機上沒有存在意義 */
+  .hero-veil {
+    display: none;
+  }
+  /* 靠左擺在樹蔭那一側；高度用 vw 綁定圖寬，
+     人物與斑馬線的比例才不會隨螢幕寬度跑掉 */
+  .hero-character {
+    left: 13%;
+    right: auto;
+    height: 46vw;
+  }
+}
+
+/* 使用者開啟「減少動態效果」時直接顯示成品，不做位移與縮放 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg,
+  .hero-character {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}
+
 /* Blog-styled CSS components */
 .mini-mark {
   width: 44px;

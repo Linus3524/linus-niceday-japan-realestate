@@ -327,8 +327,16 @@ export default function App() {
       </header>
 
       {/* Hero Banner Section */}
-      <section className="hero-banner bg-white py-12 border-b border-[#DDE3DF] relative" id="hero-banner">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <section className="hero-banner bg-white pt-12 pb-12 lg:pb-28 border-b border-[#DDE3DF] relative overflow-hidden" id="hero-banner">
+        {/* 背景與人物圖層：純裝飾，不進無障礙樹，也不攔截點擊 */}
+        <div className="hero-media" aria-hidden="true">
+          <img src="/hero-bg.webp" alt="" className="hero-bg" fetchPriority="high" decoding="async" />
+          {/* 白色漸層必須夾在背景與人物之間：只淡化背景，人物維持原色 */}
+          <div className="hero-veil" />
+          <img src="/hero-character.webp" alt="" className="hero-character" decoding="async" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left side: Heading */}
           <div className="lg:col-span-8 space-y-4 pr-0 lg:pr-10">
@@ -347,21 +355,25 @@ export default function App() {
               台灣人仲介帶你看懂日本租屋、買房與置產。
             </h2>
 
-            <div className="text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
+            {/* 限制寬度讓長句提早換行，避免文字延伸過去壓到人物 */}
+            <div className="max-w-[30rem] text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
               <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
-              <p>分享日本租屋、買房、貸款規劃與在日生活的第一線實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
+              <p>分享日本租屋、買房、貸款規劃與在日生活的經驗實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
               <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
               <p>Linus 住好日，一起在日本住好日！</p>
             </div>
 
-            <div className="border-t border-[#DDE3DF] my-6"></div>
+            {/* w-fit 讓分隔線寬度自動等於下方 SINCE…TOKYO 這一行，桌機與手機都會自動吻合 */}
+            <div className="w-fit">
+              <div className="border-t border-[#DDE3DF] my-6"></div>
 
-            <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
-              <span>SINCE 2024</span>
-              <span>•</span>
-              <span>REAL ESTATE GUIDE</span>
-              <span>•</span>
-              <span>TOKYO</span>
+              <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
+                <span>SINCE 2024</span>
+                <span>•</span>
+                <span>REAL ESTATE GUIDE</span>
+                <span>•</span>
+                <span>TOKYO</span>
+              </div>
             </div>
           </div>
 
