@@ -165,10 +165,18 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 .threads-drag-shield.is-unlocked .threads-shield-hint {
   opacity: 0 !important;
 }
-/* 觸控裝置沒有 hover，提示改為常駐但淡一點 */
+/* 兩種裝置的操作方式不同，提示文字也要跟著換 */
+.threads-hint-touch {
+  display: none;
+}
+/* 觸控裝置沒有 hover，提示常駐（淡一點），並改為「開啟 Threads」的說法 */
 @media (hover: none) {
-  .threads-shield-hint {
-    opacity: 0.75;
+  .threads-hint-pointer {
+    display: none;
+  }
+  .threads-hint-touch {
+    display: block;
+    opacity: 0.82;
   }
 }
 .threads-slide .text-post-media {

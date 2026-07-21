@@ -39,7 +39,8 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
               </a>
             </blockquote>
             <div class="threads-drag-shield" data-thread-url="${url}" aria-hidden="true">
-              <span class="threads-shield-hint">點一下可滑動圖片</span>
+              <span class="threads-shield-hint threads-hint-pointer">點一下可滑動圖片</span>
+              <span class="threads-shield-hint threads-hint-touch">點一下用 Threads 開啟 ↗</span>
             </div>
             </div>
           </div>
@@ -60,6 +61,7 @@ export function ThreadsCarousel() {
   const dragStateRef = useRef({ active: false, pointerId: -1, startX: 0, startScrollLeft: 0, moved: 0 });
   const unlockedShieldRef = useRef<HTMLElement | null>(null);
   const pressedShieldRef = useRef<HTMLElement | null>(null);
+  const pressedPointerTypeRef = useRef("mouse");
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeSlide, setActiveSlide] = useState(1);
   const currentCategory = threadCategories[activeCategory];
@@ -171,7 +173,12 @@ export function ThreadsCarousel() {
     // 先記住按在哪張卡的遮罩上：一旦 track 取得 pointer capture，之後的 click 會被
     // 重新指向 track，屆時 event.target 不再是遮罩，因此不能等到 click 才判斷。
     pressedShieldRef.current = (event.target as HTMLElement).closest<HTMLElement>(".threads-drag-shield");
-    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    pressedPointerTypeRef.current = event.pointerType;
+    if (event.pointerType !== "mouse" || event.button !== 0) {
+      // 觸控不走自訂拖曳（交給原生捲動），moved 歸零避免沿用上一次滑鼠拖曳的殘值。
+      dragStateRef.current.moved = 0;
+      return;
+    }
 
     dragStateRef.current = {
       active: true,
@@ -232,6 +239,15 @@ export function ThreadsCarousel() {
     const shield = pressedShieldRef.current;
     pressedShieldRef.current = null;
     if (!shield || dragStateRef.current.moved > 6) return;
+
+    // 觸控裝置直接開啟 Threads：手機上 App 的閱讀體驗遠優於卡片內的小視窗，
+    // 且沒有 hover 可表達「已解鎖」狀態，兩段式操作只會造成困惑。
+    if (pressedPointerTypeRef.current !== "mouse") {
+      const url = shield.dataset.threadUrl;
+      if (url) window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
     relockCards();
     shield.classList.add("is-unlocked");
     unlockedShieldRef.current = shield;
@@ -313,11 +329,22 @@ export function ThreadsCarousel() {
       if (isOutsideUnlockedSlide(event.clientX, event.clientY)) relockCards();
     };
 
+    // 保險：手勢若被瀏覽器接管（手機捲動很常見），pointerup／cancel 可能不會回到
+    // track，isUserInteractingRef 就會卡在 true 讓自動輪播永久停住。改由 document
+    // 層級補一次解除。
+    const releaseInteraction = () => {
+      isUserInteractingRef.current = false;
+    };
+
     document.addEventListener("pointermove", handleMove, { passive: true });
     document.addEventListener("pointerdown", handleDown, { passive: true });
+    document.addEventListener("pointerup", releaseInteraction, { passive: true });
+    document.addEventListener("pointercancel", releaseInteraction, { passive: true });
     return () => {
       document.removeEventListener("pointermove", handleMove);
       document.removeEventListener("pointerdown", handleDown);
+      document.removeEventListener("pointerup", releaseInteraction);
+      document.removeEventListener("pointercancel", releaseInteraction);
     };
   }, []);
 
