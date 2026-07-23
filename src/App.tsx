@@ -20,6 +20,14 @@ import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 
+// 首圖三組場景，每約 20 秒輪換：背景淡入淡出、人物浮現切換。
+const HERO_SETS = [
+  { key: "orange", bg: "/hero-bg.webp", character: "/hero-character.webp" },
+  { key: "grape", bg: "/hero-roppongi.webp", character: "/hero-character-grape.webp" },
+  { key: "lemon", bg: "/hero-fuji.webp", character: "/hero-character-lemon.webp" },
+];
+const HERO_ROTATE_MS = 20000;
+
 export default function App() {
   // Navigation tabs: 'cards' (租屋知識圖卡), 'buyHouse' (買房知識大補帖), 'calculator' (預算估算), 'chat' (AI問答), 'contact' (聯絡Linus)
   const [activeTab, setActiveTab] = useState<"cards" | "buyHouse" | "calculator" | "chat" | "contact">("cards");
@@ -28,6 +36,15 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showToTop, setShowToTop] = useState(false);
+
+  // 首圖場景輪播索引
+  const [heroSet, setHeroSet] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setHeroSet(prev => (prev + 1) % HERO_SETS.length);
+    }, HERO_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -328,12 +345,36 @@ export default function App() {
 
       {/* Hero Banner Section */}
       <section className="hero-banner bg-white pt-12 pb-12 lg:pb-28 border-b border-[#DDE3DF] relative overflow-hidden" id="hero-banner">
-        {/* 背景與人物圖層：純裝飾，不進無障礙樹，也不攔截點擊 */}
+        {/* 背景與人物圖層：純裝飾，不進無障礙樹，也不攔截點擊。
+            三組場景堆疊，靠 is-active 切換透明度做淡入淡出／浮現。 */}
         <div className="hero-media" aria-hidden="true">
-          <img src="/hero-bg.webp" alt="" className="hero-bg" fetchPriority="high" decoding="async" />
+          <div className="hero-bg-layer">
+            {HERO_SETS.map((set, i) => (
+              <img
+                key={set.key}
+                src={set.bg}
+                alt=""
+                className={`hero-bg ${i === heroSet ? "is-active" : ""}`}
+                fetchPriority={i === 0 ? "high" : undefined}
+                loading={i === 0 ? undefined : "lazy"}
+                decoding="async"
+              />
+            ))}
+          </div>
           {/* 白色漸層必須夾在背景與人物之間：只淡化背景，人物維持原色 */}
           <div className="hero-veil" />
-          <img src="/hero-character.webp" alt="" className="hero-character" decoding="async" />
+          <div className="hero-char-layer">
+            {HERO_SETS.map((set, i) => (
+              <img
+                key={set.key}
+                src={set.character}
+                alt=""
+                className={`hero-character hero-char--${set.key} ${i === heroSet ? "is-active" : ""}`}
+                loading={i === 0 ? undefined : "lazy"}
+                decoding="async"
+              />
+            ))}
+          </div>
         </div>
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
