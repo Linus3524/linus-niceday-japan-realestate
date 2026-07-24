@@ -20,13 +20,13 @@ import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 
-// 首圖三組場景，每約 20 秒輪換：背景淡入淡出、人物浮現切換。
+// 首圖三組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
   { key: "orange", bg: "/hero-bg.webp", character: "/hero-character.webp" },
   { key: "grape", bg: "/hero-roppongi.webp", character: "/hero-character-grape.webp" },
   { key: "lemon", bg: "/hero-fuji.webp", character: "/hero-character-lemon.webp" },
 ];
-const HERO_ROTATE_MS = 20000;
+const HERO_ROTATE_MS = 15000;
 
 export default function App() {
   // Navigation tabs: 'cards' (租屋知識圖卡), 'buyHouse' (買房知識大補帖), 'calculator' (預算估算), 'chat' (AI問答), 'contact' (聯絡Linus)
