@@ -1,13 +1,23 @@
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { threadCategories, type FeaturedThread } from "../data/featuredThreads";
+import { threadsSearchIndex } from "../data/threadsSearchIndex";
 
 const THREADS_SCRIPT_SRC = "https://www.threads.com/embed.js";
+
+// 搜尋框下方的熱門關鍵字快捷鈕
+const PRESET_KEYWORDS = ["水電", "瓦斯", "打工", "留學", "內見", "初期"];
+
+function threadPostId(url: string) {
+  const match = url.match(/\/post\/([A-Za-z0-9_-]+)/);
+  return match ? match[1] : url;
+}
 
 // 觸發 Threads / Instagram 共用嵌入 SDK 重新掃描頁面上的 blockquote 並轉成 iframe。
 // SDK 尚未載入時做短暫重試，載入後即會渲染。
@@ -64,8 +74,37 @@ export function ThreadsCarousel() {
   const pressedPointerTypeRef = useRef("mouse");
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeSlide, setActiveSlide] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const currentCategory = threadCategories[activeCategory];
-  const currentThreads = currentCategory?.threads ?? [];
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const isSearching = normalizedQuery.length > 0;
+
+  // 搜尋：只比對貼文「內文」（不含分類名稱，否則整個分類會因名字含關鍵字而全中），
+  // 並依相關性給分後排序——標題附近命中、出現次數多的排前面，順帶提一次的排後面。
+  const searchResults = useMemo(() => {
+    if (!isSearching) return [] as FeaturedThread[];
+    const scored: { thread: FeaturedThread; score: number }[] = [];
+    for (const category of threadCategories) {
+      for (const thread of category.threads) {
+        const text = (threadsSearchIndex[threadPostId(thread.url)] ?? "").toLowerCase();
+        const firstIndex = text.indexOf(normalizedQuery);
+        if (firstIndex === -1) continue;
+        const occurrences = text.split(normalizedQuery).length - 1;
+        // 出現在前 60 字（約略是系列標籤＋標題範圍）視為「主題命中」，大幅加權
+        const headlineBonus = firstIndex < 60 ? 100 : 0;
+        const score = headlineBonus + occurrences * 10 - Math.min(firstIndex, 600) * 0.05;
+        scored.push({ thread, score });
+      }
+    }
+    scored.sort((a, b) => b.score - a.score);
+    return scored.map((entry) => entry.thread);
+  }, [normalizedQuery, isSearching]);
+
+  // currentThreads = 目前實際顯示的清單（搜尋結果或所選分類），
+  // 下方拖曳／輪播／批次載入邏輯全部沿用這個清單，不需改動。
+  const currentThreads = isSearching ? searchResults : (currentCategory?.threads ?? []);
 
   // 一次性把 blockquote 注入容器（避免 React 與嵌入腳本爭搶同一組 DOM 節點而崩潰），
   // 再載入官方腳本並觸發渲染。
@@ -92,7 +131,7 @@ export function ThreadsCarousel() {
       script.onload = () => processEmbeds();
       document.body.appendChild(script);
     }
-  }, [activeCategory]);
+  }, [activeCategory, normalizedQuery]);
 
   const updateArrows = () => {
     const track = trackRef.current;
@@ -126,7 +165,7 @@ export function ThreadsCarousel() {
       window.removeEventListener("resize", updateArrows);
       clearTimeout(t);
     };
-  }, [activeCategory]);
+  }, [activeCategory, normalizedQuery]);
 
   const appendNextBatch = () => {
     const track = trackRef.current;
@@ -405,118 +444,191 @@ export function ThreadsCarousel() {
       document.removeEventListener("pointermove", updatePointerPosition);
       window.cancelAnimationFrame(animationFrame);
     };
-  }, [activeCategory]);
+  }, [activeCategory, normalizedQuery]);
 
   const selectCategory = (index: number, button: HTMLButtonElement) => {
+    setSearchQuery("");
     setActiveCategory(index);
     button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   };
 
-  if (threadCategories.length === 0 || currentThreads.length === 0) return null;
+  // 只有完全沒有分類資料時才整塊不顯示；搜尋 0 筆時仍要保留搜尋框與提示。
+  if (threadCategories.length === 0) return null;
 
   return (
     <section className="border-y border-[#DDE3DF] bg-[#F5F8F6]" id="threads-featured" aria-label="LINUS 精選 Threads 文章">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10">
-        <div className="mb-5 grid gap-5 border-b border-[#C9D8D1] pb-5 sm:mb-6 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div className="min-w-0 max-w-2xl">
-            <p className="mb-1.5 font-jost text-[10px] font-semibold tracking-[0.22em] text-[#00a174] sm:text-[11px]">
-              LINUS SOCIAL JOURNAL
-            </p>
+        {/* 標題列：標題 + 搜尋框 + 追蹤 + 輪播箭頭。搜尋框放在追蹤左側，
+            熱門關鍵字改成聚焦搜尋框時才落下的下拉，平時不佔版面。 */}
+        <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
             <h2 className="font-serif text-xl font-bold leading-snug text-[#1A2A22] sm:text-2xl">
               在 Threads，繼續住好日
             </h2>
-            <p className="mt-2 max-w-xl font-sans text-xs leading-relaxed text-zinc-600 sm:text-sm">
+            <p className="mt-1 font-sans text-xs leading-relaxed text-zinc-500 sm:text-sm">
               日本租屋、買房與生活實務，從第一線經驗說給你聽。
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end">
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="relative flex-1 sm:w-60 sm:flex-none">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="搜尋貼文關鍵字"
+                aria-label="搜尋 Threads 貼文"
+                className="h-9 w-full border border-[#C9D8D1] bg-white pl-9 pr-9 font-sans text-sm text-[#1A2A22] placeholder:text-zinc-400 focus:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174] [&::-webkit-search-cancel-button]:hidden"
+              />
+              {isSearching && (
+                <button
+                  type="button"
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => setSearchQuery("")}
+                  aria-label="清除搜尋"
+                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-zinc-400 hover:text-[#00a174]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+              {/* 聚焦時落下的熱門關鍵字下拉 */}
+              {searchFocused && (
+                <div className="absolute left-0 right-0 top-full z-30 mt-1 border border-[#C9D8D1] bg-white p-2.5 shadow-[0_8px_24px_-12px_rgba(15,143,109,0.35)]">
+                  <div className="mb-2 px-0.5 font-jost text-[10px] font-semibold tracking-[0.14em] text-zinc-400">
+                    熱門關鍵字
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {PRESET_KEYWORDS.map((keyword) => (
+                      <button
+                        key={keyword}
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => {
+                          setSearchQuery(keyword);
+                          setSearchFocused(false);
+                        }}
+                        className="shrink-0 border border-[#C9D8D1] bg-white px-2.5 py-1 font-sans text-xs text-[#3F5147] transition-colors hover:border-[#00a174] hover:bg-[#e6f6f1] hover:text-[#007d5a]"
+                      >
+                        {keyword}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <a
               href="https://www.threads.com/@linus3524"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-1.5 border border-[#00a174] bg-white px-3.5 font-sans text-xs font-bold text-[#007d5a] transition-colors hover:bg-[#00a174] hover:text-white"
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 border border-[#00a174] bg-white px-3.5 font-sans text-xs font-bold text-[#007d5a] transition-colors hover:bg-[#00a174] hover:text-white"
             >
-              追蹤 @linus3524 <ArrowUpRight className="h-3.5 w-3.5" />
+              追蹤 <span className="hidden sm:inline">@linus3524</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
-            <div className="flex items-center gap-2">
-              <span className="min-w-[3.25rem] text-center font-jost text-[11px] tracking-[0.12em] text-zinc-500">
-                {String(activeSlide).padStart(2, "0")} / {String(currentThreads.length).padStart(2, "0")}
-              </span>
-              <button
-                type="button"
-                onClick={() => scrollByCard(-1)}
-                disabled={currentThreads.length <= 1}
-                aria-label="上一則"
-                className="flex h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollByCard(1)}
-                disabled={currentThreads.length <= 1}
-                aria-label="下一則"
-                className="flex h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => scrollByCard(-1)}
+              disabled={currentThreads.length <= 1}
+              aria-label="上一則"
+              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByCard(1)}
+              disabled={currentThreads.length <= 1}
+              aria-label="下一則"
+              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
 
-        <div
-          className="threads-category-tabs mb-5 flex gap-2 overflow-x-auto pb-2 sm:mb-6"
-          role="tablist"
-          aria-label="Threads 文章分類"
-        >
-          {threadCategories.map((category, index) => {
-            const isActive = index === activeCategory;
-            return (
-              <button
-                key={category.label}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-controls="threads-category-panel"
-                onClick={(event) => selectCategory(index, event.currentTarget)}
-                className={`shrink-0 border px-3.5 py-2 font-sans text-xs font-bold transition-colors ${
-                  isActive
-                    ? "border-[#00a174] bg-[#00a174] text-white"
-                    : "border-[#C9D8D1] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
-                }`}
-              >
-                {category.label}
-                <span className={`ml-1.5 font-jost text-[10px] ${isActive ? "text-white/75" : "text-zinc-400"}`}>
-                  {category.threads.length}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div
-          id="threads-category-panel"
-          role="tabpanel"
-          aria-label={`${currentCategory.label} Threads 貼文，可左右滑動`}
-          ref={trackRef}
-          tabIndex={0}
-          onPointerDown={startDragging}
-          onPointerMove={dragCarousel}
-          onPointerUp={stopDragging}
-          onPointerCancel={stopDragging}
-          onClick={unlockCardInteraction}
-          onKeyDown={(event) => {
-            if (event.key === "ArrowLeft") scrollByCard(-1);
-            if (event.key === "ArrowRight") scrollByCard(1);
-          }}
-          className="threads-track flex gap-4 overflow-x-auto overscroll-x-contain touch-auto px-0.5 pb-4 pt-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        />
-        <div className="mt-4 h-px overflow-hidden bg-[#DDE3DF]" aria-hidden="true">
+        {/* 搜尋中：顯示結果摘要；否則顯示分類標籤 */}
+        {isSearching ? (
+          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 sm:mb-5">
+            <span className="font-sans text-sm text-[#1A2A22]">
+              「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」找到{" "}
+              <span className="font-bold">{currentThreads.length}</span> 篇
+            </span>
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="font-sans text-xs text-zinc-500 underline underline-offset-2 hover:text-[#00a174]"
+            >
+              清除，回到分類瀏覽
+            </button>
+          </div>
+        ) : (
           <div
-            className="h-full bg-[#00a174] transition-[width] duration-300"
-            style={{ width: `${(activeSlide / currentThreads.length) * 100}%` }}
-          />
-        </div>
+            className="threads-category-tabs mb-5 flex gap-2 overflow-x-auto pb-2 sm:mb-6"
+            role="tablist"
+            aria-label="Threads 文章分類"
+          >
+            {threadCategories.map((category, index) => {
+              const isActive = index === activeCategory;
+              return (
+                <button
+                  key={category.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="threads-category-panel"
+                  onClick={(event) => selectCategory(index, event.currentTarget)}
+                  className={`shrink-0 border px-3.5 py-2 font-sans text-xs font-bold transition-colors ${
+                    isActive
+                      ? "border-[#00a174] bg-[#00a174] text-white"
+                      : "border-[#C9D8D1] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
+                  }`}
+                >
+                  {category.label}
+                  <span className={`ml-1.5 font-jost text-[10px] ${isActive ? "text-white/75" : "text-zinc-400"}`}>
+                    {category.threads.length}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {isSearching && currentThreads.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 border border-dashed border-[#C9D8D1] bg-white px-6 py-14 text-center">
+            <p className="font-sans text-sm text-[#1A2A22]">
+              找不到符合「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」的貼文
+            </p>
+            <p className="font-sans text-xs text-zinc-500">換個關鍵字，或試試上方的熱門標籤。</p>
+          </div>
+        ) : (
+          <>
+            <div
+              id="threads-category-panel"
+              role="tabpanel"
+              aria-label={isSearching ? "搜尋結果 Threads 貼文，可左右滑動" : `${currentCategory.label} Threads 貼文，可左右滑動`}
+              ref={trackRef}
+              tabIndex={0}
+              onPointerDown={startDragging}
+              onPointerMove={dragCarousel}
+              onPointerUp={stopDragging}
+              onPointerCancel={stopDragging}
+              onClick={unlockCardInteraction}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowLeft") scrollByCard(-1);
+                if (event.key === "ArrowRight") scrollByCard(1);
+              }}
+              className="threads-track flex gap-4 overflow-x-auto overscroll-x-contain touch-auto px-0.5 pb-4 pt-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            />
+            <div className="mt-4 h-px overflow-hidden bg-[#DDE3DF]" aria-hidden="true">
+              <div
+                className="h-full bg-[#00a174] transition-[width] duration-300"
+                style={{ width: `${currentThreads.length ? (activeSlide / currentThreads.length) * 100 : 0}%` }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

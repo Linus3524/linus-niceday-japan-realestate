@@ -92,6 +92,7 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DXgRQ81E6QW" },
       { url: "https://www.threads.com/@linus3524/post/DZmdPV7E0V2" },
       { url: "https://www.threads.com/@linus3524/post/DZugcCDk3UZ" },
+      { url: "https://www.threads.com/@linus3524/post/DbKT2aJk7ag" },
     ],
   },
   {
