@@ -12,6 +12,7 @@ import {
 import { budgetModifiers } from "./data/rentGuideData";
 import { hasTowerMansionSupport } from "./lib/calcRules";
 import { RentGuideTab } from "./components/RentGuideTab";
+import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
@@ -202,6 +203,8 @@ export default function App() {
   };
 
   // Filter Knowledge Base items
+  const isKnowledgeSearchActive = hasMinimumKnowledgeSearchLength(searchQuery);
+
   const getFilteredItems = () => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     
@@ -225,11 +228,13 @@ export default function App() {
     }
 
     // Step 2: Filter by search query
-    if (normalizedQuery) {
+    if (isKnowledgeSearchActive) {
       matchedInitialFees = matchedInitialFees.filter(
         f => f.name.toLowerCase().includes(normalizedQuery) || 
              (f.jpName && f.jpName.toLowerCase().includes(normalizedQuery)) ||
-             f.description.toLowerCase().includes(normalizedQuery)
+             f.description.toLowerCase().includes(normalizedQuery) ||
+             (f.warning && f.warning.toLowerCase().includes(normalizedQuery)) ||
+             (f.keyPoints && f.keyPoints.some(point => point.toLowerCase().includes(normalizedQuery)))
       );
       matchedSpecialTerms = matchedSpecialTerms.filter(
         t => t.name.toLowerCase().includes(normalizedQuery) ||
@@ -239,7 +244,10 @@ export default function App() {
       );
       matchedSteps = matchedSteps.filter(
         s => s.name.toLowerCase().includes(normalizedQuery) ||
-             s.description.toLowerCase().includes(normalizedQuery)
+             s.description.toLowerCase().includes(normalizedQuery) ||
+             s.duration.toLowerCase().includes(normalizedQuery) ||
+             (s.details && s.details.some(detail => detail.toLowerCase().includes(normalizedQuery))) ||
+             (s.searchKeywords && s.searchKeywords.some(keyword => keyword.toLowerCase().includes(normalizedQuery)))
       );
       matchedQA = matchedQA.filter(
         q => q.question.toLowerCase().includes(normalizedQuery) ||
@@ -256,11 +264,14 @@ export default function App() {
   };
 
   const filtered = getFilteredItems();
+  const staticKnowledgeMatches = getRentStaticMatches(searchQuery, kbCategory);
   const hasNoResults = 
+    isKnowledgeSearchActive &&
     filtered.fees.length === 0 && 
     filtered.terms.length === 0 && 
     filtered.steps.length === 0 && 
-    filtered.qa.length === 0;
+    filtered.qa.length === 0 &&
+    staticKnowledgeMatches.length === 0;
 
   // Filter Buy House items
   const getFilteredBuyItems = () => {
@@ -514,6 +525,7 @@ export default function App() {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               filtered={filtered}
+              staticMatches={staticKnowledgeMatches}
               hasNoResults={hasNoResults}
               setSelectedFee={setSelectedFee}
               handleTabChange={handleTabChange}

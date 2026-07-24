@@ -1,32 +1,23 @@
 import { motion } from "motion/react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Search, ArrowRight, FileText, X, HelpCircle, ChevronDown } from "lucide-react";
 import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
+import {
+  applicationRoutes,
+  domesticScreeningDocuments,
+  domesticScreeningNotice,
+  domesticSop,
+  getRentStaticMatches,
+  hasMinimumKnowledgeSearchLength,
+  overseasScreeningDocuments,
+  overseasSop,
+  processReminders,
+  screeningDocumentDisclaimer,
+  type RentStaticSectionId
+} from "../data/rentStaticSearchData";
 import { renderFormattedText } from "../lib/format";
 import { QACard } from "./QACard";
 import { JapaneseRuby } from "./JapaneseRuby";
-
-interface ScreeningDocumentProfile {
-  profile: string;
-  documents: string[];
-  availability: "多" | "一般" | "最少" | "不一定";
-}
-
-const overseasScreeningDocuments: ScreeningDocumentProfile[] = [
-  { profile: "工作簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "僱傭契約書"], availability: "一般" },
-  { profile: "留學簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "入學通知書"], availability: "一般" },
-  { profile: "打工度假簽證", documents: ["護照照片頁", "日本簽證貼紙", "銀行財力或餘額證明"], availability: "最少" }
-];
-
-const domesticScreeningDocuments: ScreeningDocumentProfile[] = [
-  { profile: "尚未入職", documents: ["護照照片頁", "在留卡正反面", "僱傭契約書"], availability: "多" },
-  { profile: "入職未滿三個月", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "已有的薪資明細", "僱傭條件通知書"], availability: "多" },
-  { profile: "入職三個月以上", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "現有公司源泉票", "三個月薪資明細", "僱傭條件通知書"], availability: "多" },
-  { profile: "轉職中", documents: ["在留卡正反面", "護照照片頁", "新公司內定通知書", "新公司僱傭條件通知書", "舊公司三個月薪資明細（視個案）"], availability: "多" },
-  { profile: "留學簽證", documents: ["護照照片頁", "在留卡正反面", "學生證", "銀行財力或餘額證明"], availability: "一般" },
-  { profile: "打工度假簽證", documents: ["護照照片頁", "在留卡正反面", "銀行財力或餘額證明"], availability: "最少" },
-  { profile: "法人契約（社員入住）", documents: ["公司登記簿謄本", "公司決算書影本", "公司印鑑證明書", "代表者印鑑證明書", "入住者在留卡與護照", "社員證或在職證明", "公司簡介或業務資料"], availability: "不一定" }
-];
 
 const availabilityStyle = {
   "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
@@ -35,8 +26,19 @@ const availabilityStyle = {
   "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
 };
 
-function VisaDocumentMatrix() {
+function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
   const [screeningMode, setScreeningMode] = useState<"overseas" | "domestic">("overseas");
+  useEffect(() => {
+    if (!hasMinimumKnowledgeSearchLength(searchQuery)) return;
+    const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+    const overseasText = overseasScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents]).join(" ").toLocaleLowerCase();
+    const domesticText = [domesticScreeningNotice, ...domesticScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents])].join(" ").toLocaleLowerCase();
+    if (domesticText.includes(normalizedQuery) && !overseasText.includes(normalizedQuery)) {
+      setScreeningMode("domestic");
+    } else if (overseasText.includes(normalizedQuery)) {
+      setScreeningMode("overseas");
+    }
+  }, [searchQuery]);
   const profiles = screeningMode === "overseas" ? overseasScreeningDocuments : domesticScreeningDocuments;
   return (
     <div className="space-y-5 font-sans">
@@ -45,7 +47,7 @@ function VisaDocumentMatrix() {
         <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
       </div>
       {screeningMode === "domestic" && (
-        <div className="border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 text-sm leading-7 text-[#3F5147]">境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。</div>
+        <div className="border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 text-sm leading-7 text-[#3F5147]">{domesticScreeningNotice}</div>
       )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {profiles.map(profile => (
@@ -61,7 +63,7 @@ function VisaDocumentMatrix() {
           </article>
         ))}
       </div>
-      <div className="border border-[#DCC8A1] bg-[#FFF9ED] p-4 text-xs leading-6 text-[#66583D] md:text-sm">以上為 Linus 的申請準備對照，不是所有物件一律要求的固定清單。管理公司、保證公司、簽證狀態與個別案件可能追加、減少或改用其他文件，送件前請以該物件最新書面要求為準。</div>
+      <div className="border border-[#DCC8A1] bg-[#FFF9ED] p-4 text-xs leading-6 text-[#66583D] md:text-sm">{screeningDocumentDisclaimer}</div>
     </div>
   );
 }
@@ -90,14 +92,23 @@ interface RentGuideTabProps {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filtered: { fees: InitialFeeItem[]; terms: SpecialTermItem[]; steps: ProcessStep[]; qa: QAItem[] };
+  staticMatches: RentStaticSectionId[];
   hasNoResults: boolean;
   setSelectedFee: (fee: any) => void;
   handleTabChange: (tab: any) => void;
 }
 
 export function RentGuideTab(props: RentGuideTabProps) {
-  const { kbCategory, setKbCategory, searchQuery, setSearchQuery, filtered, hasNoResults, setSelectedFee, handleTabChange } = props;
+  const { kbCategory, setKbCategory, searchQuery, setSearchQuery, filtered, staticMatches, hasNoResults, setSelectedFee, handleTabChange } = props;
   const [documentsExpanded, setDocumentsExpanded] = useState(false);
+  const isSearchActive = hasMinimumKnowledgeSearchLength(searchQuery);
+  const staticMatchSet = new Set(staticMatches);
+  const showSop = !isSearchActive || staticMatchSet.has("sop");
+  const showDocuments = !isSearchActive || staticMatchSet.has("documents");
+  const showRoutes = !isSearchActive || staticMatchSet.has("routes");
+  const showReminders = !isSearchActive || staticMatchSet.has("reminders");
+  const showProcessSection =
+    filtered.steps.length > 0 || showSop || showDocuments || showRoutes || showReminders;
 
   return (
             <motion.div
