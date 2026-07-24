@@ -460,12 +460,12 @@ export function ThreadsCarousel() {
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10">
         {/* 標題列：標題 + 搜尋框 + 追蹤 + 輪播箭頭。搜尋框放在追蹤左側，
             熱門關鍵字改成聚焦搜尋框時才落下的下拉，平時不佔版面。 */}
-        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <h2 className="font-serif text-xl font-bold leading-snug text-[#1A2A22] sm:text-2xl">
               在 Threads，繼續住好日
             </h2>
-            <p className="mt-1.5 font-sans text-xs leading-relaxed text-zinc-500 sm:text-sm">
+            <p className="mt-1 font-sans text-xs leading-relaxed text-zinc-500 sm:text-sm">
               日本租屋、買房與生活實務，從第一線經驗說給你聽。
             </p>
           </div>
@@ -550,7 +550,7 @@ export function ThreadsCarousel() {
 
         {/* 搜尋中：顯示結果摘要；否則顯示分類標籤 */}
         {isSearching ? (
-          <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 sm:mb-6">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 sm:mb-4">
             <span className="font-sans text-sm text-[#1A2A22]">
               「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」找到{" "}
               <span className="font-bold">{currentThreads.length}</span> 篇
@@ -565,7 +565,7 @@ export function ThreadsCarousel() {
           </div>
         ) : (
           <div
-            className="threads-category-tabs mb-6 flex gap-2 overflow-x-auto pb-2 sm:mb-7"
+            className="threads-category-tabs mb-3.5 flex gap-2 overflow-x-auto pb-1.5 sm:mb-4"
             role="tablist"
             aria-label="Threads 文章分類"
           >
@@ -579,7 +579,7 @@ export function ThreadsCarousel() {
                   aria-selected={isActive}
                   aria-controls="threads-category-panel"
                   onClick={(event) => selectCategory(index, event.currentTarget)}
-                  className={`shrink-0 border px-3.5 py-2 font-sans text-xs font-bold transition-colors ${
+                  className={`shrink-0 border px-3 py-1.5 font-sans text-xs font-bold transition-colors ${
                     isActive
                       ? "border-[#00a174] bg-[#00a174] text-white"
                       : "border-[#C9D8D1] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
