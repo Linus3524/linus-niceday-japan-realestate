@@ -329,7 +329,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   pointer-events: none;
 }
 
-/* 背景與人物各自一個堆疊層，三組場景重疊在裡面靠透明度切換。
+/* 背景與人物各自一個堆疊層，四組場景重疊在裡面靠透明度切換。
    疊放順序：背景(0) → 白色漸層(1) → 人物(2)，人物必須高於漸層才不會被淡化。 */
 .hero-bg-layer,
 .hero-char-layer {
@@ -433,9 +433,25 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   /* 人物比背景晚一點浮現，避免兩者同時動顯得雜亂 */
   transition-delay: 260ms;
 }
+/* 橘子那組人物與柴犬在畫面裡偏小，放大一點但腳底位置維持不變（bottom 沿用預設）；
+   放大後右側會逼近 LINE 卡片，桌機再往左挪一點保持距離。 */
+.hero-char--orange {
+  height: clamp(174px, 28.5vw, 366px);
+  left: 44%;
+}
+/* 葡萄那組同樣稍微放大一點點，腳底位置維持不變 */
+.hero-char--grape {
+  height: clamp(168px, 27.3vw, 351px);
+}
 /* 檸檬那組人物前傾、狗又跑在左前方，桌機稍微往左擺構圖較平衡 */
 .hero-char--lemon {
   left: 43%;
+}
+/* 蘋果那組人物直立、狗是坐姿，整體視覺比其他組小，
+   略微放大並抬高，讓他站在草地上而不是貼著畫面下緣。 */
+.hero-char--apple {
+  height: clamp(178px, 29vw, 372px);
+  bottom: 46px;
 }
 
 @media (max-width: 767px) {
@@ -496,12 +512,14 @@ h1, h2, h3, h4, h5, h6, .font-serif {
      比其他兩組再下沉一點點貼近斑馬線。 */
   .hero-char--orange {
     bottom: 3px;
+    height: 39.5vw;
   }
   /* 葡萄：六本木場景構圖偏中央，人物置中比較平衡。
      預設與 is-active 都要疊上 translateX(-50%)，否則淡入時會出現橫向漂移。 */
   .hero-char--grape {
     left: 50%;
     right: auto;
+    height: 37.8vw;
     transform: translateX(-50%) translateY(26px) scale(0.97);
   }
   .hero-char--grape.is-active {
@@ -511,6 +529,18 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   .hero-char--lemon {
     left: auto;
     right: 6%;
+  }
+  /* 蘋果：草原背景左右都空，人物置中構圖最平衡；同樣放大並抬高一點。
+     預設與 is-active 都要疊上 translateX(-50%)，否則淡入時會橫向漂移。 */
+  .hero-char--apple {
+    left: 50%;
+    right: auto;
+    bottom: 12px;
+    height: 40vw;
+    transform: translateX(-50%) translateY(26px) scale(0.97);
+  }
+  .hero-char--apple.is-active {
+    transform: translateX(-50%) translateY(0) scale(1);
   }
 }
 

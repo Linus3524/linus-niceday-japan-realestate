@@ -21,11 +21,12 @@ import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 
-// 首圖三組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
+// 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
   { key: "orange", bg: "/hero-bg.webp", character: "/hero-character.webp" },
-  { key: "grape", bg: "/hero-roppongi.webp", character: "/hero-character-grape.webp" },
   { key: "lemon", bg: "/hero-fuji.webp", character: "/hero-character-lemon.webp" },
+  { key: "apple", bg: "/hero-showa.webp", character: "/hero-character-apple.webp" },
+  { key: "grape", bg: "/hero-roppongi.webp", character: "/hero-character-grape.webp" },
 ];
 const HERO_ROTATE_MS = 15000;
 
