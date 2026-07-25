@@ -677,7 +677,7 @@ export default function App() {
       </div>
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
-      <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] select-none" id="primary-nav">
+      <nav className="sticky top-[53px] z-40 select-none" id="primary-nav">
         <div className="max-w-[1280px] mx-auto flex items-center justify-start px-2 sm:justify-center sm:px-6 overflow-x-auto overscroll-x-contain touch-pan-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex min-w-max items-center gap-0 py-2 sm:min-w-0 sm:gap-1 md:gap-2">
             {[
@@ -690,16 +690,13 @@ export default function App() {
               <button 
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`relative py-2 px-3 sm:px-4 md:px-5.5 flex items-baseline gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
-                  activeTab === tab.id ? "text-[#007d5a] font-bold" : "text-[#1a2a22] hover:text-[#007d5a]"
+                className={`primary-nav-tab relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
+                  activeTab === tab.id ? "is-active text-[#007d5a]" : "text-[#1a2a22] hover:text-[#007d5a]"
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >
-                <span className="font-jost text-[8px] sm:text-[9px] md:text-[10px] text-zinc-400 group-hover:text-[#00a174] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
+                <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
                 <span>{tab.label}</span>
-                {activeTab === tab.id && (
-                  <div className="absolute bottom-[-10px] left-3 right-3 sm:left-4 sm:right-4 md:left-5.5 md:right-5.5 h-[2px] bg-[#00a174]" />
-                )}
               </button>
             ))}
           </div>

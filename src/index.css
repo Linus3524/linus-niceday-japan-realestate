@@ -654,6 +654,67 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   background: var(--color-primary);
 }
 
+/* ===== 桌機分頁列:沿用手機 dock 的語彙(和紙底、罫線、短線 active) ===== */
+#primary-nav {
+  border-bottom: 1px solid rgba(26, 42, 34, 0.1);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px);
+}
+.primary-nav-tab {
+  font-family: "Shippori Mincho", var(--font-serif);
+  font-weight: 500;
+}
+/* 罫線:相鄰分頁之間一條 1px 短直線,上下不到底 */
+.primary-nav-tab + .primary-nav-tab {
+  background:
+    linear-gradient(
+        to bottom,
+        transparent 0 26%,
+        rgba(0, 161, 116, 0.16) 26% 74%,
+        transparent 74%
+      )
+      left center / 1px 100% no-repeat;
+}
+/* 數字對齊中文字的「視覺中心」:齊基線會偏低、齊方框中心會偏高,取中間微調 */
+.primary-nav-num {
+  position: relative;
+  top: 1.5px;
+  color: #9aa8a0;
+  letter-spacing: 0.18em;
+}
+.primary-nav-tab.is-active .primary-nav-num {
+  color: #007d5a;
+}
+/* 選中記號:底線壓在整條 nav 的下緣,由中心展開 */
+.primary-nav-tab::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: #00a174;
+  opacity: 0;
+  transform: scaleX(0.3);
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.primary-nav-tab.is-active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+@media (min-width: 640px) {
+  .primary-nav-tab::after {
+    left: 16px;
+    right: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .primary-nav-tab::after {
+    left: 22px;
+    right: 22px;
+  }
+}
+
 /* ===== 手機專屬首屏、浮動導覽與 Threads 閱讀頁 ===== */
 .mobile-scene-shell,
 .mobile-dock,
@@ -810,16 +871,18 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     align-items: stretch;
     height: calc(82px + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
-    border-top: 1px solid rgba(0, 161, 116, 0.28);
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 -10px 30px rgba(0, 77, 55, 0.08);
-    backdrop-filter: blur(16px);
+    /* 和紙感:讓底下主視覺透一點上來,分隔線改中性細線而非綠色 */
+    border-top: 1px solid rgba(26, 42, 34, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 -8px 24px rgba(0, 77, 55, 0.06);
+    backdrop-filter: blur(24px);
   }
   .mobile-dock-side {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mobile-dock-side button {
+    position: relative;
     display: flex;
     min-width: 0;
     flex-direction: column;
@@ -829,21 +892,63 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     border: 0;
     background: transparent;
     color: #1a2a22;
-    font-family: var(--font-serif);
+    font-family: "Shippori Mincho", var(--font-serif);
+  }
+  /* 罫線:每組第二個按鈕的左緣畫一條 1px 短直線,上下不到底 */
+  .mobile-dock-side button + button {
+    background:
+      linear-gradient(
+          to bottom,
+          transparent 0 30%,
+          rgba(0, 161, 116, 0.16) 30% 70%,
+          transparent 70%
+        )
+        left center / 1px 100% no-repeat;
+  }
+  /* 選中記號:上緣一道短綠線 + 標籤下方一顆墨點,皆用絕對定位不影響排版 */
+  .mobile-dock-side button::before,
+  .mobile-dock-side button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    background: #00a174;
+    opacity: 0;
+    transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .mobile-dock-side button::before {
+    top: 0;
+    width: 26px;
+    height: 2px;
+    transform: translateX(-50%) scaleX(0.3);
+  }
+  .mobile-dock-side button::after {
+    bottom: 17px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    transform: translateX(-50%) scale(0.4);
+  }
+  .mobile-dock-side button.is-active::before {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1);
+  }
+  .mobile-dock-side button.is-active::after {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
   }
   .mobile-dock-side button span {
-    color: #829087;
+    color: #9aa8a0;
     font-family: var(--font-jost);
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
   }
   .mobile-dock-side button strong {
     overflow: hidden;
     max-width: 100%;
     font-size: clamp(10px, 2.9vw, 13px);
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-weight: 500;
+    letter-spacing: 0.06em;
     white-space: nowrap;
   }
   .mobile-dock-side button.is-active,
@@ -871,7 +976,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     width: 88px;
     height: 88px;
     object-fit: contain;
-    filter: drop-shadow(0 3px 6px rgba(0, 88, 63, 0.16));
+    filter: drop-shadow(0 3px 6px rgba(0, 88, 63, 0.12));
   }
   /* 圓角膠囊:「精選 ⟨Threads 標誌⟩ 文」,標誌比字略大當作中間那個字 */
   .mobile-threads-shortcut {
