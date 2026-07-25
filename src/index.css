@@ -810,7 +810,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     left: clamp(28px, 9vw, 48px);
     height: min(calc(var(--app-vh) * 44), 370px);
     margin: 0;
-    color: #08724f;
+    color: #008761; /* 🍊 橘子場景：對標色票指南「深翡翠綠」#008761 */
     font-family: "Shippori Mincho", "Noto Serif TC", serif;
     font-size: clamp(17px, 4.7vw, 23px);
     font-weight: 600;
@@ -821,7 +821,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 700ms ease 360ms, transform 700ms ease 360ms;
-    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.35);
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.4);
   }
   .mobile-scene-slogan.is-active {
     opacity: 1;
@@ -831,15 +831,15 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     display: inline;
   }
   .mobile-scene-slogan--lemon {
-    color: #fffdf4;
-    text-shadow: 0 1px 14px rgba(0, 85, 112, 0.22);
+    color: #FFFFFF; /* 🍋 檸檬場景：對標色票指南「日系雪白」#FFFFFF */
+    text-shadow: 0 1px 14px rgba(0, 85, 112, 0.35);
   }
   .mobile-scene-slogan--apple {
-    color: #21a83f;
+    color: #327509; /* 🍎 蘋果場景：對標色票指南「深蘋果葉綠」#327509 */
   }
   .mobile-scene-slogan--grape {
-    color: #22228c;
-    text-shadow: 0 1px 12px rgba(255, 246, 228, 0.4);
+    color: #3B1470; /* 🍇 葡萄場景：對標色票指南「尊爵巨峰紫」#3B1470 */
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.45);
   }
   .mobile-scene-count {
     position: absolute;
@@ -857,16 +857,16 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   }
   .mobile-scene-count span.is-active {
     width: 28px;
-    background: #FF5500;
+    background: #FF5500; /* 🍊 橘子場景：對標「鮮艷橘子橘」#FF5500 */
   }
   .mobile-scene--lemon .mobile-scene-count span.is-active {
-    background: #FFD700;
+    background: #FFD700; /* 🍋 檸檬場景：對標「明亮黃檸檬」#FFD700 */
   }
   .mobile-scene--apple .mobile-scene-count span.is-active {
-    background: #21a83f;
+    background: #327509; /* 🍎 蘋果場景：對標 Slogan 與髮色「深蘋果葉綠」#327509 */
   }
   .mobile-scene--grape .mobile-scene-count span.is-active {
-    background: #7B2CBF;
+    background: #3B1470; /* 🍇 葡萄場景：對標「尊爵巨峰紫」#3B1470 */
   }
   .mobile-hero-info {
     position: absolute;
