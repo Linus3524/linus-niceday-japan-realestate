@@ -851,22 +851,28 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   }
   .mobile-scene-count span {
     width: 14px;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.6);
-    transition: width 400ms ease, background-color 400ms ease;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(4px);
+    transition: width 400ms ease, background-color 400ms ease, box-shadow 400ms ease;
   }
   .mobile-scene-count span.is-active {
     width: 28px;
-    background: #e94e2b;
+    background: #FF5500; /* 🍊 橘子場景：對標色票指南「鮮艷橘子橘」#FF5500 */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
   }
   .mobile-scene--lemon .mobile-scene-count span.is-active {
-    background: #e5bd12;
+    background: #FFD700; /* 🍋 檸檬場景：對標色票指南「明亮黃檸檬」#FFD700 */
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
   }
   .mobile-scene--apple .mobile-scene-count span.is-active {
-    background: #35ad4b;
+    background: #A8C53F; /* 🍎 蘋果場景：對標色票指南「青蘋果黃綠」#A8C53F */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
   }
   .mobile-scene--grape .mobile-scene-count span.is-active {
-    background: #25248b;
+    background: #FF6A00; /* 🍇 葡萄場景：對標色票指南「琥珀暖橘」#FF6A00 */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
   }
   .mobile-hero-info {
     position: absolute;
