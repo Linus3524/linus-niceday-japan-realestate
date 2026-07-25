@@ -632,15 +632,17 @@ export default function App() {
             <div className="w-fit">
               <div className="border-t border-[#DDE3DF] my-6"></div>
 
-              <div className="flex items-center gap-x-4 flex-wrap gap-y-1 text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
+              <div className="flex items-center gap-x-2 sm:gap-x-3 flex-wrap gap-y-1 text-[9px] sm:text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
                 <span>SINCE 2024</span>
                 <span>•</span>
-                <span>REAL ESTATE GUIDE</span>
-                <span>•</span>
+                <span className="hidden min-[380px]:inline">REAL ESTATE GUIDE</span>
+                <span className="hidden min-[380px]:inline">•</span>
                 <span>TOKYO</span>
                 <span>•</span>
-                <span className="text-[#007d5a]">VISITORS</span>
-                <span className="font-mono tracking-[0.12em] text-[#007d5a]" aria-live="polite">{visitorDisplay}</span>
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[#007d5a]">
+                  <span>VISITORS</span>
+                  <span className="font-mono tracking-[0.12em]" aria-live="polite">{visitorDisplay}</span>
+                </span>
               </div>
             </div>
           </div>
