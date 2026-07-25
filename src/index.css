@@ -863,10 +863,10 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     background: #FFD700;
   }
   .mobile-scene--apple .mobile-scene-count span.is-active {
-    background: #A8C53F;
+    background: #21a83f;
   }
   .mobile-scene--grape .mobile-scene-count span.is-active {
-    background: #FF6A00;
+    background: #7B2CBF;
   }
   .mobile-hero-info {
     position: absolute;
