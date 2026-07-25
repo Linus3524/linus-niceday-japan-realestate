@@ -34,6 +34,30 @@
       "availableLanguage": ["zh-Hant", "ja"]
     }
     </script>
+    <script>
+      // 手機瀏覽器往下滑時網址列會收合,視窗高度隨之變高,
+      // 若首屏直接吃 svh/vh,人物與背景會在滑動途中突然放大。
+      // 這裡把「一個視窗高度」鎖成 --app-vh,只有寬度或方向改變時才重算。
+      (function () {
+        var lockedWidth = -1;
+        var locked = false;
+        function setAppVh() {
+          var h = window.innerHeight;
+          // 只有寬度改變(轉向／視窗縮放)才重算;單純變高一律忽略。
+          if (!h || (locked && window.innerWidth === lockedWidth)) return;
+          lockedWidth = window.innerWidth;
+          locked = true;
+          document.documentElement.style.setProperty("--app-vh", h / 100 + "px");
+        }
+        setAppVh();
+        window.addEventListener("resize", setAppVh);
+        document.addEventListener("DOMContentLoaded", setAppVh);
+        window.addEventListener("orientationchange", function () {
+          locked = false;
+          setTimeout(setAppVh, 300);
+        });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
