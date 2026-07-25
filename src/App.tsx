@@ -60,7 +60,7 @@ function MobileSceneHero({ heroSet }: { heroSet: number }) {
           {HERO_SETS.map((set, index) => (
             <img
               key={set.key}
-              src={set.bg}
+              src={set.key === "orange" ? "/hero-bg-mobile.webp" : set.bg}
               alt=""
               className={`mobile-scene-bg ${index === heroSet ? "is-active" : ""}`}
               fetchPriority={index === 0 ? "high" : undefined}
