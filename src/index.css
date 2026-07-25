@@ -857,16 +857,16 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   }
   .mobile-scene-count span.is-active {
     width: 28px;
-    background: #e94e2b;
+    background: #FF5500;
   }
   .mobile-scene--lemon .mobile-scene-count span.is-active {
-    background: #e5bd12;
+    background: #FFD700;
   }
   .mobile-scene--apple .mobile-scene-count span.is-active {
-    background: #35ad4b;
+    background: #A8C53F;
   }
   .mobile-scene--grape .mobile-scene-count span.is-active {
-    background: #25248b;
+    background: #FF6A00;
   }
   .mobile-hero-info {
     position: absolute;
