@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINUS 住好日 - 全站 Web Color 高清視覺色彩指南</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "STHeiti", sans-serif; background: #F5F8F6; color: #1A2A22; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { border-bottom: 2px solid #00A174; padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        header h1 { font-size: 24px; font-weight: 800; color: #1A2A22; }
+        header p { font-size: 14px; color: #66736C; margin-top: 6px; }
+        header .brand { color: #00A174; font-size: 14px; font-weight: 700; }
+        
+        .section { margin-bottom: 50px; background: white; border: 1px solid #DDE3DF; padding: 28px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .section-title { font-size: 18px; font-weight: 700; color: #1A2A22; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .section-subtitle { font-size: 13px; color: #66736C; margin-bottom: 20px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #D1D5DB; border-radius: 6px; overflow: hidden; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+        .swatch { height: 160px; width: 100%; border-bottom: 1px solid #E5E7EB; }
+        .info { padding: 16px; background: white; }
+        .tag { font-size: 11px; font-weight: 700; color: #00A174; letter-spacing: 0.5px; }
+        .code { font-size: 20px; font-weight: 800; color: #1A2A22; margin: 4px 0 2px 0; font-family: monospace; }
+        .name { font-size: 15px; font-weight: 700; color: #1A2A22; margin-bottom: 6px; }
+        .desc { font-size: 12px; color: #555555; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>LINUS 住好日 - 全站 Web Color 高清視覺色彩指南</h1>
+                <p>程式碼庫全檔案掃描與 4 組 Hero 插圖原檔精確對照 (100% 完整收錄)</p>
+            </div>
+            <div class="brand">LINUS® WEB COLOR SPEC</div>
+        </header>
+
+        <div class="section">
+            <div class="section-title">一、網站品牌與核心視覺 (Core UI System - Part 1)</div>
+            <div class="section-subtitle">LINUS 品牌主色、黑標與高亮輔助色階</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #00A174;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(0, 161, 116)</div>
+                        <div class="code">#00A174</div>
+                        <div class="name">LINUS 翡翠綠</div>
+                        <div class="desc">品牌主要標誌、重點按鈕、標題點綴、選中狀態標籤</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #1A2A22;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(26, 42, 34)</div>
+                        <div class="code">#1A2A22</div>
+                        <div class="name">深墨綠黑</div>
+                        <div class="desc">主標題 (H1/H2)、頂部重點區塊、重要提示底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #E6F6F1;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(230, 246, 241)</div>
+                        <div class="code">#E6F6F1</div>
+                        <div class="name">柔和薄荷淺綠</div>
+                        <div class="desc">標題底線高亮、焦點卡片背景、標籤底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #9EE2CF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(158, 226, 207)</div>
+                        <div class="code">#9EE2CF</div>
+                        <div class="name">輕薄荷邊框</div>
+                        <div class="desc">卡片選中邊框、標籤邊線、重要區塊強調線</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #3F5147;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(63, 81, 71)</div>
+                        <div class="code">#3F5147</div>
+                        <div class="name">石墨深綠灰</div>
+                        <div class="desc">段落內文、卡片內文說明、長篇閱讀文字</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #66736C;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(102, 115, 108)</div>
+                        <div class="code">#66736C</div>
+                        <div class="name">質感草木灰</div>
+                        <div class="desc">副標題、註解文字、發布時間、圖卡附註</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">一、網站品牌與核心視覺 (Core UI System - Part 2)</div>
+            <div class="section-subtitle">靜態文字、頁面基底背景與分隔邊框</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #8A9590;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(138, 149, 144)</div>
+                        <div class="code">#8A9590</div>
+                        <div class="name">柔和微灰</div>
+                        <div class="desc">底部免責聲明、搜尋框提示文字 (Placeholder)</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #F5F8F6;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(245, 248, 246)</div>
+                        <div class="code">#F5F8F6</div>
+                        <div class="name">微暖和紙白</div>
+                        <div class="desc">全站區塊底色、搜尋卡片背景、問答集次要區塊</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFFFFF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 255, 255)</div>
+                        <div class="code">#FFFFFF</div>
+                        <div class="name">日系雪白</div>
+                        <div class="desc">主要內容圖卡、彈窗背景、輸入框背景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #DDE3DF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(221, 227, 223)</div>
+                        <div class="code">#DDE3DF</div>
+                        <div class="name">草木灰分隔線</div>
+                        <div class="desc">卡片外框、區塊水平分割線、列表底線</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #06C755;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(6, 199, 85)</div>
+                        <div class="code">#06C755</div>
+                        <div class="name">LINE 官方亮綠</div>
+                        <div class="desc">LINE 官方標誌鮮亮綠色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #087154;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(8, 113, 84)</div>
+                        <div class="code">#087154</div>
+                        <div class="name">對話 Hover 深綠</div>
+                        <div class="desc">AI 對話與聯絡按鈕懸停深色</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">二、日本主要都市租屋/房價行情熱力圖 (RentMap - Part 1)</div>
+            <div class="section-subtitle">極高預算/房價與中高預算/房價之底色、Hover 高亮、邊框與文字碼</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #FEE2E2;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 226, 226)</div>
+                        <div class="code">#FEE2E2</div>
+                        <div class="name">極高預算底色</div>
+                        <div class="desc">港區/千代田區等極高行情區域熱力圖卡底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FCA5A5;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(252, 165, 165)</div>
+                        <div class="code">#FCA5A5</div>
+                        <div class="name">極高預算 Hover 色</div>
+                        <div class="desc">游標懸停極高行情區域時的高亮效果</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #F87171;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(248, 113, 113)</div>
+                        <div class="code">#F87171</div>
+                        <div class="name">極高預算邊框</div>
+                        <div class="desc">極高行情區域圖卡邊框線條</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #991B1B;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(153, 27, 27)</div>
+                        <div class="code">#991B1B</div>
+                        <div class="name">極高預算文字</div>
+                        <div class="desc">極高行情金額數字與強烈視覺文字</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFEDD5;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 237, 213)</div>
+                        <div class="code">#FFEDD5</div>
+                        <div class="name">中高預算底色</div>
+                        <div class="desc">澀谷/新宿區等中高行情區域熱力圖卡底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FED7AA;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 215, 170)</div>
+                        <div class="code">#FED7AA</div>
+                        <div class="name">中高預算 Hover 色</div>
+                        <div class="desc">游標懸停中高行情區域時的高亮效果</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">二、日本主要都市租屋/房價行情熱力圖 (RentMap - Part 2)</div>
+            <div class="section-subtitle">中等預算、實惠平價與地圖選中狀態標籤色</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #FB923C;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(251, 146, 60)</div>
+                        <div class="code">#FB923C</div>
+                        <div class="name">中高預算邊框</div>
+                        <div class="desc">中高行情區域圖卡邊框線條</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #C2410C;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(194, 65, 12)</div>
+                        <div class="code">#C2410C</div>
+                        <div class="name">中高預算文字</div>
+                        <div class="desc">中高行情金額數字與強調文字</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FEF9C3;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 249, 195)</div>
+                        <div class="code">#FEF9C3</div>
+                        <div class="name">中等預算底色</div>
+                        <div class="desc">中野/杉並區等中等行情區域熱力圖卡底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FEF08A;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 240, 138)</div>
+                        <div class="code">#FEF08A</div>
+                        <div class="name">中等預算 Hover 色</div>
+                        <div class="desc">游標懸停中等行情區域時的高亮效果</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #DCFCE7;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(220, 252, 231)</div>
+                        <div class="code">#DCFCE7</div>
+                        <div class="name">實惠平價底色</div>
+                        <div class="desc">足立/葛飾區等親民行情區域熱力圖卡底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #BBF7D0;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(187, 247, 208)</div>
+                        <div class="code">#BBF7D0</div>
+                        <div class="name">實惠平價 Hover 色</div>
+                        <div class="desc">游標懸停親民行情區域時的高亮效果</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">三、預算估算與條件評估色階 (Calculator & Assessment)</div>
+            <div class="section-subtitle">貸款試算天空藍、條件取捨杏黃與高費用警示橘紅</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #0284C7;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(2, 132, 199)</div>
+                        <div class="code">#0284C7</div>
+                        <div class="name">貸款藍標題</div>
+                        <div class="desc">房貸試算與條件亮點深藍標題</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #7DD3FC;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(125, 211, 252)</div>
+                        <div class="code">#7DD3FC</div>
+                        <div class="name">貸款藍邊框</div>
+                        <div class="desc">貸款條件卡片強調邊框</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #E0F2FE;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(224, 242, 254)</div>
+                        <div class="code">#E0F2FE</div>
+                        <div class="name">貸款藍底色</div>
+                        <div class="desc">房貸與買房試算背景高亮</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #D97706;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(217, 119, 6)</div>
+                        <div class="code">#D97706</div>
+                        <div class="name">取捨杏黃文字</div>
+                        <div class="desc">需要取捨/中等難度評估文字</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FEF3C7;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 243, 199)</div>
+                        <div class="code">#FEF3C7</div>
+                        <div class="name">取捨杏黃底色</div>
+                        <div class="desc">條件提醒與評估區塊背景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #EF4444;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(239, 68, 68)</div>
+                        <div class="code">#EF4444</div>
+                        <div class="name">警示鮮紅邊框</div>
+                        <div class="desc">高難度與費用增加警示邊框</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FEE2E2;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(254, 226, 226)</div>
+                        <div class="code">#FEE2E2</div>
+                        <div class="name">警示鮮紅底色</div>
+                        <div class="desc">高難度評估與初期費用警示底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #3F626D;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(63, 98, 109)</div>
+                        <div class="code">#3F626D</div>
+                        <div class="name">資訊藍灰文字</div>
+                        <div class="desc">補充說明與免責條款藍灰文字</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">四、全站互動元件與高頻狀態輔助色 (Interactive States & Badges)</div>
+            <div class="section-subtitle">按鈕懸停深綠、警示琥珀紅、條件高亮水藍與狀態邊框</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #007D5A;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(0, 125, 90)</div>
+                        <div class="code">#007D5A</div>
+                        <div class="name">LINUS 深翡翠綠</div>
+                        <div class="desc">主要按鈕懸停 (Hover)、點擊 (Active) 與動態標籤背景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #B13818;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(177, 56, 24)</div>
+                        <div class="code">#B13818</div>
+                        <div class="name">警示深琥珀紅</div>
+                        <div class="desc">重要注意事項、條款警告與初期費用增額強調文字</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #E94E2B;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(233, 78, 43)</div>
+                        <div class="code">#E94E2B</div>
+                        <div class="name">鮮暖橘紅標籤</div>
+                        <div class="desc">預算試算評估高難度與提醒標籤色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FBDFD2;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(251, 223, 210)</div>
+                        <div class="code">#FBDFD2</div>
+                        <div class="name">鮮暖橘紅底色</div>
+                        <div class="desc">預算評估警告卡片區塊背景底色</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #D6EAF0;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(214, 234, 240)</div>
+                        <div class="code">#D6EAF0</div>
+                        <div class="name">條件高亮水藍</div>
+                        <div class="desc">買房/租屋條件選定清單與搜尋卡片背景高亮</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #C9D8D1;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(201, 216, 209)</div>
+                        <div class="code">#C9D8D1</div>
+                        <div class="name">質感綠灰邊框</div>
+                        <div class="desc">社群動態輪播、選單對話框與次要卡片邊框</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">🍊 橘子男 × 柴犬（東京鐵塔暖陽系）</div>
+            <div class="section-subtitle">目視與像素比對：深翡翠綠短褲/配件、鮮橘橘子果實/赤柴毛色</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #008761;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(0, 135, 97)</div>
+                        <div class="code">#008761</div>
+                        <div class="name">深翡翠綠褲裝</div>
+                        <div class="desc">橘子男線條、短褲、側背包與樂福鞋翡翠綠</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FF5500;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 85, 0)</div>
+                        <div class="code">#FF5500</div>
+                        <div class="name">鮮艷橘子橘</div>
+                        <div class="desc">橘子果實、耳飾與赤柴犬毛色鮮橘焦段</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFFFFF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 255, 255)</div>
+                        <div class="code">#FFFFFF</div>
+                        <div class="name">襯衫日系雪白</div>
+                        <div class="desc">橘子男長袖襯衫與襪子純白</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #E24A3B;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(226, 74, 59)</div>
+                        <div class="code">#E24A3B</div>
+                        <div class="name">東京鐵塔朱紅</div>
+                        <div class="desc">經典東京鐵塔結構與暖色遠景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #9CDED1;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(156, 222, 209)</div>
+                        <div class="code">#9CDED1</div>
+                        <div class="name">晨光薄荷天藍</div>
+                        <div class="desc">東京都會晨光背景漸層薄荷藍天</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #00A174;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(0, 161, 116)</div>
+                        <div class="code">#00A174</div>
+                        <div class="name">牽繩綠</div>
+                        <div class="desc">柴犬牽繩與盆栽線條綠</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">🍋 檸檬男 × 傑克羅素梗（富士山清晨系）</div>
+            <div class="section-subtitle">目視與像素比對：青空湛藍條紋襯衫/短褲、檸檬黃泳圈/耳飾/梗犬斑塊</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #0099FF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(0, 153, 255)</div>
+                        <div class="code">#0099FF</div>
+                        <div class="name">青空湛藍線條</div>
+                        <div class="desc">檸檬男髮型、條紋襯衫、衝浪短褲與拖鞋湛藍</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFD700;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 215, 0)</div>
+                        <div class="code">#FFD700</div>
+                        <div class="name">明亮黃檸檬</div>
+                        <div class="desc">檸檬男游泳圈、檸檬耳飾與梗犬黃斑</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #78CDE6;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(120, 205, 230)</div>
+                        <div class="code">#78CDE6</div>
+                        <div class="name">富士山湛藍</div>
+                        <div class="desc">富士山背景清澈明亮天空藍</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFFFFF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 255, 255)</div>
+                        <div class="code">#FFFFFF</div>
+                        <div class="name">梗犬雪白身軀</div>
+                        <div class="desc">傑克羅素梗犬經典雪白身軀</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #F5FAFD;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(245, 250, 253)</div>
+                        <div class="code">#F5FAFD</div>
+                        <div class="name">富士雪山純白</div>
+                        <div class="desc">富士山頂冠雪與積雪遠景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #E0F1E5;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(224, 241, 229)</div>
+                        <div class="code">#E0F1E5</div>
+                        <div class="name">和諧樹蔭嫩綠</div>
+                        <div class="desc">遠景自然樹木與草地綠意</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">🍇 葡萄男 × 杜賓犬（六本木都會夜景系）</div>
+            <div class="section-subtitle">目視與像素比對：鮮艷琥珀橘衛衣/長褲、深邃巨峰紫葡萄耳飾與杜賓犬身</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #FF6A00;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 106, 0)</div>
+                        <div class="code">#FF6A00</div>
+                        <div class="name">琥珀暖橘衛衣</div>
+                        <div class="desc">葡萄男連帽衛衣、長褲、髮型與皮鞋暖橘</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #3B1470;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(59, 20, 112)</div>
+                        <div class="code">#3B1470</div>
+                        <div class="name">尊爵巨峰紫</div>
+                        <div class="desc">葡萄耳飾與杜賓犬整隻犬身尊爵深紫</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #2B2D54;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(43, 45, 84)</div>
+                        <div class="code">#2B2D54</div>
+                        <div class="name">六本木暮色藍紫</div>
+                        <div class="desc">六本木高樓摩登夜空藍紫</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #BA6938;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(186, 105, 56)</div>
+                        <div class="code">#BA6938</div>
+                        <div class="name">杜賓鐵鏽紅</div>
+                        <div class="desc">杜賓犬胸前經典鐵鏽紅斑塊</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #EAB879;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(234, 184, 121)</div>
+                        <div class="code">#EAB879</div>
+                        <div class="name">六本木夕照璀璨金</div>
+                        <div class="desc">六本木高樓窗景與夕照金芒</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FFFFFF;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 255, 255)</div>
+                        <div class="code">#FFFFFF</div>
+                        <div class="name">內搭純白</div>
+                        <div class="desc">葡萄男衛衣內搭白領</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">🍎 蘋果男 × 黃金獵犬（昭和公園綠意系）</div>
+            <div class="section-subtitle">實圖像素精確採樣：青蘋果黃綠吊帶褲、深蘋果葉綠髮色、粉紅格紋襯衫</div>
+            <div class="grid">
+                <div class="card">
+                    <div class="swatch" style="background-color: #A8C53F;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(168, 197, 63)</div>
+                        <div class="code">#A8C53F</div>
+                        <div class="name">青蘋果黃綠吊帶褲</div>
+                        <div class="desc">蘋果男主視覺青蘋果黃綠吊帶褲與鞋線條</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #327509;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(50, 117, 9)</div>
+                        <div class="code">#327509</div>
+                        <div class="name">深蘋果葉綠髮色</div>
+                        <div class="desc">蘋果男質感深蘋果葉綠髮型與鬍鬚</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #A5CC70;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(165, 204, 112)</div>
+                        <div class="code">#A5CC70</div>
+                        <div class="name">昭和公園草原嫩綠</div>
+                        <div class="desc">昭和紀念公園大片嫩綠草原背景</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #DAECA7;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(218, 236, 167)</div>
+                        <div class="code">#DAECA7</div>
+                        <div class="name">陽光透光黃綠</div>
+                        <div class="desc">樹冠葉片間透出之明亮黃綠陽光</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #F06292;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(240, 98, 146)</div>
+                        <div class="code">#F06292</div>
+                        <div class="name">粉紅蘋果格紋襯衫</div>
+                        <div class="desc">蘋果男粉紅格紋長袖襯衫</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="swatch" style="background-color: #FF2A2A;"></div>
+                    <div class="info">
+                        <div class="tag">WEB COLOR | RGB(255, 42, 42)</div>
+                        <div class="code">#FF2A2A</div>
+                        <div class="name">鮮紅蘋果赤耳飾</div>
+                        <div class="desc">蘋果男眼鏡兩側鮮紅蘋果赤耳飾</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

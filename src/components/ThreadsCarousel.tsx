@@ -62,7 +62,7 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
     .join("");
 }
 
-export function ThreadsCarousel() {
+export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const renderedCountRef = useRef(0);
   const isPointerInsideRef = useRef(false);
@@ -112,7 +112,10 @@ export function ThreadsCarousel() {
     const track = trackRef.current;
     if (!track || currentThreads.length === 0) return;
 
-    const initialCount = Math.min(currentThreads.length, window.innerWidth >= 1024 ? 6 : 3);
+    const isVerticalPage = pageMode && window.innerWidth < 768;
+    const initialCount = isVerticalPage
+      ? Math.min(currentThreads.length, 6)
+      : Math.min(currentThreads.length, window.innerWidth >= 1024 ? 6 : 3);
     const initialSlides = buildSlidesHtml(currentThreads.slice(0, initialCount), 0, currentThreads.length);
     const needsDesktopLoopBuffer = window.innerWidth >= 1024 && currentThreads.length <= 3;
     track.innerHTML = needsDesktopLoopBuffer ? initialSlides + initialSlides : initialSlides;
@@ -131,7 +134,21 @@ export function ThreadsCarousel() {
       script.onload = () => processEmbeds();
       document.body.appendChild(script);
     }
-  }, [activeCategory, normalizedQuery]);
+  }, [activeCategory, normalizedQuery, pageMode]);
+
+  useEffect(() => {
+    if (!pageMode) return;
+    const appendWhenNearEnd = () => {
+      if (window.innerWidth >= 768) return;
+      const distanceToEnd = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      if (distanceToEnd < window.innerHeight * 1.5 && appendNextBatch()) {
+        window.setTimeout(processEmbeds, 60);
+      }
+    };
+    window.addEventListener("scroll", appendWhenNearEnd, { passive: true });
+    appendWhenNearEnd();
+    return () => window.removeEventListener("scroll", appendWhenNearEnd);
+  }, [pageMode, activeCategory, normalizedQuery, currentThreads.length]);
 
   const updateArrows = () => {
     const track = trackRef.current;
@@ -389,7 +406,7 @@ export function ThreadsCarousel() {
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || currentThreads.length <= 1) return;
+    if (!track || currentThreads.length <= 1 || (pageMode && window.innerWidth < 768)) return;
 
     let animationFrame = 0;
     let previousTime = 0;
@@ -444,7 +461,7 @@ export function ThreadsCarousel() {
       document.removeEventListener("pointermove", updatePointerPosition);
       window.cancelAnimationFrame(animationFrame);
     };
-  }, [activeCategory, normalizedQuery]);
+  }, [activeCategory, normalizedQuery, pageMode]);
 
   const selectCategory = (index: number, button: HTMLButtonElement) => {
     setSearchQuery("");
@@ -456,7 +473,7 @@ export function ThreadsCarousel() {
   if (threadCategories.length === 0) return null;
 
   return (
-    <section className="border-y border-[#DDE3DF] bg-[#F5F8F6]" id="threads-featured" aria-label="LINUS 精選 Threads 文章">
+    <section className={`border-y border-[#DDE3DF] bg-[#F5F8F6] ${pageMode ? "threads-page-mode" : ""}`} id="threads-featured" aria-label="LINUS 精選 Threads 文章">
       <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 sm:py-10">
         {/* 標題列：標題 + 搜尋框 + 追蹤 + 輪播箭頭。搜尋框放在追蹤左側，
             熱門關鍵字改成聚焦搜尋框時才落下的下拉，平時不佔版面。 */}
@@ -607,7 +624,7 @@ export function ThreadsCarousel() {
             <div
               id="threads-category-panel"
               role="tabpanel"
-              aria-label={isSearching ? "搜尋結果 Threads 貼文，可左右滑動" : `${currentCategory.label} Threads 貼文，可左右滑動`}
+              aria-label={isSearching ? "搜尋結果 Threads 貼文" : `${currentCategory.label} Threads 貼文`}
               ref={trackRef}
               tabIndex={0}
               onPointerDown={startDragging}

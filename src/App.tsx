@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import {
-  ExternalLink, ArrowUp, Copy, Check, Smile, MousePointerClick
+  ExternalLink, ArrowUp, MousePointerClick
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import {
@@ -23,16 +23,150 @@ import HeaderInfoBar from "./components/HeaderInfoBar";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
-  { key: "orange", bg: "/hero-bg.webp", character: "/hero-character.webp" },
-  { key: "lemon", bg: "/hero-fuji.webp", character: "/hero-character-lemon.webp" },
-  { key: "apple", bg: "/hero-showa.webp", character: "/hero-character-apple.webp" },
-  { key: "grape", bg: "/hero-roppongi.webp", character: "/hero-character-grape.webp" },
+  {
+    key: "orange",
+    bg: "/hero-bg.webp",
+    character: "/hero-character.webp",
+    slogan: ["「東京の光と歩む、", "自分らしい心地よい日常。」"],
+  },
+  {
+    key: "lemon",
+    bg: "/hero-fuji.webp",
+    character: "/hero-character-lemon.webp",
+    slogan: ["「澄みわたる空の下、", "心地よい風と生きる。」"],
+  },
+  {
+    key: "apple",
+    bg: "/hero-showa.webp",
+    character: "/hero-character-apple.webp",
+    slogan: ["「愛おしい時間と、", "緑あふれる住まい。」"],
+  },
+  {
+    key: "grape",
+    bg: "/hero-roppongi.webp",
+    character: "/hero-character-grape.webp",
+    slogan: ["「都市の余韻に浸り、", "上質な時間を紡ぐ。」"],
+  },
 ];
 const HERO_ROTATE_MS = 15000;
+const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
+type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
+
+function MobileSceneHero({ heroSet }: { heroSet: number }) {
+  return (
+    <section className={`mobile-scene-shell mobile-scene--${HERO_SETS[heroSet].key}`} aria-label="LINUS 住好日手機版主視覺">
+      <div className="mobile-scene-stage" aria-live="polite">
+        <div className="mobile-scene-backgrounds" aria-hidden="true">
+          {HERO_SETS.map((set, index) => (
+            <img
+              key={set.key}
+              src={set.bg}
+              alt=""
+              className={`mobile-scene-bg ${index === heroSet ? "is-active" : ""}`}
+              fetchPriority={index === 0 ? "high" : undefined}
+              loading={index === 0 ? undefined : "lazy"}
+              decoding="async"
+            />
+          ))}
+        </div>
+        <div className="mobile-scene-characters" aria-hidden="true">
+          {HERO_SETS.map((set, index) => (
+            <img
+              key={set.key}
+              src={set.character}
+              alt=""
+              className={`mobile-scene-character mobile-scene-character--${set.key} ${index === heroSet ? "is-active" : ""}`}
+              loading={index === 0 ? undefined : "lazy"}
+              decoding="async"
+            />
+          ))}
+        </div>
+        {HERO_SETS.map((set, index) => (
+          <p
+            key={set.key}
+            className={`mobile-scene-slogan mobile-scene-slogan--${set.key} ${index === heroSet ? "is-active" : ""}`}
+          >
+            <span>{set.slogan[0]}</span>
+            <br />
+            <span className="mobile-scene-slogan-second">　　{set.slogan[1]}</span>
+          </p>
+        ))}
+        <div className="mobile-scene-count" aria-hidden="true">
+          {HERO_SETS.map((set, index) => (
+            <span key={set.key} className={index === heroSet ? "is-active" : ""} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobileDock({
+  activeTab,
+  isHome,
+  onTabChange,
+  onContact,
+  onThreads,
+}: {
+  activeTab: AppTab;
+  isHome: boolean;
+  onTabChange: (tab: AppTab) => void;
+  onContact: () => void;
+  onThreads: () => void;
+}) {
+  const items: Array<{ id: AppTab; label: string; number: string }> = [
+    { id: "cards", label: "租屋指南", number: "01" },
+    { id: "buyHouse", label: "買房置產", number: "02" },
+    { id: "calculator", label: "費用試算", number: "03" },
+    { id: "chat", label: "AI 顧問", number: "04" },
+  ];
+
+  return (
+    <>
+      <button type="button" className="mobile-threads-shortcut" onClick={onThreads} aria-label="開啟精選 Threads 貼文">
+        <span>精選</span>
+        <strong>Threads</strong>
+      </button>
+      <nav className="mobile-dock" aria-label="手機版主要導覽">
+        <div className="mobile-dock-side">
+          {items.slice(0, 2).map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={!isHome && activeTab === item.id ? "is-active" : ""}
+              onClick={() => onTabChange(item.id)}
+            >
+              <span>{item.number}</span>
+              <strong>{item.label}</strong>
+            </button>
+          ))}
+        </div>
+        <button type="button" className="mobile-dock-logo" onClick={onContact} aria-label="前往聯絡諮詢">
+          <img src={MOBILE_DOCK_BUTTON} alt="" />
+        </button>
+        <div className="mobile-dock-side">
+          {items.slice(2).map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={!isHome && activeTab === item.id ? "is-active" : ""}
+              onClick={() => onTabChange(item.id)}
+            >
+              <span>{item.number}</span>
+              <strong>{item.label}</strong>
+            </button>
+          ))}
+        </div>
+      </nav>
+    </>
+  );
+}
 
 export default function App() {
   // Navigation tabs: 'cards' (租屋知識圖卡), 'buyHouse' (買房知識大補帖), 'calculator' (預算估算), 'chat' (AI問答), 'contact' (聯絡Linus)
-  const [activeTab, setActiveTab] = useState<"cards" | "buyHouse" | "calculator" | "chat" | "contact">("cards");
+  const [activeTab, setActiveTab] = useState<AppTab>("cards");
+  const [isMobileHome, setIsMobileHome] = useState(true);
+  const [isThreadsPage, setIsThreadsPage] = useState(() => window.location.hash === "#threads");
   
   // UI Scroll States for Japanese Editorial Specs
   const [scrolled, setScrolled] = useState(false);
@@ -46,6 +180,15 @@ export default function App() {
       setHeroSet(prev => (prev + 1) % HERO_SETS.length);
     }, HERO_ROTATE_MS);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsThreadsPage(window.location.hash === "#threads");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   useEffect(() => {
@@ -141,7 +284,8 @@ export default function App() {
   const [copiedWechat, setCopiedWechat] = useState(false);
 
   // Keep the tab navigation visible and move to the selected content, not the site header.
-  const handleTabChange = (tab: "cards" | "buyHouse" | "calculator" | "chat" | "contact") => {
+  const handleTabChange = (tab: AppTab) => {
+    setIsMobileHome(false);
     setActiveTab(tab);
     requestAnimationFrame(() => {
       document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -327,8 +471,42 @@ export default function App() {
 
   const buyFiltered = getFilteredBuyItems();
 
+  const openThreadsPage = () => {
+    window.location.hash = "threads";
+  };
+
+  const returnHome = () => {
+    if (window.location.hash) {
+      window.history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+    setIsThreadsPage(false);
+    setIsMobileHome(true);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  };
+
+  const returnMobileHome = () => {
+    setIsMobileHome(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (isThreadsPage) {
+    return (
+      <div className="threads-mobile-page min-h-screen bg-[#F5F8F6]">
+        <header className="threads-mobile-header">
+          <button type="button" onClick={returnHome} aria-label="回到首頁">
+            <span aria-hidden="true">←</span>
+            回首頁
+          </button>
+          <img src="/logo-text.svg" alt="LINUS 住好日" />
+          <span>精選 THREADS</span>
+        </header>
+        <ThreadsCarousel pageMode />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col font-serif select-text">
+    <div className={`min-h-screen flex flex-col font-serif select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
       {/* Reading Progress Bar */}
       <div 
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] transition-all duration-75"
@@ -338,18 +516,20 @@ export default function App() {
         }}
       />
 
+      <MobileSceneHero heroSet={heroSet} />
+
       {/* Top sticky header */}
       <header className="sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
         <div className="max-w-[1280px] mx-auto flex justify-between items-center">
           {/* Left: SVG logo */}
-          <div className="flex items-center gap-3">
+          <button type="button" className="site-home-button flex items-center gap-3" onClick={returnMobileHome} aria-label="回到首頁">
             <img 
               src="/logo-text.svg" 
               alt="LINUS 住好日" 
               className="h-6 w-auto select-none"
             />
             <span className="inline-block shrink-0 text-[9px] border border-[#00a174] bg-[#e6f6f1] text-[#00a174] px-1.5 py-0.5 font-sans font-bold tracking-wider select-none">日本租屋買房知識大補帖</span>
-          </div>
+          </button>
           {/* Right: 令和日期時間 & 東京天氣 */}
           <HeaderInfoBar />
         </div>
@@ -399,7 +579,9 @@ export default function App() {
             </div>
             
             <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
-              日本での<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">暮らしを</span>、
+              <span className="hero-title-first-line">
+                日本での<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">暮らしを</span>、
+              </span>
               <br />
               <span className="text-[#00a174]">好日へ。</span>
             </h1>
@@ -483,7 +665,9 @@ export default function App() {
       </section>
 
       {/* Featured Threads posts carousel */}
-      <ThreadsCarousel />
+      <div className="desktop-threads-section">
+        <ThreadsCarousel />
+      </div>
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
       <nav className="sticky top-[53px] z-40 bg-white border-b border-[#DDE3DF] select-none" id="primary-nav">
@@ -598,32 +782,41 @@ export default function App() {
       />
 
       {/* Footer copyright block */}
-      <footer className="border-t border-[#1A2A22] bg-white mt-12 py-12" id="app-footer">
-        <div className="max-w-6xl mx-auto px-4 space-y-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <div className="space-y-1">
-              <strong className="text-sm text-[#1A2A22]">LINUS住好日 ╳ 日本租屋買房知識大補帖</strong>
-              <p className="text-xs text-zinc-500 font-sans">
-                版權所有 © 2026 LINUS Nice Day Japan (CHANG CHIN WEI) @linus3524 All Rights Reserved.
+      <footer className="mt-12 border-t border-[#1A2A22] bg-white py-9" id="app-footer">
+        <div className="mx-auto max-w-6xl space-y-5 px-4">
+          <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+            <div>
+              <strong className="font-serif text-sm text-[#1A2A22]">LINUS 住好日</strong>
+              <p className="mt-0.5 font-sans text-[11px] text-zinc-500">
+                日本租屋・買房・生活指南
               </p>
             </div>
             
-            <div className="flex gap-4 text-xs font-sans">
-              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-[#00a174] flex items-center gap-0.5">
-                <span>Threads 專頁</span> <ExternalLink className="w-3 h-3" />
+            <div className="flex items-center gap-3 font-sans text-xs">
+              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-zinc-600 hover:text-[#00a174]">
+                <span>Threads</span> <ExternalLink className="h-3 w-3" />
               </a>
               <span className="text-zinc-300">|</span>
               <a href={`mailto:${linusContact.email}`} className="text-zinc-600 hover:text-[#00a174]">
-                電子信箱
+                聯絡信箱
               </a>
             </div>
           </div>
 
-          <div className="bg-[#F5F8F6] border border-zinc-200 p-4 text-[10px] text-zinc-500 leading-relaxed text-justify font-sans">
-            <p>
-              本站內容由 <strong>株式会社世嘉 Seika Linus Chang</strong> 依公開資料與仲介實務整理，供一般資訊與預算規劃參考，不構成法律、稅務、金融、簽證或投資建議。法令、契約與金融方案可能更新，請以主管機關及服務提供者的最新書面資料為準。未經授權請勿作商業轉載；若發現錯誤或授權疑慮，請聯絡 r352410@gmail.com。
-            </p>
+          <div className="grid border border-[#DDE3DF] bg-[#F5F8F6] font-sans text-[10px] leading-relaxed text-zinc-500 md:grid-cols-2">
+            <div className="p-4 md:border-r md:border-[#DDE3DF]">
+              <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">INFORMATION</strong>
+              本站內容僅供一般資訊與預算參考，不構成法律、稅務、金融、簽證或投資建議；最新規定請以主管機關資料為準。
+            </div>
+            <div className="border-t border-[#DDE3DF] p-4 md:border-t-0">
+              <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">ARTWORK COPYRIGHT</strong>
+              人物、動物、場景及品牌插圖皆為 Linus 原創。未經書面授權，禁止重製、修改、轉載、商用或用於 AI 訓練。
+            </div>
           </div>
+
+          <p className="text-center font-jost text-[9px] tracking-[0.06em] text-zinc-400 md:text-left">
+            © 2026 CHANG CHIN WEI · @linus3524 · ALL RIGHTS RESERVED
+          </p>
         </div>
       </footer>
 
@@ -636,6 +829,13 @@ export default function App() {
           <ArrowUp className="w-5 h-5" />
         </button>
       )}
+      <MobileDock
+        activeTab={activeTab}
+        isHome={isMobileHome}
+        onTabChange={handleTabChange}
+        onContact={() => handleTabChange("contact")}
+        onThreads={openThreadsPage}
+      />
     </div>
   );
 }
