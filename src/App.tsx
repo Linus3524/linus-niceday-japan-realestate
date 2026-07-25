@@ -91,6 +91,7 @@ function MobileSceneHero({ heroSet }: { heroSet: number }) {
             <span className="mobile-scene-slogan-second">　　{set.slogan[1]}</span>
           </p>
         ))}
+        <HeaderInfoBar variant="hero" />
         <div className="mobile-scene-count" aria-hidden="true">
           {HERO_SETS.map((set, index) => (
             <span key={set.key} className={index === heroSet ? "is-active" : ""} />
@@ -174,6 +175,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>("cards");
   const [isMobileHome, setIsMobileHome] = useState(true);
   const [isThreadsPage, setIsThreadsPage] = useState(() => window.location.hash === "#threads");
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
   
   // UI Scroll States for Japanese Editorial Specs
   const [scrolled, setScrolled] = useState(false);
@@ -187,6 +189,24 @@ export default function App() {
       setHeroSet(prev => (prev + 1) % HERO_SETS.length);
     }, HERO_ROTATE_MS);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/visitor-count", { credentials: "same-origin" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Unable to load visitor count.");
+        return response.json();
+      })
+      .then((data) => {
+        if (!cancelled && typeof data?.count === "number") setVisitorCount(data.count);
+      })
+      .catch(() => {
+        if (!cancelled) setVisitorCount(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -477,6 +497,9 @@ export default function App() {
   };
 
   const buyFiltered = getFilteredBuyItems();
+  const visitorDisplay = visitorCount === null
+    ? "—"
+    : visitorCount.toLocaleString("en-US", { minimumIntegerDigits: 6, useGrouping: true });
 
   const openThreadsPage = () => {
     window.location.hash = "threads";
@@ -615,6 +638,9 @@ export default function App() {
                 <span>REAL ESTATE GUIDE</span>
                 <span>•</span>
                 <span>TOKYO</span>
+                <span>•</span>
+                <span className="text-[#007d5a]">VISITORS</span>
+                <span className="font-mono tracking-[0.12em] text-[#007d5a]" aria-live="polite">{visitorDisplay}</span>
               </div>
             </div>
           </div>
@@ -810,7 +836,7 @@ export default function App() {
           <div className="grid border border-[#DDE3DF] bg-[#F5F8F6] font-sans text-[10px] leading-relaxed text-zinc-500 md:grid-cols-2">
             <div className="p-4 md:border-r md:border-[#DDE3DF]">
               <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">INFORMATION</strong>
-              本站內容僅供一般資訊與預算參考，不構成法律、稅務、金融、簽證或投資建議；最新規定請以主管機關資料為準。
+              本站內容僅供一般資訊與預算參考，不構成法律、稅務、金融、簽證或投資建議；來訪統計僅使用匿名裝置識別碼。
             </div>
             <div className="border-t border-[#DDE3DF] p-4 md:border-t-0">
               <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">ARTWORK COPYRIGHT</strong>

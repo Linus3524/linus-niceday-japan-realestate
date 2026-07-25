@@ -22,6 +22,12 @@ const timeFmt = new Intl.DateTimeFormat("ja-JP", {
   hour12: false,
   timeZone: TZ,
 });
+const shortTimeFmt = new Intl.DateTimeFormat("ja-JP", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: TZ,
+});
 
 // Open-Meteo WMO 天氣代碼 → 日文描述
 const WMO: Record<number, string> = {
@@ -35,10 +41,14 @@ const WMO: Record<number, string> = {
   95: "雷雨", 96: "雷雨(雹)", 99: "激しい雷雨",
 };
 
-export default function HeaderInfoBar() {
+export default function HeaderInfoBar({ variant = "header" }: { variant?: "header" | "hero" }) {
   const [dateTime, setDateTime] = useState(() => {
     const now = new Date();
     return `${eraFmt.format(now)} ${mdFmt.format(now)} ${timeFmt.format(now)}`;
+  });
+  const [heroDateTime, setHeroDateTime] = useState(() => {
+    const now = new Date();
+    return `${eraFmt.format(now)} ${mdFmt.format(now)} · ${shortTimeFmt.format(now)}`;
   });
   const [weather, setWeather] = useState("東京 · --℃");
 
@@ -46,6 +56,7 @@ export default function HeaderInfoBar() {
     const tick = () => {
       const now = new Date();
       setDateTime(`${eraFmt.format(now)} ${mdFmt.format(now)} ${timeFmt.format(now)}`);
+      setHeroDateTime(`${eraFmt.format(now)} ${mdFmt.format(now)} · ${shortTimeFmt.format(now)}`);
     };
     tick();
     const timer = setInterval(tick, 1000);
@@ -77,6 +88,16 @@ export default function HeaderInfoBar() {
       clearInterval(timer);
     };
   }, []);
+
+  if (variant === "hero") {
+    return (
+      <div className="mobile-hero-info" aria-label={`東京時間 ${heroDateTime}，${weather}`}>
+        <span className="mobile-hero-info-place">TOKYO / JAPAN</span>
+        <span className="mobile-hero-info-date">{heroDateTime}</span>
+        <span className="mobile-hero-info-weather">{weather}</span>
+      </div>
+    );
+  }
 
   return (
     <div className="hidden sm:flex font-sans text-[11px] tracking-[0.08em] text-zinc-500 items-center gap-3 tabular-nums">

@@ -3,9 +3,11 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
+import { randomUUID } from "crypto";
 import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "./src/data/rentGuideData";
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./src/data/buyHouseData";
 import { buildMarketReality, buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
+import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
 const app = express();
@@ -148,6 +150,46 @@ ${JSON.stringify(linusContact, null, 2)}
 // API Routes
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
+});
+
+const VISITOR_COOKIE = "linus_visitor_id";
+const VISITOR_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+const VISITOR_BOT_USER_AGENT = /bot|crawler|spider|slurp|facebookexternalhit|preview/i;
+
+function visitorCookie(req: express.Request) {
+  const entry = String(req.headers.cookie || "").split(";").map((part) => part.trim()).find((part) => part.startsWith(`${VISITOR_COOKIE}=`));
+  return entry ? decodeURIComponent(entry.slice(VISITOR_COOKIE.length + 1)) : null;
+}
+
+app.get("/api/visitor-count", async (req, res) => {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  if (!visitorCounterConfigured()) {
+    return res.status(503).json({ error: "Visitor counter storage is not configured." });
+  }
+
+  try {
+    if (VISITOR_BOT_USER_AGENT.test(String(req.headers["user-agent"] || ""))) {
+      return res.json({ count: await getVisitorCount(), counted: false });
+    }
+
+    let visitorId = visitorCookie(req);
+    if (!visitorId || !/^[a-f0-9-]{36}$/i.test(visitorId)) {
+      visitorId = randomUUID();
+      res.cookie(VISITOR_COOKIE, visitorId, {
+        maxAge: VISITOR_COOKIE_MAX_AGE * 1000,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+      });
+    }
+
+    const result = await recordUniqueVisitor(visitorId);
+    return res.json({ count: result.count, counted: result.isNewVisitor });
+  } catch (error) {
+    console.error("Visitor counter error:", error);
+    return res.status(500).json({ error: "Unable to record visitor count." });
+  }
 });
 
 // Natural-language rent brief: Gemini extracts intent; the site's fixed rent model calculates prices.

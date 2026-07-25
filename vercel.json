@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/chat", "destination": "/api/chat" },
-    { "source": "/api/rent-analysis", "destination": "/api/rent-analysis" }
+    { "source": "/api/rent-analysis", "destination": "/api/rent-analysis" },
+    { "source": "/api/visitor-count", "destination": "/api/visitor-count" }
   ]
 }
