@@ -103,10 +103,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
   const [documentsExpanded, setDocumentsExpanded] = useState(false);
   const isSearchActive = hasMinimumKnowledgeSearchLength(searchQuery);
   const staticMatchSet = new Set(staticMatches);
-  const showSop = !isSearchActive || staticMatchSet.has("sop");
-  const showDocuments = !isSearchActive || staticMatchSet.has("documents");
-  const showRoutes = !isSearchActive || staticMatchSet.has("routes");
-  const showReminders = !isSearchActive || staticMatchSet.has("reminders");
+  const isStepsCategory = kbCategory === "all" || kbCategory === "steps";
+  const showSop = isStepsCategory && (!isSearchActive || staticMatchSet.has("sop"));
+  const showDocuments = isStepsCategory && (!isSearchActive || staticMatchSet.has("documents"));
+  const showRoutes = isStepsCategory && (!isSearchActive || staticMatchSet.has("routes"));
+  const showReminders = isStepsCategory && (!isSearchActive || staticMatchSet.has("reminders"));
   const isDocumentSearchResult = isSearchActive && staticMatchSet.has("documents");
   const isDocumentsOpen = documentsExpanded || isDocumentSearchResult;
   const showProcessSection =
