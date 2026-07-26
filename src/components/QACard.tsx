@@ -1,5 +1,6 @@
 import { ChevronDown, Lightbulb } from "lucide-react";
 import { renderFormattedText } from "../lib/format";
+import { NorthEastIcon } from "./NorthEastIcon";
 
 interface QACardProps {
   key?: string | number;
@@ -122,14 +123,14 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
                   </thead>
                   <tbody>
                     {table.rows.map((row, rowIndex) => (
-                      <tr key={row.label} className={rowIndex % 2 === 0 ? "bg-white" : "bg-[#F7FAF8]"}>
+                      <tr key={rowIndex} className={rowIndex % 2 === 0 ? "bg-white" : "bg-[#F7FAF8]"}>
                         <th className="whitespace-normal break-words border-b border-r border-[#DDE3DF] px-3 py-2.5 font-bold text-zinc-800">{row.label}</th>
                         {row.cells.map((cell, cellIndex) => {
                           const limited = cell.startsWith("僅");
                           const worldwide = cell.startsWith("國內外全部財產");
                           return (
                             <td
-                              key={`${row.label}-${cellIndex}`}
+                              key={cellIndex}
                               className={`whitespace-normal break-words border-b border-r border-[#DDE3DF] px-3 py-2.5 last:border-r-0 ${
                                 limited
                                   ? "bg-[#F4F5F5] text-zinc-600"
@@ -158,7 +159,10 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
               <div className="mt-2 flex flex-wrap gap-2">
                 {sources.map(source => (
                   <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#9ee2cf] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#007d5a] underline-offset-2 hover:underline">
-                    {source.label} ↗
+                    <span className="inline-flex items-center gap-1">
+                      {source.label}
+                      <NorthEastIcon className="h-3 w-3" />
+                    </span>
                   </a>
                 ))}
               </div>

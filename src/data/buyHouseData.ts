@@ -2,7 +2,10 @@ export interface BuyHouseTermItem {
   name: string;
   jpName?: string;
   description: string;
-  category: "drawing" | "fee";
+  // 這個欄位決定 TermModal 的 AI 諮詢按鈕文案（圖紙用語／費用／名詞／流程步驟），
+  // 不決定卡片顯示在哪一區——那是由 buyHouseDrawingTerms / buyHouseFeeTerms 兩個陣列決定的。
+  // 與 rentGuideData 的分類保持同一組值。
+  category: "fee" | "drawing" | "term" | "step";
   warning?: string;
 }
 

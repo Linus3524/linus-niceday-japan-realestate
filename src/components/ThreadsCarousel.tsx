@@ -5,9 +5,10 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { threadCategories, type FeaturedThread } from "../data/featuredThreads";
 import { threadsSearchIndex } from "../data/threadsSearchIndex";
+import { NORTH_EAST_SVG, NorthEastIcon } from "./NorthEastIcon";
 
 const THREADS_SCRIPT_SRC = "https://www.threads.com/embed.js";
 
@@ -45,18 +46,18 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
               data-text-post-permalink="${url}"
               data-text-post-version="0"${themeAttr}>
               <a href="${url}" target="_blank" rel="noopener noreferrer" class="threads-fallback-btn">
-                在 Threads 查看這篇精選貼文 ↗
+                在 Threads 查看這篇精選貼文 ${NORTH_EAST_SVG}
               </a>
             </blockquote>
             <div class="threads-drag-shield" data-thread-url="${url}" aria-hidden="true">
               <span class="threads-shield-hint threads-hint-pointer">點一下可滑動圖片</span>
-              <span class="threads-shield-hint threads-hint-touch">點一下用 Threads 開啟 ↗</span>
+              <span class="threads-shield-hint threads-hint-touch">點一下用 Threads 開啟 ${NORTH_EAST_SVG}</span>
             </div>
             </div>
           </div>
           <div class="threads-scroll-indicator" aria-hidden="true"></div>
           <a href="${url}" target="_blank" rel="noopener noreferrer" class="threads-read-more">
-            <span>閱讀完整貼文</span><span aria-hidden="true">↗</span>
+            <span>閱讀完整貼文</span>${NORTH_EAST_SVG}
           </a>
         </article>`;
     })
@@ -579,7 +580,7 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
               className="inline-flex h-9 shrink-0 items-center gap-1.5 border border-[#00a174] bg-white px-3.5 font-sans text-xs font-bold text-[#007d5a] transition-colors hover:bg-[#00a174] hover:text-white"
             >
               追蹤 <span className="hidden sm:inline">@linus3524</span>
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              <NorthEastIcon className="h-3.5 w-3.5" />
             </a>
             <button
               type="button"
