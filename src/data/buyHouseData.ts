@@ -236,7 +236,7 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
   {
     name: "固定資産税",
     jpName: "固定資產稅",
-    description: "地方政府依土地與建物的固定資產稅評價額，向每年課稅基準日的所有權人課徵。可概略類比台灣持有不動產的年度稅負，但課稅標準與減免制度不同。",
+    description: "每年由地方稅務機關依評價額向不動產所有人課徵的持有稅，功能類似台灣的房屋稅與地價稅。",
     category: "drawing"
   },
   {
@@ -290,7 +290,7 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
   {
     name: "ペット相談",
     jpName: "可飼養寵物",
-    description: "代表您可以與屋主或管理處商量飼養寵物事宜。在日本，許多集合住宅（公寓）為了環境安寧與衛生，在管理規約中是嚴格禁止飼養寵物的。若有此標示，則代表可在規定範圍內（如限制大小、隻數）飼養寵物。",
+    description: "代表該物件允許與屋主或管理處商量飼養寵物。在日本選房時標有此項目，即可在符合社區規約的條件下（如貓狗類別、體型或隻數限制）申請同住。",
     category: "drawing"
   },
   {
