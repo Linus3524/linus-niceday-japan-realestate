@@ -318,7 +318,7 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "model"; text: string }>>([
     {
       role: "model",
-      text: "您好！我是 Linus ❀ \n\n歡迎來到日本租屋與買房知識大補帖！不論您是想在東京租下第一個溫馨小窩，還是看好日本房地產想在東京置產投資、申請房貸或經營民宿，我都能為您提供最專業的解答喔！\n\n您可以在下方輸入任何問題，例如：\n- 「海外人士可以在日本貸款買房嗎？」\n- 「民泊新法在東京都 23 區有哪些營業限制？」\n- 「租屋初期費用大概要準備多少？」\n\n我會隨時線上為您解答！"
+      text: "您好！我是 Linus ❀ \n\n歡迎來到日本租屋與買房知識大補帖！不論是在日本租屋、置產投資、房貸規劃還是民宿經營，都歡迎在下方直接提問。\n\n例如：\n- 「海外人士可以在日本貸款買房嗎？」\n- 「民泊新法在東京都 23 區有哪些營業限制？」\n- 「租屋初期費用大概要準備多少？」\n\n有任何疑問，隨時輸入就好！"
     }
   ]);
   const [chatLoading, setChatLoading] = useState(false);
