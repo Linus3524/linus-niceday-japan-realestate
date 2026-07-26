@@ -45,35 +45,35 @@ export function SectionHeading({ icon: Icon, title, description, action, open, o
   );
 
   return (
+    // 手機版用 grid：箭頭固定在標題右側的第二欄，不會被擠到自己一行（會多虛高一截）；
+    // 右側控制項才另起一列。桌機版切回 flex 一列排完，順序為 標題 → 控制項 → 箭頭。
     <div
-      className={`flex flex-col gap-3 md:flex-row md:items-center md:justify-between ${
+      className={`grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-3 md:flex md:items-center md:justify-between ${
         // 收合時不留分隔線與下方間距，卡片才不會只剩標題卻還有一大塊白
         collapsed ? "" : "mb-3 border-b border-[#DDE3DF] pb-3"
       }`}
     >
       {/* 標題本身不可點：閱讀時常會點到（或選取文字），整塊當按鈕很容易誤觸收合。
           開合只交給右邊的箭頭按鈕。 */}
-      <div className="min-w-0 flex-1">{heading}</div>
+      <div className="min-w-0 md:flex-1">{heading}</div>
 
-      {/* 右側控制項與開合箭頭放在同一組，箭頭永遠在整列最右邊，
-          不會卡在標題與切換鈕之間。收合時不顯示控制項（點不到內容卻看得到切換鈕很怪）。 */}
-      {(action || collapsible) && (
-        <div className="flex shrink-0 items-center gap-3 self-end md:self-auto">
-          {action && !collapsed && action}
-          {collapsible && (
-            <button
-              type="button"
-              onClick={onToggle}
-              aria-expanded={open}
-              aria-label={open ? "收合這個區塊" : "展開這個區塊"}
-              className="-m-1 cursor-pointer p-2 text-[#00a174] transition-colors hover:text-[#007d5a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a174]"
-            >
-              <ChevronDown
-                className={`h-5 w-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-              />
-            </button>
-          )}
-        </div>
+      {collapsible && (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-label={open ? "收合這個區塊" : "展開這個區塊"}
+          className="-m-1 cursor-pointer justify-self-end p-2 text-[#00a174] transition-colors hover:text-[#007d5a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a174] md:order-last"
+        >
+          <ChevronDown
+            className={`h-5 w-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+      )}
+
+      {/* 收合時不顯示控制項（點不到內容卻看得到切換鈕很怪） */}
+      {action && !collapsed && (
+        <div className="col-span-2 shrink-0 md:col-auto md:mr-3">{action}</div>
       )}
     </div>
   );

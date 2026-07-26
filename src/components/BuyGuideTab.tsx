@@ -534,7 +534,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               )}
 
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
-                <section className="border border-[#DDE3DF] bg-white p-5 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
                   <SectionHeading
                     icon={Lightbulb}
                     title="台灣人在日本買房前，先轉換這五個觀念"
@@ -587,7 +587,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: STEPS & FLOWS */}
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
                 <div className="space-y-6">
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={MapPin}
                       title="日本買房交易完整流程"
@@ -596,10 +596,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       onToggle={() => toggleStep("flow")}
                       action={
                         /* Flow Type Switcher */
-                        <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans text-xs">
+                        <div className="flex w-full border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans text-xs md:w-auto">
                         <button
                           onClick={() => setSelectedFlowType("cash")}
-                          className={`px-4 py-2 font-bold cursor-pointer transition-all ${
+                          className={`flex-1 px-4 py-2 font-bold cursor-pointer transition-all md:flex-none ${
                             selectedFlowType === "cash" 
                               ? "bg-[#00a174] text-white" 
                               : "bg-transparent text-zinc-700 hover:bg-zinc-200"
@@ -609,7 +609,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </button>
                         <button
                           onClick={() => setSelectedFlowType("loan")}
-                          className={`px-4 py-2 font-bold cursor-pointer transition-all ${
+                          className={`flex-1 px-4 py-2 font-bold cursor-pointer transition-all md:flex-none ${
                             selectedFlowType === "loan" 
                               ? "bg-[#00a174] text-white" 
                               : "bg-transparent text-zinc-700 hover:bg-zinc-200"
@@ -680,7 +680,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Signing documents requirements */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={FileText}
                       title={signingDocuments.title}
@@ -727,7 +727,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               )}
 
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
-                <section className="border border-[#DDE3DF] bg-white p-5 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
                   <SectionHeading
                     icon={ReceiptText}
                     title="日本房產稅務與持有成本整理"
@@ -790,7 +790,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: LOAN COMPARISON */}
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "loans") && (
                 <div className="space-y-6">
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={Landmark}
                       title="海外買方融資方案整理"
@@ -867,7 +867,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Japanese Banks */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={Percent}
                       title="在日工作者融資方案整理"
@@ -927,7 +927,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "minpaku") && (
                 <div className="space-y-6">
                   {/* Minpaku District Rules */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={Map}
                       title="東京都 23 區住宅宿泊事業條例整理"
@@ -1002,7 +1002,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Ryokan requirements */}
-                  <section className="border border-[#DDE3DF] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setRyokanExpanded(current => !current)}
