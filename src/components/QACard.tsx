@@ -17,9 +17,26 @@ interface QACardProps {
 }
 
 const getSummary = (answer: string) => {
-  const firstParagraph = answer.split(/\n\s*\n/).find(part => part.trim())?.trim() || answer.trim();
-  const plain = firstParagraph.replace(/^\d+\.\s*/, "");
-  return plain.length > 115 ? `${plain.slice(0, 115)}…` : plain;
+  // 取第一個非空段落
+  let text = answer.split(/\n\s*\n/).find(part => part.trim())?.trim() || answer.trim();
+
+  // 若第一段僅為獨立標題（如【入住開栓】），則往後抓實體內容段落
+  if (/^【[^】]+】$/.test(text)) {
+    const paragraphs = answer.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    const contentPara = paragraphs.find(p => !/^【[^】]+】$/.test(p));
+    if (contentPara) {
+      text = contentPara;
+    }
+  }
+
+  // 清除【大括號】標題與項目符號 (•, -, 數字條列等)
+  text = text
+    .replace(/【[^】]+】\s*/g, "")
+    .replace(/^[•・\-●▪︎\d+.]\s*/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return text.length > 115 ? `${text.slice(0, 115)}…` : text;
 };
 
 const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
