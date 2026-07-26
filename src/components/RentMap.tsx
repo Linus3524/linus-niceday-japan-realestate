@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { RentRate } from "../data/rentGuideData";
 import { rentRates } from "../data/housingMarket";
-import { MapPin, Info } from "lucide-react";
+import { MapPin, Info, Lightbulb, Layers } from "lucide-react";
 
 interface RentMapProps {
   selectedDistrict: string;
@@ -278,7 +278,7 @@ export const RentMap: React.FC<RentMapProps> = ({
             </span>
           </h4>
           <p className="text-[10px] text-zinc-500">
-            💡 {mode === "buy"
+            {mode === "buy"
               ? "點擊下方地圖的區塊，可自動將該區房價行情代入左側置產預算計算機中！"
               : "點擊下方地圖的區塊，可自動將該區租金行情代入左側租屋預算計算機中！"}
           </p>
@@ -393,7 +393,7 @@ export const RentMap: React.FC<RentMapProps> = ({
         {/* Color Legend */}
         <div className="md:col-span-5 space-y-2">
           <span className="font-bold text-zinc-700 block text-[11px] tracking-wider">
-            {mode === "buy" ? "🎌 2026 房價（預估總價）熱力圖例：" : "🎌 2026 房租熱力圖例："}
+            {mode === "buy" ? "2026 房價（預估總價）熱力圖例：" : "2026 房租熱力圖例："}
           </span>
           <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-zinc-600">
             <div className="flex items-center gap-1.5">
@@ -440,7 +440,8 @@ export const RentMap: React.FC<RentMapProps> = ({
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
                     <span className="font-bold text-[#00a174] flex items-center gap-1">
-                      <span>📍 {activeWard.district}</span>
+                      <MapPin className="w-3.5 h-3.5 text-[#00a174] shrink-0" />
+                      <span>{activeWard.district}</span>
                       {hoveredWard ? (
                         <span className="text-[9px] bg-zinc-800 text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
                       ) : (

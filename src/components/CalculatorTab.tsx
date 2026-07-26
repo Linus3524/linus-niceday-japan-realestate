@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, AlertTriangle } from "lucide-react";
+import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, AlertTriangle, Receipt, Lightbulb, Calculator } from "lucide-react";
 import { budgetModifiers } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
@@ -958,8 +958,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 <div className="xl:col-span-5 xl:sticky xl:top-8 space-y-6">
                   {/* Results Display */}
                   <div className="border border-[#1A2A22] bg-white p-6 relative">
-                    <div className="absolute top-0 right-4 bg-[#00a174] text-white px-2 py-0.5 text-xs select-none font-sans">
-                      精算結果 ❀
+                    <div className="absolute top-0 right-4 bg-[#00a174] text-white px-2.5 py-0.5 text-xs select-none font-sans flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-white" />
+                      <span>精算結果</span>
                     </div>
                     
                     {calcMode === "rent" ? (
@@ -1104,7 +1105,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Estimation of Initial Fees */}
                           <div className="pt-4 border-t border-dashed border-zinc-300">
-                            <span className="text-[#00a174] font-bold block mb-1">🗂 估算初期費用區間：</span>
+                            <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
+                              <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
+                              <span>估算初期費用區間：</span>
+                            </span>
                             <div className="bg-[#F5F8F6] p-3 border border-zinc-200 space-y-1.5">
                               <div className="flex justify-between font-bold text-zinc-800 font-sans text-[11px] md:text-xs">
                                 <span>較精簡情境（租金 × 4）：</span>
@@ -1118,8 +1122,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>費用較多情境（租金 × 6）：</span>
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 6).toLocaleString()} 円</span>
                               </div>
-                              <p className="text-[10px] text-zinc-500 mt-2.5 text-justify leading-relaxed border-t border-zinc-200/60 pt-2 font-sans">
-                                💡 這是提供您初步抓預算的整體概算。實際是否有敷金、禮金或換鑰匙等優惠，會依每個物件當下的招租條件而定。
+                              <p className="text-[10px] text-zinc-500 mt-2.5 text-justify leading-relaxed border-t border-zinc-200/60 pt-2 font-sans flex items-start gap-1">
+                                <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
+                                <span>這是提供您初步抓預算的整體概算。實際是否有敷金、禮金或換鑰匙等優惠，會依每個物件當下的招租條件而定。</span>
                               </p>
                             </div>
                           </div>
@@ -1203,7 +1208,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Initial purchase fees section */}
                           <div className="pt-3 border-t border-dashed border-zinc-200">
-                            <span className="text-[#00a174] font-bold block mb-1">購屋初期諸費用概算（一次性過戶費用）：</span>
+                            <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
+                              <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
+                              <span>購屋初期諸費用概算（一次性過戶費用）：</span>
+                            </span>
                             <div className="bg-[#F5F8F6] border border-zinc-200">
                               <div className="space-y-1.5 p-3">
                               <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
@@ -1214,8 +1222,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>申請貸款購置 (約總價 9%):</span>
                                 <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
-                              <p className="text-[10px] text-zinc-500 mt-1 pt-1.5 border-t border-dashed border-zinc-200 text-justify">
-                                先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。
+                              <p className="text-[10px] text-zinc-500 mt-1 pt-1.5 border-t border-dashed border-zinc-200 text-justify flex items-start gap-1">
+                                <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
+                                <span>先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。</span>
                               </p>
                               </div>
                               <button
