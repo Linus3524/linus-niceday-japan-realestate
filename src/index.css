@@ -1,5 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+/* 網頁字型分兩路走，完整說明見 docs/FONTS.md：
+   1. 英數字型 (Jost / JetBrains Mono) → 自架在 public/fonts/，並在 index.html preload。
+   2. 中日文字型 (Noto Sans TC / Noto Serif TC / Shippori Mincho) → 仍走 Google，
+      因為它們會依頁面實際出現的文字分片下載，自架整包反而是好幾 MB，
+      而 AI 顧問會輸出任意中文字，靜態 subset 有缺字變成 □ 的風險。
+      載入標籤現在寫在 index.html <head>，不要改回 @import：
+      @import 得等這支 CSS 下載完才會被發現，字型起跑晚一整輪，
+      使用者就會先看到系統字型再跳字。 */
 @import "tailwindcss";
+
+/* Jost：可變字型，涵蓋 300–700，站內用於英文標題與標籤 */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/jost-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/jost-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* JetBrains Mono：可變字型，站內用於 LINE ID 與金額等寬數字 */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+/* Material Symbols Rounded：自架字型，不依賴 Google CDN。
+   檔案是用專案實際使用的 4 個圖示 (calculate / key / real_estate_agent / smart_toy)
+   subset 過的可變字型，只有 16KB。改用/新增圖示時要重新 subset，做法見 docs/FONTS.md。
+   font-display:block 讓字型載入前留白而不是先畫出 ligature 名稱文字；
+   因為現在是同網域的小檔案，這段留白幾乎不會被看到。 */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('/fonts/material-symbols-rounded-subset.woff2') format('woff2');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 
 @theme {
   --font-sans: "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
@@ -60,6 +131,55 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 
 .font-jost {
   font-family: var(--font-jost);
+}
+
+/* 桌機版頂部資訊列（logo + 令和日期時間 + 東京天氣）：磨砂玻璃，
+   捲動時讓下方內容透一點上來。做法與手機版底部分頁列 (.mobile-dock) 相同，
+   但白色再淡一些。手機版維持純白：那裡字更小、又疊在主視覺上，透明會不好讀。 */
+@media (min-width: 768px) {
+  .site-header {
+    background-color: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+}
+
+/* 桌機版首屏左側的主色，跟著四組場景一起換色。
+   色票沿用專案色票指南（同一組色也用在手機版直式標語與進度點）：
+     🍊 橘子 #00A174　🍋 檸檬 #0099FF　🍎 蘋果 #327509　🍇 葡萄 #FF6A00
+   橘子（預設）的螢光筆底色沿用原本的 #E6F6F1；
+   其餘場景沒有指定底色，就用該場景主色的 16% 淡化版本。 */
+.hero-banner {
+  --hero-accent: #00A174;
+  --hero-marker: #E6F6F1;
+}
+.hero-scene--lemon {
+  --hero-accent: #0099FF;
+  --hero-marker: rgba(0, 153, 255, 0.16);
+}
+.hero-scene--apple {
+  --hero-accent: #327509;
+  --hero-marker: rgba(50, 117, 9, 0.16);
+}
+.hero-scene--grape {
+  --hero-accent: #FF6A00;
+  --hero-marker: rgba(255, 106, 0, 0.16);
+}
+
+/* 換色的節奏對齊背景淡入（1.2s），才不會比場景早到或晚到。 */
+.hero-eyebrow,
+.hero-accent-text,
+.hero-visitors {
+  color: var(--hero-accent);
+  transition: color 1200ms ease;
+}
+.hero-eyebrow-dash {
+  background-color: var(--hero-accent);
+  transition: background-color 1200ms ease;
+}
+.hero-marker::after {
+  background-color: var(--hero-marker);
+  transition: background-color 1200ms ease;
 }
 
 .hero-title-first-line {
@@ -243,21 +363,41 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
-    scrollbar-color: #9ee2cf transparent;
-    scrollbar-width: thin;
+    /* 原生捲軸整個藏起來：它是「佔版面」的捲軸，會吃掉卡片右側 5px，
+       讓貼文內容左右不對稱。改用 .threads-scroll-indicator 疊在上面顯示。 */
+    scrollbar-width: none;
+  }
+  .threads-post-frame::-webkit-scrollbar {
+    display: none;
   }
   .threads-post-frame:focus-visible {
     box-shadow: inset 0 0 0 1px #9ee2cf;
   }
-  .threads-post-frame::-webkit-scrollbar {
-    width: 5px;
+  /* 自繪的浮動捲動指示條：定位在卡片（position:relative）右緣，
+     不參與版面計算所以不佔寬度；平常透明，捲動時由 JS 加上 is-visible，
+     停止捲動 700ms 後淡出。 */
+  .threads-scroll-indicator {
+    position: absolute;
+    z-index: 4;
+    top: 10px; /* 對齊 .threads-slide 的 padding-top */
+    right: 4px;
+    width: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 260ms ease;
   }
-  .threads-post-frame::-webkit-scrollbar-track {
-    background: transparent;
+  .threads-scroll-indicator.is-visible {
+    opacity: 1;
   }
-  .threads-post-frame::-webkit-scrollbar-thumb {
+  .threads-scroll-indicator::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: var(--thumb-height, 40px);
+    transform: translateY(var(--thumb-offset, 0px));
     border-radius: 999px;
-    background: #9ee2cf;
+    background: rgba(26, 42, 34, 0.28);
   }
 }
 
@@ -409,6 +549,12 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 .hero-bg.is-active {
   opacity: var(--hero-bg-opacity);
   transform: scale(1);
+}
+/* 首次載入：第一張背景直接就位，不跑淡入與推近。
+   背景圖 preload 後 30ms 內就下載完了，會讓人覺得「背景比文字慢」的
+   其實是這段 1.2 秒淡入。輪播切換仍然保留動畫（App.tsx 在下一幀移除 is-booting）。 */
+.hero-media.is-booting .hero-bg.is-active {
+  transition: none;
 }
 
 /* 保護左側文字區的白色漸層，自然向右平滑過渡 */
@@ -756,7 +902,11 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     height: 100%;
     object-fit: contain;
     opacity: 0;
-    transform: translateX(-54%);
+    /* 靜止值＝平移動畫的終點。切換時 is-active 被移除、動畫跟著消失，
+       若靜止值是起點(-54%)，正在淡出的前一張會瞬間跳回原位才交棒，非常突兀。
+       設成終點(-46%)後，舊場景會停在平移結束的位置安靜淡出，
+       新場景則由 animation 從 -54% 重新開始，交接看起來就是「平移到底直接換」。 */
+    transform: translateX(-46%);
     transition: opacity 1.2s ease;
     will-change: transform, opacity;
   }
@@ -764,6 +914,11 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     z-index: 1;
     opacity: 1;
     animation: mobile-scene-pan 15s linear both;
+  }
+  /* 首次載入：第一張背景直接就位，不跑 1.2 秒淡入（平移動畫照常跑）。
+     理由同桌機版，見 .hero-media.is-booting 的註解。 */
+  .mobile-scene-stage.is-booting .mobile-scene-bg.is-active {
+    transition: none;
   }
   @keyframes mobile-scene-pan {
     from { transform: translateX(-54%); }

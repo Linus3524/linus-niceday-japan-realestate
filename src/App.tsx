@@ -52,10 +52,10 @@ const HERO_ROTATE_MS = 15000;
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
 type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
 
-function MobileSceneHero({ heroSet }: { heroSet: number }) {
+function MobileSceneHero({ heroSet, booting }: { heroSet: number; booting: boolean }) {
   return (
     <section className={`mobile-scene-shell mobile-scene--${HERO_SETS[heroSet].key}`} aria-label="LINUS 住好日手機版主視覺">
-      <div className="mobile-scene-stage" aria-live="polite">
+      <div className={`mobile-scene-stage ${booting ? "is-booting" : ""}`} aria-live="polite">
         <div className="mobile-scene-backgrounds" aria-hidden="true">
           {HERO_SETS.map((set, index) => (
             <img
@@ -189,6 +189,17 @@ export default function App() {
       setHeroSet(prev => (prev + 1) % HERO_SETS.length);
     }, HERO_ROTATE_MS);
     return () => window.clearInterval(id);
+  }, []);
+
+  // 剛載入的第一張場景直接顯示，不跑 1.2 秒的淡入。
+  // 背景圖其實在 30ms 就下載完了，慢的是我們自己的淡入動畫，
+  // 首屏會看起來「文字先出現、背景才慢慢浮上來」。
+  // 之後輪播切換仍然保留淡入（下一幀就把 boot 旗標關掉，
+  // 此時沒有任何屬性變化，所以不會補跑一次動畫）。
+  const [heroBooting, setHeroBooting] = useState(true);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setHeroBooting(false));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {
@@ -546,10 +557,10 @@ export default function App() {
         }}
       />
 
-      <MobileSceneHero heroSet={heroSet} />
+      <MobileSceneHero heroSet={heroSet} booting={heroBooting} />
 
       {/* Top sticky header */}
-      <header className="sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
+      <header className="site-header sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
         <div className="max-w-[1280px] mx-auto flex justify-between items-center">
           {/* Left: SVG logo */}
           <button type="button" className="site-home-button flex items-center gap-3" onClick={returnMobileHome} aria-label="回到首頁">
@@ -566,10 +577,10 @@ export default function App() {
       </header>
 
       {/* Hero Banner Section */}
-      <section className="hero-banner bg-white pt-12 pb-12 lg:pb-28 border-b border-[#DDE3DF] relative overflow-hidden" id="hero-banner">
+      <section className={`hero-banner hero-scene--${HERO_SETS[heroSet].key} bg-white pt-12 pb-12 lg:pb-28 border-b border-[#DDE3DF] relative overflow-hidden`} id="hero-banner">
         {/* 背景與人物圖層：純裝飾，不進無障礙樹，也不攔截點擊。
             三組場景堆疊，靠 is-active 切換透明度做淡入淡出／浮現。 */}
-        <div className="hero-media" aria-hidden="true">
+        <div className={`hero-media ${heroBooting ? "is-booting" : ""}`} aria-hidden="true">
           <div className="hero-bg-layer">
             {HERO_SETS.map((set, i) => (
               <img
@@ -603,17 +614,17 @@ export default function App() {
           
           {/* Left side: Heading */}
           <div className="lg:col-span-8 space-y-4 pr-0 lg:pr-10">
-            <div className="flex items-center gap-2 text-[11px] text-[#00a174] font-jost font-semibold tracking-wider uppercase select-none">
-              <span className="w-6 h-[1px] bg-[#00a174] inline-block"></span>
+            <div className="hero-eyebrow flex items-center gap-2 text-[11px] font-jost font-semibold tracking-wider uppercase select-none">
+              <span className="hero-eyebrow-dash w-6 h-[1px] inline-block"></span>
               <span>HAVE A NICE DAY IN JAPAN</span>
             </div>
-            
+
             <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
               <span className="hero-title-first-line">
-                日本での<span className="relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:bg-[#DDF3EA]/90 after:-z-10">暮らしを</span>、
+                日本での<span className="hero-marker relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:-z-10">暮らしを</span>、
               </span>
               <br />
-              <span className="text-[#00a174]">好日へ。</span>
+              <span className="hero-accent-text">好日へ。</span>
             </h1>
 
             <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
@@ -639,7 +650,7 @@ export default function App() {
                 <span className="hidden min-[380px]:inline">•</span>
                 <span>TOKYO</span>
                 <span>•</span>
-                <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[#007d5a]">
+                <span className="hero-visitors inline-flex items-center gap-1.5 whitespace-nowrap">
                   <span>VISITORS</span>
                   <span className="font-mono tracking-[0.12em]" aria-live="polite">{visitorDisplay}</span>
                 </span>

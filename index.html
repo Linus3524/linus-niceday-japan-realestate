@@ -6,8 +6,25 @@
     <title>LINUS住好日 ╳ 日本租屋買房知識大補帖</title>
     <meta name="description" content="第一次來日本租屋、買房必看!東京房仲 Linus 整理的 2026 最新租屋初期費用、買房流程、貸款條件、民泊法規知識,附東京23區租金行情預算計算機與 AI 找房顧問。全中文台灣仲介一對一服務。" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>">
-    <!-- Material Symbols Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
+    <!-- 自架字型（public/fonts/），不連 Google，斷網或網路差時也不會退化：
+         圖示字型退化會直接把 icon 名稱當文字畫出來，所以全部 preload 先載。
+         三個檔都很小（16KB + 26KB + 31KB），且都是首屏就會用到。 -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols-rounded-subset.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jost-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrains-mono-latin.woff2" crossorigin />
+
+    <!-- 中日文字型仍走 Google（依實際用字分片下載，自架整包要好幾 MB）。
+         這裡只請求「站內真的用到的字重」：
+           Noto Sans TC 400/500/700、Noto Serif TC 400/700、Shippori Mincho 400/500/600。
+         先前多請求的 300 字重與整個 Noto Sans JP 家族實測都沒有被使用，
+         卻讓這支樣式表膨脹到 536KB（中日文每個字重都會展開上百段 unicode-range）。
+         preconnect 先把連線建好，字型才不用等 DNS/TLS。 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&family=Shippori+Mincho:wght@400;500;600&display=swap"
+    />
 
     <!-- Preload 首屏關鍵視覺（高解析度 1920x1080 原圖橘子場景背景與人物），確保 Retina 螢幕銳利度與首屏加載 speed -->
     <link rel="preload" as="image" href="/hero-bg.webp" fetchpriority="high" />

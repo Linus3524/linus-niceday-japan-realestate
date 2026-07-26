@@ -54,6 +54,7 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
             </div>
             </div>
           </div>
+          <div class="threads-scroll-indicator" aria-hidden="true"></div>
           <a href="${url}" target="_blank" rel="noopener noreferrer" class="threads-read-more">
             <span>閱讀完整貼文</span><span aria-hidden="true">↗</span>
           </a>
@@ -366,6 +367,42 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
     return () => track.removeEventListener("wheel", scrollWithHorizontalWheel);
   }, [activeCategory]);
 
+  // 卡片內的捲軸改成自繪的浮動指示條：原生捲軸已在 CSS 隱藏（不佔卡片左右空間），
+  // 這裡在捲動時把半透明灰色的 thumb 疊在卡片右緣，停止捲動後淡出。
+  // scroll 事件不會冒泡，所以用 capture 從 track 上代理接收。
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const hideTimers = new WeakMap<HTMLElement, number>();
+
+    const showIndicator = (event: Event) => {
+      const frame = event.target as HTMLElement;
+      if (!frame?.classList?.contains("threads-post-frame")) return;
+      const indicator = frame.parentElement?.querySelector<HTMLElement>(".threads-scroll-indicator");
+      if (!indicator) return;
+
+      const scrollable = frame.scrollHeight - frame.clientHeight;
+      if (scrollable <= 1) return;
+
+      // thumb 長度反映可視比例，太短會看不清楚，所以設下限
+      const thumbHeight = Math.max(32, frame.clientHeight * (frame.clientHeight / frame.scrollHeight));
+      const offset = (frame.clientHeight - thumbHeight) * (frame.scrollTop / scrollable);
+      indicator.style.height = `${frame.clientHeight}px`;
+      indicator.style.setProperty("--thumb-height", `${thumbHeight}px`);
+      indicator.style.setProperty("--thumb-offset", `${offset}px`);
+      indicator.classList.add("is-visible");
+
+      window.clearTimeout(hideTimers.get(indicator));
+      hideTimers.set(
+        indicator,
+        window.setTimeout(() => indicator.classList.remove("is-visible"), 700)
+      );
+    };
+
+    track.addEventListener("scroll", showIndicator, { capture: true, passive: true });
+    return () => track.removeEventListener("scroll", showIndicator, { capture: true });
+  }, [activeCategory]);
+
   // 解鎖後自動歸位：游標移出該卡片（桌機）或在別處按下（手機）就把遮罩裝回去，
   // 讓輪播恢復可拖曳。註：游標停在 iframe 上時 document 收不到 pointermove，
   // 因此收得到事件本身就代表已離開 iframe，判斷才成立。
@@ -636,7 +673,10 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
                 if (event.key === "ArrowLeft") scrollByCard(-1);
                 if (event.key === "ArrowRight") scrollByCard(1);
               }}
-              className="threads-track flex gap-4 overflow-x-auto overscroll-x-contain touch-auto px-0.5 pb-4 pt-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              /* overflow-x-auto 會讓垂直方向也變成裁切框，卡片 hover 上移 2px 時
+                 最上面那條（hover 時轉綠的）外框就會被切掉。留 4px 上緣空間給它，
+                 再用 -mt-1 抵銷，版面位置維持不變。 */
+              className="threads-track flex gap-4 overflow-x-auto overscroll-x-contain touch-auto px-0.5 pb-4 pt-1 -mt-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             />
             <div className="mt-4 h-px overflow-hidden bg-[#DDE3DF]" aria-hidden="true">
               <div
