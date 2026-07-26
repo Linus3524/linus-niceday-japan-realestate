@@ -229,10 +229,13 @@ export const specialTerms: SpecialTermItem[] = [
       "K (Kitchen): 廚房",
       "S (Service room): 納戶（沒有採光或照明、用作收納的小房間）",
       "WC (Water Closet): 廁所",
-      "CL (Closet): 衣櫥 | WIC (Walk-in Closet): 步入式衣帽間",
+      "CL (Closet): 衣櫥",
+      "WIC (Walk-in Closet): 步入式衣帽間",
       "UB (Unit Bath): 整體浴室 (乾濕在一起的太空艙型浴室)",
       "SB (Shoes Box): 鞋櫃",
-      "W: 洗衣機放置處 | R: 冰箱放置處 | AC: 冷氣"
+      "W: 洗衣機放置處",
+      "R: 冰箱放置處",
+      "AC: 冷氣"
     ]
   },
   {
