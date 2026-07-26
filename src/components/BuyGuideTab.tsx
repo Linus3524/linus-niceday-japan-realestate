@@ -355,6 +355,9 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       <FileText className="w-5 h-5 text-[#00a174]" />
                       <span>{signingDocuments.title}</span>
                     </h3>
+                    <p className="mb-5 text-xs leading-relaxed text-zinc-500 font-sans">
+                      以下為常見準備資料；實際所需文件、正本／影本、發行期限與譯本要求，仍須依買方身分、付款方式、物件及司法書士或金融機構的個案指示確認。
+                    </p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">

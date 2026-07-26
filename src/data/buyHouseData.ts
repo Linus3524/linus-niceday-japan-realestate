@@ -483,7 +483,7 @@ export const buyHouseLoanSteps: BuyHouseFlowStep[] = [
 ];
 
 export const signingDocuments = {
-  title: "日本買房簽約與過戶常見文件（依個案確認）",
+  title: "日本買房簽約與過戶常見文件",
   residenceGroup: {
     title: "在日居民（持有在留卡 / 具中長期簽證者）",
     items: [
@@ -1390,7 +1390,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     multiplier: -0.10,
     type: "minus",
     category: "occupancy",
-    description: "房屋附帶租約，買主買下後直接成為房東收租，因無法看屋內狀況且無法收回自住，房價有折價"
+    description: "房屋附帶既有租約，買主過戶後直接承接出租關係；因通常無法確認室內狀況、也不能立即收回自住，市場價格常低於同條件空屋，實際價差仍視租金、租客、契約與屋況而定"
   },
 
   // Earthquake Resistance Standard
