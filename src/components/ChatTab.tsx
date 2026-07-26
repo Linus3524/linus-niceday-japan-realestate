@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { Send, ExternalLink } from "lucide-react";
 import { formatMessageText } from "../lib/format";
@@ -12,9 +13,65 @@ interface ChatTabProps {
   handleSendMessage: (e?: any, customMsg?: string) => void;
 }
 
+// 使用者問到第幾個問題之後，主動顯示一次加 LINE 的邀請
+const AUTO_CTA_AFTER_QUESTIONS = 3;
+
 export function ChatTab(props: ChatTabProps) {
   const { chatMessages, chatInput, setChatInput, chatLoading, chatError, handleSendMessage } = props;
   const lineFriendUrl = `https://line.me/ti/p/~${linusContact.lineId}`;
+
+  // 什麼時候在回覆下方顯示「一鍵加好友」按鈕，兩種情況：
+  // 1. AI 自己在回覆裡寫出 LINE ID（系統提示會在個案諮詢、知識庫查無資料時這樣做）
+  // 2. 使用者問到第 3 個問題之後，主動出現一次
+  // 兩者都只認「第一次」，之後的回覆不再重複出現，避免整串對話都在推銷。
+  const ctaTargets = useMemo(() => {
+    const byAiText = new Set<number>();
+    const byQuestionCount = new Set<number>();
+    let questionCount = 0;
+    let alreadyShown = false;
+
+    chatMessages.forEach((msg, index) => {
+      if (msg.role === "user") {
+        questionCount += 1;
+        return;
+      }
+      if (/line/i.test(msg.text) && msg.text.includes(linusContact.lineId)) {
+        byAiText.add(index);
+        alreadyShown = true;
+        return;
+      }
+      if (!alreadyShown && questionCount >= AUTO_CTA_AFTER_QUESTIONS) {
+        byQuestionCount.add(index);
+        alreadyShown = true;
+      }
+    });
+
+    return { byAiText, byQuestionCount };
+  }, [chatMessages]);
+
+  // 對話視窗自動跟著新訊息捲動：按下「熱門諮詢」後，AI 已經在回答，
+  // 但畫面停在原地，使用者要自己往下滑才發現有回覆。
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const lastMessage = chatMessages[chatMessages.length - 1];
+
+  useEffect(() => {
+    const area = scrollAreaRef.current;
+    if (!area) return;
+
+    // 剛送出提問／AI 思考中：捲到最底，讓「正在調閱知識庫」的提示露出來。
+    if (chatLoading || lastMessage?.role === "user") {
+      area.scrollTo({ top: area.scrollHeight, behavior: "smooth" });
+      return;
+    }
+
+    // AI 回覆通常很長，捲到「該則訊息的開頭」而不是最底，
+    // 使用者才能從第一行讀起，不會被丟到答案的結尾。
+    const node = lastMessageRef.current;
+    if (node) {
+      area.scrollTo({ top: Math.max(0, node.offsetTop - 12), behavior: "smooth" });
+    }
+  }, [chatMessages.length, chatLoading, lastMessage?.role]);
 
   return (
             <motion.div
@@ -42,10 +99,12 @@ export function ChatTab(props: ChatTabProps) {
               {/* Chat Dialog Grid Container */}
               <div className="border border-[#DDE3DF] bg-white h-[600px] flex flex-col justify-between overflow-hidden shadow-colored-soft" id="chat-box-interface">
                 {/* Message list area */}
-                <div className="flex-grow overflow-y-auto p-4 md:p-6 bg-[#fafcfb] space-y-6" id="chat-messages-scroll-area">
+                {/* relative：讓下方訊息的 offsetTop 以這個捲動容器為基準，自動捲動才算得準 */}
+                <div ref={scrollAreaRef} className="relative flex-grow overflow-y-auto p-4 md:p-6 bg-[#fafcfb] space-y-6" id="chat-messages-scroll-area">
                   {chatMessages.map((msg, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
+                      ref={index === chatMessages.length - 1 ? lastMessageRef : undefined}
                       className={`flex gap-3.5 max-w-[85%] ${
                         msg.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
                       }`}
@@ -74,17 +133,26 @@ export function ChatTab(props: ChatTabProps) {
                             : "bg-[#fffdfa] border-[#DDE3DF] text-zinc-900 shadow-sm transition-colors"
                         }`}>
                           {formatMessageText(msg.text)}
-                          {msg.role === "model" && /line/i.test(msg.text) && msg.text.includes(linusContact.lineId) && (
-                            <a
-                              href={lineFriendUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
-                              aria-label={`開啟 LINE 並加入 ${linusContact.name} 為好友`}
-                            >
-                              <span>LINE：{linusContact.lineId}・一鍵加好友</span>
-                              <ExternalLink className="h-3.5 w-3.5" />
-                            </a>
+                          {(ctaTargets.byAiText.has(index) || ctaTargets.byQuestionCount.has(index)) && (
+                            <>
+                              {/* 由問題數觸發的邀請，AI 的回覆本身沒提到 LINE，
+                                  所以補一句話說明，不然按鈕會很突兀 */}
+                              {ctaTargets.byQuestionCount.has(index) && (
+                                <p className="mt-4 border-t border-dashed border-[#DDE3DF] pt-3 font-sans text-xs text-zinc-600">
+                                  想更貼近您的狀況給建議嗎？加 LINE 由 Linus 本人為您解答，房源配對與個案諮詢都可以聊 ❀
+                                </p>
+                              )}
+                              <a
+                                href={lineFriendUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
+                                aria-label={`開啟 LINE 並加入 ${linusContact.name} 為好友`}
+                              >
+                                <span>LINE：{linusContact.lineId}・一鍵加好友</span>
+                                <ExternalLink className="h-3.5 w-3.5" />
+                              </a>
+                            </>
                           )}
                         </div>
                       </div>
