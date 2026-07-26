@@ -4,6 +4,7 @@ import { renderFormattedText } from "../lib/format";
 interface QACardProps {
   key?: string | number;
   question: string;
+  summary?: string;
   answer: string;
   number: number;
   sources?: Array<{ label: string; url: string }>;
@@ -18,16 +19,8 @@ interface QACardProps {
 
 const getSummary = (answer: string) => {
   // 取第一個非空段落
-  let text = answer.split(/\n\s*\n/).find(part => part.trim())?.trim() || answer.trim();
-
-  // 若第一段僅為獨立標題（如【入住開栓】），則往後抓實體內容段落
-  if (/^【[^】]+】$/.test(text)) {
-    const paragraphs = answer.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-    const contentPara = paragraphs.find(p => !/^【[^】]+】$/.test(p));
-    if (contentPara) {
-      text = contentPara;
-    }
-  }
+  const paragraphs = answer.split(/\n\s*\n/).map(part => part.trim()).filter(Boolean);
+  let text = paragraphs.find(p => !/^【[^】]+】$/.test(p)) || answer.trim();
 
   // 清除【大括號】標題與項目符號 (•, -, 數字條列等)
   text = text
@@ -36,7 +29,13 @@ const getSummary = (answer: string) => {
     .replace(/\s+/g, " ")
     .trim();
 
-  return text.length > 115 ? `${text.slice(0, 115)}…` : text;
+  // 優先擷取第一個完整的單句重點（15 ~ 75 字）
+  const firstSentence = text.match(/^([^。！？]+[。！？])/);
+  if (firstSentence && firstSentence[1].length >= 15 && firstSentence[1].length <= 75) {
+    return firstSentence[1];
+  }
+
+  return text.length > 70 ? `${text.slice(0, 70)}…` : text;
 };
 
 const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
@@ -80,9 +79,9 @@ const AnswerBlock = ({ text }: { text: string; key?: string | number }) => {
   );
 };
 
-export function QACard({ question, answer, number, sources, table }: QACardProps) {
+export function QACard({ question, summary, answer, number, sources, table }: QACardProps) {
   const blocks = answer.split(/\n\s*\n/).filter(Boolean);
-  const isLong = answer.length > 260 || blocks.length > 1;
+  const displaySummary = summary || getSummary(answer);
 
   return (
     <article className="border border-[#DDE3DF] hover:border-[#00a174] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-colored-soft">
@@ -91,7 +90,11 @@ export function QACard({ question, answer, number, sources, table }: QACardProps
           <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#00a174] text-xs font-bold text-white font-jost">Q{number}</span>
           <div className="min-w-0 flex-1">
             <h4 className="pr-4 text-sm font-bold leading-relaxed text-[#1A2A22] md:text-base">{question}</h4>
-            {isLong && <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{getSummary(answer)}</p>}
+            {displaySummary && (
+              <p className="mt-1.5 text-xs leading-relaxed text-zinc-500 group-open:hidden">
+                {displaySummary}
+              </p>
+            )}
           </div>
           <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[#00a174] transition-transform group-open:rotate-180" />
         </summary>

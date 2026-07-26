@@ -448,7 +448,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關買房問答</h4>
                           <div className="space-y-3">
                             {buyFiltered.qa.map((qa, idx) => (
-                              <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />
+                              <QACard key={idx} question={qa.question} summary={qa.summary} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />
                             ))}
                           </div>
                         </div>
@@ -1083,7 +1083,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />)}
+                      {buyFiltered.qa.map((qa, idx) => <QACard key={idx} question={qa.question} summary={qa.summary} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />)}
                     </div>
                   )}
                 </section>

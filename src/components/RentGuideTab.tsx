@@ -583,7 +583,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>
                   <div className="space-y-4">
-                    {filtered.qa.map((qa, idx) => <QACard key={qa.id} question={qa.question} answer={qa.answer} number={idx + 1} />)}
+                    {filtered.qa.map((qa, idx) => <QACard key={qa.id} question={qa.question} summary={qa.summary} answer={qa.answer} number={idx + 1} />)}
                   </div>
                 </section>
               )}
