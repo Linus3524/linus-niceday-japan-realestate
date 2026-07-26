@@ -20,6 +20,7 @@ import { ContactTab } from "./components/ContactTab";
 import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
+import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -51,6 +52,12 @@ const HERO_SETS = [
 const HERO_ROTATE_MS = 15000;
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
 type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
+const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer"];
+
+function getPolicyPageFromHash(): PolicyPageId | null {
+  const hash = window.location.hash.slice(1);
+  return POLICY_HASHES.includes(hash as PolicyPageId) ? (hash as PolicyPageId) : null;
+}
 
 function MobileSceneHero({ heroSet, booting }: { heroSet: number; booting: boolean }) {
   return (
@@ -175,6 +182,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>("cards");
   const [isMobileHome, setIsMobileHome] = useState(true);
   const [isThreadsPage, setIsThreadsPage] = useState(() => window.location.hash === "#threads");
+  const [policyPage, setPolicyPage] = useState<PolicyPageId | null>(() => getPolicyPageFromHash());
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   
   // UI Scroll States for Japanese Editorial Specs
@@ -223,6 +231,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       setIsThreadsPage(window.location.hash === "#threads");
+      setPolicyPage(getPolicyPageFromHash());
       window.scrollTo({ top: 0, behavior: "auto" });
     };
     window.addEventListener("hashchange", handleHashChange);
@@ -521,6 +530,7 @@ export default function App() {
       window.history.pushState("", document.title, window.location.pathname + window.location.search);
     }
     setIsThreadsPage(false);
+    setPolicyPage(null);
     setIsMobileHome(true);
     window.scrollTo({ top: 0, behavior: "auto" });
   };
@@ -544,6 +554,10 @@ export default function App() {
         <ThreadsCarousel pageMode />
       </div>
     );
+  }
+
+  if (policyPage) {
+    return <PolicyPage page={policyPage} onBack={returnHome} />;
   }
 
   return (
@@ -824,41 +838,44 @@ export default function App() {
         handleSendMessage={handleSendMessage}
       />
 
-      {/* Footer copyright block */}
-      <footer className="mt-12 border-t border-[#1A2A22] bg-white py-9" id="app-footer">
-        <div className="mx-auto max-w-6xl space-y-5 px-4">
-          <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+      <footer className="mt-12 border-t border-[#1A2A22] bg-[#F5F8F6]" id="app-footer">
+        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
+          <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div>
-              <strong className="font-serif text-sm text-[#1A2A22]">LINUS 住好日</strong>
-              <p className="mt-0.5 font-sans text-[11px] text-zinc-500">
-                日本租屋・買房・生活指南
+              <strong className="font-serif text-base font-semibold tracking-[0.04em] text-[#1A2A22]">LINUS 住好日</strong>
+              <p className="mt-1 font-sans text-xs text-[#68756E]">
+                日本租屋・買房與在日生活的實務整理
               </p>
             </div>
-            
-            <div className="flex items-center gap-3 font-sans text-xs">
-              <a href="https://www.threads.com/@linus3524" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-zinc-600 hover:text-[#00a174]">
-                <span>Threads</span> <ExternalLink className="h-3 w-3" />
-              </a>
-              <span className="text-zinc-300">|</span>
-              <a href={`mailto:${linusContact.email}`} className="text-zinc-600 hover:text-[#00a174]">
-                聯絡信箱
-              </a>
+            <div className="flex flex-col items-center gap-3 md:items-end">
+              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#31443A]">
+                <a
+                  href="https://www.threads.com/@linus3524"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 transition-colors hover:text-[#009670]"
+                >
+                  Threads
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
+                <span className="h-3 w-px bg-[#C8D1CC]" aria-hidden="true" />
+                <a
+                  href={`mailto:${linusContact.email}`}
+                  className="transition-colors hover:text-[#009670]"
+                >
+                  聯絡信箱
+                </a>
+              </div>
+              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#68756E]" aria-label="網站政策">
+                <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
+                <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
+                <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
+              </nav>
             </div>
           </div>
 
-          <div className="grid border border-[#DDE3DF] bg-[#F5F8F6] font-sans text-[10px] leading-relaxed text-zinc-500 md:grid-cols-2">
-            <div className="p-4 md:border-r md:border-[#DDE3DF]">
-              <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">INFORMATION</strong>
-              本站內容僅供一般資訊與預算參考，不構成法律、稅務、金融、簽證或投資建議；來訪統計僅使用匿名裝置識別碼。
-            </div>
-            <div className="border-t border-[#DDE3DF] p-4 md:border-t-0">
-              <strong className="mb-1 block font-jost text-[9px] tracking-[0.12em] text-[#007d5a]">ARTWORK COPYRIGHT</strong>
-              人物、動物、場景及品牌插圖皆為 Linus 原創。未經書面授權，禁止重製、修改、轉載、商用或用於 AI 訓練。
-            </div>
-          </div>
-
-          <p className="text-center font-jost text-[9px] tracking-[0.06em] text-zinc-400 md:text-left">
-            © 2026 CHANG CHIN WEI · @linus3524 · ALL RIGHTS RESERVED
+          <p className="mt-6 border-t border-[#D4DDD8] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#879089] md:text-left">
+            © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
         </div>
       </footer>
