@@ -16,8 +16,8 @@ function getItemTypeLabel(item: any): string {
   if (!item) return "名詞";
   if (item.category === "drawing") return "圖紙用語";
   if (item.category === "fee") return "費用";
-  if (item.duration !== undefined) return "流程步驟";
-  if (item.warning !== undefined || item.keyPoints !== undefined) return "費用";
+  if (item.category === "step" || item.duration !== undefined || item.step !== undefined) return "流程步驟";
+  if (item.category === "term") return "名詞";
   return "名詞";
 }
 

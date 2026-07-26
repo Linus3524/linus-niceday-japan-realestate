@@ -306,7 +306,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
-                      <div key={idx} className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
+                      <div 
+                        key={idx} 
+                        className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft cursor-pointer relative"
+                        onClick={() => setSelectedFee(term)}
+                      >
                         <div className="flex justify-between items-start gap-3 mb-3">
                           <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
                             <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
@@ -328,6 +332,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                             ))}
                           </div>
                         )}
+                        <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
+                          <span>房屋／設備</span>
+                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明與 AI 諮詢 →</span>
+                        </div>
                       </div>
                     ))}
                   </div>

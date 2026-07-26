@@ -226,25 +226,25 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
     name: "管理費",
     jpName: "管理費",
     description: "每月向住戶收取的費用，用於維護公共設施、支付管理員薪資等日常營運開銷。",
-    category: "drawing"
+    category: "fee"
   },
   {
     name: "修繕積立金",
     jpName: "修繕基金、公共基金",
     description: "每月向住戶收取的費用，專門用於未來建築物的大型修繕工程，例如外牆翻新、屋頂修繕、電梯更新等，類似台灣的「公共基金」。",
-    category: "drawing"
+    category: "fee"
   },
   {
     name: "固定資産税",
     jpName: "固定資產稅",
     description: "每年由地方稅務機關依評價額向不動產所有人課徵的持有稅，功能類似台灣的房屋稅與地價稅。",
-    category: "drawing"
+    category: "fee"
   },
   {
     name: "都市計画税",
     jpName: "都市計畫稅",
     description: "針對都市計畫區域內的土地與房屋課徵的稅金，用於都市建設，會與固定資產稅一併徵收。",
-    category: "drawing"
+    category: "fee"
   },
   {
     name: "敷地内駐車場",
@@ -274,13 +274,13 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
     name: "現状",
     jpName: "現況",
     description: "指房屋目前的狀態，例如「空室（空屋）」、「賃貸中（出租中）」、「居住中（所有者自住中）」等。",
-    category: "drawing"
+    category: "term"
   },
   {
     name: "引渡",
     jpName: "交屋時間、點交",
     description: "指買賣雙方完成所有手續後，房屋產權和實體正式移交的日期。",
-    category: "drawing"
+    category: "term"
   },
   {
     name: "リフォーム・リノベーション",
@@ -298,14 +298,14 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
     name: "表面利回り",
     jpName: "表面投報率",
     description: "以一年預估租金收入除以物件購入價格計算的簡易收益率，適合用作初步篩選比較；實際淨收益還需扣除管理費、稅務與維護各項支出。",
-    category: "drawing",
+    category: "term",
     warning: "計算式：年租金收入 ÷ 物件購入價格 × 100%。募集資料採用現行租金、滿室假設或預估租金時，結果可能不同。"
   },
   {
     name: "実質利回り・実際利回り",
     jpName: "實質／實際投報率",
     description: "將每月固定開銷（如管理費、修繕積立金、固資稅、PM託管費及保險等）扣除後計算的淨回報率，能更真實反映置產的實際收益狀況。",
-    category: "drawing",
+    category: "term",
     warning: "💡 比較不同物件收益時，建議採用統一的費用標準，並將未來空置與修繕維護預算一併納入考量。"
   }
 ];
@@ -315,7 +315,7 @@ export const buyHouseFeeTerms: BuyHouseTermItem[] = [
     name: "買付申込書",
     jpName: "購屋意向書",
     description: "買方向賣方提出購入價格、付款方式與交屋日期等條件的書面申請。主要用於表達購買意願並展開條件協商；待雙方達成共識並完成簽約後，買賣契約才正式成立。",
-    category: "fee"
+    category: "term"
   },
   {
     name: "売買契約書印紙代",
@@ -364,7 +364,7 @@ export const buyHouseFeeTerms: BuyHouseTermItem[] = [
     name: "重要事項説明書",
     jpName: "重要事項說明書",
     description: "簽約前由持有國家證照的『宅建士』向買主解說的法律說明文件，詳細載明產權、土地分區、大樓管理規約與權利限制，確保交易資訊透明公開。",
-    category: "fee"
+    category: "term"
   },
   {
     name: "火災保険料",
@@ -394,13 +394,13 @@ export const buyHouseFeeTerms: BuyHouseTermItem[] = [
     name: "仮審査",
     jpName: "貸款事前審査、初審",
     description: "正式申請房貸前的初步、簡易審査。金融機構會根據申請人提供的基本資料（年齡、年收入、工作單位等）快速審核，以判斷借款人的基本還款能力與信用度。",
-    category: "fee"
+    category: "term"
   },
   {
     name: "本審査",
     jpName: "貸款正式審査、本審",
     description: "事前審査（假審）通過且買賣雙方簽署正式「不動產買賣契約書」後進行的最終、詳細審査。此階段，金融機構會對實際交易物件進行實地鑑價，並對借款人資格進行最嚴格、全面的審査。",
-    category: "fee"
+    category: "term"
   }
 ];
 
