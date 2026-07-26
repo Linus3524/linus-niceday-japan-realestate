@@ -1,12 +1,14 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-import { Search, MapPin, ArrowRight, Smile, FileText, X, Building, Landmark, Percent, Map, ChevronDown } from "lucide-react";
+import { Search, MapPin, ArrowRight, Lightbulb, ReceiptText, Smile, FileText, X, Building, Landmark, Percent, Map, ChevronDown } from "lucide-react";
 import {
   buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks,
   japaneseBanks, minpakuRules, ryokanRules, BuyHouseTermItem, BuyHouseQAItem
 } from "../data/buyHouseData";
 import { renderFormattedText } from "../lib/format";
 import { QACard } from "./QACard";
+import { SectionHeading } from "./SectionHeading";
+import { matchesAllTokens, tokenizeQuery } from "../lib/search";
 import { JapaneseRuby } from "./JapaneseRuby";
 
 interface BuyGuideTabProps {
@@ -44,11 +46,151 @@ const getMinpakuAreaLabel = (areaLimit: string) => {
   return "依物件所在地確認";
 };
 
+const taiwanJapanComparisons = [
+  {
+    id: "area",
+    number: "01",
+    title: "房屋面積怎麼算",
+    taiwan: "權狀總面積通常包含主建物、附屬建物及共有部分；看房時還會再用公設比推算實際室內空間。",
+    japan: "買賣廣告主要標示專有面積，不把大廳、公共走廊與電梯等共有部分加進房屋面積。陽台通常也不列入專有面積。",
+    advice: "日本廣告標示的多半是壁芯面積（從牆壁中心線計算），登記簿則是內法面積（從牆壁內側計算）。所以同一間房的登記面積通常會比廣告小一些，這是量測基準不同，不是面積短少。"
+  },
+  {
+    id: "price",
+    number: "02",
+    title: "坪數與單價怎麼換算",
+    taiwan: "市場習慣直接使用「坪」與每坪單價比較房價。",
+    japan: "物件圖紙與登記使用平方公尺。換算方式為「平方公尺 × 0.3025＝坪」；例如50㎡約為15.1坪。",
+    advice: "日本的每坪單價是用專有面積換算，台灣的權狀坪數則含公設。兩者基準不同，直接比較容易高估或低估日本的房價。"
+  },
+  {
+    id: "condition",
+    number: "03",
+    title: "新屋交屋時有什麼",
+    taiwan: "建案可能採毛胚、標準配備或客變後交屋，室內裝修通常需要另外確認。",
+    japan: "新築公寓一般已完成地板、牆面、廚房、浴室、廁所與收納等基本內裝，可直接安排入住。",
+    advice: "基本內裝雖然已經完成，但冷氣、照明、窗簾與家具不一定包含。簽約前可以先看設備表與選配清單，確認哪些是附的、哪些要另外添購，入住預算會比較好抓。"
+  },
+  {
+    id: "management",
+    number: "04",
+    title: "管理費與修繕積立金",
+    taiwan: "社區通常按月收取管理費，大型修繕的基金籌措與收費方式由各社區決定。",
+    japan: "公寓每月通常分開收取「管理費」與「修繕積立金」：前者支付日常管理，後者專門準備外牆、防水、管線與電梯等大型修繕。",
+    advice: "除了每月金額，建議一併看長期修繕計畫、積立金餘額與最近一次總會紀錄。積立金存得不夠時，未來可能會調漲或臨時分攤。"
+  },
+  {
+    id: "transaction",
+    number: "05",
+    title: "出價、訂金與仲介費",
+    taiwan: "常透過斡旋或要約提出價格，訂金的金額與支付方式依交易及仲介契約而定。仲介服務費依《不動產經紀業管理條例》規定，買賣雙方合計不得超過成交價的 6%，實務上多為賣方 4%、買方 1%～2%。",
+    japan: "通常先提交買付申込書表達出價，這個階段一般不用付款；正式簽訂買賣契約時，才支付約房價 5%～10% 的手付金。仲介費另有法定上限，中古屋常用的速算是「成交價 × 3% ＋ 6 萬日圓，再加消費稅」。",
+    advice: "手付金與仲介費的實際付款時間、是否分次支付，各家做法不同。這兩筆都是交屋前就要準備的現金，建議在簽約前先確認清楚。"
+  }
+];
+
+const taxLifecycle = [
+  {
+    stage: "買進",
+    tone: "bg-[#F4E8CB] text-[#75571E]",
+    summary: "簽約、登記與取得時產生的一次性稅費。",
+    details: [
+      {
+        title: "印紙稅",
+        points: ["1,000萬～5,000萬日圓：1萬日圓", "5,000萬～1億日圓：3萬日圓", "1億～5億日圓：6萬日圓"]
+      },
+      {
+        title: "登錄免許稅",
+        points: ["土地移轉：固定資產稅評價額 × 1.5%", "建物一般移轉：評價額 × 2%", "住宅特例：移轉0.3%／保存0.15%／抵押權設定0.1%"]
+      },
+      {
+        title: "不動產取得稅",
+        points: ["住宅建物：固定資產稅評價額 × 3%", "土地：評價額 × 1/2 × 3%", "符合條件的新築住宅：課稅標準扣除1,200萬日圓"]
+      }
+    ],
+    note: "印紙稅與不動產取得稅的輕減措施適用到 2027 年 3 月 31 日，之後是否延長要看政策。住宅特例也不是每間都適用，還要看面積、屋齡、耐震條件與辦理期限。"
+  },
+  {
+    stage: "持有",
+    tone: "bg-[#DDE7EC] text-[#31576A]",
+    summary: "年度稅負與大樓持有成本要分開計算。",
+    details: [
+      {
+        title: "固定資產稅",
+        points: ["固定資產稅評價額 × 1.4%", "納稅人：每年1月1日的登記所有權人", "稅單通常於4～6月寄出"]
+      },
+      {
+        title: "都市計畫稅",
+        points: ["固定資產稅評價額 × 最高0.3%", "僅課徵於市街化區域等適用範圍", "通常與固定資產稅一併繳納"]
+      },
+      {
+        title: "管理費與修繕積立金",
+        points: ["管理費：日常管理與公共設備運作", "修繕積立金：大型修繕準備金", "兩項皆非稅金，但屬每月固定持有成本"]
+      }
+    ],
+    note: "固定資產稅是向每年 1 月 1 日的登記所有權人課徵，交屋那一年通常由買賣雙方按持有天數分攤，在交屋時一併結算。中古公寓建議另外確認修繕積立金餘額、住戶欠繳情形與調漲計畫，這些會直接影響每月的持有成本。"
+  },
+  {
+    stage: "出租",
+    tone: "bg-[#DCEFE8] text-[#16634D]",
+    summary: "租金收入要扣除必要經費後，再依屋主身分申報。",
+    details: [
+      {
+        title: "不動產所得",
+        points: ["課稅所得＝租金等收入－必要經費", "常見經費：管理、修繕、稅金、保險、建物折舊與借款利息", "土地不能提列折舊"]
+      },
+      {
+        title: "海外房東的20.42%源泉扣繳",
+        points: ["法人租客：租金先扣20.42%", "個人供本人或親屬居住：免辦租金扣繳", "20.42%是預繳，不是最終稅率"]
+      },
+      {
+        title: "確定申告與納稅管理人",
+        points: ["按實際所得重新計算稅額", "已扣20.42%可抵稅，超扣可退、不足須補", "海外屋主通常指定日本納稅管理人"]
+      }
+    ],
+    note: "是否預扣 20.42%，看的是屋主在日本的稅務身分與租客的實際用途，不是只看有沒有在留卡。條件相近的房東也可能適用不同處理，實務上建議個案確認。"
+  },
+  {
+    stage: "出售／繼承",
+    tone: "bg-[#F3DFD5] text-[#8A4329]",
+    summary: "出售利益、持有期間及跨境繼承都要依身分判斷。",
+    details: [
+      {
+        title: "出售利益",
+        points: ["讓渡所得＝售價－取得費－出售費用－適用控除", "建物取得費須扣除持有期間折舊", "不能只用售價減原始買價"]
+      },
+      {
+        title: "持有期間與稅率",
+        points: ["長期讓渡所得：20.315%", "短期讓渡所得：39.63%", "以出售年度1月1日是否持有超過5年判斷"]
+      },
+      {
+        title: "海外賣方與繼承",
+        points: ["非居住者出售：成交總價原則先扣10.21%", "之後以確定申告按實際利益結算", "相續稅申報期限：得知繼承開始翌日起10個月"]
+      }
+    ],
+    note: "買方是個人、而且買來自住，符合條件時可以免扣 10.21%。自住房 3,000 萬日圓的特別控除則是另一套條件，要看持有期間與實際居住情形個別判斷。"
+  }
+];
+
 export function BuyGuideTab(props: BuyGuideTabProps) {
   const { buyCategory, setBuyCategory, buySearchQuery, setBuySearchQuery, buyFiltered, selectedFlowType, setSelectedFlowType, setSelectedFee, handleTabChange } = props;
+  const normalizedBuyQuery = buySearchQuery.trim().toLowerCase();
+  // 多關鍵字查詢（例如「民泊 天數」）要全部命中才算，避免空白被當成比對字元
+  const buyQueryTokens = tokenizeQuery(buySearchQuery);
+  const isBuySearchActive = normalizedBuyQuery.length > 0;
   const [expandedBanks, setExpandedBanks] = useState<Set<string>>(new Set());
   const [expandedMinpakuWards, setExpandedMinpakuWards] = useState<Set<string>>(new Set());
   const [ryokanExpanded, setRyokanExpanded] = useState(false);
+  // 「買房流程」底下四個大區塊做成可摺疊，整頁才不會過長。
+  // 預設只展開第一塊（觀念），其餘收合，讓使用者一進來就看得到內容又能快速掃到標題。
+  const [openSteps, setOpenSteps] = useState<Set<string>>(new Set(["concepts"]));
+  const isStepOpen = (key: string) => openSteps.has(key);
+  const toggleStep = (key: string) => setOpenSteps(current => {
+    const next = new Set(current);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    return next;
+  });
   const toggleBank = (key: string) => setExpandedBanks(current => {
     const next = new Set(current);
     if (next.has(key)) next.delete(key);
@@ -61,6 +203,65 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
     else next.add(district);
     return next;
   });
+  const staticBuySearchItems = [
+    ...taiwanJapanComparisons.map(item => ({
+      category: "台日買房差異",
+      title: item.title,
+      text: `台灣：${item.taiwan} 日本：${item.japan} Linus 實務提醒：${item.advice}`
+    })),
+    ...buyHouseCashSteps.map(step => ({
+      category: "現金買房流程",
+      title: step.title,
+      text: [step.description, step.timing, step.payment, step.documents, ...(step.points || []), step.warning].filter(Boolean).join(" ")
+    })),
+    ...buyHouseLoanSteps.map(step => ({
+      category: "貸款買房流程",
+      title: step.title,
+      text: [step.description, step.timing, step.payment, step.documents, ...(step.points || []), step.warning].filter(Boolean).join(" ")
+    })),
+    ...taxLifecycle.flatMap(stage => stage.details.map(detail => ({
+      category: `稅務與持有・${stage.stage}`,
+      title: detail.title,
+      text: `${stage.summary} ${detail.points.join(" ")} 實務提醒：${stage.note}`
+    }))),
+    {
+      category: "買房流程與文件",
+      title: signingDocuments.residenceGroup.title,
+      text: signingDocuments.residenceGroup.items.join(" ")
+    },
+    {
+      category: "買房流程與文件",
+      title: signingDocuments.nonResidenceGroup.title,
+      text: signingDocuments.nonResidenceGroup.items.join(" ")
+    },
+    ...taiwaneseBanks.map(bank => ({
+      category: "海外買方融資",
+      title: bank.name,
+      text: Object.values(bank).flat().join(" ")
+    })),
+    ...japaneseBanks.map(bank => ({
+      category: "在日工作者融資",
+      title: bank.name,
+      text: Object.values(bank).flat().join(" ")
+    })),
+    ...minpakuRules.map(rule => ({
+      category: "東京都民泊法規",
+      title: rule.district,
+      text: `${rule.rules} ${rule.daysLimit} ${rule.areaLimit} ${rule.managerReq}`
+    })),
+    {
+      category: "旅館業／簡易宿所",
+      title: "東京都特別區旅館業與簡易宿所確認重點",
+      text: JSON.stringify(ryokanRules)
+    }
+  ].filter(item =>
+    matchesAllTokens(`${item.category} ${item.title} ${item.text}`, buyQueryTokens)
+  );
+  const searchResultCount =
+    buyFiltered.drawing.length +
+    buyFiltered.fee.length +
+    buyFiltered.qa.length +
+    staticBuySearchItems.length;
 
   return (
             <motion.div
@@ -84,7 +285,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   <span className="text-[#00a174] text-sm font-normal">By Linus</span>
                 </h3>
                 <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#00a174] first-letter:mr-1">
-                  許多華人朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
+                  許多台灣朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
                 </p>
                 <p className="text-zinc-800 leading-relaxed text-justify mt-4">
                   為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
@@ -141,7 +342,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   ].map(cat => (
                     <button
                       key={cat.id}
-                      onClick={() => setBuyCategory(cat.id as any)}
+                      onClick={() => {
+                        setBuyCategory(cat.id as any);
+                        setBuySearchQuery("");
+                      }}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         buyCategory === cat.id 
                           ? "bg-[#00a174] text-white border-[#00a174]" 
@@ -154,31 +358,109 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 </div>
  
                 {/* Filter Search Field */}
-                {(buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee" || buyCategory === "qa") && (
-                  <div className="relative w-full md:w-72 font-sans">
-                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
-                    <input
-                      type="text"
-                      placeholder="搜尋買房指南 (如：表面利回り)..."
-                      value={buySearchQuery}
-                      onChange={(e) => setBuySearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] hover:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174]"
-                    />
-                    {buySearchQuery && (
-                      <button 
-                        onClick={() => setBuySearchQuery("")}
-                        className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-                )}
+                <div className="relative w-full md:w-72 font-sans">
+                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
+                  <input
+                    type="text"
+                    placeholder="搜尋買房知識（如：貸款）..."
+                    value={buySearchQuery}
+                    onChange={(e) => {
+                      setBuySearchQuery(e.target.value);
+                      if (!["all", "drawing", "fee", "qa"].includes(buyCategory) && e.target.value.trim()) {
+                        setBuyCategory("all");
+                      }
+                    }}
+                    className="w-full pl-9 pr-4 py-1.5 text-sm bg-white border border-[#DDE3DF] hover:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174]"
+                  />
+                  {buySearchQuery && (
+                    <button 
+                      onClick={() => setBuySearchQuery("")}
+                      className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
 
+              {isBuySearchActive && (
+                <section className="border border-[#DDE3DF] bg-white p-5 md:p-8">
+                  <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#DDE3DF] pb-4">
+                    <div>
+                      <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">買房知識搜尋結果</h3>
+                      <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
+                        「{buySearchQuery.trim()}」共找到 {searchResultCount} 筆相關內容
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setBuySearchQuery("")}
+                      className="shrink-0 font-sans text-xs font-bold text-[#007D5A] hover:text-[#00a174]"
+                    >
+                      清除搜尋
+                    </button>
+                  </div>
+
+                  {searchResultCount === 0 ? (
+                    <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
+                      <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
+                      <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「取得稅」、「貸款」、「非居住者」或「修繕」。</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-7">
+                      {(buyFiltered.drawing.length > 0 || buyFiltered.fee.length > 0) && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
+                          <div className="grid gap-3 md:grid-cols-2">
+                            {[...buyFiltered.drawing, ...buyFiltered.fee].map(term => (
+                              <button
+                                key={`${term.category}-${term.name}`}
+                                type="button"
+                                onClick={() => setSelectedFee(term)}
+                                className="border border-[#DDE3DF] bg-[#F8FAF9] p-4 text-left transition-colors hover:border-[#00a174]"
+                              >
+                                <strong className="font-serif text-sm text-[#1A2A22]">{term.name}</strong>
+                                {term.jpName && <span className="ml-2 font-sans text-[10px] text-zinc-500">{term.jpName}</span>}
+                                <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-zinc-600">{term.description}</p>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {staticBuySearchItems.length > 0 && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">指南與流程</h4>
+                          <div className="grid gap-3 md:grid-cols-2">
+                            {staticBuySearchItems.map((item, index) => (
+                              <article key={`${item.category}-${item.title}-${index}`} className="border border-[#DDE3DF] bg-white p-4">
+                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
+                                <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
+                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{item.text}</p>
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {buyFiltered.qa.length > 0 && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關買房問答</h4>
+                          <div className="space-y-3">
+                            {buyFiltered.qa.map((qa, idx) => (
+                              <QACard key={idx} question={qa.question} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </section>
+              )}
+
               {/* SECTION: TERMS */}
-              {(buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") && (
-                <div className="space-y-8">
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") && (
+                <div className="space-y-6">
                   {/* Drawing terms */}
                   {buyFiltered.drawing.length > 0 && (
                     <section className="space-y-4">
@@ -251,23 +533,70 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 </div>
               )}
 
-              {/* SECTION: STEPS & FLOWS */}
-              {(buyCategory === "all" || buyCategory === "steps") && (
-                <div className="space-y-8">
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[#DDE3DF] pb-4 mb-6 gap-4">
-                      <div>
-                        <h3 className="text-xl font-bold flex items-center gap-2">
-                          <MapPin className="w-5 h-5 text-[#00a174]" />
-                          <span>日本買房交易完整流程</span>
-                        </h3>
-                        <p className="text-xs text-zinc-500 font-sans mt-0.5">
-                          在日本購置房地產，依照付款方式不同，交易與審査步驟大相徑庭
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
+                <section className="border border-[#DDE3DF] bg-white p-5 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                  <SectionHeading
+                    icon={Lightbulb}
+                    title="台灣人在日本買房前，先轉換這五個觀念"
+                    description="從實坪計算到出價文化——看懂 5 個關鍵差異，切換日本置產思維。"
+                    open={isStepOpen("concepts")}
+                    onToggle={() => toggleStep("concepts")}
+                  />
+
+                  {/* 用站內既有的卡片語彙：灰底卡片 + 白色子欄位 + 小方塊綠標題 + 左側綠條提醒，
+                      與「簽約文件」「流程步驟」等區塊同一套寫法。 */}
+                  {isStepOpen("concepts") && (
+                  <div className="space-y-4">
+                    {taiwanJapanComparisons.map((item) => (
+                      <article key={item.id} className="border border-zinc-200 bg-[#F5F8F6] p-5">
+                        <h4 className="mb-4 flex items-center gap-2 border-b border-zinc-300 pb-3 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
+                          <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
+                            {item.number.replace(/^0/, "")}
+                          </span>
+                          <span>{item.title}</span>
+                        </h4>
+
+                        <div className="grid grid-cols-1 gap-4 font-sans md:grid-cols-2">
+                          <div className="border border-zinc-200 bg-white p-4">
+                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#66736C]">
+                              <span className="h-2 w-2 bg-[#8A9590]" />
+                              <span>台灣常見理解</span>
+                            </h5>
+                            <p className="text-xs leading-relaxed text-zinc-700 md:text-sm">{item.taiwan}</p>
+                          </div>
+                          <div className="border border-zinc-200 bg-white p-4">
+                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#00a174]">
+                              <span className="h-2 w-2 bg-[#00a174]" />
+                              <span>日本實務</span>
+                            </h5>
+                            <p className="text-xs leading-relaxed text-zinc-700 md:text-sm">{item.japan}</p>
+                          </div>
+                        </div>
+
+                        <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
+                          <strong className="mr-2 text-[#007d5a]">Linus 實務提醒</strong>
+                          {item.advice}
                         </p>
-                      </div>
-                      
-                      {/* Flow Type Switcher */}
-                      <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans text-xs">
+                      </article>
+                    ))}
+                  </div>
+                  )}
+                </section>
+              )}
+
+              {/* SECTION: STEPS & FLOWS */}
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
+                <div className="space-y-6">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                    <SectionHeading
+                      icon={MapPin}
+                      title="日本買房交易完整流程"
+                      description="全款與貸款兩條路：掌握出價、審查到交屋的時間節奏，安心完成跨國置產。"
+                      open={isStepOpen("flow")}
+                      onToggle={() => toggleStep("flow")}
+                      action={
+                        /* Flow Type Switcher */
+                        <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans text-xs">
                         <button
                           onClick={() => setSelectedFlowType("cash")}
                           className={`px-4 py-2 font-bold cursor-pointer transition-all ${
@@ -288,25 +617,29 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         >
                           銀行貸款交易流程
                         </button>
-                      </div>
-                    </div>
+                        </div>
+                      }
+                    />
 
                     {/* Render Stepper */}
+                    {isStepOpen("flow") && (
                     <div className="space-y-6">
                       {selectedFlowType === "cash" ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                           {buyHouseCashSteps.map((step, sIdx) => (
                             <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
-                              <span className="absolute top-4 right-4 text-3xl font-bold text-[#00a174]/15 select-none font-sans">
-                                {step.step}
-                              </span>
                               <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
-                                <span className="text-[#00a174] font-sans font-bold">{step.step}</span>
+                                <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">{step.step}</span>
                                 <span>{step.title}</span>
                               </h4>
                               <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
                                 {step.description}
                               </p>
+                              <div className="mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-3 font-sans text-[11px] leading-relaxed">
+                                {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
+                                {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
+                                {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
+                              </div>
                               {step.warning && (
                                 <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
                                   {step.warning}
@@ -320,22 +653,18 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {buyHouseLoanSteps.map((step, sIdx) => (
                               <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
-                                <span className="absolute top-4 right-4 text-3xl font-bold text-[#00a174]/15 select-none font-sans">
-                                  {step.step}
-                                </span>
                                 <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
-                                  <span className="text-[#00a174] font-sans font-bold">{step.step}</span>
+                                  <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">{step.step}</span>
                                   <span>{step.title}</span>
                                 </h4>
                                 <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
                                   {step.description}
                                 </p>
-                                {step.points && step.points.map((pt, pIdx) => (
-                                  <p key={pIdx} className="mt-1.5 text-xs text-zinc-500 font-sans flex items-start gap-1">
-                                    <span className="text-[#00a174] font-bold">•</span>
-                                    <span>{pt}</span>
-                                  </p>
-                                ))}
+                                <div className="mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-3 font-sans text-[11px] leading-relaxed">
+                                  {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
+                                  {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
+                                  {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
+                                </div>
                                 {step.warning && (
                                   <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
                                     {step.warning}
@@ -347,19 +676,21 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </div>
                       )}
                     </div>
+                    )}
                   </section>
 
                   {/* Signing documents requirements */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 transition-all duration-300 hover:shadow-colored-soft">
-                    <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-[#00a174]" />
-                      <span>{signingDocuments.title}</span>
-                    </h3>
-                    <p className="mb-5 text-xs leading-relaxed text-zinc-500 font-sans">
-                      以下為常見準備資料；實際所需文件、正本／影本、發行期限與譯本要求，仍須依買方身分、付款方式、物件及司法書士或金融機構的個案指示確認。
-                    </p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                    <SectionHeading
+                      icon={FileText}
+                      title={signingDocuments.title}
+                      description="清單式整理台日身分必備文件！按身分與付款方式超前部署，過戶登記不卡關。"
+                      open={isStepOpen("documents")}
+                      onToggle={() => toggleStep("documents")}
+                    />
+
+                    {isStepOpen("documents") && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans">
                       <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
                         <h4 className="font-bold text-sm text-[#00a174] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
                           <span className="w-2 h-2 bg-[#00a174]"></span>
@@ -390,23 +721,81 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </ul>
                       </div>
                     </div>
+                    )}
                   </section>
                 </div>
               )}
 
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
+                <section className="border border-[#DDE3DF] bg-white p-5 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                  <SectionHeading
+                    icon={ReceiptText}
+                    title="日本房產稅務與持有成本整理"
+                    description="釐清評價額與市價差異：一手掌握購入規費、年度持稅與賣房資本利得稅。"
+                    open={isStepOpen("tax")}
+                    onToggle={() => toggleStep("tax")}
+                  />
+
+                  {isStepOpen("tax") && (
+                  <>
+                  {/* 與上面「五個觀念」比較表同一套卡片語彙 */}
+                  <div className="space-y-4">
+                    {taxLifecycle.map((item, index) => (
+                      <article key={item.stage} className="border border-zinc-200 bg-[#F5F8F6] p-5">
+                        <div className="mb-4 border-b border-zinc-300 pb-3">
+                          <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
+                            <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
+                              {index + 1}
+                            </span>
+                            <span>{item.stage}</span>
+                          </h4>
+                          <p className="mt-2 font-sans text-xs leading-relaxed text-zinc-600 md:text-sm">{item.summary}</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4 font-sans md:grid-cols-3">
+                          {item.details.map(detail => (
+                            <div key={detail.title} className="border border-zinc-200 bg-white p-4">
+                              <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#00a174]">
+                                <span className="h-2 w-2 shrink-0 bg-[#00a174]" />
+                                <span>{detail.title}</span>
+                              </h5>
+                              <ul className="space-y-2 text-xs leading-relaxed text-zinc-700 md:text-sm">
+                                {detail.points.map(point => (
+                                  <li key={point} className="flex items-start gap-2">
+                                    <span className="font-bold text-[#00a174]">✓</span>
+                                    <span>{point}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+
+                        <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
+                          <strong className="mr-2 text-[#007d5a]">Linus 實務提醒</strong>
+                          {item.note}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+
+                  <p className="mt-4 font-sans text-[10px] leading-relaxed text-zinc-400">
+                    制度基準：2026年7月。上方先以現行一般稅率與常見住宅特例說明；正式精算時，再以物件的固定資產稅評價證明、用途、面積、屋齡及買方稅務身分計算。
+                  </p>
+                  </>
+                  )}
+                </section>
+              )}
+
               {/* SECTION: LOAN COMPARISON */}
-              {(buyCategory === "all" || buyCategory === "loans") && (
-                <div className="space-y-8">
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
-                    <div>
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Landmark className="w-5 h-5 text-[#00a174]" />
-                        <span>海外買方融資方案整理</span>
-                      </h3>
-                      <p className="text-xs text-zinc-500 font-sans mt-1">
-                        若不持有日本長期居留資格，可諮詢提供海外買方方案的金融機構。以下為本站蒐集的方案示例，不代表完整名單或目前一定受理：
-                      </p>
-                    </div>
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "loans") && (
+                <div className="space-y-6">
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                    <SectionHeading
+                      icon={Landmark}
+                      title="海外買方融資方案整理"
+                      description="非在日居住也能貸！精選台系銀行日本分行融資條件，掌握成數、利率與門檻。"
+                    />
 
                     <div className="space-y-5">
                       {taiwaneseBanks.map((bank, bIdx) => (
@@ -478,16 +867,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Japanese Banks */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
-                    <div>
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Percent className="w-5 h-5 text-[#00a174]" />
-                        <span>在日工作者融資方案整理</span>
-                      </h3>
-                      <p className="text-xs text-zinc-500 font-sans mt-1">
-                        如果您持有日本長期工作簽證（如技術人文知識國際業務、高度人才），在日本有穩定正社員工作與繳稅紀錄：
-                      </p>
-                    </div>
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                    <SectionHeading
+                      icon={Percent}
+                      title="在日工作者融資方案整理"
+                      description="在日本就業的安心購屋指南：評估正社員年收門檻、在留資格與低利率住宅貸款。"
+                    />
 
                     <div className="grid grid-cols-1 items-start gap-5 font-sans md:grid-cols-2 xl:grid-cols-3">
                       {japaneseBanks.map((bank, idx) => (
@@ -539,19 +924,15 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               )}
 
               {/* SECTION: MINPAKU & RYOKAN */}
-              {(buyCategory === "all" || buyCategory === "minpaku") && (
-                <div className="space-y-8">
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "minpaku") && (
+                <div className="space-y-6">
                   {/* Minpaku District Rules */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-8 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="border-b border-zinc-200 pb-5">
-                      <h3 className="text-xl font-bold flex items-start gap-2">
-                        <Map className="w-5 h-5 mt-0.5 shrink-0 text-[#00a174]" />
-                        <span>東京都 23 區住宅宿泊事業條例整理</span>
-                      </h3>
-                      <p className="text-xs text-zinc-500 font-sans mt-2 leading-relaxed">
-                        適用《住宅宿泊事業法（民泊新法）》的物件，不是旅館業許可。中央法規上限為一年 180 天；各區可再加上區域、星期與管理限制。
-                      </p>
-                    </div>
+                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
+                    <SectionHeading
+                      icon={Map}
+                      title="東京都 23 區住宅宿泊事業條例整理"
+                      description="180 天營業上限與區域天條！看懂東京都 23 區民泊新法規範，避開限制地雷區。"
+                    />
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 border border-zinc-200 font-sans text-xs">
                       <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
@@ -621,7 +1002,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   </section>
 
                   {/* Ryokan requirements */}
-                  <section className="border border-[#DDE3DF] bg-white p-6 md:p-8 space-y-6 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
+                  <section className="border border-[#DDE3DF] bg-white p-5 md:p-6 space-y-3 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setRyokanExpanded(current => !current)}
@@ -689,7 +1070,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               )}
 
               {/* SECTION: QA */}
-              {(buyCategory === "all" || buyCategory === "qa") && (
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "qa") && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見日本買房與投資問題 Q&A</span>

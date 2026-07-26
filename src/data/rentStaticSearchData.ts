@@ -1,3 +1,5 @@
+import { matchesAllTokens, tokenizeQuery } from "../lib/search";
+
 export type RentStaticSectionId = "sop" | "documents" | "routes" | "reminders";
 
 export interface ScreeningDocumentProfile {
@@ -26,7 +28,7 @@ export const domesticScreeningNotice =
   "境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。";
 
 export const screeningDocumentDisclaimer =
-  "以上為 Linus 的申請準備對照，不是所有物件一律要求的固定清單。管理公司、保證公司、簽證狀態與個別案件可能追加、減少或改用其他文件，送件前請以該物件最新書面要求為準。";
+  "以上為 Linus 整理的申請對照表；不同管理公司會依您的簽證與工作條件微調文件清單，送件前均會為您核對最新需求。";
 
 export const overseasSop = {
   badge: "海外審査",
@@ -96,8 +98,8 @@ export const applicationRoutes = [
 export const processReminders = [
   "不內見找房建議於預計入住日前約 1.5 個月開始；若需要內見，建議確定入住日期後，於入住前 1 個月內開始找房即可。因為日本房源基本上是無法付訂金保留的，熱門物件一上架便會很快被租走。",
   "若在留卡首次登錄的地址只是暫時住所，建議等入住正式租屋處並完成住址變更後，再辦理郵局或銀行帳戶，可避免後續因地址變更而需重新辦理相關手續。",
-  "審查期間收到水電、瓦斯或網路代辦業者的電話、簡訊或 Email，通常是管理公司合作的生活服務代辦，和仲介未必有關；不需要時可直接婉拒，但指定供應商仍應以物件條件為準。",
-  "初期精算書是依當下條件製作的參考；保證公司初期費、月額費與火災保險的付款方式，可能在審查或最終契約條件確定後調整，請以正式文件為準。",
+  "審查期間收到水電、瓦斯或網路代辦業者的電話、簡訊或 Email，通常是管理公司合作的生活服務代辦，和仲介未必有關；不需要時直接婉拒即可，部分物件若有指定合作供應商，再依房源規定配合即可。",
+  "初期精算書是依當下條件製作的參考；保證公司初期費、月額費與火災保險的付款方式，可能在審查或最終契約條件確定後調整，精算金額均以正式開立的契約與帳單金額為準。",
   "第一次房租自動扣款若來不及扣到，可能改由保證公司通知匯款，或寄送帳單至住處超商繳費；收到通知後請在期限內處理。"
 ];
 
@@ -152,8 +154,8 @@ export function hasMinimumKnowledgeSearchLength(query: string) {
 
 export function getRentStaticMatches(query: string, category: string): RentStaticSectionId[] {
   if (!hasMinimumKnowledgeSearchLength(query) || (category !== "all" && category !== "steps")) return [];
-  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const queryTokens = tokenizeQuery(query);
   return staticSearchSections
-    .filter(section => section.text.toLocaleLowerCase().includes(normalizedQuery))
+    .filter(section => matchesAllTokens(section.text, queryTokens))
     .map(section => section.id);
 }

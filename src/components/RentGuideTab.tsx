@@ -207,7 +207,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
                   <input
                     type="text"
-                    placeholder="在知識庫中搜尋 (如：敷金)..."
+                    placeholder="搜尋租屋知識（如：敷金）..."
                     minLength={2}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}

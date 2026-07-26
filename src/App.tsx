@@ -13,6 +13,7 @@ import { budgetModifiers } from "./data/rentGuideData";
 import { hasTowerMansionSupport } from "./lib/calcRules";
 import { RentGuideTab } from "./components/RentGuideTab";
 import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
+import { buildHaystack, matchesAllTokens, tokenizeQuery } from "./lib/search";
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
@@ -398,8 +399,9 @@ export default function App() {
   const isKnowledgeSearchActive = hasMinimumKnowledgeSearchLength(searchQuery);
 
   const getFilteredItems = () => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-    
+    // 切成多個關鍵字後全部都要命中，這樣「敷金 禮金」這種查法才有結果
+    const queryTokens = tokenizeQuery(searchQuery);
+
     // Step 1: Filter by category
     let matchedInitialFees: InitialFeeItem[] = [];
     let matchedSpecialTerms = [];
@@ -421,29 +423,17 @@ export default function App() {
 
     // Step 2: Filter by search query
     if (isKnowledgeSearchActive) {
-      matchedInitialFees = matchedInitialFees.filter(
-        f => f.name.toLowerCase().includes(normalizedQuery) || 
-             (f.jpName && f.jpName.toLowerCase().includes(normalizedQuery)) ||
-             f.description.toLowerCase().includes(normalizedQuery) ||
-             (f.warning && f.warning.toLowerCase().includes(normalizedQuery)) ||
-             (f.keyPoints && f.keyPoints.some(point => point.toLowerCase().includes(normalizedQuery)))
+      matchedInitialFees = matchedInitialFees.filter(f =>
+        matchesAllTokens(buildHaystack(f.name, f.jpName, f.description, f.warning, f.keyPoints), queryTokens)
       );
-      matchedSpecialTerms = matchedSpecialTerms.filter(
-        t => t.name.toLowerCase().includes(normalizedQuery) ||
-             (t.jpName && t.jpName.toLowerCase().includes(normalizedQuery)) ||
-             t.description.toLowerCase().includes(normalizedQuery) ||
-             (t.details && t.details.some(d => d.toLowerCase().includes(normalizedQuery)))
+      matchedSpecialTerms = matchedSpecialTerms.filter(t =>
+        matchesAllTokens(buildHaystack(t.name, t.jpName, t.description, t.details), queryTokens)
       );
-      matchedSteps = matchedSteps.filter(
-        s => s.name.toLowerCase().includes(normalizedQuery) ||
-             s.description.toLowerCase().includes(normalizedQuery) ||
-             s.duration.toLowerCase().includes(normalizedQuery) ||
-             (s.details && s.details.some(detail => detail.toLowerCase().includes(normalizedQuery))) ||
-             (s.searchKeywords && s.searchKeywords.some(keyword => keyword.toLowerCase().includes(normalizedQuery)))
+      matchedSteps = matchedSteps.filter(s =>
+        matchesAllTokens(buildHaystack(s.name, s.description, s.duration, s.details, s.searchKeywords), queryTokens)
       );
-      matchedQA = matchedQA.filter(
-        q => q.question.toLowerCase().includes(normalizedQuery) ||
-             q.answer.toLowerCase().includes(normalizedQuery)
+      matchedQA = matchedQA.filter(q =>
+        matchesAllTokens(buildHaystack(q.question, q.answer), queryTokens)
       );
     }
 
@@ -489,22 +479,19 @@ export default function App() {
     }
     
     if (q) {
+      // 多關鍵字要全部命中（見 lib/search.ts）
+      const tokens = tokenizeQuery(buySearchQuery);
       if (buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") {
-        matchedDrawing = matchedDrawing.filter(
-          t => t.name.toLowerCase().includes(q) || 
-               (t.jpName && t.jpName.toLowerCase().includes(q)) || 
-               t.description.toLowerCase().includes(q)
+        matchedDrawing = matchedDrawing.filter(t =>
+          matchesAllTokens(buildHaystack(t.name, t.jpName, t.description), tokens)
         );
-        matchedFee = matchedFee.filter(
-          t => t.name.toLowerCase().includes(q) || 
-               (t.jpName && t.jpName.toLowerCase().includes(q)) || 
-               t.description.toLowerCase().includes(q)
+        matchedFee = matchedFee.filter(t =>
+          matchesAllTokens(buildHaystack(t.name, t.jpName, t.description), tokens)
         );
       }
       if (buyCategory === "all" || buyCategory === "qa") {
-        matchedQA = matchedQA.filter(
-          qa => qa.question.toLowerCase().includes(q) || 
-                qa.answer.toLowerCase().includes(q)
+        matchedQA = matchedQA.filter(qa =>
+          matchesAllTokens(buildHaystack(qa.question, qa.answer), tokens)
         );
       }
     }

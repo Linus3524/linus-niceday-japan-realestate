@@ -118,7 +118,7 @@ export function TermModal(props: TermModalProps) {
 
                   {selectedFee.warning && (
                     <div className="bg-red-50 border-l-4 border-[#00a174] p-3 text-xs text-[#00a174] leading-relaxed font-sans">
-                      <strong>⚠️ 注意及風險提醒：</strong>
+                      <strong>💡 實務重點與風險提醒：</strong>
                       <br />
                       {renderFormattedText(selectedFee.warning)}
                     </div>

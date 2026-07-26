@@ -185,7 +185,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
           </div>
         ))}
       </div>
-      <p className="border-t border-[#DDE3DF] bg-[#FAFCFB] p-3 text-[9px] leading-relaxed text-[#8A9590] font-sans">難度是搜尋條件的相對評估，不代表保證有空室或通過入居審査；實際結果仍以當下募集物件、管理公司與房東審査為準。</p>
+      <p className="border-t border-[#DDE3DF] bg-[#FAFCFB] p-3 text-[9px] leading-relaxed text-[#8A9590] font-sans">難度等級為依據市場行情給予的相對評估參考；實際招租空室與審查條件，以當下物件的市場狀況為準。</p>
     </section>
   );
 }

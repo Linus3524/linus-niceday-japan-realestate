@@ -85,6 +85,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const [loanRatio, setLoanRatio] = useState(70);
   const [annualRate, setAnnualRate] = useState(2.2);
   const [loanYears, setLoanYears] = useState(20);
+  const [showBuyFeeDetails, setShowBuyFeeDetails] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
@@ -1118,7 +1119,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 6).toLocaleString()} 円</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-2.5 text-justify leading-relaxed border-t border-zinc-200/60 pt-2 font-sans">
-                                💡 這是快速準備預算的倍數概算，不是費用報價。是否有禮金、押金、預付租金、保證費、保險與鑰匙費，均以特定物件精算書為準。
+                                💡 這是提供您初步抓預算的整體概算。實際是否有敷金、禮金或換鑰匙等優惠，會依每個物件當下的招租條件而定。
                               </p>
                             </div>
                           </div>
@@ -1202,25 +1203,56 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {/* Initial purchase fees section */}
                           <div className="pt-3 border-t border-dashed border-zinc-200">
-                            <span className="text-[#00a174] font-bold block mb-1">🗂 估算初期過戶費用 (諸費用 - 一次性)：</span>
-                            <div className="bg-[#F5F8F6] p-3 border border-zinc-200 space-y-1.5">
+                            <span className="text-[#00a174] font-bold block mb-1">購屋初期諸費用概算（一次性過戶費用）：</span>
+                            <div className="bg-[#F5F8F6] border border-zinc-200">
+                              <div className="space-y-1.5 p-3">
                               <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
-                                <span>現金一括買 (房價約 7%):</span>
+                                <span>現金全款購置 (約總價 7%):</span>
                                 <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.07 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
                               <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
-                                <span>融資貸款買 (房價約 9%):</span>
+                                <span>申請貸款購置 (約總價 9%):</span>
                                 <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
                               <p className="text-[10px] text-zinc-500 mt-1 pt-1.5 border-t border-dashed border-zinc-200 text-justify">
-                                說明：諸費用包含司法書士過戶規費、登錄免許稅、不動產取得稅、印花稅與仲介服務費，如利用銀行貸款，會額外產生銀行手續費及保證料。
+                                先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。
                               </p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setShowBuyFeeDetails(current => !current)}
+                                aria-expanded={showBuyFeeDetails}
+                                className="flex w-full items-center justify-between border-t border-zinc-200 bg-white px-3 py-2.5 text-left text-[11px] font-bold text-[#31443A] hover:text-[#00a174]"
+                              >
+                                <span>{showBuyFeeDetails ? "收合費用組成" : "展開費用組成"}</span>
+                                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showBuyFeeDetails ? "rotate-180" : ""}`} />
+                              </button>
+                              {showBuyFeeDetails && (
+                                <div className="grid gap-px border-t border-zinc-200 bg-zinc-200 sm:grid-cols-2">
+                                  {[
+                                    ["簽約時", "手付金、契約印紙稅；仲介費依媒介契約約定"],
+                                    ["交屋時", "尾款、仲介費、司法書士報酬、登錄免許稅及各項清算款"],
+                                    ["過戶後", "不動產取得稅通常於取得後另行收到通知"],
+                                    ["貸款案件", "銀行手續費、保證費、抵押權設定登記及保險費"],
+                                    ["大樓物件", "管理費、修繕積立金與固定資產稅等依交屋日清算"],
+                                    ["保險與個案費用", "火災／地震保險、估價、翻譯、海外送金等依案件發生"]
+                                  ].map(([label, description]) => (
+                                    <div key={label} className="bg-white p-3">
+                                      <strong className="block text-[10px] tracking-wide text-[#007d5a]">{label}</strong>
+                                      <p className="mt-1 text-[10px] leading-relaxed text-zinc-600">{description}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
+                            <p className="mt-2 text-[9px] leading-relaxed text-zinc-400">
+                              7%／9%是整體準備預算的概算，不代表每項費用固定按房價比例計算；實際金額會依成交型態、評價額、貸款方案與特例資格改變。
+                            </p>
                           </div>
 
                           {/* Loan payments section */}
                           <div className="pt-3 border-t border-dashed border-zinc-200">
-                            <span className="text-[#00a174] font-bold block mb-1">🏦 銀行貸款與月還款額試算：</span>
+                            <span className="text-[#00a174] font-bold block mb-1">銀行貸款與月還款額試算：</span>
                             <div className="bg-zinc-50 p-3 border border-zinc-200 space-y-1.5">
                               <div className="grid grid-cols-3 gap-2 pb-2 mb-2 border-b border-dashed border-zinc-200">
                                 <label className="text-[10px] text-zinc-600">貸款成數 (%)
