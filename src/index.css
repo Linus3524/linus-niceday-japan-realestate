@@ -1247,6 +1247,12 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   .hero-banner h1 {
     font-size: clamp(29px, 8.5vw, 42px);
   }
+  /* 手機版 UIUX 跟桌機不同（場景視覺已經換色，這裡是視覺下方的純文字區塊），
+     不需要跟著四場景變色，固定用橘子場景的橘/綠當作品牌色即可。 */
+  .hero-banner {
+    --hero-accent: #00A174 !important;
+    --hero-marker: #E6F6F1 !important;
+  }
   .desktop-threads-section,
   #primary-nav {
     display: none;
