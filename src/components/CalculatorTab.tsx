@@ -704,10 +704,16 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <strong className="text-[#B13818]">樣本有限：</strong>此區域已查找當地行情來源，但可用招租樣本仍不足，目前改以鄰近主要城市行情提供參考。
                       </div>
                     )}
-                    {getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
+                    {calcMode === "rent" && getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
                       <div className="text-[10px] text-[#3F5147] bg-[#e6f6f1] border border-[#9ee2cf] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
                         <span>資料基準：{getSelectedDistrictData().sourceNote}</span>
                         <span className="font-mono">{getSelectedDistrictData().sourceDate} · 含管理費／共益費</span>
+                      </div>
+                    )}
+                    {calcMode === "buy" && (
+                      <div className="text-[10px] text-[#3F5147] bg-[#e6f6f1] border border-[#9ee2cf] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
+                        <span>估算基準：行政區租金基準 × 區域參考收益率模型</span>
+                        <span className="font-mono">中古公寓概算 · 未含購置諸費用</span>
                       </div>
                     )}
                   </div>
