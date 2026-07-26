@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useEffect, useState, type ReactNode } from "react";
-import { Search, ArrowRight, FileText, X, HelpCircle, ChevronDown } from "lucide-react";
+import { Search, ArrowRight, FileText, X, ChevronDown } from "lucide-react";
 import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
 import {
   applicationRoutes,
@@ -112,6 +112,38 @@ export function RentGuideTab(props: RentGuideTabProps) {
   const isDocumentsOpen = documentsExpanded || isDocumentSearchResult;
   const showProcessSection =
     filtered.steps.length > 0 || showSop || showDocuments || showRoutes || showReminders;
+  const staticRentSearchItems = [
+    {
+      id: "sop" as const,
+      category: "申請流程",
+      title: "海外與日本境內申請流程",
+      text: `${overseasSop.description} ${domesticSop.description}`
+    },
+    {
+      id: "documents" as const,
+      category: "審査文件",
+      title: "審査所需資料與準備文件",
+      text: "依海外或日本境內申請、簽證與工作狀況，整理送審前應準備的身分、收入、就職及財力文件。"
+    },
+    {
+      id: "routes" as const,
+      category: "申請方式",
+      title: "一般申請、先行申請與先行契約",
+      text: applicationRoutes.map(route => `${route.title}：${route.condition}，${route.body}`).join(" ")
+    },
+    {
+      id: "reminders" as const,
+      category: "實務提醒",
+      title: "申請、付款與入住注意事項",
+      text: processReminders.join(" ")
+    }
+  ].filter(item => staticMatchSet.has(item.id));
+  const rentSearchResultCount =
+    filtered.fees.length +
+    filtered.terms.length +
+    filtered.steps.length +
+    filtered.qa.length +
+    staticRentSearchItems.length;
 
   return (
             <motion.div
@@ -231,33 +263,89 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 </div>
               )}
               {isSearchActive && (
-                <div className="text-sm text-zinc-600 px-1 font-sans">
-                  關鍵字「{searchQuery.trim()}」搜尋結果：
-                </div>
-              )}
-
-              {/* NO RESULTS VIEW */}
-              {hasNoResults && (
-                <div className="border border-dashed border-zinc-300 bg-white py-12 text-center space-y-4">
-                  <HelpCircle className="w-12 h-12 text-[#00a174] mx-auto opacity-75" />
-                  <div className="space-y-1">
-                    <p className="text-base font-bold">找不到符合「{searchQuery}」的項目</p>
-                    <p className="text-sm text-zinc-500 font-sans">請嘗試換一個詞，或者直接點擊 AI 顧問諮詢 Linus！</p>
+                <section className="border border-[#DDE3DF] bg-white p-5 md:p-8">
+                  <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#DDE3DF] pb-4">
+                    <div>
+                      <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">租屋知識搜尋結果</h3>
+                      <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
+                        「{searchQuery.trim()}」共找到 {rentSearchResultCount} 筆相關內容
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="shrink-0 font-sans text-xs font-bold text-[#007D5A] hover:text-[#00a174]"
+                    >
+                      清除搜尋
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => {
-                      setSearchQuery("");
-                      handleTabChange("chat");
-                    }}
-                    className="px-4 py-2 bg-[#1A2A22] text-white text-xs tracking-wider uppercase font-sans font-bold hover:bg-[#00a174] cursor-pointer"
-                  >
-                    開啟 AI 對話諮詢
-                  </button>
-                </div>
+
+                  {hasNoResults ? (
+                    <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
+                      <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
+                      <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「敷金」、「先行契約」、「保證公司」或「審査」。</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-7">
+                      {(filtered.fees.length > 0 || filtered.terms.length > 0) && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
+                          <div className="grid gap-3 md:grid-cols-2">
+                            {[...filtered.fees, ...filtered.terms].map(term => (
+                              <button
+                                key={`${term.name}-${term.jpName || ""}`}
+                                type="button"
+                                onClick={() => setSelectedFee(term)}
+                                className="border border-[#DDE3DF] bg-[#F8FAF9] p-4 text-left transition-colors hover:border-[#00a174]"
+                              >
+                                <strong className="font-serif text-sm text-[#1A2A22]">{term.name}</strong>
+                                {term.jpName && <span className="ml-2 font-sans text-[10px] text-zinc-500">{term.jpName}</span>}
+                                <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-zinc-600">{term.description}</p>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(filtered.steps.length > 0 || staticRentSearchItems.length > 0) && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">指南與流程</h4>
+                          <div className="grid gap-3 md:grid-cols-2">
+                            {filtered.steps.map(step => (
+                              <article key={step.id} className="border border-[#DDE3DF] bg-white p-4">
+                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">租屋申請流程</span>
+                                <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{step.name}</h5>
+                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{step.description}</p>
+                              </article>
+                            ))}
+                            {staticRentSearchItems.map(item => (
+                              <article key={item.id} className="border border-[#DDE3DF] bg-white p-4">
+                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
+                                <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
+                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{item.text}</p>
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {filtered.qa.length > 0 && (
+                        <div>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關租屋問答</h4>
+                          <div className="space-y-3">
+                            {filtered.qa.map((qa, idx) => (
+                              <QACard key={qa.id} question={qa.question} summary={qa.summary} answer={qa.answer} number={idx + 1} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </section>
               )}
 
               {/* CARD SECTOR: INITIAL FEES */}
-              {filtered.fees.length > 0 && (
+              {!isSearchActive && filtered.fees.length > 0 && (
                 <section className="space-y-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>初期費用與契約術語</span>
@@ -298,7 +386,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
 
               {/* CARD SECTOR: SPECIAL TERMS */}
-              {filtered.terms.length > 0 && (
+              {!isSearchActive && filtered.terms.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>房屋與設備術語</span>
@@ -343,7 +431,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
 
               {/* CARD SECTOR: PROCESS STEPS */}
-              {showProcessSection && (
+              {!isSearchActive && showProcessSection && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3">
                     <span>日本租屋正式申請與引渡流程 SOP</span>
@@ -584,7 +672,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
 
               {/* CARD SECTOR: Q&A */}
-              {filtered.qa.length > 0 && (
+              {!isSearchActive && filtered.qa.length > 0 && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見租屋問題 Q&A</span>

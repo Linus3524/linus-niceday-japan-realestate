@@ -10,6 +10,7 @@ import { QACard } from "./QACard";
 import { SectionHeading } from "./SectionHeading";
 import { matchesAllTokens, tokenizeQuery } from "../lib/search";
 import { JapaneseRuby } from "./JapaneseRuby";
+import { hasMinimumKnowledgeSearchLength } from "../data/rentStaticSearchData";
 
 interface BuyGuideTabProps {
   buyCategory: string;
@@ -174,10 +175,9 @@ const taxLifecycle = [
 
 export function BuyGuideTab(props: BuyGuideTabProps) {
   const { buyCategory, setBuyCategory, buySearchQuery, setBuySearchQuery, buyFiltered, selectedFlowType, setSelectedFlowType, setSelectedFee, handleTabChange } = props;
-  const normalizedBuyQuery = buySearchQuery.trim().toLowerCase();
   // 多關鍵字查詢（例如「民泊 天數」）要全部命中才算，避免空白被當成比對字元
   const buyQueryTokens = tokenizeQuery(buySearchQuery);
-  const isBuySearchActive = normalizedBuyQuery.length > 0;
+  const isBuySearchActive = hasMinimumKnowledgeSearchLength(buySearchQuery);
   const [expandedBanks, setExpandedBanks] = useState<Set<string>>(new Set());
   const [expandedMinpakuWards, setExpandedMinpakuWards] = useState<Set<string>>(new Set());
   const [ryokanExpanded, setRyokanExpanded] = useState(false);
@@ -328,7 +328,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               </div>
  
               {/* Grid Control & Search Block */}
-              <div className="border border-[#DDE3DF] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center" id="buy-filter-bar">
+              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="buy-filter-bar">
                 {/* Horizontal Category selectors */}
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
@@ -363,10 +363,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   <input
                     type="text"
                     placeholder="搜尋買房知識（如：貸款）..."
+                    minLength={2}
                     value={buySearchQuery}
                     onChange={(e) => {
                       setBuySearchQuery(e.target.value);
-                      if (!["all", "drawing", "fee", "qa"].includes(buyCategory) && e.target.value.trim()) {
+                      if (!["all", "drawing", "fee", "qa"].includes(buyCategory) && hasMinimumKnowledgeSearchLength(e.target.value)) {
                         setBuyCategory("all");
                       }
                     }}
@@ -382,6 +383,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   )}
                 </div>
               </div>
+
+              {buySearchQuery.trim() && !isBuySearchActive && (
+                <div className="border-l-4 border-[#DCC8A1] bg-[#FFF9ED] px-4 py-3 text-sm text-[#66583D] font-sans">
+                  請輸入至少 2 個字的完整詞，例如「取得稅」或「住宅貸款」。
+                </div>
+              )}
 
               {isBuySearchActive && (
                 <section className="border border-[#DDE3DF] bg-white p-5 md:p-8">

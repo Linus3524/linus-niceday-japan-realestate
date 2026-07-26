@@ -457,7 +457,7 @@ export default function App() {
 
   // Filter Buy House items
   const getFilteredBuyItems = () => {
-    const q = buySearchQuery.trim().toLowerCase();
+    const isBuyKnowledgeSearchActive = hasMinimumKnowledgeSearchLength(buySearchQuery);
     
     let matchedDrawing = buyHouseDrawingTerms;
     let matchedFee = buyHouseFeeTerms;
@@ -478,7 +478,7 @@ export default function App() {
       matchedQA = [];
     }
     
-    if (q) {
+    if (isBuyKnowledgeSearchActive) {
       // 多關鍵字要全部命中（見 lib/search.ts）
       const tokens = tokenizeQuery(buySearchQuery);
       if (buyCategory === "all" || buyCategory === "drawing" || buyCategory === "fee") {
