@@ -257,8 +257,8 @@ export function InteractiveFloorPlan() {
                 <path d="M596 839V852" />
                 <rect x="846" y="839" width="235" height="13" />
                 <path d="M963.5 839V852" />
-                <path d="M1059 76H1074V196H1059M1066 76V196" />
-                <path d="M1059 224H1074V380H1059M1066 224V380" />
+                <path d="M1061 76H1072V196H1061M1066.5 76V196" />
+                <path d="M1061 224H1072V380H1061M1066.5 224V380" />
                 <path d="M401 184H411V277H401M406 184V277" />
               </g>
 
