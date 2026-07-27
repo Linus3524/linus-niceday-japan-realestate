@@ -521,17 +521,17 @@ export const buyHouseLoanSteps: BuyHouseFlowStep[] = [
 export const signingDocuments = {
   title: "日本買房簽約與過戶常見文件",
   residenceGroup: {
-    title: "在日居民（持有在留卡 / 具中長期簽證者）",
+    title: "在日居民（持有在留卡／具中長期簽證者）",
     items: [
       "住民票（需全體家族記載，且發行於 3 個月內。含個人編號 My Number 的通常不需提供）",
       "在留卡正本（需確認在留資格種類與有效期限）及護照正本",
       "印鑑證明書（買方辦理一般所有權移轉登記時，法務局原則上不要求；但賣方公司、仲介或司法書士的交易流程，以及貸款與抵押權設定，可能另外要求）",
       "印章（一般所有權移轉登記的買方可使用認印；簽約或貸款是否須使用實印，依賣方公司、仲介、司法書士及金融機構要求確認）",
-      "課稅證明書 / 源泉徵收票（若辦理貸款，需提供最近 1-3 年的所得、繳稅及扣繳憑單紀錄）"
+      "課稅證明書／源泉徵收票（若辦理貸款，需提供最近 1-3 年的所得、繳稅及扣繳憑單紀錄）"
     ]
   },
   nonResidenceGroup: {
-    title: "非在日居民（純海外投資人 / 台灣買方）",
+    title: "非在日居民（純海外投資人／台灣買方）",
     items: [
       "台灣護照正本及影本（本人確認及司法書士核對身分使用）",
       "台灣身分證正本及影本（核對本人身分及台灣基本資料使用）",
@@ -545,7 +545,7 @@ export const signingDocuments = {
 
 export const taiwaneseBanks: TaiwaneseBankItem[] = [
   {
-    name: "中國信託銀行 (CTBC Bank / 東京之星)",
+    name: "中國信託銀行 (CTBC Bank／東京之星)",
     object: "個人：具中華民國國籍，且在台灣有穩定工作與資產者。法人：於日本設立法人持有者。",
     ageLimit: "借款人年紀 + 貸款年限不超過 75 歲。",
     incomeAsset: "年收入要求：須達 1,000 萬日圓以上（約合新台幣 215 萬元以上）；或在台淨資產達 3,000 萬日圓以上（約新台幣 640 萬元以上）。",
@@ -711,8 +711,8 @@ export const taiwaneseBanks: TaiwaneseBankItem[] = [
 export const japaneseBanks: JapaneseBankItem[] = [
   {
     name: "三井住友銀行 (SMBC)",
-    rate: "變動 0.925%～ / 固定 2.68%～",
-    visaReq: "技術簽證 / 1年以上工作簽證 (必須正社員且非永住)",
+    rate: "變動 0.925%～／固定 2.68%～",
+    visaReq: "技術簽證／1年以上工作簽證 (必須正社員且非永住)",
     workYears: "同公司3個月以上(限2成首付)；同公司3年以上(可挑戰0首付)",
     incomeReq: "300萬日圓以上",
     downPayment: "1～3成（視信用條件，可挑戰 0 首付）",
@@ -722,8 +722,8 @@ export const japaneseBanks: JapaneseBankItem[] = [
   },
   {
     name: "三菱UFJ銀行 (MUFG)",
-    rate: "變動 0.595%～ / 固定 1.36%～",
-    visaReq: "技術簽證 / 1年以上工作簽證",
+    rate: "變動 0.595%～／固定 1.36%～",
+    visaReq: "技術簽證／1年以上工作簽證",
     workYears: "同公司 3 年以上",
     incomeReq: "300萬日圓以上",
     downPayment: "約 2 成起",
@@ -733,8 +733,8 @@ export const japaneseBanks: JapaneseBankItem[] = [
   },
   {
     name: "みずほ銀行 (Mizuho)",
-    rate: "變動 0.525%～0.725% / 固定 1.8%～",
-    visaReq: "高度人才簽證 / 高度人才分數70分以上 / 永住申請中 (必須永住申請回執單)",
+    rate: "變動 0.525%～0.725%／固定 1.8%～",
+    visaReq: "高度人才簽證／高度人才分數70分以上／永住申請中 (必須永住申請回執單)",
     workYears: "同公司 1 年以上 (轉職需過試用期)",
     incomeReq: "700萬日圓以上 (要求偏高)",
     downPayment: "0 ～ 1 成起",
@@ -744,7 +744,7 @@ export const japaneseBanks: JapaneseBankItem[] = [
   },
   {
     name: "SMBC信託銀行 (PRESTIA)",
-    rate: "變動 0.88%～1.77% / 固定 1.89%～2.79%",
+    rate: "變動 0.88%～1.77%／固定 1.89%～2.79%",
     visaReq: "1年以上工作簽證",
     workYears: "同公司 1 年以上",
     incomeReq: "500萬日圓以上",
@@ -772,24 +772,24 @@ export const japaneseBanks: JapaneseBankItem[] = [
     incomeReq: "500萬日圓以上",
     downPayment: "0 ～ 1 成起（成數審査極富彈性）",
     amountLimit: "年收入 7 - 8 倍",
-    ageLimit: "無特別要求 / 舊耐震可談",
+    ageLimit: "無特別要求／舊耐震可談",
     note: "• 接受單身人士申請，來日需滿 3 年。\n• 極度看重借款人在日本帳戶的存款餘額（必須是在日工作合法所得，從海外大量匯入的資金不可認列）。"
   },
   {
     name: "三井住友信託L&F (SM Trust)",
     rate: "變動 4.05%～",
-    visaReq: "1年以上工作簽證 / 個人事業主 / 公司經營者",
+    visaReq: "1年以上工作簽證／個人事業主／公司經營者",
     workYears: "提供 3 個月以上工資流水證明即可",
     incomeReq: "200萬日圓以上（門檻極低）",
     downPayment: "約 3 - 5 成",
     amountLimit: "年收入 8 - 9 倍",
-    ageLimit: "無特別要求 / 舊耐震可談",
+    ageLimit: "無特別要求／舊耐震可談",
     note: "• 無特別在日年限或配偶限制，屬於融資型信託公司。利息偏高但審核極快，適合不符合大銀行資格的置產客戶。"
   },
   {
     name: "セゾンファンデックス (Saison)",
     rate: "變動 4.15%～",
-    visaReq: "1年以上工作簽證 / 個人事業主 / 公司經營者",
+    visaReq: "1年以上工作簽證／個人事業主／公司經營者",
     workYears: "提供 3 個月以上工資與扣稅流水證明",
     incomeReq: "200萬日圓以上",
     downPayment: "約 3 - 5 成（若公司有合作可降至 2 成）",
@@ -800,12 +800,12 @@ export const japaneseBanks: JapaneseBankItem[] = [
   {
     name: "あすか信用金庫 (Asuka)",
     rate: "變動 2.0%～",
-    visaReq: "1年以上工作簽證 / 個人事業主 / 公司經營者均可",
+    visaReq: "1年以上工作簽證／個人事業主／公司經營者均可",
     workYears: "同公司 2 年以上",
     incomeReq: "400萬日圓以上",
     downPayment: "約 2 成起",
     amountLimit: "年收入 7 - 8 倍",
-    ageLimit: "無特別要求 / 舊耐震可承作",
+    ageLimit: "無特別要求／舊耐震可承作",
     note: "• 接受單身人士申請，來日需滿 3 年以上。\n• 作為信用金庫，對在日華人的中小型企業及商務經營者審査更具彈性與理解力。"
   }
 ];
