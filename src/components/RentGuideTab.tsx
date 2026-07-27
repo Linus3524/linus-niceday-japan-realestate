@@ -353,10 +353,9 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filtered.fees.map((fee, idx) => (
-                      <div 
-                        key={idx} 
-                        className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
-                        onClick={() => setSelectedFee(fee)}
+                      <div
+                        key={idx}
+                        className="border border-[#DDE3DF] bg-white p-5 flex flex-col justify-between transition-all duration-300 relative"
                       >
                         <div>
                           <div className="flex justify-between items-start gap-2 mb-2">
@@ -369,7 +368,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                             {fee.description}
                           </p>
                         </div>
-                        
+
                         {fee.warning && (
                           <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200 text-xs text-[#00a174] line-clamp-1 font-sans">
                             {fee.warning}
@@ -377,7 +376,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         )}
                         <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans">
                           <span>初期費用／契約</span>
-                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFee(fee)}
+                            className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                          >
+                            查看說明 →
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -394,10 +399,9 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
-                      <div 
-                        key={idx} 
-                        className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft cursor-pointer relative"
-                        onClick={() => setSelectedFee(term)}
+                      <div
+                        key={idx}
+                        className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 relative"
                       >
                         <div className="flex justify-between items-start gap-3 mb-3">
                           <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
@@ -422,7 +426,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         )}
                         <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
                           <span>房屋／設備</span>
-                          <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明與 AI 諮詢 →</span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFee(term)}
+                            className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                          >
+                            查看說明與 AI 諮詢 →
+                          </button>
                         </div>
                       </div>
                     ))}

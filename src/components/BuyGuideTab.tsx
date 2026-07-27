@@ -477,10 +477,9 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.drawing.map((term, idx) => (
-                          <div 
-                            key={idx} 
-                            className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
-                            onClick={() => setSelectedFee(term)}
+                          <div
+                            key={idx}
+                            className="border border-[#DDE3DF] bg-white p-5 flex flex-col justify-between transition-all duration-300 relative"
                           >
                             <div>
                               <div className="flex justify-between items-start gap-2 mb-2">
@@ -495,7 +494,13 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>圖紙／物件</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
+                              <button
+                                type="button"
+                                onClick={() => setSelectedFee(term)}
+                                className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                              >
+                                查看說明 →
+                              </button>
                             </div>
                           </div>
                         ))}
@@ -512,10 +517,9 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.fee.map((term, idx) => (
-                          <div 
-                            key={idx} 
-                            className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-5 flex flex-col justify-between hover:shadow-colored-soft hover:-translate-y-0.5 transition-all duration-300 cursor-pointer relative"
-                            onClick={() => setSelectedFee(term)}
+                          <div
+                            key={idx}
+                            className="border border-[#DDE3DF] bg-white p-5 flex flex-col justify-between transition-all duration-300 relative"
                           >
                             <div>
                               <div className="flex justify-between items-start gap-2 mb-2">
@@ -530,7 +534,13 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                             </div>
                             <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
                               <span>交易／費用</span>
-                              <span className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174]">查看說明 →</span>
+                              <button
+                                type="button"
+                                onClick={() => setSelectedFee(term)}
+                                className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                              >
+                                查看說明 →
+                              </button>
                             </div>
                           </div>
                         ))}
