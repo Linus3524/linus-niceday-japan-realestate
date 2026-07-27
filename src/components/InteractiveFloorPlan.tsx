@@ -15,8 +15,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   L: {
     code: "L",
     nameEn: "Living Room",
-    nameZh: "客廳 (Living Room)",
-    jpName: "居間（リビング）",
+    nameZh: "客廳",
+    jpName: "居間・リビング",
     desc: "日常起居與社交核心空間。在日本 1LDK 構造中，通常與餐廚區無縫連通（開放式 LDK），並透過大面落地窗銜接戶外陽台，提供主要採光與通風。",
     practicalNote: "實務看屋重點：需確認電視主牆到沙發的視距（建議至少 2 公尺）、插座與網路壁孔位置，以及前往陽台的步行通道是否會被大型沙發擺設阻擋。",
     category: "room"
@@ -24,8 +24,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   D: {
     code: "D",
     nameEn: "Dining Room",
-    nameZh: "餐廳 (Dining Room)",
-    jpName: "食事室（ダイニング）",
+    nameZh: "餐廳",
+    jpName: "食事室・ダイニング",
     desc: "擺放餐桌椅並專用於用餐與家庭交流的區域，介於廚房料理區與客廳起居區之間，構成日本現代住宅常見的高效「動線黃金三角」。",
     practicalNote: "實務看屋重點：勿僅看平面圖空間；需預留座椅向後拉開與後方行走的通行淨寬（建議座椅後方留 60-80cm），避免餐桌放妥後擠壓到廚房進出路徑。",
     category: "room"
@@ -33,8 +33,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   K: {
     code: "K",
     nameEn: "Kitchen",
-    nameZh: "廚房 (Kitchen)",
-    jpName: "台所（キッチン）",
+    nameZh: "廚房",
+    jpName: "台所・キッチン",
     desc: "料理與洗滌區域，配置水槽、切菜工作檯面與雙口/三口瓦斯爐或 IH 爐。旁側緊鄰冰箱預留位 (R)，實現短距離的洗切炒烹飪動線。",
     practicalNote: "實務看屋重點：確認熱源類別（都市瓦斯/LP丙烷瓦斯/IH）、工作檯面寬度（是否好切菜）、抽油煙機風量，以及料理小家電（微波爐/電鍋）所需的專用迴路插座。",
     category: "room"
@@ -42,17 +42,17 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   S: {
     code: "S",
     nameEn: "Service Room / Storeroom",
-    nameZh: "納戶 / 服務室 (Service Room)",
+    nameZh: "納戶 / 服務室",
     jpName: "納戸・サービスルーム",
     desc: "因採光口（窗戶）面積未達日本《建築基準法》第 28 條規定之居室標準（採光面積小於地板面積 1/7），故法規上標示為 S (Service Room) 或納戶，實務上常作為書房、影音室、儲藏室或彈性多功能空間。",
-    practicalNote: "實務看屋重點：若預計當臥室使用，需特別確認是否有冷氣穿牆管孔 (貫通孔) 與獨立電壓插座；且未來此房屋欲出租或轉售時，法規上不可直接標示為標準臥室 (Bed Room)。",
+    practicalNote: "實務看屋重點：若預計當臥室使用，需特別確認是否有冷氣穿牆管孔與獨立電壓插座；且未來此房屋欲出租或轉售時，法規上不可直接標示為標準臥室。",
     category: "room"
   },
   WC: {
     code: "WC",
     nameEn: "Water Closet / Toilet",
-    nameZh: "獨立廁所 (Toilet)",
-    jpName: "トイレ（独立トイレスペース）",
+    nameZh: "獨立廁所",
+    jpName: "独立トイレ",
     desc: "完全獨立於浴室與洗面所之外的廁所空間（日本衛浴分離主流規格）。讓家人或同居者在有人泡澡淋浴時，仍可完全獨立且安心地如廁。",
     practicalNote: "實務看屋重點：親自坐上馬桶測試膝蓋與前門的距離、確認是否標配溫水洗淨便座 (免治馬桶)、上方有無衛生紙儲藏吊櫃，並注意門扇開合方向是否會與浴室門撞擊。",
     category: "bath"
@@ -60,7 +60,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   VANITY: {
     code: "洗面台",
     nameEn: "Independent Vanity",
-    nameZh: "獨立洗面台 (Vanity)",
+    nameZh: "獨立洗面台",
     jpName: "独立洗面化粧台",
     desc: "獨立設於脫衣過道的梳洗設備，整合洗臉盆、三面鏡櫃、單手彈開伸縮龍頭與電源插座，無須進入濕漉漉的浴室即可快速完成早晚洗漱、吹髮與化妝。",
     practicalNote: "實務看屋重點：確認鏡櫃內部收納深度、龍頭是否為可拉出沖洗頭皮的蓮蓬頭龍頭（シャンプー水栓）、防濺檯面設計，以及吹風機/電動牙刷所需的防水插座。",
@@ -69,8 +69,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   UB: {
     code: "UB",
     nameEn: "Unit Bath",
-    nameZh: "整體浴室 (Unit Bath)",
-    jpName: "ユニットバス（浴室）",
+    nameZh: "整體浴室",
+    jpName: "ユニットバス",
     desc: "工廠預製成型的一體化防漏防水浴室，整合浴缸、獨立淋浴區與專用排水孔。具備極高的熱絕緣保溫性與優異的氣密防潮性能。",
     practicalNote: "實務看屋重點：確認浴室尺寸代號（如 1616 或 1418）、是否配備自動追焚加熱功能（追炊き），以及浴室換氣乾燥暖房機（梅雨季室內晾衣與冬天防熱休克必備）。",
     category: "bath"
@@ -78,7 +78,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   CL: {
     code: "CL",
     nameEn: "Closet",
-    nameZh: "壁櫥 / 衣櫥 (Closet)",
+    nameZh: "壁櫥 / 衣櫥",
     jpName: "クローゼット",
     desc: "內嵌於牆體內部的收納衣櫃，配有橫向金屬吊衣桿與頂部天袋置物層板，完全不占用房間實際行走與擺放床鋪的地板面積。",
     practicalNote: "實務看屋重點：平面圖僅呈現長度，看屋時務必測量有效深度（懸掛大衣與西裝至少需 60cm），並確認摺疊門或拉門完全開啟時，是否會卡到鄰近的床頭櫃或家具。",
@@ -87,7 +87,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   WIC: {
     code: "WIC",
     nameEn: "Walk-in Closet",
-    nameZh: "步入式衣帽間 (Walk-in Closet)",
+    nameZh: "步入式衣帽間",
     jpName: "ウォークインクローゼット",
     desc: "人可直接走入的大容量獨立收納空間，內部四周設有多層隔板、吊衣桿與層架，能同時集中收納四季衣物、大型行李箱、棉被與季節性家電。",
     practicalNote: "實務看屋重點：WIC 的記載面積包含內部行走通道；看屋時需確認轉角處與高處層板是否好拿取、內部是否有通風換氣孔，以防台灣/日本夏季潮濕發霉。",
@@ -96,8 +96,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   SB: {
     code: "SB",
     nameEn: "Shoes Box",
-    nameZh: "鞋櫃 / 下駄箱 (Shoes Box)",
-    jpName: "シューズボックス（下駄箱）",
+    nameZh: "鞋櫃",
+    jpName: "シューズボックス・下駄箱",
     desc: "緊貼玄關牆面設置的高容量鞋類收納櫃，內設可自由調整高度的層板，底部常留有懸空區供擺放當天常穿的室外鞋。",
     practicalNote: "實務看屋重點：確認層板是否能彈性拆卸調整高度（用以擺放高跟鞋或長靴）、內部有無雨傘掛放架與長傘排水溝，以及櫃門打開時是否會阻擋玄關的行走動線。",
     category: "storage"
@@ -105,8 +105,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   ENT: {
     code: "玄",
     nameEn: "Entrance / Genkan",
-    nameZh: "玄關 (Entrance)",
-    jpName: "玄関（上がり框）",
+    nameZh: "玄關",
+    jpName: "玄関",
     desc: "連通室外與內部的換鞋緩衝空間。設有落塵土間與抬高之地板段差（上がり框），在傳統與現代日本文化中均為明確區隔乾淨室內的衛生防線。",
     practicalNote: "實務看屋重點：量測高低差高度、大門開啟淨寬度與轉角迴旋半徑，確保雙門雙開冰箱、大尺寸沙發與雙人床墊能順利搬運進房。",
     category: "room"
@@ -114,8 +114,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   W: {
     code: "W",
     nameEn: "Washing Machine Space",
-    nameZh: "洗衣機預留位 (Washing Space)",
-    jpName: "室内洗濯機置場（防水パン）",
+    nameZh: "洗衣機預留位",
+    jpName: "室内洗濯機置場",
     desc: "室內專用洗衣機擺放區，配有防溢水保護盤（防水パン）、專用防冷凝給水龍頭與防漏電接地保護插座。",
     practicalNote: "實務看屋重點：務必測量防水パン的內部淨尺寸（如常見 64cm×64cm 規格），並確認給水龍頭高度是否會阻擋歐規/日規滾筒式洗衣機的上開蓋或上方機身。",
     category: "equipment"
@@ -123,7 +123,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   R: {
     code: "R",
     nameEn: "Refrigerator Space",
-    nameZh: "冰箱預留位 (Refrigerator Space)",
+    nameZh: "冰箱預留位",
     jpName: "冷蔵庫置場",
     desc: "廚房料理區旁專門預留的冰箱擺設位置，緊鄰電源插座，方便在備餐與料理過程中無縫取用冷凍與冷藏食材。",
     practicalNote: "實務看屋重點：除了機身寬深外，兩側與後方需預留 1-2cm 的散熱空間；並需特別確認冰箱門開啟方向（左開/右開/對開）是否會撞擊旁邊的牆壁或廚房走道。",
@@ -132,8 +132,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   AC: {
     code: "AC",
     nameEn: "Air Conditioner",
-    nameZh: "冷氣預留位 / 變頻冷氣 (Air Conditioner)",
-    jpName: "エアコン（エアコン置場）",
+    nameZh: "冷氣預留位 / 變頻冷氣",
+    jpName: "エアコン",
     desc: "牆面上方專用的變頻壁掛冷氣安裝位，配置冷媒管/排水管穿牆貫通孔以及大功率專用單獨迴路插座 (100V/200V)。",
     practicalNote: "實務看屋重點：平面圖標示 AC 不代表隨屋附贈冷氣機！看屋/簽約前必須與仲介確認該冷氣屬於「設備（故障由房東修繕）」還是「前房客殘留物（故障自理）」，並核對插座電壓。",
     category: "equipment"
@@ -141,8 +141,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
   BALCONY: {
     code: "BALCONY",
     nameEn: "Balcony",
-    nameZh: "陽台 (Balcony)",
-    jpName: "バルコニー（専有使用部分）",
+    nameZh: "陽台",
+    jpName: "バルコニー",
     desc: "自客廳延伸出去的對外戶外空間，主要提供日常採光、通風與晾曬衣物。在日本法律上屬於社區全體共有、但授權該戶獨佔的「專有使用部分」。",
     practicalNote: "實務看屋重點：親自至陽台觀察座向採光、周邊遮蔽物、冷氣室外機擺放位置，並特別注意避難隔板與避難梯（避難ハッチ）周圍依《消防法》嚴禁堆放雜物。",
     category: "room"
@@ -429,21 +429,17 @@ export function InteractiveFloorPlan() {
           {currentItem ? (
             <div className="flex h-full flex-col space-y-3.5">
               <div>
-                <div className="flex items-center gap-2 border-b border-zinc-200/80 pb-2.5">
+                <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200/80 pb-2.5">
                   <span className="bg-[#00a174] text-white px-2 py-0.5 font-mono text-xs font-bold">
                     {currentItem.code}
                   </span>
-                  <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.nameZh}</h5>
+                  <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.jpName || currentItem.nameZh}</h5>
+                  <span className="bg-white border border-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-700 font-sans">
+                    {currentItem.nameZh}
+                  </span>
                 </div>
-                <div className="mt-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs text-zinc-400 font-medium">{currentItem.nameEn}</span>
-                    {currentItem.jpName && (
-                      <span className="bg-white border border-zinc-200 px-1.5 py-0.5 text-[11px] font-medium text-zinc-600">
-                        {currentItem.jpName}
-                      </span>
-                    )}
-                  </div>
+                <div className="mt-2.5 space-y-2">
+                  <p className="font-mono text-xs text-zinc-400 font-medium">{currentItem.nameEn}</p>
                   <p className="text-xs leading-relaxed text-zinc-700 text-justify">
                     {currentItem.desc}
                   </p>
