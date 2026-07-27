@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { parseTermDetail, usesCodeTags } from "../lib/termDetail";
+import { InteractiveFloorPlan } from "./InteractiveFloorPlan";
 
 // 把「標題：」開頭的片段加粗，維持條列原本的閱讀節奏。
 function renderInlineLabels(detail: string) {
@@ -34,6 +35,8 @@ export function TermDetailList({
   /** 收合時傳入完整清單，代號欄才能一律以展開後的最長代號決定寬度。 */
   allDetails?: string[];
 }) {
+  const isFloorPlanTerm = termName === "間取り";
+
   if (!usesCodeTags(termName)) {
     return (
       <div className="space-y-2.5">
@@ -56,7 +59,10 @@ export function TermDetailList({
     .reduce((longest, code) => (code.length > longest.length ? code : longest), "");
 
   return (
-    <div className="-mt-2.5 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-2.5 font-sans">
+    <div className="space-y-4">
+      {isFloorPlanTerm && <InteractiveFloorPlan />}
+
+      <div className="-mt-2.5 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-2.5 font-sans">
       <span aria-hidden="true" className="invisible h-0 overflow-hidden">
         <span className="block whitespace-nowrap border px-1.5 py-0.5 text-center font-mono text-[11px] leading-tight">
           {widestCode}
@@ -81,6 +87,7 @@ export function TermDetailList({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }
