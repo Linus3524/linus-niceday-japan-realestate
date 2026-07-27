@@ -277,14 +277,14 @@ export function InteractiveFloorPlan() {
                 <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
-              {/* Bi-fold doors (UB, CL, WIC) with white fill and black outline */}
+              {/* Bi-fold doors (UB, CL, WIC) with white fill, black outline, 100% aligned with wall borders */}
               <g fill={paper} stroke={line} strokeWidth="1.5">
-                {/* UB folding door */}
-                <polygon points="401,185 388,207 401,230 401,231 388,253 401,276 407,276 394,253 407,231 407,230 394,207 407,185" />
-                {/* CL bi-fold closet door */}
-                <polygon points="1059,77 1036,106 1059,136 1059,137 1036,166 1059,195 1065,195 1042,166 1065,137 1065,136 1042,106 1065,77" />
-                {/* WIC bi-fold closet door */}
-                <polygon points="1059,225 1036,263 1059,302 1059,303 1036,341 1059,379 1065,379 1042,341 1065,302 1065,301 1042,263 1065,225" />
+                {/* UB folding door: wall x=401..411, y=184..277 */}
+                <polygon points="401,184 388,207 401,230 401,231 388,253 401,277 411,277 398,253 411,231 411,230 398,207 411,184" />
+                {/* CL bi-fold closet door: wall x=1061..1072, y=76..196 */}
+                <polygon points="1061,76 1036,106 1061,136 1061,137 1036,166 1061,196 1072,196 1047,166 1072,137 1072,136 1047,106 1072,76" />
+                {/* WIC bi-fold closet door: wall x=1061..1072, y=224..380 */}
+                <polygon points="1061,224 1036,263 1061,302 1061,303 1036,341 1061,380 1072,380 1047,341 1072,302 1072,301 1047,263 1072,224" />
               </g>
 
               {/* UB bathtub */}
