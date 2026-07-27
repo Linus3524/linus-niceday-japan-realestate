@@ -79,7 +79,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Shoes Box",
     nameZh: "鞋櫃 / 下駄箱",
     jpName: "シューズボックス",
-    desc: "玄關處的專用鞋櫃，部分高階物件包含可存放雨傘與靴子的大型 Schuh-Cloak。",
+    desc: "玄關處的貼牆式專用鞋櫃，部分高階物件包含可存放雨傘與靴子的大型 Schuh-Cloak。",
     category: "storage"
   },
   W: {
@@ -122,7 +122,7 @@ export function InteractiveFloorPlan() {
             日本住宅平面圖 (1LDK + S)
           </h4>
           <p className="mt-1 text-xs text-zinc-500 font-sans">
-            移動游標至圖紙代號即可查看詳細空間定義與房仲提示
+            移動游標至圖紙代號區域即可查看詳細空間定義與房仲提示
           </p>
         </div>
         <span className="border border-zinc-300 bg-zinc-50 px-2 py-1 font-mono text-[11px] font-semibold text-zinc-700">
@@ -158,7 +158,7 @@ export function InteractiveFloorPlan() {
               {/* Outer Guideline Box */}
               <rect x="30" y="30" width="470" height="340" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="2 2" />
 
-              {/* --- ONLY ENGLISH ABBREVIATIONS ON DRAWING (NO MIXED CHINESE/JAPANESE/DIMENSIONS) --- */}
+              {/* --- REALISTIC CAD PROPORTIONS (SLEEK WALL-MOUNTED SHOE BOX SB) --- */}
 
               {/* 1. UB */}
               <g
@@ -231,12 +231,13 @@ export function InteractiveFloorPlan() {
                 <rect x="125" y="175" width="50" height="35" fill="none" stroke="#94a3b8" strokeWidth="1" />
               </g>
 
-              {/* 4. SB */}
+              {/* 4. Entrance Hall & SB (Sleek Wall-mounted Shoe Box) */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("SB")}
                 onClick={() => setActiveCode("SB")}
               >
+                {/* Entrance Floor Hall */}
                 <rect
                   x="30"
                   y="270"
@@ -246,24 +247,24 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
                   strokeWidth={activeCode === "SB" ? "2.5" : "1.5"}
                 />
-                {/* SB Shoes Box */}
+                {/* Sleek Wall-Mounted Shoes Box SB (Realistic Slim Cabinet along Left Wall) */}
                 <rect
-                  x="40"
-                  y="300"
-                  width="150"
-                  height="50"
+                  x="35"
+                  y="280"
+                  width="35"
+                  height="80"
                   fill="none"
                   stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
                   strokeWidth="1.5"
                 />
-                <text x="115" y="331" textAnchor="middle" fontSize="15" fontWeight="bold" fill={activeCode === "SB" ? "#00a174" : "#1e293b"}>
+                <text x="52.5" y="325" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "SB" ? "#00a174" : "#1e293b"}>
                   SB
                 </text>
               </g>
 
               {/* Front Door Swing Arc at Bottom Entrance */}
-              <path d="M 30 370 A 50 50 0 0 1 80 370" fill="none" stroke="#00a174" strokeWidth="1.5" strokeDasharray="2 2" />
-              <line x1="30" y1="370" x2="80" y2="370" stroke="#1A2A22" strokeWidth="3" />
+              <path d="M 80 370 A 50 50 0 0 1 130 370" fill="none" stroke="#00a174" strokeWidth="1.5" strokeDasharray="2 2" />
+              <line x1="80" y1="370" x2="130" y2="370" stroke="#1A2A22" strokeWidth="3" />
 
               {/* 5. K */}
               <g
@@ -452,7 +453,7 @@ export function InteractiveFloorPlan() {
               <line x1="340" y1="180" x2="500" y2="180" stroke="#1A2A22" strokeWidth="3" />
 
               {/* Balcony Outer Window Designation */}
-              <text x="350" y="388" textAnchor="middle" fontSize="11" fill="#475569" fontMono fontStyle="uppercase" letterSpacing="1">
+              <text x="350" y="388" textAnchor="middle" fontSize="11" fill="#475569" fontMono letterSpacing="1">
                 BALCONY
               </text>
             </svg>
