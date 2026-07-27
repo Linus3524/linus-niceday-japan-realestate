@@ -85,13 +85,15 @@ function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: Speci
 
   return (
     <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 relative">
-      <div className="flex justify-between items-start gap-3 mb-3">
-        <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
-          <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
-          {term.jpName && (
-            <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
-          )}
+      <div className="flex justify-between items-start gap-2 mb-3">
+        <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]">
+          <JapaneseRuby text={term.name} />
         </h4>
+        {term.jpName && (
+          <span className="shrink-0 text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">
+            {term.jpName}
+          </span>
+        )}
       </div>
       <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
 
