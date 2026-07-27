@@ -31,7 +31,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Kitchen",
     nameZh: "廚房",
     jpName: "台所",
-    desc: "開放式中島檯面，配置洗滌水槽、雙火瓦斯爐/IH電磁爐與料理空間。",
+    desc: "獨立或中島廚房，配置洗滌水槽、雙火瓦斯爐/IH電磁爐與料理檯面。",
     category: "room"
   },
   S: {
@@ -119,10 +119,10 @@ export function InteractiveFloorPlan() {
         <div>
           <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
             <span className="inline-block h-2.5 w-2.5 bg-[#00a174]" />
-            日本住宅平面圖 (間取り図 1LDK + S)
+            日本住宅平面圖 (1LDK + S)
           </h4>
           <p className="mt-1 text-xs text-zinc-500 font-sans">
-            移動游標至圖紙區域即可查看詳細空間定義與房仲提示
+            移動游標至圖紙代號即可查看詳細空間定義與房仲提示
           </p>
         </div>
         <span className="border border-zinc-300 bg-zinc-50 px-2 py-1 font-mono text-[11px] font-semibold text-zinc-700">
@@ -138,7 +138,7 @@ export function InteractiveFloorPlan() {
             <svg
               viewBox="0 0 560 400"
               className="h-full w-full select-none"
-              style={{ fontFamily: "'Inter', 'Hiragino Sans', 'Noto Sans CJK JP', sans-serif" }}
+              style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
             >
               {/* CAD Blue Grid Pattern */}
               <defs>
@@ -158,16 +158,9 @@ export function InteractiveFloorPlan() {
               {/* Outer Guideline Box */}
               <rect x="30" y="30" width="470" height="340" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="2 2" />
 
-              {/* ========================================================
-                  REALISTIC JAPANESE 1LDK LAYOUT:
-                  - Bottom-Left (30,270 to 200,370): 玄關 & SB (Shoes Box)
-                  - Mid-Left (30,150 to 200,270): 洗面脫衣室 & W (Washing Machine)
-                  - Top-Left (30,30 to 200,150): UB (Bath) & WC (Toilet)
-                  - Top-Right (340,30 to 500,180): S (Service Room 納戶) + CL + WIC
-                  - Center & Right (200,30 to 500,370): Open LDK (K, R, D, L, AC)
-                 ======================================================== */}
+              {/* --- ONLY ENGLISH ABBREVIATIONS ON DRAWING (NO MIXED CHINESE/JAPANESE/DIMENSIONS) --- */}
 
-              {/* 1. UB (Unit Bath / 整體浴室) - Top Left (30, 30, w: 100, h: 120) */}
+              {/* 1. UB */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("UB")}
@@ -182,15 +175,15 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "UB" ? "#00a174" : "#1A2A22"}
                   strokeWidth={activeCode === "UB" ? "2.5" : "1.5"}
                 />
-                {/* Bathtub CAD Contour */}
+                {/* Bathtub CAD contour */}
                 <rect x="38" y="38" width="84" height="60" fill="none" stroke={activeCode === "UB" ? "#00a174" : "#475569"} strokeWidth="1" />
                 <circle cx="52" cy="68" r="4" fill="none" stroke={activeCode === "UB" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <text x="80" y="128" textAnchor="middle" fontSize="12" fontWeight="bold" fill={activeCode === "UB" ? "#00a174" : "#1e293b"}>
+                <text x="80" y="118" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "UB" ? "#00a174" : "#1e293b"}>
                   UB
                 </text>
               </g>
 
-              {/* 2. WC (Water Closet / 獨立廁所) - Top Mid-Left (130, 30, w: 70, h: 120) */}
+              {/* 2. WC */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("WC")}
@@ -208,12 +201,12 @@ export function InteractiveFloorPlan() {
                 {/* Toilet Bowl CAD Contour */}
                 <path d="M 155 42 L 175 42 L 175 52 L 155 52 Z" fill={activeCode === "WC" ? "#a7f3d0" : "#e2e8f0"} stroke={activeCode === "WC" ? "#00a174" : "#475569"} strokeWidth="1" />
                 <path d="M 153 52 C 153 78, 177 78, 177 52 Z" fill="none" stroke={activeCode === "WC" ? "#00a174" : "#475569"} strokeWidth="1.2" />
-                <text x="165" y="128" textAnchor="middle" fontSize="12" fontWeight="bold" fill={activeCode === "WC" ? "#00a174" : "#1e293b"}>
+                <text x="165" y="118" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "WC" ? "#00a174" : "#1e293b"}>
                   WC
                 </text>
               </g>
 
-              {/* 3. 洗面室 & W (Washing Machine / 洗衣機位) - Mid Left (30, 150, w: 170, h: 120) */}
+              {/* 3. W */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("W")}
@@ -228,18 +221,17 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "W" ? "#00a174" : "#1A2A22"}
                   strokeWidth={activeCode === "W" ? "2.5" : "1.5"}
                 />
-                {/* 洗衣機防水盤 W */}
+                {/* Washing Machine Pan W */}
                 <rect x="40" y="165" width="55" height="55" fill="none" stroke={activeCode === "W" ? "#00a174" : "#475569"} strokeWidth="1" strokeDasharray="2 2" />
-                <text x="67.5" y="198" textAnchor="middle" fontSize="15" fontWeight="bold" fill={activeCode === "W" ? "#00a174" : "#1e293b"}>
+                <text x="67.5" y="198" textAnchor="middle" fontSize="16" fontWeight="bold" fill={activeCode === "W" ? "#00a174" : "#1e293b"}>
                   W
                 </text>
-                {/* 洗面台 */}
+                {/* Washbasin Sink Outline */}
                 <rect x="110" y="165" width="80" height="55" fill="none" stroke="#475569" strokeWidth="1" />
                 <rect x="125" y="175" width="50" height="35" fill="none" stroke="#94a3b8" strokeWidth="1" />
-                <text x="115" y="248" textAnchor="middle" fontSize="10" fill="#64748b">洗面脱衣室</text>
               </g>
 
-              {/* 4. 玄關 & SB (Shoes Box) - Bottom Left (30, 270, w: 170, h: 100) */}
+              {/* 4. SB */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("SB")}
@@ -254,20 +246,18 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
                   strokeWidth={activeCode === "SB" ? "2.5" : "1.5"}
                 />
-                <text x="115" y="300" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#334155">玄關 (Entrance)</text>
-                
                 {/* SB Shoes Box */}
                 <rect
                   x="40"
-                  y="315"
+                  y="300"
                   width="150"
-                  height="40"
+                  height="50"
                   fill="none"
                   stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
                   strokeWidth="1.5"
                 />
-                <text x="115" y="340" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "SB" ? "#00a174" : "#1e293b"}>
-                  SB (シューズボックス)
+                <text x="115" y="331" textAnchor="middle" fontSize="15" fontWeight="bold" fill={activeCode === "SB" ? "#00a174" : "#1e293b"}>
+                  SB
                 </text>
               </g>
 
@@ -275,7 +265,7 @@ export function InteractiveFloorPlan() {
               <path d="M 30 370 A 50 50 0 0 1 80 370" fill="none" stroke="#00a174" strokeWidth="1.5" strokeDasharray="2 2" />
               <line x1="30" y1="370" x2="80" y2="370" stroke="#1A2A22" strokeWidth="3" />
 
-              {/* 5. K (Kitchen) & R (Refrigerator) - Center Top (200, 30, w: 140, h: 110) */}
+              {/* 5. K */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("K")}
@@ -295,12 +285,12 @@ export function InteractiveFloorPlan() {
                 <circle cx="225" cy="63" r="7" fill="none" stroke={activeCode === "K" ? "#00a174" : "#334155"} strokeWidth="1" />
                 <circle cx="245" cy="63" r="7" fill="none" stroke={activeCode === "K" ? "#00a174" : "#334155"} strokeWidth="1" />
                 <rect x="265" y="50" width="30" height="26" stroke={activeCode === "K" ? "#00a174" : "#334155"} fill="none" strokeWidth="1" />
-                <text x="255" y="115" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "K" ? "#00a174" : "#1A2A22"}>
-                  K (廚房)
+                <text x="270" y="115" textAnchor="middle" fontSize="16" fontWeight="bold" fill={activeCode === "K" ? "#00a174" : "#1A2A22"}>
+                  K
                 </text>
               </g>
 
-              {/* R Area (Refrigerator Box) */}
+              {/* 6. R */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("R")}
@@ -316,12 +306,12 @@ export function InteractiveFloorPlan() {
                   strokeWidth="1.5"
                   strokeDasharray="2 2"
                 />
-                <text x="320" y="68" textAnchor="middle" fontSize="12" fontWeight="bold" fill={activeCode === "R" ? "#00a174" : "#1e293b"}>
+                <text x="320" y="68" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "R" ? "#00a174" : "#1e293b"}>
                   R
                 </text>
               </g>
 
-              {/* 6. S (Service Room / 納戶) - Top Right (340, 30, w: 160, h: 150) */}
+              {/* 7. S */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("S")}
@@ -336,15 +326,12 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "S" ? "#00a174" : "#1A2A22"}
                   strokeWidth={activeCode === "S" ? "2.5" : "1.5"}
                 />
-                <text x="420" y="115" textAnchor="middle" fontSize="16" fontWeight="bold" fill={activeCode === "S" ? "#00a174" : "#1A2A22"}>
+                <text x="420" y="125" textAnchor="middle" fontSize="20" fontWeight="bold" fill={activeCode === "S" ? "#00a174" : "#1A2A22"}>
                   S
-                </text>
-                <text x="420" y="135" textAnchor="middle" fontSize="11" fill="#475569">
-                  納戶 5.0帖 (服務室)
                 </text>
               </g>
 
-              {/* 7. CL (Closet / 衣櫥) inside Service Room S */}
+              {/* 8. CL */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("CL")}
@@ -360,12 +347,12 @@ export function InteractiveFloorPlan() {
                   strokeWidth={activeCode === "CL" ? "2" : "1"}
                 />
                 <path d="M 345 35 L 380 43 L 415 35" fill="none" stroke={activeCode === "CL" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <text x="380" y="65" textAnchor="middle" fontSize="11" fontWeight="bold" fill={activeCode === "CL" ? "#00a174" : "#1e293b"}>
+                <text x="380" y="65" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "CL" ? "#00a174" : "#1e293b"}>
                   CL
                 </text>
               </g>
 
-              {/* 8. WIC (Walk-in Closet / 步入式衣帽間) inside Service Room S */}
+              {/* 9. WIC */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("WIC")}
@@ -381,12 +368,12 @@ export function InteractiveFloorPlan() {
                   strokeWidth={activeCode === "WIC" ? "2" : "1"}
                 />
                 <line x1="425" y1="42" x2="490" y2="42" stroke={activeCode === "WIC" ? "#00a174" : "#475569"} strokeWidth="1" strokeDasharray="3 3" />
-                <text x="457.5" y="65" textAnchor="middle" fontSize="11" fontWeight="bold" fill={activeCode === "WIC" ? "#00a174" : "#1e293b"}>
+                <text x="457.5" y="65" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "WIC" ? "#00a174" : "#1e293b"}>
                   WIC
                 </text>
               </g>
 
-              {/* 9. D (Dining Area) - Center LDK (200, 140, w: 140, h: 100) */}
+              {/* 10. D */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("D")}
@@ -405,12 +392,12 @@ export function InteractiveFloorPlan() {
                 <rect x="230" y="160" width="75" height="45" stroke="#cbd5e1" strokeWidth="1.5" fill="none" />
                 <rect x="215" y="172" width="10" height="20" stroke="#cbd5e1" fill="#f8fafc" strokeWidth="1" />
                 <rect x="310" y="172" width="10" height="20" stroke="#cbd5e1" fill="#f8fafc" strokeWidth="1" />
-                <text x="270" y="222" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "D" ? "#00a174" : "#1A2A22"}>
-                  D (餐廳)
+                <text x="270" y="222" textAnchor="middle" fontSize="18" fontWeight="bold" fill={activeCode === "D" ? "#00a174" : "#1A2A22"}>
+                  D
                 </text>
               </g>
 
-              {/* 10. L (Living Area) - Center Bottom & Right LDK (200, 240, w: 300, h: 130) */}
+              {/* 11. L */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("L")}
@@ -428,15 +415,12 @@ export function InteractiveFloorPlan() {
                 {/* Sofa & TV CAD Outline */}
                 <rect x="290" y="295" width="120" height="45" stroke="#cbd5e1" strokeWidth="1.5" fill="none" />
                 <line x1="290" y1="252" x2="410" y2="252" stroke="#475569" strokeWidth="3" />
-                <text x="350" y="280" textAnchor="middle" fontSize="18" fontWeight="bold" fill={activeCode === "L" ? "#00a174" : "#1A2A22"}>
-                  L (客廳)
-                </text>
-                <text x="350" y="358" textAnchor="middle" fontSize="11" fontWeight="bold" fill={activeCode === "L" ? "#00a174" : "#475569"}>
-                  LDK 14 帖 (居間・食事室・台所)
+                <text x="350" y="280" textAnchor="middle" fontSize="22" fontWeight="bold" fill={activeCode === "L" ? "#00a174" : "#1A2A22"}>
+                  L
                 </text>
               </g>
 
-              {/* 11. AC (Air Conditioner) - Wall Unit */}
+              {/* 12. AC */}
               <g
                 className="cursor-pointer transition-colors"
                 onMouseEnter={() => setActiveCode("AC")}
@@ -451,7 +435,7 @@ export function InteractiveFloorPlan() {
                   stroke={activeCode === "AC" ? "#00a174" : "#475569"}
                   strokeWidth="1.5"
                 />
-                <text x="472.5" y="260" textAnchor="middle" fontSize="11" fontWeight="bold" fill={activeCode === "AC" ? "#00a174" : "#1e293b"}>
+                <text x="472.5" y="260" textAnchor="middle" fontSize="12" fontWeight="bold" fill={activeCode === "AC" ? "#00a174" : "#1e293b"}>
                   AC
                 </text>
               </g>
@@ -459,7 +443,7 @@ export function InteractiveFloorPlan() {
               {/* --- STRUCTURAL THICK SOLID CAD WALLS (#1A2A22) --- */}
               {/* Outer Boundary Wall (Square 4px) */}
               <rect x="30" y="30" width="470" height="340" fill="none" stroke="#1A2A22" strokeWidth="4" />
-              {/* Internal Load-bearing Partition Walls */}
+              {/* Interior Partition Walls */}
               <line x1="200" y1="30" x2="200" y2="370" stroke="#1A2A22" strokeWidth="3.5" />
               <line x1="340" y1="30" x2="340" y2="180" stroke="#1A2A22" strokeWidth="3" />
               <line x1="30" y1="150" x2="200" y2="150" stroke="#1A2A22" strokeWidth="3" />
@@ -467,9 +451,9 @@ export function InteractiveFloorPlan() {
               <line x1="200" y1="140" x2="340" y2="140" stroke="#1A2A22" strokeWidth="3" />
               <line x1="340" y1="180" x2="500" y2="180" stroke="#1A2A22" strokeWidth="3" />
 
-              {/* Balcony Label Outside Sliding Glass Window */}
-              <text x="350" y="388" textAnchor="middle" fontSize="11" fill="#475569" fontWeight="500">
-                ベランダ / バルコニー (陽台 / 南向採光)
+              {/* Balcony Outer Window Designation */}
+              <text x="350" y="388" textAnchor="middle" fontSize="11" fill="#475569" fontMono fontStyle="uppercase" letterSpacing="1">
+                BALCONY
               </text>
             </svg>
           </div>
@@ -509,7 +493,7 @@ export function InteractiveFloorPlan() {
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400">
               <span className="text-2xl mb-2">👆</span>
-              <p className="text-xs font-sans leading-relaxed">請將游標移至左側圖紙區域，<br />即可查看空間詳細解說</p>
+              <p className="text-xs font-sans leading-relaxed">請將游標移至左側圖紙代號區域，<br />即可查看詳細空間解說</p>
             </div>
           )}
         </div>
