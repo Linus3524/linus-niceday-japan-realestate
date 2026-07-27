@@ -275,21 +275,18 @@ export function InteractiveFloorPlan() {
                 <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
-              {/* Bi-fold doors (UB, CL, WIC): 100% wall thickness (11px/10px) hollow frame rect + V-folding panels folding left */}
+              {/* Bi-fold doors (UB, CL, WIC): clean hollow frame rect matching wall thickness (11px/10px) + V-folding panels folding left */}
               <g>
                 {/* UB bi-fold door: wall x=401..411 (width=10), y=184..277 */}
                 <rect x="401" y="184" width="10" height="93" fill={paper} stroke={line} strokeWidth="1.5" />
-                <line x1="406" y1="184" x2="406" y2="277" stroke={line} strokeWidth="1.5" />
                 <path d="M401 184 L388 207 L401 230.5 L388 254 L401 277" fill="none" stroke={line} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
 
                 {/* CL bi-fold closet door: wall x=1061..1072 (width=11), y=76..196 */}
                 <rect x="1061" y="76" width="11" height="120" fill={paper} stroke={line} strokeWidth="1.5" />
-                <line x1="1066.5" y1="76" x2="1066.5" y2="196" stroke={line} strokeWidth="1.5" />
                 <path d="M1061 76 L1036 106 L1061 136 L1036 166 L1061 196" fill="none" stroke={line} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
 
                 {/* WIC bi-fold closet door: wall x=1061..1072 (width=11), y=224..380 */}
                 <rect x="1061" y="224" width="11" height="156" fill={paper} stroke={line} strokeWidth="1.5" />
-                <line x1="1066.5" y1="224" x2="1066.5" y2="380" stroke={line} strokeWidth="1.5" />
                 <path d="M1061 224 L1036 263 L1061 302 L1036 341 L1061 380" fill="none" stroke={line} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </g>
 
