@@ -78,8 +78,9 @@ const TERM_DETAIL_MIN_HIDDEN = 3;
 function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: SpecialTermItem; onAskAI: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const isFloorPlanTerm = term.name === "間取り";
+  const isBuildingStructureTerm = term.name === "建築構造";
   const details = term.details ?? [];
-  const isCollapsible = !isFloorPlanTerm && details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
+  const isCollapsible = !isFloorPlanTerm && !isBuildingStructureTerm && details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
   const visibleDetails = isCollapsible && !expanded ? details.slice(0, TERM_DETAIL_PREVIEW) : details;
   const hiddenCount = details.length - TERM_DETAIL_PREVIEW;
 
