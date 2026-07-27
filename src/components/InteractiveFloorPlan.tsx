@@ -134,7 +134,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Air Conditioner",
     nameZh: "冷氣預留位 / 變頻冷氣",
     jpName: "エアコン",
-    desc: "牆面上方專用的變頻壁掛冷氣安裝位，配置冷媒管/排水管穿牆貫通孔以及大功率專用單獨迴路插座 (100V/200V)。",
+    desc: "牆面上方專用的變頻壁掛冷氣安裝位（本圖面於 L 客廳區與 S 房間區均配置有專用 AC 位置），設有冷媒管/排水管穿牆貫通孔與專用單獨迴路插座 (100V/200V)。",
     practicalNote: "✦ 權屬確認：確認標示 AC 屬於「設備（房東修）」還是「殘留物（自理）」。\n✦ 專用迴路：核對變頻冷氣牆面專用插座電壓 (100V / 200V)。\n✦ 室外機位：確認冷媒管穿牆貫通孔與室外機擺放陽台位置。",
     category: "equipment"
   },
@@ -336,7 +336,7 @@ export function InteractiveFloorPlan() {
               <text x="247" y="783" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">SB</text>
               <text x="352.5" y="777.5" textAnchor="middle" dominantBaseline="central" fontSize="27" fontWeight="600" fill="#202727">ENT</text>
 
-              {/* S room single bed and desk */}
+              {/* S room single bed, desk, and AC unit */}
               <g fill={paper} stroke="#777b79" strokeWidth="1.5">
                 <rect x="625" y="80" width="240" height="120" />
                 <rect x="635" y="96" width="44" height="88" rx="6" />
@@ -344,10 +344,12 @@ export function InteractiveFloorPlan() {
                 <rect x="846" y="325" width="140" height="60" />
                 <rect x="891" y="338" width="50" height="30" />
                 <circle cx="916" cy="298" r="17" />
+                <rect x="960" y="65" width="88" height="34" strokeDasharray="5 4" />
               </g>
 
               {/* S, closets and closet rails */}
               <text x="842" y="265" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">S</text>
+              <text x="1004" y="82" textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="600" fill="#202727">AC</text>
               <text x="1138" y="148" textAnchor="middle" fontSize="30" fontWeight="600" fill="#202727">CL</text>
               <text x="1139" y="325" textAnchor="middle" fontSize="29" fontWeight="600" fill="#202727">WIC</text>
               <g fill="none" stroke={line} strokeWidth="1.4" strokeDasharray="6 5">
@@ -419,7 +421,10 @@ export function InteractiveFloorPlan() {
               <g {...interaction("WIC")}><rect x="1072" y="216" width="142" height="169" fill={zoneFill("WIC")} /></g>
               <g {...interaction("D")}><path d="M425 288H613V396H736V839H425Z" fill={zoneFill("D")} /></g>
               <g {...interaction("L")}><rect x="736" y="396" width="478" height="443" fill={zoneFill("L")} /></g>
-              <g {...interaction("AC")}><rect x="1178" y="406" width="36" height="88" fill={zoneFill("AC")} /></g>
+              <g {...interaction("AC")}>
+                <rect x="1178" y="406" width="36" height="88" fill={zoneFill("AC")} />
+                <rect x="960" y="65" width="88" height="34" fill={zoneFill("AC")} />
+              </g>
               <g {...interaction("BALCONY")}><rect x="760" y="852" width="458" height="126" fill={zoneFill("BALCONY")} /></g>
             </svg>
           </div>
