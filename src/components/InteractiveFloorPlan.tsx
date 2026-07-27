@@ -103,7 +103,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     category: "storage"
   },
   ENT: {
-    code: "玄",
+    code: "ENT",
     nameEn: "Entrance / Genkan",
     nameZh: "玄關",
     jpName: "玄関",
@@ -334,7 +334,7 @@ export function InteractiveFloorPlan() {
               </g>
               <text x="257" y="618" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">R</text>
               <text x="247" y="783" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">SB</text>
-              <text x="352.5" y="777.5" textAnchor="middle" dominantBaseline="central" fontSize="27" fontWeight="600" fill="#202727">玄</text>
+              <text x="352.5" y="777.5" textAnchor="middle" dominantBaseline="central" fontSize="27" fontWeight="600" fill="#202727">ENT</text>
 
               {/* S room single bed and desk */}
               <g fill={paper} stroke="#777b79" strokeWidth="1.5">
