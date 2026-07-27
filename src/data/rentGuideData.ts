@@ -251,7 +251,7 @@ export const specialTerms: SpecialTermItem[] = [
   {
     name: "間取り",
     jpName: "格局",
-    description: "房子的房間構成，通常以阿拉伯數字（代表房間數）加上英文組合：",
+    description: "日本住宅格局由數字（代表房間數）與英文縮寫組合而成。下方提供標準 1LDK+S 的 CAD 互動平面圖，移動游標或點擊各區域即可預覽詳細空間說明與看屋重點：",
     category: "drawing",
     // 依用途分四組排列：房型代號（會寫進 1LDK 這種標示）→ 衛浴 → 收納 → 設備位置。
     // 前四項刻意照 L→D→K→S 的順序，和物件標示的寫法一致。

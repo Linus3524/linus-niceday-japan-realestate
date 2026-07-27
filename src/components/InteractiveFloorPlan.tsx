@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
+import { MousePointerClick } from "lucide-react";
 
 export interface RoomDetail {
   code: string;
@@ -180,24 +181,19 @@ export function InteractiveFloorPlan() {
     activeCode === code ? "rgba(0, 161, 116, 0.13)" : "rgba(255,255,255,0.001)";
 
   return (
-    <div className="border border-[#DDE3DF] bg-white p-3 font-sans sm:p-4 md:p-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 pb-3">
-        <div>
-          <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
-            <span className="inline-block h-2.5 w-2.5 bg-[#00a174]" />
-            日本住宅平面圖 (1LDK + S)
-          </h4>
-          <p className="mt-1 text-xs text-zinc-500 font-sans">
-            移動游標可預覽空間資訊，點擊後可固定區域顏色與右側說明
-          </p>
+    <div className="font-sans space-y-3 pt-1">
+      <div className="flex items-center justify-between text-xs text-zinc-500 font-sans pb-0.5">
+        <div className="flex items-center gap-1.5 font-medium text-zinc-700">
+          <span className="inline-block h-2 w-2 rounded-full bg-[#00a174]" />
+          <span className="font-semibold text-[#1A2A22]">標準 1LDK + S 互動平面圖解</span>
         </div>
-        <span className="border border-zinc-300 bg-zinc-50 px-2 py-1 font-mono text-[11px] font-semibold text-zinc-700">
+        <span className="border border-zinc-200 bg-zinc-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-zinc-600">
           MAISOKU CAD
         </span>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-12 md:items-stretch lg:gap-5">
-        <div className="border border-zinc-300 bg-[#faf9f6] md:col-span-8">
+      <div className="grid gap-4 md:grid-cols-12 md:items-stretch">
+        <div className="border border-zinc-200 bg-[#faf9f6] md:col-span-7 lg:col-span-8">
           <div className="relative aspect-[1450/1030] w-full overflow-hidden">
             <svg
               viewBox="0 0 1450 1030"
@@ -413,39 +409,44 @@ export function InteractiveFloorPlan() {
           </div>
         </div>
 
-        <div className="min-h-[220px] border border-zinc-200 bg-white p-4 md:col-span-4 md:min-h-0 lg:p-5">
+        <div className="min-h-[220px] border border-zinc-200 bg-[#F8FAF9] p-4 font-sans md:col-span-5 lg:col-span-4 md:min-h-0 flex flex-col justify-between">
           {currentItem ? (
-            <div className="flex h-full flex-col">
-              <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 pb-3">
-                <span className="inline-block border border-[#00a174] bg-[#00a174] px-2 py-0.5 font-mono text-xs font-bold text-white">
-                  {currentItem.code}
-                </span>
-                <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.nameZh}</h5>
-              </div>
-              <div className="pt-4">
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <p className="font-mono text-xs font-medium text-zinc-400">{currentItem.nameEn}</p>
-                  {currentItem.jpName && (
-                    <span className="border border-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-500">
-                      {currentItem.jpName}
-                    </span>
-                  )}
+            <div className="flex h-full flex-col space-y-3.5">
+              <div>
+                <div className="flex items-center gap-2 border-b border-zinc-200/80 pb-2.5">
+                  <span className="bg-[#00a174] text-white px-2 py-0.5 font-mono text-xs font-bold">
+                    {currentItem.code}
+                  </span>
+                  <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.nameZh}</h5>
                 </div>
-                <p className="font-sans text-xs leading-relaxed text-zinc-700">
-                  {currentItem.desc}
-                </p>
+                <div className="mt-3 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs text-zinc-400 font-medium">{currentItem.nameEn}</span>
+                    {currentItem.jpName && (
+                      <span className="bg-white border border-zinc-200 px-1.5 py-0.5 text-[11px] font-medium text-zinc-600">
+                        {currentItem.jpName}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs leading-relaxed text-zinc-700 text-justify">
+                    {currentItem.desc}
+                  </p>
+                </div>
               </div>
-              <div className="mt-auto border border-[#bce8dc] bg-[#f0faf7] p-3 text-xs leading-relaxed text-[#007d5a]">
-                <strong>Linus 實務說明</strong><br />
-                {currentItem.practicalNote}
+
+              <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3 space-y-1">
+                <strong className="text-xs font-bold text-[#007d5a] block font-sans">Linus 實務說明：</strong>
+                <p className="text-xs text-zinc-600 leading-relaxed text-justify">
+                  {currentItem.practicalNote}
+                </p>
               </div>
             </div>
           ) : (
-            <div className="flex h-full min-h-[188px] flex-col items-center justify-center text-center text-zinc-400 md:min-h-0">
-              <span className="mb-3 text-2xl">↖</span>
-              <p className="text-xs leading-relaxed">
-                將游標移至左側圖紙代號區域，<br />
-                或點按房間固定詳細空間解說
+            <div className="flex h-full min-h-[188px] flex-col items-center justify-center text-center text-zinc-400 md:min-h-0 space-y-2 p-4">
+              <MousePointerClick className="w-6 h-6 text-[#00a174]/70" />
+              <p className="text-xs leading-relaxed text-zinc-500 font-sans">
+                移動游標預覽左側 CAD 圖紙區劃<br />
+                或點擊區域固定解說面板
               </p>
             </div>
           )}
