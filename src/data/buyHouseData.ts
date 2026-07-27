@@ -309,7 +309,7 @@ export const buyHouseDrawingTerms: BuyHouseTermItem[] = [
     jpName: "實質／實際投報率",
     description: "將每月固定開銷（如管理費、修繕積立金、固資稅、PM託管費及保險等）扣除後計算的淨回報率，能更真實反映置產的實際收益狀況。",
     category: "term",
-    warning: "💡 比較不同物件收益時，建議採用統一的費用標準，並將未來空置與修繕維護預算一併納入考量。"
+    warning: "比較不同物件收益時，建議採用統一的費用標準，並將未來空置與修繕維護預算一併納入考量。"
   }
 ];
 
@@ -331,7 +331,7 @@ export const buyHouseFeeTerms: BuyHouseTermItem[] = [
     jpName: "簽約訂金",
     description: "簽訂買賣契約時由買方支付、交屋時充作價款一部分的款項（常見約總價 5%～10%）。簽約後若需解約，手付金的處理會依手付解除、融資特約或違約解除等具體條款辦理。",
     category: "fee",
-    warning: "💡 融資退還條款需視契約內的融資特約而定；簽約時需確認指定銀行、核貸金額與解約期限。"
+    warning: "融資退還條款需視契約內的融資特約而定；簽約時需確認指定銀行、核貸金額與解約期限。"
   },
   {
     name: "残代金",
@@ -482,7 +482,7 @@ export const buyHouseLoanSteps: BuyHouseFlowStep[] = [
     timing: "買付成立後約 1～2 週",
     payment: "手付金、印紙稅；仲介費依約定",
     documents: "買付申込書、重要事項說明書、買賣契約書",
-    warning: "💡 買賣契約中建議載明融資解除特約與期限；若未獲銀行核貸，即可依特約保障全額取回訂金。"
+    warning: "買賣契約中建議載明融資解除特約與期限；若未獲銀行核貸，即可依特約保障全額取回訂金。"
   },
   {
     step: "3",
