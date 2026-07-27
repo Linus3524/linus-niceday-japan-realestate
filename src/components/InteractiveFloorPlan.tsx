@@ -270,9 +270,9 @@ export function InteractiveFloorPlan() {
                 <rect x="624" y="385" width="86" height="11" fill={paper} stroke={line} strokeWidth="1.5" />
                 <path d="M624 385V299A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* Entrance door: exterior wall y=839..852 (height=13) */}
+                {/* Entrance door: exterior wall y=839..852 (height=13), swing arc extends 86px from outer face y=852 */}
                 <rect x="301" y="839" width="86" height="13" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
+                <path d="M301 852V938A86 86 0 0 0 387 852" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
               {/* Bi-fold doors (UB, CL): clean hollow frame rect matching wall thickness (11px/10px) + V-folding panels folding left */}
