@@ -241,7 +241,7 @@ export function InteractiveFloorPlan() {
                 <rect x="751" y="52" width="87" height="13" />
                 <rect x="398" y="184" width="17" height="93" />
                 <rect x="1058" y="76" width="18" height="120" />
-                <rect x="1058" y="224" width="18" height="156" />
+                <rect x="1058" y="224" width="18" height="78" />
                 <rect x="435" y="274" width="86" height="18" />
                 <rect x="624" y="382" width="86" height="18" />
                 <rect x="301" y="829" width="86" height="24" />
@@ -275,7 +275,7 @@ export function InteractiveFloorPlan() {
                 <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
-              {/* Bi-fold doors (UB, CL, WIC): clean hollow frame rect matching wall thickness (11px/10px) + V-folding panels folding left */}
+              {/* Bi-fold doors (UB, CL): clean hollow frame rect matching wall thickness (11px/10px) + V-folding panels folding left */}
               <g>
                 {/* UB bi-fold door: wall x=401..411 (width=10), y=184..277 */}
                 <rect x="401" y="184" width="10" height="93" fill={paper} stroke={line} strokeWidth="1.5" />
@@ -284,10 +284,6 @@ export function InteractiveFloorPlan() {
                 {/* CL bi-fold closet door: wall x=1061..1072 (width=11), y=76..196 */}
                 <rect x="1061" y="76" width="11" height="120" fill={paper} stroke={line} strokeWidth="1.5" />
                 <path d="M1061 76 L1036 106 L1061 136 L1036 166 L1061 196" fill="none" stroke={line} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-
-                {/* WIC bi-fold closet door: wall x=1061..1072 (width=11), y=224..380 */}
-                <rect x="1061" y="224" width="11" height="156" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M1061 224 L1036 263 L1061 302 L1036 341 L1061 380" fill="none" stroke={line} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </g>
 
               {/* UB bathtub */}
