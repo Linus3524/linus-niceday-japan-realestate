@@ -18,6 +18,7 @@ import {
 import { renderFormattedText } from "../lib/format";
 import { QACard } from "./QACard";
 import { JapaneseRuby } from "./JapaneseRuby";
+import { TermDetailList } from "./TermDetailList";
 
 const availabilityStyle = {
   "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
@@ -68,22 +69,61 @@ function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
   );
 }
 
-function renderTermDetail(detail: string) {
-  const nodes: ReactNode[] = [];
-  const labelPattern = /(^|\|\s*)([^|：:]+[：:])/g;
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  let index = 0;
+// 這類術語卡的內容本來就完整攤在卡片上，再開一層 TermModal 只會看到更少的東西，
+// 所以改成就地收合：長清單露出前幾條，其餘由使用者自己決定要不要展開。
+const TERM_DETAIL_PREVIEW = 5;
+// 只藏一兩條反而多一次點擊，不划算；要藏得夠多才值得收合（例如 4 條的「建物種別」就整份攤開）。
+const TERM_DETAIL_MIN_HIDDEN = 3;
 
-  while ((match = labelPattern.exec(detail)) !== null) {
-    if (match.index > lastIndex) nodes.push(detail.slice(lastIndex, match.index));
-    nodes.push(match[1]);
-    nodes.push(<strong key={`${match[2]}-${index++}`} className="font-semibold text-[#1A2A22]">{match[2]}</strong>);
-    lastIndex = match.index + match[0].length;
-  }
+function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: SpecialTermItem; onAskAI: () => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const details = term.details ?? [];
+  const isCollapsible = details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
+  const visibleDetails = isCollapsible && !expanded ? details.slice(0, TERM_DETAIL_PREVIEW) : details;
+  const hiddenCount = details.length - TERM_DETAIL_PREVIEW;
 
-  if (lastIndex < detail.length) nodes.push(detail.slice(lastIndex));
-  return nodes;
+  return (
+    <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 relative">
+      <div className="flex justify-between items-start gap-3 mb-3">
+        <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
+          <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
+          {term.jpName && (
+            <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
+          )}
+        </h4>
+        <span className="shrink-0 text-xs text-zinc-400 font-sans">房屋／設備</span>
+      </div>
+      <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
+
+      {details.length > 0 && (
+        <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
+          <TermDetailList termName={term.name} details={visibleDetails} />
+          {isCollapsible && (
+            <button
+              type="button"
+              onClick={() => setExpanded(prev => !prev)}
+              aria-expanded={expanded}
+              className="flex w-full items-center justify-center gap-1 border-t border-zinc-200 pt-2.5 font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174] cursor-pointer"
+            >
+              {expanded ? "收合" : `展開其餘 ${hiddenCount} 項`}
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
+        <span>房屋／設備</span>
+        <button
+          type="button"
+          onClick={onAskAI}
+          className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+        >
+          向 AI 顧問諮詢 →
+        </button>
+      </div>
+    </div>
+  );
 }
 
 interface RentGuideTabProps {
@@ -96,10 +136,11 @@ interface RentGuideTabProps {
   hasNoResults: boolean;
   setSelectedFee: (fee: any) => void;
   handleTabChange: (tab: any) => void;
+  handleSendMessage: (e?: any, customMsg?: string) => void;
 }
 
 export function RentGuideTab(props: RentGuideTabProps) {
-  const { kbCategory, setKbCategory, searchQuery, setSearchQuery, filtered, staticMatches, hasNoResults, setSelectedFee, handleTabChange } = props;
+  const { kbCategory, setKbCategory, searchQuery, setSearchQuery, filtered, staticMatches, hasNoResults, setSelectedFee, handleTabChange, handleSendMessage } = props;
   const [documentsExpanded, setDocumentsExpanded] = useState(false);
   const isSearchActive = hasMinimumKnowledgeSearchLength(searchQuery);
   const staticMatchSet = new Set(staticMatches);
@@ -399,42 +440,14 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
-                      <div
+                      <SpecialTermCard
                         key={idx}
-                        className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 relative"
-                      >
-                        <div className="flex justify-between items-start gap-3 mb-3">
-                          <h4 className="min-w-0 text-base font-bold text-[#1A2A22] flex flex-wrap items-center gap-2">
-                            <span className="leading-[1.8]"><JapaneseRuby text={term.name} /></span>
-                            {term.jpName && (
-                              <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
-                            )}
-                          </h4>
-                          <span className="shrink-0 text-xs text-zinc-400 font-sans">房屋／設備</span>
-                        </div>
-                        <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
-                        
-                        {term.details && term.details.length > 0 && (
-                          <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
-                            {term.details.map((detail, dIdx) => (
-                              <div key={dIdx} className="text-xs text-zinc-800 leading-relaxed flex items-start gap-2 font-sans">
-                                <span className="text-[#00a174] font-bold shrink-0">✦</span>
-                                <span className="text-justify">{renderTermDetail(detail)}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
-                          <span>房屋／設備</span>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedFee(term)}
-                            className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
-                          >
-                            查看說明與 AI 諮詢 →
-                          </button>
-                        </div>
-                      </div>
+                        term={term}
+                        onAskAI={() => {
+                          handleTabChange("chat");
+                          handleSendMessage(undefined, `想深入了解關於「${term.name}」的內容與實務細節`);
+                        }}
+                      />
                     ))}
                   </div>
                 </section>

@@ -1553,7 +1553,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
   }
 ];
 
-// --- 台日購屋 5 大思維轉換數據 ---
+// --- 台日買房5大差異數據 ---
 export interface TaiwanJapanCompareItem {
   id: string;
   title: string;
@@ -1563,7 +1563,7 @@ export interface TaiwanJapanCompareItem {
 }
 
 export const taiwanJapanCompareData = {
-  title: "台日購屋 5 大思維轉換",
+  title: "台日買房5大差異",
   subtitle: "從實坪計算到出價文化——看懂 5 個關鍵差異，切換日本置產思維。",
   items: [
     {

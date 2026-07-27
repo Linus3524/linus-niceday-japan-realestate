@@ -758,6 +758,7 @@ export default function App() {
               hasNoResults={hasNoResults}
               setSelectedFee={setSelectedFee}
               handleTabChange={handleTabChange}
+              handleSendMessage={handleSendMessage}
             />
           )}
 

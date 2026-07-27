@@ -554,7 +554,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
                   <SectionHeading
                     icon={Lightbulb}
-                    title="台日購屋 5 大思維轉換"
+                    title="台日買房5大差異"
                     description="從實坪計算到出價文化——看懂 5 個關鍵差異，切換日本置產思維。"
                     open={isStepOpen("concepts")}
                     onToggle={() => toggleStep("concepts")}

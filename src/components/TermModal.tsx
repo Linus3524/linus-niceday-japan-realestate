@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { renderFormattedText } from "../lib/format";
 import { JapaneseRuby } from "./JapaneseRuby";
+import { TermDetailList } from "./TermDetailList";
 
 interface TermModalProps {
   selectedFee: any | null;
@@ -11,14 +12,14 @@ interface TermModalProps {
   handleSendMessage: (e?: any, customMsg?: string) => void;
 }
 
-// 依項目類型動態決定按鈕文字與帶入 AI 的問句，避免「圖紙用語」也被稱為「費用」的錯置狀況
+// 依項目類型動態決定按鈕文字與帶入 AI 的問句，避免「圖紙用語」也被稱為「費用」的錯置狀況。
+// 注意 category: "drawing" 底下混了兩種東西：真正的圖紙標示（間取り、主要採光面）與
+// 建築知識（建築構造、ガスの種類），後者叫「圖紙用語」會誤導，所以一律用中性的「項目」。
 function getItemTypeLabel(item: any): string {
-  if (!item) return "名詞";
-  if (item.category === "drawing") return "圖紙用語";
+  if (!item) return "項目";
   if (item.category === "fee") return "費用";
   if (item.category === "step" || item.duration !== undefined || item.step !== undefined) return "流程步驟";
-  if (item.category === "term") return "名詞";
-  return "名詞";
+  return "項目";
 }
 
 function splitTermName(name: string) {
@@ -127,12 +128,20 @@ export function TermModal(props: TermModalProps) {
                   {selectedFee.keyPoints && selectedFee.keyPoints.length > 0 && (
                     <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2">
                       <span className="font-bold text-xs text-zinc-800 block font-sans">🔍 實務精要細節：</span>
-                      {selectedFee.keyPoints.map((point, pIdx) => (
+                      {selectedFee.keyPoints.map((point: string, pIdx: number) => (
                         <div key={pIdx} className="text-xs text-zinc-700 leading-relaxed flex items-start gap-1.5 font-sans">
                           <span className="text-[#00a174] font-bold">•</span>
                           <span>{point}</span>
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {/* SpecialTermItem 用 details 存條列內容（搜尋結果也會把這類項目送進來），
+                      少了這段就會出現「卡片有十條、彈窗只剩一句」的空殼狀況。 */}
+                  {selectedFee.details && selectedFee.details.length > 0 && (
+                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
+                      <TermDetailList termName={selectedFee.name} details={selectedFee.details} />
                     </div>
                   )}
                 </div>
