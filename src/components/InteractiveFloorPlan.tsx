@@ -262,18 +262,18 @@ export function InteractiveFloorPlan() {
                 <path d="M401 184H411V277H401M406 184V277" />
               </g>
 
-              {/* doors: door leaf bars across wall openings (fill=paper, stroke=line) + swing arcs */}
+              {/* doors: door leaf bars across wall openings aligned 100% with wall thickness */}
               <g>
-                {/* WC door: opening x=435..521 */}
-                <rect x="435" y="278" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                {/* WC door: wall y=277..288 (height=11) */}
+                <rect x="435" y="277" width="86" height="11" fill={paper} stroke={line} strokeWidth="1.5" />
                 <path d="M435 288V374A86 86 0 0 0 521 288" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* S room door: opening x=624..710 */}
-                <rect x="624" y="386" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                {/* S room door: wall y=385..396 (height=11) */}
+                <rect x="624" y="385" width="86" height="11" fill={paper} stroke={line} strokeWidth="1.5" />
                 <path d="M624 385V299A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* Entrance door: opening x=301..387 */}
-                <rect x="301" y="834" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                {/* Entrance door: exterior wall y=839..852 (height=13) */}
+                <rect x="301" y="839" width="86" height="13" fill={paper} stroke={line} strokeWidth="1.5" />
                 <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
