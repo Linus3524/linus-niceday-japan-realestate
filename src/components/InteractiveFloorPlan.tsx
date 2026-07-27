@@ -191,9 +191,9 @@ export function InteractiveFloorPlan() {
 
       <div className="grid gap-4 md:grid-cols-12 md:items-stretch">
         <div className="border border-zinc-200 bg-[#faf9f6] md:col-span-7 lg:col-span-8">
-          <div className="relative aspect-[1450/1030] w-full overflow-hidden">
+          <div className="relative aspect-[1070/965] w-full overflow-hidden">
             <svg
-              viewBox="0 0 1450 1030"
+              viewBox="175 35 1070 965"
               className="h-full w-full select-none"
               style={{ fontFamily: "'Jost', 'Noto Sans', Arial, sans-serif" }}
               aria-label="日本住宅 1LDK 加服務室平面圖"
@@ -212,8 +212,8 @@ export function InteractiveFloorPlan() {
                   <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#81918a" floodOpacity=".08" />
                 </filter>
               </defs>
-              <rect width="1450" height="1086" fill="#fbfaf8" />
-              <rect width="1450" height="1086" fill="url(#cadGrid)" opacity=".83" />
+              <rect x="175" y="35" width="1070" height="965" fill="#fbfaf8" />
+              <rect x="175" y="35" width="1070" height="965" fill="url(#cadGrid)" opacity=".83" />
 
               {/* paper and room fields */}
               <path d="M211 62H1217V841H211Z" fill={paper} filter="url(#paperShadow)" />
@@ -393,16 +393,16 @@ export function InteractiveFloorPlan() {
               </text>
 
               {/* compass */}
-              <g transform="translate(1335 104)">
-                <circle r="44" fill={paper} stroke="#596472" strokeWidth="2.2" />
-                <circle r="36" fill="none" stroke="#c2cac6" strokeWidth="1" />
-                <g stroke="#7c8782" strokeWidth="1.3">
-                  <path d="M0-44V-38M44 0H38M0 44V38M-44 0H-38" />
+              <g transform="translate(560 915)">
+                <circle r="40" fill={paper} stroke="#596472" strokeWidth="2" />
+                <circle r="32" fill="none" stroke="#c2cac6" strokeWidth="1" />
+                <g stroke="#7c8782" strokeWidth="1.2">
+                  <path d="M0-40V-34M40 0H34M0 40V34M-40 0H-34" />
                 </g>
-                <path d="M0-32L9 7L0 2L-9 7Z" fill={ink} />
-                <path d="M0 28L-6 3L0 7L6 3Z" fill="#aeb8b3" />
-                <circle r="2.2" fill={ink} />
-                <text y="-53" textAnchor="middle" fontSize="22" fontWeight="700" fill={ink} letterSpacing="1">N</text>
+                <path d="M0-28L8 6L0 2L-8 6Z" fill={ink} />
+                <path d="M0 25L-5 3L0 6L5 3Z" fill="#aeb8b3" />
+                <circle r="2" fill={ink} />
+                <text y="-48" textAnchor="middle" fontSize="20" fontWeight="700" fill={ink} letterSpacing="1">N</text>
               </g>
 
               {/* interactive hit regions and active tint */}
