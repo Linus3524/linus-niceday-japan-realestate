@@ -92,7 +92,6 @@ function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: Speci
             <span className="text-xs bg-zinc-100 text-zinc-600 px-1.5 py-0.5 font-normal font-sans">{term.jpName}</span>
           )}
         </h4>
-        <span className="shrink-0 text-xs text-zinc-400 font-sans">房屋／設備</span>
       </div>
       <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
 

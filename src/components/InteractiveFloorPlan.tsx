@@ -187,9 +187,6 @@ export function InteractiveFloorPlan() {
           <span className="inline-block h-2 w-2 rounded-full bg-[#00a174]" />
           <span className="font-semibold text-[#1A2A22]">標準 1LDK + S 互動平面圖解</span>
         </div>
-        <span className="border border-zinc-200 bg-zinc-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-zinc-600">
-          MAISOKU CAD
-        </span>
       </div>
 
       <div className="grid gap-4 md:grid-cols-12 md:items-stretch">
