@@ -77,8 +77,9 @@ const TERM_DETAIL_MIN_HIDDEN = 3;
 
 function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: SpecialTermItem; onAskAI: () => void }) {
   const [expanded, setExpanded] = useState(false);
+  const isFloorPlanTerm = term.name === "間取り";
   const details = term.details ?? [];
-  const isCollapsible = details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
+  const isCollapsible = !isFloorPlanTerm && details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
   const visibleDetails = isCollapsible && !expanded ? details.slice(0, TERM_DETAIL_PREVIEW) : details;
   const hiddenCount = details.length - TERM_DETAIL_PREVIEW;
 
@@ -96,7 +97,7 @@ function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: Speci
       <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
 
       {details.length > 0 && (
-        <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
+        <div className={isFloorPlanTerm ? "" : "bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5"}>
           <TermDetailList termName={term.name} details={visibleDetails} allDetails={details} />
           {isCollapsible && (
             <button
