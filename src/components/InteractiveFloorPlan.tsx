@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 export interface RoomDetail {
   code: string;
@@ -6,6 +6,7 @@ export interface RoomDetail {
   nameZh: string;
   jpName?: string;
   desc: string;
+  practicalNote: string;
   category: "room" | "bath" | "storage" | "equipment";
 }
 
@@ -15,7 +16,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Living Room",
     nameZh: "客廳",
     jpName: "居間",
-    desc: "主要起居與社交空間，通常連同大面積採光落地窗與陽台。",
+    desc: "日常起居的主要空間，本格局與餐廳、廚房相連，並由落地窗銜接陽台。",
+    practicalNote: "看屋時可確認沙發到電視的距離、落地窗開啟方向，以及前往陽台的動線是否順暢。",
     category: "room"
   },
   D: {
@@ -23,7 +25,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Dining Room",
     nameZh: "餐廳",
     jpName: "食事室",
-    desc: "用餐區域，日本 1LDK 物件多與客廳及廚房結合為 LDK 開放連貫空間。",
+    desc: "餐桌與餐椅的配置區域，與客廳及廚房共同構成日本住宅常見的 LDK 開放空間。",
+    practicalNote: "除了桌面尺寸，也要預留椅子後拉與通行空間；圖上放得下，不代表實際使用時不會卡住。",
     category: "room"
   },
   K: {
@@ -31,7 +34,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Kitchen",
     nameZh: "廚房",
     jpName: "台所",
-    desc: "獨立或中島廚房，配置洗滌水槽、雙火瓦斯爐/IH電磁爐與料理檯面。",
+    desc: "料理與清洗區，配置雙口爐具、水槽、工作檯面，並在下方預留冰箱位置。",
+    practicalNote: "實際看屋要確認爐具種類、工作檯寬度、收納量，以及冰箱門開啟後是否影響走道。",
     category: "room"
   },
   S: {
@@ -39,7 +43,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Service Room",
     nameZh: "納戶 (多功能室)",
     jpName: "納戸・サービスルーム",
-    desc: "因採光或通風窗戶面積未達法定房間標準（建築基準法），故標示為納戶，常作獨立書房、儲藏室或臥室。",
+    desc: "因採光或通風等條件未達法定居室標準，因此以 S、納戶或服務室標示，可作書房、收納或彈性空間。",
+    practicalNote: "即使擺得下床，也要確認窗戶、空調與插座條件；出租或轉售時，通常不能直接當作正式居室標示。",
     category: "room"
   },
   WC: {
@@ -47,7 +52,17 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Water Closet",
     nameZh: "獨立廁所",
     jpName: "トイレ",
-    desc: "獨立分隔的馬桶間，與洗面室及浴室獨立分離（バストイレ別），多配置溫水洗淨便座。",
+    desc: "與整體浴室分隔的馬桶區，讓如廁與泡澡、淋浴可以分開使用。",
+    practicalNote: "確認馬桶前方腿部空間、溫水洗淨便座，以及廁所門與浴室摺疊門是否互相干涉。",
+    category: "bath"
+  },
+  VANITY: {
+    code: "洗面台",
+    nameEn: "Independent Vanity",
+    nameZh: "獨立洗面台",
+    jpName: "独立洗面台",
+    desc: "獨立配置的洗臉與梳洗設備，具備洗手盆、鏡面及盥洗用品收納空間，不需使用廚房或浴室水槽。",
+    practicalNote: "看屋時要確認檯面寬度、鏡櫃收納、插座與照明；早晚盥洗時，獨立洗面台會比浴室內洗手盆方便許多。",
     category: "bath"
   },
   UB: {
@@ -55,7 +70,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Unit Bath",
     nameZh: "整體浴室",
     jpName: "ユニットバス",
-    desc: "一體成型防水浴室，包含深型泡澡浴缸、淋浴區與自動追焚設備，保溫防漏性能佳。",
+    desc: "工廠預製的一體式防水浴室，整合浴缸與淋浴區，是日本集合住宅常見的配置。",
+    practicalNote: "確認浴室尺寸、乾燥暖房功能與追焚功能；同樣寫 UB，設備等級仍可能差很多。",
     category: "bath"
   },
   CL: {
@@ -63,7 +79,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Closet",
     nameZh: "壁櫥 / 衣櫥",
     jpName: "クローゼット",
-    desc: "標準內嵌式壁櫥，設有雙開拉門與掛衣桿，提供基礎收納容量。",
+    desc: "一般壁面衣櫥，通常配置吊衣桿與上層置物板，適合收納日常衣物。",
+    practicalNote: "平面圖只看得到寬度，實際還要確認深度、內部分隔，以及摺疊門開啟後會不會碰到家具。",
     category: "storage"
   },
   WIC: {
@@ -71,7 +88,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Walk-in Closet",
     nameZh: "步入式衣帽間",
     jpName: "ウォークインクローゼット",
-    desc: "可直接步入的大型獨立衣帽間，配置雙側層架與吊衣桿，極具收納優勢。",
+    desc: "可走入使用的獨立收納空間，通常配置吊衣桿與層板，容量高於一般衣櫥。",
+    practicalNote: "WIC 面積包含走道，不等於全部都能收納；要確認層板配置與進出寬度是否實用。",
     category: "storage"
   },
   SB: {
@@ -79,15 +97,26 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Shoes Box",
     nameZh: "鞋櫃 / 下駄箱",
     jpName: "シューズボックス",
-    desc: "玄關處的貼牆式專用鞋櫃，部分高階物件包含可存放雨傘與靴子的大型 Schuh-Cloak。",
+    desc: "設於玄關旁的鞋類收納櫃，日文物件資料也常標示為下駄箱或シューズボックス。",
+    practicalNote: "確認櫃體高度、可調層板與雨傘收納；玄關偏窄時，也要留意櫃門開啟是否擋路。",
     category: "storage"
+  },
+  ENT: {
+    code: "玄",
+    nameEn: "Entrance / Genkan",
+    nameZh: "玄關",
+    jpName: "玄関",
+    desc: "進入住宅後脫鞋、換鞋的緩衝空間，也是日本住宅區分室外與室內生活區域的重要位置。",
+    practicalNote: "看屋時要確認門扇開啟、鞋櫃與換鞋動線是否互相干涉，也要留意高低差及搬運大型家具的入口寬度。",
+    category: "room"
   },
   W: {
     code: "W",
     nameEn: "Washing Machine Space",
     nameZh: "洗衣機放置處",
     jpName: "洗濯機置場",
-    desc: "洗面脫衣室專用防水盤（洗濯機パン）、獨立給排水龍頭與電源插座。",
+    desc: "洗衣機專用預留區，通常包含防水盤、給排水接口與電源插座。",
+    practicalNote: "日本防水盤尺寸不一，購買洗衣機前要核對機身寬深、上蓋高度與水龍頭位置。",
     category: "equipment"
   },
   R: {
@@ -95,7 +124,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Refrigerator Space",
     nameZh: "冰箱預留位",
     jpName: "冷蔵庫置場",
-    desc: "廚房檯面旁邊預留的專用冰箱電源插座與置放空間。",
+    desc: "廚房旁預留的冰箱位置，通常鄰近插座與料理動線，圖面以 R 表示。",
+    practicalNote: "量測時要把散熱距離、插頭與冰箱門開啟半徑算進去，不能只看機身標示尺寸。",
     category: "equipment"
   },
   AC: {
@@ -103,18 +133,54 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Air Conditioner",
     nameZh: "冷氣預留位 / 變頻冷氣",
     jpName: "エアコン",
-    desc: "牆面上方預留的冷氣專用插座、冷媒管穿牆孔與安裝位置。",
+    desc: "牆面上方的冷氣安裝位置，通常鄰近專用插座與冷媒管穿牆孔。",
+    practicalNote: "平面圖標示 AC 不一定代表設備隨屋附贈，簽約前要確認現況、年份與維修責任。",
     category: "equipment"
+  },
+  BALCONY: {
+    code: "BALCONY",
+    nameEn: "Balcony",
+    nameZh: "陽台",
+    jpName: "バルコニー",
+    desc: "由客廳落地窗連接的戶外空間，可供晾衣、採光與通風使用，實際用途仍受社區管理規約限制。",
+    practicalNote: "看屋時要確認朝向、日照、進深、排水口、避難隔板與冷氣室外機位置，不能只看平面面積。",
+    category: "room"
   }
 };
 
 export function InteractiveFloorPlan() {
-  const [activeCode, setActiveCode] = useState<string | null>(null);
+  const [hoveredCode, setHoveredCode] = useState<string | null>(null);
+  const [selectedCode, setSelectedCode] = useState<string | null>(null);
+  const activeCode = selectedCode ?? hoveredCode;
   const currentItem = activeCode ? FLOOR_PLAN_ITEMS[activeCode] : null;
+  const ink = "#17271f";
+  const line = "#4d5658";
+  const paper = "#fbfaf7";
+
+  const interaction = (code: string) => ({
+    className: "cursor-pointer outline-none",
+    role: "button",
+    tabIndex: 0,
+    "aria-label": `${FLOOR_PLAN_ITEMS[code].code} ${FLOOR_PLAN_ITEMS[code].nameZh}`,
+    "aria-pressed": selectedCode === code,
+    onMouseEnter: () => setHoveredCode(code),
+    onMouseLeave: () => setHoveredCode(null),
+    onFocus: () => setHoveredCode(code),
+    onBlur: () => setHoveredCode(null),
+    onClick: () => setSelectedCode((current) => current === code ? null : code),
+    onKeyDown: (event: KeyboardEvent<SVGGElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        setSelectedCode((current) => current === code ? null : code);
+      }
+    }
+  });
+
+  const zoneFill = (code: string) =>
+    activeCode === code ? "rgba(0, 161, 116, 0.13)" : "rgba(255,255,255,0.001)";
 
   return (
-    <div className="border border-[#DDE3DF] bg-white p-4 md:p-6 font-sans">
-      {/* Header Bar */}
+    <div className="border border-[#DDE3DF] bg-white p-3 font-sans sm:p-4 md:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200 pb-3">
         <div>
           <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
@@ -122,7 +188,7 @@ export function InteractiveFloorPlan() {
             日本住宅平面圖 (1LDK + S)
           </h4>
           <p className="mt-1 text-xs text-zinc-500 font-sans">
-            移動游標至圖紙代號區域即可查看詳細空間定義與房仲提示
+            移動游標可預覽空間資訊，點擊後可固定區域顏色與右側說明
           </p>
         </div>
         <span className="border border-zinc-300 bg-zinc-50 px-2 py-1 font-mono text-[11px] font-semibold text-zinc-700">
@@ -130,371 +196,257 @@ export function InteractiveFloorPlan() {
         </span>
       </div>
 
-      {/* Main Layout: Monochromatic Blueprint CAD Canvas + Floating Hover Detail Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* SVG CAD Blueprint Canvas */}
-        <div className="lg:col-span-8 border border-zinc-300 bg-[#FAF9F6] p-3">
-          <div className="relative w-full aspect-[560/400]">
+      <div className="grid gap-4 md:grid-cols-12 md:items-stretch lg:gap-5">
+        <div className="border border-zinc-300 bg-[#faf9f6] md:col-span-8">
+          <div className="relative aspect-[1450/1030] w-full overflow-hidden">
             <svg
-              viewBox="0 0 560 400"
+              viewBox="0 0 1450 1030"
               className="h-full w-full select-none"
-              style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+              style={{ fontFamily: "'Jost', 'Noto Sans', Arial, sans-serif" }}
+              aria-label="日本住宅 1LDK 加服務室平面圖"
             >
-              {/* CAD Blue Grid Pattern */}
               <defs>
-                <pattern id="cadGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" strokeWidth="0.7" />
+                <pattern id="cadGrid" width="46" height="47" patternUnits="userSpaceOnUse">
+                  <path d="M 46 0H0V47" fill="none" stroke="#dbe4e9" strokeWidth="1.2" />
                 </pattern>
+                <pattern id="floorBoards" width="32" height="32" patternUnits="userSpaceOnUse">
+                  <path d="M0 0V32" fill="none" stroke="#ddd9d0" strokeWidth="1" />
+                </pattern>
+                <filter id="paperShadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#81918a" floodOpacity=".08" />
+                </filter>
               </defs>
-              <rect width="560" height="400" fill="url(#cadGrid)" />
+              <rect width="1450" height="1086" fill="#fbfaf8" />
+              <rect width="1450" height="1086" fill="url(#cadGrid)" opacity=".83" />
 
-              {/* Compass Rose N - Top Right */}
-              <g transform="translate(525, 45)">
-                <circle cx="0" cy="0" r="15" fill="none" stroke="#475569" strokeWidth="1" />
-                <path d="M 0 -13 L 4 0 L 0 -3 L -4 0 Z" fill="#1A2A22" />
-                <text x="0" y="-17" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#1A2A22">N</text>
+              {/* paper and room fields */}
+              <path d="M211 62H1217V841H211Z" fill={paper} filter="url(#paperShadow)" />
+              <path d="M632 62H1066V389H632Z" fill="url(#floorBoards)" opacity=".75" />
+              <path d="M425 390H1217V840H425Z" fill="url(#floorBoards)" opacity=".34" />
+
+              {/* balcony and entrance landing */}
+              <path d="M760 852V978H1218V852M771 852V966H1206V852" fill="none" stroke={line} strokeWidth="2" />
+              <text x="989" y="925" textAnchor="middle" fontSize="29" fontWeight="500" fill="#1f2525" letterSpacing="1">BALCONY</text>
+
+              {/* major structural walls */}
+              <path d="M201 52H1227V852H201ZM214 65V839H1214V65Z" fill={ink} fillRule="evenodd" />
+              <path d="M401 62H411V281H401Z" fill={ink} />
+              <path d="M211 277H401V288H211Z" fill={ink} />
+              <path d="M401 277H624V288H401Z" fill={ink} />
+              <path d="M613 62H624V390H613Z" fill={ink} />
+              <path d="M613 385H1072V396H613Z" fill={ink} />
+              <path d="M1061 62H1072V390H1061Z" fill={ink} />
+              <path d="M1067 205H1218V216H1067Z" fill={ink} />
+              <path d="M1059 385H1218V396H1059Z" fill={ink} />
+
+              {/* wall openings erase + framed jambs */}
+              <g fill={paper}>
+                <rect x="751" y="52" width="87" height="13" />
+                <rect x="398" y="184" width="17" height="93" />
+                <rect x="1058" y="76" width="18" height="120" />
+                <rect x="1058" y="224" width="18" height="156" />
+                <rect x="435" y="274" width="86" height="18" />
+                <rect x="624" y="382" width="86" height="18" />
+                <rect x="301" y="829" width="86" height="24" />
+                <rect x="511" y="839" width="170" height="13" />
+                <rect x="846" y="839" width="235" height="13" />
               </g>
 
-              {/* Outer Guideline Box */}
-              <rect x="30" y="30" width="470" height="340" fill="none" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="2 2" />
+              {/* windows */}
+              <g fill={paper} stroke={line} strokeWidth="1.5">
+                <rect x="751" y="52" width="87" height="13" />
+                <path d="M794.5 52V65" />
+                <rect x="511" y="839" width="170" height="13" />
+                <path d="M596 839V852" />
+                <rect x="846" y="839" width="235" height="13" />
+                <path d="M963.5 839V852" />
+                <path d="M1059 76H1074V196H1059M1066 76V196" />
+                <path d="M1059 224H1074V380H1059M1066 224V380" />
+                <path d="M401 184H411V277H401M406 184V277" />
+              </g>
 
-              {/* --- REALISTIC CAD PROPORTIONS (SLEEK WALL-MOUNTED SHOE BOX SB) --- */}
+              {/* doors */}
+              <g fill="none" stroke={line} strokeWidth="1.7">
+                <path d="M401 185L388 207L401 230M401 231L388 253L401 276" />
+                <path d="M435 288V374A86 86 0 0 0 521 288" />
+                <path d="M624 385V299A86 86 0 0 1 710 385" />
+                <path d="M1059 77L1036 106L1059 136M1059 137L1036 166L1059 195" />
+                <path d="M1059 225L1036 263L1059 302M1059 303L1036 341L1059 379" />
+                <path d="M301 839V925A86 86 0 0 0 387 839" />
+              </g>
 
-              {/* 1. UB */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("UB")}
-                onClick={() => setActiveCode("UB")}
+              {/* UB bathtub */}
+              <g fill="none" stroke={line} strokeWidth="1.5">
+                <path d="M214 171H401M234 171V277" />
+                <rect x="230" y="79" width="155" height="78" rx="29" />
+                <circle cx="315" cy="145" r="4" />
+              </g>
+              <text x="313" y="229" textAnchor="middle" fontSize="29" fontWeight="600" fill="#202727">UB</text>
+
+              {/* toilet — purple annotation position */}
+              <g fill={paper} stroke={line} strokeWidth="1.5">
+                <rect x="432" y="77" width="48" height="21" />
+                <path d="M436 98H476V110C476 134 468 148 456 148C444 148 436 134 436 110Z" />
+                <ellipse cx="456" cy="119" rx="15" ry="21" />
+              </g>
+              <text x="484" y="216" textAnchor="middle" fontSize="27" fontWeight="600" fill="#202727">WC</text>
+
+              {/* washing machine space — swapped into the upper position */}
+              <g fill="none" stroke={line} strokeWidth="1.5">
+                <rect x="534" y="72" width="72" height="72" strokeDasharray="6 6" />
+              </g>
+              <text x="570" y="108" textAnchor="middle" dominantBaseline="central" fontSize="28" fontWeight="600" fill="#202727">W</text>
+
+              {/* washstand — rotated 90 degrees and mounted to the right wall */}
+              <g fill="none" stroke={line} strokeWidth="1.5">
+                <rect x="553" y="176" width="60" height="90" />
+                <rect x="562" y="187" width="42" height="68" rx="7" />
+                <path d="M613 221H596M605 214V228" />
+              </g>
+
+              {/* kitchen counter */}
+              <g fill={paper} stroke={line} strokeWidth="1.5">
+                <rect x="214" y="288" width="84" height="269" />
+                <rect x="232" y="313" width="53" height="71" />
+                <circle cx="250" cy="336" r="11" />
+                <circle cx="268" cy="359" r="11" />
+                <rect x="238" y="457" width="45" height="75" rx="6" />
+                <rect x="244" y="465" width="32" height="59" rx="5" />
+                <path d="M236 493H253M244 484V505" />
+              </g>
+              <text x="354" y="469" textAnchor="middle" fontSize="34" fontWeight="600" fill="#202727">K</text>
+
+              {/* refrigerator and shoe cabinet */}
+              <g fill={paper} stroke={line} strokeWidth="1.5">
+                <rect x="223" y="573" width="68" height="72" strokeDasharray="6 6" />
+                <rect x="214" y="716" width="66" height="123" />
+              </g>
+              <text x="257" y="618" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">R</text>
+              <text x="247" y="783" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">SB</text>
+              <text x="352.5" y="777.5" textAnchor="middle" dominantBaseline="central" fontSize="27" fontWeight="600" fill="#202727">玄</text>
+
+              {/* S room bed and desk */}
+              <g fill={paper} stroke="#777b79" strokeWidth="1.4">
+                <rect x="625" y="86" width="250" height="116" rx="5" />
+                <rect x="637" y="96" width="48" height="96" rx="8" />
+                <path d="M697 86V202M697 96H865" />
+                <rect x="846" y="325" width="140" height="60" />
+                <rect x="891" y="338" width="50" height="30" />
+                <circle cx="916" cy="298" r="17" />
+              </g>
+
+              {/* S, closets and closet rails */}
+              <text x="842" y="265" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">S</text>
+              <text x="1138" y="148" textAnchor="middle" fontSize="30" fontWeight="600" fill="#202727">CL</text>
+              <text x="1139" y="325" textAnchor="middle" fontSize="29" fontWeight="600" fill="#202727">WIC</text>
+              <g fill="none" stroke={line} strokeWidth="1.3" strokeDasharray="6 5">
+                <path d="M1075 241H1190V382M1181 250V382" />
+              </g>
+
+              {/* dining table and chairs */}
+              <g fill={paper} stroke="#797d7b" strokeWidth="1.4">
+                <rect x="489" y="531" width="88" height="184" />
+                <rect x="447" y="559" width="34" height="48" rx="7" />
+                <rect x="447" y="639" width="34" height="48" rx="7" />
+                <rect x="585" y="559" width="35" height="48" rx="7" />
+                <rect x="585" y="639" width="35" height="48" rx="7" />
+                <path d="M457 560V606M457 640V686M609 560V606M609 640V686" />
+              </g>
+              <text x="678" y="646" textAnchor="middle" fontSize="35" fontWeight="600" fill="#202727">D</text>
+
+              {/* living furniture */}
+              <g fill={paper} stroke="#777b79" strokeWidth="1.4">
+                <rect x="849" y="502" width="86" height="241" rx="5" />
+                <rect x="868" y="516" width="66" height="62" />
+                <rect x="868" y="578" width="66" height="86" />
+                <rect x="868" y="664" width="66" height="65" />
+                <rect x="849" y="510" width="19" height="222" rx="7" />
+                <rect x="976" y="563" width="70" height="130" />
+                <rect x="1172" y="550" width="30" height="150" />
+                <path d="M1185 580V670M1189 580V670" />
+                <rect x="1178" y="406" width="36" height="88" strokeDasharray="5 4" />
+              </g>
+              <text x="1108" y="646" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">L</text>
+              <text
+                x="0"
+                y="0"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize="16"
+                fontWeight="600"
+                fill="#202727"
+                transform="translate(1196 450) rotate(90)"
               >
-                <rect
-                  x="30"
-                  y="30"
-                  width="100"
-                  height="120"
-                  fill={activeCode === "UB" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "UB" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "UB" ? "2.5" : "1.5"}
-                />
-                {/* Bathtub CAD contour */}
-                <rect x="38" y="38" width="84" height="60" fill="none" stroke={activeCode === "UB" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <circle cx="52" cy="68" r="4" fill="none" stroke={activeCode === "UB" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <text x="80" y="118" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "UB" ? "#00a174" : "#1e293b"}>
-                  UB
-                </text>
-              </g>
-
-              {/* 2. WC */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("WC")}
-                onClick={() => setActiveCode("WC")}
-              >
-                <rect
-                  x="130"
-                  y="30"
-                  width="70"
-                  height="120"
-                  fill={activeCode === "WC" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "WC" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "WC" ? "2.5" : "1.5"}
-                />
-                {/* Toilet Bowl CAD Contour */}
-                <path d="M 155 42 L 175 42 L 175 52 L 155 52 Z" fill={activeCode === "WC" ? "#a7f3d0" : "#e2e8f0"} stroke={activeCode === "WC" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <path d="M 153 52 C 153 78, 177 78, 177 52 Z" fill="none" stroke={activeCode === "WC" ? "#00a174" : "#475569"} strokeWidth="1.2" />
-                <text x="165" y="118" textAnchor="middle" fontSize="14" fontWeight="bold" fill={activeCode === "WC" ? "#00a174" : "#1e293b"}>
-                  WC
-                </text>
-              </g>
-
-              {/* 3. W */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("W")}
-                onClick={() => setActiveCode("W")}
-              >
-                <rect
-                  x="30"
-                  y="150"
-                  width="170"
-                  height="120"
-                  fill={activeCode === "W" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "W" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "W" ? "2.5" : "1.5"}
-                />
-                {/* Washing Machine Pan W */}
-                <rect x="40" y="165" width="55" height="55" fill="none" stroke={activeCode === "W" ? "#00a174" : "#475569"} strokeWidth="1" strokeDasharray="2 2" />
-                <text x="67.5" y="198" textAnchor="middle" fontSize="16" fontWeight="bold" fill={activeCode === "W" ? "#00a174" : "#1e293b"}>
-                  W
-                </text>
-                {/* Washbasin Sink Outline */}
-                <rect x="110" y="165" width="80" height="55" fill="none" stroke="#475569" strokeWidth="1" />
-                <rect x="125" y="175" width="50" height="35" fill="none" stroke="#94a3b8" strokeWidth="1" />
-              </g>
-
-              {/* 4. Entrance Hall & SB (Sleek Wall-mounted Shoe Box) */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("SB")}
-                onClick={() => setActiveCode("SB")}
-              >
-                {/* Entrance Floor Hall */}
-                <rect
-                  x="30"
-                  y="270"
-                  width="170"
-                  height="100"
-                  fill={activeCode === "SB" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "SB" ? "2.5" : "1.5"}
-                />
-                {/* Sleek Wall-Mounted Shoes Box SB (Realistic Slim Cabinet along Left Wall) */}
-                <rect
-                  x="35"
-                  y="280"
-                  width="35"
-                  height="80"
-                  fill="none"
-                  stroke={activeCode === "SB" ? "#00a174" : "#1A2A22"}
-                  strokeWidth="1.5"
-                />
-                <text x="52.5" y="325" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "SB" ? "#00a174" : "#1e293b"}>
-                  SB
-                </text>
-              </g>
-
-              {/* Front Door Swing Arc at Bottom Entrance */}
-              <path d="M 80 370 A 50 50 0 0 1 130 370" fill="none" stroke="#00a174" strokeWidth="1.5" strokeDasharray="2 2" />
-              <line x1="80" y1="370" x2="130" y2="370" stroke="#1A2A22" strokeWidth="3" />
-
-              {/* 5. K */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("K")}
-                onClick={() => setActiveCode("K")}
-              >
-                <rect
-                  x="200"
-                  y="30"
-                  width="140"
-                  height="110"
-                  fill={activeCode === "K" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "K" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "K" ? "2.5" : "1.5"}
-                />
-                {/* Countertop Sink & 2 Burners */}
-                <rect x="210" y="38" width="90" height="50" fill="none" stroke={activeCode === "K" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <circle cx="225" cy="63" r="7" fill="none" stroke={activeCode === "K" ? "#00a174" : "#334155"} strokeWidth="1" />
-                <circle cx="245" cy="63" r="7" fill="none" stroke={activeCode === "K" ? "#00a174" : "#334155"} strokeWidth="1" />
-                <rect x="265" y="50" width="30" height="26" stroke={activeCode === "K" ? "#00a174" : "#334155"} fill="none" strokeWidth="1" />
-                <text x="270" y="115" textAnchor="middle" fontSize="16" fontWeight="bold" fill={activeCode === "K" ? "#00a174" : "#1A2A22"}>
-                  K
-                </text>
-              </g>
-
-              {/* 6. R */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("R")}
-                onClick={() => setActiveCode("R")}
-              >
-                <rect
-                  x="305"
-                  y="38"
-                  width="30"
-                  height="50"
-                  fill={activeCode === "R" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "R" ? "#00a174" : "#475569"}
-                  strokeWidth="1.5"
-                  strokeDasharray="2 2"
-                />
-                <text x="320" y="68" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "R" ? "#00a174" : "#1e293b"}>
-                  R
-                </text>
-              </g>
-
-              {/* 7. S */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("S")}
-                onClick={() => setActiveCode("S")}
-              >
-                <rect
-                  x="340"
-                  y="30"
-                  width="160"
-                  height="150"
-                  fill={activeCode === "S" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "S" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "S" ? "2.5" : "1.5"}
-                />
-                <text x="420" y="125" textAnchor="middle" fontSize="20" fontWeight="bold" fill={activeCode === "S" ? "#00a174" : "#1A2A22"}>
-                  S
-                </text>
-              </g>
-
-              {/* 8. CL */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("CL")}
-                onClick={() => setActiveCode("CL")}
-              >
-                <rect
-                  x="345"
-                  y="35"
-                  width="70"
-                  height="50"
-                  fill={activeCode === "CL" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "CL" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "CL" ? "2" : "1"}
-                />
-                <path d="M 345 35 L 380 43 L 415 35" fill="none" stroke={activeCode === "CL" ? "#00a174" : "#475569"} strokeWidth="1" />
-                <text x="380" y="65" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "CL" ? "#00a174" : "#1e293b"}>
-                  CL
-                </text>
-              </g>
-
-              {/* 9. WIC */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("WIC")}
-                onClick={() => setActiveCode("WIC")}
-              >
-                <rect
-                  x="420"
-                  y="35"
-                  width="75"
-                  height="50"
-                  fill={activeCode === "WIC" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "WIC" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "WIC" ? "2" : "1"}
-                />
-                <line x1="425" y1="42" x2="490" y2="42" stroke={activeCode === "WIC" ? "#00a174" : "#475569"} strokeWidth="1" strokeDasharray="3 3" />
-                <text x="457.5" y="65" textAnchor="middle" fontSize="13" fontWeight="bold" fill={activeCode === "WIC" ? "#00a174" : "#1e293b"}>
-                  WIC
-                </text>
-              </g>
-
-              {/* 10. D */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("D")}
-                onClick={() => setActiveCode("D")}
-              >
-                <rect
-                  x="200"
-                  y="140"
-                  width="140"
-                  height="100"
-                  fill={activeCode === "D" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "D" ? "#00a174" : "none"}
-                  strokeWidth="2"
-                />
-                {/* Dining Table CAD Outline */}
-                <rect x="230" y="160" width="75" height="45" stroke="#cbd5e1" strokeWidth="1.5" fill="none" />
-                <rect x="215" y="172" width="10" height="20" stroke="#cbd5e1" fill="#f8fafc" strokeWidth="1" />
-                <rect x="310" y="172" width="10" height="20" stroke="#cbd5e1" fill="#f8fafc" strokeWidth="1" />
-                <text x="270" y="222" textAnchor="middle" fontSize="18" fontWeight="bold" fill={activeCode === "D" ? "#00a174" : "#1A2A22"}>
-                  D
-                </text>
-              </g>
-
-              {/* 11. L */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("L")}
-                onClick={() => setActiveCode("L")}
-              >
-                <rect
-                  x="200"
-                  y="240"
-                  width="300"
-                  height="130"
-                  fill={activeCode === "L" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "L" ? "#00a174" : "#1A2A22"}
-                  strokeWidth={activeCode === "L" ? "2.5" : "1.5"}
-                />
-                {/* Sofa & TV CAD Outline */}
-                <rect x="290" y="295" width="120" height="45" stroke="#cbd5e1" strokeWidth="1.5" fill="none" />
-                <line x1="290" y1="252" x2="410" y2="252" stroke="#475569" strokeWidth="3" />
-                <text x="350" y="280" textAnchor="middle" fontSize="22" fontWeight="bold" fill={activeCode === "L" ? "#00a174" : "#1A2A22"}>
-                  L
-                </text>
-              </g>
-
-              {/* 12. AC */}
-              <g
-                className="cursor-pointer transition-colors"
-                onMouseEnter={() => setActiveCode("AC")}
-                onClick={() => setActiveCode("AC")}
-              >
-                <rect
-                  x="450"
-                  y="245"
-                  width="45"
-                  height="22"
-                  fill={activeCode === "AC" ? "rgba(0, 161, 116, 0.14)" : "#ffffff"}
-                  stroke={activeCode === "AC" ? "#00a174" : "#475569"}
-                  strokeWidth="1.5"
-                />
-                <text x="472.5" y="260" textAnchor="middle" fontSize="12" fontWeight="bold" fill={activeCode === "AC" ? "#00a174" : "#1e293b"}>
-                  AC
-                </text>
-              </g>
-
-              {/* --- STRUCTURAL THICK SOLID CAD WALLS (#1A2A22) --- */}
-              {/* Outer Boundary Wall (Square 4px) */}
-              <rect x="30" y="30" width="470" height="340" fill="none" stroke="#1A2A22" strokeWidth="4" />
-              {/* Interior Partition Walls */}
-              <line x1="200" y1="30" x2="200" y2="370" stroke="#1A2A22" strokeWidth="3.5" />
-              <line x1="340" y1="30" x2="340" y2="180" stroke="#1A2A22" strokeWidth="3" />
-              <line x1="30" y1="150" x2="200" y2="150" stroke="#1A2A22" strokeWidth="3" />
-              <line x1="30" y1="270" x2="200" y2="270" stroke="#1A2A22" strokeWidth="3" />
-              <line x1="200" y1="140" x2="340" y2="140" stroke="#1A2A22" strokeWidth="3" />
-              <line x1="340" y1="180" x2="500" y2="180" stroke="#1A2A22" strokeWidth="3" />
-
-              {/* Balcony Outer Window Designation */}
-              <text x="350" y="388" textAnchor="middle" fontSize="11" fill="#475569" fontMono letterSpacing="1">
-                BALCONY
+                AC
               </text>
+
+              {/* compass */}
+              <g transform="translate(1335 104)">
+                <circle r="44" fill={paper} stroke="#596472" strokeWidth="2.2" />
+                <circle r="36" fill="none" stroke="#c2cac6" strokeWidth="1" />
+                <g stroke="#7c8782" strokeWidth="1.3">
+                  <path d="M0-44V-38M44 0H38M0 44V38M-44 0H-38" />
+                </g>
+                <path d="M0-32L9 7L0 2L-9 7Z" fill={ink} />
+                <path d="M0 28L-6 3L0 7L6 3Z" fill="#aeb8b3" />
+                <circle r="2.2" fill={ink} />
+                <text y="-53" textAnchor="middle" fontSize="22" fontWeight="700" fill={ink} letterSpacing="1">N</text>
+              </g>
+
+              {/* interactive hit regions and active tint */}
+              <g {...interaction("UB")}><rect x="214" y="65" width="187" height="212" fill={zoneFill("UB")} /></g>
+              <g {...interaction("WC")}><rect x="411" y="65" width="202" height="212" fill={zoneFill("WC")} /></g>
+              <g {...interaction("W")}><rect x="534" y="72" width="72" height="72" fill={zoneFill("W")} /></g>
+              <g {...interaction("VANITY")}><rect x="553" y="176" width="60" height="90" fill={zoneFill("VANITY")} /></g>
+              <g {...interaction("K")}><rect x="214" y="288" width="211" height="428" fill={zoneFill("K")} /></g>
+              <g {...interaction("R")}><rect x="223" y="573" width="68" height="72" fill={zoneFill("R")} /></g>
+              <g {...interaction("ENT")}><rect x="280" y="716" width="145" height="123" fill={zoneFill("ENT")} /></g>
+              <g {...interaction("SB")}><rect x="214" y="716" width="66" height="123" fill={zoneFill("SB")} /></g>
+              <g {...interaction("S")}><rect x="624" y="65" width="437" height="320" fill={zoneFill("S")} /></g>
+              <g {...interaction("CL")}><rect x="1072" y="65" width="142" height="140" fill={zoneFill("CL")} /></g>
+              <g {...interaction("WIC")}><rect x="1072" y="216" width="142" height="169" fill={zoneFill("WIC")} /></g>
+              <g {...interaction("D")}><path d="M425 288H613V396H736V839H425Z" fill={zoneFill("D")} /></g>
+              <g {...interaction("L")}><rect x="736" y="396" width="478" height="443" fill={zoneFill("L")} /></g>
+              <g {...interaction("AC")}><rect x="1178" y="406" width="36" height="88" fill={zoneFill("AC")} /></g>
+              <g {...interaction("BALCONY")}><rect x="760" y="852" width="458" height="126" fill={zoneFill("BALCONY")} /></g>
             </svg>
           </div>
         </div>
 
-        {/* Floating Detail Explanation Card (Side Column) */}
-        <div className="lg:col-span-4 flex flex-col justify-between h-full border border-zinc-200 bg-white p-5 min-h-[360px]">
+        <div className="min-h-[220px] border border-zinc-200 bg-white p-4 md:col-span-4 md:min-h-0 lg:p-5">
           {currentItem ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-block border border-[#00a174] bg-[#00a174] px-2 py-0.5 font-mono text-xs font-bold text-white">
-                    {currentItem.code}
-                  </span>
-                  <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.nameZh}</h5>
-                </div>
-                {currentItem.jpName && (
-                  <span className="text-xs font-sans font-medium text-zinc-500 border border-zinc-200 px-2 py-0.5">
-                    {currentItem.jpName}
-                  </span>
-                )}
+            <div className="flex h-full flex-col">
+              <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 pb-3">
+                <span className="inline-block border border-[#00a174] bg-[#00a174] px-2 py-0.5 font-mono text-xs font-bold text-white">
+                  {currentItem.code}
+                </span>
+                <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.nameZh}</h5>
               </div>
-
-              <div>
-                <p className="text-xs font-mono font-medium text-zinc-400 mb-1">
-                  {currentItem.nameEn}
-                </p>
-                <p className="text-xs leading-relaxed text-zinc-700 text-justify font-sans">
+              <div className="pt-4">
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  <p className="font-mono text-xs font-medium text-zinc-400">{currentItem.nameEn}</p>
+                  {currentItem.jpName && (
+                    <span className="border border-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-500">
+                      {currentItem.jpName}
+                    </span>
+                  )}
+                </div>
+                <p className="font-sans text-xs leading-relaxed text-zinc-700">
                   {currentItem.desc}
                 </p>
               </div>
-
-              <div className="border border-[#bce8dc] bg-[#f0faf7] p-3 text-xs text-[#007d5a] font-sans leading-normal">
-                💡 <strong>房仲提示</strong>：標準日本 1LDK 將「水圍水區（衛浴脫衣）」與「動態 LDK（客餐廳廚房）」及「獨立納戶 S」完美分區，是東京與關西最主流熱門的高品質單身/雙人住宅格局。
+              <div className="mt-auto border border-[#bce8dc] bg-[#f0faf7] p-3 text-xs leading-relaxed text-[#007d5a]">
+                <strong>Linus 實務說明</strong><br />
+                {currentItem.practicalNote}
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400">
-              <span className="text-2xl mb-2">👆</span>
-              <p className="text-xs font-sans leading-relaxed">請將游標移至左側圖紙代號區域，<br />即可查看詳細空間解說</p>
+            <div className="flex h-full min-h-[188px] flex-col items-center justify-center text-center text-zinc-400 md:min-h-0">
+              <span className="mb-3 text-2xl">↖</span>
+              <p className="text-xs leading-relaxed">
+                將游標移至左側圖紙代號區域，<br />
+                或點按房間固定詳細空間解說
+              </p>
             </div>
           )}
         </div>
