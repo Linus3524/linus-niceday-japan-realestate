@@ -45,7 +45,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "納戶 / 服務室",
     jpName: "納戸・サービスルーム",
     desc: "因採光口（窗戶）面積未達日本《建築基準法》第 28 條規定之居室標準（採光面積小於地板面積 1/7），法規標示為 S (Service Room) 或納戶，實務上常作為獨立書房、影音室或擺放單身床墊之多功能空間。",
-    practicalNote: "✦ 日本常見床墊尺寸代號：\n  • S (Single 單人床)：97 × 195cm\n  • SD (Semi-Double 雙人單用加寬)：120 × 195cm\n  • D (Double 標準雙人床)：140 × 195cm\n  • Q (Queen 雙人加大床)：160 × 195cm\n✦ 實務提醒：確認是否有冷氣貫通孔與插座；轉售時不可標為標準臥室。",
+    practicalNote: "✦ 日本常見床墊尺寸代號：\n  • S (Single 單人床)：97 × 195cm\n  • SD (Semi-Double 單人加大)：120 × 195cm\n  • D (Double 標準雙人床)：140 × 195cm\n  • Q (Queen 雙人加大床)：160 × 195cm\n✦ 實務提醒：確認是否有冷氣貫通孔與插座；轉售時不可標為標準臥室。",
     category: "room"
   },
   WC: {
