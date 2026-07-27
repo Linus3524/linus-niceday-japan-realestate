@@ -97,7 +97,7 @@ function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: Speci
 
       {details.length > 0 && (
         <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5">
-          <TermDetailList termName={term.name} details={visibleDetails} />
+          <TermDetailList termName={term.name} details={visibleDetails} allDetails={details} />
           {isCollapsible && (
             <button
               type="button"
