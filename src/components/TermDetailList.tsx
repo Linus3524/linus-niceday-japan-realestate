@@ -35,7 +35,9 @@ export function TermDetailList({
   /** 收合時傳入完整清單，代號欄才能一律以展開後的最長代號決定寬度。 */
   allDetails?: string[];
 }) {
-  const isFloorPlanTerm = termName === "間取り";
+  if (termName === "間取り") {
+    return <InteractiveFloorPlan />;
+  }
 
   if (!usesCodeTags(termName)) {
     return (
@@ -59,10 +61,7 @@ export function TermDetailList({
     .reduce((longest, code) => (code.length > longest.length ? code : longest), "");
 
   return (
-    <div className="space-y-4">
-      {isFloorPlanTerm && <InteractiveFloorPlan />}
-
-      <div className="-mt-2.5 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-2.5 font-sans">
+    <div className="-mt-2.5 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-2.5 font-sans">
       <span aria-hidden="true" className="invisible h-0 overflow-hidden">
         <span className="block whitespace-nowrap border px-1.5 py-0.5 text-center font-mono text-[11px] leading-tight">
           {widestCode}
@@ -87,7 +86,6 @@ export function TermDetailList({
           </div>
         );
       })}
-      </div>
     </div>
   );
 }
