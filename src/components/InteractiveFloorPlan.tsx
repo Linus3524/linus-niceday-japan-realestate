@@ -350,7 +350,8 @@ export function InteractiveFloorPlan() {
               <text x="842" y="265" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">S</text>
               <text x="1138" y="148" textAnchor="middle" fontSize="30" fontWeight="600" fill="#202727">CL</text>
               <text x="1139" y="325" textAnchor="middle" fontSize="29" fontWeight="600" fill="#202727">WIC</text>
-              <g fill="none" stroke={line} strokeWidth="1.3" strokeDasharray="6 5">
+              <g fill="none" stroke={line} strokeWidth="1.4" strokeDasharray="6 5">
+                <path d="M1061 216V302M1072 216V302" />
                 <path d="M1075 241H1190V382M1181 250V382" />
               </g>
 
