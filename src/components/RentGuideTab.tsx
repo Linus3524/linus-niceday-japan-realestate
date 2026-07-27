@@ -635,10 +635,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   {filtered.steps.length > 0 && (
                   <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <div className="absolute top-0 right-6 bg-[#00a174] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
-                      9個核心步驟
+                      租屋申請9步驟
                     </div>
                     <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
-                      日本租屋審查、付款與交屋步驟分解
+                      租屋審查、付款與入住步驟全解析
                       <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
                     </h4>
                     
