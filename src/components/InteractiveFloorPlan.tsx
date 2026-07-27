@@ -322,11 +322,11 @@ export function InteractiveFloorPlan() {
               <text x="247" y="783" textAnchor="middle" fontSize="26" fontWeight="600" fill="#202727">SB</text>
               <text x="352.5" y="777.5" textAnchor="middle" dominantBaseline="central" fontSize="27" fontWeight="600" fill="#202727">玄</text>
 
-              {/* S room bed and desk */}
-              <g fill={paper} stroke="#777b79" strokeWidth="1.4">
-                <rect x="625" y="86" width="250" height="116" rx="5" />
-                <rect x="637" y="96" width="48" height="96" rx="8" />
-                <path d="M697 86V202M697 96H865" />
+              {/* S room single bed and desk */}
+              <g fill={paper} stroke="#777b79" strokeWidth="1.5">
+                <rect x="625" y="80" width="240" height="120" />
+                <rect x="635" y="96" width="44" height="88" rx="6" />
+                <line x1="695" y1="80" x2="695" y2="200" />
                 <rect x="846" y="325" width="140" height="60" />
                 <rect x="891" y="338" width="50" height="30" />
                 <circle cx="916" cy="298" r="17" />
