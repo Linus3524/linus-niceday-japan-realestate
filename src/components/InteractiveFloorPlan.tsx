@@ -344,12 +344,12 @@ export function InteractiveFloorPlan() {
                 <rect x="846" y="325" width="140" height="60" />
                 <rect x="891" y="338" width="50" height="30" />
                 <circle cx="916" cy="298" r="17" />
-                <rect x="960" y="65" width="88" height="34" strokeDasharray="5 4" />
+                <rect x="890" y="65" width="88" height="34" strokeDasharray="5 4" />
               </g>
 
               {/* S, closets and closet rails */}
               <text x="842" y="265" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">S</text>
-              <text x="1004" y="82" textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="600" fill="#202727">AC</text>
+              <text x="934" y="82" textAnchor="middle" dominantBaseline="central" fontSize="16" fontWeight="600" fill="#202727">AC</text>
               <text x="1138" y="148" textAnchor="middle" fontSize="30" fontWeight="600" fill="#202727">CL</text>
               <text x="1139" y="325" textAnchor="middle" fontSize="29" fontWeight="600" fill="#202727">WIC</text>
               <g fill="none" stroke={line} strokeWidth="1.4" strokeDasharray="6 5">
@@ -423,7 +423,7 @@ export function InteractiveFloorPlan() {
               <g {...interaction("L")}><rect x="736" y="396" width="478" height="443" fill={zoneFill("L")} /></g>
               <g {...interaction("AC")}>
                 <rect x="1178" y="406" width="36" height="88" fill={zoneFill("AC")} />
-                <rect x="960" y="65" width="88" height="34" fill={zoneFill("AC")} />
+                <rect x="890" y="65" width="88" height="34" fill={zoneFill("AC")} />
               </g>
               <g {...interaction("BALCONY")}><rect x="760" y="852" width="458" height="126" fill={zoneFill("BALCONY")} /></g>
             </svg>
