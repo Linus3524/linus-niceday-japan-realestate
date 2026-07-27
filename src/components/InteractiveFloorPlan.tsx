@@ -72,7 +72,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "整體浴室",
     jpName: "ユニットバス",
     desc: "工廠預製成型的一體化防漏防水浴室，整合浴缸、獨立淋浴區與專用排水孔。具備極高的熱絕緣保溫性與優異的氣密防潮性能。",
-    practicalNote: "實務看屋重點：確認浴室尺寸代號（如 1616 或 1418）、是否配備自動追焚加熱功能（追炊き），以及浴室換氣乾燥暖房機（梅雨季室內晾衣與冬天防熱休克必備）。",
+    practicalNote: "✦ 浴室尺寸：確認浴室尺寸代號（如 1616 或 1418 規格）。\n✦ 追焚功能：確認是否配備自動追焚加熱功能（追炊き）。\n✦ 換氣乾燥：確認是否有浴室換氣乾燥暖房機（室內晾衣與冬季防熱休克）。",
     category: "bath"
   },
   CL: {
@@ -126,7 +126,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "冰箱預留位",
     jpName: "冷蔵庫置場",
     desc: "廚房料理區旁專門預留的冰箱擺設空間，緊鄰電源插座與廚房備餐動線。日本現代單身套房/1LDK 多設計為適合擺放單身主流「高瘦型冰箱（高身スリム冷蔵庫）」之空間。",
-    practicalNote: "實務尺寸與看屋重點：日本單身族群主流冰箱容量為 150L~200L（雙門高瘦型，淨寬約 48~54cm、深 55~60cm、高 120~150cm）。預留位寬度通常在 60cm 左右，看屋時務必預留兩側各 0.5~1cm 散熱淨寬與前方開門迴旋空間，並確認門扇開向（左開/右開/雙開）是否會撞牆。",
+    practicalNote: "✦ 家電尺寸：單身主流 150L~200L 雙門高瘦型（寬 48~54cm、深 55~60cm）。\n✦ 散熱淨寬：預留兩側各 0.5~1cm 散熱淨寬與前方開門迴旋空間。\n✦ 門扇開向：確認門扇左開/右開/雙開不撞牆面或廚房櫃體。",
     category: "equipment"
   },
   AC: {
@@ -446,14 +446,42 @@ export function InteractiveFloorPlan() {
                 </div>
               </div>
 
-              <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3.5 space-y-1.5 shadow-2xs">
+              <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3.5 space-y-2 rounded-r shadow-xs">
                 <strong className="text-xs font-bold text-[#007d5a] block font-sans">Linus 實務說明：</strong>
-                <div className="text-xs text-zinc-600 leading-relaxed font-sans space-y-1">
-                  {currentItem.practicalNote.split("\n").map((line, idx) => (
-                    <div key={idx} className="whitespace-pre-line text-justify">
-                      {line}
-                    </div>
-                  ))}
+                <div className="text-xs text-zinc-600 leading-relaxed font-sans space-y-1.5">
+                  {currentItem.practicalNote.split("\n").map((line, idx) => {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith("✦")) {
+                      const colonIdx = line.indexOf("：") !== -1 ? line.indexOf("：") : line.indexOf(":");
+                      if (colonIdx !== -1) {
+                        const title = line.slice(0, colonIdx + 1);
+                        const body = line.slice(colonIdx + 1);
+                        return (
+                          <div key={idx} className="text-justify leading-relaxed">
+                            <span className="font-semibold text-[#1A2A22]">{title}</span>
+                            <span className="text-zinc-600">{body}</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={idx} className="font-semibold text-[#1A2A22] text-justify leading-relaxed">
+                          {line}
+                        </div>
+                      );
+                    }
+                    if (trimmed.startsWith("•")) {
+                      return (
+                        <div key={idx} className="pl-3.5 text-zinc-600 text-justify leading-relaxed">
+                          {line}
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={idx} className="whitespace-pre-line text-justify leading-relaxed">
+                        {line}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
