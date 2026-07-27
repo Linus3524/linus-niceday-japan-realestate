@@ -262,19 +262,19 @@ export function InteractiveFloorPlan() {
                 <path d="M401 184H411V277H401M406 184V277" />
               </g>
 
-              {/* doors: rectangular door leaves (white fill, black stroke) + 1.4px CAD swing arcs */}
+              {/* doors: door leaf bars across wall openings (fill=paper, stroke=line) + swing arcs */}
               <g>
-                {/* WC door */}
-                <rect x="427" y="288" width="8" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M435 374 A86 86 0 0 0 521 288" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* WC door: opening x=435..521 */}
+                <rect x="435" y="278" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M435 288V374A86 86 0 0 0 521 288" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* S room door */}
-                <rect x="616" y="299" width="8" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M624 299 A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* S room door: opening x=624..710 */}
+                <rect x="624" y="386" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M624 385V299A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* Entrance door */}
-                <rect x="293" y="839" width="8" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M301 925 A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* Entrance door: opening x=301..387 */}
+                <rect x="301" y="834" width="86" height="10" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
               {/* Bi-fold doors (UB, CL, WIC) with white fill and black outline */}
