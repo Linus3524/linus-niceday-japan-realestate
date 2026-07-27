@@ -18,7 +18,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "客廳",
     jpName: "居間・リビング",
     desc: "日常起居與社交核心空間。在日本 1LDK 構造中，通常與餐廚區無縫連通（開放式 LDK），並透過大面落地窗銜接戶外陽台，提供主要採光與通風。",
-    practicalNote: "實務看屋重點：需確認電視主牆到沙發的視距（建議至少 2 公尺）、插座與網路壁孔位置，以及前往陽台的步行通道是否會被大型沙發擺設阻擋。",
+    practicalNote: "✦ 視距與動線淨寬：電視主牆至沙發建議至少留 2 公尺視距。\n✦ 落地窗擺設：前往陽台的步行動線勿被大型沙發或茶邊桌遮擋。\n✦ 壁孔機能：看屋時需核對電視壁孔、網路出線口與電源插座位置。",
     category: "room"
   },
   D: {
@@ -27,7 +27,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "餐廳",
     jpName: "食事室・ダイニング",
     desc: "擺放餐桌椅並專用於用餐與家庭交流的區域，介於廚房料理區與客廳起居區之間，構成日本現代住宅常見的高效「動線黃金三角」。",
-    practicalNote: "實務看屋重點：勿僅看平面圖空間；需預留座椅向後拉開與後方行走的通行淨寬（建議座椅後方留 60-80cm），避免餐桌放妥後擠壓到廚房進出路徑。",
+    practicalNote: "✦ 動線淨寬：餐桌椅後方需預留 60-80cm 通行淨寬。\n✦ 黃金動線：確認餐桌擺妥後不擠壓廚房料理與出菜通道。\n✦ 燈具插座：留意餐桌上方吊燈線路與便攜式電磁爐插座。",
     category: "room"
   },
   K: {
@@ -36,7 +36,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "廚房",
     jpName: "台所・キッチン",
     desc: "料理與洗滌區域，配置水槽、切菜工作檯面與雙口/三口瓦斯爐或 IH 爐。旁側緊鄰冰箱預留位 (R)，實現短距離的洗切炒烹飪動線。",
-    practicalNote: "實務看屋重點：確認熱源類別（都市瓦斯/LP丙烷瓦斯/IH）、工作檯面寬度（是否好切菜）、抽油煙機風量，以及料理小家電（微波爐/電鍋）所需的專用迴路插座。",
+    practicalNote: "✦ 熱源種類：確認屬都市瓦斯 (都市ガス)、LP丙烷瓦斯或 IH 爐。\n✦ 料理空間：確認切菜檯面淨寬、水槽大小與抽油煙機風量。\n✦ 專用迴路：確認微波爐、電鍋等高功率家電之專用插座。",
     category: "room"
   },
   S: {
@@ -45,7 +45,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "納戶 / 服務室",
     jpName: "納戸・サービスルーム",
     desc: "因採光口（窗戶）面積未達日本《建築基準法》第 28 條規定之居室標準（採光面積小於地板面積 1/7），法規標示為 S (Service Room) 或納戶，實務上常作為獨立書房、影音室或擺放單身床墊之多功能空間。",
-    practicalNote: "實務尺寸與看屋重點：日本常見標準床墊尺寸為—— S (Single 單人床 97×195cm)、SD (Semi-Double 雙人單用加寬床 120×195cm)、D (Double 標準雙人床 140×195cm)、Q (Queen 雙人加大床 160×195cm)。S 空間看屋時需特別確認是否有冷氣貫通孔與插座，並精算擺放 S (97cm) 或 SD (120cm) 床墊後是否會阻擋房門開合。",
+    practicalNote: "✦ 日本常見床墊尺寸代號：\n  • S (Single 單人床)：97 × 195cm\n  • SD (Semi-Double 雙人單用加寬)：120 × 195cm\n  • D (Double 標準雙人床)：140 × 195cm\n  • Q (Queen 雙人加大床)：160 × 195cm\n✦ 實務提醒：確認是否有冷氣貫通孔與插座；轉售時不可標為標準臥室。",
     category: "room"
   },
   WC: {
@@ -54,7 +54,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "獨立廁所",
     jpName: "独立トイレ",
     desc: "完全獨立於浴室與洗面所之外的廁所空間（日本衛浴分離主流規格）。讓家人或同居者在有人泡澡淋浴時，仍可完全獨立且安心地如廁。",
-    practicalNote: "實務看屋重點：親自坐上馬桶測試膝蓋與前門的距離、確認是否標配溫水洗淨便座 (免治馬桶)、上方有無衛生紙儲藏吊櫃，並注意門扇開合方向是否會與浴室門撞擊。",
+    practicalNote: "✦ 淨寬與門扇：親自坐下測試膝蓋與前門淨寬度（避免過窄擠壓）。\n✦ 標配設備：確認是否標配溫水洗淨便座 (免治馬桶) 與上層吊櫃。\n✦ 門扇干涉：注意廁所門開啟方向是否會與浴室門相互碰撞。",
     category: "bath"
   },
   VANITY: {
@@ -63,7 +63,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "獨立洗面台",
     jpName: "独立洗面化粧台",
     desc: "獨立設於脫衣過道的梳洗設備，整合洗臉盆、三面鏡櫃、單手彈開伸縮龍頭與電源插座，無須進入濕漉漉的浴室即可快速完成早晚洗漱、吹髮與化妝。",
-    practicalNote: "實務看屋重點：確認鏡櫃內部收納深度、龍頭是否為可拉出沖洗頭皮的蓮蓬頭龍頭（シャンプー水栓）、防濺檯面設計，以及吹風機/電動牙刷所需的防水插座。",
+    practicalNote: "✦ 鏡櫃龍頭：確認鏡櫃內部收納深度與伸縮蓮蓬頭龍頭（シャンプー水栓）。\n✦ 防濺設計：檯面防濺邊界與水槽洗滌深度。\n✦ 用電配備：確認吹風機、電動牙刷必備之防水電源插座。",
     category: "bath"
   },
   UB: {
@@ -81,7 +81,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "壁櫥 / 衣櫥",
     jpName: "クローゼット",
     desc: "內嵌於牆體內部的收納衣櫃，配有橫向金屬吊衣桿與頂部天袋置物層板，完全不占用房間實際行走與擺放床鋪的地板面積。",
-    practicalNote: "實務看屋重點：平面圖僅呈現長度，看屋時務必測量有效深度（懸掛大衣與西裝至少需 60cm），並確認摺疊門或拉門完全開啟時，是否會卡到鄰近的床頭櫃或家具。",
+    practicalNote: "✦ 有效深度：吊掛西裝/大衣內部深度建議至少留 60cm。\n✦ 天袋收納：頂部天袋層板收納大型棉被與季節物品。\n✦ 門扇迴旋：確認摺疊門或拉門開啟時是否卡到床頭櫃。",
     category: "storage"
   },
   WIC: {
@@ -90,7 +90,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "步入式衣帽間",
     jpName: "ウォークインクローゼット",
     desc: "人可直接走入的大容量獨立收納空間，內部四周設有多層隔板、吊衣桿與層架，能同時集中收納四季衣物、大型行李箱、棉被與季節性家電。",
-    practicalNote: "實務看屋重點：WIC 的記載面積包含內部行走通道；看屋時需確認轉角處與高處層板是否好拿取、內部是否有通風換氣孔，以防台灣/日本夏季潮濕發霉。",
+    practicalNote: "✦ 空間淨寬：WIC 標示面積含內部走道，需實測有效掛衣深度。\n✦ 轉角高處：確認轉角吊桿與高處層板是否便於拿取。\n✦ 通風防霉：確認內部設有換氣風門或抽風孔以防潮濕。",
     category: "storage"
   },
   SB: {
@@ -99,7 +99,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "鞋櫃",
     jpName: "シューズボックス・下駄箱",
     desc: "緊貼玄關牆面設置的高容量鞋類收納櫃，內設可自由調整高度的層板，底部常留有懸空區供擺放當天常穿的室外鞋。",
-    practicalNote: "實務看屋重點：確認層板是否能彈性拆卸調整高度（用以擺放高跟鞋或長靴）、內部有無雨傘掛放架與長傘排水溝，以及櫃門打開時是否會阻擋玄關的行走動線。",
+    practicalNote: "✦ 層板調整：層板需能自由拆卸（以擺放高跟鞋或長靴）。\n✦ 長傘收納：內部設有傘架與底層瀝水溝槽。\n✦ 玄關動線：門扇全開時不阻擋玄關落塵區進出動線。",
     category: "storage"
   },
   ENT: {
@@ -108,7 +108,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "玄關",
     jpName: "玄関",
     desc: "連通室外與內部的換鞋緩衝空間。設有落塵土間與抬高之地板段差（上がり框），在傳統與現代日本文化中均為明確區隔乾淨室內的衛生防線。",
-    practicalNote: "實務看屋重點：量測高低差高度、大門開啟淨寬度與轉角迴旋半徑，確保雙門雙開冰箱、大尺寸沙發與雙人床墊能順利搬運進房。",
+    practicalNote: "✦ 搬運淨寬：測量玄關大門開啟淨寬與迴旋半徑（搬運大家電必查）。\n✦ 落塵段差：確認室外土間與室內上がり框的高低差高度。\n✦ 燈光感應：玄關是否配備自動人感感應照明。",
     category: "room"
   },
   W: {
@@ -117,7 +117,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "洗衣機預留位",
     jpName: "室内洗濯機置場",
     desc: "室內專用洗衣機擺放區，配有固定尺寸防溢水保護盤（防水パン）、防冷凝高位給水龍頭與防漏電接地插座。日本單身公寓最常見標配規格為正方形 64cm×64cm 防水盤（內部淨寬約 58-59cm）。",
-    practicalNote: "實務尺寸與看屋重點：日本單身族群多採直立式 5~7kg（機身寬約 52~55cm）或日系/歐規高瘦超薄型滾筒洗衣機（機身寬 60cm 內）。看屋時需核對：① 防水盤內部淨尺寸（64×64cm 或 74×64cm）、② 龍頭安裝高度是否會卡住洗衣機上蓋開啟、③ 排水口位置是否利於自行排水管接續。",
+    practicalNote: "✦ 單身標準防水盤：正方形 64×64cm 規格（內部淨寬約 58-59cm）。\n✦ 適用機型尺寸：\n  • 直立式 5~7kg（機身寬約 52~55cm）\n  • 滾筒式（機身寬 60cm 內超薄款）\n✦ 看屋必查重點：水龍頭高度不阻擋上蓋開啟、排水孔位置好接管。",
     category: "equipment"
   },
   R: {
@@ -135,7 +135,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "冷氣預留位 / 變頻冷氣",
     jpName: "エアコン",
     desc: "牆面上方專用的變頻壁掛冷氣安裝位，配置冷媒管/排水管穿牆貫通孔以及大功率專用單獨迴路插座 (100V/200V)。",
-    practicalNote: "實務看屋重點：平面圖標示 AC 不代表隨屋附贈冷氣機！看屋/簽約前必須與仲介確認該冷氣屬於「設備（故障由房東修繕）」還是「前房客殘留物（故障自理）」，並核對插座電壓。",
+    practicalNote: "✦ 權屬確認：確認標示 AC 屬於「設備（房東修）」還是「殘留物（自理）」。\n✦ 專用迴路：核對變頻冷氣牆面專用插座電壓 (100V / 200V)。\n✦ 室外機位：確認冷媒管穿牆貫通孔與室外機擺放陽台位置。",
     category: "equipment"
   },
   BALCONY: {
@@ -144,7 +144,7 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameZh: "陽台",
     jpName: "バルコニー",
     desc: "自客廳延伸出去的對外戶外空間，主要提供日常採光、通風與晾曬衣物。在日本法律上屬於社區全體共有、但授權該戶獨佔的「專有使用部分」。",
-    practicalNote: "實務看屋重點：親自至陽台觀察座向採光、周邊遮蔽物、冷氣室外機擺放位置，並特別注意避難隔板與避難梯（避難ハッチ）周圍依《消防法》嚴禁堆放雜物。",
+    practicalNote: "✦ 專有使用權：法律上屬全體共有、但授權該戶獨佔使用。\n✦ 消防規範：避難梯 (避難ハッチ) 與避難隔板周圍嚴禁堆放雜物。\n✦ 採光與晾衣：觀察戶外採光座向、遮蔽物與曬衣架安裝高度。",
     category: "room"
   }
 };
@@ -446,11 +446,15 @@ export function InteractiveFloorPlan() {
                 </div>
               </div>
 
-              <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3 space-y-1">
+              <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3.5 space-y-1.5 shadow-2xs">
                 <strong className="text-xs font-bold text-[#007d5a] block font-sans">Linus 實務說明：</strong>
-                <p className="text-xs text-zinc-600 leading-relaxed text-justify">
-                  {currentItem.practicalNote}
-                </p>
+                <div className="text-xs text-zinc-600 leading-relaxed font-sans space-y-1">
+                  {currentItem.practicalNote.split("\n").map((line, idx) => (
+                    <div key={idx} className="whitespace-pre-line text-justify">
+                      {line}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
