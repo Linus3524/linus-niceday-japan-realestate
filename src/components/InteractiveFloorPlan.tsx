@@ -376,8 +376,8 @@ export function InteractiveFloorPlan() {
                 <rect x="868" y="664" width="66" height="65" />
                 <rect x="849" y="510" width="19" height="222" rx="7" />
                 <rect x="976" y="563" width="70" height="130" />
-                <rect x="1172" y="550" width="30" height="150" />
-                <path d="M1185 580V670M1189 580V670" />
+                <rect x="1184" y="550" width="30" height="150" />
+                <path d="M1197 580V670M1201 580V670" />
                 <rect x="1178" y="406" width="36" height="88" strokeDasharray="5 4" />
               </g>
               <text x="1108" y="646" textAnchor="middle" fontSize="36" fontWeight="600" fill="#202727">L</text>
