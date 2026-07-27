@@ -359,14 +359,14 @@ export function InteractiveFloorPlan() {
 
               {/* dining table and chairs */}
               <g fill={paper} stroke="#797d7b" strokeWidth="1.4">
-                <rect x="489" y="531" width="88" height="184" />
-                <rect x="447" y="559" width="34" height="48" rx="7" />
-                <rect x="447" y="639" width="34" height="48" rx="7" />
-                <rect x="585" y="559" width="35" height="48" rx="7" />
-                <rect x="585" y="639" width="35" height="48" rx="7" />
-                <path d="M457 560V606M457 640V686M609 560V606M609 640V686" />
+                <rect x="519" y="531" width="88" height="184" />
+                <rect x="477" y="559" width="34" height="48" rx="7" />
+                <rect x="477" y="639" width="34" height="48" rx="7" />
+                <rect x="615" y="559" width="35" height="48" rx="7" />
+                <rect x="615" y="639" width="35" height="48" rx="7" />
+                <path d="M487 560V606M487 640V686M639 560V606M639 640V686" />
               </g>
-              <text x="678" y="646" textAnchor="middle" fontSize="35" fontWeight="600" fill="#202727">D</text>
+              <text x="698" y="646" textAnchor="middle" fontSize="35" fontWeight="600" fill="#202727">D</text>
 
               {/* living furniture */}
               <g fill={paper} stroke="#777b79" strokeWidth="1.4">
