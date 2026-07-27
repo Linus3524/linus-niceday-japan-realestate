@@ -208,6 +208,9 @@ export function InteractiveFloorPlan() {
                 <pattern id="floorBoards" width="32" height="32" patternUnits="userSpaceOnUse">
                   <path d="M0 0V32" fill="none" stroke="#ddd9d0" strokeWidth="1" />
                 </pattern>
+                <pattern id="genkanTiles" width="25" height="25" patternUnits="userSpaceOnUse">
+                  <path d="M 25 0H0V25" fill="none" stroke="#c0c8c4" strokeWidth="1" />
+                </pattern>
                 <filter id="paperShadow" x="-10%" y="-10%" width="120%" height="120%">
                   <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#81918a" floodOpacity=".08" />
                 </filter>
@@ -217,6 +220,7 @@ export function InteractiveFloorPlan() {
 
               {/* paper and room fields */}
               <path d="M211 62H1217V841H211Z" fill={paper} filter="url(#paperShadow)" />
+              <rect x="280" y="716" width="145" height="123" fill="url(#genkanTiles)" opacity=".85" />
               <path d="M632 62H1066V389H632Z" fill="url(#floorBoards)" opacity=".75" />
               <path d="M425 390H1217V840H425Z" fill="url(#floorBoards)" opacity=".34" />
 
