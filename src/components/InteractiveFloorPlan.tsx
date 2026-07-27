@@ -393,16 +393,16 @@ export function InteractiveFloorPlan() {
               </text>
 
               {/* compass */}
-              <g transform="translate(560 915)">
-                <circle r="40" fill={paper} stroke="#596472" strokeWidth="2" />
-                <circle r="32" fill="none" stroke="#c2cac6" strokeWidth="1" />
-                <g stroke="#7c8782" strokeWidth="1.2">
-                  <path d="M0-40V-34M40 0H34M0 40V34M-40 0H-34" />
+              <g transform="translate(490 930)">
+                <circle r="30" fill={paper} stroke="#596472" strokeWidth="1.6" />
+                <circle r="24" fill="none" stroke="#c2cac6" strokeWidth="0.9" />
+                <g stroke="#7c8782" strokeWidth="1">
+                  <path d="M0-30V-25M30 0H25M0 30V25M-30 0H-25" />
                 </g>
-                <path d="M0-28L8 6L0 2L-8 6Z" fill={ink} />
-                <path d="M0 25L-5 3L0 6L5 3Z" fill="#aeb8b3" />
-                <circle r="2" fill={ink} />
-                <text y="-48" textAnchor="middle" fontSize="20" fontWeight="700" fill={ink} letterSpacing="1">N</text>
+                <path d="M0-21L6 4L0 1L-6 4Z" fill={ink} />
+                <path d="M0 19L-4 2L0 4L4 2Z" fill="#aeb8b3" />
+                <circle r="1.6" fill={ink} />
+                <text y="-36" textAnchor="middle" fontSize="16" fontWeight="700" fill={ink} letterSpacing="0.8">N</text>
               </g>
 
               {/* interactive hit regions and active tint */}
