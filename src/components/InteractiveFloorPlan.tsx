@@ -260,19 +260,25 @@ export function InteractiveFloorPlan() {
                 <path d="M963.5 839V852" />
               </g>
 
-              {/* doors: door leaf bars across wall openings aligned 100% with wall thickness */}
+              {/* Single-swing CAD doors (WC, S room, Entrance): unified 86px wall opening, 5px slim 90° open door panel, jamb lines, and 86px arc radius */}
               <g>
-                {/* WC door: wall y=277..288 (height=11) */}
-                <rect x="435" y="277" width="86" height="11" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M435 288V374A86 86 0 0 0 521 288" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* WC door: opening x=435..521 (width=86), wall y=277..288 */}
+                <line x1="435" y1="277" x2="435" y2="288" stroke={line} strokeWidth="1.5" />
+                <line x1="521" y1="277" x2="521" y2="288" stroke={line} strokeWidth="1.5" />
+                <rect x="430" y="288" width="5" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M430 374 A86 86 0 0 0 521 288" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* S room door: wall y=385..396 (height=11) */}
-                <rect x="624" y="385" width="86" height="11" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M624 385V299A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* S room door: opening x=624..710 (width=86), wall y=385..396 */}
+                <line x1="624" y1="385" x2="624" y2="396" stroke={line} strokeWidth="1.5" />
+                <line x1="710" y1="385" x2="710" y2="396" stroke={line} strokeWidth="1.5" />
+                <rect x="619" y="299" width="5" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M619 299 A86 86 0 0 1 710 385" fill="none" stroke={line} strokeWidth="1.4" />
 
-                {/* Entrance door: exterior wall y=839..852 (height=13) */}
-                <rect x="301" y="839" width="86" height="13" fill={paper} stroke={line} strokeWidth="1.5" />
-                <path d="M301 839V925A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
+                {/* Entrance door: opening x=301..387 (width=86), exterior wall y=839..852 */}
+                <line x1="301" y1="839" x2="301" y2="852" stroke={line} strokeWidth="1.5" />
+                <line x1="387" y1="839" x2="387" y2="852" stroke={line} strokeWidth="1.5" />
+                <rect x="296" y="839" width="5" height="86" fill={paper} stroke={line} strokeWidth="1.5" />
+                <path d="M296 925 A86 86 0 0 0 387 839" fill="none" stroke={line} strokeWidth="1.4" />
               </g>
 
               {/* Bi-fold doors (UB, CL): clean hollow frame rect matching wall thickness (11px/10px) + V-folding panels folding left */}
