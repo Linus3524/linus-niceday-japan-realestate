@@ -4,6 +4,7 @@
 export interface FeaturedThread {
   url: string;
   theme?: "light" | "dark";
+  keywords?: string[];
 }
 
 export interface ThreadCategory {
@@ -196,6 +197,21 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DUDOmFhErWU" },
       { url: "https://www.threads.com/@linus3524/post/DUktauiEvnr" },
       { url: "https://www.threads.com/@linus3524/post/DaC_GzlkxfU" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DbUvfzpE5IH",
+        keywords: [
+          "打工度假",
+          "Working Holiday",
+          "赴日前準備",
+          "先找房再買機票",
+          "海外審査",
+          "海外審查",
+          "入境日期",
+          "入住日期",
+          "機票時間",
+          "落地入住"
+        ]
+      },
     ],
   },
   {

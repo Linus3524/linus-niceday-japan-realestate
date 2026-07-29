@@ -90,7 +90,10 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
     const scored: { thread: FeaturedThread; score: number }[] = [];
     for (const category of threadCategories) {
       for (const thread of category.threads) {
-        const text = (threadsSearchIndex[threadPostId(thread.url)] ?? "").toLowerCase();
+        const text = [
+          threadsSearchIndex[threadPostId(thread.url)] ?? "",
+          ...(thread.keywords ?? [])
+        ].join(" ").toLowerCase();
         const firstIndex = text.indexOf(normalizedQuery);
         if (firstIndex === -1) continue;
         const occurrences = text.split(normalizedQuery).length - 1;
