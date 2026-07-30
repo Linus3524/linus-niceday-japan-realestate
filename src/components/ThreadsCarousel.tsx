@@ -11,6 +11,7 @@ import { threadsSearchIndex } from "../data/threadsSearchIndex";
 import { NORTH_EAST_SVG, NorthEastIcon } from "./NorthEastIcon";
 
 const THREADS_SCRIPT_SRC = "https://www.threads.com/embed.js";
+const CATEGORY_ROTATE_MS = 15_000;
 
 // 搜尋框下方的熱門關鍵字快捷鈕
 const PRESET_KEYWORDS = ["水電", "瓦斯", "打工", "留學", "內見", "初期"];
@@ -110,6 +111,28 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
   // currentThreads = 目前實際顯示的清單（搜尋結果或所選分類），
   // 下方拖曳／輪播／批次載入邏輯全部沿用這個清單，不需改動。
   const currentThreads = isSearching ? searchResults : (currentCategory?.threads ?? []);
+
+  // 首頁輪播每 15 秒換到下一個 Threads 分類。完整 Threads 頁以閱讀與搜尋為主，
+  // 不自動切換；使用者正在操作卡片、鍵盤閱讀或切到背景分頁時也維持目前分類。
+  useEffect(() => {
+    if (pageMode || isSearching || searchFocused || threadCategories.length <= 1) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setInterval(() => {
+      const track = trackRef.current;
+      if (
+        document.hidden ||
+        isPointerInsideRef.current ||
+        isUserInteractingRef.current ||
+        track?.contains(document.activeElement)
+      ) {
+        return;
+      }
+      setActiveCategory((current) => (current + 1) % threadCategories.length);
+    }, CATEGORY_ROTATE_MS);
+
+    return () => window.clearInterval(timer);
+  }, [activeCategory, isSearching, pageMode, searchFocused]);
 
   // 一次性把 blockquote 注入容器（避免 React 與嵌入腳本爭搶同一組 DOM 節點而崩潰），
   // 再載入官方腳本並觸發渲染。
