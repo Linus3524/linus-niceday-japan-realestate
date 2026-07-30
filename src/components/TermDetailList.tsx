@@ -81,7 +81,7 @@ export function TermDetailList({
             </span>
             <span className="text-xs leading-relaxed text-zinc-800 text-justify">
               {label && <strong className="mr-1.5 font-semibold text-[#1A2A22]">{label}</strong>}
-              {renderInlineLabels(body)}
+              {body}
             </span>
           </div>
         );

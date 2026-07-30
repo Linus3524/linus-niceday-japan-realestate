@@ -36,7 +36,15 @@ export function parseTermDetail(detail: string): ParsedTermDetail {
 // 刻意採白名單而非自動判斷：這幾張卡的條列本來就是「代號 ↔ 全名」對照表，
 // 拉成一欄才有掃描價值；其他卡片的條列是完整句子，自動套用只會變成一排色塊。
 // 要擴充就把名稱加進來，解析邏輯不用動。
-const CODE_TAG_TERMS = new Set(["間取り", "建築構造", "建物種別"]);
+const CODE_TAG_TERMS = new Set([
+  "間取り",
+  "建築構造",
+  "建物種別",
+  "賃貸借契約",
+  "ガスの種類",
+  "インターネット対応・ネット無料",
+  "テレビ端子（BS／CS／CATV）",
+]);
 
 export function usesCodeTags(termName: string): boolean {
   return CODE_TAG_TERMS.has(termName);

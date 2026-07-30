@@ -17,8 +17,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Living Room",
     nameZh: "客廳",
     jpName: "居間・リビング",
-    desc: "日常起居與社交核心空間。在日本 1LDK 構造中，通常與餐廚區無縫連通（開放式 LDK），並透過大面落地窗銜接戶外陽台，提供主要採光與通風。",
-    practicalNote: "✦ 視距與動線淨寬：電視主牆至沙發建議至少留 2 公尺視距。\n✦ 落地窗擺設：前往陽台的步行動線勿被大型沙發或茶邊桌遮擋。\n✦ 壁孔機能：看屋時需核對電視壁孔、網路出線口與電源插座位置。",
+    desc: "日本物件圖上的 L 是 Living Room，指客廳或主要起居區，也是放鬆、看電視與接待訪客的生活空間。與 D、K 組合成 LDK 時，代表客廳、餐廳與廚房共同構成一個完整的起居區域。",
+    practicalNote: "✦ 空間判讀：確認 L 區的實際帖數、形狀與可用牆面，不只看 LDK 的總帖數。\n✦ 家具動線：估算沙發、電視與通往窗戶或陽台的通道是否互相干涉。\n✦ 插座位置：看屋時確認電視端子、網路端子與電源插座的數量及位置。",
     category: "room"
   },
   D: {
@@ -26,8 +26,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Dining Room",
     nameZh: "餐廳",
     jpName: "食事室・ダイニング",
-    desc: "擺放餐桌椅並專用於用餐與家庭交流的區域，介於廚房料理區與客廳起居區之間，構成日本現代住宅常見的高效「動線黃金三角」。",
-    practicalNote: "✦ 動線淨寬：餐桌椅後方需預留 60-80cm 通行淨寬。\n✦ 黃金動線：確認餐桌擺妥後不擠壓廚房料理與出菜通道。\n✦ 燈具插座：留意餐桌上方吊燈線路與便攜式電磁爐插座。",
+    desc: "日本物件圖上的 D 是 Dining，指規劃作為用餐的區域，通常位於廚房與客廳之間。與 K 組合為 DK，與 L、K 組合則為 LDK，是日本住宅格局中常見的餐廚與起居空間標示。",
+    practicalNote: "✦ 尺寸確認：依預計使用的餐桌尺寸，確認拉開椅子後仍有足夠通行空間。\n✦ 料理動線：留意餐桌位置是否會擋住廚房、客廳或其他房間的主要通道。\n✦ 照明電源：確認天花板燈具接口及附近插座位置是否符合使用方式。",
     category: "room"
   },
   K: {
@@ -35,8 +35,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Kitchen",
     nameZh: "廚房",
     jpName: "台所・キッチン",
-    desc: "料理與洗滌區域，配置水槽、切菜工作檯面與雙口/三口瓦斯爐或 IH 爐。旁側緊鄰冰箱預留位 (R)，實現短距離的洗切炒烹飪動線。",
-    practicalNote: "✦ 熱源種類：確認屬都市瓦斯 (都市ガス)、LP丙烷瓦斯或 IH 爐。\n✦ 料理空間：確認切菜檯面淨寬、水槽大小與抽油煙機風量。\n✦ 專用迴路：確認微波爐、電鍋等高功率家電之專用插座。",
+    desc: "日本物件圖上的 K 是 Kitchen，指廚房或料理區，通常由水槽、料理檯面、爐具與收納櫃組成。常見熱源包括都市瓦斯、LP 瓦斯與 IH 電磁爐。",
+    practicalNote: "✦ 熱源種類：確認使用都市瓦斯、LP 瓦斯或 IH，並核對爐具是否隨屋附帶。\n✦ 料理空間：查看水槽、工作檯面、爐口數與抽油煙設備是否符合需求。\n✦ 家電用電：確認冰箱、微波爐與電鍋等家電的插座位置及可用迴路。",
     category: "room"
   },
   S: {
@@ -44,8 +44,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Service Room / Storeroom",
     nameZh: "納戶 / 服務室",
     jpName: "納戸・サービスルーム",
-    desc: "因採光口（窗戶）面積未達日本《建築基準法》第 28 條規定之居室標準（採光面積小於地板面積 1/7），法規標示為 S (Service Room) 或納戶，實務上常作為獨立書房、影音室或擺放單身床墊之多功能空間。",
-    practicalNote: "✦ 日本常見床墊尺寸代號：\n  • S (Single 單人床)：97 × 195cm\n  • SD (Semi-Double 單人加大)：120 × 195cm\n  • D (Double 標準雙人床)：140 × 195cm\n  • Q (Queen 雙人加大床)：160 × 195cm\n✦ 實務提醒：確認是否有冷氣貫通孔與插座；轉售時不可標為標準臥室。",
+    desc: "日本物件圖上的 S 多指 Service Room，也常寫作納戶。通常是因採光或通風等條件未達法規上的「居室」標準，因此不能標示為一般臥室，常作為收納、書房、工作室或其他多功能空間。",
+    practicalNote: "✦ 法規標示：S／納戶不列入一般居室或臥室數量，但仍會計入專有面積。\n✦ 空間用途：可依面積與生活需求規劃為收納、書房或工作空間。\n✦ 使用條件：留意窗戶、通風、冷氣安裝條件與電源插座。",
     category: "room"
   },
   WC: {
@@ -53,8 +53,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Water Closet / Toilet",
     nameZh: "獨立廁所",
     jpName: "独立トイレ",
-    desc: "完全獨立於浴室與洗面所之外的廁所空間（日本衛浴分離主流規格）。讓家人或同居者在有人泡澡淋浴時，仍可完全獨立且安心地如廁。",
-    practicalNote: "✦ 淨寬與門扇：親自坐下測試膝蓋與前門淨寬度（避免過窄擠壓）。\n✦ 標配設備：確認是否標配溫水洗淨便座 (免治馬桶) 與上層吊櫃。\n✦ 門扇干涉：注意廁所門開啟方向是否會與浴室門相互碰撞。",
+    desc: "日本物件圖上的 WC 是 Water Closet，指廁所空間。日本住宅常將廁所與浴室分開配置，募集資訊通常以「バス・トイレ別」表示，是租屋時常見的衛浴格局條件。",
+    practicalNote: "✦ 空間尺寸：確認座下後的膝部空間、入口寬度與門扇開啟方向。\n✦ 便座設備：確認是否有溫水洗淨便座，以及該設備屬房東設備或殘置物。\n✦ 收納換氣：查看吊櫃、衛生紙收納、窗戶或換氣扇是否存在。",
     category: "bath"
   },
   VANITY: {
@@ -62,8 +62,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Independent Vanity",
     nameZh: "獨立洗面台",
     jpName: "独立洗面化粧台",
-    desc: "獨立設於脫衣過道的梳洗設備，整合洗臉盆、三面鏡櫃、單手彈開伸縮龍頭與電源插座，無須進入濕漉漉的浴室即可快速完成早晚洗漱、吹髮與化妝。",
-    practicalNote: "✦ 鏡櫃龍頭：確認鏡櫃內部收納深度與伸縮蓮蓬頭龍頭（シャンプー水栓）。\n✦ 防濺設計：檯面防濺邊界與水槽洗滌深度。\n✦ 用電配備：確認吹風機、電動牙刷必備之防水電源插座。",
+    desc: "「独立洗面化粧台」指洗面台設在浴室之外，可供洗臉、刷牙、吹髮或整理儀容。常見由洗面盆與鏡面組成，部分款式也會結合收納櫃、伸縮龍頭或電源插座。",
+    practicalNote: "✦ 檯面設備：確認洗面盆尺寸、龍頭形式、鏡面及收納空間。\n✦ 設置位置：留意洗面台是否位於脫衣區，以及使用時會不會阻擋通道或洗衣機。\n✦ 插座換氣：確認吹風機用插座、照明與洗面區換氣條件。",
     category: "bath"
   },
   UB: {
@@ -71,8 +71,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Unit Bath",
     nameZh: "整體浴室",
     jpName: "ユニットバス",
-    desc: "工廠預製成型的一體化防漏防水浴室，整合浴缸、獨立淋浴區與專用排水孔。具備極高的熱絕緣保溫性與優異的氣密防潮性能。",
-    practicalNote: "✦ 浴室尺寸：確認浴室尺寸代號（如 1616 或 1418 規格）。\n✦ 追焚功能：確認是否配備自動追焚加熱功能（追炊き）。\n✦ 換氣乾燥：確認是否有浴室換氣乾燥暖房機（室內晾衣與冬季防熱休克）。",
+    desc: "日本物件圖上的 UB 是 Unit Bath，指將浴缸、牆面、地板與排水等部件以一體化方式施工的防水浴室。日文的 Unit Bath 是施工形式名稱，並不等同於廁所、洗面盆與浴缸全部合在一起的三點式浴室。",
+    practicalNote: "✦ 浴室規格：確認浴室尺寸代號，以及浴缸與洗澡區的實際大小。\n✦ 熱水功能：確認是否有追焚、自動放水或保溫等功能。\n✦ 換氣乾燥：確認一般換氣扇或浴室換氣乾燥暖房機的配置與操作狀況。",
     category: "bath"
   },
   CL: {
@@ -80,8 +80,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Closet",
     nameZh: "壁櫥 / 衣櫥",
     jpName: "クローゼット",
-    desc: "內嵌於牆體內部的收納衣櫃，配有橫向金屬吊衣桿與頂部天袋置物層板，完全不占用房間實際行走與擺放床鋪的地板面積。",
-    practicalNote: "✦ 有效深度：吊掛西裝/大衣內部深度建議至少留 60cm。\n✦ 天袋收納：頂部天袋層板收納大型棉被與季節物品。\n✦ 門扇迴旋：確認摺疊門或拉門開啟時是否卡到床頭櫃。",
+    desc: "日本物件圖上的 CL 是 Closet，指設置在房間內的衣櫥或壁櫥，是日本住宅常見的基本收納空間，主要用來吊掛衣物及收納日常用品。",
+    practicalNote: "✦ 內部尺寸：實際確認寬度、深度與高度，判斷能否吊掛衣物或收納行李。\n✦ 內部配置：查看吊衣桿、層板與上方收納是否存在且方便使用。\n✦ 開門空間：確認摺疊門或拉門開啟後不會碰到床或其他家具。",
     category: "storage"
   },
   WIC: {
@@ -89,8 +89,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Walk-in Closet",
     nameZh: "步入式衣帽間",
     jpName: "ウォークインクローゼット",
-    desc: "人可直接走入的大容量獨立收納空間，內部四周設有多層隔板、吊衣桿與層架，能同時集中收納四季衣物、大型行李箱、棉被與季節性家電。",
-    practicalNote: "✦ 空間淨寬：WIC 標示面積含內部走道，需實測有效掛衣深度。\n✦ 轉角高處：確認轉角吊桿與高處層板是否便於拿取。\n✦ 通風防霉：確認內部設有換氣風門或抽風孔以防潮濕。",
+    desc: "日本物件圖上的 WIC 是 Walk-in Closet，指可讓人直接走入並整理物品的衣帽間。相較一般 CL，內部活動空間更完整，適合集中收納衣物、行李箱、棉被與季節用品。",
+    practicalNote: "✦ 有效收納：區分走道與實際可放置衣物、行李的範圍。\n✦ 內部配置：確認吊桿、層板、轉角與高處空間是否符合收納需求。\n✦ 通風防潮：查看是否有換氣口，並留意牆角、地板與衣物附近的潮濕痕跡。",
     category: "storage"
   },
   SB: {
@@ -98,8 +98,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Shoes Box",
     nameZh: "鞋櫃",
     jpName: "シューズボックス・下駄箱",
-    desc: "緊貼玄關牆面設置的高容量鞋類收納櫃，內設可自由調整高度的層板，底部常留有懸空區供擺放當天常穿的室外鞋。",
-    practicalNote: "✦ 層板調整：層板需能自由拆卸（以擺放高跟鞋或長靴）。\n✦ 長傘收納：內部設有傘架與底層瀝水溝槽。\n✦ 玄關動線：門扇全開時不阻擋玄關落塵區進出動線。",
+    desc: "日本物件圖上的 SB 是 Shoes Box，指設於玄關附近的鞋類收納櫃，日文也常稱為「下駄箱」。主要用來集中收納室外鞋，讓玄關與換鞋區保持整齊。",
+    practicalNote: "✦ 收納容量：確認鞋櫃內部寬度、深度、層板數量及能否調整。\n✦ 長物收納：如需放置長靴或雨傘，查看是否有足夠高度與專用空間。\n✦ 玄關動線：確認鞋櫃與大門開啟時不會壓縮換鞋及進出空間。",
     category: "storage"
   },
   ENT: {
@@ -107,35 +107,35 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Entrance / Genkan",
     nameZh: "玄關",
     jpName: "玄関",
-    desc: "連通室外與內部的換鞋緩衝空間。設有落塵土間與抬高之地板段差（上がり框），在傳統與現代日本文化中均為明確區隔乾淨室內的衛生防線。",
-    practicalNote: "✦ 搬運淨寬：測量玄關大門開啟淨寬與迴旋半徑（搬運大家電必查）。\n✦ 落塵段差：確認室外土間與室內上がり框的高低差高度。\n✦ 燈光感應：玄關是否配備自動人感感應照明。",
+    desc: "玄關是住宅入口內側的換鞋與過渡空間，通常由可穿鞋踩踏的土間與抬高的室內地板組成，是日本住宅用來區分室外與室內的重要空間。",
+    practicalNote: "✦ 搬運尺寸：確認大門淨寬、走道轉角及大型家具家電能否通過。\n✦ 換鞋空間：查看土間大小、地板段差與開門後可站立的位置。\n✦ 門鎖設備：確認門鎖、門鏡、防盜鏈及感應照明等設備是否存在。",
     category: "room"
   },
   W: {
     code: "W",
     nameEn: "Washing Machine Space",
-    nameZh: "洗衣機預留位",
+    nameZh: "洗衣機放置處",
     jpName: "室内洗濯機置場",
-    desc: "室內專用洗衣機擺放區，配有固定尺寸防溢水保護盤（防水パン）、防冷凝高位給水龍頭與防漏電接地插座。日本單身公寓最常見標配規格為正方形 64cm×64cm 防水盤（內部淨寬約 58-59cm）。",
-    practicalNote: "✦ 單身標準防水盤：正方形 64×64cm 規格（內部淨寬約 58-59cm）。\n✦ 適用機型尺寸：\n  • 直立式 5~7kg（機身寬約 52~55cm）\n  • 滾筒式（機身寬 60cm 內超薄款）\n✦ 看屋必查重點：水龍頭高度不阻擋上蓋開啟、排水孔位置好接管。",
+    desc: "日本物件圖上的 W 常表示 Washing Machine Space，也就是洗衣機放置處。室內洗衣機位通常集中配置防水盤、給水龍頭、排水口與電源插座。",
+    practicalNote: "✦ 防水盤尺寸：量測外框與內部有效寬深，確認洗衣機腳座能否放入。\n✦ 機身空間：同時確認機身寬深、門蓋開啟、牆面及上方層架的限制。\n✦ 給排水位置：查看水龍頭高度、排水口方向、接地插座與搬入路線。",
     category: "equipment"
   },
   R: {
     code: "R",
     nameEn: "Refrigerator Space",
-    nameZh: "冰箱預留位",
+    nameZh: "冰箱放置處",
     jpName: "冷蔵庫置場",
-    desc: "廚房料理區旁專門預留的冰箱擺設空間，緊鄰電源插座與廚房備餐動線。日本現代單身套房/1LDK 多設計為適合擺放單身主流「高瘦型冰箱（高身スリム冷蔵庫）」之空間。",
-    practicalNote: "✦ 家電尺寸：單身主流 150L~200L 雙門高瘦型（寬 48~54cm、深 55~60cm）。\n✦ 散熱淨寬：預留兩側各 0.5~1cm 散熱淨寬與前方開門迴旋空間。\n✦ 門扇開向：確認門扇左開/右開/雙開不撞牆面或廚房櫃體。",
+    desc: "日本物件圖上的 R 常表示 Refrigerator Space，也就是冰箱放置處。通常安排在廚房附近，方便串連取用食材、清洗與料理的日常動線。",
+    practicalNote: "✦ 設置尺寸：量測可用寬度、深度與高度，再依冰箱規格保留散熱間距。\n✦ 開門方向：確認冰箱門開啟後不會碰牆、廚房櫃體或阻擋通道。\n✦ 插座動線：查看專用插座高度，以及冰箱搬入玄關與走道的最窄處。",
     category: "equipment"
   },
   AC: {
     code: "AC",
     nameEn: "Air Conditioner",
-    nameZh: "冷氣預留位 / 變頻冷氣",
+    nameZh: "冷氣／冷氣安裝位",
     jpName: "エアコン",
-    desc: "牆面上方專用的變頻壁掛冷氣安裝位（本圖面於 L 客廳區與 S 房間區均配置有專用 AC 位置），設有冷媒管/排水管穿牆貫通孔與專用單獨迴路插座 (100V/200V)。",
-    practicalNote: "✦ 權屬確認：確認標示 AC 屬於「設備（房東修）」還是「殘留物（自理）」。\n✦ 專用迴路：核對變頻冷氣牆面專用插座電壓 (100V / 200V)。\n✦ 室外機位：確認冷媒管穿牆貫通孔與室外機擺放陽台位置。",
+    desc: "日本物件圖上的 AC 是 Air Conditioner，常用來標示冷氣設備或冷氣安裝位置。日本租屋不一定每個房間都配有冷氣；依物件設備而定，租客也可能需要自行購買與安裝。",
+    practicalNote: "✦ 設備性質：確認冷氣是契約設備、前住戶留下的殘置物，或僅有安裝條件。\n✦ 安裝同意：自行安裝前須先取得房東或管理公司同意，再確認專用插座、冷媒管孔與可施工位置。\n✦ 室外機位置：查看陽台或外牆是否有合法且足夠的室外機放置空間。",
     category: "equipment"
   },
   BALCONY: {
@@ -143,8 +143,8 @@ export const FLOOR_PLAN_ITEMS: Record<string, RoomDetail> = {
     nameEn: "Balcony",
     nameZh: "陽台",
     jpName: "バルコニー",
-    desc: "自客廳延伸出去的對外戶外空間，主要提供日常採光、通風與晾曬衣物。在日本法律上屬於社區全體共有、但授權該戶獨佔的「專有使用部分」。",
-    practicalNote: "✦ 專有使用權：法律上屬全體共有、但授權該戶獨佔使用。\n✦ 消防規範：避難梯 (避難ハッチ) 與避難隔板周圍嚴禁堆放雜物。\n✦ 採光與晾衣：觀察戶外採光座向、遮蔽物與曬衣架安裝高度。",
+    desc: "日本物件圖上的 Balcony 指建物外側的平台空間，常用於採光、通風或晾衣。集合住宅的陽台通常屬共用部分中的專用使用區域，使用方式仍受管理規約與避難要求限制。",
+    practicalNote: "✦ 使用規約：確認是否可晾衣、放置物品，以及吸菸等行為的限制。\n✦ 避難設備：避難梯、避難艙口與隔板前不得堆放阻礙逃生的物品。\n✦ 環境確認：查看朝向、遮蔽物、排水、晾衣架及室外機對可用空間的影響。",
     category: "room"
   }
 };
@@ -457,20 +457,25 @@ export function InteractiveFloorPlan() {
                   {currentItem.practicalNote.split("\n").map((line, idx) => {
                     const trimmed = line.trim();
                     if (trimmed.startsWith("✦")) {
-                      const colonIdx = line.indexOf("：") !== -1 ? line.indexOf("：") : line.indexOf(":");
+                      const content = trimmed.slice(1).trim();
+                      const colonIdx = content.indexOf("：") !== -1 ? content.indexOf("：") : content.indexOf(":");
                       if (colonIdx !== -1) {
-                        const title = line.slice(0, colonIdx + 1);
-                        const body = line.slice(colonIdx + 1);
+                        const title = content.slice(0, colonIdx + 1);
+                        const body = content.slice(colonIdx + 1);
                         return (
-                          <div key={idx} className="text-justify leading-relaxed">
-                            <span className="font-semibold text-[#1A2A22]">{title}</span>
-                            <span className="text-zinc-600">{body}</span>
+                          <div key={idx} className="flex items-start gap-2 text-justify leading-relaxed">
+                            <span className="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#00a174]" aria-hidden="true" />
+                            <span>
+                              <span className="font-semibold text-[#1A2A22]">{title}</span>
+                              <span className="text-zinc-600">{body}</span>
+                            </span>
                           </div>
                         );
                       }
                       return (
-                        <div key={idx} className="font-semibold text-[#1A2A22] text-justify leading-relaxed">
-                          {line}
+                        <div key={idx} className="flex items-start gap-2 font-semibold text-[#1A2A22] text-justify leading-relaxed">
+                          <span className="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#00a174]" aria-hidden="true" />
+                          <span>{content}</span>
                         </div>
                       );
                     }
