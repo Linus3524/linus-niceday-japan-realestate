@@ -978,7 +978,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">日圓 / 月</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            （約合 <strong>{(getCalculatedRent() / 10000).toFixed(2)}</strong> 萬日圓／月；此為固定係數概算，不是即時市場中位數。）
+                            約合 <strong>{(getCalculatedRent() / 10000).toFixed(2)}</strong> 萬日圓／月
                           </div>
                         </div>
 
@@ -1068,7 +1068,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
                                       <div className={`h-full bg-[#00a174] ${assessment.supply.width}`} />
                                     </div>
-                                    <p className="mt-1.5 text-[9px] text-[#8A9590]">長條越長，代表可選房源相對較多</p>
                                   </div>
                                   <div className="border border-[#DDE3DF] bg-white p-3">
                                     <div className="flex items-center justify-between gap-2">
@@ -1078,7 +1077,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
                                       <div className={`h-full bg-[#E94E2B] ${assessment.competition.width}`} />
                                     </div>
-                                    <p className="mt-1.5 text-[9px] text-[#8A9590]">綜合地區租金、站點熱度與條件稀缺性</p>
                                   </div>
                                 </div>
                                 {assessment.limitingConditions.length > 0 && (
@@ -1098,7 +1096,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                   </div>
                                 )}
                                 <p className="mt-3 border-l-2 border-[#00a174] bg-[#F5F8F6] px-3 py-2.5 text-[10px] leading-relaxed text-[#3F5147]">{assessment.advice}</p>
-                                <p className="mt-2 text-[9px] leading-relaxed text-[#8A9590]">此為條件組合的相對難度評估，不是即時空室數量或成交速度保證。</p>
                               </div>
                             );
                           })()}
@@ -1122,10 +1119,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>費用較多情境（租金 × 6）：</span>
                                 <span className="font-mono text-xs text-zinc-900">{(getCalculatedRent() * 6).toLocaleString()} 円</span>
                               </div>
-                              <p className="text-[10px] text-zinc-500 mt-2.5 text-justify leading-relaxed border-t border-zinc-200/60 pt-2 font-sans flex items-start gap-1">
-                                <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
-                                <span>這是提供您初步抓預算的整體概算。實際是否有敷金、禮金或換鑰匙等優惠，會依每個物件當下的招租條件而定。</span>
-                              </p>
                             </div>
                           </div>
                         </div>
@@ -1150,9 +1143,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           </button>
                         </div>
 
-                        {/* Rent Disclaimer */}
+                        {/* Rent Disclaimer：全卡只保留這一段，房源供給、初期費用等估算的方法論限制都收在這裡，不再逐段重複。 */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 方法與限制：租金概算採網站整理的行政區／格局基準值，再套用固定條件係數；並非逐筆募集資料的即時中位數。結果不含共益費時應另行加計，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
+                          * 方法與限制：租金與房源供給評估皆採網站整理的行政區／格局基準值，套用固定條件係數與相對難度推算，並非逐筆募集資料的即時中位數或空室狀況。初期費用區間未計入敷金禮金減免等招租優惠；結果不含共益費，實際金額受面積、樓層、屋況、座向、契約條件與供需影響。
                         </div>
                       </>
                     ) : (
@@ -1328,25 +1321,58 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       )}
                     </h5>
                     <div className="text-xs text-zinc-600 space-y-2.5 font-sans leading-relaxed">
-                      {calcMode === "rent" ? (
-                        <>
-                          <p>
-                            <strong>案例：</strong> 準備在新宿區（新宿區 1K 均價 10.8 萬）上班。希望步行 5 分鐘內、5年內新房、有獨立洗面台與免治馬桶，使用這台計算機勾選：
-                          </p>
-                          <ul className="list-disc pl-4 space-y-1 text-zinc-800 font-bold">
-                            <li>108,000 円 (新宿區均價)</li>
-                            <li>+5,000 円 (步行5分鐘內)</li>
-                            <li>+10,000 円 (屋齡5年新房)</li>
-                            <li>+10,000 円 (獨洗+免治馬桶)</li>
-                          </ul>
-                          <p className="border-t border-zinc-200 pt-2 text-[#00a174] font-bold">
-                            精算預算 = 133,000 日圓 / 月
-                          </p>
-                          <p className="text-[10px]">
-                            實務上，東京新成屋與核心大站的溢價極高。如果您預算吃緊，強烈建議可妥協「步行時間至 12 分鐘」或「一樓房間」，能一舉幫您省下近 15,000 円的租金喔！
-                          </p>
-                        </>
-                      ) : (
+                      {calcMode === "rent" ? (() => {
+                        // 依左側目前實際勾選的地區、車站、加價條件即時組出來，
+                        // 不是固定案例——換一個地區或拿掉一個條件，這裡會跟著變。
+                        const roomTypeLabel = ({ r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" } as const)[calcRoomType];
+                        const baseRate = parseFloat(getSelectedDistrictData()[calcRoomType as keyof typeof getSelectedDistrictData] as string) * 10000;
+                        const lineItems: Array<{ label: string; price: number }> = [];
+                        if (calcStation !== "none") {
+                          const currentStation = (districtStations[calcDistrict] || []).find(s => s.name === calcStation);
+                          let stationPrice = 0;
+                          if (currentStation?.type === "major") stationPrice = 10000;
+                          else if (currentStation?.type === "regular") stationPrice = 5000;
+                          else if (currentStation?.type === "minor") stationPrice = -5000;
+                          if (stationPrice !== 0) lineItems.push({ label: `${calcStation}站等級`, price: getModifierPrice(stationPrice) });
+                        }
+                        calcModifiers.forEach(idx => {
+                          const mod = budgetModifiers[idx];
+                          if (mod) lineItems.push({ label: mod.text, price: getModifierPrice(mod.price, idx) });
+                        });
+                        const total = getCalculatedRent();
+                        const priciestAddOn = [...lineItems].filter(item => item.price > 0).sort((a, b) => b.price - a.price)[0];
+
+                        if (!lineItems.length) {
+                          return (
+                            <p>
+                              目前是 <strong>{calcDistrict}</strong>（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬）的基準行情，還沒有勾選車站等級或其他加價條件。左側勾選後，這裡會即時算出精算預算與最有效的省錢方向。
+                            </p>
+                          );
+                        }
+                        return (
+                          <>
+                            <p>
+                              <strong>目前條件：</strong> {calcDistrict}（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬），已勾選：
+                            </p>
+                            <ul className="list-disc pl-4 space-y-1 text-zinc-800 font-bold">
+                              <li>{baseRate.toLocaleString()} 円（{calcDistrict}均價）</li>
+                              {lineItems.map(item => (
+                                <li key={item.label}>
+                                  {item.price >= 0 ? "+" : ""}{item.price.toLocaleString()} 円（{item.label}）
+                                </li>
+                              ))}
+                            </ul>
+                            <p className="border-t border-zinc-200 pt-2 text-[#00a174] font-bold">
+                              精算預算 = {total.toLocaleString()} 日圓 / 月
+                            </p>
+                            {priciestAddOn && (
+                              <p className="text-[10px]">
+                                目前加價最多的是「{priciestAddOn.label}」（+{priciestAddOn.price.toLocaleString()} 円）。若預算吃緊，這是第一個可以考慮妥協的項目。
+                              </p>
+                            )}
+                          </>
+                        );
+                      })() : (
                         <>
                           <p>
                             <strong>關於買房折溢價與實務：</strong>
