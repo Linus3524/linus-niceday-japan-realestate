@@ -45,16 +45,15 @@ export interface RentSearchCriteria {
   commuteDirectRequired?: boolean;
   unverifiedConditions?: string[];
   tower?: boolean;
-  analysisNotes?: {
-    visa?: string | null;
-    location?: string | null;
-    amenity?: string | null;
-    layout?: string | null;
-    building?: string | null;
-    walking?: string | null;
-    equipment?: string | null;
-    special?: string | null;
-  } | null;
+  /** 希望入住的時間，例如「9月底」。日本物件多在入住前 1～2 個月才釋出，會影響開始看房的時機。 */
+  moveInTiming?: string | null;
+  /** 同住人數；影響格局建議與審查時的續柄資料。 */
+  householdSize?: number | null;
+  /**
+   * 使用者提到、但結構化欄位裝不下的需求。
+   * 刻意限制為「短詞」而非 AI 自由句子——長句會把免責語氣帶回來。
+   */
+  otherNeeds?: string[];
 }
 
 export interface RentRecommendation {
@@ -66,7 +65,7 @@ export interface RentRecommendation {
   rangeLow: number;
   rangeHigh: number;
   budgetGap: number | null;
-  fit: "預算內" | "接近預算" | "需調整";
+  fit: "預算內" | "接近預算" | "需調整" | "預算未定";
   recommendationType: "指定車站" | "指定範圍" | "通勤優先" | "預算替代";
   reasons: string[];
   commuteFit: "直達線路" | "需確認轉乘" | "未指定通勤地";
@@ -105,58 +104,6 @@ export interface CommuteRouteDetails {
   segments: CommuteRouteSegment[];
 }
 
-export function buildMarketReality(criteria: RentSearchCriteria, recommendations: RentRecommendation[]) {
-  const budget = criteria.maxBudget;
-  if (!budget || budget <= 0) {
-    return "尚未指定月租上限；以下先依條件列出市場區間，另請預留管理費、共益費與初期費用。";
-  }
-
-  if (!recommendations.length) {
-    return "目前沒有足夠資料產生搜尋方向；請補充預算、格局或通勤目的地。";
-  }
-
-  const feeNotice = criteria.budgetIncludesFees === true
-    ? "預算包含管理費；看實際物件時以租金加管理費不超過上限為準。"
-    : criteria.budgetIncludesFees === false
-      ? "管理費另計。"
-      : "請確認預算是否包含管理費，這會直接影響可選房源。";
-  const withinBudget = recommendations.filter(item => item.estimate <= budget).length;
-  if (withinBudget > 0) {
-    const pendingConditions = [
-      criteria.commuteStation && recommendations.some(item => !item.commuteRoute) ? "通勤時間" : null,
-      criteria.buildingAgeMax ? "屋齡" : null,
-      criteria.furnished ? "家具家電" : null,
-      criteria.petsAllowed ? "寵物條件" : null,
-      criteria.unverifiedConditions?.length ? "逐屋條件" : null
-    ].filter(Boolean);
-    const pendingText = pendingConditions.length
-      ? `接下來要確認的是${pendingConditions.join("、")}。`
-      : "可直接進入實際物件搜尋。";
-    return `有 ${withinBudget} 個搜尋方向落在預算內，預算設定可行。${pendingText}${feeNotice}`;
-  }
-
-  const closestEstimate = Math.min(...recommendations.map(item => item.estimate));
-  const overBudgetRatio = recommendations.length > 0 ? (closestEstimate - budget) / budget : 1;
-  const overBudgetPercent = Math.max(1, Math.round(overBudgetRatio * 100));
-  const adjustments = [
-    criteria.furnishedPriority === "uncertain" ? "先確認家具家電是否為必要條件（目前未把不確定偏好當成硬性加價）" : null,
-    criteria.furnishedPriority === "required" ? "比較空屋加家具租借／二手購入，避免只搜尋供給較少的附家具物件" : null,
-    criteria.buildingAgeMax && criteria.buildingAgeMax <= 5 && criteria.buildingAgePriority === "preferred" ? "把屋齡約 5 年改為希望條件，並比較屋齡較高但翻新良好的物件" : null,
-    criteria.areaMin ? "適度放寬最低面積" : null,
-    criteria.walkMinutes ? "比較較遠的車站步行距離" : null,
-    criteria.commuteDirectRequired ? "保留直達需求時，擴大同線較外圍車站" : null
-  ].filter(Boolean);
-  const adjustmentText = adjustments.length ? ` 建議優先${adjustments.slice(0, 3).join("；")}。` : " 建議重新確認必要條件與可取捨項目。";
-
-  if (overBudgetRatio <= 0.1) {
-    return `最接近的搜尋方向推估中心值仍約高出預算 ${overBudgetPercent}%，屬於接近上限但需要取捨。${adjustmentText}${feeNotice}`;
-  }
-  if (overBudgetRatio <= 0.25) {
-    return `目前最接近的搜尋方向推估中心值約高出預算 ${overBudgetPercent}%，預算與已量化條件有明顯落差。${adjustmentText}${feeNotice}`;
-  }
-  return `目前最接近的搜尋方向推估中心值約高出預算 ${overBudgetPercent}%，若維持現有預算，通常需要同時調整兩項以上的高影響條件。${adjustmentText}${feeNotice}`;
-}
-
 const normalize = (value?: string | null) => (value || "")
   .toLowerCase()
   .replace(/涉谷|渋谷/g, "澀谷")
@@ -166,21 +113,62 @@ const normalize = (value?: string | null) => (value || "")
   .replace(/[\s・･（）()\-]/g, "")
   .replace(/jr|東京地下鐵|都營|東急|京王|小田急/g, "");
 
+/** 使用者常見的否定寫法；命中就代表「明確不需要」，不可當成需求。 */
+const NEGATION = /(?:不用|不需要|不必|不想|沒有需要|没有需要|無需|无需|不要)/;
+
+/** 判斷某個關鍵詞在原文中是被「要求」還是被「否決」。 */
+function mentionIntent(prompt: string, keyword: RegExp): "required" | "negated" | "absent" {
+  const sentences = prompt.split(/[\n。；;，,]/).filter(part => keyword.test(part));
+  if (!sentences.length) return "absent";
+  return sentences.every(part => NEGATION.test(part)) ? "negated" : "required";
+}
+
+/** 在留資格分類；文案分流以此為準，不再用零散的關鍵字判斷。 */
+export type VisaCategory = "work" | "student" | "workingHoliday" | "family" | "longTerm" | "other" | "unknown";
+
+const VISA_RULES: Array<[VisaCategory, RegExp, string]> = [
+  ["student", /留學|留学|留学生|語言學校|语言学校|語学学校|就學|就学|學生簽|学生签/, "留學簽證"],
+  ["work", /技人[國国]|技術[・·／/]?人文知識|人文知識|國際業務|国际业务|就[勞劳]|工作簽|工作签|正社員|轉職簽|经营管理|經營管理|高度人材|企業內轉勤|企业内转勤/, "技術・人文知識・國際業務簽證（技人國）"],
+  ["workingHoliday", /打工度假|打工渡假|working\s*holiday|ワーホリ|ワーキングホリデー/i, "打工度假簽證"],
+  ["family", /家族滯在|家族滞在|家族滞留|配偶者|眷屬簽|眷属签|依親/, "家族滯在簽證"],
+  ["longTerm", /永住|定住|歸化|归化|日本國籍|日本国籍/, "永住・定住資格"]
+];
+
+export function resolveVisaCategory(visaType?: string | null): VisaCategory {
+  const value = (visaType || "").trim();
+  if (!value) return "unknown";
+  for (const [category, pattern] of VISA_RULES) {
+    if (pattern.test(value)) return category;
+  }
+  return "other";
+}
+
 export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, prompt: string): RentSearchCriteria {
   const enriched = { ...criteria };
   if (enriched.commuteStation && /涉谷|澀谷|渋谷/.test(enriched.commuteStation)) enriched.commuteStation = enriched.commuteStation.replace(/涉谷|澀谷|渋谷/g, "渋谷");
   if (enriched.commuteStations?.length) enriched.commuteStations = enriched.commuteStations.map(station => station.replace(/涉谷|澀谷|渋谷/g, "渋谷"));
-  const budgetRange = prompt.match(/(\d+(?:\.\d+)?)\s*[萬万]\s*(?:[~～〜－—-]|至|到)\s*(\d+(?:\.\d+)?)\s*[萬万]/i);
+
+  // 預算：先抓區間，再抓單一上限。使用者常寫「20萬以下」「上限20萬」「不超過20萬」，
+  // 舊版只認區間格式，導致明明寫了上限卻被當成未指定。
+  const budgetRange = prompt.match(/(\d+(?:\.\d+)?)\s*[萬万]\s*(?:[~～〜－—\-]|至|到)\s*(\d+(?:\.\d+)?)\s*[萬万]/i);
   if (budgetRange) {
     enriched.minBudget = Math.round(Number(budgetRange[1]) * 10000);
     enriched.maxBudget = Math.round(Number(budgetRange[2]) * 10000);
   }
-  const visaLine = prompt.match(/(?:簽證種類|签证种类|在留資格|在留资格)\s*[:：]\s*([^\n，,；;]+)/i);
-  const technicalVisa = /技人[國国]|技術[・·／/]?人文知識[・·／/]?(?:國際|国际|国際)業務/i.test(prompt);
+  if (!enriched.maxBudget) {
+    const cap = prompt.match(/(\d+(?:\.\d+)?)\s*[萬万](?:円|圓|元|日圓|日元|日幣|日弊)?\s*(?:以下|以內|以内|之內|之内|內|以下就好)/i)
+      || prompt.match(/(?:上限|預算|预算|不超過|不超过|最多|最高)[^\n]{0,8}?(\d+(?:\.\d+)?)\s*[萬万]/i);
+    if (cap?.[1]) enriched.maxBudget = Math.round(Number(cap[1]) * 10000);
+  }
 
-  if (!enriched.visaType) {
-    if (technicalVisa) enriched.visaType = "技術・人文知識・國際業務簽證（技人國）";
-    else if (visaLine?.[1]?.trim()) enriched.visaType = visaLine[1].trim();
+  // 在留資格：不再要求「簽證種類：」這種標籤格式，全文找關鍵詞。
+  if (!enriched.visaType || resolveVisaCategory(enriched.visaType) === "unknown") {
+    const matched = VISA_RULES.find(([, pattern]) => pattern.test(prompt));
+    if (matched) enriched.visaType = matched[2];
+    else {
+      const visaLine = prompt.match(/(?:簽證種類|签证种类|在留資格|在留资格|簽證|签证)\s*[:：]?\s*([^\n，,；;]{2,20})/i);
+      if (visaLine?.[1]?.trim()) enriched.visaType = visaLine[1].trim();
+    }
   }
   if (!enriched.visaYears) {
     const nearbyYears = prompt.match(/(?:簽證|签证|在留(?:期間|期限)?)[^\n]{0,12}?(\d+(?:\.\d+)?)\s*年/i)
@@ -189,12 +177,19 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   }
   const catRequested = /可養\s*(?:一隻|1隻)?\s*[貓猫]|(?:養|饲养|飼養)\s*[貓猫]|[貓猫]\s*(?:可|ok)|ペット可[^\n]{0,12}(?:猫|ネコ)/i.test(prompt);
   const petRequested = /可養\s*寵物|寵物可|宠物可|ペット可/i.test(prompt);
-  if (catRequested) {
+  const petIntent = mentionIntent(prompt, /寵物|宠物|[貓猫]|[狗犬]|ペット/);
+  if (petIntent === "negated") {
+    enriched.petsAllowed = false;
+    enriched.petType = null;
+  } else if (catRequested) {
     enriched.petsAllowed = true;
     enriched.petType = "貓";
   } else if (petRequested) {
     enriched.petsAllowed = true;
     if (!enriched.petType) enriched.petType = "寵物";
+  } else if (petIntent === "absent") {
+    enriched.petsAllowed = false;
+    enriched.petType = null;
   }
   const commuteLine = prompt.split(/\n/).find(line => /通勤|車程|上班|工作地點|目的地|希望.*(?:分鐘|分內)/i.test(line));
   if (commuteLine) {
@@ -215,18 +210,45 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   }
   enriched.commuteDirectRequired = /(?:一條線|一条线|不用換乘|不用换乘|不換乘|不换乘|直達|直达)/i.test(prompt);
 
-  if (enriched.furnished || /家具|家電|家电/i.test(prompt)) {
+  // 家具家電：舊版只要全文出現「家具」就設為 true，連「不需要家具」也會中。
+  // 改為判斷語氣，並在明確否定時清掉模型可能誤給的 true。
+  const furnishedIntent = mentionIntent(prompt, /家具|家電|家电/);
+  if (furnishedIntent === "negated") {
+    enriched.furnished = false;
+    enriched.furnishedPriority = null;
+  } else if (furnishedIntent === "required") {
+    const furnishedText = prompt.match(/[^\n]*(?:家具|家電|家电)[^\n]*/i)?.[0] || "";
     enriched.furnished = true;
-    enriched.furnishedPriority = /(?:可能|也許|也许|不確定|不确定|\?？)/i.test(prompt.match(/[^\n]*(?:家具|家電|家电)[^\n]*/i)?.[0] || "")
+    enriched.furnishedPriority = /(?:可能|也許|也许|不確定|不确定|\?|？)/i.test(furnishedText)
       ? "uncertain"
-      : /(?:希望|最好|優先|优先)/i.test(prompt.match(/[^\n]*(?:家具|家電|家电)[^\n]*/i)?.[0] || "")
+      : /(?:希望|最好|優先|优先)/i.test(furnishedText)
         ? "preferred"
         : "required";
+  } else if (!enriched.furnished) {
+    // 使用者沒提到就必須是「未提出」，不能留下模型硬填的 false/true。
+    enriched.furnished = false;
+    enriched.furnishedPriority = null;
   }
 
+  // 屋齡：舊版只在模型已給值時才判定寬鬆度，原文寫「屋齡大約5年左右」會整個漏掉。
+  if (!enriched.buildingAgeMax) {
+    const age = prompt.match(/(?:屋齡|屋龄|築年|筑年|房齡|房龄)[^\n]{0,8}?(\d{1,3})\s*年/i)
+      || prompt.match(/(\d{1,3})\s*年[^\n]{0,4}(?:以內|以内|內|新|左右)[^\n]{0,6}(?:屋齡|屋龄|中古|物件)/i);
+    if (age?.[1]) enriched.buildingAgeMax = Number(age[1]);
+  }
   if (enriched.buildingAgeMax) {
-    const ageLine = prompt.split(/\n/).find(line => /屋齡|屋龄|築年|房齡|房龄/i.test(line)) || "";
-    enriched.buildingAgePriority = /(?:大約|大概|左右|希望|最好)/i.test(ageLine) ? "preferred" : "required";
+    const ageLine = prompt.split(/\n/).find(line => /屋齡|屋龄|築年|筑年|房齡|房龄/i.test(line)) || "";
+    enriched.buildingAgePriority = /(?:大約|大概|大约|左右|希望|最好|盡量|尽量)/i.test(ageLine) ? "preferred" : "required";
+  }
+
+  // 入住時間：舊版完全沒有擷取，但這是決定「什麼時候該開始看房」的關鍵。
+  if (!enriched.moveInTiming) {
+    const timing = prompt.match(/(\d{1,2})\s*月\s*(初|中|底|下旬|中旬|上旬)?/);
+    if (timing) enriched.moveInTiming = `${timing[1]}月${timing[2] || ""}`;
+  }
+  if (!enriched.householdSize) {
+    const people = prompt.match(/(\d{1,2})\s*(?:個?人|名)(?:入住|居住|住)?/) || prompt.match(/(夫妻|情侶|兩人|2人)/);
+    if (people) enriched.householdSize = /夫妻|情侶|兩人|2人/.test(people[0]) ? 2 : Number(people[1]);
   }
 
   const verificationRules: Array<[RegExp, string]> = [
@@ -267,8 +289,8 @@ export function getRentModifierIndexes(criteria: RentSearchCriteria) {
     if (criteria.roomType === "ldk2") indexes.add(criteria.areaMin >= 60 ? 8 : criteria.areaMin >= 50 ? 7 : -1);
   }
   if (criteria.elevator || criteria.autoLock) indexes.add(9);
-  if (criteria.buildingAgeMax && criteria.buildingAgeMax <= 5) indexes.add(10);
-  else if (criteria.buildingAgeMax && criteria.buildingAgeMax <= 10) indexes.add(11);
+  if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 5) indexes.add(10);
+  else if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 10) indexes.add(11);
   if (criteria.walkMinutes && criteria.walkMinutes <= 5) indexes.add(14);
   else if (criteria.walkMinutes && criteria.walkMinutes >= 15) indexes.add(17);
   else if (criteria.walkMinutes && criteria.walkMinutes >= 11) indexes.add(16);
@@ -277,6 +299,26 @@ export function getRentModifierIndexes(criteria: RentSearchCriteria) {
   if (criteria.lpGasAccepted) indexes.add(26);
   indexes.delete(-1);
   return [...indexes];
+}
+
+type RateRow = (typeof rentRates)[number];
+
+/** 行政區基準價 → 疊加使用者實際提出的條件 → 車站等級微調。判斷與推薦共用同一組估價。 */
+export function computeStackedEstimate(
+  rate: RateRow,
+  station: StationInfo | null,
+  mods: number[],
+  roomType: RoomType
+) {
+  let estimate = parseFloat(rate[roomType]) * 10000;
+  for (const index of mods) {
+    const mod = budgetModifiers[index];
+    if (mod) estimate += adjustedModifier(rate.district, index === 25 ? 15000 : mod.price);
+  }
+  if (station) {
+    estimate += adjustedModifier(rate.district, station.type === "major" ? 10000 : station.type === "regular" ? 5000 : -5000);
+  }
+  return Math.max(20000, Math.round(estimate / 1000) * 1000);
 }
 
 const lineMatches = (left: string, right: string) => {
@@ -307,15 +349,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   });
 
   const ranked = candidates.map(({ rate, station }) => {
-    let estimate = parseFloat(rate[criteria.roomType]) * 10000;
-    for (const index of mods) {
-      const mod = budgetModifiers[index];
-      if (mod) estimate += adjustedModifier(rate.district, index === 25 ? 15000 : mod.price);
-    }
-    if (station) {
-      estimate += adjustedModifier(rate.district, station.type === "major" ? 10000 : station.type === "regular" ? 5000 : -5000);
-    }
-    estimate = Math.max(20000, Math.round(estimate / 1000) * 1000);
+    const estimate = computeStackedEstimate(rate, station, mods, criteria.roomType);
     const gap = criteria.maxBudget ? estimate - criteria.maxBudget : null;
     const stationName = normalize(station?.name);
     const exactStation = Boolean(station && wantedStations.some(wanted => stationName === wanted));
@@ -342,7 +376,14 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       directCommute ? `與 ${criteria.commuteStation} 有共同線路` : criteria.commuteStation ? `前往 ${criteria.commuteStation} 的轉乘需另行確認` : null,
       gap !== null ? (gap <= 0 ? "估算中心值在預算內" : gap <= Math.max(10000, criteria.maxBudget! * .1) ? "估算接近預算上限" : "需要調整條件或預算") : "依條件估算市場租金"
     ].filter(Boolean) as string[];
-    const fit: RentRecommendation["fit"] = gap === null || gap <= 0 ? "預算內" : gap <= Math.max(10000, criteria.maxBudget! * 0.1) ? "接近預算" : "需調整";
+    // 沒有預算資料時不得判為「預算內」，否則沒填預算會被當成六個方向全部可行。
+    const fit: RentRecommendation["fit"] = gap === null
+      ? "預算未定"
+      : gap <= 0
+        ? "預算內"
+        : gap <= Math.max(10000, criteria.maxBudget! * 0.1)
+          ? "接近預算"
+          : "需調整";
     const commuteFit: RentRecommendation["commuteFit"] = !criteria.commuteStation ? "未指定通勤地" : directCommute ? "直達線路" : "需確認轉乘";
     const commuteTimeFit: RentRecommendation["commuteTimeFit"] = criteria.commuteMinutes ? "時間未驗證" : "未指定時間";
     const cautions = [

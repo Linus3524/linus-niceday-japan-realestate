@@ -89,7 +89,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [aiResult, setAiResult] = useState<{ criteria: RentSearchCriteria; recommendations: RentRecommendation[]; reality: string } | null>(null);
+  const [aiResult, setAiResult] = useState<{ criteria: RentSearchCriteria; recommendations: RentRecommendation[] } | null>(null);
   const [appliedNotice, setAppliedNotice] = useState<string | null>(null);
   const [rentSearchFilters, setRentSearchFilters] = useState<RentSearchFilter[]>([]);
 
@@ -537,7 +537,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           </div>
                           <div className="mb-3 border-l-4 border-[#1A2A22] bg-[#FAFCFB] px-3 py-2 font-sans">
                             <p className="text-xs font-bold text-[#1A2A22]">6 個市場搜尋方向</p>
-                            <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">比較推薦車站、預算與通勤路線；展開卡片查看線路圖和租金細節。</p>
+                            <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">依左側需求推導出的可搜尋車站，落在預算內不等於原始需求全部成立。展開卡片可看線路圖與租金細節。</p>
                           </div>
                           <RentMarketReports
                             recommendations={aiResult.recommendations}

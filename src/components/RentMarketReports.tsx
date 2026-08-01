@@ -239,12 +239,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             <section className="border border-[#DDE3DF] bg-white p-4">
               <div className="flex items-center gap-2 font-bold text-xs mb-3"><Footprints className="w-4 h-4 text-[#00a174]" /> 步行距離租金階梯</div>
               <WalkDistanceSteps items={walks} baseline={item.estimate} />
-              <p className="mt-1 text-[9px] leading-relaxed text-[#66736C] font-sans">以本站固定距離係數呈現近站溢價的方向性趨勢，不是實際物件分佈或統計迴歸曲線。</p>
             </section>
             <section className="border border-[#DDE3DF] bg-white p-4">
               <div className="flex items-center gap-2 font-bold text-xs mb-4"><SlidersHorizontal className="w-4 h-4 text-[#00a174]" /> 建物規格租金級距</div>
               <BuildingRange items={equipment} baseline={item.estimate} />
-              <p className="mt-3 border-t border-dashed border-[#DDE3DF] pt-2 text-[9px] leading-relaxed text-[#66736C] font-sans">上圖為常見規格組合的租金情境，不代表同結構物件一定具備相同設備。木造／輕量鐵骨也包含新築物件，本圖不以結構推定屋齡。</p>
             </section>
           </div>
 
@@ -262,5 +260,23 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
 
 export function RentMarketReports({ recommendations, criteria, onApply }: Props) {
   const [expanded, setExpanded] = useState<number | null>(0);
-  return <div className="space-y-3">{recommendations.map((item, index) => <Report key={`${item.district}-${item.station || index}`} item={item} criteria={criteria} index={index} expanded={expanded === index} onToggle={() => setExpanded(expanded === index ? null : index)} onApply={() => onApply(item)} />)}</div>;
+  return (
+    <div className="space-y-3">
+      {recommendations.map((item, index) => (
+        <Report
+          key={`${item.district}-${item.station || index}`}
+          item={item}
+          criteria={criteria}
+          index={index}
+          expanded={expanded === index}
+          onToggle={() => setExpanded(expanded === index ? null : index)}
+          onApply={() => onApply(item)}
+        />
+      ))}
+      {/* 共通說明全站只出現這一次；卡片內不再重複同樣的免責文字。 */}
+      <p className="border-t border-[#DDE3DF] pt-3 font-sans text-[9px] leading-relaxed text-[#8A9590]">
+        以上為行政區／車站層級的租金推估與趨勢，非即時空室資料。圖表呈現的是規格差異的方向性，實際物件仍依募集條件為準。
+      </p>
+    </div>
+  );
 }

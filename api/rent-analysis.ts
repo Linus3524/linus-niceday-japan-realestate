@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { buildMarketReality, buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
+import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 
 const MAX_PROMPT_CHARS = 1000;
@@ -90,39 +90,45 @@ export default async function handler(req: any, res: any) {
             visaType: { type: Type.STRING, nullable: true },
             visaYears: { type: Type.NUMBER, nullable: true },
             structure: { type: Type.STRING, nullable: true },
-            autoLock: { type: Type.BOOLEAN },
+            autoLock: { type: Type.BOOLEAN, nullable: true },
             floorMin: { type: Type.NUMBER, nullable: true },
-            balcony: { type: Type.BOOLEAN },
+            balcony: { type: Type.BOOLEAN, nullable: true },
             gasBurnersMin: { type: Type.NUMBER, nullable: true },
-            freeInternet: { type: Type.BOOLEAN },
-            lpGasAccepted: { type: Type.BOOLEAN },
-            cityGasRequired: { type: Type.BOOLEAN },
-            petsAllowed: { type: Type.BOOLEAN },
+            freeInternet: { type: Type.BOOLEAN, nullable: true },
+            lpGasAccepted: { type: Type.BOOLEAN, nullable: true },
+            cityGasRequired: { type: Type.BOOLEAN, nullable: true },
+            petsAllowed: { type: Type.BOOLEAN, nullable: true },
             petType: { type: Type.STRING, nullable: true },
-            washbasin: { type: Type.BOOLEAN },
-            bidet: { type: Type.BOOLEAN },
-            elevator: { type: Type.BOOLEAN },
-            furnished: { type: Type.BOOLEAN },
-            tower: { type: Type.BOOLEAN }
-            ,analysisNotes: {
-              type: Type.OBJECT,
-              nullable: true,
-              properties: {
-                visa: { type: Type.STRING, nullable: true },
-                location: { type: Type.STRING, nullable: true },
-                amenity: { type: Type.STRING, nullable: true },
-                layout: { type: Type.STRING, nullable: true },
-                building: { type: Type.STRING, nullable: true },
-                walking: { type: Type.STRING, nullable: true },
-                equipment: { type: Type.STRING, nullable: true },
-                special: { type: Type.STRING, nullable: true }
-              },
-              required: ["visa", "location", "amenity", "layout", "building", "walking", "equipment", "special"]
+            washbasin: { type: Type.BOOLEAN, nullable: true },
+            bidet: { type: Type.BOOLEAN, nullable: true },
+            elevator: { type: Type.BOOLEAN, nullable: true },
+            furnished: { type: Type.BOOLEAN, nullable: true },
+            tower: { type: Type.BOOLEAN, nullable: true }
+            ,moveInTiming: { type: Type.STRING, nullable: true, description: "希望入住的時間，例如「9月底」「明年3月」。沒提到回傳 null。" },
+            householdSize: { type: Type.NUMBER, nullable: true, description: "同住人數。沒提到回傳 null。" },
+            otherNeeds: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: "使用者提到、但其他欄位裝不下的需求。每項務必是 12 字以內的短詞（例如「離超市近」「安靜」），不可寫成句子或加上任何說明與免責語氣。沒有就回傳空陣列。"
             }
           },
-          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "analysisNotes"]
+          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "otherNeeds"]
         },
-        systemInstruction: "你是日本租屋需求理解器。使用者會用自由、模糊或口語的方式描述生活圈與通勤需求；請保留原意並合理結構化，不要要求固定句型，也不可自行捏造條件。未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；通勤時間放入 commuteMinutes；無法化成單一車站但仍有意義的描述保留在 locationPreference，絕不可因此判定為未指定地點。analysisNotes 要依本次原文逐項寫給租客看的個人化分析，每項一至兩句，必須連結使用者實際提出的入住時間、人數、簽證、通勤、格局或設備；不要出現『本站』『模型』『已辨識』『需逐間確認』等開發者口吻，也不可自行編造租金數字。未提到的項目可回傳 null。辨識簽證、生活機能、建物結構、自動門、樓層、陽台、爐具、免費網路、瓦斯與寵物條件。只輸出符合 schema 的 JSON。"
+        systemInstruction: `你是日本租屋需求理解器。使用者會用自由、模糊、跳號或口語的方式描述需求（例如「2.未定」「5.不知道」「可能需要含家具？」），請保留原意並合理結構化。
+
+最重要的規則：只能萃取使用者真的說過的條件。
+- 使用者沒有提到的欄位一律回傳 null，不可猜測、不可補完、不可因為常見就填。
+- 布林欄位沒提到時必須回傳 null，不要回傳 false 充數；使用者明確說不需要才回傳 false。
+- 「不知道」「未定」「還沒想好」「再看看」代表未指定，對應欄位回傳 null，不要轉成任何條件。
+- 帶問號或「可能」「也許」的條件仍要萃取，但那是不確定的偏好，不是硬性條件。
+
+未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；通勤時間放入 commuteMinutes；無法化成單一車站但仍有意義的描述保留在 locationPreference，絕不可因此判定為未指定地點。
+
+visaType 請照原文的在留資格填寫（留學、技人國、打工度假、家族滯在、永住等），不要把留學生和工作簽混用。
+
+otherNeeds 只收「其他欄位真的裝不下」的需求，且必須是短詞。不要把已經有欄位的東西（預算、通勤、格局、屋齡、設備、寵物）重複塞進來，也不要寫成句子或加上任何說明、理由與免責語氣。
+
+只輸出符合 schema 的 JSON。`
         }
       });
       const responseText = response.text?.trim();
@@ -141,9 +147,8 @@ export default async function handler(req: any, res: any) {
 
     const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
     const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
-    const reality = buildMarketReality(criteria, recommendations);
 
-    return res.status(200).json({ criteria, recommendations, reality, model: "gemini-3.1-flash-lite" });
+    return res.status(200).json({ criteria, recommendations, model: "gemini-3.1-flash-lite" });
   } catch (error: any) {
     console.error("Gemini rent analysis error:", error);
     const missingKey = String(error?.message || "").includes("GEMINI_API_KEY");

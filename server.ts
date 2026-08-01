@@ -6,7 +6,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { randomUUID } from "crypto";
 import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "./src/data/rentGuideData";
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./src/data/buyHouseData";
-import { buildMarketReality, buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
+import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
 import { attachCommuteRoutes } from "./src/lib/transitRouteApi";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
@@ -291,8 +291,7 @@ app.post("/api/rent-analysis", async (req, res) => {
     }
     const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
     const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
-    const reality = buildMarketReality(criteria, recommendations);
-    return res.json({ criteria, recommendations, reality, model: "gemini-3.1-flash-lite" });
+    return res.json({ criteria, recommendations, model: "gemini-3.1-flash-lite" });
   } catch (error) {
     console.error("Gemini rent analysis error:", error);
     return res.status(500).json({ error: "AI 暫時無法解析需求，請稍後再試或改用下方手動估算。" });
