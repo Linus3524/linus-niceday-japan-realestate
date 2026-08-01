@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, AlertTriangle, Receipt, Lightbulb, Calculator } from "lucide-react";
+import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator } from "lucide-react";
 import { budgetModifiers } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
@@ -535,9 +535,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <span key={item.label} className={`border px-2.5 py-1 text-[11px] font-bold font-sans ${criteriaTagStyle[item.category]}`}>{item.label}</span>
                             ))}
                           </div>
-                          <div className={`mb-5 p-3 border flex gap-2 text-xs leading-relaxed font-sans ${aiResult.recommendations.some(item => item.fit === "預算內") ? "border-[#9ee2cf] bg-[#F5F8F6] text-[#3F5147]" : "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"}`}>
-                            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                            <span>{aiResult.reality}</span>
+                          <div className="mb-3 border-l-4 border-[#1A2A22] bg-[#FAFCFB] px-3 py-2 font-sans">
+                            <p className="text-xs font-bold text-[#1A2A22]">6 個市場搜尋方向</p>
+                            <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">比較推薦車站、預算與通勤路線；展開卡片查看線路圖和租金細節。</p>
                           </div>
                           <RentMarketReports
                             recommendations={aiResult.recommendations}

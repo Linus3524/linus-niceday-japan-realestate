@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact } from "./src/data/rentGuideData";
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./src/data/buyHouseData";
 import { buildMarketReality, buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
+import { attachCommuteRoutes } from "./src/lib/transitRouteApi";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -289,7 +290,7 @@ app.post("/api/rent-analysis", async (req, res) => {
       parsedCriteria = await generateCriteria();
     }
     const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
-    const recommendations = buildRentRecommendations(criteria);
+    const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
     const reality = buildMarketReality(criteria, recommendations);
     return res.json({ criteria, recommendations, reality, model: "gemini-3.1-flash-lite" });
   } catch (error) {

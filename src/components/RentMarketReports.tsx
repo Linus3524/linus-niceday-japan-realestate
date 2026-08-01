@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { BarChart3, Building2, ChevronDown, Footprints, Home, SlidersHorizontal } from "lucide-react";
+import { BarChart3, Building2, ChevronDown, Footprints, Home, SlidersHorizontal, TrainFront } from "lucide-react";
 import { rentRates } from "../data/housingMarket";
-import type { RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
+import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
+import { buildCommuteDiagram, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { CommuteRouteCard, CommuteRouteSkeleton } from "./CommuteRouteCard";
 
 interface Props {
   recommendations: RentRecommendation[];
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const yen = (value: number) => `¥${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
 
 function LayoutTiles({ items }: { items: Array<{ label: string; value: number }> }) {
   // Unify with map colors & hovers:
@@ -197,9 +200,15 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
               <span className="text-[10px] font-mono text-[#8A9590]">AREA {String(index + 1).padStart(2, "0")}</span>
               <span className="border border-[#D6EAF0] bg-[#F2F8FA] px-2 py-0.5 text-[10px] font-bold text-[#3F626D]">{item.recommendationType || "市場推薦"}</span>
               <span className={`text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "bg-[#e6f6f1] text-[#007d5a]" : item.fit === "接近預算" ? "bg-[#D6EAF0]" : "bg-[#FBDFD2] text-[#B13818]"}`}>{item.fit}</span>
+              {criteria.commuteStation && <span className={`text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "bg-[#e6f6f1] text-[#007d5a]" : "bg-[#FFF9ED] text-[#7A5A1F]"}`}>{item.commuteFit}</span>}
+              {item.commuteRoute ? (
+                <span className={`px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "bg-[#e6f6f1] text-[#007d5a]" : "bg-[#F2F8FA] text-[#3F626D]"}`}>
+                  {item.commuteRoute.totalDurationMinutes} 分・轉乘 {item.commuteRoute.transfers} 次
+                </span>
+              ) : null}
             </div>
-            <h4 className="font-bold text-base text-[#1A2A22] mt-1">{item.district}{item.station ? ` · ${item.station}站` : ""}</h4>
-            <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.join("・") || `${item.region}行政區行情`}</p>
+            <h4 className="font-bold text-base text-[#1A2A22] mt-1">{item.district}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
+            <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${item.region}行政區行情`}</p>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
               {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{reason}</span>)}
             </div>
@@ -212,8 +221,9 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
       </button>
       {expanded && (
         <div className="border-t border-[#DDE3DF] p-4 md:p-5 bg-[#FAFCFB] space-y-5">
+          {item.commuteRoute ? <CommuteRouteCard route={item.commuteRoute} /> : <CommuteRouteSkeleton item={item} criteria={criteria} />}
           <section className="border border-[#DDE3DF] bg-white p-4">
-            <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#00a174]" /> 客戶預算 vs. 市場合理區間</div>
+            <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#00a174]" /> 預算 vs. 推估租金區間</div>
             <div className="relative h-12 mx-3">
               <div className="absolute left-0 right-0 top-5 h-2 bg-[#ECEFEC]" />
               <div className="absolute top-5 h-2 bg-[#9ee2cf]" style={{ left: `${pos(item.rangeLow)}%`, width: `${pos(item.rangeHigh) - pos(item.rangeLow)}%` }} />
@@ -238,13 +248,9 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             </section>
           </div>
 
-          <div className="bg-[#e6f6f1] border-l-4 border-[#00a174] p-4 text-xs text-[#3F5147] leading-relaxed font-sans">
-            <strong className="text-[#1A2A22]">市場判讀：</strong> 此區條件中心值約 {yen(item.estimate)}。若希望降低預算，優先比較屋齡 20 年以上、步行 11-15 分鐘或非熱門大站；若保留電梯、獨立洗面台與面積要求，需以區間上緣準備較穩妥。
-          </div>
           <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
             <div className="max-w-xl">
-              <p className="text-[9px] text-[#8A9590] leading-relaxed">圖表為本站行政區／格局基準與固定條件係數的情境比較，不是即時空室統計、標準差或實際成交分佈。</p>
-              <p className="mt-1 text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把這個地區、車站、格局及 AI 讀到的設備／面積等需求帶入下方計算器，讓你繼續增減條件並查看月租明細。</p>
+              <p className="text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把地區、車站、格局與需求帶入下方計算器，繼續調整月租明細。</p>
             </div>
             <button onClick={onApply} className="bg-[#1A2A22] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#00a174] whitespace-nowrap">套用此方案到下方計算器</button>
           </div>

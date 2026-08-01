@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { buildMarketReality, buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
+import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 
 const MAX_PROMPT_CHARS = 1000;
 const ANALYSIS_RATE_LIMIT = 5;
@@ -139,7 +140,7 @@ export default async function handler(req: any, res: any) {
     }
 
     const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
-    const recommendations = buildRentRecommendations(criteria);
+    const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
     const reality = buildMarketReality(criteria, recommendations);
 
     return res.status(200).json({ criteria, recommendations, reality, model: "gemini-3.1-flash-lite" });
