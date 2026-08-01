@@ -158,6 +158,13 @@ export function toJapanesePlaceName(value: string) {
     .replace(/營/g, "営").replace(/狀/g, "状");
 }
 
+export function toJapanesePrefectureName(value: string) {
+  const name = toJapanesePlaceName(value);
+  if (name === "東京都" || name === "北海道") return name;
+  if (name === "大阪" || name === "京都") return `${name}府`;
+  return /[都道府県]$/.test(name) ? name : `${name}県`;
+}
+
 export function getTransitLineIdentity(lineName: string): TransitLineIdentity | null {
   const normalized = normalize(lineName);
   const found = TRANSIT_LINES.find(line => line.patterns.some(pattern => pattern.test(normalized)));

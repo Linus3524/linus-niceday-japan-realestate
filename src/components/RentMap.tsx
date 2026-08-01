@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { RentRate } from "../data/rentGuideData";
 import { rentRates } from "../data/housingMarket";
 import { MapPin, Info, Lightbulb, Layers } from "lucide-react";
+import { toJapanesePlaceName, toJapanesePrefectureName } from "../lib/transit";
 
 interface RentMapProps {
   selectedDistrict: string;
@@ -259,10 +260,7 @@ export const RentMap: React.FC<RentMapProps> = ({
   const areaGroupOrder = ["北海道", "東北", "關東", "中部", "關西", "中國", "九州"];
   const availableAreaGroups = areaGroupOrder.filter(group => rentRates.some(rate => rate.areaGroup === group));
   const visibleRegions = availableRegions.filter(region => rentRates.some(rate => rate.region === region && rate.areaGroup === activeAreaGroup));
-  const regionDisplayName = (region: string) => ({
-    "東京都": "東京都", "神奈川": "神奈川縣", "埼玉": "埼玉縣", "千葉": "千葉縣", "大阪": "大阪府",
-    "北海道": "北海道", "宮城": "宮城縣", "愛知": "愛知縣", "京都": "京都府", "兵庫": "兵庫縣", "廣島": "廣島縣", "福岡": "福岡縣"
-  }[region] || `${region}縣`);
+  const regionDisplayName = toJapanesePrefectureName;
 
   return (
     <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
@@ -336,7 +334,8 @@ export const RentMap: React.FC<RentMapProps> = ({
                   onSelectDistrict(firstDist.district);
                 }
               }}
-              className={`px-2.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
+              lang="ja"
+              className={`font-jp px-2.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
                 isActive
                   ? "bg-[#00a174] text-white border-[#00a174]"
                   : "bg-white text-zinc-700 border-zinc-300 hover:border-zinc-400 hover:text-zinc-900"
@@ -375,9 +374,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                   onMouseEnter={() => setHoveredWard(rateData)}
                   onMouseLeave={() => setHoveredWard(null)}
                   className={`${isTokyoMap ? "h-[72px]" : "h-[56px]"} p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between rounded-none ${bg} ${border}`}
-                  title={mode === "buy" ? `${cell.name} - 2026行情: ${val.toLocaleString()}萬円` : `${cell.name} - 2026行情: ${val}萬円/月`}
+                  title={mode === "buy" ? `${toJapanesePlaceName(cell.name)} - 2026行情: ${val.toLocaleString()}萬円` : `${toJapanesePlaceName(cell.name)} - 2026行情: ${val}萬円/月`}
                 >
-                  <div className="text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{cell.name}</div>
+                  <div lang="ja" className="font-jp text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{toJapanesePlaceName(cell.name)}</div>
                   <div className={`text-[10px] font-mono font-bold leading-none mt-1.5 ${text}`}>
                     {mode === "buy" ? val.toLocaleString() : val.toFixed(1)} <span className="text-[8px] font-sans">萬</span>
                   </div>
@@ -441,7 +440,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                   <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
                     <span className="font-bold text-[#00a174] flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-[#00a174] shrink-0" />
-                      <span>{activeWard.district}</span>
+                      <span lang="ja" className="font-jp">{toJapanesePlaceName(activeWard.district)}</span>
                       {hoveredWard ? (
                         <span className="text-[9px] bg-zinc-800 text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
                       ) : (

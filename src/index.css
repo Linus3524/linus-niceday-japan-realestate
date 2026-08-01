@@ -1,6 +1,6 @@
 /* 網頁字型分兩路走，完整說明見 docs/FONTS.md：
    1. 英數字型 (Jost / JetBrains Mono) → 自架在 public/fonts/，並在 index.html preload。
-   2. 中日文字型 (Noto Sans TC / Noto Serif TC / Shippori Mincho) → 仍走 Google，
+   2. 中日文字型 (Noto Sans TC / Noto Sans JP / Noto Serif TC / Shippori Mincho) → 仍走 Google，
       因為它們會依頁面實際出現的文字分片下載，自架整包反而是好幾 MB，
       而 AI 顧問會輸出任意中文字，靜態 subset 有缺字變成 □ 的風險。
       載入標籤現在寫在 index.html <head>，不要改回 @import：
@@ -74,6 +74,7 @@
 
 @theme {
   --font-sans: "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+  --font-jp-sans: "Noto Sans JP", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Noto Serif TC", "Shippori Mincho", serif;
   --font-jost: "Jost", "Noto Sans JP", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
@@ -131,6 +132,11 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 
 .font-jost {
   font-family: var(--font-jost);
+}
+
+/* 日本正式地名、車站與線路專用。繁體說明仍使用 .font-sans。 */
+.font-jp {
+  font-family: var(--font-jp-sans);
 }
 
 /* 桌機版頂部資訊列（logo + 令和日期時間 + 東京天氣）：磨砂玻璃，

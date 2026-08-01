@@ -12,7 +12,7 @@ import {
 import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
-import { toJapanesePlaceName, toJapaneseStationName } from "../lib/transit";
+import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
 
 const criteriaTagStyle = {
   layout: "border-[#facc15] bg-[#fef9c3] text-[#854D0E]",
@@ -83,6 +83,8 @@ function reserveClientAnalysisAttempt() {
 
 export function CalculatorTab(props: CalculatorTabProps) {
   const { calcMode, setCalcMode, calcDistrict, setCalcDistrict, calcRoomType, setCalcRoomType, calcModifiers, setCalcModifiers, calcBuyModifiers, setCalcBuyModifiers, calcStation, setCalcStation, handleTabChange, handleSendMessage } = props;
+  const districtDisplayName = toJapanesePlaceName(calcDistrict);
+  const stationDisplayName = calcStation !== "none" ? toJapaneseStationName(calcStation) : null;
   const [loanRatio, setLoanRatio] = useState(70);
   const [annualRate, setAnnualRate] = useState(2.2);
   const [loanYears, setLoanYears] = useState(20);
@@ -582,13 +584,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
                           >
                             {Array.from(new Set(rentRates.map(r => r.region))).map(region => (
-                              <optgroup key={region} label={region} className="font-sans font-bold">
+                              <optgroup key={region} label={toJapanesePrefectureName(region)} className="font-sans font-bold">
                                 {rentRates.filter(r => r.region === region).map(item => (
                                   <option key={item.district} value={item.district} className="font-sans">
                                     {calcMode === "rent" ? (
-                                      `${item.district} (1K均價: ${item.k1} 萬円/月)`
+                                      `${toJapanesePlaceName(item.district)} (1K均價: ${item.k1} 萬円/月)`
                                     ) : (
-                                      `${item.district} (1K估計: ${getDistrictBuyPrice(item.district, "k1").toLocaleString()} 萬円)`
+                                      `${toJapanesePlaceName(item.district)} (1K估計: ${getDistrictBuyPrice(item.district, "k1").toLocaleString()} 萬円)`
                                     )}
                                   </option>
                                 ))}
@@ -647,7 +649,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <optgroup label="🚇 熱門大站 / 多線共構 / 快速急行停靠 (行情溢價約 +1.0 萬円/月)">
                                 {majorStations.map(s => (
                                   <option key={s.name} value={s.name}>
-                                    {s.name}站 ({s.lines.join(", ")})
+                                    {toJapaneseStationName(s.name)}駅 ({s.lines.map(toJapaneseLineName).join(", ")})
                                   </option>
                                 ))}
                               </optgroup>
@@ -656,7 +658,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <optgroup label="🚉 常規站點 / 人氣常規站 (行情溢價約 +0.5 萬円/月)">
                                 {regularStations.map(s => (
                                   <option key={s.name} value={s.name}>
-                                    {s.name}站 ({s.lines.join(", ")})
+                                    {toJapaneseStationName(s.name)}駅 ({s.lines.map(toJapaneseLineName).join(", ")})
                                   </option>
                                 ))}
                               </optgroup>
@@ -665,7 +667,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               <optgroup label="🛤 各停小站 / 二線各停 / 偏遠小站 (行情調減約 -0.5 萬円/月)">
                                 {minorStations.map(s => (
                                   <option key={s.name} value={s.name}>
-                                    {s.name}站 ({s.lines.join(", ")}) — 行情相對親民
+                                    {toJapaneseStationName(s.name)}駅 ({s.lines.map(toJapaneseLineName).join(", ")}) — 行情相對親民
                                   </option>
                                 ))}
                               </optgroup>
@@ -684,13 +686,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       <Info className="w-4 h-4 text-[#00a174] shrink-0" />
                       {calcMode === "rent" ? (
                         <span>
-                          當前選定：<strong>{calcDistrict}</strong> 區域，該格局規格下的合理市場平均月租金約為 <strong>
+                          當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong> 區域，該格局規格下的合理市場平均月租金約為 <strong>
                             {calcRoomType === "r1" ? getSelectedDistrictData().r1 : calcRoomType === "k1" ? getSelectedDistrictData().k1 : calcRoomType === "ldk1" ? getSelectedDistrictData().ldk1 : getSelectedDistrictData().ldk2}
                           </strong> 萬日圓。
                         </span>
                       ) : (
                         <span>
-                          當前選定：<strong>{calcDistrict}</strong> 區域，該格局規格下的合理市場中古公寓估計基本總價約為 <strong>
+                          當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong> 區域，該格局規格下的合理市場中古公寓估計基本總價約為 <strong>
                             {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}
                           </strong> 萬日圓（估計投資年收益率約 <strong>{(getBuyYieldRate() * 100).toFixed(2)}%</strong>）。
                         </span>
@@ -986,7 +988,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         {/* Breakdown details */}
                         <div className="space-y-3.5 text-xs font-sans">
                           <div>
-                            <span className="text-zinc-500 block">所選基本平均租金 ({calcDistrict})：</span>
+                            <span className="text-zinc-500 block">所選基本平均租金 (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：</span>
                             <span className="font-bold text-zinc-800 font-mono">
                               {(parseFloat(getSelectedDistrictData()[calcRoomType as keyof typeof getSelectedDistrictData] as string) * 10000).toLocaleString()} 円
                             </span>
@@ -994,7 +996,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {calcStation !== "none" && (
                             <div className="flex justify-between items-baseline font-sans border-t border-dashed border-zinc-100 pt-3">
-                              <span className="text-zinc-500">周邊站點溢折價 ({calcStation}站)：</span>
+                              <span className="text-zinc-500">周邊站點溢折價 (<span lang="ja" className="font-jp">{stationDisplayName}駅</span>)：</span>
                               {(() => {
                                 const currentStation = (districtStations[calcDistrict] || []).find(s => s.name === calcStation);
                                 if (!currentStation) return null;
@@ -1171,7 +1173,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         {/* Breakdown buy details */}
                         <div className="space-y-4 text-xs font-sans">
                           <div>
-                            <span className="text-zinc-500 block">所選規格基本總價 ({calcDistrict})：</span>
+                            <span className="text-zinc-500 block">所選規格基本總價 (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：</span>
                             <span className="font-bold text-zinc-800 font-mono">
                               {(getDistrictBuyPrice(calcDistrict, calcRoomType) * 10000).toLocaleString()} 円 ({getDistrictBuyPrice(calcDistrict, calcRoomType)} 萬日圓)
                             </span>
@@ -1334,7 +1336,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           if (currentStation?.type === "major") stationPrice = 10000;
                           else if (currentStation?.type === "regular") stationPrice = 5000;
                           else if (currentStation?.type === "minor") stationPrice = -5000;
-                          if (stationPrice !== 0) lineItems.push({ label: `${calcStation}站等級`, price: getModifierPrice(stationPrice) });
+                          if (stationPrice !== 0) lineItems.push({ label: `${toJapaneseStationName(calcStation)}駅等級`, price: getModifierPrice(stationPrice) });
                         }
                         calcModifiers.forEach(idx => {
                           const mod = budgetModifiers[idx];
@@ -1346,17 +1348,17 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         if (!lineItems.length) {
                           return (
                             <p>
-                              目前是 <strong>{calcDistrict}</strong>（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬）的基準行情，還沒有勾選車站等級或其他加價條件。左側勾選後，這裡會即時算出精算預算與最有效的省錢方向。
+                              目前是 <strong lang="ja" className="font-jp">{districtDisplayName}</strong>（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬）的基準行情，還沒有勾選車站等級或其他加價條件。左側勾選後，這裡會即時算出精算預算與最有效的省錢方向。
                             </p>
                           );
                         }
                         return (
                           <>
                             <p>
-                              <strong>目前條件：</strong> {calcDistrict}（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬），已勾選：
+                              <strong>目前條件：</strong> <span lang="ja" className="font-jp">{districtDisplayName}</span>（{roomTypeLabel} 均價 {(baseRate / 10000).toFixed(1)} 萬），已勾選：
                             </p>
                             <ul className="list-disc pl-4 space-y-1 text-zinc-800 font-bold">
-                              <li>{baseRate.toLocaleString()} 円（{calcDistrict}均價）</li>
+                              <li>{baseRate.toLocaleString()} 円（<span lang="ja" className="font-jp">{districtDisplayName}</span>均價）</li>
                               {lineItems.map(item => (
                                 <li key={item.label}>
                                   {item.price >= 0 ? "+" : ""}{item.price.toLocaleString()} 円（{item.label}）

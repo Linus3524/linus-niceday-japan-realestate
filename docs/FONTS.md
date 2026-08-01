@@ -7,7 +7,7 @@
 | Material Symbols Rounded（圖示） | 自架 | `public/fonts/material-symbols-rounded-subset.woff2`（16KB，只含 4 個圖示） |
 | Jost（英文標題／標籤） | 自架 | `public/fonts/jost-latin.woff2`（26KB）、`jost-latin-ext.woff2`（17KB） |
 | JetBrains Mono（LINE ID／數字） | 自架 | `public/fonts/jetbrains-mono-latin.woff2`（31KB） |
-| Noto Sans TC / Noto Serif TC / Shippori Mincho（中日文） | Google Fonts | `index.html` 的 `<link rel="stylesheet">` |
+| Noto Sans TC / Noto Sans JP / Noto Serif TC / Shippori Mincho（中日文） | Google Fonts | `index.html` 的 `<link rel="stylesheet">` |
 
 `@font-face` 宣告集中在 `src/index.css` 最上方，載入標籤集中在 `index.html` `<head>`。
 
@@ -27,12 +27,13 @@ latin 分片只有 20–30KB，preload 之後幾乎都能在首次繪製前就�
 ## 只請求真的用到的字重（重要）
 
 中日文每多一個字重，Google 那支樣式表就會多展開上百段 `@font-face`。
-先前請求了 300 字重與整個 `Noto Sans JP` 家族，實測**完全沒有被使用**，
-卻讓樣式表膨脹到 **536KB**；砍掉後降到 **254KB**。
+先前請求了 300 字重與整個 `Noto Sans JP` 家族，當時沒有指定日文專有名詞使用，
+反而讓樣式表膨脹。現在只保留實際用於行政區、車站與線路的 500／700 字重。
 
 目前請求的字重（要改之前請先確認站內真的有用到）：
 
 - Noto Sans TC — 400 / 500 / 700
+- Noto Sans JP — 500 / 700（只用於日本正式地名、車站與線路）
 - Noto Serif TC — 400 / 700
 - Shippori Mincho — 400 / 500 / 600（手機版直式日文標語用 600）
 
@@ -99,8 +100,8 @@ curl -s -H "User-Agent: Mozilla/5.0" "https://fonts.googleapis.com/css2?family=J
 
 - 介面上大部分圖示其實是 `lucide-react`（隨 JS 打包，本來就不受網路影響），
   只有上表那幾個是 Material Symbols。
-- `--font-sans` / `--font-jost` 的 fallback 名單裡仍留著 `Noto Sans JP`，
-  它只是「使用者本機有裝就用」的候補，不會產生任何下載。
+- `.font-jp` 搭配 `lang="ja"` 專門套用日本正式地名、車站與線路；
+  一般繁體中文內容不可整段改用日文字體。
 - 中日文字型在極慢網路下仍可能先顯示系統字型（字型檔本身就有幾百 KB）。
   若要完全不跳字，只能改用 `font-display: optional`（第一次載不到就整趟都用系統字型），
   那是另一種取捨，目前沒有採用。

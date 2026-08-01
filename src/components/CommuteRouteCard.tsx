@@ -13,7 +13,7 @@ const StationSign: React.FC<{ name: string; number: string; color: string; type:
             <div className="w-1.5 h-1.5 bg-slate-500" />
           </div>
         </div>
-        <p className="mt-1 text-xs font-medium text-slate-700 max-w-[60px] truncate">{cleanedName}</p>
+        <p lang="ja" className="font-jp mt-1 text-xs font-medium text-slate-700 max-w-[60px] truncate">{cleanedName}</p>
       </div>
     );
   }
@@ -35,7 +35,7 @@ const StationSign: React.FC<{ name: string; number: string; color: string; type:
           </span>
         </div>
       </div>
-      <p className="mt-1 text-xs font-bold text-slate-700 max-w-[64px] truncate">{cleanedName}</p>
+      <p lang="ja" className="font-jp mt-1 text-xs font-bold text-slate-700 max-w-[64px] truncate">{cleanedName}</p>
     </div>
   );
 };
@@ -57,7 +57,7 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
   return (
     <div className="bg-slate-50 p-3.5 sm:p-5 border border-slate-200 font-sans">
       <div className="mb-1 flex items-start justify-between gap-3">
-        <h3 className="text-sm sm:text-base font-bold text-slate-800">
+        <h3 lang="ja" className="font-jp text-sm sm:text-base font-bold text-slate-800">
           {toJapaneseStationName(route.originStation)} → {toJapaneseStationName(route.destinationStation)}
         </h3>
         <span className="shrink-0 border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{sourceBadge}</span>
@@ -113,7 +113,7 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
                       className="relative z-10 px-2 py-0.5 text-[11px] font-bold text-white whitespace-nowrap shadow-2xs max-w-[130px] truncate"
                       style={{ backgroundColor: segment.lineColor }}
                     >
-                      <span className="truncate">{toJapaneseLineName(segment.lineName)}</span>
+                      <span lang="ja" className="font-jp truncate">{toJapaneseLineName(segment.lineName)}</span>
                     </div>
                   </div>
                   {/* Duration Text below without label box */}
@@ -162,7 +162,7 @@ export function CommuteRouteSkeleton({ item, criteria }: { item: RentRecommendat
   if (!item.station || !criteria.commuteStation) return null;
   return (
     <div className="border border-slate-200 bg-slate-50 px-4 py-3 font-sans">
-      <p className="text-xs font-bold text-slate-700">
+      <p lang="ja" className="font-jp text-xs font-bold text-slate-700">
         {toJapaneseStationName(item.station)} → {toJapaneseStationName(criteria.commuteStation)}
       </p>
       <p className="mt-1 text-[11px] text-slate-500">目前未取得可引用的路線資料，因此不顯示推測時間與轉乘資訊。</p>

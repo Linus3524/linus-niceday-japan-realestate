@@ -215,8 +215,8 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
                 </span>
               ) : null}
             </div>
-            <h4 className="font-bold text-base text-[#1A2A22] mt-1">{toJapanesePlaceName(item.district)}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
-            <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${toJapanesePlaceName(item.region)}行政区行情`}</p>
+            <h4 lang="ja" className="font-jp font-bold text-base text-[#1A2A22] mt-1">{toJapanesePlaceName(item.district)}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
+            <p lang="ja" className="font-jp font-medium text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${toJapanesePlaceName(item.region)}行政区行情`}</p>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
               {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{recommendationReasonLabel(reason, criteria)}</span>)}
             </div>

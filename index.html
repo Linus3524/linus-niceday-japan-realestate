@@ -15,15 +15,14 @@
 
     <!-- 中日文字型仍走 Google（依實際用字分片下載，自架整包要好幾 MB）。
          這裡只請求「站內真的用到的字重」：
-           Noto Sans TC 400/500/700、Noto Serif TC 400/700、Shippori Mincho 400/500/600。
-         先前多請求的 300 字重與整個 Noto Sans JP 家族實測都沒有被使用，
-         卻讓這支樣式表膨脹到 536KB（中日文每個字重都會展開上百段 unicode-range）。
+           Noto Sans TC 400/500/700、Noto Sans JP 500/700、Noto Serif TC 400/700、Shippori Mincho 400/500/600。
+         Noto Sans JP 只用於日本正式地名、車站與線路；不套用全站，避免繁體中文字形錯置。
          preconnect 先把連線建好，字型才不用等 DNS/TLS。 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&family=Shippori+Mincho:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&family=Shippori+Mincho:wght@400;500;600&display=swap"
     />
 
     <!-- Preload 首屏關鍵視覺（高解析度 1920x1080 原圖橘子場景背景與人物），確保 Retina 螢幕銳利度與首屏加載 speed -->
