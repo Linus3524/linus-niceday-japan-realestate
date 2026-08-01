@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BarChart3, Building2, ChevronDown, Footprints, Home, SlidersHorizontal, TrainFront } from "lucide-react";
 import { rentRates } from "../data/housingMarket";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
-import { buildCommuteDiagram, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { buildCommuteDiagram, getStationCodeForLine, toJapaneseLineName, toJapanesePlaceName, toJapaneseStationName } from "../lib/transit";
 import { CommuteRouteCard, CommuteRouteSkeleton } from "./CommuteRouteCard";
 
 interface Props {
@@ -12,6 +12,14 @@ interface Props {
 }
 
 const yen = (value: number) => `¥${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+function recommendationReasonLabel(reason: string, criteria: RentSearchCriteria) {
+  let label = reason;
+  if (criteria.line) label = label.replaceAll(criteria.line, toJapaneseLineName(criteria.line));
+  const stations = [criteria.commuteStation, ...(criteria.commuteStations || [])].filter((station): station is string => Boolean(station));
+  for (const station of stations) label = label.replaceAll(station, toJapaneseStationName(station));
+  return label;
+}
 
 
 function LayoutTiles({ items }: { items: Array<{ label: string; value: number }> }) {
@@ -207,10 +215,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
                 </span>
               ) : null}
             </div>
-            <h4 className="font-bold text-base text-[#1A2A22] mt-1">{item.district}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
-            <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${item.region}行政區行情`}</p>
+            <h4 className="font-bold text-base text-[#1A2A22] mt-1">{toJapanesePlaceName(item.district)}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
+            <p className="text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${toJapanesePlaceName(item.region)}行政区行情`}</p>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-              {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{reason}</span>)}
+              {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{recommendationReasonLabel(reason, criteria)}</span>)}
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">

@@ -55,8 +55,11 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "tokyu-meguro", name: "東急目黒線", shortCode: "MG", color: "#009CD2", textColor: "#FFFFFF", operator: "東急電鉄", patterns: [/東急目[黑黒]線/] },
   { id: "tokyu-oimachi", name: "東急大井町線", shortCode: "OM", color: "#F18C43", textColor: "#1A2A22", operator: "東急電鉄", patterns: [/東急大井町線/] },
   { id: "tokyu-shin-yokohama", name: "東急新横浜線", shortCode: "SH", color: "#5D639E", textColor: "#FFFFFF", operator: "東急電鉄", patterns: [/東急新[橫横]濱線|東急新横浜線/] },
+  { id: "minatomirai", name: "みなとみらい線", shortCode: "MM", color: "#006BB6", textColor: "#FFFFFF", operator: "横浜高速鉄道", patterns: [/港未來線|みなとみらい線/] },
   { id: "yokohama-subway-green", name: "横浜市営地下鉄グリーンライン", shortCode: "G", color: "#00B06B", textColor: "#FFFFFF", operator: "横浜市交通局", patterns: [/綠線|グリーンライン/] },
   { id: "yokohama-subway-blue", name: "横浜市営地下鉄ブルーライン", shortCode: "B", color: "#0067B1", textColor: "#FFFFFF", operator: "横浜市交通局", patterns: [/藍線|ブルーライン/] },
+  { id: "yokohama-subway", name: "横浜市営地下鉄", shortCode: "", color: "#0067B1", textColor: "#FFFFFF", operator: "横浜市交通局", patterns: [/[橫横][濱浜](?:市營|市営)?地(?:下)?[鐵鉄]/] },
+  { id: "sotetsu", name: "相鉄線", shortCode: "SO", color: "#0066B3", textColor: "#FFFFFF", operator: "相模鉄道", patterns: [/相[鐵鉄]線/] },
   { id: "odakyu-odawara", name: "小田急小田原線", shortCode: "OH", color: "#2288CC", textColor: "#FFFFFF", operator: "小田急電鉄", patterns: [/小田急(?:小田原線)?/] },
   { id: "seibu-shinjuku", name: "西武新宿線", shortCode: "SS", color: "#00A6BF", textColor: "#FFFFFF", operator: "西武鉄道", patterns: [/西武新宿線/] },
   { id: "seibu-ikebukuro", name: "西武池袋線", shortCode: "SI", color: "#F58220", textColor: "#1A2A22", operator: "西武鉄道", patterns: [/西武池袋線/] },
@@ -131,9 +134,14 @@ const normalize = (value: string) => value
   .replace(/[\s・･（）()\-/／]/g, "");
 
 export function toJapaneseStationName(value: string) {
-  const cleaned = value.replace(/\s*(?:站|駅)\s*$/, "").trim();
+  const cleaned = value.replace(/\s*(?:車站|站|駅)\s*$/, "").trim();
   if (JAPANESE_STATION_NAMES[cleaned]) return JAPANESE_STATION_NAMES[cleaned];
-  return cleaned
+  return toJapanesePlaceName(cleaned);
+}
+
+/** Convert Traditional Chinese place-name glyphs to the official Japanese forms used on maps and railway signage. */
+export function toJapanesePlaceName(value: string) {
+  return value
     .replace(/澀/g, "渋").replace(/惠/g, "恵").replace(/壽/g, "寿").replace(/廣/g, "広")
     .replace(/濱/g, "浜").replace(/橫/g, "横").replace(/樂/g, "楽").replace(/國/g, "国")
     .replace(/龜/g, "亀").replace(/兩/g, "両").replace(/戶/g, "戸").replace(/稻/g, "稲")
@@ -145,7 +153,9 @@ export function toJapaneseStationName(value: string) {
     .replace(/姬/g, "姫").replace(/縣/g, "県").replace(/廳/g, "庁").replace(/兒/g, "児")
     .replace(/圓/g, "円").replace(/增/g, "増").replace(/與/g, "与").replace(/鄉/g, "郷")
     .replace(/實/g, "実").replace(/螢/g, "蛍").replace(/國/g, "国").replace(/內/g, "内")
-    .replace(/攝/g, "摂").replace(/寶/g, "宝").replace(/氣/g, "気").replace(/譽/g, "誉");
+    .replace(/攝/g, "摂").replace(/寶/g, "宝").replace(/氣/g, "気").replace(/譽/g, "誉")
+    .replace(/區/g, "区").replace(/繩/g, "縄").replace(/穗/g, "穂").replace(/鷗/g, "鴎")
+    .replace(/營/g, "営").replace(/狀/g, "状");
 }
 
 export function getTransitLineIdentity(lineName: string): TransitLineIdentity | null {
@@ -159,7 +169,7 @@ export function getTransitLineIdentity(lineName: string): TransitLineIdentity | 
 export function toJapaneseLineName(value: string) {
   const identity = getTransitLineIdentity(value);
   if (identity) return identity.name;
-  return value.replace(/總武/g, "総武").replace(/濱/g, "浜").replace(/橫/g, "横").replace(/黑/g, "黒").replace(/鐵/g, "鉄").replace(/營/g, "営").replace(/氣/g, "気").replace(/狀/g, "状");
+  return toJapanesePlaceName(value);
 }
 
 function getStationCode(line: TransitLineIdentity | null, stationName: string) {

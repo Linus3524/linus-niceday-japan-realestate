@@ -12,6 +12,7 @@ import {
 import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
+import { toJapanesePlaceName, toJapaneseStationName } from "../lib/transit";
 
 const criteriaTagStyle = {
   layout: "border-[#facc15] bg-[#fef9c3] text-[#854D0E]",
@@ -155,7 +156,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
       criteria.gasBurnersMin && criteria.gasBurnersMin >= 2 ? "twoBurners" : null,
       criteria.cityGasRequired ? "cityGas" : null
     ].filter(Boolean) as RentSearchFilter[]);
-    setAppliedNotice(`已將「${item.district}${selectedStation !== "none" ? `・${selectedStation}站` : ""}」與 ${modifiers.length} 項需求帶入下方計算器。`);
+    setAppliedNotice(`已將「${toJapanesePlaceName(item.district)}${selectedStation !== "none" ? `・${toJapaneseStationName(selectedStation)}駅` : ""}」與 ${modifiers.length} 項需求帶入下方計算器。`);
 
     window.requestAnimationFrame(() => {
       document.getElementById("calc-engine-container")?.scrollIntoView({ behavior: "smooth", block: "start" });
