@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis";
-import type { CommuteRouteDetails } from "./rentAnalysis";
+import type { CommuteRouteDetails } from "./rentAnalysis.js";
 
 const TTL_SECONDS = 60 * 60 * 24 * 30;
 const memory = new Map<string, { expiresAt: number; value: CommuteRouteDetails }>();

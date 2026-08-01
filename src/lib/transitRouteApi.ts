@@ -1,8 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "./rentAnalysis";
-import { getStationCodeForLine, getTransitLineIdentity, toJapaneseLineName, toJapaneseStationName } from "./transit";
-import { readTransitRoute, writeTransitRoute } from "./transitRouteCache";
-import { findLocalTransitRoute } from "./localTransitRoute";
+import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
+import { getStationCodeForLine, getTransitLineIdentity, toJapaneseLineName, toJapaneseStationName } from "./transit.js";
+import { readTransitRoute, writeTransitRoute } from "./transitRouteCache.js";
+import { findLocalTransitRoute } from "./localTransitRoute.js";
 
 type GroundedSegment = {
   type?: string;

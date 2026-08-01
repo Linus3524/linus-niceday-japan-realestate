@@ -1,6 +1,6 @@
 import graphJson from "../data/tokyoTransitGraph.json";
-import type { CommuteRouteDetails, CommuteRouteSegment } from "./rentAnalysis";
-import { toJapaneseStationName } from "./transit";
+import type { CommuteRouteDetails, CommuteRouteSegment } from "./rentAnalysis.js";
+import { toJapaneseStationName } from "./transit.js";
 
 type Edge = { to: string; lineName: string; lineShortName: string | null; lineColor: string; lineTextColor: string; operator: string; sourceId: string; durationMinutes: number; schedule?: Array<[number, number]>; fromCode: string | null; toCode: string | null; headsign: string | null };
 type GraphSource = { id: string; label: string; sourceUrl: string; downloadUrl: string };
