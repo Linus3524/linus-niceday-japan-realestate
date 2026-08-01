@@ -396,7 +396,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       district: rate.district,
       region: rate.region,
       station: station?.name || null,
-      lines: station?.lines || [],
+      lines: (station?.lines || []).flatMap(line => line.split(/[/／]/)).map(l => l.trim()).filter(Boolean),
       estimate,
       rangeLow: Math.round((estimate * 0.9) / 1000) * 1000,
       rangeHigh: Math.round((estimate * 1.1) / 1000) * 1000,

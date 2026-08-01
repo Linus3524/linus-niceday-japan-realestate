@@ -66,8 +66,8 @@ export const districtStations: Record<string, StationInfo[]> = {
     { name: "寶町", type: "minor", lines: ["淺草線"] }
   ],
   "澀谷區": [
-    { name: "澀谷", type: "major", lines: ["JR山手線", "東京地下鐵各線", "東急各線", "京王井之頭線"] },
-    { name: "惠比壽", type: "major", lines: ["JR山手線", "日比谷線", "JR埼京線"] },
+    { name: "澀谷", type: "major", lines: ["JR山手線", "JR埼京線", "JR湘南新宿線", "銀座線", "半藏門線", "副都心線", "東急東橫線", "東急田園都市線", "京王井之頭線"] },
+    { name: "惠比壽", type: "major", lines: ["JR山手線", "JR埼京線", "JR湘南新宿線", "日比谷線"] },
     { name: "原宿", type: "major", lines: ["JR山手線", "千代田線"] },
     { name: "代代木", type: "major", lines: ["JR山手線", "大江戶線", "JR中央總武線"] },
     { name: "代代木上原", type: "regular", lines: ["千代田線", "小田急小田原線"] },
@@ -94,7 +94,7 @@ export const districtStations: Record<string, StationInfo[]> = {
     { name: "綠丘", type: "minor", lines: ["東急大井町線"] }
   ],
   "新宿區": [
-    { name: "新宿", type: "major", lines: ["JR山手線/中央線", "東京地下鐵各線", "都營新宿/大江戶線", "小田急", "京王"] },
+    { name: "新宿", type: "major", lines: ["JR山手線", "JR中央線快速", "JR中央總武線", "JR埼京線", "JR湘南新宿線", "丸之內線", "新宿線", "大江戶線", "小田急小田原線", "京王線"] },
     { name: "高田馬場", type: "major", lines: ["JR山手線", "東西線", "西武新宿線"] },
     { name: "四谷", type: "major", lines: ["JR中央總武線", "丸之內線", "南北線"] },
     { name: "信濃町", type: "major", lines: ["JR中央總武線"] },
@@ -505,12 +505,12 @@ export const districtStations: Record<string, StationInfo[]> = {
     { name: "小島新田", type: "minor", lines: ["京急大師線各停終點"] }
   ],
   "川崎市中原區": [
-    { name: "武藏小杉", type: "major", lines: ["JR湘南新宿線/橫須賀線/南武線", "東急東橫線/目黑線"] },
-    { name: "元住吉", type: "major", lines: ["東急東橫線各停", "東急目黑線"] },
+    { name: "武藏小杉", type: "major", lines: ["JR湘南新宿線", "JR橫須賀線", "JR南武線", "東急東橫線", "東急目黑線"] },
+    { name: "元住吉", type: "major", lines: ["東急東橫線", "東急目黑線"] },
     { name: "武藏新城", type: "regular", lines: ["JR南武線"] },
-    { name: "新丸子", type: "regular", lines: ["東急東橫線", "東急目黑線各停"] },
+    { name: "新丸子", type: "regular", lines: ["東急東橫線", "東急目黑線"] },
     { name: "向河原", type: "regular", lines: ["JR南武線"] },
-    { name: "平間", type: "minor", lines: ["JR南武線各停"] }
+    { name: "平間", type: "minor", lines: ["JR南武線"] }
   ],
   "川崎市高津區": [
     { name: "溝之口", type: "major", lines: ["東急田園都市線", "東急大井町線"] },
