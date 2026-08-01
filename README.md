@@ -16,5 +16,8 @@ View your app in AI Studio: https://ai.studio/apps/3bc4faa3-a9cc-4a08-93f0-d2da0
 1. Install dependencies:
    `npm install`
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Optional: set `TRANSITOUS_USER_AGENT` to identify this app when using the free Transitous route service. Route results use Transitous first and Gemini Search only when its Japan GTFS coverage is unavailable.
+
+Successful commute routes are cached in memory for local use. When `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are configured, verified results are also retained for 30 days across server restarts and Vercel invocations.
 3. Run the app:
    `npm run dev`

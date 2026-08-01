@@ -1,6 +1,6 @@
 import React from "react";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
-import { buildCommuteFallbackRoute, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
 
 const StationSign: React.FC<{ name: string; number: string; color: string; type: CommuteRouteSegment["type"] }> = ({ name, number, color, type }) => {
   const cleanedName = toJapaneseStationName(name.replace(/\(.*\)/, "").trim());
@@ -42,12 +42,26 @@ const StationSign: React.FC<{ name: string; number: string; color: string; type:
 
 export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
   const lastSegment = route.segments[route.segments.length - 1];
+  const sourceBadge = route.source === "local_gtfs"
+    ? "本地標準班表"
+    : route.source === "transitous"
+    ? "標準班表"
+    : route.source === "verified_cache"
+      ? "已驗證快取"
+      : route.source === "web_grounded"
+        ? "網路交叉查證"
+        : route.source === "ai_estimate"
+          ? "AI 路線估算"
+        : "標準路線參考";
 
   return (
     <div className="bg-slate-50 p-3.5 sm:p-5 border border-slate-200 font-sans">
-      <h3 className="text-sm sm:text-base font-bold text-slate-800 mb-1">
-        {toJapaneseStationName(route.originStation)} → {toJapaneseStationName(route.destinationStation)}
-      </h3>
+      <div className="mb-1 flex items-start justify-between gap-3">
+        <h3 className="text-sm sm:text-base font-bold text-slate-800">
+          {toJapaneseStationName(route.originStation)} → {toJapaneseStationName(route.destinationStation)}
+        </h3>
+        <span className="shrink-0 border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">{sourceBadge}</span>
+      </div>
       <div className="mb-4 flex items-center space-x-5 text-xs text-slate-600">
         <span>
           總時間：<strong className="text-blue-600 text-sm">{route.totalDurationMinutes} 分鐘</strong>
@@ -129,14 +143,29 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
             ? "最快且最方便的直達路線，無需求乘。"
             : `建議路線需轉乘 ${route.transfers} 次。`}
         </p>
+        <p className="mt-1.5 text-[10px] text-slate-500">{route.referenceLabel}</p>
+        {route.sourceLinks?.length ? (
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+            {route.sourceLinks.slice(0, 3).map(source => (
+              <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="text-[10px] text-blue-700 underline underline-offset-2">
+                {source.title}
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
 
 export function CommuteRouteSkeleton({ item, criteria }: { item: RentRecommendation; criteria: RentSearchCriteria }) {
-  const fallbackRoute = buildCommuteFallbackRoute(item, criteria);
-  if (!fallbackRoute) return null;
-
-  return <CommuteRouteCard route={fallbackRoute} />;
+  if (!item.station || !criteria.commuteStation) return null;
+  return (
+    <div className="border border-slate-200 bg-slate-50 px-4 py-3 font-sans">
+      <p className="text-xs font-bold text-slate-700">
+        {toJapaneseStationName(item.station)} → {toJapaneseStationName(criteria.commuteStation)}
+      </p>
+      <p className="mt-1 text-[11px] text-slate-500">目前未取得可引用的路線資料，因此不顯示推測時間與轉乘資訊。</p>
+    </div>
+  );
 }

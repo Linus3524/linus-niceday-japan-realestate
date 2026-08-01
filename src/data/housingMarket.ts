@@ -155,7 +155,7 @@ const secondStageMarketSpecs: SecondStageMarketSpec[] = [
   { region:"大分",district:"大分市",areaGroup:"九州",referenceDistrict:"福岡市（市平均）",multiplier:.74,station:"大分",lines:["日豐本線","久大本線"] },
   { region:"宮崎",district:"宮崎市",areaGroup:"九州",referenceDistrict:"福岡市（市平均）",multiplier:.70,station:"宮崎",lines:["日豐本線"] },
   { region:"鹿兒島",district:"鹿兒島市",areaGroup:"九州",referenceDistrict:"福岡市（市平均）",multiplier:.76,station:"鹿兒島中央",lines:["九州新幹線","鹿兒島本線"] },
-  { region:"沖繩",district:"那霸市",areaGroup:"九州",referenceDistrict:"福岡市（市平均）",multiplier:.92,station:"縣廳前",lines:["沖繩都市單軌電車"],tier:"major" }
+  { region:"沖繩",district:"那霸市",areaGroup:"九州",referenceDistrict:"福岡市（市平均）",multiplier:.92,station:"県庁前",lines:["ゆいレール"],tier:"major" }
 ];
 
 const secondStageRates: RentRate[] = secondStageMarketSpecs.flatMap(spec => {

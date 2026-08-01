@@ -20,6 +20,8 @@ export interface RentSearchCriteria {
   commuteStation?: string | null;
   commuteStations?: string[];
   commuteMinutes?: number | null;
+  /** 理想通勤時間；commuteMinutes 保留為最長可接受時間。 */
+  commutePreferredMinutes?: number | null;
   locationPreference?: string | null;
   nearbyAmenity?: string | null;
   amenityWalkMinutes?: number | null;
@@ -49,11 +51,19 @@ export interface RentSearchCriteria {
   moveInTiming?: string | null;
   /** 同住人數；影響格局建議與審查時的續柄資料。 */
   householdSize?: number | null;
+  /** 目前在日本的居住地／住宿狀態，例如「千葉縣成田市（公司宿舍）」。 */
+  currentResidence?: string | null;
+  /** 入社或就業開始時間，例如「9/16 入社」。 */
+  employmentStartTiming?: string | null;
+  /** 初期費用上限，單位日圓。 */
+  initialCostBudget?: number | null;
   /**
    * 使用者提到、但結構化欄位裝不下的需求。
    * 刻意限制為「短詞」而非 AI 自由句子——長句會把免責語氣帶回來。
    */
   otherNeeds?: string[];
+  /** 其他核心條件在原文中的必要程度；由規則層從原句判斷，避免全部當成硬條件。 */
+  otherNeedPriorities?: Record<string, "required" | "preferred" | "uncertain">;
 }
 
 export interface RentRecommendation {
@@ -93,7 +103,7 @@ export interface CommuteRouteSegment {
 }
 
 export interface CommuteRouteDetails {
-  source: "google_routes";
+  source: "local_gtfs" | "transitous" | "web_grounded" | "ai_estimate" | "verified_cache" | "static_reference";
   originStation: string;
   destinationStation: string;
   totalDurationMinutes: number;
@@ -101,6 +111,7 @@ export interface CommuteRouteDetails {
   departureTime: string | null;
   arrivalTime: string | null;
   referenceLabel: string;
+  sourceLinks?: Array<{ title: string; url: string }>;
   segments: CommuteRouteSegment[];
 }
 
@@ -145,6 +156,8 @@ export function resolveVisaCategory(visaType?: string | null): VisaCategory {
 
 export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, prompt: string): RentSearchCriteria {
   const enriched = { ...criteria };
+  const promptLines = prompt.split(/\n/);
+  const promptClauses = prompt.split(/[。；;，,、\n]/).map(value => value.trim()).filter(Boolean);
   if (enriched.commuteStation && /涉谷|澀谷|渋谷/.test(enriched.commuteStation)) enriched.commuteStation = enriched.commuteStation.replace(/涉谷|澀谷|渋谷/g, "渋谷");
   if (enriched.commuteStations?.length) enriched.commuteStations = enriched.commuteStations.map(station => station.replace(/涉谷|澀谷|渋谷/g, "渋谷"));
 
@@ -155,6 +168,18 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     enriched.minBudget = Math.round(Number(budgetRange[1]) * 10000);
     enriched.maxBudget = Math.round(Number(budgetRange[2]) * 10000);
   }
+  const monthlyBudgetClause = promptClauses.find(clause => /月租|每月|租屋預算|租金預算|房租/.test(clause))
+    || promptClauses.find(clause => /\d+(?:\.\d+)?\s*[萬万](?:円|圓|元|日圓|日元)?/.test(clause) && !/初期費用|初期费用/.test(clause));
+  if (monthlyBudgetClause && !enriched.maxBudget) {
+    const monthlyAmount = monthlyBudgetClause.match(/(\d+(?:\.\d+)?)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i);
+    if (monthlyAmount?.[1]) enriched.maxBudget = Number(monthlyAmount[1]) * 10000 + Number(monthlyAmount[2] || 0) * 1000;
+  }
+  const mixedUnitCap = prompt.match(/(?:不超過|不超过|上限|最多)[^\n]{0,8}?(\d+)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i);
+  if (mixedUnitCap?.[1]) {
+    enriched.maxBudget = Number(mixedUnitCap[1]) * 10000 + Number(mixedUnitCap[2] || 0) * 1000;
+  }
+  if (/含管理費|含管理费|管理費込み|管理费込み/i.test(prompt)) enriched.budgetIncludesFees = true;
+  if (/不含管理費|不含管理费|管理費另計|管理费另计/i.test(prompt)) enriched.budgetIncludesFees = false;
   if (!enriched.maxBudget) {
     const cap = prompt.match(/(\d+(?:\.\d+)?)\s*[萬万](?:円|圓|元|日圓|日元|日幣|日弊)?\s*(?:以下|以內|以内|之內|之内|內|以下就好)/i)
       || prompt.match(/(?:上限|預算|预算|不超過|不超过|最多|最高)[^\n]{0,8}?(\d+(?:\.\d+)?)\s*[萬万]/i);
@@ -191,7 +216,11 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     enriched.petsAllowed = false;
     enriched.petType = null;
   }
-  const commuteLine = prompt.split(/\n/).find(line => /通勤|車程|上班|工作地點|目的地|希望.*(?:分鐘|分內)/i.test(line));
+  const commuteLineIndex = promptLines.findIndex(line => /通勤|車程|上班|工作地點|目的地|希望.*(?:分鐘|分內)/i.test(line));
+  const rawCommuteLine = commuteLineIndex >= 0
+    ? [promptLines[commuteLineIndex], promptLines[commuteLineIndex + 1]].filter(Boolean).join(" ")
+    : undefined;
+  const commuteLine = rawCommuteLine?.match(/(?:通勤|車程|上班|工作地點|目的地)[^。；;]*/i)?.[0] || rawCommuteLine;
   if (commuteLine) {
     const normalizedLine = normalize(commuteLine);
     const inferredDestinations = [...new Map(
@@ -204,9 +233,14 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     if (!enriched.commuteStation && displayDestinations.length) enriched.commuteStation = displayDestinations.join("／");
     if (!enriched.locationPreference) enriched.locationPreference = commuteLine.replace(/^\s*\d+[.、．]?\s*/, "").trim();
   }
-  if (!enriched.commuteMinutes && commuteLine) {
-    const commuteMinutes = commuteLine.match(/(\d{1,3})\s*分鐘/i);
-    if (commuteMinutes?.[1]) enriched.commuteMinutes = Number(commuteMinutes[1]);
+  if (commuteLine) {
+    const commuteValues = [...commuteLine.matchAll(/(\d{1,3})\s*(?:分鐘|分)(?:鐘)?/gi)].map(match => Number(match[1]));
+    if (commuteValues.length >= 2) {
+      enriched.commutePreferredMinutes = Math.min(...commuteValues);
+      enriched.commuteMinutes = Math.max(...commuteValues);
+    } else if (!enriched.commuteMinutes && commuteValues[0]) {
+      enriched.commuteMinutes = commuteValues[0];
+    }
   }
   enriched.commuteDirectRequired = /(?:一條線|一条线|不用換乘|不用换乘|不換乘|不换乘|直達|直达)/i.test(prompt);
 
@@ -243,12 +277,47 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
 
   // 入住時間：舊版完全沒有擷取，但這是決定「什麼時候該開始看房」的關鍵。
   if (!enriched.moveInTiming) {
+    const timingRange = prompt.match(/(\d{1,2})\s*月\s*(上旬|中旬|下旬|初|中|底)\s*(?:[~～〜－—\-]|至|到)\s*(上旬|中旬|下旬|初|中|底)/);
     const timing = prompt.match(/(\d{1,2})\s*月\s*(初|中|底|下旬|中旬|上旬)?/);
-    if (timing) enriched.moveInTiming = `${timing[1]}月${timing[2] || ""}`;
+    if (timingRange) enriched.moveInTiming = `${timingRange[1]}月${timingRange[2]}～${timingRange[3]}`;
+    else if (timing) enriched.moveInTiming = `${timing[1]}月${timing[2] || ""}`;
   }
   if (!enriched.householdSize) {
     const people = prompt.match(/(\d{1,2})\s*(?:個?人|名)(?:入住|居住|住)?/) || prompt.match(/(夫妻|情侶|兩人|2人)/);
-    if (people) enriched.householdSize = /夫妻|情侶|兩人|2人/.test(people[0]) ? 2 : Number(people[1]);
+    if (/獨居|独居|一人暮らし|自己住|自己居住/.test(prompt)) enriched.householdSize = 1;
+    else if (people) enriched.householdSize = /夫妻|情侶|兩人|2人/.test(people[0]) ? 2 : Number(people[1]);
+  }
+  if (!enriched.currentResidence) {
+    const residence = prompt.match(/(?:目前居住於|目前居住于|現在住在|现住|現居)\s*([^\n]+)/i);
+    if (residence?.[1]) enriched.currentResidence = residence[1].trim();
+  }
+  if (!enriched.employmentStartTiming) {
+    const employment = prompt.match(/(?:預計)?\s*(\d{1,2}\s*[\/／.-]\s*\d{1,2})\s*(?:入社|到職|到职)/i);
+    if (employment?.[1]) enriched.employmentStartTiming = `${employment[1].replace(/\s/g, "")} 入社`;
+  }
+  if (!enriched.initialCostBudget) {
+    const initialCost = prompt.match(/初期費用[^\n]{0,12}?(\d+(?:\.\d+)?)\s*[萬万]/i);
+    if (initialCost?.[1]) enriched.initialCostBudget = Math.round(Number(initialCost[1]) * 10000);
+  }
+  if (!enriched.floorMin) {
+    const floor = prompt.match(/(?:希望)?\s*(\d{1,2})\s*樓以上/i);
+    if (floor?.[1]) enriched.floorMin = Number(floor[1]);
+  }
+  const explicitRoomType = prompt.match(/\b(1R|1K|1DK|1LDK|2K|2DK|2LDK)\b/i)?.[1]?.toUpperCase();
+  if (explicitRoomType) {
+    enriched.roomType = explicitRoomType === "1R" ? "r1" : /1K|1DK/.test(explicitRoomType) ? "k1" : /1LDK|2K|2DK/.test(explicitRoomType) ? "ldk1" : "ldk2";
+  }
+  if (!enriched.areaMin) {
+    const area = prompt.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|平米|平方米|平方公尺)\s*(?:以上|以內|以内)?/i);
+    if (area?.[1]) enriched.areaMin = Number(area[1]);
+  }
+  if (!enriched.structure && /RC|SRC|鋼筋混凝土|钢筋混凝土/i.test(prompt)) enriched.structure = /SRC/i.test(prompt) ? "SRC" : "RC";
+  if (/電梯|电梯|エレベーター/i.test(prompt)) enriched.elevator = true;
+  if (/自動門|自动门|オートロック/i.test(prompt)) enriched.autoLock = true;
+  if (/陽台|阳台|ベランダ|バルコニー/i.test(prompt)) enriched.balcony = true;
+  if (!enriched.walkMinutes) {
+    const walk = prompt.match(/(?:距離車站|车站|車站|駅)[^\n]{0,12}?(?:步行|徒步)?\s*(\d{1,3})\s*分鐘(?:以內|以内|內)?/i);
+    if (walk?.[1]) enriched.walkMinutes = Number(walk[1]);
   }
 
   const verificationRules: Array<[RegExp, string]> = [
@@ -256,12 +325,31 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     [/(?:暗巷|偏僻)/i, "避免偏僻地點與暗巷"],
     [/(?:房間|室內)[^\n]{0,12}(?:對外窗|对外窗|窗戶|窗户)/i, "房間對外窗"],
     [/(?:採光|采光|明亮|光線充足|光线充足)/i, "室內採光"],
-    [/(?:廁所|厕所|浴室)[^\n]{0,12}(?:對外窗|对外窗|窗戶|窗户)/i, "廁所對外窗"],
+    [/(?:廁所|厕所|浴室)[^\n]{0,12}(?:對外窗|对外窗|窗戶|窗户|有窗)/i, "廁所對外窗"],
     [/(?:樑壓床|梁压床|橫樑|横梁)/i, "避免樑壓床"],
     [/(?:凶宅|事故屋|出事宅|心理瑕疵)/i, "排除事故屋／心理瑕疵物件"],
     [/(?:煮熱食|煮食|廚房|厨房)/i, "可煮食的廚房配置"]
+    , [/(?:隔音|安靜|安静|噪音)/i, "隔音與噪音環境"]
   ];
   enriched.unverifiedConditions = verificationRules.filter(([pattern]) => pattern.test(prompt)).map(([, label]) => label);
+  const inferPriority = (sourceLine: string): "required" | "preferred" | "uncertain" => {
+    if (/(?:如果可以|如果可以的話)/i.test(sourceLine)) return "preferred";
+    if (/(?:一定|必須|必须|務必|务必|不可|不要|避免|排除|不能接受|硬性)/i.test(sourceLine)) return "required";
+    if (/(?:可能|也許|也许|不確定|不确定|可有可無|可有可无)/i.test(sourceLine)) return "uncertain";
+    if (/(?:希望|最好|優先|优先|盡量|尽量|偏好|好一點|好一点|如果可以|如果可以的話|會更好|都不是必要)/i.test(sourceLine)) return "preferred";
+    return /都不是必要條件|都不是必要条件/i.test(prompt) ? "preferred" : "required";
+  };
+  const priorities: Record<string, "required" | "preferred" | "uncertain"> = {};
+  for (const [pattern, label] of verificationRules) {
+    const sourceLine = promptClauses.find(line => pattern.test(line));
+    if (sourceLine) priorities[label] = inferPriority(sourceLine);
+  }
+  for (const need of enriched.otherNeeds || []) {
+    if (priorities[need]) continue;
+    const sourceLine = promptClauses.find(line => normalize(line).includes(normalize(need)));
+    priorities[need] = inferPriority(sourceLine || need);
+  }
+  enriched.otherNeedPriorities = priorities;
   return enriched;
 }
 
@@ -353,7 +441,11 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     const gap = criteria.maxBudget ? estimate - criteria.maxBudget : null;
     const stationName = normalize(station?.name);
     const exactStation = Boolean(station && wantedStations.some(wanted => stationName === wanted));
-    const districtMatch = districtQueries.some(query => normalize(rate.district).includes(query) || query.includes(normalize(rate.district)) || normalize(rate.region).includes(query));
+    const normalizedDistrict = normalize(rate.district);
+    const exactDistrictMatch = districtQueries.some(query => normalizedDistrict === query);
+    const districtMatch = exactDistrictMatch || districtQueries.some(query =>
+      normalizedDistrict.includes(query) || normalize(rate.region) === query
+    );
     const requestedLineMatch = Boolean(station && wantedLine && station.lines.some(line => lineMatches(line, wantedLine)));
     const directCommute = Boolean(station && commuteStations.some(destination =>
       station.lines.some(line => destination.lines.some(destinationLine => lineMatches(line, destinationLine)))
@@ -361,7 +453,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     const budgetScore = criteria.maxBudget
       ? Math.max(0, 30 - Math.abs(estimate - criteria.maxBudget) / 10000 * 3)
       : Math.max(0, 20 - estimate / 20000);
-    const score = (exactStation ? 120 : 0) + (districtMatch ? 60 : 0) + (requestedLineMatch ? 50 : 0) + (directCommute ? 35 : 0) + budgetScore;
+    const score = (exactStation ? 120 : 0) + (exactDistrictMatch ? 80 : districtMatch ? 45 : 0) + (requestedLineMatch ? 50 : 0) + (directCommute ? 35 : 0) + budgetScore;
     const recommendationType: RentRecommendation["recommendationType"] = exactStation
       ? "指定車站"
       : districtMatch || requestedLineMatch
@@ -410,10 +502,14 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       score
     };
   });
+  const exactDistrictCandidates = districtQueries.length
+    ? ranked.filter(item => districtQueries.some(query => normalize(item.district) === query))
+    : [];
+  const geographicPool = exactDistrictCandidates.length ? exactDistrictCandidates : ranked;
   const directCandidates = criteria.commuteDirectRequired && criteria.commuteStation
-    ? ranked.filter(item => item.commuteFit === "直達線路")
-    : ranked;
-  const pool = directCandidates.length ? directCandidates : ranked;
+    ? geographicPool.filter(item => item.commuteFit === "直達線路")
+    : geographicPool;
+  const pool = directCandidates.length ? directCandidates : geographicPool;
   return pool.sort((a, b) => b.score - a.score || a.estimate - b.estimate)
     .filter((item, index, all) => all.findIndex(candidate => candidate.station === item.station) === index)
     .slice(0, 6)

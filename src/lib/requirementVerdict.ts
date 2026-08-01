@@ -170,7 +170,8 @@ function commuteAxis(criteria: RentSearchCriteria, recommendations: RentRecommen
   const target = criteria.commuteStation;
   const detail = [
     target ? `通勤至 ${target}` : null,
-    criteria.commuteMinutes ? `${criteria.commuteMinutes} 分鐘內` : null,
+    criteria.commutePreferredMinutes ? `希望 ${criteria.commutePreferredMinutes} 分鐘內` : null,
+    criteria.commuteMinutes ? `最長 ${criteria.commuteMinutes} 分鐘` : null,
     criteria.commuteDirectRequired ? "不換乘" : null,
     criteria.walkMinutes ? `車站徒步 ${criteria.walkMinutes} 分內` : null
   ].filter(Boolean).join("・") || null;
@@ -366,9 +367,11 @@ function equipmentAxis(criteria: RentSearchCriteria): AxisVerdict | null {
 function timingAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   const timing = criteria.moveInTiming?.trim();
   const size = criteria.householdSize;
-  if (!timing && !size) return null;
+  const residence = criteria.currentResidence?.trim();
+  const employment = criteria.employmentStartTiming?.trim();
+  if (!timing && !size && !residence && !employment) return null;
 
-  const detail = [timing ? `預計 ${timing} 入住` : null, size ? `${size} 人同住` : null].filter(Boolean).join("・");
+  const detail = [timing ? `預計 ${timing} 入住` : null, size ? (size === 1 ? "獨居" : `${size} 人同住`) : null, residence ? `現居 ${residence}` : null].filter(Boolean).join("・");
   if (!timing) {
     return {
       key: "timing", label: "入住條件", detail, status: "符合",
@@ -379,38 +382,93 @@ function timingAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   }
   return {
     key: "timing", label: "入住條件", detail, status: "符合",
-    headline: `${timing} 入住的話，開始看房的時機大約是前一個半月。`,
+    headline: `${timing} 入住，建議在入住前約一個半月開始集中找房。`,
     drivers: [
       "日本物件多在入住前 1～2 個月才釋出募集，太早看到的多半留不到入住日",
+      residence ? "目前已在日本居住，可走境內審查並安排實際看房" : "",
+      employment ? `${employment}，申請時準備雇用契約或內定資料` : "",
       size && size >= 2 ? `${size} 人同住需確認物件是否接受複數入居` : ""
     ].filter(Boolean),
     supplyImpact: 0
   };
 }
 
-function specialAxis(criteria: RentSearchCriteria): AxisVerdict | null {
-  const pets = criteria.petsAllowed === true;
-  const unverified = [...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])];
-  if (!pets && !unverified.length) return null;
-
-  const detail = [pets ? `可養${criteria.petType || "寵物"}` : null, ...unverified].filter(Boolean).join("・");
-  if (pets) {
-    return {
-      key: "special", label: "特殊條件", detail, status: "難度高",
-      headline: `可養${criteria.petType || "寵物"}的物件約佔市場少數，這是硬性篩選。`,
-      drivers: [
-        "多數會另收敷金或清潔費",
-        unverified.length ? `另有 ${unverified.length} 項需看現場或告知事項確認` : ""
-      ].filter(Boolean),
-      supplyImpact: 3
-    };
-  }
+function initialCostAxis(criteria: RentSearchCriteria): AxisVerdict | null {
+  const cap = criteria.initialCostBudget;
+  if (!cap) return null;
+  const monthly = criteria.maxBudget || 0;
+  const multiple = monthly ? cap / monthly : null;
+  const tight = multiple !== null && multiple < 4.5;
   return {
-    key: "special", label: "居住環境條件", detail, status: "部分符合",
-    headline: `${unverified.length} 項條件要看物件圖面與現場才能確認。`,
-    drivers: [`包含 ${unverified.slice(0, 3).join("、")}${unverified.length > 3 ? " 等" : ""}`],
-    nextStep: "看房時一次確認這幾項，可以省下重複帶看。",
-    supplyImpact: unverified.length >= 5 ? 1 : 0
+    key: "initialCost", label: "初期費用", detail: `上限 ${yen(cap)}`,
+    status: tight ? "需調整" : "部分符合",
+    headline: tight
+      ? `${yen(cap)} 約是月租上限的 ${multiple!.toFixed(1)} 倍，預算偏緊但仍有機會。`
+      : "初期費用上限有機會達成，但要避開高禮金與高保證費物件。",
+    drivers: ["優先找零禮金、低仲介費及保證費較低的物件"],
+    nextStep: tight ? "把零禮金列為優先條件，申請前先取得完整初期費用明細。" : undefined,
+    supplyImpact: tight ? 1 : 0
+  };
+}
+
+function petAxis(criteria: RentSearchCriteria): AxisVerdict | null {
+  if (criteria.petsAllowed !== true) return null;
+  const petLabel = `可養${criteria.petType || "寵物"}`;
+  return {
+    key: "pet", label: "特殊條件", detail: petLabel, status: "難度高",
+    headline: `${petLabel}會直接縮小可申請的房源範圍。`,
+    drivers: [`${petLabel}物件供給較少，常增加敷金或退房清潔費`],
+    nextStep: "從一開始就以可養寵物物件篩選，避免找到後才被管理規約排除。",
+    supplyImpact: 3
+  };
+}
+
+function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
+  const unverified = [...new Set([...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])])];
+  if (!unverified.length) return null;
+
+  const priorityOf = (condition: string) => criteria.otherNeedPriorities?.[condition] || "required";
+  const priorityLabel = { required: "必要", preferred: "希望", uncertain: "尚未確定" } as const;
+  const detail = unverified.map(condition => `${condition}（${priorityLabel[priorityOf(condition)]}）`).join("・");
+  const conditionAdvice = (condition: string) => {
+    const prefix = `${condition}｜${priorityLabel[priorityOf(condition)]}`;
+    if (/隔音|噪音|安靜|安静/.test(condition)) return `${prefix}・現場確認：優先 RC／SRC、角部屋及遠離鐵道或幹道的物件，內見時確認牆面與環境聲音。`;
+    if (/採光|采光|明亮/.test(condition)) return `${prefix}・圖面＋現場：先看朝向、前方遮蔽物與窗戶尺寸，再於實際時段看採光。`;
+    if (/治安|暗巷|偏僻|夜間/.test(condition)) return `${prefix}・現場確認：比較車站至物件的夜間動線、街燈、商店與人流。`;
+    if (/事故屋|心理瑕疵|凶宅/.test(condition)) return `${prefix}・文件確認：搜尋與申請前確認告知事項及管理公司回覆。`;
+    if (/對外窗|窗戶|窗户/.test(condition)) return `${prefix}・可篩選：先看募集圖面與室內照片，內見時確認窗外遮蔽物。`;
+    if (/樑壓床|梁压床|橫樑|横梁/.test(condition)) return `${prefix}・可篩選：用格局圖與內見確認床位上方結構。`;
+    if (/廚房|厨房|煮食/.test(condition)) return `${prefix}・可篩選：確認爐具形式、料理空間與排煙設備。`;
+    return `${prefix}・待確認：推薦與內見時逐項核對。`;
+  };
+  const drivers = unverified.map(conditionAdvice);
+  const required = unverified.filter(condition => priorityOf(condition) === "required");
+  const preferred = unverified.filter(condition => priorityOf(condition) === "preferred");
+  const uncertain = unverified.filter(condition => priorityOf(condition) === "uncertain");
+  const needsOnSite = required.some(condition => /隔音|噪音|安靜|安静|治安|暗巷|偏僻|夜間/.test(condition));
+  const status: AxisStatus = uncertain.length ? "待確認" : required.length ? (needsOnSite ? "待確認" : "部分符合") : "符合";
+  const singlePriority = unverified.length === 1 ? priorityOf(unverified[0]) : null;
+  const headline = unverified.length === 1 && /隔音|噪音|安靜|安静/.test(unverified[0])
+    ? singlePriority === "preferred"
+      ? "隔音是加分條件，會優先排序，但不會因此排除其他合適物件。"
+      : singlePriority === "uncertain" ? "隔音是否為必要條件還沒確定，目前先作排序參考。" : "隔音是必要條件，房間位置、鄰接牆與周邊道路都要一起確認。"
+    : unverified.length === 1 && /採光|采光|明亮/.test(unverified[0])
+      ? singlePriority === "preferred" ? "採光是加分條件，會優先比較朝向、窗戶與遮蔽物。" : singlePriority === "uncertain" ? "採光是否為必要條件還沒確定，目前先作排序參考。" : "採光是必要條件，要用圖面與實際時段一起確認。"
+      : unverified.length === 1 && /治安|暗巷|偏僻|夜間/.test(unverified[0])
+        ? "安全感要看車站到物件的夜間步行路線，不只看行政區名稱。"
+        : required.length
+          ? `${required.join("、")}會作為必要篩選。${preferred.length ? `${preferred.join("、")}只作排序加分。` : ""}${uncertain.length ? `${uncertain.join("、")}是否必要仍待確認。` : ""}`
+          : uncertain.length
+            ? `${uncertain.join("、")}是否為必要條件還沒確定，先不作硬性排除。`
+            : `${preferred.join("、")}只作排序加分，不會縮小基本搜尋範圍。`;
+
+  return {
+    key: "otherCoreNeeds", label: "其他核心條件", detail,
+    status,
+    headline,
+    drivers,
+    nextStep: "推薦與看房時按這份清單逐項確認。",
+    supplyImpact: required.length >= 4 ? 2 : required.length ? 1 : 0
   };
 }
 
@@ -474,8 +532,10 @@ export function buildAxisVerdicts(criteria: RentSearchCriteria, recommendations:
     layoutAxis(criteria),
     buildingAxis(criteria),
     equipmentAxis(criteria),
-    specialAxis(criteria),
-    timingAxis(criteria)
+    petAxis(criteria),
+    otherCoreNeedsAxis(criteria),
+    timingAxis(criteria),
+    initialCostAxis(criteria)
   ].filter(Boolean) as AxisVerdict[];
 }
 
@@ -500,7 +560,11 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
     };
   }
 
-  const reasons = [...blocking, ...adjusting].slice(0, 3).map(axis => axis.headline);
+  const explicitReasons = [...blocking, ...adjusting];
+  const impactfulReasons = axes
+    .filter(axis => axis.supplyImpact > 0 && !explicitReasons.includes(axis))
+    .sort((a, b) => b.supplyImpact - a.supplyImpact);
+  const reasons = [...explicitReasons, ...impactfulReasons].slice(0, 3).map(axis => axis.headline);
 
   if (blocking.length || totalImpact >= 6) {
     return {

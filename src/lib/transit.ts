@@ -32,7 +32,9 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "metro-chiyoda", name: "東京メトロ千代田線", shortCode: "C", color: "#009944", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/千代田線/] },
   { id: "metro-yurakucho", name: "東京メトロ有楽町線", shortCode: "Y", color: "#D7C447", textColor: "#1A2A22", operator: "東京メトロ", patterns: [/有[樂楽]町線/] },
   { id: "metro-hanzomon", name: "東京メトロ半蔵門線", shortCode: "Z", color: "#9B7CB6", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/半[藏蔵]門線/] },
-  { id: "metro-namboku", name: "東京メトロ南北線", shortCode: "N", color: "#00ADA9", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/南北線/] },
+  { id: "sapporo-subway-namboku", name: "札幌市営地下鉄南北線", shortCode: "N", color: "#008F68", textColor: "#FFFFFF", operator: "札幌市交通局", patterns: [/札幌(?:市営)?(?:地下鉄)?南北線/] },
+  { id: "sendai-subway-namboku", name: "仙台市地下鉄南北線", shortCode: "N", color: "#00A651", textColor: "#FFFFFF", operator: "仙台市交通局", patterns: [/仙台(?:市)?(?:地下鉄)?南北線/] },
+  { id: "metro-namboku", name: "東京メトロ南北線", shortCode: "N", color: "#00ADA9", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/東京メトロ南北線|東京地下鉄南北線|^南北線$/] },
   { id: "metro-fukutoshin", name: "東京メトロ副都心線", shortCode: "F", color: "#BB641D", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/副都心線/] },
   { id: "toei-asakusa", name: "都営浅草線", shortCode: "A", color: "#E85298", textColor: "#FFFFFF", operator: "東京都交通局", patterns: [/[淺浅]草線/] },
   { id: "toei-mita", name: "都営三田線", shortCode: "I", color: "#0079C2", textColor: "#FFFFFF", operator: "東京都交通局", patterns: [/三田線/] },
@@ -84,6 +86,25 @@ const STATION_CODES: Record<string, Record<string, string>> = {
 };
 
 const JAPANESE_STATION_NAMES: Record<string, string> = {
+  "市谷": "市ケ谷", "四谷": "四ツ谷", "勝鬨": "勝どき", "虎之門之丘": "虎ノ門ヒルズ",
+  "日出": "日の出", "寶町": "宝町", "幡谷": "幡ヶ谷", "參宮橋": "参宮橋",
+  "押上 (晴空塔前)": "押上", "東京晴空塔": "とうきょうスカイツリー",
+  "羽田機場第1・第2航廈": "羽田空港第1・第2ターミナル", "豪德寺": "豪徳寺",
+  "千歲烏山": "千歳烏山", "宮之坂": "宮の坂", "鷺之宮": "鷺ノ宮",
+  "三鷹 (北口)": "三鷹", "三鷹 (南口)": "三鷹", "多摩中心": "多摩センター",
+  "港未來": "みなとみらい", "日本大通": "日本大通り", "市尾": "市が尾",
+  "藤之丘": "藤が丘", "兒童之國": "こどもの国", "片瀨江之島": "片瀬江ノ島",
+  "柏之葉校園": "柏の葉キャンパス", "流山大鷹之森": "流山おおたかの森",
+  "越谷Laketown": "越谷レイクタウン", "鐵道博物館": "鉄道博物館",
+  "表參道": "表参道", "北參道": "北参道", "天王洲島": "天王洲アイル",
+  "西巢鴨": "西巣鴨", "阿佐谷": "阿佐ケ谷", "光丘": "光が丘",
+  "竹之塚": "竹ノ塚", "舍人公園": "舎人公園", "四木": "四ツ木",
+  "杜鵑丘": "つつじヶ丘", "鷹之台": "鷹の台", "聖蹟櫻丘": "聖蹟桜ヶ丘",
+  "三澤上町": "三ツ沢上町", "溝之口": "溝の口", "武藏溝之口": "武蔵溝ノ口",
+  "梶谷": "梶が谷", "六會日大前": "六会日大前", "由比濱": "由比ヶ浜",
+  "八千代綠丘": "八千代緑が丘", "鰭崎": "鰭ヶ崎",
+  "吹田 (JR)": "吹田", "八尾 (JR)": "八尾", "勾當台公園": "勾当台公園",
+  "榮": "栄", "四條": "四条", "二條": "二条", "姪濱": "姪浜",
   "御茶之水": "御茶ノ水", "澀谷": "渋谷", "惠比壽": "恵比寿", "代代木": "代々木",
   "代代木上原": "代々木上原", "代代木八幡": "代々木八幡", "千駄谷": "千駄ケ谷",
   "廣尾": "広尾", "自由之丘": "自由が丘", "綠丘": "緑が丘", "井之頭公園": "井の頭公園",
@@ -117,7 +138,14 @@ export function toJapaneseStationName(value: string) {
     .replace(/濱/g, "浜").replace(/橫/g, "横").replace(/樂/g, "楽").replace(/國/g, "国")
     .replace(/龜/g, "亀").replace(/兩/g, "両").replace(/戶/g, "戸").replace(/稻/g, "稲")
     .replace(/藥/g, "薬").replace(/櫻/g, "桜").replace(/澤/g, "沢").replace(/邊/g, "辺")
-    .replace(/淺/g, "浅").replace(/藏/g, "蔵").replace(/雜/g, "雑").replace(/綠/g, "緑");
+    .replace(/淺/g, "浅").replace(/藏/g, "蔵").replace(/雜/g, "雑").replace(/綠/g, "緑").replace(/黑/g, "黒")
+    .replace(/學/g, "学").replace(/藝/g, "芸").replace(/體/g, "体").replace(/萬/g, "万")
+    .replace(/關/g, "関").replace(/鐵/g, "鉄").replace(/總/g, "総").replace(/檢/g, "検")
+    .replace(/瀨/g, "瀬").replace(/德/g, "徳").replace(/豐/g, "豊").replace(/靜/g, "静")
+    .replace(/姬/g, "姫").replace(/縣/g, "県").replace(/廳/g, "庁").replace(/兒/g, "児")
+    .replace(/圓/g, "円").replace(/增/g, "増").replace(/與/g, "与").replace(/鄉/g, "郷")
+    .replace(/實/g, "実").replace(/螢/g, "蛍").replace(/國/g, "国").replace(/內/g, "内")
+    .replace(/攝/g, "摂").replace(/寶/g, "宝").replace(/氣/g, "気").replace(/譽/g, "誉");
 }
 
 export function getTransitLineIdentity(lineName: string): TransitLineIdentity | null {
@@ -131,7 +159,7 @@ export function getTransitLineIdentity(lineName: string): TransitLineIdentity | 
 export function toJapaneseLineName(value: string) {
   const identity = getTransitLineIdentity(value);
   if (identity) return identity.name;
-  return value.replace(/總武/g, "総武").replace(/濱/g, "浜").replace(/橫/g, "横").replace(/黑/g, "黒").replace(/鐵/g, "鉄").replace(/營/g, "営");
+  return value.replace(/總武/g, "総武").replace(/濱/g, "浜").replace(/橫/g, "横").replace(/黑/g, "黒").replace(/鐵/g, "鉄").replace(/營/g, "営").replace(/氣/g, "気").replace(/狀/g, "状");
 }
 
 function getStationCode(line: TransitLineIdentity | null, stationName: string) {
@@ -142,17 +170,6 @@ function getStationCode(line: TransitLineIdentity | null, stationName: string) {
   if (line && STATION_CODES[line.id]) {
     const code = STATION_CODES[line.id][norm] || STATION_CODES[line.id][jpName] || STATION_CODES[line.id][stationName];
     if (code) return code;
-  }
-
-  // Smart fallback code generation if line identity exists (e.g. JS15, TY11, H01, JY20)
-  if (line?.shortCode) {
-    let hash = 0;
-    for (let i = 0; i < stationName.length; i++) {
-      hash = (hash << 5) - hash + stationName.charCodeAt(i);
-      hash |= 0;
-    }
-    const num = String((Math.abs(hash) % 20) + 1).padStart(2, "0");
-    return `${line.shortCode}${num}`;
   }
 
   return null;
@@ -168,6 +185,50 @@ function findStation(name: string) {
     const candidate = normalize(station.name);
     return candidate === wanted || candidate.includes(wanted) || wanted.includes(candidate);
   });
+}
+
+const MINUTES_PER_STOP: Record<string, number> = {
+  "jr-yamanote": 2.2,
+  "jr-shonan-shinjuku": 3.8,
+  "metro-ginza": 2,
+  "metro-hibiya": 2.1,
+  "metro-hanzomon": 2.1,
+  "metro-fukutoshin": 2.2,
+  "tokyu-toyoko": 2.3,
+  "tokyu-denentoshi": 2.4,
+  "keio-inokashira": 2.2
+};
+
+function stationNumber(code: string | null) {
+  const value = code?.match(/(\d+)$/)?.[1];
+  return value ? Number(value) : null;
+}
+
+function standardSegmentEstimate(line: TransitLineIdentity, from: string, to: string) {
+  const fromCode = getStationCode(line, from);
+  const toCode = getStationCode(line, to);
+  const fromNumber = stationNumber(fromCode);
+  const toNumber = stationNumber(toCode);
+  let stopCount = fromNumber !== null && toNumber !== null ? Math.abs(fromNumber - toNumber) : null;
+  if (line.id === "jr-yamanote" && stopCount !== null) stopCount = Math.min(stopCount, 30 - stopCount);
+  const durationMinutes = stopCount !== null
+    ? Math.max(3, Math.round(stopCount * (MINUTES_PER_STOP[line.id] || 2.3) + 1))
+    : 12;
+  return { durationMinutes, stopCount, fromCode, toCode };
+}
+
+function interchangeFor(originLines: TransitLineIdentity[], destinationLines: TransitLineIdentity[]) {
+  const stations = Object.values(districtStations).flat();
+  for (const originLine of originLines) {
+    for (const destinationLine of destinationLines) {
+      const interchange = stations.find(station => {
+        const ids = station.lines.map(line => getTransitLineIdentity(line)?.id).filter(Boolean);
+        return ids.includes(originLine.id) && ids.includes(destinationLine.id);
+      });
+      if (interchange) return { originLine, destinationLine, station: interchange.name };
+    }
+  }
+  return null;
 }
 
 export function buildCommuteFallbackRoute(item: RentRecommendation, criteria: RentSearchCriteria) {
@@ -190,15 +251,16 @@ export function buildCommuteFallbackRoute(item: RentRecommendation, criteria: Re
     const lineColor = common.identity.color;
     const lineTextColor = common.identity.textColor;
 
+    const estimate = standardSegmentEstimate(common.identity, originStation, destinationStation);
     return {
-      source: "google_routes" as const,
+      source: "static_reference" as const,
       originStation,
       destinationStation,
-      totalDurationMinutes: 14,
+      totalDurationMinutes: estimate.durationMinutes,
       transfers: 0,
       departureTime: null,
       arrivalTime: null,
-      referenceLabel: "預估直達路線",
+      referenceLabel: "靜態標準車程・非即時班次",
       segments: [
         {
           type: "train" as const,
@@ -209,38 +271,36 @@ export function buildCommuteFallbackRoute(item: RentRecommendation, criteria: Re
           operator: common.identity.operator,
           departureStop: originStation,
           arrivalStop: destinationStation,
-          startStationNumber: getStationCodeForLine(lineName, originStation),
-          endStationNumber: getStationCodeForLine(lineName, destinationStation),
+          startStationNumber: estimate.fromCode,
+          endStationNumber: estimate.toCode,
           departureTime: null,
           arrivalTime: null,
-          durationMinutes: 14,
-          stopCount: 4,
+          durationMinutes: estimate.durationMinutes,
+          stopCount: estimate.stopCount,
           headsign: `${destinationStation}方面`
         }
       ]
     };
   }
 
-  // Transfer route (1 transfer required)
-  const line1 = originLines[0]?.identity || { id: "tokyu-toyoko", name: "東急東横線", shortCode: "TY", color: "#DA0442", textColor: "#FFFFFF", operator: "東急電鉄" };
-  const line2 = destLines[0]?.identity || { id: "metro-hibiya", name: "東京メトロ日比谷線", shortCode: "H", color: "#9CAEB7", textColor: "#1A2A22", operator: "東京メトロ" };
-
-  let transferStation = "中目黒";
-  if (line1.id.includes("keio") || line1.id.includes("seibu") || line1.id.includes("odakyu")) {
-    transferStation = "新宿";
-  } else if (line1.id.includes("yamanote") || line2.id.includes("yamanote")) {
-    transferStation = "澀谷";
-  }
+  const transfer = interchangeFor(originLines.map(item => item.identity).filter(Boolean) as TransitLineIdentity[], destLines.map(item => item.identity).filter(Boolean) as TransitLineIdentity[]);
+  if (!transfer) return null;
+  const line1 = transfer.originLine;
+  const line2 = transfer.destinationLine;
+  const transferStation = toJapaneseStationName(transfer.station);
+  const firstEstimate = standardSegmentEstimate(line1, originStation, transferStation);
+  const secondEstimate = standardSegmentEstimate(line2, transferStation, destinationStation);
+  const transferMinutes = 5;
 
   return {
-    source: "google_routes" as const,
+    source: "static_reference" as const,
     originStation,
     destinationStation,
-    totalDurationMinutes: 25,
+    totalDurationMinutes: firstEstimate.durationMinutes + secondEstimate.durationMinutes + transferMinutes,
     transfers: 1,
     departureTime: null,
     arrivalTime: null,
-    referenceLabel: "預估轉乘路線",
+    referenceLabel: "靜態標準車程・含 5 分鐘轉乘緩衝",
     segments: [
       {
         type: "train" as const,
@@ -251,12 +311,12 @@ export function buildCommuteFallbackRoute(item: RentRecommendation, criteria: Re
         operator: line1.operator,
         departureStop: originStation,
         arrivalStop: transferStation,
-        startStationNumber: getStationCodeForLine(line1.name, originStation),
-        endStationNumber: getStationCodeForLine(line1.name, transferStation),
+        startStationNumber: firstEstimate.fromCode,
+        endStationNumber: firstEstimate.toCode,
         departureTime: null,
         arrivalTime: null,
-        durationMinutes: 12,
-        stopCount: 3,
+        durationMinutes: firstEstimate.durationMinutes,
+        stopCount: firstEstimate.stopCount,
         headsign: `${transferStation}方面`
       },
       {
@@ -268,12 +328,12 @@ export function buildCommuteFallbackRoute(item: RentRecommendation, criteria: Re
         operator: line2.operator,
         departureStop: transferStation,
         arrivalStop: destinationStation,
-        startStationNumber: getStationCodeForLine(line2.name, transferStation),
-        endStationNumber: getStationCodeForLine(line2.name, destinationStation),
+        startStationNumber: secondEstimate.fromCode,
+        endStationNumber: secondEstimate.toCode,
         departureTime: null,
         arrivalTime: null,
-        durationMinutes: 13,
-        stopCount: 3,
+        durationMinutes: secondEstimate.durationMinutes + transferMinutes,
+        stopCount: secondEstimate.stopCount,
         headsign: `${destinationStation}方面`
       }
     ]
