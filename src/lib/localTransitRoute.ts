@@ -1,4 +1,4 @@
-import graphJson from "../data/tokyoTransitGraph.json";
+import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
 import type { CommuteRouteDetails, CommuteRouteSegment } from "./rentAnalysis.js";
 import { toJapaneseStationName } from "./transit.js";
 
