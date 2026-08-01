@@ -1,4 +1,4 @@
-import { districtStations } from "../data/housingMarket";
+import { districtStations } from "../data/housingMarket.js";
 import type { RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
 
 export interface TransitLineIdentity {
