@@ -476,7 +476,22 @@ function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
 
   const priorityOf = (condition: string) => criteria.otherNeedPriorities?.[condition] || "required";
   const priorityLabel = { required: "必要", preferred: "希望", uncertain: "尚未確定" } as const;
-  const knowledgeOf = (condition: string) => CONDITION_KNOWLEDGE.find(entry => entry.pattern.test(condition));
+
+  // 常見條件一律以程式端知識表為準（品質穩定、不會每次跑出不同說法）；
+  // 知識表沒有的長尾條件才用模型補的判讀，避免整個交給模型導致品質浮動。
+  const DIFFICULTY_IMPACT = { easy: 0, normal: 1, hard: 2 } as const;
+  const BANNED_TONE = /不代表|不能只以|尚未確認|仍需逐屋確認|不得視為|建議再核對|視情況而定/;
+  const noteOf = (condition: string) => criteria.otherNeedNotes?.find(note => note.condition === condition);
+  const knowledgeOf = (condition: string): { advice: string; impact: number } | null => {
+    const table = CONDITION_KNOWLEDGE.find(entry => entry.pattern.test(condition));
+    if (table) return { advice: table.advice, impact: table.impact };
+    const note = noteOf(condition);
+    // 模型若仍寫出免責語氣就整句捨棄，寧可不顯示也不要污染文案。
+    if (note?.howToCheck && !BANNED_TONE.test(note.howToCheck)) {
+      return { advice: note.howToCheck.trim(), impact: DIFFICULTY_IMPACT[note.difficulty] ?? 1 };
+    }
+    return null;
+  };
 
   const detail = unverified.map(condition => `${condition}（${priorityLabel[priorityOf(condition)]}）`).join("・");
 

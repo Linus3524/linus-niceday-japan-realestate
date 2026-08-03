@@ -75,6 +75,15 @@ export interface RentSearchCriteria {
   otherNeeds?: string[];
   /** 其他核心條件在原文中的必要程度；由規則層從原句判斷，避免全部當成硬條件。 */
   otherNeedPriorities?: Record<string, "required" | "preferred" | "uncertain">;
+  /**
+   * 知識表沒收錄的條件，交由模型補一句「實際怎麼確認」與難度判斷。
+   * 常見條件仍以程式端知識表為準，模型只負責補漏，避免品質浮動。
+   */
+  otherNeedNotes?: Array<{
+    condition: string;
+    howToCheck: string;
+    difficulty: "easy" | "normal" | "hard";
+  }>;
 }
 
 export interface RentRecommendation {
