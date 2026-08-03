@@ -3,6 +3,7 @@ import {
   computeStackedEstimate,
   getRentModifierIndexes,
   resolveVisaCategory,
+  ROOM_TYPE_LABEL,
   type RentRecommendation,
   type RentSearchCriteria,
   type VisaCategory
@@ -245,8 +246,19 @@ function commuteAxis(criteria: RentSearchCriteria, recommendations: RentRecommen
 }
 
 function layoutAxis(criteria: RentSearchCriteria): AxisVerdict {
-  const roomLabel = { r1: "1R", k1: "1K／1DK", ldk1: "1LDK／2K／2DK", ldk2: "2LDK" }[criteria.roomType];
+  const roomLabel = ROOM_TYPE_LABEL[criteria.roomType];
   const detail = `${roomLabel}${criteria.areaMin ? `・${criteria.areaMin}㎡以上` : ""}`;
+  // 原文列出多套方案時要講清楚只分析了哪一套，否則使用者會以為另一套也被評估過。
+  const planNote = criteria.multiPlanNote?.trim();
+  if (planNote) {
+    return {
+      key: "layout", label: "格局與面積", detail, status: "部分符合",
+      headline: `原文有多套方案，目前以 ${roomLabel} 為分析基準。`,
+      drivers: [planNote],
+      nextStep: "想比較另一套方案，請分開送出各自的房型與預算。",
+      supplyImpact: 1
+    };
+  }
   if (!criteria.areaMin) {
     return {
       key: "layout", label: "格局與面積", detail, status: "符合",

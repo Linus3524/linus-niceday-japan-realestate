@@ -9,7 +9,7 @@ import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
-import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes } from "../lib/rentAnalysis";
+import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
@@ -1130,7 +1130,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <div className="mt-6 pt-2 font-sans">
                           <button 
                             onClick={() => {
-                              const roomTypeLabel = ({ r1: "1R", k1: "1K／1DK", ldk1: "1LDK／2K／2DK", ldk2: "2LDK" } as const)[calcRoomType];
+                              const roomTypeLabel = ROOM_TYPE_LABEL[calcRoomType];
                               const stationPart = calcStation !== "none" ? `${calcStation}站附近` : "尚未指定車站";
                               const upgradeConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "plus").map(index => budgetModifiers[index].text).join("、");
                               const compromiseConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "minus").map(index => budgetModifiers[index].text).join("、");
@@ -1327,7 +1327,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       {calcMode === "rent" ? (() => {
                         // 依左側目前實際勾選的地區、車站、加價條件即時組出來，
                         // 不是固定案例——換一個地區或拿掉一個條件，這裡會跟著變。
-                        const roomTypeLabel = ({ r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" } as const)[calcRoomType];
+                        const roomTypeLabel = ROOM_TYPE_LABEL[calcRoomType];
                         const baseRate = parseFloat(getSelectedDistrictData()[calcRoomType as keyof typeof getSelectedDistrictData] as string) * 10000;
                         const lineItems: Array<{ label: string; price: number }> = [];
                         if (calcStation !== "none") {

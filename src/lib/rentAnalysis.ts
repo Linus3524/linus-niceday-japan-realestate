@@ -5,6 +5,15 @@ import { TAMA_CITIES } from "./calcRules.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
 
+/** 內部代碼 → 日本實際的格局寫法。r1/k1/ldk1/ldk2 只是欄位名，不可直接顯示給使用者。 */
+export const ROOM_TYPE_LABEL: Record<RoomType, string> = {
+  r1: "1R",
+  k1: "1K／1DK",
+  ldk1: "1LDK／2K／2DK",
+  ldk2: "2LDK"
+};
+
+
 export interface RentSearchCriteria {
   roomType: RoomType;
   areaMin?: number | null;
@@ -51,6 +60,8 @@ export interface RentSearchCriteria {
   moveInTiming?: string | null;
   /** 同住人數；影響格局建議與審查時的續柄資料。 */
   householdSize?: number | null;
+  /** 原文列出多套替代方案（不同房型／預算）時的說明；只分析其中一套，需向使用者說明。 */
+  multiPlanNote?: string | null;
   /** 目前在日本的居住地／住宿狀態，例如「千葉縣成田市（公司宿舍）」。 */
   currentResidence?: string | null;
   /** 入社或就業開始時間，例如「9/16 入社」。 */
@@ -185,6 +196,15 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
       || prompt.match(/(?:上限|預算|预算|不超過|不超过|最多|最高)[^\n]{0,8}?(\d+(?:\.\d+)?)\s*[萬万]/i);
     if (cap?.[1]) enriched.maxBudget = Math.round(Number(cap[1]) * 10000);
   }
+  // 使用者也常直接寫日圓整數（「65,000 日圓 / 月」「約 130,000 日圓」），
+  // 上面的規則全部只認「萬」，會整個漏掉。這裡補抓，並排除初期費用等非月租金額。
+  const plainYenAmounts = [...prompt.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓|yen)/gi)]
+    .map(match => Number(match[1].replace(/,/g, "")))
+    .filter(amount => amount >= 20000 && amount <= 1000000);
+  if (!enriched.maxBudget && plainYenAmounts.length) {
+    enriched.maxBudget = Math.max(...plainYenAmounts);
+    if (plainYenAmounts.length > 1) enriched.minBudget = Math.min(...plainYenAmounts);
+  }
 
   // 在留資格：不再要求「簽證種類：」這種標籤格式，全文找關鍵詞。
   if (!enriched.visaType || resolveVisaCategory(enriched.visaType) === "unknown") {
@@ -283,9 +303,17 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     else if (timing) enriched.moveInTiming = `${timing[1]}月${timing[2] || ""}`;
   }
   if (!enriched.householdSize) {
-    const people = prompt.match(/(\d{1,2})\s*(?:個?人|名)(?:入住|居住|住)?/) || prompt.match(/(夫妻|情侶|兩人|2人)/);
-    if (/獨居|独居|一人暮らし|自己住|自己居住/.test(prompt)) enriched.householdSize = 1;
-    else if (people) enriched.householdSize = /夫妻|情侶|兩人|2人/.test(people[0]) ? 2 : Number(people[1]);
+    // 使用者常直接貼填好的問卷，題目本身就含關鍵字（例如「是否為自己住/有無同居人：我和朋友共2人」）。
+    // 只看題目會把「自己住」當成答案而判成 1 人，所以有冒號時一律只讀答案側。
+    const answersOnly = prompt
+      .split(/\n/)
+      .map(line => (line.includes("：") || line.includes(":") ? line.split(/[：:]/).slice(1).join("：") : line))
+      .join("\n");
+    const explicitCount = answersOnly.match(/(?:共|總共|一共)?\s*(\d{1,2})\s*(?:個?人|名)/);
+    const pairWording = /夫妻|情侶|兩人|2人|和朋友|與朋友|跟朋友/.test(answersOnly);
+    if (explicitCount?.[1]) enriched.householdSize = Number(explicitCount[1]);
+    else if (pairWording) enriched.householdSize = 2;
+    else if (/獨居|独居|一人暮らし|自己住|自己居住|一個人/.test(answersOnly)) enriched.householdSize = 1;
   }
   if (!enriched.currentResidence) {
     const residence = prompt.match(/(?:目前居住於|目前居住于|現在住在|现住|現居)\s*([^\n]+)/i);
@@ -303,9 +331,22 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     const floor = prompt.match(/(?:希望)?\s*(\d{1,2})\s*樓以上/i);
     if (floor?.[1]) enriched.floorMin = Number(floor[1]);
   }
-  const explicitRoomType = prompt.match(/\b(1R|1K|1DK|1LDK|2K|2DK|2LDK)\b/i)?.[1]?.toUpperCase();
-  if (explicitRoomType) {
-    enriched.roomType = explicitRoomType === "1R" ? "r1" : /1K|1DK/.test(explicitRoomType) ? "k1" : /1LDK|2K|2DK/.test(explicitRoomType) ? "ldk1" : "ldk2";
+  // 使用者常一次列出多個可接受的房型，甚至是兩套替代方案
+  // （例如「1K/1DK/1LDK 各一間」與「2K/2DK/2LDK 一間可 2 人合租」）。
+  // 舊版只取第一個比對結果，會把方案 A 的房型配上方案 B 的預算，得出「1K 卻 13 萬」這種矛盾結果。
+  // 這裡取「最大的房型」，與同樣取最大值的預算配成一組，確保房型與預算來自同一個方案。
+  const ROOM_RANK: Array<[RegExp, RoomType]> = [
+    [/\b2LDK\b/i, "ldk2"],
+    [/\b2DK\b|\b2K\b|\b1LDK\b/i, "ldk1"],
+    [/\b1DK\b|\b1K\b/i, "k1"],
+    [/\b1R\b/i, "r1"]
+  ];
+  const mentionedRoomTypes = ROOM_RANK.filter(([pattern]) => pattern.test(prompt)).map(([, type]) => type);
+  if (mentionedRoomTypes.length) {
+    enriched.roomType = mentionedRoomTypes[0];
+    if (mentionedRoomTypes.length > 1) {
+      enriched.multiPlanNote = `原文列出多種房型（${mentionedRoomTypes.map(type => ROOM_TYPE_LABEL[type]).join("、")}），目前以 ${ROOM_TYPE_LABEL[mentionedRoomTypes[0]]} 與最高預算為分析基準`;
+    }
   }
   if (!enriched.areaMin) {
     const area = prompt.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|平米|平方米|平方公尺)\s*(?:以上|以內|以内)?/i);
@@ -524,7 +565,7 @@ export interface CriteriaSummaryItem {
 }
 
 export function criteriaSummary(criteria: RentSearchCriteria): CriteriaSummaryItem[] {
-  const labels: CriteriaSummaryItem[] = [{ label: criteria.roomType.toUpperCase(), category: "layout" }];
+  const labels: CriteriaSummaryItem[] = [{ label: ROOM_TYPE_LABEL[criteria.roomType], category: "layout" }];
   if (criteria.areaMin) labels.push({ label: `${criteria.areaMin}㎡以上`, category: "layout" });
   if (criteria.washbasin) labels.push({ label: "獨立洗面台", category: "equipment" });
   if (criteria.bidet) labels.push({ label: "免治馬桶", category: "equipment" });
