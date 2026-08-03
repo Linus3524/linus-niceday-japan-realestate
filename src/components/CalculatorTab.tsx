@@ -603,24 +603,21 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                       {/* Room Type Picker */}
                       <div className="space-y-1.5 font-sans">
-                        <label className="text-xs font-bold text-zinc-700">選擇格局大小 (套房/1LDK/2LDK)：</label>
+                        <label className="text-xs font-bold text-zinc-700">選擇格局大小：</label>
+                        {/* 涵蓋範圍（1K 含 1DK、1LDK 含 2K／2DK）以 title 呈現，維持按鈕視覺乾淨。 */}
                         <div className="grid h-12 grid-cols-4 border border-[#1A2A22]">
-                          {[
-                            { id: "r1", label: "1R" },
-                            { id: "k1", label: "1K" },
-                            { id: "ldk1", label: "1LDK" },
-                            { id: "ldk2", label: "2LDK" }
-                          ].map(type => (
+                          {(["r1", "k1", "ldk1", "ldk2"] as const).map(id => (
                             <button
-                              key={type.id}
-                              onClick={() => setCalcRoomType(type.id as any)}
+                              key={id}
+                              onClick={() => setCalcRoomType(id)}
+                              title={ROOM_TYPE_LABEL[id]}
                               className={`h-full border-r border-[#1A2A22] last:border-r-0 text-xs font-bold cursor-pointer transition-colors ${
-                                calcRoomType === type.id 
-                                  ? "bg-[#1A2A22] text-white" 
+                                calcRoomType === id
+                                  ? "bg-[#1A2A22] text-white"
                                   : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
                               }`}
                             >
-                              {type.label}
+                              {({ r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" } as const)[id]}
                             </button>
                           ))}
                         </div>

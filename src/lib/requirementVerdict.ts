@@ -438,52 +438,86 @@ function petAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   };
 }
 
+/**
+ * 各條件在日本租屋市場的實際難度。
+ * impact：0＝一般物件本來就滿足、1＝要靠圖面或現場篩選、2＝會明顯減少可選物件。
+ * 沒有對應知識的條件不給樣板句——四行一樣的「待確認：逐項核對」等於沒講。
+ */
+const CONDITION_KNOWLEDGE: Array<{ pattern: RegExp; advice: string; impact: 0 | 1 | 2 }> = [
+  {
+    pattern: /獨立出入口|单独出入口|單獨出入口|房中房|必經通道|必经通道|各室獨立|完全獨立房間/,
+    advice: "看間取り図確認每個房間是否各自對走廊開門。2K／2DK／2LDK 有不少是「続き間（二間続き）」，房間相連、要穿過其中一間才能進另一間，這類要直接排除。",
+    impact: 2
+  },
+  {
+    pattern: /私人衛浴|獨立衛浴|专用卫浴|專用衛浴|自己的衛浴/,
+    advice: "一般賃貸物件本來就是專用衛浴，排除シェアハウス後這項不會再縮小範圍。",
+    impact: 0
+  },
+  {
+    pattern: /非合租|不合租|不考慮合租|sharehouse|シェアハウス|share\s*house|ルームシェア/i,
+    advice: "搜尋時排除シェアハウス與ルームシェア類物件即可，一般賃貸都符合。",
+    impact: 0
+  },
+  { pattern: /隔音|噪音|安靜|安静/, advice: "優先 RC／SRC、角部屋及遠離鐵道或幹道的物件，內見時確認牆面與環境聲音。", impact: 1 },
+  { pattern: /採光|采光|明亮/, advice: "先看朝向、前方遮蔽物與窗戶尺寸，再於實際時段看採光。", impact: 1 },
+  { pattern: /治安|暗巷|偏僻|夜間/, advice: "比較車站至物件的夜間動線、街燈、商店與人流。", impact: 1 },
+  { pattern: /事故屋|心理瑕疵|凶宅/, advice: "搜尋與申請前確認告知事項及管理公司回覆。", impact: 1 },
+  { pattern: /對外窗|窗戶|窗户/, advice: "先看募集圖面與室內照片，內見時確認窗外遮蔽物。", impact: 1 },
+  { pattern: /樑壓床|梁压床|橫樑|横梁/, advice: "用格局圖與內見確認床位上方結構。", impact: 1 },
+  { pattern: /廚房|厨房|煮食/, advice: "確認爐具形式、料理空間與排煙設備。", impact: 1 }
+];
+
 function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
-  const unverified = [...new Set([...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])])];
+  // 家具家電已由設備軸處理，這裡不重複列出。
+  const unverified = [...new Set([...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])])]
+    .filter(condition => !(criteria.furnished && /家具|家電|家电/.test(condition)));
   if (!unverified.length) return null;
 
   const priorityOf = (condition: string) => criteria.otherNeedPriorities?.[condition] || "required";
   const priorityLabel = { required: "必要", preferred: "希望", uncertain: "尚未確定" } as const;
+  const knowledgeOf = (condition: string) => CONDITION_KNOWLEDGE.find(entry => entry.pattern.test(condition));
+
   const detail = unverified.map(condition => `${condition}（${priorityLabel[priorityOf(condition)]}）`).join("・");
-  const conditionAdvice = (condition: string) => {
-    const prefix = `${condition}｜${priorityLabel[priorityOf(condition)]}`;
-    if (/隔音|噪音|安靜|安静/.test(condition)) return `${prefix}・現場確認：優先 RC／SRC、角部屋及遠離鐵道或幹道的物件，內見時確認牆面與環境聲音。`;
-    if (/採光|采光|明亮/.test(condition)) return `${prefix}・圖面＋現場：先看朝向、前方遮蔽物與窗戶尺寸，再於實際時段看採光。`;
-    if (/治安|暗巷|偏僻|夜間/.test(condition)) return `${prefix}・現場確認：比較車站至物件的夜間動線、街燈、商店與人流。`;
-    if (/事故屋|心理瑕疵|凶宅/.test(condition)) return `${prefix}・文件確認：搜尋與申請前確認告知事項及管理公司回覆。`;
-    if (/對外窗|窗戶|窗户/.test(condition)) return `${prefix}・可篩選：先看募集圖面與室內照片，內見時確認窗外遮蔽物。`;
-    if (/樑壓床|梁压床|橫樑|横梁/.test(condition)) return `${prefix}・可篩選：用格局圖與內見確認床位上方結構。`;
-    if (/廚房|厨房|煮食/.test(condition)) return `${prefix}・可篩選：確認爐具形式、料理空間與排煙設備。`;
-    return `${prefix}・待確認：推薦與內見時逐項核對。`;
-  };
-  const drivers = unverified.map(conditionAdvice);
+
+  // 只對「有東西可講」的條件產出說明，其餘不填樣板句。
+  const drivers = unverified
+    .map(condition => {
+      const knowledge = knowledgeOf(condition);
+      return knowledge ? `${condition}｜${knowledge.advice}` : null;
+    })
+    .filter(Boolean) as string[];
+
   const required = unverified.filter(condition => priorityOf(condition) === "required");
-  const preferred = unverified.filter(condition => priorityOf(condition) === "preferred");
   const uncertain = unverified.filter(condition => priorityOf(condition) === "uncertain");
-  const needsOnSite = required.some(condition => /隔音|噪音|安靜|安静|治安|暗巷|偏僻|夜間/.test(condition));
-  const status: AxisStatus = uncertain.length ? "待確認" : required.length ? (needsOnSite ? "待確認" : "部分符合") : "符合";
-  const singlePriority = unverified.length === 1 ? priorityOf(unverified[0]) : null;
-  const headline = unverified.length === 1 && /隔音|噪音|安靜|安静/.test(unverified[0])
-    ? singlePriority === "preferred"
-      ? "隔音是加分條件，會優先排序，但不會因此排除其他合適物件。"
-      : singlePriority === "uncertain" ? "隔音是否為必要條件還沒確定，目前先作排序參考。" : "隔音是必要條件，房間位置、鄰接牆與周邊道路都要一起確認。"
-    : unverified.length === 1 && /採光|采光|明亮/.test(unverified[0])
-      ? singlePriority === "preferred" ? "採光是加分條件，會優先比較朝向、窗戶與遮蔽物。" : singlePriority === "uncertain" ? "採光是否為必要條件還沒確定，目前先作排序參考。" : "採光是必要條件，要用圖面與實際時段一起確認。"
-      : unverified.length === 1 && /治安|暗巷|偏僻|夜間/.test(unverified[0])
-        ? "安全感要看車站到物件的夜間步行路線，不只看行政區名稱。"
+  const hardest = unverified
+    .filter(condition => priorityOf(condition) !== "preferred")
+    .map(condition => ({ condition, impact: knowledgeOf(condition)?.impact ?? 1 }))
+    .sort((a, b) => b.impact - a.impact)[0];
+  const freeConditions = required.filter(condition => knowledgeOf(condition)?.impact === 0);
+
+  // 供給壓縮取「最難的那一項」，而不是條件數量——三個一般物件都符合的條件疊起來仍然不難。
+  const supplyImpact = hardest?.impact ?? 0;
+
+  const headline = hardest && hardest.impact >= 2
+    ? `${hardest.condition}是這組條件裡最難找的一項，會明顯減少可選物件。`
+    : uncertain.length
+      ? `${uncertain.join("、")}是否為必要條件還沒確定，先不作硬性排除。`
+      : freeConditions.length === required.length && required.length
+        ? `${required.join("、")}在一般賃貸物件多半已經滿足，不會縮小搜尋範圍。`
         : required.length
-          ? `${required.join("、")}會作為必要篩選。${preferred.length ? `${preferred.join("、")}只作排序加分。` : ""}${uncertain.length ? `${uncertain.join("、")}是否必要仍待確認。` : ""}`
-          : uncertain.length
-            ? `${uncertain.join("、")}是否為必要條件還沒確定，先不作硬性排除。`
-            : `${preferred.join("、")}只作排序加分，不會縮小基本搜尋範圍。`;
+          ? `${required.join("、")}會作為必要篩選，主要靠間取り図與內見確認。`
+          : `這些只作排序加分，不會縮小基本搜尋範圍。`;
 
   return {
     key: "otherCoreNeeds", label: "其他核心條件", detail,
-    status,
+    status: hardest && hardest.impact >= 2 ? "需調整" : uncertain.length ? "待確認" : supplyImpact === 0 ? "符合" : "部分符合",
     headline,
     drivers,
-    nextStep: "推薦與看房時按這份清單逐項確認。",
-    supplyImpact: required.length >= 4 ? 2 : required.length ? 1 : 0
+    nextStep: hardest && hardest.impact >= 2
+      ? "搜尋時先用間取り図篩掉房間相連的物件，可以省下大量無效帶看。"
+      : undefined,
+    supplyImpact
   };
 }
 

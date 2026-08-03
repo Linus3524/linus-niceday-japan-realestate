@@ -286,26 +286,21 @@ export const RentMap: React.FC<RentMapProps> = ({
         {/* Room Type Switcher inside Map Component */}
         {/* 按鈕只放代表性格局（寫全名會讓四顆鈕在手機上擠爆），
             實際涵蓋範圍以下方說明與 title 補齊，不讓使用者誤以為只查得到 1K 與 1LDK。 */}
-        <div className="shrink-0">
-          <div className="flex bg-zinc-100 p-0.5 border border-zinc-300">
-            {(["r1", "k1", "ldk1", "ldk2"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => onSelectRoomType(type)}
-                title={ROOM_TYPE_LABEL[type]}
-                className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
-                  roomType === type
-                    ? "bg-white text-[#00a174] border-b border-zinc-200"
-                    : "text-zinc-500 hover:text-zinc-800"
-                }`}
-              >
-                {type === "r1" ? "1R" : type === "k1" ? "1K" : type === "ldk1" ? "1LDK" : "2LDK"}
-              </button>
-            ))}
-          </div>
-          <p className="mt-1 text-[9px] leading-relaxed text-zinc-400">
-            1K 含 1DK・1LDK 含 2K／2DK
-          </p>
+        <div className="flex shrink-0 bg-zinc-100 p-0.5 border border-zinc-300">
+          {(["r1", "k1", "ldk1", "ldk2"] as const).map((type) => (
+            <button
+              key={type}
+              onClick={() => onSelectRoomType(type)}
+              title={ROOM_TYPE_LABEL[type]}
+              className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
+                roomType === type
+                  ? "bg-white text-[#00a174] border-b border-zinc-200"
+                  : "text-zinc-500 hover:text-zinc-800"
+              }`}
+            >
+              {type === "r1" ? "1R" : type === "k1" ? "1K" : type === "ldk1" ? "1LDK" : "2LDK"}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -460,31 +455,26 @@ export const RentMap: React.FC<RentMapProps> = ({
                       {mode === "buy" ? "2026年 預估中古公寓總價" : "2026年 家賃相場"}
                     </span>
                   </div>
+                  {/* 四格改用共用的 ROOM_TYPE_LABEL，標示標準才會一致
+                      （原本只有 1K 寫了「1K/1DK」，1LDK 沒寫它同樣含 2K／2DK）；
+                      高亮也改成跟著目前選取的格局，原本寫死在 1K。 */}
                   <div className="grid grid-cols-4 gap-1 text-center font-mono">
-                    <div className="bg-white p-1 border border-zinc-200">
-                      <div className="text-[9px] text-zinc-500 font-sans">1R (套房)</div>
-                      <div className="text-xs font-bold text-zinc-800">
-                        {mode === "buy" ? getDistrictBuyPrice(activeWard, "r1").toLocaleString() : activeWard.r1} 萬円
-                      </div>
-                    </div>
-                    <div className="bg-white p-1 border border-zinc-200 ring-1 ring-[#00a174]/10">
-                      <div className="text-[9px] text-[#00a174] font-sans font-bold">1K/1DK</div>
-                      <div className="text-xs font-bold text-[#00a174]">
-                        {mode === "buy" ? getDistrictBuyPrice(activeWard, "k1").toLocaleString() : activeWard.k1} 萬円
-                      </div>
-                    </div>
-                    <div className="bg-white p-1 border border-zinc-200">
-                      <div className="text-[9px] text-zinc-500 font-sans">1LDK</div>
-                      <div className="text-xs font-bold text-zinc-800">
-                        {mode === "buy" ? getDistrictBuyPrice(activeWard, "ldk1").toLocaleString() : activeWard.ldk1} 萬円
-                      </div>
-                    </div>
-                    <div className="bg-white p-1 border border-zinc-200">
-                      <div className="text-[9px] text-zinc-500 font-sans">2LDK</div>
-                      <div className="text-xs font-bold text-zinc-800">
-                        {mode === "buy" ? getDistrictBuyPrice(activeWard, "ldk2").toLocaleString() : activeWard.ldk2} 萬円
-                      </div>
-                    </div>
+                    {(["r1", "k1", "ldk1", "ldk2"] as const).map(type => {
+                      const isActive = roomType === type;
+                      return (
+                        <div
+                          key={type}
+                          className={`bg-white p-1 border border-zinc-200 ${isActive ? "ring-1 ring-[#00a174]/10" : ""}`}
+                        >
+                          <div className={`text-[9px] font-sans ${isActive ? "text-[#00a174] font-bold" : "text-zinc-500"}`}>
+                            {ROOM_TYPE_LABEL[type]}
+                          </div>
+                          <div className={`text-xs font-bold ${isActive ? "text-[#00a174]" : "text-zinc-800"}`}>
+                            {mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : activeWard[type]} 萬円
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
