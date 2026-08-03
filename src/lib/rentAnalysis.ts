@@ -264,6 +264,32 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   }
   enriched.commuteDirectRequired = /(?:一條線|一条线|不用換乘|不用换乘|不換乘|不换乘|直達|直达)/i.test(prompt);
 
+  // 居住地區：直接拿熱力地圖用的同一份 rentRates／districtStations 去比對原文，
+  // 不需要另建對照表。少了這一步，estimateRequestedRent 會退回全市場樣本，
+  // 使得「港區 1LDK」被拿去跟含近郊的全國行情比較，報出誤導的低標價格。
+  // 通勤句要排除，否則「通勤到品川」會被誤認成想住品川區。
+  const residenceText = commuteLine ? prompt.split(commuteLine).join(" ") : prompt;
+  const normalizedResidence = normalize(residenceText);
+  if (!(enriched.districts || []).length && !enriched.district) {
+    const matchedDistricts = [...new Set(
+      rentRates
+        .map(rate => rate.district)
+        .filter(district => normalize(district).length >= 2 && normalizedResidence.includes(normalize(district)))
+    )];
+    if (matchedDistricts.length) enriched.districts = matchedDistricts;
+  }
+  if (!(enriched.stations || []).length && !enriched.station) {
+    const commuteNames = new Set([...(enriched.commuteStations || []), enriched.commuteStation].filter(Boolean).map(v => normalize(v)));
+    const matchedStations = [...new Map(
+      Object.values(districtStations).flat()
+        .filter(station => normalize(station.name).length >= 2
+          && normalizedResidence.includes(normalize(station.name))
+          && !commuteNames.has(normalize(station.name)))
+        .map(station => [normalize(station.name), station.name] as const)
+    ).values()];
+    if (matchedStations.length) enriched.stations = matchedStations;
+  }
+
   // 家具家電：舊版只要全文出現「家具」就設為 true，連「不需要家具」也會中。
   // 改為判斷語氣，並在明確否定時清掉模型可能誤給的 true。
   const furnishedIntent = mentionIntent(prompt, /家具|家電|家电/);
@@ -345,6 +371,16 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   if (mentionedRoomTypes.length) {
     enriched.roomType = mentionedRoomTypes[0];
     if (mentionedRoomTypes.length > 1) {
+      // 房型取了最大的，預算就必須跟著取最大的，否則會配出「2LDK 卻只有 6 萬」的假矛盾。
+      // 上面的預算規則是「取第一個符合的寫法」，在多方案原文中會挑到較小的那個方案。
+      const allAmounts = [
+        ...[...prompt.matchAll(/(\d+(?:\.\d+)?)\s*[萬万]/gi)].map(match => Math.round(Number(match[1]) * 10000)),
+        ...[...prompt.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓)/gi)].map(match => Number(match[1].replace(/,/g, "")))
+      ].filter(amount => amount >= 20000 && amount <= 1000000);
+      if (allAmounts.length > 1) {
+        enriched.maxBudget = Math.max(...allAmounts);
+        enriched.minBudget = Math.min(...allAmounts);
+      }
       enriched.multiPlanNote = `原文列出多種房型（${mentionedRoomTypes.map(type => ROOM_TYPE_LABEL[type]).join("、")}），目前以 ${ROOM_TYPE_LABEL[mentionedRoomTypes[0]]} 與最高預算為分析基準`;
     }
   }
@@ -353,11 +389,25 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     if (area?.[1]) enriched.areaMin = Number(area[1]);
   }
   if (!enriched.structure && /RC|SRC|鋼筋混凝土|钢筋混凝土/i.test(prompt)) enriched.structure = /SRC/i.test(prompt) ? "SRC" : "RC";
-  if (/電梯|电梯|エレベーター/i.test(prompt)) enriched.elevator = true;
-  if (/自動門|自动门|オートロック/i.test(prompt)) enriched.autoLock = true;
-  if (/陽台|阳台|ベランダ|バルコニー/i.test(prompt)) enriched.balcony = true;
+  // 設備類條件同樣要看語氣：舊版是裸測試，「不用電梯」也會被設成 true。
+  const equipmentIntents: Array<[keyof RentSearchCriteria, RegExp]> = [
+    ["elevator", /電梯|电梯|エレベーター/],
+    ["autoLock", /自動門|自动门|オートロック/],
+    ["balcony", /陽台|阳台|ベランダ|バルコニー/],
+    ["bidet", /免治馬桶|免治马桶|溫水洗淨|温水洗净|溫水清淨|ウォシュレット/],
+    ["washbasin", /獨立洗面台|独立洗面台|洗面所獨立|獨立洗手台/],
+    ["freeInternet", /免費網路|免费网络|ネット無料|網路免費/]
+  ];
+  for (const [field, pattern] of equipmentIntents) {
+    const intent = mentionIntent(prompt, pattern);
+    if (intent === "required") (enriched as any)[field] = true;
+    else if (intent === "negated") (enriched as any)[field] = false;
+  }
   if (!enriched.walkMinutes) {
-    const walk = prompt.match(/(?:距離車站|车站|車站|駅)[^\n]{0,12}?(?:步行|徒步)?\s*(\d{1,3})\s*分鐘(?:以內|以内|內)?/i);
+    // 必須真的出現「步行／徒步」字樣才算徒步時間。
+    // 舊版把它設為選填，導致「通勤到東京車站30分鐘內」被當成「徒步 30 分」。
+    const walk = prompt.match(/(?:距離車站|车站|車站|駅)[^\n]{0,12}?(?:步行|徒步|歩)\s*(\d{1,3})\s*分(?:鐘)?(?:以內|以内|內)?/i)
+      || prompt.match(/(?:步行|徒步|歩)\s*(\d{1,3})\s*分(?:鐘)?(?:以內|以内|內)?/i);
     if (walk?.[1]) enriched.walkMinutes = Number(walk[1]);
   }
 

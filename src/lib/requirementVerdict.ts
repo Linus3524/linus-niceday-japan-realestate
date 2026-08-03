@@ -66,30 +66,33 @@ export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRe
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(v => normalize(v));
   const stationQueries = [...(criteria.stations || []), criteria.station].filter(Boolean).map(v => normalize(v));
 
+  // 只比對到單一車站時樣本只有 1 筆，區間會退化成同一個數字（「行情約 ¥119,000～¥119,000」），
+  // 拿來判斷預算也失去意義。因此車站命中時連同它所屬的行政區一起納入，取得有寬度的區間。
+  const stationDistricts = new Set<string>();
+  if (stationQueries.length) {
+    for (const [district, stations] of Object.entries(districtStations)) {
+      if (stations.some(station => stationQueries.some(q => normalize(station.name) === q))) {
+        stationDistricts.add(normalize(district));
+      }
+    }
+  }
+
   const pool: number[] = [];
   let basis = "東京都與近郊整體行情";
+  const hasScope = districtQueries.length > 0 || stationDistricts.size > 0;
 
   for (const rate of rentRates) {
     const stations = districtStations[rate.district] || [];
-    const districtHit = districtQueries.length
-      ? districtQueries.some(q => normalize(rate.district).includes(q) || q.includes(normalize(rate.district)))
-      : false;
+    const districtHit = districtQueries.some(q => normalize(rate.district).includes(q) || q.includes(normalize(rate.district)))
+      || stationDistricts.has(normalize(rate.district));
     for (const station of stations.length ? stations : [null]) {
-      const stationHit = stationQueries.length && station
-        ? stationQueries.some(q => normalize(station.name) === q)
-        : false;
-      if (districtQueries.length || stationQueries.length) {
-        if (!districtHit && !stationHit) continue;
-      }
+      if (hasScope && !districtHit) continue;
       pool.push(computeStackedEstimate(rate, station, mods, criteria.roomType));
     }
   }
 
-  if (districtQueries.length || stationQueries.length) {
-    basis = [
-      districtQueries.length ? `指定行政區` : null,
-      stationQueries.length ? `指定車站` : null
-    ].filter(Boolean).join("與");
+  if (hasScope) {
+    basis = districtQueries.length ? "指定行政區" : "指定車站所在行政區";
   }
 
   if (!pool.length) return null;
