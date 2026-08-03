@@ -177,7 +177,11 @@ export function resolveVisaCategory(visaType?: string | null): VisaCategory {
 export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, prompt: string): RentSearchCriteria {
   const enriched = { ...criteria };
   const promptLines = prompt.split(/\n/);
-  const promptClauses = prompt.split(/[。；;，,、\n]/).map(value => value.trim()).filter(Boolean);
+  const promptClauses = prompt
+    .replace(/(\d),(\d)/g, "$1__COMMA__$2")
+    .split(/[。；;，,、\n]/)
+    .map(value => value.replace(/__COMMA__/g, ",").trim())
+    .filter(Boolean);
   if (enriched.commuteStation && /涉谷|澀谷|渋谷/.test(enriched.commuteStation)) enriched.commuteStation = enriched.commuteStation.replace(/涉谷|澀谷|渋谷/g, "渋谷");
   if (enriched.commuteStations?.length) enriched.commuteStations = enriched.commuteStations.map(station => station.replace(/涉谷|澀谷|渋谷/g, "渋谷"));
 
@@ -191,23 +195,31 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   const monthlyBudgetClause = promptClauses.find(clause => /月租|每月|租屋預算|租金預算|房租/.test(clause))
     || promptClauses.find(clause => /\d+(?:\.\d+)?\s*[萬万](?:円|圓|元|日圓|日元)?/.test(clause) && !/初期費用|初期费用/.test(clause));
   if (monthlyBudgetClause && !enriched.maxBudget) {
-    const monthlyAmount = monthlyBudgetClause.match(/(\d+(?:\.\d+)?)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i);
-    if (monthlyAmount?.[1]) enriched.maxBudget = Number(monthlyAmount[1]) * 10000 + Number(monthlyAmount[2] || 0) * 1000;
+    const monthlyAmount = monthlyBudgetClause.match(/(\d+(?:\.\d+)?)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i)
+      || monthlyBudgetClause.match(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓|yen)?/i);
+    if (monthlyAmount?.[1]) {
+      const val = Number(monthlyAmount[1].replace(/,/g, ""));
+      enriched.maxBudget = val < 1000 ? Math.round(val * 10000) + Number(monthlyAmount[2] || 0) * 1000 : val;
+    }
   }
-  const mixedUnitCap = prompt.match(/(?:不超過|不超过|上限|最多)[^\n]{0,8}?(\d+)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i);
+  const promptWithoutInitialFees = promptClauses
+    .filter(clause => !/初期費用|初期费用|禮金|礼金|押金|敷金|頭金/.test(clause))
+    .join(" ");
+
+  const mixedUnitCap = promptWithoutInitialFees.match(/(?:不超過|不超过|上限|最多)[^\n]{0,8}?(\d+)\s*[萬万]\s*(?:(\d+)\s*[千仟])?/i);
   if (mixedUnitCap?.[1]) {
     enriched.maxBudget = Number(mixedUnitCap[1]) * 10000 + Number(mixedUnitCap[2] || 0) * 1000;
   }
   if (/含管理費|含管理费|管理費込み|管理费込み/i.test(prompt)) enriched.budgetIncludesFees = true;
   if (/不含管理費|不含管理费|管理費另計|管理费另计/i.test(prompt)) enriched.budgetIncludesFees = false;
   if (!enriched.maxBudget) {
-    const cap = prompt.match(/(\d+(?:\.\d+)?)\s*[萬万](?:円|圓|元|日圓|日元|日幣|日弊)?\s*(?:以下|以內|以内|之內|之内|內|以下就好)/i)
-      || prompt.match(/(?:上限|預算|预算|不超過|不超过|最多|最高)[^\n]{0,8}?(\d+(?:\.\d+)?)\s*[萬万]/i);
+    const cap = promptWithoutInitialFees.match(/(\d+(?:\.\d+)?)\s*[萬万](?:円|圓|元|日圓|日元|日幣|日弊)?\s*(?:以下|以內|以内|之內|之内|內|以下就好)/i)
+      || promptWithoutInitialFees.match(/(?:上限|預算|预算|不超過|不超过|最多|最高)[^\n]{0,8}?(\d+(?:\.\d+)?)\s*[萬万]/i);
     if (cap?.[1]) enriched.maxBudget = Math.round(Number(cap[1]) * 10000);
   }
   // 使用者也常直接寫日圓整數（「65,000 日圓 / 月」「約 130,000 日圓」），
   // 上面的規則全部只認「萬」，會整個漏掉。這裡補抓，並排除初期費用等非月租金額。
-  const plainYenAmounts = [...prompt.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓|yen)/gi)]
+  const plainYenAmounts = [...promptWithoutInitialFees.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓|yen)/gi)]
     .map(match => Number(match[1].replace(/,/g, "")))
     .filter(amount => amount >= 20000 && amount <= 1000000);
   if (!enriched.maxBudget && plainYenAmounts.length) {
@@ -229,27 +241,33 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
       || prompt.match(/(?:技人[國国]|技術[・·／/]?人文知識[・·／/]?(?:國際|国际|国際)業務)[^\n]{0,12}?(\d+(?:\.\d+)?)\s*年/i);
     if (nearbyYears?.[1]) enriched.visaYears = Number(nearbyYears[1]);
   }
-  const catRequested = /可養\s*(?:一隻|1隻)?\s*[貓猫]|(?:養|饲养|飼養)\s*[貓猫]|[貓猫]\s*(?:可|ok)|ペット可[^\n]{0,12}(?:猫|ネコ)/i.test(prompt);
+  const catRequested = /(?:可養|可以養|能養)\s*(?:一隻|1隻|兩隻|2隻)?\s*[貓猫]|(?:養|饲养|飼養)\s*(?:一隻|1隻|兩隻|2隻)?\s*[貓猫]|[貓猫]\s*(?:可|ok)|ペット可[^\n]{0,12}(?:猫|ネコ)/i.test(prompt);
+  const dogRequested = /(?:可養|可以養|能養)\s*(?:一隻|1隻|兩隻|2隻)?\s*[狗犬]|(?:養|饲养|飼養)\s*(?:一隻|1隻|兩隻|2隻)?\s*[狗犬]|[狗犬]\s*(?:可|ok)/i.test(prompt);
   const petRequested = /可養\s*寵物|寵物可|宠物可|ペット可/i.test(prompt);
   const petIntent = mentionIntent(prompt, /寵物|宠物|[貓猫]|[狗犬]|ペット/);
   if (petIntent === "negated") {
     enriched.petsAllowed = false;
     enriched.petType = null;
-  } else if (catRequested) {
+  } else if (catRequested || (petIntent === "required" && /[貓猫]/.test(prompt))) {
     enriched.petsAllowed = true;
     enriched.petType = "貓";
-  } else if (petRequested) {
+  } else if (dogRequested || (petIntent === "required" && /[狗犬]/.test(prompt))) {
+    enriched.petsAllowed = true;
+    enriched.petType = "狗";
+  } else if (petRequested || petIntent === "required") {
     enriched.petsAllowed = true;
     if (!enriched.petType) enriched.petType = "寵物";
   } else if (petIntent === "absent") {
     enriched.petsAllowed = false;
     enriched.petType = null;
   }
+
+  const commuteClause = promptClauses.find(clause => /通勤|車程|上班|工作地點|目的地/.test(clause));
   const commuteLineIndex = promptLines.findIndex(line => /通勤|車程|上班|工作地點|目的地|希望.*(?:分鐘|分內)/i.test(line));
-  const rawCommuteLine = commuteLineIndex >= 0
+  const rawCommuteLine = commuteClause || (commuteLineIndex >= 0
     ? [promptLines[commuteLineIndex], promptLines[commuteLineIndex + 1]].filter(Boolean).join(" ")
-    : undefined;
-  const commuteLine = rawCommuteLine?.match(/(?:通勤|車程|上班|工作地點|目的地)[^。；;]*/i)?.[0] || rawCommuteLine;
+    : undefined);
+  const commuteLine = rawCommuteLine;
   if (commuteLine) {
     const normalizedLine = normalize(commuteLine);
     const inferredDestinations = [...new Map(
@@ -263,7 +281,12 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     if (!enriched.locationPreference) enriched.locationPreference = commuteLine.replace(/^\s*\d+[.、．]?\s*/, "").trim();
   }
   if (commuteLine) {
-    const commuteValues = [...commuteLine.matchAll(/(\d{1,3})\s*(?:分鐘|分)(?:鐘)?/gi)].map(match => Number(match[1]));
+    const commuteMatches = [...commuteLine.matchAll(/(\d{1,3})\s*(?:分鐘|分)(?:鐘)?/gi)].filter(match => {
+      const idx = match.index || 0;
+      const prefix = commuteLine.slice(Math.max(0, idx - 8), idx);
+      return !/(?:徒步|步行|走路|歩|距離車站|離車站|車站|駅)/.test(prefix);
+    });
+    const commuteValues = commuteMatches.map(match => Number(match[1]));
     if (commuteValues.length >= 2) {
       enriched.commutePreferredMinutes = Math.min(...commuteValues);
       enriched.commuteMinutes = Math.max(...commuteValues);

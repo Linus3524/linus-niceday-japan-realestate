@@ -544,12 +544,15 @@ const VISA_COPY: Record<VisaCategory, { headline: string; drivers: string[] }> =
     drivers: ["審查看的是任職公司、雇用狀態與年收入", "需要一位日本國內的緊急聯絡人"]
   },
   student: {
-    headline: "留學身分可正常申請，但要挑接受留學生的物件。",
+    headline: "留學身分可正常申請，但要挑選接受留學生的物件。",
     drivers: ["常備資料是入學證明、在留卡與財力證明", "多數需要日本國內的緊急聯絡人或連帶保證人"]
   },
   workingHoliday: {
-    headline: "打工度假的在留期間較短，長期租約選擇會受限。",
-    drivers: ["部分管理公司要求在留期間長於契約期間", "短租、シェアハウス與マンスリー通常較容易通過"]
+    headline: "打工度假可申請長期租賃，但需篩選接受該簽證的管理公司。",
+    drivers: [
+      "若尚未在日找到工作，審查通常需準備存款餘額證明（財力證明）",
+      "市場上接受的長期物件較少，需提前由仲介鎖定可申請的物件"
+    ]
   },
   family: {
     headline: "家族滯在可申請一般租賃，審查會一併看扶養者。",
@@ -580,7 +583,11 @@ function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
     status: category === "unknown" ? "待確認" : category === "workingHoliday" ? "部分符合" : "符合",
     headline: copy.headline,
     drivers: copy.drivers,
-    nextStep: category === "unknown" ? "補上在留資格與剩餘期間。" : undefined,
+    nextStep: category === "unknown"
+      ? "補上在留資格與剩餘期間。"
+      : category === "workingHoliday"
+        ? "提前準備存款證明（預金殘高證明），方便仲介快速鎖定可申請的長期物件。"
+        : undefined,
     supplyImpact: category === "workingHoliday" ? 2 : 0
   };
 }
