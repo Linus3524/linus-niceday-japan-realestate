@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://linus-niceday-japan-realestate.vercel.app/sitemap.xml
