@@ -51,6 +51,12 @@ const normalize = (value?: string | null) => (value || "")
   .replace(/涉谷|渋谷/g, "澀谷")
   .replace(/[\s・･（）()\-]/g, "");
 
+/** 路線名比對用：去掉營運商前綴與車種後綴，「西武池袋線」與「池袋線」才對得上。 */
+const normalizeLine = (value?: string | null) => (value || "")
+  .toLowerCase()
+  .replace(/[\s・･（）()\-]/g, "")
+  .replace(/各停|急行|快速|特急|準急|通勤/g, "");
+
 /** 針對「使用者指定的範圍」重新估價，完全不參考推薦清單。 */
 export interface RequestedRentRange {
   low: number;
@@ -61,39 +67,103 @@ export interface RequestedRentRange {
   basis: string;
 }
 
-export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRentRange | null {
-  const mods = getRentModifierIndexes(criteria);
-  const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(v => normalize(v));
-  const stationQueries = [...(criteria.stations || []), criteria.station].filter(Boolean).map(v => normalize(v));
+/**
+ * 使用者實際指定的搜尋範圍（行政區集合＋人看得懂的說法）。
+ *
+ * 左側可行性評估與右側推薦車站必須用同一組地理範圍，否則會出現
+ * 「左邊說要 11 萬、右邊給 7 萬車站」這種互相矛盾的結果。
+ * 之後要新增地點類條件（例如指定區域帶、學區）只要改這裡，兩側一起生效。
+ */
+export function resolveSearchScope(criteria: RentSearchCriteria): { districts: Set<string>; label: string } {
+  const districts = new Set<string>();
+  const sources: string[] = [];
 
-  // 只比對到單一車站時樣本只有 1 筆，區間會退化成同一個數字（「行情約 ¥119,000～¥119,000」），
-  // 拿來判斷預算也失去意義。因此車站命中時連同它所屬的行政區一起納入，取得有寬度的區間。
-  const stationDistricts = new Set<string>();
+  const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(v => normalize(v));
+  if (districtQueries.length) {
+    for (const rate of rentRates) {
+      if (districtQueries.some(q => normalize(rate.district).includes(q) || q.includes(normalize(rate.district)))) {
+        districts.add(normalize(rate.district));
+      }
+    }
+    if (districts.size) sources.push("指定行政區");
+  }
+
+  // 車站：只取該站會讓樣本剩 1 筆、區間退化成單一數字，因此連同所屬行政區一起納入。
+  const stationQueries = [...(criteria.stations || []), criteria.station].filter(Boolean).map(v => normalize(v));
   if (stationQueries.length) {
+    let hit = false;
     for (const [district, stations] of Object.entries(districtStations)) {
       if (stations.some(station => stationQueries.some(q => normalize(station.name) === q))) {
-        stationDistricts.add(normalize(district));
+        districts.add(normalize(district));
+        hit = true;
       }
+    }
+    if (hit) sources.push("指定車站所在行政區");
+  }
+
+  // 路線：一條線橫跨的行政區行情差距很大（西武池袋線從豐島區到所澤市），
+  // 少了這段就會只用線上最貴的那一站當基準。
+  const lineQuery = normalizeLine(criteria.line);
+  if (lineQuery.length >= 3) {
+    let hit = false;
+    for (const [district, stations] of Object.entries(districtStations)) {
+      if (stations.some(station => station.lines.some(line => {
+        const candidate = normalizeLine(line);
+        return candidate.includes(lineQuery) || lineQuery.includes(candidate);
+      }))) {
+        districts.add(normalize(district));
+        hit = true;
+      }
+    }
+    if (hit) sources.push(`${criteria.line}沿線`);
+  }
+
+  // 只給通勤目的地時，可住範圍就是「與該站有共同線路的行政區」——
+  // 這正是推薦清單挑候選的規則，用同一條規則兩側才會一致。
+  // 刻意不看預算，避免用預算挑出範圍再回頭證明預算可行的循環論證。
+  if (!districts.size && criteria.commuteStation) {
+    const targets = [...(criteria.commuteStations || []), ...(criteria.commuteStation.split(/[、,，/／或|・]/))]
+      .map(v => normalize(v)).filter(Boolean);
+    const targetLines = new Set<string>();
+    for (const stations of Object.values(districtStations)) {
+      for (const station of stations) {
+        if (targets.some(t => normalize(station.name).includes(t) || t.includes(normalize(station.name)))) {
+          station.lines.forEach(line => targetLines.add(normalizeLine(line)));
+        }
+      }
+    }
+    if (targetLines.size) {
+      let hit = false;
+      for (const [district, stations] of Object.entries(districtStations)) {
+        if (stations.some(station => station.lines.some(line => targetLines.has(normalizeLine(line))))) {
+          districts.add(normalize(district));
+          hit = true;
+        }
+      }
+      if (hit) sources.push(`可通往 ${criteria.commuteStation} 的沿線`);
     }
   }
 
-  const pool: number[] = [];
-  let basis = "東京都與近郊整體行情";
-  const hasScope = districtQueries.length > 0 || stationDistricts.size > 0;
+  return {
+    districts,
+    label: sources.length ? sources.join("＋") : "東京都與近郊整體行情"
+  };
+}
 
+export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRentRange | null {
+  const mods = getRentModifierIndexes(criteria);
+  const scope = resolveSearchScope(criteria);
+  const hasScope = scope.districts.size > 0;
+
+  const pool: number[] = [];
   for (const rate of rentRates) {
+    if (hasScope && !scope.districts.has(normalize(rate.district))) continue;
     const stations = districtStations[rate.district] || [];
-    const districtHit = districtQueries.some(q => normalize(rate.district).includes(q) || q.includes(normalize(rate.district)))
-      || stationDistricts.has(normalize(rate.district));
     for (const station of stations.length ? stations : [null]) {
-      if (hasScope && !districtHit) continue;
       pool.push(computeStackedEstimate(rate, station, mods, criteria.roomType));
     }
   }
-
-  if (hasScope) {
-    basis = districtQueries.length ? "指定行政區" : "指定車站所在行政區";
-  }
+  const basis = scope.label;
 
   if (!pool.length) return null;
   const sorted = pool.sort((a, b) => a - b);
@@ -347,21 +417,32 @@ function equipmentAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   if (!equipment.length && !wantsFurnished) return null;
 
   if (wantsFurnished) {
-    const uncertain = criteria.furnishedPriority === "uncertain";
+    const priority = criteria.furnishedPriority;
+    const uncertain = priority === "uncertain";
+    // 使用者說「沒有也沒關係」時，這是加分項而非門檻：不該壓低整體可行性，
+    // 也不該叫他去比較家具租借的成本——他已經表明可以接受空屋。
+    const optional = priority === "preferred";
+    const priorityLabel = uncertain ? "尚未確定是否必要" : optional ? "有更好" : "必要";
     return {
       key: "equipment",
       label: "設備與家具家電",
-      detail: [...equipment, `家具家電（${uncertain ? "尚未確定是否必要" : criteria.furnishedPriority === "preferred" ? "希望" : "必要"}）`].join("・"),
-      status: uncertain ? "待確認" : "需調整",
-      headline: "日本長期租賃以空屋為主，附家具家電的房源相對少。",
+      detail: [...equipment, `家具家電（${priorityLabel}）`].join("・"),
+      status: uncertain ? "待確認" : optional ? "符合" : "需調整",
+      headline: optional
+        ? "附家具家電的房源較少，但你已表明沒有也可以，不會因此縮小搜尋範圍。"
+        : "日本長期租賃以空屋為主，附家具家電的房源相對少。",
       drivers: [
-        "多集中在外國人向、短租或套裝管理物件，租金與初期費用通常較高",
+        optional
+          ? "搜尋時把附家具家電的物件排在前面，空屋一併保留為選項"
+          : "多集中在外國人向、短租或套裝管理物件，租金與初期費用通常較高",
         equipment.length ? `另有 ${equipment.join("、")} 需求` : ""
       ].filter(Boolean),
       nextStep: uncertain
         ? "先確認家具家電是必要還是加分；若只是希望，可選範圍會大很多。"
-        : "可比較「空屋＋家具租借」或「空屋＋二手購入」的總成本。",
-      supplyImpact: uncertain ? 1 : 2
+        : optional
+          ? undefined
+          : "可比較「空屋＋家具租借」或「空屋＋二手購入」的總成本。",
+      supplyImpact: uncertain ? 1 : optional ? 0 : 2
     };
   }
 

@@ -1,4 +1,9 @@
-import "dotenv/config";
+// .env.local 優先、.env 墊底（與 Vite／Next 慣例一致）。
+// 舊版的 `import "dotenv/config"` 只讀 .env，用 `vercel env pull` 拉下來的
+// .env.local 不會生效，導致本機拿不到 GEMINI_API_KEY 而只能靠正則 fallback，
+// 出現「本機與線上結果不一致」的假象。
+import dotenv from "dotenv";
+dotenv.config({ path: [".env.local", ".env"] });
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -8,6 +13,7 @@ import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, ot
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs } from "./src/data/buyHouseData";
 import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
 import { attachCommuteRoutes } from "./src/lib/transitRouteApi";
+import rentAnalysisHandler from "./api/rent-analysis";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -198,111 +204,12 @@ app.get("/api/visitor-count", async (req, res) => {
 });
 
 // Natural-language rent brief: Gemini extracts intent; the site's fixed rent model calculates prices.
+// 直接複用 api/rent-analysis 的 handler。
+// 先前這裡另外維護了一份 106 行的重複實作，schema 已與 api/ 版本嚴重脫節
+// （仍保留早已刪除的 analysisNotes 欄位，也沒有 otherNeedNotes），
+// 造成本機測到的結果與線上不同。單一來源才不會再次分岔。
 app.post("/api/rent-analysis", async (req, res) => {
-  try {
-    const prompt = typeof req.body?.prompt === "string" ? req.body.prompt.trim() : "";
-    if (!prompt || prompt.length > MAX_MESSAGE_CHARS) return res.status(400).json({ error: "請輸入 1～1000 字的租屋需求。" });
-    const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
-    const limit = getAnalysisRateLimit(ip);
-    res.setHeader("X-RateLimit-Limit", String(ANALYSIS_RATE_LIMIT));
-    res.setHeader("X-RateLimit-Remaining", String(limit.remaining));
-    if (limit.limited) {
-      res.setHeader("Retry-After", String(limit.retryAfter));
-      return res.status(429).json({ error: "AI 分析每 3 分鐘最多使用 5 次，請稍候再試。", retryAfter: limit.retryAfter });
-    }
-    const ai = getAiClient();
-    const generateCriteria = async () => {
-      const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite",
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        config: {
-        temperature: 0,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            roomType: { type: Type.STRING, enum: ["r1", "k1", "ldk1", "ldk2"] },
-            areaMin: { type: Type.NUMBER, nullable: true },
-            maxBudget: { type: Type.NUMBER, nullable: true, description: "Monthly budget in Japanese yen. Convert 萬円 to yen." },
-            budgetIncludesFees: { type: Type.BOOLEAN, nullable: true },
-            district: { type: Type.STRING, nullable: true },
-            districts: { type: Type.ARRAY, items: { type: Type.STRING } },
-            station: { type: Type.STRING, nullable: true, description: "Station name without 站/駅." },
-            stations: { type: Type.ARRAY, items: { type: Type.STRING }, description: "All explicitly requested station names, without 站/駅." },
-            line: { type: Type.STRING, nullable: true },
-            walkMinutes: { type: Type.NUMBER, nullable: true },
-            commuteStation: { type: Type.STRING, nullable: true },
-            commuteStations: { type: Type.ARRAY, items: { type: Type.STRING } },
-            commuteMinutes: { type: Type.NUMBER, nullable: true },
-            commutePreferredMinutes: { type: Type.NUMBER, nullable: true },
-            locationPreference: { type: Type.STRING, nullable: true },
-            nearbyAmenity: { type: Type.STRING, nullable: true },
-            amenityWalkMinutes: { type: Type.NUMBER, nullable: true },
-            buildingAgeMax: { type: Type.NUMBER, nullable: true },
-            visaType: { type: Type.STRING, nullable: true },
-            visaYears: { type: Type.NUMBER, nullable: true },
-            structure: { type: Type.STRING, nullable: true },
-            autoLock: { type: Type.BOOLEAN },
-            floorMin: { type: Type.NUMBER, nullable: true },
-            balcony: { type: Type.BOOLEAN },
-            gasBurnersMin: { type: Type.NUMBER, nullable: true },
-            freeInternet: { type: Type.BOOLEAN },
-            lpGasAccepted: { type: Type.BOOLEAN },
-            cityGasRequired: { type: Type.BOOLEAN },
-            petsAllowed: { type: Type.BOOLEAN },
-            petType: { type: Type.STRING, nullable: true },
-            washbasin: { type: Type.BOOLEAN },
-            bidet: { type: Type.BOOLEAN },
-            elevator: { type: Type.BOOLEAN },
-            furnished: { type: Type.BOOLEAN },
-            tower: { type: Type.BOOLEAN }
-            ,moveInTiming: { type: Type.STRING, nullable: true },
-            householdSize: { type: Type.NUMBER, nullable: true },
-            currentResidence: { type: Type.STRING, nullable: true },
-            employmentStartTiming: { type: Type.STRING, nullable: true },
-            initialCostBudget: { type: Type.NUMBER, nullable: true },
-            otherNeeds: { type: Type.ARRAY, items: { type: Type.STRING } }
-            ,analysisNotes: {
-              type: Type.OBJECT,
-              nullable: true,
-              properties: {
-                visa: { type: Type.STRING, nullable: true },
-                location: { type: Type.STRING, nullable: true },
-                amenity: { type: Type.STRING, nullable: true },
-                layout: { type: Type.STRING, nullable: true },
-                building: { type: Type.STRING, nullable: true },
-                walking: { type: Type.STRING, nullable: true },
-                equipment: { type: Type.STRING, nullable: true },
-                special: { type: Type.STRING, nullable: true }
-              },
-              required: ["visa", "location", "amenity", "layout", "building", "walking", "equipment", "special"]
-            }
-          },
-          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "analysisNotes"]
-        },
-        systemInstruction: "你是日本租屋需求理解器，只能萃取使用者真的提出的條件。未指定格局時以 k1 作搜尋基準。理想通勤時間放 commutePreferredMinutes，最長可接受時間放 commuteMinutes。辨識入住時間、目前居住地、入社時間、同住人數與初期費用上限；獨居等於 householdSize 1。otherNeeds 只放其他欄位裝不下的短詞，例如隔音。未提到的欄位回傳 null，不可自行捏造。analysisNotes 依原文簡短整理，不要寫免責句。只輸出符合 schema 的 JSON。"
-        }
-      });
-      const responseText = response.text?.trim();
-      if (!responseText) throw new Error("Gemini returned an empty rent-analysis response.");
-      return JSON.parse(responseText) as RentSearchCriteria;
-    };
-    let parsedCriteria: RentSearchCriteria;
-    try {
-      parsedCriteria = await generateCriteria();
-    } catch (firstError) {
-      if (!shouldRetryRentAnalysis(firstError)) throw firstError;
-      console.warn("Gemini rent analysis first attempt failed; retrying once:", firstError);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      parsedCriteria = await generateCriteria();
-    }
-    const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
-    const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
-    return res.json({ criteria, recommendations, model: "gemini-3.1-flash-lite" });
-  } catch (error) {
-    console.error("Gemini rent analysis error:", error);
-    return res.status(500).json({ error: "AI 暫時無法解析需求，請稍後再試或改用下方手動估算。" });
-  }
+  await rentAnalysisHandler(req, res);
 });
 
 // Q&A and Chat endpoint

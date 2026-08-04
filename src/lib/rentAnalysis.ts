@@ -154,6 +154,39 @@ function mentionIntent(prompt: string, keyword: RegExp): "required" | "negated" 
   return sentences.every(part => NEGATION.test(part)) ? "negated" : "required";
 }
 
+/**
+ * 現居地的說法。這類句子講的是「現在住哪」，不是「想搬去哪」，
+ * 掃描希望居住地區時必須整句排除，否則「現在住練馬區」會被當成想住練馬區。
+ */
+const CURRENT_RESIDENCE_CUE = /(?:目前居住於|目前居住于|目前住在|現在住在|現在住|现在住|现住|現居|现居|目前人在|已在日本)/;
+
+/** 讓步語氣：「沒有也沒關係」「有更好」——條件是加分而非門檻。 */
+const CONCESSIVE = /(?:沒有也|没有也|沒有沒關係|没有没关系|也沒關係|也没关系|也可以|也行|不強求|不强求|不一定要|不是必須|不是必须|可有可無|可有可无|有更好|有的話更好|有的话更好|加分)/;
+/** 偏好語氣：想要但沒說是門檻。 */
+const PREFERRED_TONE = /(?:希望|最好|最理想|理想|優先|优先|盡量|尽量|傾向|倾向)/;
+/** 不確定語氣。 */
+const UNCERTAIN_TONE = /(?:可能|也許|也许|不確定|不确定|再看看|再說|再说|\?|？)/;
+
+/**
+ * 判斷某條件是「必要」「希望」還是「不確定」。
+ *
+ * 讓步語氣常寫在下一句（「最理想是附家電。如果真的沒有也沒關係。」），
+ * 只看關鍵詞所在的那一句會漏掉，因此改用關鍵詞前後的字元窗口判斷。
+ */
+function conditionPriority(prompt: string, keyword: RegExp): "required" | "preferred" | "uncertain" {
+  const source = new RegExp(keyword.source, keyword.flags.replace("g", "") + "g");
+  let window = "";
+  for (const match of prompt.matchAll(source)) {
+    const start = Math.max(0, (match.index ?? 0) - 30);
+    window += prompt.slice(start, (match.index ?? 0) + 60) + " ";
+  }
+  if (!window) return "required";
+  if (CONCESSIVE.test(window)) return "preferred";
+  if (UNCERTAIN_TONE.test(window)) return "uncertain";
+  if (PREFERRED_TONE.test(window)) return "preferred";
+  return "required";
+}
+
 /** 在留資格分類；文案分流以此為準，不再用零散的關鍵字判斷。 */
 export type VisaCategory = "work" | "student" | "workingHoliday" | "family" | "longTerm" | "other" | "unknown";
 
@@ -299,8 +332,14 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   // 居住地區：直接拿熱力地圖用的同一份 rentRates／districtStations 去比對原文，
   // 不需要另建對照表。少了這一步，estimateRequestedRent 會退回全市場樣本，
   // 使得「港區 1LDK」被拿去跟含近郊的全國行情比較，報出誤導的低標價格。
-  // 通勤句要排除，否則「通勤到品川」會被誤認成想住品川區。
-  const residenceText = commuteLine ? prompt.split(commuteLine).join(" ") : prompt;
+  //
+  // 有兩種句子必須排除，否則會把地名認成「想住的地方」：
+  //   通勤句——「通勤到品川」不等於想住品川區；
+  //   現居句——「現在住練馬區，準備更新簽證」講的是現在住哪，不是希望搬去哪。
+  const currentResidenceLine = promptLines.find(line => CURRENT_RESIDENCE_CUE.test(line));
+  const residenceText = [commuteLine, currentResidenceLine]
+    .filter(Boolean)
+    .reduce<string>((text, exclude) => text.split(exclude as string).join(" "), prompt);
   const normalizedResidence = normalize(residenceText);
   if (!(enriched.districts || []).length && !enriched.district) {
     const matchedDistricts = [...new Set(
@@ -329,13 +368,8 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     enriched.furnished = false;
     enriched.furnishedPriority = null;
   } else if (furnishedIntent === "required") {
-    const furnishedText = prompt.match(/[^\n]*(?:家具|家電|家电)[^\n]*/i)?.[0] || "";
     enriched.furnished = true;
-    enriched.furnishedPriority = /(?:可能|也許|也许|不確定|不确定|\?|？)/i.test(furnishedText)
-      ? "uncertain"
-      : /(?:希望|最好|優先|优先)/i.test(furnishedText)
-        ? "preferred"
-        : "required";
+    enriched.furnishedPriority = conditionPriority(prompt, /家具|家電|家电/);
   } else if (!enriched.furnished) {
     // 使用者沒提到就必須是「未提出」，不能留下模型硬填的 false/true。
     enriched.furnished = false;
@@ -374,7 +408,7 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     else if (/獨居|独居|一人暮らし|自己住|自己居住|一個人/.test(answersOnly)) enriched.householdSize = 1;
   }
   if (!enriched.currentResidence) {
-    const residence = prompt.match(/(?:目前居住於|目前居住于|現在住在|现住|現居)\s*([^\n]+)/i);
+    const residence = prompt.match(new RegExp(`${CURRENT_RESIDENCE_CUE.source}\\s*[:：]?\\s*([^\\n。]+)`, "i"));
     if (residence?.[1]) enriched.currentResidence = residence[1].trim();
   }
   if (!enriched.employmentStartTiming) {
