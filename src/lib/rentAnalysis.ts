@@ -5,12 +5,28 @@ import { TAMA_CITIES } from "./calcRules.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
 
-/** 內部代碼 → 日本實際的格局寫法。r1/k1/ldk1/ldk2 只是欄位名，不可直接顯示給使用者。 */
+/** 內部代碼 → 日本實際的格局簡寫（1R, 1K, 1LDK, 2LDK）。 */
 export const ROOM_TYPE_LABEL: Record<RoomType, string> = {
   r1: "1R",
-  k1: "1K／1DK",
-  ldk1: "1LDK／2K／2DK",
+  k1: "1K",
+  ldk1: "1LDK",
   ldk2: "2LDK"
+};
+
+/** 完整說明標籤 */
+export const ROOM_TYPE_DETAIL_LABEL: Record<RoomType, string> = {
+  r1: "1R",
+  k1: "1K（包含 1DK）",
+  ldk1: "1LDK（包含 2K、2DK）",
+  ldk2: "2LDK"
+};
+
+/** 包含格局說明標籤 (Hover 顯示) */
+export const ROOM_TYPE_INCLUDES_LABEL: Record<RoomType, string | null> = {
+  r1: null,
+  k1: "包含 1DK",
+  ldk1: "包含 2K、2DK",
+  ldk2: null
 };
 
 

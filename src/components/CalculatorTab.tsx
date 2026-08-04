@@ -9,7 +9,7 @@ import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
-import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL } from "../lib/rentAnalysis";
+import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
@@ -604,22 +604,33 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       {/* Room Type Picker */}
                       <div className="space-y-1.5 font-sans">
                         <label className="text-xs font-bold text-zinc-700">選擇格局大小：</label>
-                        {/* 涵蓋範圍（1K 含 1DK、1LDK 含 2K／2DK）以 title 呈現，維持按鈕視覺乾淨。 */}
+                        {/* 涵蓋範圍（1K 含 1DK、1LDK 含 2K／2DK）Hover 時顯示浮動標籤，維持按鈕視覺乾淨。 */}
                         <div className="grid h-12 grid-cols-4 border border-[#1A2A22]">
-                          {(["r1", "k1", "ldk1", "ldk2"] as const).map(id => (
-                            <button
-                              key={id}
-                              onClick={() => setCalcRoomType(id)}
-                              title={ROOM_TYPE_LABEL[id]}
-                              className={`h-full border-r border-[#1A2A22] last:border-r-0 text-xs font-bold cursor-pointer transition-colors ${
-                                calcRoomType === id
-                                  ? "bg-[#1A2A22] text-white"
-                                  : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
-                              }`}
-                            >
-                              {({ r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" } as const)[id]}
-                            </button>
-                          ))}
+                          {(["r1", "k1", "ldk1", "ldk2"] as const).map(id => {
+                            const includesText = ROOM_TYPE_INCLUDES_LABEL[id];
+                            return (
+                              <div key={id} className="group relative h-full">
+                                <button
+                                  type="button"
+                                  onClick={() => setCalcRoomType(id)}
+                                  title={ROOM_TYPE_DETAIL_LABEL[id]}
+                                  className={`h-full w-full border-r border-[#1A2A22] last:border-r-0 text-xs font-bold cursor-pointer transition-colors ${
+                                    calcRoomType === id
+                                      ? "bg-[#1A2A22] text-white"
+                                      : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
+                                  }`}
+                                >
+                                  {ROOM_TYPE_LABEL[id]}
+                                </button>
+                                {includesText && (
+                                  <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-zinc-900 text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                                    {includesText}
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900" />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>

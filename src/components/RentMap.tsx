@@ -3,7 +3,7 @@ import type { RentRate } from "../data/rentGuideData";
 import { rentRates } from "../data/housingMarket";
 import { MapPin, Info, Lightbulb, Layers } from "lucide-react";
 import { toJapanesePlaceName, toJapanesePrefectureName } from "../lib/transit";
-import { ROOM_TYPE_LABEL } from "../lib/rentAnalysis";
+import { ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
 
 interface RentMapProps {
   selectedDistrict: string;
@@ -287,20 +287,30 @@ export const RentMap: React.FC<RentMapProps> = ({
         {/* 按鈕只放代表性格局（寫全名會讓四顆鈕在手機上擠爆），
             實際涵蓋範圍以下方說明與 title 補齊，不讓使用者誤以為只查得到 1K 與 1LDK。 */}
         <div className="flex shrink-0 bg-zinc-100 p-0.5 border border-zinc-300">
-          {(["r1", "k1", "ldk1", "ldk2"] as const).map((type) => (
-            <button
-              key={type}
-              onClick={() => onSelectRoomType(type)}
-              title={ROOM_TYPE_LABEL[type]}
-              className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
-                roomType === type
-                  ? "bg-white text-[#00a174] border-b border-zinc-200"
-                  : "text-zinc-500 hover:text-zinc-800"
-              }`}
-            >
-              {type === "r1" ? "1R" : type === "k1" ? "1K" : type === "ldk1" ? "1LDK" : "2LDK"}
-            </button>
-          ))}
+          {(["r1", "k1", "ldk1", "ldk2"] as const).map((type) => {
+            const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
+            return (
+              <div key={type} className="group relative">
+                <button
+                  onClick={() => onSelectRoomType(type)}
+                  title={ROOM_TYPE_DETAIL_LABEL[type]}
+                  className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
+                    roomType === type
+                      ? "bg-white text-[#00a174] border-b border-zinc-200"
+                      : "text-zinc-500 hover:text-zinc-800"
+                  }`}
+                >
+                  {ROOM_TYPE_LABEL[type]}
+                </button>
+                {includesText && (
+                  <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-zinc-900 text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                    {includesText}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -455,24 +465,38 @@ export const RentMap: React.FC<RentMapProps> = ({
                       {mode === "buy" ? "2026年 預估中古公寓總價" : "2026年 家賃相場"}
                     </span>
                   </div>
-                  {/* 四格改用共用的 ROOM_TYPE_LABEL，標示標準才會一致
-                      （原本只有 1K 寫了「1K/1DK」，1LDK 沒寫它同樣含 2K／2DK）；
-                      高亮也改成跟著目前選取的格局，原本寫死在 1K。 */}
+                  {/* 四格使用簡短標籤 (1R, 1K, 1LDK, 2LDK)，Hover 時顯示標籤 (如：包含 1DK) */}
                   <div className="grid grid-cols-4 gap-1 text-center font-mono">
                     {(["r1", "k1", "ldk1", "ldk2"] as const).map(type => {
                       const isActive = roomType === type;
+                      const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
                       return (
-                        <div
+                        <button
                           key={type}
-                          className={`bg-white p-1 border border-zinc-200 ${isActive ? "ring-1 ring-[#00a174]/10" : ""}`}
+                          type="button"
+                          onClick={() => onSelectRoomType(type)}
+                          title={ROOM_TYPE_DETAIL_LABEL[type]}
+                          className={`group relative bg-white py-1.5 px-1 border cursor-pointer transition-all ${
+                            isActive
+                              ? "border-[#00a174] ring-1 ring-[#00a174]/20 bg-[#F1F6F3]"
+                              : "border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50"
+                          }`}
                         >
-                          <div className={`text-[9px] font-sans ${isActive ? "text-[#00a174] font-bold" : "text-zinc-500"}`}>
+                          <div className={`text-xs font-bold font-sans ${isActive ? "text-[#00a174]" : "text-zinc-600"}`}>
                             {ROOM_TYPE_LABEL[type]}
                           </div>
-                          <div className={`text-xs font-bold ${isActive ? "text-[#00a174]" : "text-zinc-800"}`}>
+                          <div className={`text-xs font-bold ${isActive ? "text-[#00a174]" : "text-zinc-900"}`}>
                             {mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : activeWard[type]} 萬円
                           </div>
-                        </div>
+
+                          {/* Hover 浮動提示標籤 */}
+                          {includesText && (
+                            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-zinc-900 text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                              {includesText}
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900" />
+                            </div>
+                          )}
+                        </button>
                       );
                     })}
                   </div>
