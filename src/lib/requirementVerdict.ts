@@ -568,8 +568,8 @@ function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
     if (table) return { advice: table.advice, impact: table.impact };
     const note = noteOf(condition);
     // 模型若仍寫出免責語氣就整句捨棄，寧可不顯示也不要污染文案。
-    if (note?.howToCheck && !BANNED_TONE.test(note.howToCheck)) {
-      return { advice: note.howToCheck.trim(), impact: DIFFICULTY_IMPACT[note.difficulty] ?? 1 };
+    if (note?.marketImpact && !BANNED_TONE.test(note.marketImpact)) {
+      return { advice: note.marketImpact.trim(), impact: DIFFICULTY_IMPACT[note.difficulty] ?? 1 };
     }
     return null;
   };
@@ -602,7 +602,9 @@ function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
       : freeConditions.length === required.length && required.length
         ? `${required.join("、")}在一般賃貸物件多半已經滿足，不會縮小搜尋範圍。`
         : required.length
-          ? `${required.join("、")}會作為必要篩選，主要靠間取り図與內見確認。`
+          // 不寫死確認方式：有的條件下方計算機就能勾、有的只能看圖面、有的要到現場，
+          // 各自的做法留給下面每一條說明，標題只講「這些是必要篩選」。
+          ? `${required.join("、")}會作為必要篩選。`
           : `這些只作排序加分，不會縮小基本搜尋範圍。`;
 
   return {
