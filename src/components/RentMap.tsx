@@ -294,9 +294,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                 <button
                   onClick={() => onSelectRoomType(type)}
                   title={ROOM_TYPE_DETAIL_LABEL[type]}
-                  className={`px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
                     roomType === type
-                      ? "bg-white text-[#00a174] border-b border-zinc-200"
+                      ? "bg-white text-[#00a174] font-semibold border-b border-zinc-200"
                       : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
@@ -470,6 +470,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                     {(["r1", "k1", "ldk1", "ldk2"] as const).map(type => {
                       const isActive = roomType === type;
                       const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
+                      const priceVal = mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : activeWard[type];
                       return (
                         <button
                           key={type}
@@ -482,11 +483,11 @@ export const RentMap: React.FC<RentMapProps> = ({
                               : "border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50"
                           }`}
                         >
-                          <div className={`text-xs font-bold font-sans ${isActive ? "text-[#00a174]" : "text-zinc-600"}`}>
+                          <div className={`text-[11px] font-medium font-sans leading-tight ${isActive ? "text-[#00a174] font-semibold" : "text-zinc-500"}`}>
                             {ROOM_TYPE_LABEL[type]}
                           </div>
-                          <div className={`text-xs font-bold ${isActive ? "text-[#00a174]" : "text-zinc-900"}`}>
-                            {mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : activeWard[type]} 萬円
+                          <div className={`text-xs font-semibold leading-tight ${isActive ? "text-[#00a174]" : "text-zinc-800"}`}>
+                            {priceVal}<span className={`text-[10px] font-normal ml-0.5 ${isActive ? "text-[#00a174]" : "text-zinc-500"}`}>萬円</span>
                           </div>
 
                           {/* Hover 浮動提示標籤 */}

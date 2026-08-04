@@ -614,9 +614,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                   type="button"
                                   onClick={() => setCalcRoomType(id)}
                                   title={ROOM_TYPE_DETAIL_LABEL[id]}
-                                  className={`h-full w-full border-r border-[#1A2A22] last:border-r-0 text-xs font-bold cursor-pointer transition-colors ${
+                                  className={`h-full w-full border-r border-[#1A2A22] last:border-r-0 text-xs font-medium cursor-pointer transition-colors ${
                                     calcRoomType === id
-                                      ? "bg-[#1A2A22] text-white"
+                                      ? "bg-[#1A2A22] text-white font-semibold"
                                       : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
                                   }`}
                                 >
