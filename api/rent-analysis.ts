@@ -1,9 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
+import { resolveSearchScope } from "../src/lib/requirementVerdict.js";
+import { lookupMarketRate } from "./market-lookup.js";
 
 const MAX_PROMPT_CHARS = 1000;
-const ANALYSIS_RATE_LIMIT = 5;
+const ANALYSIS_RATE_LIMIT = 3;
 const ANALYSIS_RATE_WINDOW_MS = 180_000;
 const analysisRateBuckets = new Map<string, { count: number; resetAt: number }>();
 
@@ -58,7 +60,7 @@ export default async function handler(req: any, res: any) {
     res.setHeader("X-RateLimit-Remaining", String(limit.remaining));
     if (limit.limited) {
       res.setHeader("Retry-After", String(limit.retryAfter));
-      return res.status(429).json({ error: "AI 分析每 3 分鐘最多使用 5 次，請稍候再試。", retryAfter: limit.retryAfter });
+      return res.status(429).json({ error: "AI 分析每 3 分鐘最多使用 3 次，請稍候再試。", retryAfter: limit.retryAfter });
     }
     const generateCriteria = async () => {
       const response = await getAiClient().models.generateContent({
@@ -184,9 +186,29 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
     }
 
     const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
-    const recommendations = await attachCommuteRoutes(criteria, buildRentRecommendations(criteria));
 
-    return res.status(200).json({ criteria, recommendations, model: "gemini-3.1-flash-lite" });
+    // 只有站內資料涵蓋不到時才外部查詢：resolveSearchScope 回傳空集合就代表
+    // 使用者指定的地區不在 rentRates 裡（例如名古屋、福岡）。已經有基準值的地區
+    // 再查一次只是多花時間與費用，數字也不會比自家基準更適合用來判斷。
+    // 與通勤路線並行，避免延遲疊加。
+    const scope = resolveSearchScope(criteria);
+    const requestedArea = scope.districts.size
+      ? null
+      : [
+          criteria.district,
+          ...(criteria.districts || []),
+          criteria.station,
+          ...(criteria.stations || []),
+          criteria.line,
+          criteria.locationPreference
+        ].find(value => typeof value === "string" && value.trim().length >= 2) || null;
+
+    const [recommendations, marketReference] = await Promise.all([
+      attachCommuteRoutes(criteria, buildRentRecommendations(criteria)),
+      requestedArea ? lookupMarketRate(requestedArea, criteria.roomType) : Promise.resolve(null)
+    ]);
+
+    return res.status(200).json({ criteria, recommendations, marketReference, model: "gemini-3.1-flash-lite" });
   } catch (error: any) {
     console.error("Gemini rent analysis error:", error);
     const missingKey = String(error?.message || "").includes("GEMINI_API_KEY");

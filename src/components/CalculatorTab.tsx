@@ -100,7 +100,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
     if (!aiPrompt.trim() || aiLoading) return;
     const waitMinutes = reserveClientAnalysisAttempt();
     if (waitMinutes > 0) {
-      setAiError(`AI 分析每 3 分鐘最多使用 5 次，請約 ${waitMinutes} 分鐘後再試。`);
+      setAiError(`AI 分析每 3 分鐘最多使用 3 次，請約 ${waitMinutes} 分鐘後再試。`);
       return;
     }
     setAiLoading(true);
@@ -513,7 +513,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           套用範例
                         </button>
                       </div>
-                      <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 3 分鐘最多分析 5 次。</p>
+                      <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 3 分鐘最多分析 3 次。</p>
                       {aiError && <p className="mt-3 text-xs text-[#B13818] bg-[#FBDFD2] p-3 font-sans">{aiError}</p>}
                       {aiResult && (
                         <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />

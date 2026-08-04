@@ -14,6 +14,7 @@ import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoan
 import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "./src/lib/rentAnalysis";
 import { attachCommuteRoutes } from "./src/lib/transitRouteApi";
 import rentAnalysisHandler from "./api/rent-analysis";
+import marketLookupHandler from "./api/market-lookup";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -26,7 +27,7 @@ app.use(express.json());
 // Simple in-memory per-IP rate limit for /api/chat to protect the Gemini quota
 const RATE_LIMIT = 10; // requests per window
 const RATE_WINDOW_MS = 300_000;
-const ANALYSIS_RATE_LIMIT = 5;
+const ANALYSIS_RATE_LIMIT = 3;
 const ANALYSIS_RATE_WINDOW_MS = 180_000;
 const MAX_MESSAGE_CHARS = 1000;
 const MAX_HISTORY_TURNS = 20;
@@ -210,6 +211,11 @@ app.get("/api/visitor-count", async (req, res) => {
 // 造成本機測到的結果與線上不同。單一來源才不會再次分岔。
 app.post("/api/rent-analysis", async (req, res) => {
   await rentAnalysisHandler(req, res);
+});
+
+// 市場行情即時查詢。與可行性判斷分離，只作參考顯示。
+app.post("/api/market-lookup", async (req, res) => {
+  await marketLookupHandler(req, res);
 });
 
 // Q&A and Chat endpoint
