@@ -145,7 +145,14 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
       ? Math.min(currentThreads.length, 6)
       : Math.min(currentThreads.length, window.innerWidth >= 1024 ? 6 : 3);
     const initialSlides = buildSlidesHtml(currentThreads.slice(0, initialCount), 0, currentThreads.length);
-    const needsDesktopLoopBuffer = window.innerWidth >= 1024 && currentThreads.length <= 3;
+    // 桌機一排放得下 3 張，分類只有 2～3 篇時複製一輪當作無縫捲動的緩衝。
+    // 但搜尋結果、或只有 1 篇的分類不能複製：畫面會出現兩張同編號的卡片，
+    // 跟上方「找到 N 篇」對不起來（看起來就像重複貼文）。
+    const needsDesktopLoopBuffer =
+      !isSearching &&
+      window.innerWidth >= 1024 &&
+      currentThreads.length > 1 &&
+      currentThreads.length <= 3;
     track.innerHTML = needsDesktopLoopBuffer ? initialSlides + initialSlides : initialSlides;
     renderedCountRef.current = initialCount;
     unlockedShieldRef.current = null;

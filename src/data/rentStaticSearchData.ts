@@ -1,4 +1,6 @@
-import { matchesAllTokens, tokenizeQuery } from "../lib/search";
+// 副檔名不可省略：這支檔案現在也被 api/chat.ts 匯入，Vercel 的 ESM runtime
+// 解析不到沒有 .js 的相對路徑（會出現 ERR_MODULE_NOT_FOUND）。
+import { matchesAllTokens, tokenizeQuery } from "../lib/search.js";
 
 export type RentStaticSectionId = "sop" | "documents" | "routes" | "reminders";
 
