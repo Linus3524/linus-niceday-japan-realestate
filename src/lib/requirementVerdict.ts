@@ -278,7 +278,7 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
 
   // 分布橫跨不同價位帶時，單一區間會產生對應不到任何地點的中間值，改成分段講。
   const segmentText = range.segments
-    .map(seg => `${seg.district}約 ${man(seg.median)}`)
+    .map(seg => seg.low === seg.median ? `${seg.district}約 ${man(seg.median)}` : `${seg.district}約 ${man(seg.low)}～${man(seg.median)}`)
     .join("、");
   const drivers = range.spread
     ? [`${range.basis}在此條件下，各區價位差距不小：${segmentText}`]
@@ -346,7 +346,7 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     key: "budget", label: "預算", detail,
     status: withinReach ? "需調整" : "難度高",
     headline: range.spread
-      ? `這個預算低於指定區域的起跳行情，目前最接近預算的是 ${cheapest.district}（約 ${man(cheapest.median)}）。`
+      ? `這個預算低於指定區域的起跳行情，目前最接近預算的是 ${cheapest.district}（約 ${man(cheapest.low)}～${man(cheapest.median)}）。`
       : `這個預算低於指定區域的起跳行情約 ${gapPercent}%。`,
     drivers,
     // 低端來自哪個區要講清楚。只說「提高到 X 萬」而不說那是哪裡的價位，
