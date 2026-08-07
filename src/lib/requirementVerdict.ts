@@ -1,4 +1,6 @@
 import { rentRates, districtStations } from "../data/housingMarket.js";
+import { stationsWithinHops } from "./localTransitRoute.js";
+import { toJapaneseStationName } from "./transit.js";
 import {
   computeStackedEstimate,
   getRentModifierIndexes,
@@ -46,6 +48,16 @@ export interface OverallVerdict {
 const yen = (value: number) => `¥${(Math.round(value / 1000) * 1000).toLocaleString("en-US")}`;
 const man = (value: number) => `${(value / 10000).toFixed(1).replace(/\.0$/, "")} 萬円`;
 
+/**
+ * 預算專用：無條件捨去到 0.1 萬，不四捨五入。
+ *
+ * 使用者說「6萬多」時，擷取會取區間上緣 69,999；man() 再四捨五入就變成「7 萬円」，
+ * 兩層向上偏移疊起來，畫面顯示的預算比使用者實際講的多了近 15%，
+ * 後續所有判斷與報價都被這個虛高的數字錨定。行情數字維持四捨五入即可，
+ * 但使用者自己的預算只能少報、不能多報。
+ */
+const manBudget = (value: number) => `${(Math.floor(value / 1000) / 10).toFixed(1).replace(/\.0$/, "")} 萬円`;
+
 const normalize = (value?: string | null) => (value || "")
   .toLowerCase()
   .replace(/涉谷|渋谷/g, "澀谷")
@@ -65,6 +77,24 @@ export interface RequestedRentRange {
   sampleCount: number;
   /** 估價基準的說法，用於文案。 */
   basis: string;
+  /** 各行政區各自的估價，依中位由低到高排序。 */
+  segments: RentSegment[];
+  /**
+   * 樣本橫跨互不重疊的價位帶時為 true。
+   *
+   * 這種情況下 low／median／high 這組百分位是「假精確」——把 4 個行情差一倍的
+   * 行政區混在一起取百分位，得到的中間值對應不到任何真實地點：中位可能是練馬的
+   * 價，低端卻是所澤的價。使用者看到「只差 1%」會以為加一點錢就有，實際上那個
+   * 低端在他不想住的地方。所以 true 時文案要改成分段講，不要給單一區間。
+   */
+  spread: boolean;
+}
+
+export interface RentSegment {
+  district: string;
+  low: number;
+  median: number;
+  high: number;
 }
 
 /**
@@ -144,6 +174,36 @@ export function resolveSearchScope(criteria: RentSearchCriteria): { districts: S
     }
   }
 
+  // 站數上限：「池袋五六站就能到」。這是唯一能把「同一條線但貴到離譜的起點區」
+  // 與「太遠的郊區」同時修掉的條件，所以放在最後當收斂用——先讓上面的規則決定
+  // 候選範圍，再用站數把不符合的行政區剔除。
+  const maxStations = criteria.commuteMaxStations;
+  const hopOrigin = criteria.commuteStation || criteria.station || null;
+  if (maxStations && maxStations > 0 && hopOrigin) {
+    const reachable = stationsWithinHops(hopOrigin, maxStations);
+    if (reachable.size) {
+      const withinHops = new Set<string>();
+      for (const [district, stations] of Object.entries(districtStations)) {
+        if (stations.some(s => reachable.has(toJapaneseStationName(s.name)))) {
+          withinHops.add(normalize(district));
+        }
+      }
+      if (withinHops.size) {
+        // 已有範圍就取交集（兩個條件都要滿足）；還沒有範圍就直接採用。
+        if (districts.size) {
+          for (const district of [...districts]) {
+            if (!withinHops.has(district)) districts.delete(district);
+          }
+          // 交集為空代表使用者的條件互相矛盾，此時保留站數範圍比留下空集合有用。
+          if (!districts.size) withinHops.forEach(d => districts.add(d));
+        } else {
+          withinHops.forEach(d => districts.add(d));
+        }
+        sources.push(`${hopOrigin} ${maxStations} 站內`);
+      }
+    }
+  }
+
   return {
     districts,
     label: sources.length ? sources.join("＋") : "東京都與近郊整體行情"
@@ -156,19 +216,40 @@ export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRe
   const hasScope = scope.districts.size > 0;
 
   const pool: number[] = [];
+  const byDistrict = new Map<string, number[]>();
   for (const rate of rentRates) {
     if (hasScope && !scope.districts.has(normalize(rate.district))) continue;
     const stations = districtStations[rate.district] || [];
+    const values: number[] = [];
     for (const station of stations.length ? stations : [null]) {
-      pool.push(computeStackedEstimate(rate, station, mods, criteria.roomType));
+      const estimate = computeStackedEstimate(rate, station, mods, criteria.roomType);
+      values.push(estimate);
+      pool.push(estimate);
     }
+    if (values.length) byDistrict.set(rate.district, values);
   }
   const basis = scope.label;
 
   if (!pool.length) return null;
-  const sorted = pool.sort((a, b) => a - b);
-  const at = (ratio: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * ratio))];
-  return { low: at(0.15), median: at(0.5), high: at(0.85), sampleCount: sorted.length, basis };
+  const percentiles = (values: number[]) => {
+    const sorted = [...values].sort((a, b) => a - b);
+    const at = (ratio: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * ratio))];
+    return { low: at(0.15), median: at(0.5), high: at(0.85) };
+  };
+
+  const segments: RentSegment[] = [...byDistrict.entries()]
+    .map(([district, values]) => ({ district, ...percentiles(values) }))
+    .sort((a, b) => a.median - b.median);
+
+  // 最便宜與最貴的行政區中位差超過 15%，就當作橫跨不同價位帶。
+  // 這個門檻對應的是「換一個區就換一個價格級距」的實務感受：以練馬區 8.6 萬
+  // 對豐島區 10.1 萬（差 17%）來說，兩者確實是不同的預算級距，不能混為一談。
+  const cheapest = segments[0];
+  const priciest = segments[segments.length - 1];
+  const spread = segments.length > 1 && cheapest.median > 0 &&
+    (priciest.median - cheapest.median) / cheapest.median > 0.15;
+
+  return { ...percentiles(pool), sampleCount: pool.length, basis, segments, spread };
 }
 
 /* ── 各軸判斷 ───────────────────────────────────────────── */
@@ -177,7 +258,7 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
   const budget = criteria.maxBudget;
   const feeState = criteria.budgetIncludesFees;
   const detail = budget
-    ? `${criteria.minBudget ? `${man(criteria.minBudget)}～` : "上限 "}${man(budget)}${feeState === true ? "（含管理費）" : feeState === false ? "（不含管理費）" : ""}`
+    ? `${criteria.minBudget ? `${manBudget(criteria.minBudget)}～` : "上限 "}${manBudget(budget)}${feeState === true ? "（含管理費）" : feeState === false ? "（不含管理費）" : ""}`
     : null;
 
   if (!budget) {
@@ -195,7 +276,13 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     };
   }
 
-  const drivers = [`${range.basis}套用你的條件後，行情約 ${yen(range.low)}～${yen(range.high)}，中位約 ${yen(range.median)}`];
+  // 分布橫跨不同價位帶時，單一區間會產生對應不到任何地點的中間值，改成分段講。
+  const segmentText = range.segments
+    .map(seg => `${seg.district}約 ${man(seg.median)}`)
+    .join("、");
+  const drivers = range.spread
+    ? [`${range.basis}套用你的條件後，各區價位差距不小：${segmentText}`]
+    : [`${range.basis}套用你的條件後，行情約 ${yen(range.low)}～${yen(range.high)}，中位約 ${yen(range.median)}`];
   if (feeState === false) drivers.push("管理費另計，實付會再高一些");
   const feeStep = feeState === null || feeState === undefined ? "順帶確認預算含不含管理費，這會直接影響可選範圍。" : undefined;
 
@@ -205,6 +292,11 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     criteria.buildingAgeMax ? "屋齡" : null,
     criteria.walkMinutes ? "徒步距離" : null
   ].filter(Boolean) as string[];
+
+  // 預算構不到行情時，先看看是不是「某幾個區其實買得起」——
+  // 只講一句「提高到 X 萬」而不說 X 萬對應哪裡，使用者照做仍然找不到房子。
+  const affordable = range.segments.filter(seg => seg.low <= budget);
+  const cheapest = range.segments[0];
 
   if (range.median <= budget) {
     return {
@@ -218,25 +310,51 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     const share = Math.round(((budget - range.low) / span) * 100);
     return {
       key: "budget", label: "預算", detail, status: "部分符合",
-      headline: `預算落在行情偏低端，約 ${Math.min(95, Math.max(10, share))}% 的物件在範圍內。`,
+      headline: range.spread && affordable.length
+        ? `這個預算在${affordable.map(s => s.district).join("、")}找得到，其他區要再往上加。`
+        : `預算落在行情偏低端，約 ${Math.min(95, Math.max(10, share))}% 的物件在範圍內。`,
       drivers,
-      nextStep: loosenable.length
-        ? `鎖定行情較低的車站，或放寬${loosenable.join("、")}。`
-        : "往行情較低的車站找，可選數量會明顯增加。",
+      nextStep: range.spread && affordable.length
+        ? `把搜尋集中在${affordable.map(s => s.district).join("、")}，其他區同條件約 ${man(range.median)}。`
+        : loosenable.length
+          ? `鎖定行情較低的車站，或放寬${loosenable.join("、")}。`
+          : "往行情較低的車站找，可選數量會明顯增加。",
       supplyImpact: 1
     };
   }
+
+  // 容差帶：行情本來就是估算，差幾個百分點屬於雜訊。
+  // 沒有這段的話 ¥70,000 對上低端 ¥71,000 會被判「需調整」，還建議使用者
+  // 「提高到 7.1 萬」——為了 1,000 円叫人改預算，只會讓整份評估看起來不可信。
+  // 同時這也消掉 range.low 上的斷崖（¥71,000 部分符合 / ¥70,999 需調整）。
   const gapRatio = (range.low - budget) / budget;
-  const gapPercent = Math.max(1, Math.round(gapRatio * 100));
+  if (gapRatio <= 0.05) {
+    return {
+      key: "budget", label: "預算", detail, status: "部分符合",
+      headline: `預算幾乎貼齊行情低端，能找但選擇不多。`,
+      drivers,
+      nextStep: loosenable.length
+        ? `優先找行情較低的車站，或放寬${loosenable.join("、")}就會鬆一些。`
+        : "優先找行情較低的車站，可選數量會明顯增加。",
+      supplyImpact: 1
+    };
+  }
+
+  const gapPercent = Math.round(gapRatio * 100);
+  const withinReach = gapRatio <= 0.15;
   return {
     key: "budget", label: "預算", detail,
-    status: gapRatio <= 0.15 ? "需調整" : "難度高",
-    headline: `預算比指定範圍的行情低端還少約 ${gapPercent}%。`,
+    status: withinReach ? "需調整" : "難度高",
+    headline: range.spread
+      ? `這個預算在指定範圍內都構不到，最接近的是${cheapest.district}（約 ${man(cheapest.median)}）。`
+      : `預算比指定範圍的行情低端還少約 ${gapPercent}%。`,
     drivers,
-    nextStep: gapRatio <= 0.15
-      ? `月租上限提高到約 ${man(range.low)}，或改找行情較低的區域。`
-      : `維持這個預算就要換區域；指定範圍的最低行情約 ${man(range.low)}。`,
-    supplyImpact: gapRatio <= 0.15 ? 2 : 3
+    // 低端來自哪個區要講清楚。只說「提高到 X 萬」而不說那是哪裡的價位，
+    // 使用者會以為加錢就能留在原本想住的地方。
+    nextStep: withinReach
+      ? `月租上限提高到約 ${man(range.low)}${range.spread ? `（${cheapest.district}一帶的價位）` : ""}，或改找行情較低的區域。`
+      : `維持這個預算就要換區域；指定範圍內最低約 ${man(range.low)}${range.spread ? `，在${cheapest.district}` : ""}。`,
+    supplyImpact: withinReach ? 2 : 3
   };
 }
 

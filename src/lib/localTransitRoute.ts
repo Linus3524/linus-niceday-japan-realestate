@@ -110,3 +110,62 @@ export function findLocalTransitRoute(originValue: string, destinationValue: str
     segments
   };
 }
+
+/** 各停（每站都停）的班次。急行與特急跳站，數起來的「站數」會失真。 */
+const LOCAL_SERVICE_PATTERN = /各駅停車|各停|普通|local/i;
+
+/**
+ * 從指定車站出發，「搭同一條線的各停」坐 maxStations 站以內可到達的所有車站。
+ *
+ * 「池袋五六站就能到」是使用者很常寫、但用通勤時間或行政區都表達不出來的條件。
+ * 少了它，「西武池袋線沿線」會把 0 站的池袋本身與 20 站外的所澤一起當成同一個
+ * 行情範圍，估出來的區間對應不到任何真實地點。
+ *
+ * 兩個限制缺一不可，實測都是必要的：
+ *
+ * 【不允許轉乘】使用者說「幾站」指的是搭一班車坐幾站。放開轉乘後池袋 6 站可達
+ * 1019 站，等於整個關東，完全失去篩選意義。
+ *
+ * 【只跟各停】圖上一條邊是「該班次的一次停靠」，所以特急從池袋到所沢只算 1 站。
+ * 照這樣算，連「池袋 1 站內」都會включ所澤市。使用者說「五六站」時看的是路線圖上
+ * 的站數，對應的是各停，因此跳站的班次要排除。若某站在該線上沒有標示各停的邊，
+ * 就退而取最短車程的邊（相鄰站），避免資料標示不全時整條線斷掉。
+ */
+export function stationsWithinHops(originValue: string, maxStations: number): Set<string> {
+  const origin = station(originValue);
+  const reached = new Set<string>();
+  if (!graph.stations[origin] || maxStations <= 0) return reached;
+
+  const localEdges = (from: string, line?: string) => {
+    const edges = (graph.stations[from] || []).filter(e => !line || e.lineName === line);
+    const locals = edges.filter(e => LOCAL_SERVICE_PATTERN.test(e.headsign || ""));
+    if (locals.length) return locals;
+    // 沒有各停標示時，用最短車程當作相鄰站，逐線各取一組。
+    const byLine = new Map<string, Edge>();
+    for (const edge of edges) {
+      const best = byLine.get(edge.lineName);
+      if (!best || edge.durationMinutes < best.durationMinutes) byLine.set(edge.lineName, edge);
+    }
+    return [...byLine.values()];
+  };
+
+  reached.add(origin);
+  let frontier: Array<{ at: string; line: string }> = [];
+  for (const edge of localEdges(origin)) {
+    reached.add(edge.to);
+    frontier.push({ at: edge.to, line: edge.lineName });
+  }
+
+  for (let hop = 1; hop < maxStations; hop += 1) {
+    const next: Array<{ at: string; line: string }> = [];
+    for (const current of frontier) {
+      for (const edge of localEdges(current.at, current.line)) {
+        if (!reached.has(edge.to)) reached.add(edge.to);
+        next.push({ at: edge.to, line: edge.lineName });
+      }
+    }
+    if (!next.length) break;
+    frontier = next;
+  }
+  return reached;
+}

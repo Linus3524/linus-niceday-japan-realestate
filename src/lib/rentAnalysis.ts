@@ -47,6 +47,14 @@ export interface RentSearchCriteria {
   commuteMinutes?: number | null;
   /** 理想通勤時間；commuteMinutes 保留為最長可接受時間。 */
   commutePreferredMinutes?: number | null;
+  /**
+   * 距通勤目的地最多幾站，例如「池袋五六站就能到」＝ 6。
+   *
+   * 這是使用者很常講、但用時間或行政區都表達不出來的條件：一條線橫跨的行政區
+   * 行情差距極大（西武池袋線從豐島區到所澤市），只用「沿線」當範圍會把 0 站的
+   * 池袋本身與 20 站外的所澤一起算進行情，估出來的區間對應不到任何真實地點。
+   */
+  commuteMaxStations?: number | null;
   locationPreference?: string | null;
   nearbyAmenity?: string | null;
   amenityWalkMinutes?: number | null;

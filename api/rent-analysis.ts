@@ -74,7 +74,8 @@ export default async function handler(req: any, res: any) {
           properties: {
             roomType: { type: Type.STRING, enum: ["r1", "k1", "ldk1", "ldk2"] },
             areaMin: { type: Type.NUMBER, nullable: true },
-            maxBudget: { type: Type.NUMBER, nullable: true, description: "每月預算，單位為日圓；萬円須換算為日圓。" },
+            maxBudget: { type: Type.NUMBER, nullable: true, description: "每月預算上限，單位為日圓；萬円須換算為日圓。" },
+            minBudget: { type: Type.NUMBER, nullable: true, description: "使用者給預算區間時的下限，單位為日圓，例如「5萬多到6萬多」填 50000。只給單一數字或上限時填 null。" },
             budgetIncludesFees: { type: Type.BOOLEAN, nullable: true },
             district: { type: Type.STRING, nullable: true },
             districts: { type: Type.ARRAY, items: { type: Type.STRING } },
@@ -86,6 +87,7 @@ export default async function handler(req: any, res: any) {
             commuteStations: { type: Type.ARRAY, items: { type: Type.STRING } },
             commuteMinutes: { type: Type.NUMBER, nullable: true },
             commutePreferredMinutes: { type: Type.NUMBER, nullable: true, description: "理想通勤時間；最長可接受時間放 commuteMinutes。" },
+            commuteMaxStations: { type: Type.NUMBER, nullable: true, description: "距通勤目的地最多幾站，例如「池袋五六站就能到」填 6、「三站內」填 3。給範圍時取較寬鬆的那個數字。沒提到站數就填 null，不要用通勤時間換算。" },
             locationPreference: { type: Type.STRING, nullable: true },
             nearbyAmenity: { type: Type.STRING, nullable: true },
             amenityWalkMinutes: { type: Type.NUMBER, nullable: true },
@@ -131,7 +133,7 @@ export default async function handler(req: any, res: any) {
               }
             }
           },
-          required: ["roomType", "areaMin", "maxBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
+          required: ["roomType", "areaMin", "maxBudget", "minBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "commuteMaxStations", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
         },
         systemInstruction: `你是日本租屋需求理解器。使用者會用自由、模糊、跳號或口語的方式描述需求（例如「2.未定」「5.不知道」「可能需要含家具？」），請保留原意並合理結構化。
 
@@ -141,7 +143,7 @@ export default async function handler(req: any, res: any) {
 - 「不知道」「未定」「還沒想好」「再看看」代表未指定，對應欄位回傳 null，不要轉成任何條件。
 - 帶問號或「可能」「也許」的條件仍要萃取，但那是不確定的偏好，不是硬性條件。
 
-未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；同時有理想與最長通勤時間時，理想值放 commutePreferredMinutes，最長值放 commuteMinutes；無法化成單一車站但仍有意義的描述保留在 locationPreference。
+未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；同時有理想與最長通勤時間時，理想值放 commutePreferredMinutes，最長值放 commuteMinutes；提到「幾站以內」「五六站就能到」時把站數放 commuteMaxStations（有範圍取寬鬆值），這與通勤時間是不同條件，不要互相換算；無法化成單一車站但仍有意義的描述保留在 locationPreference。
 
 入住時間、目前居住地、入社時間、同住人數與初期費用上限要分別放入 moveInTiming、currentResidence、employmentStartTiming、householdSize、initialCostBudget；「獨居」等於 householdSize 1。
 
