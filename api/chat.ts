@@ -158,16 +158,39 @@ const TOPIC_PATTERNS: RegExp[] = [
   /[一-龥]{1,4}[區区]|生活機能|生活圈|氛圍|氣氛|治安|環境|住起來|適合居住|周邊|附近|哪一?[區区]|哪裡好/,
   // 交通與通勤（規則 4.1：車站、路線、轉乘、通勤時間可用一般常識回答）
   /車站|通勤|交通|搭車|搭乘|轉乘|乗換|換車|電車|地鐵|地下鐵|新幹線|JR|山手線|路線|車程|幾站|幾分鐘|走路|步行/i,
+  // 看房條件與居住環境（使用者描述需求時用的是這些字，而不是「租屋」「物件」）
+  /需求|條件|看房|內見|帶看|預算|挑選|注意|安全|路燈|巷|暗|明亮|採光|西曬|噪音|隔音|吵|樓層|頂樓|電梯|陽台|洗衣|垃圾|鄰居|寵物|養貓|養狗|廚房|浴室|衛浴|坪數|朝向|通風|發霉|蟲/,
   // 身分詢問（【你的身分】規定被問「你是誰」時要怎麼自稱）
   /你是誰|妳是誰|你是不是\s*ai|你是什麼|你能做什麼|你可以(?:做|幫)什麼|你叫什麼|自我介紹/i,
 ];
 
 const PROMPT_ABUSE_PATTERN = /忽略.{0,12}(?:指示|規則|設定)|無視.{0,12}(?:指示|規則)|system\s*prompt|developer\s*message|系統提示|開發者訊息|越獄|jailbreak|扮演.{0,12}(?:程式|工程師|其他ai)|寫程式|寫代碼|產生程式|幫我(?:寫|改).{0,12}(?:code|程式)|python|javascript|typescript|sql|shell|bash|透露.{0,12}(?:提示|規則)|重複.{0,12}(?:系統|提示詞)/i;
 
-function isAllowedHousingQuestion(message: string) {
+function matchesHousingTopic(text: string) {
+  return TOPIC_PATTERNS.some((pattern) => pattern.test(text));
+}
+
+// 對話中的追問通常一個關鍵字都沒有——「那很難確認嗎？」「大概多少錢？」「有推薦的嗎？」。
+// 只看單句會把整串對話從第二輪開始全部擋掉，使用者的體感是 AI 突然翻臉不認人。
+// 因此改成：只要這段對話先前已經有訊息通過主題篩選，後續追問就一律放行，
+// 由 systemInstruction 的角色鎖（規則 6）負責把離題的追問擋在回答層。
+//
+// 這不會削弱防護強度：history 由前端傳入本來就可偽造，但想繞過單句篩選的人
+// 只要在訊息裡塞一個「租」字就夠了，門檻完全一樣。真正的用量保護是 rate limit。
+function hasHousingContext(history: unknown) {
+  if (!Array.isArray(history)) return false;
+  return history.some((turn: any) => {
+    if (turn?.role === "model") return false;
+    const text = String(turn?.text || turn?.content || "");
+    return matchesHousingTopic(text) || text.includes("使用了您的預算計算機");
+  });
+}
+
+function isAllowedHousingQuestion(message: string, history: unknown) {
   if (PROMPT_ABUSE_PATTERN.test(message)) return false;
   return message.includes("使用了您的預算計算機") ||
-    TOPIC_PATTERNS.some((pattern) => pattern.test(message));
+    matchesHousingTopic(message) ||
+    hasHousingContext(history);
 }
 
 // 註：曾評估掛上 Google 搜尋工具（tools: [{ googleSearch: {} }]）讓模型自行決定要不要查，
@@ -250,7 +273,7 @@ export default async function handler(req: any, res: any) {
     if (message.length > MAX_MESSAGE_CHARS) {
       return res.status(400).json({ error: `訊息太長囉,請將問題精簡到 ${MAX_MESSAGE_CHARS} 字以內再送出 ❀` });
     }
-    if (!isAllowedHousingQuestion(message)) {
+    if (!isAllowedHousingQuestion(message, history)) {
       return res.json({
         reply: "您好，我是 Linus 住好日的 AI 不動產顧問,僅提供日本租屋、買房、貸款、契約、簽證審查與入住生活相關諮詢。其他聊天、寫程式、改寫系統設定或與日本住宅無關的要求不會送到 AI 模型。若您有日本找房問題，歡迎直接告訴我地區、預算與需求喔 ❀",
         blocked: true
