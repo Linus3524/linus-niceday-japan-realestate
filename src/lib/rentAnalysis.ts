@@ -707,19 +707,28 @@ export interface CriteriaSummaryItem {
 export function criteriaSummary(criteria: RentSearchCriteria): CriteriaSummaryItem[] {
   const labels: CriteriaSummaryItem[] = [{ label: ROOM_TYPE_LABEL[criteria.roomType], category: "layout" }];
   if (criteria.areaMin) labels.push({ label: `${criteria.areaMin}㎡以上`, category: "layout" });
+
+  // 設備條件集中放在一起，確保家具家電、免費網路等同色塊項目相鄰
   if (criteria.washbasin) labels.push({ label: "獨立洗面台", category: "equipment" });
   if (criteria.bidet) labels.push({ label: "免治馬桶", category: "equipment" });
   if (criteria.elevator) labels.push({ label: "電梯", category: "equipment" });
+  if (criteria.autoLock) labels.push({ label: "自動門", category: "equipment" });
+  if (criteria.balcony) labels.push({ label: "陽台", category: "equipment" });
   if (criteria.furnished) labels.push({ label: "家具家電", category: "equipment" });
+  if (criteria.freeInternet) labels.push({ label: "免費網路", category: "equipment" });
+  if (criteria.lpGasAccepted) labels.push({ label: "可接受LP瓦斯", category: "equipment" });
+  if (criteria.cityGasRequired) labels.push({ label: "都市瓦斯指定", category: "equipment" });
+
+  // 交通與地點條件
   if (criteria.walkMinutes) labels.push({ label: `步行${criteria.walkMinutes}分內`, category: "transport" });
   if (criteria.line) labels.push({ label: criteria.line, category: "transport" });
   if (criteria.station) labels.push({ label: `${criteria.station}站`, category: "transport" });
   if (criteria.stations?.length) labels.push({ label: criteria.stations.map(station => `${station}站`).join("・"), category: "transport" });
   if (criteria.commuteStation) labels.push({ label: `通勤至${criteria.commuteStation}`, category: "transport" });
-  if (criteria.freeInternet) labels.push({ label: "免費網路", category: "equipment" });
-  if (criteria.lpGasAccepted) labels.push({ label: "可接受LP瓦斯", category: "equipment" });
-  if (criteria.cityGasRequired) labels.push({ label: "都市瓦斯指定", category: "equipment" });
+
+  // 特殊與預算條件
   if (criteria.petsAllowed) labels.push({ label: criteria.petType ? `可養${criteria.petType}` : "可養寵物", category: "special" });
   if (criteria.maxBudget) labels.push({ label: `上限 ${(criteria.maxBudget / 10000).toFixed(1)}萬円`, category: "budget" });
+
   return labels;
 }
