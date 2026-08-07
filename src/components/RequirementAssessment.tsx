@@ -37,7 +37,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
           <ClipboardCheck className="h-4 w-4 text-[#00a174]" />
           <h4 id="requirement-assessment-title" className="text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
         </div>
-        <p className="mt-1 font-sans text-xs leading-relaxed text-[#66736C]">評估你輸入的這組條件本身；右側是依此推導的可搜尋方向</p>
+        <p className="mt-1 font-sans text-xs leading-relaxed text-[#66736C]">評估輸入的這組條件本身；右側是依此推導的可搜尋方向</p>
 
         <div className={`mt-3 border p-3 ${overallStyle[overall.level]}`}>
           <div className="flex items-center gap-2">

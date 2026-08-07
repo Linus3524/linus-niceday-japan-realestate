@@ -281,8 +281,8 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     .map(seg => `${seg.district}約 ${man(seg.median)}`)
     .join("、");
   const drivers = range.spread
-    ? [`${range.basis}套用你的條件後，各區價位差距不小：${segmentText}`]
-    : [`${range.basis}套用你的條件後，行情約 ${yen(range.low)}～${yen(range.high)}，中位約 ${yen(range.median)}`];
+    ? [`${range.basis}在此條件下，各區價位差距不小：${segmentText}`]
+    : [`${range.basis}在此條件下，行情約 ${yen(range.low)}～${yen(range.high)}，中位約 ${yen(range.median)}`];
   if (feeState === false) drivers.push("管理費另計，實付會再高一些");
   const feeStep = feeState === null || feeState === undefined ? "順帶確認預算含不含管理費，這會直接影響可選範圍。" : undefined;
 
@@ -547,7 +547,7 @@ function equipmentAxis(criteria: RentSearchCriteria): AxisVerdict | null {
       detail: [...equipment, `家具家電（${priorityLabel}）`].join("・"),
       status: uncertain ? "待確認" : optional ? "符合" : "需調整",
       headline: optional
-        ? "附家具家電的房源較少，但你已表明沒有也可以，不會因此縮小搜尋範圍。"
+        ? "附家具家電的房源較少，但已標記為無此需求亦可，不會因此縮小搜尋範圍。"
         : "日本長期租賃以空屋為主，附家具家電的房源相對少。",
       drivers: [
         optional
