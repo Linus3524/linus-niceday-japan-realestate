@@ -346,14 +346,14 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     key: "budget", label: "預算", detail,
     status: withinReach ? "需調整" : "難度高",
     headline: range.spread
-      ? `這個預算在指定範圍內都構不到，最接近的是${cheapest.district}（約 ${man(cheapest.median)}）。`
-      : `預算比指定範圍的行情低端還少約 ${gapPercent}%。`,
+      ? `這個預算低於指定區域的起跳行情，目前最接近預算的是 ${cheapest.district}（約 ${man(cheapest.median)}）。`
+      : `這個預算低於指定區域的起跳行情約 ${gapPercent}%。`,
     drivers,
     // 低端來自哪個區要講清楚。只說「提高到 X 萬」而不說那是哪裡的價位，
     // 使用者會以為加錢就能留在原本想住的地方。
     nextStep: withinReach
-      ? `月租上限提高到約 ${man(range.low)}${range.spread ? `（${cheapest.district}一帶的價位）` : ""}，或改找行情較低的區域。`
-      : `維持這個預算就要換區域；指定範圍內最低約 ${man(range.low)}${range.spread ? `，在${cheapest.district}` : ""}。`,
+      ? `建議將月租上限微調至約 ${man(range.low)}${range.spread ? `（${cheapest.district}一帶的起跳價）` : ""}，或是考量周邊行情更親民的區域。`
+      : `若希望維持目前的預算，建議考慮調整搜尋區域；指定範圍內相對親民的起跳行情約為 ${man(range.low)}${range.spread ? `（${cheapest.district}）` : ""}。`,
     supplyImpact: withinReach ? 2 : 3
   };
 }
@@ -698,7 +698,9 @@ function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   const drivers = unverified
     .map(condition => {
       const knowledge = knowledgeOf(condition);
-      return knowledge ? `${condition}｜${knowledge.advice}` : null;
+      if (!knowledge) return null;
+      const advice = knowledge.advice.trim();
+      return advice.startsWith(condition) ? advice : `${condition}｜${advice}`;
     })
     .filter(Boolean) as string[];
 
@@ -842,8 +844,8 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
     return {
       level: "難度高",
       headline: blocking.length
-        ? `${blocking.map(axis => axis.label).join("、")}會讓符合的房源變得很少。`
-        : "條件疊加後，同時滿足全部要求的房源會很少。",
+        ? `${blocking.map(axis => axis.label).join("、")}會對可選房源數量造成較大限制，建議稍微彈性調整。`
+        : "多項條件疊加後，同時滿足全部要求的房源相對較少。",
       reasons: reasons.length ? reasons : ["多項條件同時限制供給"],
       loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined
     };

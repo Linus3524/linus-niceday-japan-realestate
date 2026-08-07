@@ -73,16 +73,16 @@ export function RequirementAssessment({ criteria, recommendations }: {
               </div>
               <span className={`shrink-0 border px-2.5 py-1 text-[10px] font-bold ${badgeStyle[axis.status]}`}>{axis.status}</span>
             </div>
-            <p className="mt-2 text-[11px] font-bold leading-relaxed text-[#1A2A22]">{axis.headline}</p>
+            <p className="mt-2 text-[11px] font-bold leading-normal text-[#1A2A22]">{axis.headline}</p>
             {axis.drivers.length > 0 && (
-              <ul className="mt-1.5 space-y-1 border-l-2 border-[#9ee2cf] pl-2">
+              <ul className="mt-1.5 space-y-1 border-l-2 border-[#9ee2cf] py-0.5 pl-2.5">
                 {axis.drivers.map(driver => (
-                  <li key={driver} className="text-[10px] leading-relaxed text-[#66736C]">{driver}</li>
+                  <li key={driver} className="text-[11px] leading-normal text-[#52635A]">{driver}</li>
                 ))}
               </ul>
             )}
             {axis.nextStep && (
-              <p className="mt-1.5 text-[10px] leading-relaxed text-[#007d5a]">→ {axis.nextStep}</p>
+              <p className="mt-1.5 text-[11px] leading-normal font-medium text-[#007d5a]">→ {axis.nextStep}</p>
             )}
           </div>
         ))}
