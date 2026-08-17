@@ -22,15 +22,22 @@ interface AggregateRow {
   visitors: number;
 }
 
-/** 月份字串換算成查詢區間；未來的月份會被截到今天，避免白查。 */
+/**
+ * 月份字串換算成查詢區間。
+ *
+ * until 是「不含」的邊界，日期字串會被當成該日 00:00。所以查本月時不能截到
+ * 「今天」——那等於把今天整天的資料排除掉，畫面上會出現有訪客數卻沒有任何
+ * 國家與頁面的怪狀態。要截就截到「明天」，今天的資料才進得來。
+ */
 function monthRange(month: string) {
   const [year, mon] = month.split("-").map(Number);
   const start = new Date(Date.UTC(year, mon - 1, 1));
-  const end = new Date(Date.UTC(year, mon, 1));
+  const monthEnd = new Date(Date.UTC(year, mon, 1));
   const now = new Date();
+  const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
   return {
     since: start.toISOString().slice(0, 10),
-    until: (end > now ? now : end).toISOString().slice(0, 10),
+    until: (monthEnd > tomorrow ? tomorrow : monthEnd).toISOString().slice(0, 10),
   };
 }
 
