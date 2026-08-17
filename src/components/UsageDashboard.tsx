@@ -29,6 +29,23 @@ interface UsageSummary {
   geo: Record<string, Record<string, number>>;
 }
 
+interface AggregateRow { label: string; count: number; visitors: number }
+
+interface TrafficSummary {
+  month: string;
+  visitors: number;
+  pageviews: number;
+  countries: AggregateRow[];
+  pages: AggregateRow[];
+  referrers: AggregateRow[];
+  events: AggregateRow[];
+}
+
+const EVENT_LABEL: Record<string, string> = {
+  "calculator-applied": "把需求帶入計算機",
+  "rent-analysis-submitted": "送出 AI 需求分析",
+};
+
 function monthOptions() {
   const options: string[] = [];
   const now = new Date();
@@ -55,6 +72,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
   const [tokenInput, setTokenInput] = useState("");
   const [month, setMonth] = useState(() => monthOptions()[0]);
   const [data, setData] = useState<UsageSummary | null>(null);
+  const [traffic, setTraffic] = useState<TrafficSummary | null>(null);
+  // 流量區塊的狀態獨立於功能次數：Vercel token 沒設或查詢失敗時，
+  // 功能次數仍然要正常顯示，不能因為半邊壞掉就整頁空白。
+  const [trafficNote, setTrafficNote] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,8 +83,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     if (!activeToken) return;
     setLoading(true);
     setError(null);
+    setTrafficNote(null);
+
+    const usage = fetch(`/api/usage-stats?token=${encodeURIComponent(activeToken)}&month=${targetMonth}`);
+    const flow = fetch(`/api/vercel-analytics?token=${encodeURIComponent(activeToken)}&month=${targetMonth}`);
+
     try {
-      const response = await fetch(`/api/usage-stats?token=${encodeURIComponent(activeToken)}&month=${targetMonth}`);
+      const response = await usage;
       if (response.status === 401) throw new Error("Token 不正確。");
       if (response.status === 503) throw new Error("伺服器尚未設定 ANALYTICS_TOKEN 或 Upstash，請確認環境變數。");
       if (!response.ok) throw new Error(`讀取失敗（HTTP ${response.status}）。`);
@@ -71,9 +97,24 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     } catch (err: any) {
       setError(err?.message || "讀取失敗。");
       setData(null);
-    } finally {
-      setLoading(false);
     }
+
+    try {
+      const response = await flow;
+      if (response.ok) {
+        setTraffic(await response.json());
+      } else {
+        const body = await response.json().catch(() => null);
+        // 501 = 還沒設定 token（待辦），其餘才是真的故障。
+        setTrafficNote(body?.error || `流量數據讀取失敗（HTTP ${response.status}）。`);
+        setTraffic(null);
+      }
+    } catch {
+      setTrafficNote("流量數據讀取失敗。");
+      setTraffic(null);
+    }
+
+    setLoading(false);
   };
 
   useEffect(() => { load(token, month); }, [token, month]);
@@ -172,8 +213,72 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <div className="mb-6 border border-[#E4C9A8] bg-[#FBF6EF] p-4 text-sm text-[#7A5B36]">{error}</div>
         )}
 
+        {/* 流量區：訪客與瀏覽數來自 Vercel Web Analytics */}
+        {traffic && (
+          <section className="mb-8">
+            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+              網站流量
+              <span className="ml-2 font-normal text-xs text-zinc-400">{traffic.month}・來自 Vercel</span>
+            </h2>
+            <div className="mb-3 grid gap-3 sm:grid-cols-2">
+              <div className="border border-[#DDE3DF] bg-white p-5">
+                <div className="text-xs text-zinc-500">不重複訪客</div>
+                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
+              </div>
+              <div className="border border-[#DDE3DF] bg-white p-5">
+                <div className="text-xs text-zinc-500">總瀏覽次數</div>
+                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.pageviews.toLocaleString()}</div>
+              </div>
+            </div>
+            <div className="grid gap-3 lg:grid-cols-3">
+              {([
+                ["來源國家", traffic.countries, (l: string) => COUNTRY_LABEL[l] ?? l],
+                ["熱門頁面", traffic.pages, (l: string) => l],
+                ["連結來源", traffic.referrers, (l: string) => l || "直接進入"],
+              ] as [string, AggregateRow[], (l: string) => string][]).map(([title, rows, format]) => (
+                <div key={title} className="border border-[#DDE3DF] bg-white">
+                  <h3 className="border-b border-[#DDE3DF] px-4 py-2.5 text-xs font-bold text-[#1A2A22]">{title}</h3>
+                  <ul className="divide-y divide-[#F5F8F6]">
+                    {rows.length ? rows.map(row => (
+                      <li key={row.label} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
+                        <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
+                        <span className="shrink-0 font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()}</span>
+                      </li>
+                    )) : (
+                      <li className="px-4 py-6 text-center text-xs text-zinc-400">還沒有資料</li>
+                    )}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            {traffic.events.length > 0 && (
+              <div className="mt-3 border border-[#DDE3DF] bg-white">
+                <h3 className="border-b border-[#DDE3DF] px-4 py-2.5 text-xs font-bold text-[#1A2A22]">前端操作事件</h3>
+                <ul className="divide-y divide-[#F5F8F6]">
+                  {traffic.events.map(row => (
+                    <li key={row.label} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
+                      <span className="text-[#3F5147]">{EVENT_LABEL[row.label] ?? row.label}</span>
+                      <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
+
+        {trafficNote && (
+          <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-zinc-500">
+            網站流量：{trafficNote}
+          </div>
+        )}
+
         {data && (
           <>
+            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+              功能使用次數
+              <span className="ml-2 font-normal text-xs text-zinc-400">伺服器端實際呼叫</span>
+            </h2>
             <div className="mb-6 grid gap-3 sm:grid-cols-3">
               {features.map(feature => (
                 <div key={feature} className="border border-[#DDE3DF] bg-white p-5">
@@ -187,8 +292,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             </div>
 
             <p className="mb-6 text-xs text-zinc-500">
-              上方為累計；下方兩張表是 {data.month} 這個月的明細。此頁只統計伺服器端的功能呼叫次數，
-              瀏覽數、停留時間與來源請看 Vercel 的 Analytics 分頁。
+              上方卡片為累計總數；下方兩張表是 {data.month} 這個月的明細。
+              這一區只算伺服器端真正被呼叫的次數，擋廣告的外掛擋不掉，數字比前端事件可靠。
             </p>
 
             <section className="mb-6 border border-[#DDE3DF] bg-white">

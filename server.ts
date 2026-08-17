@@ -12,6 +12,7 @@ import chatHandler from "./api/chat";
 import rentAnalysisHandler from "./api/rent-analysis";
 import marketLookupHandler from "./api/market-lookup";
 import usageStatsHandler from "./api/usage-stats";
+import vercelAnalyticsHandler from "./api/vercel-analytics";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -109,6 +110,10 @@ app.post("/api/rent-analysis", async (req, res) => {
 // 後台使用量查詢（需要 ANALYTICS_TOKEN）。express 的 req.query 與 Vercel 相容。
 app.get("/api/usage-stats", async (req, res) => {
   await usageStatsHandler(req, res);
+});
+
+app.get("/api/vercel-analytics", async (req, res) => {
+  await vercelAnalyticsHandler(req, res);
 });
 
 // 市場行情即時查詢。與可行性判斷分離，只作參考顯示。

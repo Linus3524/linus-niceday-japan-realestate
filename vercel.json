@@ -19,6 +19,10 @@
     {
       "source": "/api/usage-stats",
       "destination": "/api/usage-stats"
+    },
+    {
+      "source": "/api/vercel-analytics",
+      "destination": "/api/vercel-analytics"
     }
   ]
 }
