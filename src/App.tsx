@@ -23,6 +23,7 @@ import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 import { UsageDashboard } from "./components/UsageDashboard";
+import { trackView, type TrackableView } from "./lib/trackView";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -55,6 +56,16 @@ const HERO_ROTATE_MS = 15000;
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
 type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
 const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer"];
+
+// 分頁代號用穩定的語意名稱，不直接沿用內部的 AppTab id：
+// 之後改 UI 的變數命名時，已經累積的統計不會斷掉。
+const TAB_VIEW_NAME: Record<AppTab, TrackableView> = {
+  cards: "rent-guide",
+  buyHouse: "buy-guide",
+  calculator: "calculator",
+  chat: "ai-advisor",
+  contact: "contact",
+};
 
 function getPolicyPageFromHash(): PolicyPageId | null {
   const hash = window.location.hash.slice(1);
@@ -242,6 +253,20 @@ export default function App() {
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
+
+  // 回報目前實際顯示的是哪一頁。放在這裡而不是點擊處理器，是為了同時涵蓋
+  // 直接用網址帶 hash 進站（例如有人把 #threads 分享出去）的情況。
+  // 後台頁自己不列入統計。
+  //
+  // isMobileHome 只有手機版有意義：它為 true 時手機只顯示主視覺，桌機版卻
+  // 早就把當前分頁的內容整頁攤開了。所以桌機一律回報，手機要離開首頁才算。
+  useEffect(() => {
+    if (adminPage) return;
+    if (policyPage) { trackView("policy"); return; }
+    if (isThreadsPage) { trackView("threads"); return; }
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (isDesktop || !isMobileHome) trackView(TAB_VIEW_NAME[activeTab]);
+  }, [adminPage, policyPage, isThreadsPage, isMobileHome, activeTab]);
 
   useEffect(() => {
     const handleScroll = () => {

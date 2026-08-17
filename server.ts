@@ -13,6 +13,7 @@ import rentAnalysisHandler from "./api/rent-analysis";
 import marketLookupHandler from "./api/market-lookup";
 import usageStatsHandler from "./api/usage-stats";
 import vercelAnalyticsHandler from "./api/vercel-analytics";
+import trackViewHandler from "./api/track-view";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -110,6 +111,10 @@ app.post("/api/rent-analysis", async (req, res) => {
 // 後台使用量查詢（需要 ANALYTICS_TOKEN）。express 的 req.query 與 Vercel 相容。
 app.get("/api/usage-stats", async (req, res) => {
   await usageStatsHandler(req, res);
+});
+
+app.post("/api/track-view", async (req, res) => {
+  await trackViewHandler(req, res);
 });
 
 app.get("/api/vercel-analytics", async (req, res) => {

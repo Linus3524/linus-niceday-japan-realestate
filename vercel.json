@@ -23,6 +23,10 @@
     {
       "source": "/api/vercel-analytics",
       "destination": "/api/vercel-analytics"
+    },
+    {
+      "source": "/api/track-view",
+      "destination": "/api/track-view"
     }
   ]
 }

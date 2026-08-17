@@ -19,9 +19,28 @@ import { Redis } from "@upstash/redis";
 
 export type UsageFeature = "chat" | "rent-analysis" | "market-lookup";
 
+/**
+ * 分頁瀏覽。
+ *
+ * 網站是單一路徑加 hash 導覽（#threads、#privacy）、分頁切換則是 React 狀態，
+ * 而 hash 不會送到伺服器——Vercel 眼中永遠只有一頁「/」，它的熱門頁面表格
+ * 對這個站沒有任何資訊量。自己記才知道客人到底在看哪一區。
+ *
+ * 白名單寫死在這裡：這是公開可寫的端點，不限制的話任何人都能塞垃圾鍵值進來。
+ */
+export const TRACKABLE_VIEWS = [
+  "rent-guide", "buy-guide", "calculator", "ai-advisor", "contact", "threads", "policy",
+] as const;
+export type TrackableView = (typeof TRACKABLE_VIEWS)[number];
+
+export function isTrackableView(value: unknown): value is TrackableView {
+  return typeof value === "string" && (TRACKABLE_VIEWS as readonly string[]).includes(value);
+}
+
 const TOTAL_KEY = "linus:usage:total";
 const DAILY_PREFIX = "linus:usage:daily:";
 const GEO_PREFIX = "linus:usage:geo:";
+const VIEWS_PREFIX = "linus:usage:views:";
 // 月度 hash 保留約兩年，足夠看年度趨勢又不會無限成長。
 const MONTH_TTL_SECONDS = 60 * 60 * 24 * 760;
 
@@ -76,6 +95,19 @@ export async function recordUsage(feature: UsageFeature, country = "unknown") {
   }
 }
 
+/** 記一次分頁瀏覽。與 recordUsage 一樣，失敗一律吞掉。 */
+export async function recordView(view: TrackableView) {
+  if (!redis) return;
+  try {
+    const { month } = tokyoParts();
+    const key = `${VIEWS_PREFIX}${month}`;
+    await redis.hincrby(key, view, 1);
+    await redis.expire(key, MONTH_TTL_SECONDS);
+  } catch (error) {
+    console.error("recordView failed (ignored):", error);
+  }
+}
+
 export interface UsageSummary {
   month: string;
   total: Record<string, number>;
@@ -83,6 +115,8 @@ export interface UsageSummary {
   daily: Record<string, Record<string, number>>;
   /** 每個國家每個功能的次數：{ TW: { chat: 30 } } */
   geo: Record<string, Record<string, number>>;
+  /** 每個分頁被看了幾次：{ "rent-guide": 120 } */
+  views: Record<string, number>;
 }
 
 /** 讀取指定月份（預設本月）的彙總。month 格式 YYYY-MM。 */
@@ -90,10 +124,11 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
   if (!redis) throw new Error("Usage metrics storage is not configured.");
   const target = month && /^\d{4}-\d{2}$/.test(month) ? month : tokyoParts().month;
 
-  const [total, dailyRaw, geoRaw] = await Promise.all([
+  const [total, dailyRaw, geoRaw, viewsRaw] = await Promise.all([
     redis.hgetall<Record<string, number>>(TOTAL_KEY),
     redis.hgetall<Record<string, number>>(`${DAILY_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${GEO_PREFIX}${target}`),
+    redis.hgetall<Record<string, number>>(`${VIEWS_PREFIX}${target}`),
   ]);
 
   // hash 的 field 是 "功能:維度"，這裡拆回巢狀結構讓呼叫端好讀。
@@ -115,5 +150,6 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
     total: Object.fromEntries(Object.entries(total || {}).map(([k, v]) => [k, Number(v) || 0])),
     daily: nest(dailyRaw),
     geo: nest(geoRaw),
+    views: Object.fromEntries(Object.entries(viewsRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
   };
 }

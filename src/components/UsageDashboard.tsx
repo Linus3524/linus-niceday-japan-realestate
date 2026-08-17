@@ -27,7 +27,18 @@ interface UsageSummary {
   total: Record<string, number>;
   daily: Record<string, Record<string, number>>;
   geo: Record<string, Record<string, number>>;
+  views: Record<string, number>;
 }
+
+const VIEW_LABEL: Record<string, string> = {
+  "rent-guide": "租屋指南",
+  "buy-guide": "買房指南",
+  "calculator": "預算計算機",
+  "ai-advisor": "AI 顧問",
+  "contact": "聯絡我們",
+  "threads": "Threads 精選",
+  "policy": "條款與隱私",
+};
 
 interface AggregateRow { label: string; count: number; visitors: number }
 
@@ -135,6 +146,16 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     return [...found].sort();
   }, [data]);
 
+  const viewRows = useMemo(() => {
+    const entries = Object.entries(data?.views ?? {})
+      .map(([view, value]) => ({ view, count: Number(value) || 0 }));
+    // 長條以「最多的那一頁」為滿格，比例差距才看得出來。
+    const max = Math.max(1, ...entries.map(entry => entry.count));
+    return entries
+      .map(entry => ({ ...entry, share: Math.round((entry.count / max) * 100) }))
+      .sort((a, b) => b.count - a.count);
+  }, [data]);
+
   const geoRows = useMemo(() => {
     if (!data) return [];
     return Object.entries(data.geo)
@@ -235,10 +256,9 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.pageviews.toLocaleString()}</div>
               </div>
             </div>
-            <div className="grid gap-3 lg:grid-cols-3">
+            <div className="grid gap-3 lg:grid-cols-2">
               {([
                 ["來源國家", traffic.countries, (l: string) => COUNTRY_LABEL[l] ?? l],
-                ["熱門頁面", traffic.pages, (l: string) => l],
                 ["連結來源", traffic.referrers, (l: string) => l || "直接進入"],
               ] as [string, AggregateRow[], (l: string) => string][]).map(([title, rows, format]) => (
                 <div key={title} className="border border-[#DDE3DF] bg-white">
@@ -286,6 +306,38 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {data && (
           <>
+            {/* 分頁瀏覽：自己記的，因為整站只有一個路徑，Vercel 分不出各分頁 */}
+            <section className="mb-8">
+              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+                各分頁瀏覽次數
+                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}</span>
+              </h2>
+              <div className="border border-[#DDE3DF] bg-white">
+                {viewRows.length ? (
+                  <ul className="divide-y divide-[#F5F8F6]">
+                    {viewRows.map(row => (
+                      <li key={row.view} className="flex items-center gap-3 px-4 py-2.5 text-sm">
+                        <span className="w-28 shrink-0 text-[#1A2A22]">{VIEW_LABEL[row.view] ?? row.view}</span>
+                        {/* 長條讓比例一眼可見，不必自己心算百分比 */}
+                        <span className="h-2 flex-1 overflow-hidden bg-[#EEF2F0]">
+                          <span
+                            className="block h-full bg-[#00a174]"
+                            style={{ width: `${row.share}%` }}
+                          />
+                        </span>
+                        <span className="w-20 shrink-0 text-right font-jost font-bold text-[#1A2A22]">
+                          {row.count.toLocaleString()}
+                          <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">{row.share}%</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有資料</p>
+                )}
+              </div>
+            </section>
+
             <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
               功能使用次數
               <span className="ml-2 font-normal text-xs text-zinc-400">伺服器端實際呼叫</span>
