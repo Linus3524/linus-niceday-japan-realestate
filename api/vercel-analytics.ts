@@ -95,12 +95,24 @@ export default async function handler(req: any, res: any) {
     const aggregate = (by: string, limit = 5) =>
       vercelQuery("/v1/query/web-analytics/visits/aggregate", { since, until, by, limit: String(limit) }, apiToken);
 
+    // 自訂事件查詢在 Hobby 方案會回 402（Vercel 把它列為 Pro 以上功能）。
+    // 它只是加分項，不能讓它拖垮整個流量區——先前用 Promise.all 一起等，
+    // 結果這一個 402 就讓訪客數、國家、頁面全部消失，畫面只剩一行錯誤訊息。
+    const eventsOrEmpty = vercelQuery(
+      "/v1/query/web-analytics/events/aggregate",
+      { since, until, by: "eventName", limit: "10" },
+      apiToken,
+    ).catch(error => {
+      console.warn("custom events unavailable (ignored):", error?.message);
+      return null;
+    });
+
     const [count, countries, pages, referrers, events] = await Promise.all([
       vercelQuery("/v1/query/web-analytics/visits/count", { since, until }, apiToken),
       aggregate("country"),
       aggregate("requestPath"),
       aggregate("referrerHostname"),
-      vercelQuery("/v1/query/web-analytics/events/aggregate", { since, until, by: "eventName", limit: "10" }, apiToken),
+      eventsOrEmpty,
     ]);
 
     return res.json({
@@ -113,6 +125,8 @@ export default async function handler(req: any, res: any) {
       pages: toRows(pages),
       referrers: toRows(referrers),
       events: toRows(events),
+      // 前端據此顯示「此方案無法查詢自訂事件」，而不是把空陣列誤解成「沒有人操作」。
+      eventsAvailable: events !== null,
     });
   } catch (error: any) {
     console.error("vercel-analytics error:", error);

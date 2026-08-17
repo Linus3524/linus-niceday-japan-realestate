@@ -39,6 +39,8 @@ interface TrafficSummary {
   pages: AggregateRow[];
   referrers: AggregateRow[];
   events: AggregateRow[];
+  /** Hobby 方案查不到自訂事件（Vercel 回 402），此時為 false。 */
+  eventsAvailable: boolean;
 }
 
 const EVENT_LABEL: Record<string, string> = {
@@ -254,7 +256,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 </div>
               ))}
             </div>
-            {traffic.events.length > 0 && (
+            {!traffic.eventsAvailable && (
+              <p className="mt-3 text-[11px] text-zinc-400">
+                前端操作事件（把需求帶入計算機、送出 AI 需求分析）需要 Vercel Pro 方案才能查詢，
+                目前僅顯示上方流量。這兩個動作的實際次數可從下方「功能使用次數」對照。
+              </p>
+            )}
+            {traffic.eventsAvailable && traffic.events.length > 0 && (
               <div className="mt-3 border border-[#DDE3DF] bg-white">
                 <h3 className="border-b border-[#DDE3DF] px-4 py-2.5 text-xs font-bold text-[#1A2A22]">前端操作事件</h3>
                 <ul className="divide-y divide-[#F5F8F6]">
