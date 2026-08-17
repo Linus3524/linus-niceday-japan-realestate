@@ -8,8 +8,8 @@
     "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
-    ,"transit:build": "node scripts/build-tokyo-transit.mjs",
+    "lint": "tsc --noEmit",
+    "transit:build": "node scripts/build-tokyo-transit.mjs",
     "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
+    "@vercel/analytics": "^2.0.1",
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",

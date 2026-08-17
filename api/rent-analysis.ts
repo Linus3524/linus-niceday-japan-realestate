@@ -3,11 +3,26 @@ import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCrite
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 import { resolveSearchScope } from "../src/lib/requirementVerdict.js";
 import { lookupMarketRate } from "./market-lookup.js";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 
 const MAX_PROMPT_CHARS = 1000;
 const ANALYSIS_RATE_LIMIT = 3;
 const ANALYSIS_RATE_WINDOW_MS = 180_000;
 const analysisRateBuckets = new Map<string, { count: number; resetAt: number }>();
+
+// 與 /api/chat 一致：優先用 Upstash，所有 serverless instance 共用同一組計數。
+// 先前只有下面的記憶體版，而 Vercel 每個 instance 各自一份 bucket，
+// 併發時實際上限會變成 3 × instance 數，等於沒有限流。
+const upstashAnalysisLimiter =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(ANALYSIS_RATE_LIMIT, "180 s"),
+        prefix: "linus-rent-analysis",
+      })
+    : null;
 
 let aiClient: GoogleGenAI | null = null;
 
@@ -20,7 +35,20 @@ function getAiClient() {
   return aiClient;
 }
 
-function getRateLimit(ip: string) {
+async function getRateLimit(ip: string) {
+  if (upstashAnalysisLimiter) {
+    try {
+      const { success, remaining, reset } = await upstashAnalysisLimiter.limit(ip);
+      return {
+        limited: !success,
+        remaining: Math.max(0, remaining),
+        retryAfter: Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
+      };
+    } catch (error) {
+      // Redis 不通時退回記憶體版，而不是把使用者擋在門外。
+      console.error("Upstash rent-analysis rate limit error, falling back to in-memory:", error);
+    }
+  }
   const now = Date.now();
   const bucket = analysisRateBuckets.get(ip);
   if (!bucket || now > bucket.resetAt) {
@@ -55,7 +83,7 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: "請輸入 1～1000 字的租屋需求。" });
     }
     const ip = String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim();
-    const limit = getRateLimit(ip);
+    const limit = await getRateLimit(ip);
     res.setHeader("X-RateLimit-Limit", String(ANALYSIS_RATE_LIMIT));
     res.setHeader("X-RateLimit-Remaining", String(limit.remaining));
     if (limit.limited) {
@@ -210,6 +238,8 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
       attachCommuteRoutes(criteria, buildRentRecommendations(criteria)),
       requestedArea ? lookupMarketRate(requestedArea, criteria.roomType) : Promise.resolve(null)
     ]);
+
+    await recordUsage("rent-analysis", requestCountry(req));
 
     return res.status(200).json({ criteria, recommendations, marketReference, model: "gemini-3.1-flash-lite" });
   } catch (error: any) {

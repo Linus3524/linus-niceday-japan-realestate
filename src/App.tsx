@@ -22,6 +22,7 @@ import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
+import { UsageDashboard } from "./components/UsageDashboard";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -184,6 +185,8 @@ export default function App() {
   const [isMobileHome, setIsMobileHome] = useState(true);
   const [isThreadsPage, setIsThreadsPage] = useState(() => window.location.hash === "#threads");
   const [policyPage, setPolicyPage] = useState<PolicyPageId | null>(() => getPolicyPageFromHash());
+  // 後台使用量頁；沒有連結指向它，直接輸入 #admin 才會進來。
+  const [adminPage, setAdminPage] = useState(() => window.location.hash === "#admin");
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   
   // UI Scroll States for Japanese Editorial Specs
@@ -233,6 +236,7 @@ export default function App() {
     const handleHashChange = () => {
       setIsThreadsPage(window.location.hash === "#threads");
       setPolicyPage(getPolicyPageFromHash());
+      setAdminPage(window.location.hash === "#admin");
       window.scrollTo({ top: 0, behavior: "auto" });
     };
     window.addEventListener("hashchange", handleHashChange);
@@ -541,6 +545,10 @@ export default function App() {
         <ThreadsCarousel pageMode />
       </div>
     );
+  }
+
+  if (adminPage) {
+    return <UsageDashboard onBack={returnHome} />;
   }
 
   if (policyPage) {

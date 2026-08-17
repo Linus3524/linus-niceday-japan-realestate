@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { track } from "@vercel/analytics";
 import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator } from "lucide-react";
 import { budgetModifiers } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
@@ -62,7 +63,11 @@ const modifierAvailabilityImpact: Record<number, { supply: number; competition: 
   24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 }
 };
 
-const AI_ANALYSIS_LIMIT = 5;
+// 必須與 api/rent-analysis.ts 的 ANALYSIS_RATE_LIMIT 一致。
+// 先前這裡是 5、錯誤訊息寫 3、伺服器實際也是 3：第 4、5 次會通過前端、
+// 打到伺服器再拿 429，使用者體感是「還沒到次數就被擋」。
+// 前端限流只是為了少送一次沒用的請求，比後端寬鬆就等於完全沒作用。
+const AI_ANALYSIS_LIMIT = 3;
 const AI_ANALYSIS_WINDOW_MS = 3 * 60 * 1000;
 const AI_ANALYSIS_STORAGE_KEY = "rent-ai-analysis-attempts";
 
@@ -100,9 +105,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
     if (!aiPrompt.trim() || aiLoading) return;
     const waitMinutes = reserveClientAnalysisAttempt();
     if (waitMinutes > 0) {
-      setAiError(`AI 分析每 3 分鐘最多使用 3 次，請約 ${waitMinutes} 分鐘後再試。`);
+      setAiError(`AI 分析每 3 分鐘最多使用 ${AI_ANALYSIS_LIMIT} 次，請約 ${waitMinutes} 分鐘後再試。`);
       return;
     }
+    track("rent-analysis-submitted");
     setAiLoading(true);
     setAiError(null);
     setAppliedNotice(null);
@@ -158,6 +164,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
       criteria.gasBurnersMin && criteria.gasBurnersMin >= 2 ? "twoBurners" : null,
       criteria.cityGasRequired ? "cityGas" : null
     ].filter(Boolean) as RentSearchFilter[]);
+    track("calculator-applied", { mode: calcMode, roomType: criteria.roomType });
     setAppliedNotice(`已將「${toJapanesePlaceName(item.district)}${selectedStation !== "none" ? `・${toJapaneseStationName(selectedStation)}駅` : ""}」與 ${modifiers.length} 項需求帶入下方計算器。`);
 
     window.requestAnimationFrame(() => {

@@ -11,6 +11,7 @@ import { randomUUID } from "crypto";
 import chatHandler from "./api/chat";
 import rentAnalysisHandler from "./api/rent-analysis";
 import marketLookupHandler from "./api/market-lookup";
+import usageStatsHandler from "./api/usage-stats";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -103,6 +104,11 @@ app.get("/api/visitor-count", async (req, res) => {
 // 造成本機測到的結果與線上不同。單一來源才不會再次分岔。
 app.post("/api/rent-analysis", async (req, res) => {
   await rentAnalysisHandler(req, res);
+});
+
+// 後台使用量查詢（需要 ANALYTICS_TOKEN）。express 的 req.query 與 Vercel 相容。
+app.get("/api/usage-stats", async (req, res) => {
+  await usageStatsHandler(req, res);
 });
 
 // 市場行情即時查詢。與可行性判斷分離，只作參考顯示。

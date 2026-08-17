@@ -3,6 +3,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, otherQA, linusContact, rentKnowledgeMeta } from "./rentGuideData.js";
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs, buyKnowledgeMeta, buyBudgetModifiers, taiwanJapanCompareData, buyHouseExpenseDetailData, buyHouseTaxLifecycleData } from "./buyHouseData.js";
+import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 import { overseasScreeningDocuments, domesticScreeningDocuments, domesticScreeningNotice, screeningDocumentDisclaimer, overseasSop, domesticSop, applicationRoutes, processReminders } from "../src/data/rentStaticSearchData.js";
 
 // 這支檔案是 AI 顧問的「唯一實作」。本機 server.ts 只是把 /api/chat 轉接進來
@@ -305,6 +306,8 @@ export default async function handler(req: any, res: any) {
         systemInstruction: SYSTEM_INSTRUCTION
       }
     });
+
+    await recordUsage("chat", requestCountry(req));
 
     let reply = response.text || "非常抱歉，我暫時沒能整理好答覆，歡迎直接用 Line (linus0922) 與我取得聯繫，我會盡快回覆您！❀";
     // 兜底：計算機帶進來的第一句只有地區與預算，模型仍偶爾會直接要求財力證明。
