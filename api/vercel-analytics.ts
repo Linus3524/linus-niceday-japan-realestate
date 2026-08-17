@@ -52,17 +52,21 @@ async function vercelQuery(path: string, params: Record<string, string>, apiToke
   return response.json();
 }
 
+// 兩種資料集的數量欄位名稱不同：visits 用 pageviews，events 用 count。
+// 這幾個都是量值，不能被誤認成維度標籤。
+const METRIC_KEYS = new Set(["count", "visitors", "pageviews"]);
+
 /**
- * aggregate 回傳的維度欄位名稱就是 by 的值（by=country → { country: "TW", count, visitors }）。
- * 這裡不寫死欄位名，改成取「不是 count/visitors 的第一個鍵」，
- * 之後換維度或 Vercel 調整欄位命名都不會壞。
+ * aggregate 回傳的維度欄位名稱就是 by 的值（by=country → { country: "TW", pageviews, visitors }）。
+ * 這裡不寫死欄位名，改成取「第一個不是量值的鍵」，之後換維度或 Vercel 調整
+ * 欄位命名都不會壞。
  */
 function toRows(payload: any): AggregateRow[] {
   return (payload?.data ?? []).map((row: any) => {
-    const labelKey = Object.keys(row).find(key => key !== "count" && key !== "visitors");
+    const labelKey = Object.keys(row).find(key => !METRIC_KEYS.has(key));
     return {
       label: String(row[labelKey ?? ""] ?? "unknown"),
-      count: Number(row.count) || 0,
+      count: Number(row.count ?? row.pageviews) || 0,
       visitors: Number(row.visitors) || 0,
     };
   });

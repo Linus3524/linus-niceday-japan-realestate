@@ -267,7 +267,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     {rows.length ? rows.map(row => (
                       <li key={row.label} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
                         <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
-                        <span className="shrink-0 font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()}</span>
+                        <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
+                          {row.visitors.toLocaleString()}
+                          <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
+                            人／{row.count.toLocaleString()} 次
+                          </span>
+                        </span>
                       </li>
                     )) : (
                       <li className="px-4 py-6 text-center text-xs text-zinc-400">還沒有資料</li>
