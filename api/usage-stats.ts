@@ -6,7 +6,7 @@ import { getUsageSummary, usageMetricsConfigured } from "../src/lib/usageMetrics
  * 需要 ANALYTICS_TOKEN 環境變數；沒設定就一律拒絕，而不是預設開放——
  * 忘記設定的後果應該是「查不到」，不是「全世界都查得到」。
  *
- * 用法：GET /api/usage-stats?token=xxx&month=2026-08
+ * 用法：GET /api/usage-stats?month=2026-08，權杖放 x-analytics-token 標頭。
  */
 export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -20,7 +20,9 @@ export default async function handler(req: any, res: any) {
     return res.status(503).json({ error: "ANALYTICS_TOKEN is not configured." });
   }
 
-  const provided = String(req.query?.token || req.headers?.["x-analytics-token"] || "");
+  // 只認 header，不再接受 ?token=：查詢字串會被寫進 Vercel 的請求日誌、
+  // 瀏覽器歷史與 Referer 標頭，等於在多個地方留下權杖副本。
+  const provided = String(req.headers?.["x-analytics-token"] || "");
   if (provided !== expected) {
     return res.status(401).json({ error: "Unauthorized." });
   }

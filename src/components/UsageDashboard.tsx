@@ -85,8 +85,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     setError(null);
     setTrafficNote(null);
 
-    const usage = fetch(`/api/usage-stats?token=${encodeURIComponent(activeToken)}&month=${targetMonth}`);
-    const flow = fetch(`/api/vercel-analytics?token=${encodeURIComponent(activeToken)}&month=${targetMonth}`);
+    // token 走 header 不走查詢字串：網址會被寫進伺服器日誌、瀏覽器歷史與
+    // Referer 標頭，把權杖放在那裡等於到處留下副本。
+    const auth = { headers: { "x-analytics-token": activeToken } };
+    const usage = fetch(`/api/usage-stats?month=${targetMonth}`, auth);
+    const flow = fetch(`/api/vercel-analytics?month=${targetMonth}`, auth);
 
     try {
       const response = await usage;

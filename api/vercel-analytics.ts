@@ -7,7 +7,7 @@
  * 存取權沿用 ANALYTICS_TOKEN（與 /api/usage-stats 同一把鑰匙），
  * 後台頁面只要驗一次就能同時取兩邊的資料。
  *
- * 用法：GET /api/vercel-analytics?token=xxx&month=2026-08
+ * 用法：GET /api/vercel-analytics?month=2026-08，權杖放 x-analytics-token 標頭。
  */
 
 const VERCEL_API = "https://api.vercel.com";
@@ -72,7 +72,9 @@ export default async function handler(req: any, res: any) {
   if (!expected) {
     return res.status(503).json({ error: "ANALYTICS_TOKEN is not configured." });
   }
-  const provided = String(req.query?.token || req.headers?.["x-analytics-token"] || "");
+  // 只認 header，不再接受 ?token=：查詢字串會被寫進 Vercel 的請求日誌、
+  // 瀏覽器歷史與 Referer 標頭，等於在多個地方留下權杖副本。
+  const provided = String(req.headers?.["x-analytics-token"] || "");
   if (provided !== expected) {
     return res.status(401).json({ error: "Unauthorized." });
   }
