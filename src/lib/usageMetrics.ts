@@ -41,6 +41,10 @@ const TOTAL_KEY = "linus:usage:total";
 const DAILY_PREFIX = "linus:usage:daily:";
 const GEO_PREFIX = "linus:usage:geo:";
 const VIEWS_PREFIX = "linus:usage:views:";
+const SOURCES_PREFIX = "linus:usage:sources:";
+// 來源標籤由網址參數決定，任何人都能亂填。限制不同標籤的數量，
+// 避免有人用隨機字串把 Redis 塞滿；超過上限的新標籤一律歸到 other。
+const MAX_DISTINCT_SOURCES = 50;
 // 月度 hash 保留約兩年，足夠看年度趨勢又不會無限成長。
 const MONTH_TTL_SECONDS = 60 * 60 * 24 * 760;
 
@@ -95,6 +99,39 @@ export async function recordUsage(feature: UsageFeature, country = "unknown") {
   }
 }
 
+/**
+ * 網址上的來源標記（?from=line、?utm_source=fb）。
+ *
+ * 瀏覽器只會在「從網頁點連結」時附上來源網域；從 LINE 對話、QR code、
+ * 手打網址進來的一律是空白，全部混成「直接進入」分不開。自己加標記才知道
+ * 哪個管道有效。Vercel 內建的 UTM 統計要 Enterprise 方案，所以自己記。
+ *
+ * 這是使用者可控的輸入，必須嚴格清洗：只留小寫英數與 - _，長度上限 20。
+ */
+export function normalizeSource(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 20);
+  return clean.length ? clean : null;
+}
+
+/** 記一次來源。同一位訪客每次造訪只會呼叫一次（前端用 sessionStorage 控制）。 */
+export async function recordSource(source: string) {
+  if (!redis) return;
+  try {
+    const { month } = tokyoParts();
+    const key = `${SOURCES_PREFIX}${month}`;
+    let field = source;
+    // 已存在的標籤直接累加；全新的標籤要先確認沒有超過數量上限。
+    if ((await redis.hget(key, source)) === null) {
+      if ((await redis.hlen(key)) >= MAX_DISTINCT_SOURCES) field = "other";
+    }
+    await redis.hincrby(key, field, 1);
+    await redis.expire(key, MONTH_TTL_SECONDS);
+  } catch (error) {
+    console.error("recordSource failed (ignored):", error);
+  }
+}
+
 /** 記一次分頁瀏覽。與 recordUsage 一樣，失敗一律吞掉。 */
 export async function recordView(view: TrackableView) {
   if (!redis) return;
@@ -117,6 +154,8 @@ export interface UsageSummary {
   geo: Record<string, Record<string, number>>;
   /** 每個分頁被看了幾次：{ "rent-guide": 120 } */
   views: Record<string, number>;
+  /** 網址帶了來源標記的造訪次數：{ line: 12, card: 3 } */
+  sources: Record<string, number>;
 }
 
 /** 讀取指定月份（預設本月）的彙總。month 格式 YYYY-MM。 */
@@ -124,11 +163,12 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
   if (!redis) throw new Error("Usage metrics storage is not configured.");
   const target = month && /^\d{4}-\d{2}$/.test(month) ? month : tokyoParts().month;
 
-  const [total, dailyRaw, geoRaw, viewsRaw] = await Promise.all([
+  const [total, dailyRaw, geoRaw, viewsRaw, sourcesRaw] = await Promise.all([
     redis.hgetall<Record<string, number>>(TOTAL_KEY),
     redis.hgetall<Record<string, number>>(`${DAILY_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${GEO_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${VIEWS_PREFIX}${target}`),
+    redis.hgetall<Record<string, number>>(`${SOURCES_PREFIX}${target}`),
   ]);
 
   // hash 的 field 是 "功能:維度"，這裡拆回巢狀結構讓呼叫端好讀。
@@ -151,5 +191,6 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
     daily: nest(dailyRaw),
     geo: nest(geoRaw),
     views: Object.fromEntries(Object.entries(viewsRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
+    sources: Object.fromEntries(Object.entries(sourcesRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
   };
 }

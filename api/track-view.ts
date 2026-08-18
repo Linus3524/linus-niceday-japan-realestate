@@ -1,6 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { isTrackableView, recordView } from "../src/lib/usageMetrics.js";
+import { isTrackableView, normalizeSource, recordSource, recordView } from "../src/lib/usageMetrics.js";
 
 /**
  * 分頁瀏覽回報。
@@ -49,6 +49,11 @@ export default async function handler(req: any, res: any) {
       if (!success) return res.status(204).end();
     }
     await recordView(view);
+
+    // 來源標記只有每次造訪的第一次回報會帶（前端用 sessionStorage 控制），
+    // 否則同一位訪客切五個分頁就會被算成五次造訪。
+    const source = normalizeSource(req.body?.source);
+    if (source) await recordSource(source);
   } catch (error) {
     console.error("track-view failed (ignored):", error);
   }
