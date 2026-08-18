@@ -33,9 +33,13 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: "Method not allowed. Use POST." });
   }
 
+  // 兩種回報各自獨立：切分頁時送 view，進站帶標記時送 source。
+  // 來源必須能單獨送——手機停在首頁不算任何分頁，夾在 view 裡會整筆漏掉。
   const view = req.body?.view;
-  if (!isTrackableView(view)) {
-    return res.status(400).json({ error: "Unknown view." });
+  const source = normalizeSource(req.body?.source);
+  const hasView = isTrackableView(view);
+  if (!hasView && !source) {
+    return res.status(400).json({ error: "Nothing to record." });
   }
 
   const ip = String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown")
@@ -48,11 +52,7 @@ export default async function handler(req: any, res: any) {
       // 主控台留下紅字，卻沒有任何可以補救的動作。
       if (!success) return res.status(204).end();
     }
-    await recordView(view);
-
-    // 來源標記只有每次造訪的第一次回報會帶（前端用 sessionStorage 控制），
-    // 否則同一位訪客切五個分頁就會被算成五次造訪。
-    const source = normalizeSource(req.body?.source);
+    if (hasView) await recordView(view);
     if (source) await recordSource(source);
   } catch (error) {
     console.error("track-view failed (ignored):", error);

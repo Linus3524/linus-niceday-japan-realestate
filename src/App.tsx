@@ -23,7 +23,7 @@ import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 import { UsageDashboard } from "./components/UsageDashboard";
-import { trackView, type TrackableView } from "./lib/trackView";
+import { trackSource, trackView, type TrackableView } from "./lib/trackView";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -260,6 +260,10 @@ export default function App() {
   //
   // isMobileHome 只有手機版有意義：它為 true 時手機只顯示主視覺，桌機版卻
   // 早就把當前分頁的內容整頁攤開了。所以桌機一律回報，手機要離開首頁才算。
+  // 來源標記在進站時就送，與分頁回報分開：手機停在首頁不算任何分頁，
+  // 綁在一起會讓「從 LINE 點開、看一眼就關掉」這種造訪完全沒有紀錄。
+  useEffect(() => { trackSource(); }, []);
+
   useEffect(() => {
     if (adminPage) return;
     if (policyPage) { trackView("policy"); return; }
