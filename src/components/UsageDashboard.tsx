@@ -106,8 +106,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
     try {
       const response = await usage;
-      if (response.status === 401) throw new Error("Token 不正確。");
-      if (response.status === 503) throw new Error("伺服器尚未設定 ANALYTICS_TOKEN 或 Upstash，請確認環境變數。");
+      if (response.status === 401) throw new Error("密碼不正確。");
+      if (response.status === 503) throw new Error("伺服器設定不完整（缺少後台密碼或資料庫連線），需要工程協助。");
       if (!response.ok) throw new Error(`讀取失敗（HTTP ${response.status}）。`);
       setData(await response.json());
     } catch (err: any) {
@@ -137,8 +137,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
   const features = useMemo(() => {
     if (!data) return [];
-    // 有出現在任何一個維度裡的功能都要顯示，才不會漏掉這個月剛新增的項目。
+    // 已知的功能一律顯示（沒人用就是 0）。只從資料反推的話，次數為 0 的功能
+    // 連卡片都不會出現，看的人分不出是「還沒有人用」還是「這個功能壞了」。
+    // 另外把資料裡出現、但清單上沒有的鍵也帶進來，才不會漏掉之後新增的項目。
     const found = new Set<string>([
+      ...Object.keys(FEATURE_LABEL),
       ...Object.keys(data.total),
       ...Object.values(data.daily).flatMap(v => Object.keys(v)),
       ...Object.values(data.geo).flatMap(v => Object.keys(v)),
@@ -147,8 +150,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
   }, [data]);
 
   const viewRows = useMemo(() => {
-    const entries = Object.entries(data?.views ?? {})
-      .map(([view, value]) => ({ view, count: Number(value) || 0 }));
+    if (!data) return [];
+    const counts = data.views ?? {};
+    // 與功能卡片同理：所有分頁都列出來，沒人看的顯示 0。
+    // 只列有資料的分頁會讓人以為那一頁不存在，也看不出「都沒人點」這件事本身。
+    const names = new Set<string>([...Object.keys(VIEW_LABEL), ...Object.keys(counts)]);
+    const entries = [...names].map(view => ({ view, count: Number(counts[view]) || 0 }));
     // 長條以「最多的那一頁」為滿格，比例差距才看得出來。
     const max = Math.max(1, ...entries.map(entry => entry.count));
     return entries
@@ -172,13 +179,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
       <div className="min-h-screen bg-[#F5F8F6] px-4 py-16 font-sans">
         <div className="mx-auto max-w-md border border-[#DDE3DF] bg-white p-8">
           <h1 className="font-serif text-2xl font-bold text-[#1A2A22]">後台使用量</h1>
-          <p className="mt-2 text-sm text-zinc-500">請輸入管理權杖（ANALYTICS_TOKEN）。</p>
+          <p className="mt-2 text-sm text-zinc-500">請輸入後台密碼。</p>
           <input
             type="password"
             value={tokenInput}
             onChange={e => setTokenInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && tokenInput.trim()) { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); } }}
-            placeholder="貼上 token 後按 Enter"
+            placeholder="貼上密碼後按 Enter"
             className="mt-5 h-11 w-full border border-[#C9D8D1] px-3 text-sm focus:border-[#00a174] focus:outline-none"
           />
           <button
@@ -361,7 +368,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             <p className="mb-6 text-xs text-zinc-500">
               上方卡片為累計總數；下方兩張表是 {data.month} 這個月的明細。
-              這一區只算伺服器端真正被呼叫的次數，擋廣告的外掛擋不掉，數字比前端事件可靠。
+              這一區只計算真的送出並得到回覆的次數。
             </p>
 
             <section className="mb-6 border border-[#DDE3DF] bg-white">
