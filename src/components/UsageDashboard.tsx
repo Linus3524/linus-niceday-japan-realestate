@@ -31,17 +31,6 @@ interface UsageSummary {
   sources: Record<string, number>;
 }
 
-// 常用管道給中文名；沒對到的就直接顯示你在網址裡寫的標記
-const SOURCE_LABEL: Record<string, string> = {
-  line: "LINE 傳送",
-  card: "名片 QR",
-  mail: "Email 簽名",
-  fb: "Facebook",
-  ig: "Instagram",
-  threads: "Threads",
-  other: "其他（標記過多）",
-};
-
 const VIEW_LABEL: Record<string, string> = {
   "rent-guide": "租屋指南",
   "buy-guide": "買房指南",
@@ -172,12 +161,6 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     const max = Math.max(1, ...entries.map(entry => entry.count));
     return entries
       .map(entry => ({ ...entry, share: Math.round((entry.count / max) * 100) }))
-      .sort((a, b) => b.count - a.count);
-  }, [data]);
-
-  const sourceRows = useMemo(() => {
-    return Object.entries(data?.sources ?? {})
-      .map(([source, value]) => ({ source, count: Number(value) || 0 }))
       .sort((a, b) => b.count - a.count);
   }, [data]);
 
@@ -336,29 +319,6 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {data && (
           <>
-            {/* 自訂來源標記：補足瀏覽器不提供來源的管道（LINE、QR、手打網址） */}
-            {sourceRows.length > 0 && (
-              <section className="mb-8">
-                <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-                  帶標記的連結
-                  <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}・你自己貼出去的網址</span>
-                </h2>
-                <div className="border border-[#DDE3DF] bg-white">
-                  <ul className="divide-y divide-[#F5F8F6]">
-                    {sourceRows.map(row => (
-                      <li key={row.source} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
-                        <span className="text-[#3F5147]">
-                          {SOURCE_LABEL[row.source] ?? row.source}
-                          <span className="ml-2 font-jost text-[11px] text-zinc-400">?from={row.source}</span>
-                        </span>
-                        <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            )}
-
             {/* 分頁瀏覽：自己記的，因為整站只有一個路徑，Vercel 分不出各分頁 */}
             <section className="mb-8">
               <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
