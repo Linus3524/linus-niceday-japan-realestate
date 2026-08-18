@@ -23,7 +23,7 @@ import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 import { UsageDashboard } from "./components/UsageDashboard";
-import { trackSource, trackView, type TrackableView } from "./lib/trackView";
+import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -376,6 +376,8 @@ export default function App() {
   // Copy Line ID
   const handleCopyLine = () => {
     navigator.clipboard.writeText(linusContact.lineId);
+    // 手機使用者常用「複製 ID」而不是點連結，只記連結會低估實際的聯絡意圖
+    trackAction("line-copy");
     setCopiedLine(true);
     setTimeout(() => setCopiedLine(false), 2000);
   };
@@ -721,6 +723,7 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="w-full bg-[#00a174] hover:bg-[#007d5a] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
                   id="add-line-btn-hero"
+                  onClick={() => trackAction("line-add")}
                 >
                   點我加 LINE 好友
                   <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />

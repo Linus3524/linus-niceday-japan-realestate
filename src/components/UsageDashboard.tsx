@@ -14,7 +14,6 @@ const TOKEN_STORAGE_KEY = "linus-analytics-token";
 const FEATURE_LABEL: Record<string, string> = {
   "chat": "AI 顧問對話",
   "rent-analysis": "AI 需求分析",
-  "market-lookup": "市場行情查詢",
 };
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -29,7 +28,13 @@ interface UsageSummary {
   geo: Record<string, Record<string, number>>;
   views: Record<string, number>;
   sources: Record<string, number>;
+  actions: Record<string, number>;
 }
+
+const ACTION_LABEL: Record<string, string> = {
+  "line-add": "點擊加 LINE 好友",
+  "line-copy": "複製 LINE ID",
+};
 
 const VIEW_LABEL: Record<string, string> = {
   "rent-guide": "租屋指南",
@@ -351,11 +356,33 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </section>
 
+            {/* 聯絡意圖：站上唯一的成交入口，跟「看了幾頁」分開看才有意義 */}
+            <section className="mb-8">
+              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+                聯絡意圖
+                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}</span>
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {Object.keys(ACTION_LABEL).map(action => (
+                  <div key={action} className="border border-[#DDE3DF] bg-white p-5">
+                    <div className="font-jost text-2xl font-bold text-[#1A2A22]">
+                      {(data.actions?.[action] ?? 0).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-zinc-500">{ACTION_LABEL[action]}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] leading-5 text-zinc-400">
+                記的是「按下去的次數」而不是人數；同一個人按兩次算兩次。
+                手機上多數人會用複製 ID，兩個數字要一起看。
+              </p>
+            </section>
+
             <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
               功能使用次數
               <span className="ml-2 font-normal text-xs text-zinc-400">伺服器端實際呼叫</span>
             </h2>
-            <div className="mb-6 grid gap-3 sm:grid-cols-3">
+            <div className="mb-6 grid gap-3 sm:grid-cols-2">
               {features.map(feature => (
                 <div key={feature} className="border border-[#DDE3DF] bg-white p-5">
                   <div className="text-xs text-zinc-500">{FEATURE_LABEL[feature] ?? feature}</div>

@@ -1,6 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { isTrackableView, normalizeSource, recordSource, recordView } from "../src/lib/usageMetrics.js";
+import { isTrackableAction, isTrackableView, normalizeSource, recordAction, recordSource, recordView } from "../src/lib/usageMetrics.js";
 
 /**
  * 分頁瀏覽回報。
@@ -37,8 +37,10 @@ export default async function handler(req: any, res: any) {
   // 來源必須能單獨送——手機停在首頁不算任何分頁，夾在 view 裡會整筆漏掉。
   const view = req.body?.view;
   const source = normalizeSource(req.body?.source);
+  const action = req.body?.action;
   const hasView = isTrackableView(view);
-  if (!hasView && !source) {
+  const hasAction = isTrackableAction(action);
+  if (!hasView && !source && !hasAction) {
     return res.status(400).json({ error: "Nothing to record." });
   }
 
@@ -54,6 +56,7 @@ export default async function handler(req: any, res: any) {
     }
     if (hasView) await recordView(view);
     if (source) await recordSource(source);
+    if (hasAction) await recordAction(action);
   } catch (error) {
     console.error("track-view failed (ignored):", error);
   }

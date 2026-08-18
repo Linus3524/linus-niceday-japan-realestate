@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Send, ExternalLink } from "lucide-react";
 import { formatMessageText } from "../lib/format";
 import { linusContact } from "../data/rentGuideData";
+import { trackAction } from "../lib/trackView";
 
 interface ChatTabProps {
   chatMessages: Array<{ role: "user" | "model"; text: string }>;
@@ -144,6 +145,7 @@ export function ChatTab(props: ChatTabProps) {
                               )}
                               <a
                                 href={lineFriendUrl}
+                              onClick={() => trackAction("line-add")}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
@@ -180,6 +182,7 @@ export function ChatTab(props: ChatTabProps) {
                       <span>AI 顧問目前暫時無法回覆，請稍後再試，或</span>
                       <a
                         href={lineFriendUrl}
+                              onClick={() => trackAction("line-add")}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="ml-1 inline-flex items-center font-bold text-[#087154] underline underline-offset-2 hover:text-[#05A847]"

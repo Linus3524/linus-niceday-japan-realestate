@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { trackAction } from "../lib/trackView";
 import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, MapPin, Train, Building2, Home, Building, ClipboardList, AlertCircle, Lightbulb } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 
@@ -134,6 +135,7 @@ export function ContactTab(props: ContactTabProps) {
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 bg-[#00a174] hover:bg-[#007d5a] text-white px-4 py-2.5 font-bold cursor-pointer transition-colors"
                       id="add-line-btn-contact"
+                      onClick={() => trackAction("line-add")}
                     >
                       點我加 LINE 好友
                       <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />

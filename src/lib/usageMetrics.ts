@@ -17,7 +17,7 @@ import { Redis } from "@upstash/redis";
  *   linus:usage:geo:2026-08    → { "chat:TW": 30, "chat:JP": 12 }
  */
 
-export type UsageFeature = "chat" | "rent-analysis" | "market-lookup";
+export type UsageFeature = "chat" | "rent-analysis";
 
 /**
  * 分頁瀏覽。
@@ -37,11 +37,24 @@ export function isTrackableView(value: unknown): value is TrackableView {
   return typeof value === "string" && (TRACKABLE_VIEWS as readonly string[]).includes(value);
 }
 
+/**
+ * 重要動作白名單。與分頁瀏覽分開記錄：瀏覽是「看了哪一區」，
+ * 動作是「做了什麼」——加 LINE 是站上唯一的成交入口，值得單獨看。
+ * 同樣是公開可寫的端點，所以一樣走白名單。
+ */
+export const TRACKABLE_ACTIONS = ["line-add", "line-copy"] as const;
+export type TrackableAction = (typeof TRACKABLE_ACTIONS)[number];
+
+export function isTrackableAction(value: unknown): value is TrackableAction {
+  return typeof value === "string" && (TRACKABLE_ACTIONS as readonly string[]).includes(value);
+}
+
 const TOTAL_KEY = "linus:usage:total";
 const DAILY_PREFIX = "linus:usage:daily:";
 const GEO_PREFIX = "linus:usage:geo:";
 const VIEWS_PREFIX = "linus:usage:views:";
 const SOURCES_PREFIX = "linus:usage:sources:";
+const ACTIONS_PREFIX = "linus:usage:actions:";
 // 來源標籤由網址參數決定，任何人都能亂填。限制不同標籤的數量，
 // 避免有人用隨機字串把 Redis 塞滿；超過上限的新標籤一律歸到 other。
 const MAX_DISTINCT_SOURCES = 50;
@@ -145,6 +158,18 @@ export async function recordView(view: TrackableView) {
   }
 }
 
+export async function recordAction(action: TrackableAction) {
+  if (!redis) return;
+  try {
+    const { month } = tokyoParts();
+    const key = `${ACTIONS_PREFIX}${month}`;
+    await redis.hincrby(key, action, 1);
+    await redis.expire(key, MONTH_TTL_SECONDS);
+  } catch (error) {
+    console.error("recordAction failed (ignored):", error);
+  }
+}
+
 export interface UsageSummary {
   month: string;
   total: Record<string, number>;
@@ -156,6 +181,8 @@ export interface UsageSummary {
   views: Record<string, number>;
   /** 網址帶了來源標記的造訪次數：{ line: 12, card: 3 } */
   sources: Record<string, number>;
+  /** 重要動作被觸發幾次：{ "line-add": 8 } */
+  actions: Record<string, number>;
 }
 
 /** 讀取指定月份（預設本月）的彙總。month 格式 YYYY-MM。 */
@@ -163,12 +190,13 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
   if (!redis) throw new Error("Usage metrics storage is not configured.");
   const target = month && /^\d{4}-\d{2}$/.test(month) ? month : tokyoParts().month;
 
-  const [total, dailyRaw, geoRaw, viewsRaw, sourcesRaw] = await Promise.all([
+  const [total, dailyRaw, geoRaw, viewsRaw, sourcesRaw, actionsRaw] = await Promise.all([
     redis.hgetall<Record<string, number>>(TOTAL_KEY),
     redis.hgetall<Record<string, number>>(`${DAILY_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${GEO_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${VIEWS_PREFIX}${target}`),
     redis.hgetall<Record<string, number>>(`${SOURCES_PREFIX}${target}`),
+    redis.hgetall<Record<string, number>>(`${ACTIONS_PREFIX}${target}`),
   ]);
 
   // hash 的 field 是 "功能:維度"，這裡拆回巢狀結構讓呼叫端好讀。
@@ -192,5 +220,6 @@ export async function getUsageSummary(month?: string): Promise<UsageSummary> {
     geo: nest(geoRaw),
     views: Object.fromEntries(Object.entries(viewsRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
     sources: Object.fromEntries(Object.entries(sourcesRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
+    actions: Object.fromEntries(Object.entries(actionsRaw || {}).map(([k, v]) => [k, Number(v) || 0])),
   };
 }
