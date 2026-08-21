@@ -1383,3 +1383,77 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     transform: translateX(-50%);
   }
 }
+
+/* 聯絡卡片的頭像可左右翻面顯示 LINE QR。
+   有些客人用連結加不到好友（LINE 版本、地區或帳號設定的差異都可能造成），
+   只能掃碼，所以把 QR 藏在頭像背面，不另外佔版面。 */
+.contact-flip {
+  perspective: 900px;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.contact-flip:focus-visible {
+  outline: 2px solid #00a174;
+  outline-offset: 3px;
+}
+.contact-flip-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.contact-flip.is-flipped .contact-flip-inner {
+  transform: rotateY(180deg);
+}
+.contact-flip-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 背面在轉到正面之前必須是看不見的，否則兩面會疊在一起 */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.contact-flip-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.contact-flip-back {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-flip-inner {
+    transition: none;
+  }
+}
+
+/* QR 下拉面板。
+   收合時整個不渲染，不留佔位元素——留著的話 space-y 仍會在它上下各加一段
+   間距，把按鈕和下面的複製列推開。展開只做淡入下滑，不去算高度：
+   grid 0fr→1fr 那類技巧在某些容器條件下 fr 會解析成 0，不夠穩。 */
+.qr-panel {
+  animation: qr-panel-in 0.25s ease-out;
+}
+@keyframes qr-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qr-panel {
+    animation: none;
+  }
+}

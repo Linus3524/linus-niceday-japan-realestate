@@ -363,6 +363,8 @@ export default function App() {
   // Line ID Copy State
   const [copiedLine, setCopiedLine] = useState(false);
   const [copiedWechat, setCopiedWechat] = useState(false);
+  // 聯絡卡頭像翻面顯示 LINE QR：部分客人用連結加不到好友，只能掃碼。
+  const [showLineQr, setShowLineQr] = useState(false);
 
   // Keep the tab navigation visible and move to the selected content, not the site header.
   const handleTabChange = (tab: AppTab) => {
@@ -700,13 +702,29 @@ export default function App() {
 
           {/* Right side: Contact Card */}
           <div className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
-            {/* Left: Logo alone */}
+            {/* Left: Logo，點一下翻面顯示 LINE QR */}
             <div className="shrink-0">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="h-32 w-32 object-contain lg:h-[110px] lg:w-[110px]"
-              />
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !showLineQr;
+                  setShowLineQr(next);
+                  // 只在翻出 QR 時記一次：翻回正面不是聯絡意圖。
+                  if (next) trackAction("line-qr");
+                }}
+                aria-pressed={showLineQr}
+                aria-label={showLineQr ? "收起 QR Code，顯示標誌" : "顯示 LINE 加好友 QR Code"}
+                className={`contact-flip h-32 w-32 lg:h-[110px] lg:w-[110px] ${showLineQr ? "is-flipped" : ""}`}
+              >
+                <span className="contact-flip-inner">
+                  <span className="contact-flip-face">
+                    <img src="/logo.png" alt="LINUS 住好日" />
+                  </span>
+                  <span className="contact-flip-face contact-flip-back">
+                    <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" />
+                  </span>
+                </span>
+              </button>
             </div>
             
             {/* Right: Text & Actions */}
