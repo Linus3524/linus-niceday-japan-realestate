@@ -34,15 +34,19 @@ interface UsageSummary {
 const ACTION_LABEL: Record<string, string> = {
   "line-add": "點擊加 LINE 好友",
   "line-copy": "複製 LINE ID",
+  "line-qr": "翻開 LINE QR 掃碼",
+  "wechat-qr": "展開 WeChat QR 掃碼",
 };
 
+// 名稱必須與前端分頁列一致（App.tsx 的分頁 label），
+// 後台叫「預算計算機」而網站上寫「費用試算」的話，看報表時要自己在腦中換算。
 const VIEW_LABEL: Record<string, string> = {
   "rent-guide": "租屋指南",
-  "buy-guide": "買房指南",
-  "calculator": "預算計算機",
+  "buy-guide": "買房置產",
+  "calculator": "費用試算",
   "ai-advisor": "AI 顧問",
-  "contact": "聯絡我們",
-  "threads": "Threads 精選",
+  "contact": "聯絡諮詢",
+  "threads": "精選 Threads 文",
   "policy": "條款與隱私",
 };
 
