@@ -13,7 +13,7 @@ export type TrackableView =
   | "rent-guide" | "buy-guide" | "calculator" | "ai-advisor" | "contact" | "threads" | "policy";
 
 /** 重要動作。與分頁瀏覽分開：這是「做了什麼」，不是「看了哪一區」。 */
-export type TrackableAction = "line-add" | "line-copy";
+export type TrackableAction = "line-add" | "line-copy" | "line-qr" | "wechat-qr";
 
 // 同一個分頁在短時間內重複回報沒有意義（切走再切回、元件重新掛載都會觸發）。
 // 記住上一個回報的分頁，只在真的換頁時才送。

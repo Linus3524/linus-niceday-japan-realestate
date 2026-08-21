@@ -42,7 +42,7 @@ export function isTrackableView(value: unknown): value is TrackableView {
  * 動作是「做了什麼」——加 LINE 是站上唯一的成交入口，值得單獨看。
  * 同樣是公開可寫的端點，所以一樣走白名單。
  */
-export const TRACKABLE_ACTIONS = ["line-add", "line-copy"] as const;
+export const TRACKABLE_ACTIONS = ["line-add", "line-copy", "line-qr", "wechat-qr"] as const;
 export type TrackableAction = (typeof TRACKABLE_ACTIONS)[number];
 
 export function isTrackableAction(value: unknown): value is TrackableAction {
