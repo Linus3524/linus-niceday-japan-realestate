@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import {
   ExternalLink, ArrowUp, MousePointerClick
 } from "lucide-react";
@@ -365,6 +365,70 @@ export default function App() {
   const [copiedWechat, setCopiedWechat] = useState(false);
   // 聯絡卡頭像翻面顯示 LINE QR：部分客人用連結加不到好友，只能掃碼。
   const [showLineQr, setShowLineQr] = useState(false);
+  // 使用者自己動過就不再自動示範，免得打斷他正在看的東西。
+  const qrTouchedRef = useRef(false);
+  // 手機版要捲到卡片位置才示範，所以需要拿到節點做可視偵測。
+  const contactCardRef = useRef<HTMLDivElement | null>(null);
+
+  // 自動翻一次再翻回來，用動作示範「這是一張有背面的卡」。
+  // 不加文字或圖示就能傳達，而且手機也有效（hover 類的提示手機看不到）。
+  //
+  // 桌機一進站就演——卡片本來就在第一屏。
+  // 手機的卡片在捲動之後才會出現，一進站就演等於演給空氣看，
+  // 所以改用 IntersectionObserver 等它真的進入畫面才觸發。
+  //
+  // 三個不演的情況：這次造訪已經演過、使用者自己先點了、開了「減少動態效果」。
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    try {
+      if (sessionStorage.getItem("linus-qr-demo-shown")) return;
+    } catch {
+      // 無痕模式可能讀不到，那就照常演，不影響功能
+    }
+
+    let startTimer = 0;
+    let holdTimer = 0;
+    let observer: IntersectionObserver | null = null;
+
+    const play = () => {
+      if (qrTouchedRef.current) return;
+      try {
+        sessionStorage.setItem("linus-qr-demo-shown", "1");
+      } catch {
+        // 同上，存不了就算了
+      }
+      setShowLineQr(true);
+      // 停留一下讓人看清楚背面是 QR，再翻回正面
+      holdTimer = window.setTimeout(() => setShowLineQr(false), 1200);
+    };
+
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+    if (isDesktop) {
+      // 等首圖與版面穩定後再演，一載入就動會被當成畫面還在跳而忽略
+      startTimer = window.setTimeout(play, 1400);
+    } else {
+      const card = contactCardRef.current;
+      if (!card) return;
+      observer = new IntersectionObserver(
+        entries => {
+          if (!entries.some(entry => entry.isIntersecting)) return;
+          observer?.disconnect();
+          // 進入畫面後稍等一下，讓捲動先停下來
+          startTimer = window.setTimeout(play, 600);
+        },
+        // 要看到一半以上才算真的看到了
+        { threshold: 0.5 },
+      );
+      observer.observe(card);
+    }
+
+    return () => {
+      window.clearTimeout(startTimer);
+      window.clearTimeout(holdTimer);
+      observer?.disconnect();
+    };
+  }, []);
+
 
   // Keep the tab navigation visible and move to the selected content, not the site header.
   const handleTabChange = (tab: AppTab) => {
@@ -701,15 +765,17 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
+          <div ref={contactCardRef} className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
             {/* Left: Logo，點一下翻面顯示 LINE QR */}
             <div className="shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   const next = !showLineQr;
+                  qrTouchedRef.current = true;
                   setShowLineQr(next);
                   // 只在翻出 QR 時記一次：翻回正面不是聯絡意圖。
+                  // 自動示範不會走到這裡，所以不會污染統計。
                   if (next) trackAction("line-qr");
                 }}
                 aria-pressed={showLineQr}
