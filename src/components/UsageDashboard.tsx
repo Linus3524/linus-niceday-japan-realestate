@@ -31,11 +31,23 @@ interface UsageSummary {
   actions: Record<string, number>;
 }
 
+/**
+ * 同一個代號可能來自站上多個入口，所以標籤要寫清楚合併了哪些，
+ * 不然看到數字會以為只算了其中一處。
+ */
 const ACTION_LABEL: Record<string, string> = {
   "line-add": "點擊加 LINE 好友",
   "line-copy": "複製 LINE ID",
-  "line-qr": "翻開 LINE QR 掃碼",
+  "line-qr": "開啟 LINE QR 掃碼",
   "wechat-qr": "展開 WeChat QR 掃碼",
+};
+
+/** 標籤下方的小字：說明這個數字合併了哪些入口。 */
+const ACTION_SOURCE_NOTE: Record<string, string> = {
+  "line-add": "首頁卡片 ＋ 聯絡分頁 ＋ AI 顧問回覆",
+  "line-copy": "首頁卡片 ＋ 聯絡分頁",
+  "line-qr": "首頁頭像翻卡 ＋ 聯絡分頁展開（合計）",
+  "wechat-qr": "聯絡分頁展開",
 };
 
 // 名稱必須與前端分頁列一致（App.tsx 的分頁 label），
@@ -299,9 +311,9 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               ))}
             </div>
             {!traffic.eventsAvailable && (
-              <p className="mt-3 text-[11px] text-zinc-400">
-                前端操作事件（把需求帶入計算機、送出 AI 需求分析）需要 Vercel Pro 方案才能查詢，
-                目前僅顯示上方流量。這兩個動作的實際次數可從下方「功能使用次數」對照。
+              <p className="mt-3 text-[11px] leading-5 text-zinc-400">
+                前端操作事件（把需求帶入計算機、送出 AI 需求分析）需要 Vercel Pro 方案才能查詢。
+                這兩個動作的實際次數，請看下方「功能使用次數」。
               </p>
             )}
             {traffic.eventsAvailable && traffic.events.length > 0 && (
@@ -373,12 +385,18 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       {(data.actions?.[action] ?? 0).toLocaleString()}
                     </div>
                     <div className="text-xs text-zinc-500">{ACTION_LABEL[action]}</div>
+                    {ACTION_SOURCE_NOTE[action] && (
+                      <div className="mt-1 text-[11px] leading-5 text-zinc-400">
+                        {ACTION_SOURCE_NOTE[action]}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
               <p className="mt-2 text-[11px] leading-5 text-zinc-400">
-                記的是「按下去的次數」而不是人數；同一個人按兩次算兩次。
-                手機上多數人會用複製 ID，兩個數字要一起看。
+                以按下的次數計算，同一個人按兩次算兩次。
+                手機上多數人習慣複製 ID，建議兩個數字一起看。
+                首頁的自動翻卡示範由系統觸發，只有客人自己點才會計入。
               </p>
             </section>
 
@@ -393,7 +411,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
                     {(data.total[feature] ?? 0).toLocaleString()}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-400">累計總次數（所有月份）</div>
+                  <div className="mt-1 text-[11px] leading-5 text-zinc-400">累計總次數（所有月份）</div>
                 </div>
               ))}
             </div>
@@ -417,11 +435,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <tbody>
                     {dailyRows(data.daily, features).map(row => (
                       <tr key={row.day} className="border-b border-[#F5F8F6] last:border-0">
-                        <td className="px-5 py-2 text-[#1A2A22]">{data.month}-{row.day}</td>
+                        <td className="px-5 py-2 font-jost tabular-nums text-[#1A2A22]">{data.month}-{row.day}</td>
                         {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-right font-jost text-[#3F5147]">{count || "—"}</td>
+                          <td key={index} className="px-5 py-2 text-right font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
                         ))}
-                        <td className="px-5 py-2 text-right font-jost font-bold text-[#1A2A22]">{row.sum}</td>
+                        <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
                       </tr>
                     ))}
                     {!Object.keys(data.daily).length && (
@@ -449,13 +467,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         <td className="px-5 py-2 text-[#1A2A22]">
                           {COUNTRY_LABEL[row.country] ?? row.country}
                           {COUNTRY_LABEL[row.country] && row.country !== "unknown" && (
-                            <span className="ml-1.5 font-jost text-[11px] text-zinc-400">{row.country}</span>
+                            <span className="ml-1.5 font-jost tabular-nums text-[11px] text-zinc-400">{row.country}</span>
                           )}
                         </td>
                         {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-right font-jost text-[#3F5147]">{count || "—"}</td>
+                          <td key={index} className="px-5 py-2 text-right font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
                         ))}
-                        <td className="px-5 py-2 text-right font-jost font-bold text-[#1A2A22]">{row.sum}</td>
+                        <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
                       </tr>
                     ))}
                     {!geoRows.length && (
@@ -466,9 +484,9 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </section>
 
-            <p className="mt-4 text-[11px] leading-relaxed text-zinc-400">
-              全站累計 {grandTotal.toLocaleString()} 次。國家來自 Vercel 的 IP 國碼標頭，
-              本站不儲存 IP 位址與使用者輸入的內容。
+            <p className="mt-4 text-[11px] leading-5 text-zinc-400">
+              全站累計 {grandTotal.toLocaleString()} 次。國家依 Vercel 的 IP 國碼標頭判斷，
+              系統只保留國碼這一項資料。
             </p>
           </>
         )}
