@@ -104,7 +104,7 @@ export interface RentSegment {
  * 「左邊說要 11 萬、右邊給 7 萬車站」這種互相矛盾的結果。
  * 之後要新增地點類條件（例如指定區域帶、學區）只要改這裡，兩側一起生效。
  */
-export function resolveSearchScope(criteria: RentSearchCriteria): { districts: Set<string>; label: string } {
+export function resolveSearchScope(criteria: RentSearchCriteria): { districts: Set<string>; label: string; useMetroDefault: boolean } {
   const districts = new Set<string>();
   const sources: string[] = [];
 
@@ -206,7 +206,14 @@ export function resolveSearchScope(criteria: RentSearchCriteria): { districts: S
 
   return {
     districts,
-    label: sources.length ? sources.join("＋") : "東京都與近郊整體行情"
+    label: sources.length ? sources.join("＋") : "東京都與近郊整體行情",
+    // 使用者沒指定任何地點時，districts 是空的，取樣就會涵蓋資料庫全部 210 筆——
+    // 包含札幌、廣島、那霸等與本站客層無關的地區，行情從 3.7 萬拉到 14 萬，
+    // 算出來的中位數對「在東京找房」的人沒有意義，標籤也名不副實。
+    // 因此預設收斂到一都三縣（東京都・神奈川・埼玉・千葉），
+    // 與上面那句「東京都與近郊」的標籤講的是同一個範圍。
+    // 不用整個關東是因為茨城／栃木／群馬（水戶、宇都宮、前橋）通勤上構不到都心。
+    useMetroDefault: sources.length === 0
   };
 }
 
@@ -219,6 +226,8 @@ export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRe
   const byDistrict = new Map<string, number[]>();
   for (const rate of rentRates) {
     if (hasScope && !scope.districts.has(normalize(rate.district))) continue;
+    // 沒指定地點時只取一都三縣，理由見 resolveSearchScope 的 useMetroDefault 註解。
+    if (!hasScope && scope.useMetroDefault && !METRO_REGIONS.has(rate.region)) continue;
     const stations = districtStations[rate.district] || [];
     const values: number[] = [];
     for (const station of stations.length ? stations : [null]) {
@@ -252,6 +261,12 @@ export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRe
   return { ...percentiles(pool), sampleCount: pool.length, basis, segments, spread };
 }
 
+/** 沒指定地點時的預設取樣範圍：一都三縣，也就是通勤得到都心的範圍。 */
+const METRO_REGIONS = new Set(["東京都", "神奈川", "埼玉", "千葉"]);
+
+/** 價差大時，行情說明最多列幾個區。列太多會變成一長串清單，反而看不到重點。 */
+const SEGMENT_SHOWCASE = 5;
+
 /* ── 各軸判斷 ───────────────────────────────────────────── */
 
 function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | null): AxisVerdict {
@@ -277,11 +292,23 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
   }
 
   // 分布橫跨不同價位帶時，單一區間會產生對應不到任何地點的中間值，改成分段講。
-  const segmentText = range.segments
-    .map(seg => seg.low === seg.median ? `${seg.district}約 ${man(seg.median)}` : `${seg.district}約 ${man(seg.low)}～${man(seg.median)}`)
-    .join("、");
+  //
+  // 只挑「與這個預算有關」的區來講，不是把所有區倒出來：
+  // 未指定地點時關東就有 78 個區，全部串成一句話會變成幾百字的清單，
+  // 讀的人反而找不到自己要的資訊。
+  const describe = (seg: RentSegment) =>
+    seg.low === seg.median ? `${seg.district}約 ${man(seg.median)}` : `${seg.district}約 ${man(seg.low)}～${man(seg.median)}`;
+  const inBudget = budget ? range.segments.filter(seg => seg.low <= budget) : [];
+  const spotlight = inBudget.length
+    // 預算搆得到的區：取最貴的幾個——同樣付得起，當然先看條件較好的。
+    ? inBudget.slice(-SEGMENT_SHOWCASE).reverse()
+    // 都搆不到：取最便宜的幾個，讓使用者知道最低要抓多少。
+    : range.segments.slice(0, SEGMENT_SHOWCASE);
+  const omitted = (inBudget.length || range.segments.length) - spotlight.length;
+  const segmentText = spotlight.map(describe).join("、") +
+    (omitted > 0 ? `，另有 ${omitted} 個區在範圍內` : "");
   const drivers = range.spread
-    ? [`${range.basis}在此條件下，各區價位差距不小：${segmentText}`]
+    ? [`${range.basis}在此條件下各區價差不小，${inBudget.length ? "預算內例如" : "行情較低的例如"}：${segmentText}`]
     : [`${range.basis}在此條件下，行情約 ${yen(range.low)}～${yen(range.high)}，中位約 ${yen(range.median)}`];
   if (feeState === false) drivers.push("管理費另計，實付會再高一些");
   const feeStep = feeState === null || feeState === undefined ? "順帶確認預算含不含管理費，這會直接影響可選範圍。" : undefined;
