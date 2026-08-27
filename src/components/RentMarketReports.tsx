@@ -280,28 +280,41 @@ type SortMode = "recommended" | "rent" | "commute";
 const SORT_LABEL: Record<SortMode, string> = {
   recommended: "推薦度",
   rent: "租金低到高",
-  commute: "通勤優先"
+  commute: "通勤時間"
 };
 
-/** 通勤排序的名次：有查到實際時間的排最前，其次直達，再來需轉乘。 */
-function commuteRank(item: RentRecommendation) {
-  if (item.commuteRoute?.totalDurationMinutes) return 0;
-  if (item.commuteFit === "直達線路") return 1;
-  if (item.commuteFit === "需確認轉乘") return 2;
-  return 3;
+/** 查不到路線的卡片沒有分鐘數，一律排在有時間的後面。 */
+const commuteMinutes = (item: RentRecommendation) =>
+  item.commuteRoute?.totalDurationMinutes ?? Infinity;
+
+/** 沒有分鐘數時的次序：直達 → 需轉乘 → 未指定通勤地。 */
+function commuteFallbackRank(item: RentRecommendation) {
+  if (item.commuteFit === "直達線路") return 0;
+  if (item.commuteFit === "需確認轉乘") return 1;
+  return 2;
 }
 
 function sortRecommendations(items: RentRecommendation[], mode: SortMode) {
   if (mode === "recommended") return items;
   const sorted = [...items];
   if (mode === "rent") return sorted.sort((a, b) => a.estimate - b.estimate);
+  // 通勤：直接比實際查到的分鐘數，短的在前。
   return sorted.sort((a, b) => {
-    const rank = commuteRank(a) - commuteRank(b);
+    const left = commuteMinutes(a);
+    const right = commuteMinutes(b);
+    if (left !== right) {
+      // 查不到時間的一律殿後。不能寫成 left - right：
+      // Infinity 減有限數仍是 Infinity（不是有限值），
+      // Infinity 減 Infinity 更會得到 NaN，比較器拿到 NaN 順序就沒有定義，
+      // 沒有時間的卡片會插進有時間的卡片之間。
+      if (left === Infinity) return 1;
+      if (right === Infinity) return -1;
+      return left - right;
+    }
+    // 兩邊都查不到時間時（通勤查詢失敗或沒填通勤地）才退回直達與否，
+    // 再以租金收尾，確保順序穩定、不會每次渲染都跳動。
+    const rank = commuteFallbackRank(a) - commuteFallbackRank(b);
     if (rank !== 0) return rank;
-    // 同一名次內，有實際分鐘數就比分鐘數，否則回頭比租金，
-    // 避免同名次的卡片每次渲染順序不固定。
-    const minutes = (a.commuteRoute?.totalDurationMinutes ?? Infinity) - (b.commuteRoute?.totalDurationMinutes ?? Infinity);
-    if (Number.isFinite(minutes) && minutes !== 0) return minutes;
     return a.estimate - b.estimate;
   });
 }
