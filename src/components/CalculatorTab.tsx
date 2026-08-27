@@ -10,7 +10,7 @@ import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
-import { RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
+import { RECOMMENDATION_LIMIT, RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
@@ -532,7 +532,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <div className="w-12 h-12 mx-auto mb-4 border border-[#9ee2cf] bg-[#F5F8F6] flex items-center justify-center">
                               <MapPin className="w-5 h-5 text-[#00a174]" />
                             </div>
-                            <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 6 個搜尋方向</p>
+                            <p className="font-bold text-[#1A2A22] mb-2">分析後會列出 {RECOMMENDATION_LIMIT} 個搜尋方向</p>
                             <p className="text-xs text-[#8A9590] leading-relaxed font-sans">包含地區／車站、估算中心值、合理波動區間，以及與預算的落差。</p>
                           </div>
                         </div>
@@ -544,7 +544,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             ))}
                           </div>
                           <div className="mb-3 border-l-4 border-[#1A2A22] bg-[#FAFCFB] px-3 py-2 font-sans">
-                            <p className="text-xs font-bold text-[#1A2A22]">6 個市場搜尋方向</p>
+                            <p className="text-xs font-bold text-[#1A2A22]">{RECOMMENDATION_LIMIT} 個市場搜尋方向</p>
                             <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">依左側需求推導出的可搜尋車站，落在預算內不等於原始需求全部成立。展開卡片可看線路圖與租金細節。</p>
                           </div>
                           <RentMarketReports

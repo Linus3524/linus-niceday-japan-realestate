@@ -178,8 +178,13 @@ const normalize = (value?: string | null) => toJapanesePlaceName(value || "")
   .replace(/jr|東京地下鉄|都営|東急|京王|小田急/g, "");
 
 /** 使用者常見的否定寫法；命中就代表「明確不需要」，不可當成需求。 */
-/** 推薦清單長度，以及單一行政區最多佔幾個名額。 */
-const RECOMMENDATION_LIMIT = 9;
+/**
+ * 推薦清單長度，以及單一行政區最多佔幾個名額。
+ *
+ * RECOMMENDATION_LIMIT 對外匯出給 UI 文案使用：先前畫面上寫死「6 個搜尋方向」，
+ * 這裡改成 9 之後文案沒跟著改，使用者看到的數字與實際清單對不起來。
+ */
+export const RECOMMENDATION_LIMIT = 9;
 const DISTRICT_QUOTA = 3;
 
 const NEGATION = /(?:不用|不需要|不必|不想|沒有需要|没有需要|無需|无需|不要)/;
@@ -683,7 +688,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       directCommute ? `與 ${criteria.commuteStation} 有共同線路` : criteria.commuteStation ? `前往 ${criteria.commuteStation} 的轉乘需另行確認` : null,
       gap !== null ? (gap <= 0 ? "估算中心值在預算內" : gap <= Math.max(10000, criteria.maxBudget! * .1) ? "估算接近預算上限" : "需要調整條件或預算") : "依條件估算市場租金"
     ].filter(Boolean) as string[];
-    // 沒有預算資料時不得判為「預算內」，否則沒填預算會被當成六個方向全部可行。
+    // 沒有預算資料時不得判為「預算內」，否則沒填預算會被當成所有方向全部可行。
     const fit: RentRecommendation["fit"] = gap === null
       ? "預算未定"
       : gap <= 0

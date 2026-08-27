@@ -266,11 +266,74 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
   );
 }
 
+/**
+ * 清單排序方式。
+ *
+ * 預設「推薦度」＝後端算出的綜合分數（指定車站、指定行政區、路線、通勤直達、
+ * 預算貼近度加總），也就是陣列原本的順序，所以不做任何重排。
+ *
+ * 另外兩種是使用者挑房時最常用的兩個角度：先看便宜的、先看通勤方便的。
+ * 排序只重排這九筆已經算好的結果，不會重新向後端要資料。
+ */
+type SortMode = "recommended" | "rent" | "commute";
+
+const SORT_LABEL: Record<SortMode, string> = {
+  recommended: "推薦度",
+  rent: "租金低到高",
+  commute: "通勤優先"
+};
+
+/** 通勤排序的名次：有查到實際時間的排最前，其次直達，再來需轉乘。 */
+function commuteRank(item: RentRecommendation) {
+  if (item.commuteRoute?.totalDurationMinutes) return 0;
+  if (item.commuteFit === "直達線路") return 1;
+  if (item.commuteFit === "需確認轉乘") return 2;
+  return 3;
+}
+
+function sortRecommendations(items: RentRecommendation[], mode: SortMode) {
+  if (mode === "recommended") return items;
+  const sorted = [...items];
+  if (mode === "rent") return sorted.sort((a, b) => a.estimate - b.estimate);
+  return sorted.sort((a, b) => {
+    const rank = commuteRank(a) - commuteRank(b);
+    if (rank !== 0) return rank;
+    // 同一名次內，有實際分鐘數就比分鐘數，否則回頭比租金，
+    // 避免同名次的卡片每次渲染順序不固定。
+    const minutes = (a.commuteRoute?.totalDurationMinutes ?? Infinity) - (b.commuteRoute?.totalDurationMinutes ?? Infinity);
+    if (Number.isFinite(minutes) && minutes !== 0) return minutes;
+    return a.estimate - b.estimate;
+  });
+}
+
 export function RentMarketReports({ recommendations, criteria, onApply }: Props) {
   const [expanded, setExpanded] = useState<number | null>(0);
+  const [sortMode, setSortMode] = useState<SortMode>("recommended");
+  const sorted = sortRecommendations(recommendations, sortMode);
+
   return (
     <div className="space-y-3">
-      {recommendations.map((item, index) => (
+      <div className="flex flex-wrap items-center gap-1.5 border border-[#DDE3DF] bg-[#F5F8F6] p-1 font-sans">
+        <span className="px-2 text-[10px] font-bold text-[#66736C]">排序</span>
+        {(Object.keys(SORT_LABEL) as SortMode[]).map(mode => (
+          <button
+            key={mode}
+            type="button"
+            onClick={() => {
+              setSortMode(mode);
+              // 換排序後展開的仍是第一張，否則展開的會是「排序前那個位置」的卡片。
+              setExpanded(0);
+            }}
+            aria-pressed={sortMode === mode}
+            className={`cursor-pointer px-3 py-1.5 text-[11px] font-bold transition-colors ${
+              sortMode === mode ? "bg-[#00a174] text-white" : "bg-white text-zinc-700 hover:text-[#00a174]"
+            }`}
+          >
+            {SORT_LABEL[mode]}
+          </button>
+        ))}
+      </div>
+      {sorted.map((item, index) => (
         <Report
           key={`${item.district}-${item.station || index}`}
           item={item}
