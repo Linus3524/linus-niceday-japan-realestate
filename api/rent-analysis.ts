@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
-import { resolveSearchScope } from "../src/lib/requirementVerdict.js";
+import { hasKnownCommuteStations, resolveSearchScope } from "../src/lib/requirementVerdict.js";
 import { lookupMarketRate } from "./market-lookup.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -227,7 +227,7 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
     // 再查一次只是多花時間與費用，數字也不會比自家基準更適合用來判斷。
     // 與通勤路線並行，避免延遲疊加。
     const scope = resolveSearchScope(criteria);
-    const requestedArea = scope.districts.size
+    const requestedArea = scope.unresolvedLocations[0] || (scope.districts.size
       ? null
       : [
           criteria.district,
@@ -236,10 +236,12 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
           ...(criteria.stations || []),
           criteria.line,
           criteria.locationPreference
-        ].find(value => typeof value === "string" && value.trim().length >= 2) || null;
+        ].find(value => typeof value === "string" && value.trim().length >= 2) || null);
 
+    const baseRecommendations = buildRentRecommendations(criteria);
+    const canResolveCommute = !criteria.commuteStation || hasKnownCommuteStations(criteria.commuteStation, criteria.commuteStations || []);
     const [recommendations, marketReference] = await Promise.all([
-      attachCommuteRoutes(criteria, buildRentRecommendations(criteria)),
+      canResolveCommute ? attachCommuteRoutes(criteria, baseRecommendations) : Promise.resolve(baseRecommendations),
       requestedArea ? lookupMarketRate(requestedArea, criteria.roomType) : Promise.resolve(null)
     ]);
 

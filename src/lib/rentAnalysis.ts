@@ -573,7 +573,9 @@ export function getRentModifierIndexes(criteria: RentSearchCriteria) {
   if (criteria.walkMinutes && criteria.walkMinutes <= 5) indexes.add(14);
   else if (criteria.walkMinutes && criteria.walkMinutes >= 15) indexes.add(17);
   else if (criteria.walkMinutes && criteria.walkMinutes >= 11) indexes.add(16);
-  if (criteria.furnished && criteria.furnishedPriority !== "uncertain") indexes.add(15);
+  // 「有更好」與「尚未確定」都不是必要條件，不應先把家具溢價灌進需求行情。
+  // 未標優先級的 furnished=true 維持舊行為，視為必要條件。
+  if (criteria.furnished && criteria.furnishedPriority !== "preferred" && criteria.furnishedPriority !== "uncertain") indexes.add(15);
   if (criteria.tower) indexes.add(25);
   if (criteria.lpGasAccepted) indexes.add(26);
   // 乾濕分離與 2 樓以上：先前這兩項完全沒有進價格模型，

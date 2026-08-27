@@ -10,6 +10,7 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "transit:build": "node scripts/build-tokyo-transit.mjs",
+    "test:requirement-verdict": "tsx scripts/test-requirement-verdict.ts",
     "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts"
   },
   "dependencies": {

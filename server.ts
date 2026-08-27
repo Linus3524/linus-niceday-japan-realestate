@@ -23,6 +23,14 @@ const PORT = parseInt(process.env.PORT || "3000", 10);
 // Body parser
 app.use(express.json());
 
+// express.json 的預設錯誤頁會在開發環境回傳 HTML 與堆疊；API 一律維持 JSON 格式。
+app.use((error: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (error instanceof SyntaxError && Number((error as any).status) === 400 && "body" in error) {
+    return res.status(400).json({ error: "請提供有效的 JSON 格式。" });
+  }
+  return next(error);
+});
+
 // /api/chat 與 /api/rent-analysis 的速率限制都在各自的 api/ handler 內，
 // 本機不需要再攔一層（重複計數會讓本機比線上更早被擋）。
 const ANALYSIS_RATE_LIMIT = 3;
@@ -104,7 +112,7 @@ app.get("/api/visitor-count", async (req, res) => {
 // 先前這裡另外維護了一份 106 行的重複實作，schema 已與 api/ 版本嚴重脫節
 // （仍保留早已刪除的 analysisNotes 欄位，也沒有 otherNeedNotes），
 // 造成本機測到的結果與線上不同。單一來源才不會再次分岔。
-app.post("/api/rent-analysis", async (req, res) => {
+app.all("/api/rent-analysis", async (req, res) => {
   await rentAnalysisHandler(req, res);
 });
 

@@ -1,23 +1,24 @@
 import { AlertTriangle, CheckCircle2, ClipboardCheck, HelpCircle } from "lucide-react";
 import type { RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
+import { criteriaTagStyle } from "../lib/criteriaTagStyles";
 import {
+  axisImpactLevel,
   buildAxisVerdicts,
   buildOverallVerdict,
-  type AxisStatus,
+  type AxisImpactLevel,
   type OverallLevel
 } from "../lib/requirementVerdict";
 
-const badgeStyle: Record<AxisStatus, string> = {
-  "符合": "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
-  "部分符合": "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]",
-  "需調整": "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
-  "待確認": "border-[#DDE3DF] bg-[#F5F8F6] text-[#66736C]",
-  "難度高": "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"
+const badgeStyle: Record<AxisImpactLevel, string> = {
+  "影響低": criteriaTagStyle.equipment,
+  "影響中": criteriaTagStyle.layout,
+  "影響高": criteriaTagStyle.budget,
+  "待補資料": criteriaTagStyle.transport
 };
 
 const overallStyle: Record<OverallLevel, string> = {
   "可行": "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
-  "需調整": "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
+  "有條件可行": "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
   "難度高": "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]",
   "資料不足": "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"
 };
@@ -42,7 +43,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
         <div className={`mt-3 border p-3 ${overallStyle[overall.level]}`}>
           <div className="flex items-center gap-2">
             <OverallIcon className="h-4 w-4 shrink-0" />
-            <span className="text-xs font-bold">{overall.level}</span>
+            <span className="text-xs font-bold">整體評估・{overall.level}</span>
           </div>
           <p className="mt-1.5 font-sans text-[11px] font-bold leading-relaxed">{overall.headline}</p>
           {overall.reasons.length > 0 && (
@@ -57,21 +58,32 @@ export function RequirementAssessment({ criteria, recommendations }: {
           )}
           {overall.loosenFirst && (
             <p className="mt-2 border-t border-current/20 pt-2 font-sans text-[10px] font-bold leading-relaxed">
-              最有效的調整 → {overall.loosenFirst}
+              優先處理 → {overall.loosenFirst}
+            </p>
+          )}
+          {overall.pendingLabels && overall.pendingLabels.length > 0 && (
+            <p className="mt-2 border-t border-current/20 pt-2 font-sans text-[10px] leading-relaxed">
+              待補資料：{overall.pendingLabels.join("、")}
             </p>
           )}
         </div>
       </div>
 
+      <div className="border-b border-[#DDE3DF] bg-white px-4 py-3 font-sans">
+        <p className="text-[11px] font-bold text-[#1A2A22]">各條件對整體結果的影響</p>
+        <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">下方標籤表示單項條件會縮小多少選擇；最終可行性請以上方整體評估為準。</p>
+      </div>
+
       <div className="divide-y divide-[#DDE3DF]">
-        {axes.map(axis => (
-          <div key={axis.key} className="p-4 font-sans">
+        {axes.map(axis => {
+          const impact = axisImpactLevel(axis);
+          return <div key={axis.key} className="p-4 font-sans">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-[11px] font-bold text-[#1A2A22]">{axis.label}</p>
                 {axis.detail && <p className="mt-1 text-xs leading-relaxed text-[#3F5147]">{axis.detail}</p>}
               </div>
-              <span className={`shrink-0 border px-2.5 py-1 text-[10px] font-bold ${badgeStyle[axis.status]}`}>{axis.status}</span>
+              <span className={`shrink-0 border px-2.5 py-1 text-[10px] font-bold ${badgeStyle[impact]}`}>{impact}</span>
             </div>
             <p className="mt-2 text-[11px] font-bold leading-normal text-[#1A2A22]">{axis.headline}</p>
             {axis.drivers.length > 0 && (
@@ -84,8 +96,8 @@ export function RequirementAssessment({ criteria, recommendations }: {
             {axis.nextStep && (
               <p className="mt-1.5 text-[11px] leading-normal font-medium text-[#007d5a]">→ {axis.nextStep}</p>
             )}
-          </div>
-        ))}
+          </div>;
+        })}
       </div>
     </section>
   );

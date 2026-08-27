@@ -39,6 +39,21 @@ function getAiClient() {
 const ROOM_LABEL: Record<string, string> = { r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" };
 /** 只接受站內既有的房型代碼，避免把任意字串拼進搜尋語句。 */
 const ALLOWED_ROOM_TYPES = new Set(Object.keys(ROOM_LABEL));
+const MARKET_LOOKUP_TIMEOUT_MS = 10_000;
+
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timeout = setTimeout(() => reject(new Error("Market lookup timeout")), timeoutMs);
+      })
+    ]);
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+}
 
 /**
  * 從搜尋結果的敘述中抽出租金區間。
@@ -87,14 +102,14 @@ export async function lookupMarketRate(area: string, roomType: string): Promise<
     //    那種數字沒有來源也無從查核，不能當成市場行情呈現。
     // 2. 不可把輸出格式限制得太死（例如「只輸出兩行」），一旦這樣寫模型會直接作答
     //    而跳過搜尋。所以讓它自然敘述，數字由程式端擷取。
-    const response = await getAiClient().models.generateContent({
+    const response = await withTimeout(getAiClient().models.generateContent({
       model: "gemini-3.1-flash-lite",
       contents: [{
         role: "user",
         parts: [{ text: `請搜尋 SUUMO 或 LIFULL HOME'S，「${trimmed}」的 ${label} 平均家賃相場是多少日圓？` }]
       }],
       config: { tools: [{ googleSearch: {} }], temperature: 0 }
-    });
+    }), MARKET_LOOKUP_TIMEOUT_MS);
 
     const text = (response.text || "").trim();
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];

@@ -36,13 +36,28 @@ export interface AxisVerdict {
   supplyImpact: number;
 }
 
-export type OverallLevel = "可行" | "需調整" | "難度高" | "資料不足";
+export type AxisImpactLevel = "影響低" | "影響中" | "影響高" | "待補資料";
+
+export type OverallLevel = "可行" | "有條件可行" | "難度高" | "資料不足";
 
 export interface OverallVerdict {
   level: OverallLevel;
   headline: string;
   reasons: string[];
   loosenFirst?: string;
+  /** 尚未補齊的評估面向。與難度分開顯示，避免把未知誤當成容易。 */
+  pendingLabels?: string[];
+}
+
+/**
+ * 個別列只表達「這項條件對整體結果的影響」，不再顯示符合／不符合。
+ * 符合是整組需求的結論；單項使用影響程度，才不會讓人誤讀成逐項驗收。
+ */
+export function axisImpactLevel(axis: AxisVerdict): AxisImpactLevel {
+  if (axis.status === "待確認") return "待補資料";
+  if (axis.supplyImpact >= 2) return "影響高";
+  if (axis.supplyImpact >= 1) return "影響中";
+  return "影響低";
 }
 
 const yen = (value: number) => `¥${(Math.round(value / 1000) * 1000).toLocaleString("en-US")}`;
@@ -62,6 +77,19 @@ const normalize = (value?: string | null) => (value || "")
   .toLowerCase()
   .replace(/涉谷|渋谷/g, "澀谷")
   .replace(/[\s・･（）()\-]/g, "");
+
+const normalizeStation = (value?: string | null) => normalize(toJapaneseStationName(value || ""));
+
+/** 通勤路線查詢前先確認站名在本站交通資料中，避免無效站名觸發多輪外部查詢。 */
+export function hasKnownCommuteStations(value?: string | null, alternatives: string[] = []): boolean {
+  const targets = [...alternatives, ...((value || "").split(/[、,，/／或|・]/))]
+    .map(item => normalizeStation(item))
+    .filter(Boolean);
+  if (!targets.length) return false;
+  return targets.every(query => Object.values(districtStations).some(stations =>
+    stations.some(station => normalizeStation(station.name) === query)
+  ));
+}
 
 /** 路線名比對用：去掉營運商前綴與車種後綴，「西武池袋線」與「池袋線」才對得上。 */
 const normalizeLine = (value?: string | null) => (value || "")
@@ -104,28 +132,50 @@ export interface RentSegment {
  * 「左邊說要 11 萬、右邊給 7 萬車站」這種互相矛盾的結果。
  * 之後要新增地點類條件（例如指定區域帶、學區）只要改這裡，兩側一起生效。
  */
-export function resolveSearchScope(criteria: RentSearchCriteria): { districts: Set<string>; label: string; useMetroDefault: boolean } {
+export function resolveSearchScope(criteria: RentSearchCriteria): {
+  districts: Set<string>;
+  label: string;
+  useMetroDefault: boolean;
+  unresolvedLocations: string[];
+} {
   const districts = new Set<string>();
   const sources: string[] = [];
+  const unresolvedLocations: string[] = [];
 
-  const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(v => normalize(v));
-  if (districtQueries.length) {
-    for (const rate of rentRates) {
-      if (districtQueries.some(q => normalize(rate.district).includes(q) || q.includes(normalize(rate.district)))) {
-        districts.add(normalize(rate.district));
+  const districtInputs = [...(criteria.districts || []), criteria.district]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0);
+  if (districtInputs.length) {
+    let hit = false;
+    for (const input of districtInputs) {
+      const query = normalize(input);
+      const matches = rentRates.filter(rate => normalize(rate.district).includes(query) || query.includes(normalize(rate.district)));
+      if (matches.length) {
+        matches.forEach(rate => districts.add(normalize(rate.district)));
+        hit = true;
+      } else if (!unresolvedLocations.includes(input.trim())) {
+        unresolvedLocations.push(input.trim());
       }
     }
-    if (districts.size) sources.push("指定行政區");
+    if (hit) sources.push("指定行政區");
   }
 
   // 車站：只取該站會讓樣本剩 1 筆、區間退化成單一數字，因此連同所屬行政區一起納入。
-  const stationQueries = [...(criteria.stations || []), criteria.station].filter(Boolean).map(v => normalize(v));
-  if (stationQueries.length) {
+  const stationInputs = [...(criteria.stations || []), criteria.station]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0);
+  if (stationInputs.length) {
     let hit = false;
-    for (const [district, stations] of Object.entries(districtStations)) {
-      if (stations.some(station => stationQueries.some(q => normalize(station.name) === q))) {
-        districts.add(normalize(district));
-        hit = true;
+    for (const input of stationInputs) {
+      const query = normalizeStation(input);
+      let inputHit = false;
+      for (const [district, stations] of Object.entries(districtStations)) {
+        if (stations.some(station => normalizeStation(station.name) === query)) {
+          districts.add(normalize(district));
+          hit = true;
+          inputHit = true;
+        }
+      }
+      if (!inputHit && !unresolvedLocations.includes(input.trim())) {
+        unresolvedLocations.push(input.trim());
       }
     }
     if (hit) sources.push("指定車站所在行政區");
@@ -146,6 +196,11 @@ export function resolveSearchScope(criteria: RentSearchCriteria): { districts: S
       }
     }
     if (hit) sources.push(`${criteria.line}沿線`);
+    else if (criteria.line?.trim() && !unresolvedLocations.includes(criteria.line.trim())) {
+      unresolvedLocations.push(criteria.line.trim());
+    }
+  } else if (criteria.line?.trim() && !unresolvedLocations.includes(criteria.line.trim())) {
+    unresolvedLocations.push(criteria.line.trim());
   }
 
   // 只給通勤目的地時，可住範圍就是「與該站有共同線路的行政區」——
@@ -153,11 +208,12 @@ export function resolveSearchScope(criteria: RentSearchCriteria): { districts: S
   // 刻意不看預算，避免用預算挑出範圍再回頭證明預算可行的循環論證。
   if (!districts.size && criteria.commuteStation) {
     const targets = [...(criteria.commuteStations || []), ...(criteria.commuteStation.split(/[、,，/／或|・]/))]
-      .map(v => normalize(v)).filter(Boolean);
+      .map(v => normalizeStation(v)).filter(Boolean);
     const targetLines = new Set<string>();
     for (const stations of Object.values(districtStations)) {
       for (const station of stations) {
-        if (targets.some(t => normalize(station.name).includes(t) || t.includes(normalize(station.name)))) {
+        const stationName = normalizeStation(station.name);
+        if (targets.some(t => stationName.includes(t) || t.includes(stationName))) {
           station.lines.forEach(line => targetLines.add(normalizeLine(line)));
         }
       }
@@ -204,16 +260,36 @@ export function resolveSearchScope(criteria: RentSearchCriteria): { districts: S
     }
   }
 
+  // 有填地點卻完全比對不到，和「沒有指定地點」是兩件不同的事。
+  // 前者應交給外部行情查詢並在左側顯示資料待確認，不能偷偷退回一都三縣後判可行。
+  const hasExplicitLocation = [
+    ...(criteria.districts || []),
+    criteria.district,
+    ...(criteria.stations || []),
+    criteria.station,
+    criteria.line,
+    criteria.locationPreference,
+    ...(criteria.commuteStations || []),
+    criteria.commuteStation
+  ].some(value => typeof value === "string" && value.trim().length > 0);
+
   return {
     districts,
-    label: sources.length ? sources.join("＋") : "東京都與近郊整體行情",
+    label: unresolvedLocations.length
+      ? `指定地點「${unresolvedLocations.slice(0, 2).join("、")}」行情待確認`
+      : sources.length
+      ? sources.join("＋")
+      : hasExplicitLocation
+        ? "指定地點（行情待確認）"
+        : "東京都與近郊整體行情",
     // 使用者沒指定任何地點時，districts 是空的，取樣就會涵蓋資料庫全部 210 筆——
     // 包含札幌、廣島、那霸等與本站客層無關的地區，行情從 3.7 萬拉到 14 萬，
     // 算出來的中位數對「在東京找房」的人沒有意義，標籤也名不副實。
     // 因此預設收斂到一都三縣（東京都・神奈川・埼玉・千葉），
     // 與上面那句「東京都與近郊」的標籤講的是同一個範圍。
     // 不用整個關東是因為茨城／栃木／群馬（水戶、宇都宮、前橋）通勤上構不到都心。
-    useMetroDefault: sources.length === 0
+    useMetroDefault: !hasExplicitLocation,
+    unresolvedLocations
   };
 }
 
@@ -221,6 +297,10 @@ export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRe
   const mods = getRentModifierIndexes(criteria);
   const scope = resolveSearchScope(criteria);
   const hasScope = scope.districts.size > 0;
+
+  // 使用者有指定地點但站內資料辨識不到時，不可拿預設區域行情代替。
+  // API 會另外查外部市場參考；在那之前左側應維持「資料不足」。
+  if (scope.unresolvedLocations.length || (!hasScope && !scope.useMetroDefault)) return null;
 
   const pool: number[] = [];
   const byDistrict = new Map<string, number[]>();
@@ -414,6 +494,13 @@ function commuteAxis(criteria: RentSearchCriteria, recommendations: RentRecommen
   const limit = criteria.commuteMinutes;
 
   if (!routed.length) {
+    if (!hasKnownCommuteStations(target, criteria.commuteStations || [])) {
+      return {
+        key: "commute", label: "通勤", detail, status: "待確認",
+        headline: `無法辨識通勤地點「${target}」，目前不能判斷通勤範圍。`,
+        drivers: [], nextStep: "請確認車站名稱，並盡量使用正式站名。", supplyImpact: 0
+      };
+    }
     // 使用者已經給了通勤地，只是路線服務沒回時間。這是系統端的缺口，
     // 不能因此把整份評估降級成「資料不足」而蓋掉其他真正的結論。
     const direct = recommendations.filter(item => item.commuteFit === "直達線路").length;
@@ -852,6 +939,9 @@ function positive(value: unknown, max: number): number | null {
 }
 
 function sanitizeCriteria(criteria: RentSearchCriteria): RentSearchCriteria {
+  const roomType = Object.prototype.hasOwnProperty.call(ROOM_TYPE_LABEL, criteria.roomType)
+    ? criteria.roomType
+    : "k1";
   const maxBudget = positive(criteria.maxBudget, 5_000_000);
   let minBudget = positive(criteria.minBudget, 5_000_000);
   // 下限高於上限時捨棄下限：上限是使用者真正的天花板，
@@ -860,6 +950,7 @@ function sanitizeCriteria(criteria: RentSearchCriteria): RentSearchCriteria {
 
   return {
     ...criteria,
+    roomType,
     maxBudget,
     minBudget,
     buildingAgeMax: positive(criteria.buildingAgeMax, 100),
@@ -867,10 +958,13 @@ function sanitizeCriteria(criteria: RentSearchCriteria): RentSearchCriteria {
     commuteMinutes: positive(criteria.commuteMinutes, 180),
     commutePreferredMinutes: positive(criteria.commutePreferredMinutes, 180),
     commuteMaxStations: positive(criteria.commuteMaxStations, 50),
+    amenityWalkMinutes: positive(criteria.amenityWalkMinutes, 180),
     floorMin: positive(criteria.floorMin, 60),
     householdSize: positive(criteria.householdSize, 10),
     areaMin: positive(criteria.areaMin, 500),
-    initialCostBudget: positive(criteria.initialCostBudget, 20_000_000)
+    initialCostBudget: positive(criteria.initialCostBudget, 20_000_000),
+    visaYears: positive(criteria.visaYears, 20),
+    gasBurnersMin: positive(criteria.gasBurnersMin, 10)
   };
 }
 
@@ -892,9 +986,19 @@ export function buildAxisVerdicts(rawCriteria: RentSearchCriteria, recommendatio
 }
 
 export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
-  const totalImpact = axes.reduce((sum, axis) => sum + axis.supplyImpact, 0);
-  const blocking = axes.filter(axis => axis.status === "難度高");
+  // 待補資料只影響判斷完整度，不先當成市場阻力加分。
+  const totalImpact = axes.reduce((sum, axis) => sum + (axis.status === "待確認" ? 0 : axis.supplyImpact), 0);
+  const highImpact = axes.filter(axis => axis.status !== "待確認" && axis.supplyImpact >= 2);
   const adjusting = axes.filter(axis => axis.status === "需調整");
+  const stillPending = axes.filter(axis => axis.status === "待確認");
+  const pendingLabels = [...new Set(stillPending.map(axis => axis.label))];
+
+  // 只有「整組需求本身無法成立」的軸才是一票否決：預算搆不到指定行情、
+  // 或所有推薦方向都超過通勤上限。寵物、築淺、家具等雖然很壓縮供給，
+  // 仍應與預算、地區彈性及其他條件一起做整體判斷，不能單項直接判死刑。
+  const hardConflicts = axes.filter(axis =>
+    axis.status === "難度高" && (axis.key === "budget" || axis.key === "commute")
+  );
   // 只有預算缺席才真的無法判斷。沒有通勤目的地仍可評預算、格局、建物等軸，
   // 不該讓整份評估降級成「資料不足」而蓋掉其他結論。
   const pendingKeys = axes.filter(axis => axis.status === "待確認" && axis.key === "budget");
@@ -908,30 +1012,26 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
     return {
       level: "資料不足",
       headline: `補上${pendingKeys.map(axis => axis.label).join("與")}後才能判斷這組需求找不找得到。`,
-      reasons: pendingKeys.map(axis => axis.headline)
+      reasons: pendingKeys.map(axis => axis.headline),
+      pendingLabels
     };
   }
 
-  // 「待確認」不是零風險。先前只有預算缺席才降級，其餘待確認軸的 supplyImpact
-  // 記 0，於是「在留資格未知 ＋ 通勤地未知」這種資訊最少的情況反而最容易被判「可行」——
-  // 資訊越少結論越樂觀，方向剛好相反。
-  // 這裡不改各軸的判斷，只在總結時攔住：還有東西沒問到就不給「可行」。
-  const stillPending = axes.filter(axis => axis.status === "待確認");
-
-  const explicitReasons = [...blocking, ...adjusting];
+  const explicitReasons = [...hardConflicts, ...adjusting];
   const impactfulReasons = axes
     .filter(axis => axis.supplyImpact > 0 && !explicitReasons.includes(axis))
     .sort((a, b) => b.supplyImpact - a.supplyImpact);
   const reasons = [...explicitReasons, ...impactfulReasons].slice(0, 3).map(axis => axis.headline);
 
-  if (blocking.length || totalImpact >= 6) {
+  if (hardConflicts.length || totalImpact >= 6) {
     return {
       level: "難度高",
-      headline: blocking.length
-        ? `${blocking.map(axis => axis.label).join("、")}會對可選房源數量造成較大限制，建議稍微彈性調整。`
+      headline: hardConflicts.length
+        ? `${hardConflicts.map(axis => axis.label).join("、")}與目前設定有明顯落差，整組需求需要大幅調整。`
         : "多項條件疊加後，同時滿足全部要求的房源相對較少。",
       reasons: reasons.length ? reasons : ["多項條件同時限制供給"],
-      loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined
+      loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined,
+      pendingLabels: pendingLabels.length ? pendingLabels : undefined
     };
   }
   // 多項條件同時壓縮供給時，線性加總撐不到門檻：預算勉強、屋齡勉強各記 1 分，
@@ -941,14 +1041,22 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
   // 通勤 40 分鐘會顯示部分符合但 impact 0，那不是限制，只是提醒。
   const squeezing = axes.filter(axis => axis.status === "部分符合" && axis.supplyImpact >= 1);
 
-  if (adjusting.length || totalImpact >= 4 || squeezing.length >= 2) {
+  if (highImpact.length || adjusting.length || totalImpact >= 4 || squeezing.length >= 2) {
+    const pressureLabels = [...highImpact, ...adjusting, ...impactfulReasons]
+      .sort((a, b) => b.supplyImpact - a.supplyImpact)
+      .filter((axis, index, list) => list.findIndex(item => item.key === axis.key) === index)
+      .slice(0, 3)
+      .map(axis => axis.label);
     return {
-      level: "需調整",
-      headline: adjusting.length
-        ? "整體方向可行，但有幾項需要取捨才找得順。"
-        : `${squeezing.map(axis => axis.label).join("、")}都只是勉強符合，疊在一起會讓可選房源明顯變少。`,
+      level: "有條件可行",
+      headline: pressureLabels.length
+        ? pressureLabels.length === 1
+          ? `整體仍有機會，但${pressureLabels[0]}會明顯縮小可選房源。`
+          : `整體仍有機會，但${pressureLabels.join("、")}疊加後會明顯縮小可選房源。`
+        : "整體仍有機會，但有幾項條件需要排列優先順序。",
       reasons,
-      loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined
+      loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined,
+      pendingLabels: pendingLabels.length ? pendingLabels : undefined
     };
   }
   if (stillPending.length) {
@@ -956,7 +1064,8 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
       level: "資料不足",
       headline: `已填的條件在市場上找得到，補上${stillPending.map(axis => axis.label).join("與")}後就能確認整組需求。`,
       reasons: stillPending.map(axis => axis.headline),
-      loosenFirst: undefined
+      loosenFirst: undefined,
+      pendingLabels
     };
   }
   return {
