@@ -10,9 +10,9 @@ import {
 } from "../lib/requirementVerdict";
 
 const badgeStyle: Record<AxisImpactLevel, string> = {
-  "影響低": criteriaTagStyle.equipment,
-  "影響中": criteriaTagStyle.layout,
-  "影響高": criteriaTagStyle.budget,
+  "容易達成": criteriaTagStyle.equipment,
+  "需要取捨": criteriaTagStyle.layout,
+  "較難兼顧": criteriaTagStyle.budget,
   "待補資料": criteriaTagStyle.transport
 };
 
@@ -70,8 +70,8 @@ export function RequirementAssessment({ criteria, recommendations }: {
       </div>
 
       <div className="border-b border-[#DDE3DF] bg-white px-4 py-3 font-sans">
-        <p className="text-[11px] font-bold text-[#1A2A22]">各條件對整體結果的影響</p>
-        <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">下方標籤表示單項條件會縮小多少選擇；最終可行性請以上方整體評估為準。</p>
+        <p className="text-[11px] font-bold text-[#1A2A22]">各條件的達成難度</p>
+        <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">下方標籤表示各項條件需要多少取捨；最終可行性請以上方整體評估為準。</p>
       </div>
 
       <div className="divide-y divide-[#DDE3DF]">

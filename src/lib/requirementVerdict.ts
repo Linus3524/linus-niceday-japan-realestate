@@ -36,7 +36,7 @@ export interface AxisVerdict {
   supplyImpact: number;
 }
 
-export type AxisImpactLevel = "影響低" | "影響中" | "影響高" | "待補資料";
+export type AxisImpactLevel = "容易達成" | "需要取捨" | "較難兼顧" | "待補資料";
 
 export type OverallLevel = "可行" | "有條件可行" | "難度高" | "資料不足";
 
@@ -50,14 +50,14 @@ export interface OverallVerdict {
 }
 
 /**
- * 個別列只表達「這項條件對整體結果的影響」，不再顯示符合／不符合。
- * 符合是整組需求的結論；單項使用影響程度，才不會讓人誤讀成逐項驗收。
+ * 個別列只表達「這項條件在整體需求中的達成難度」，不再顯示符合／不符合。
+ * 符合是整組需求的結論；單項使用取捨程度，才不會讓人誤讀成逐項驗收。
  */
 export function axisImpactLevel(axis: AxisVerdict): AxisImpactLevel {
   if (axis.status === "待確認") return "待補資料";
-  if (axis.supplyImpact >= 2) return "影響高";
-  if (axis.supplyImpact >= 1) return "影響中";
-  return "影響低";
+  if (axis.supplyImpact >= 2) return "較難兼顧";
+  if (axis.supplyImpact >= 1) return "需要取捨";
+  return "容易達成";
 }
 
 const yen = (value: number) => `¥${(Math.round(value / 1000) * 1000).toLocaleString("en-US")}`;
