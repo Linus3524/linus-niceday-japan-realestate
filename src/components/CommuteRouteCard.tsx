@@ -101,7 +101,7 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
                   <div className="relative w-full h-10 flex items-center justify-center">
                     {/* Thinner horizontal line bar passing through center */}
                     <div
-                      className="absolute inset-x-0 h-[2px] my-auto"
+                      className="absolute -left-3 -right-3 h-[2px] my-auto"
                       style={{
                         background: segment.type === "walk"
                           ? "repeating-linear-gradient(90deg, #94a3b8, #94a3b8 4px, transparent 4px, transparent 8px)"

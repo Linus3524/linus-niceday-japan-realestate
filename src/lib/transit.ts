@@ -1,5 +1,11 @@
 import { districtStations } from "../data/housingMarket.js";
+import stationCodeOverrides from "../data/stationCodeOverrides.json" with { type: "json" };
 import type { RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
+
+/** 駅ナンバリング的補充資料：由 scripts/fill-station-codes.mjs 以 Google Search 查證後產生，
+ * 涵蓋 GTFS feed 沒有填 stop_code、但實際有官方編號的車站。索引鍵是 GTFS 原始路線名稱，
+ * 涵蓋許多在 TRANSIT_LINES 沒有對應識別的地方線，所以獨立於 line identity 查表。 */
+const STATION_CODE_OVERRIDES = (stationCodeOverrides as { lines?: Record<string, Record<string, string>> }).lines || {};
 
 export interface TransitLineIdentity {
   id: string;
@@ -179,7 +185,7 @@ export function toJapaneseLineName(value: string) {
   return toJapanesePlaceName(value);
 }
 
-function getStationCode(line: TransitLineIdentity | null, stationName: string) {
+function getStationCode(line: TransitLineIdentity | null, stationName: string, rawLineName?: string) {
   if (!stationName) return null;
   const norm = normalize(stationName);
   const jpName = toJapaneseStationName(stationName);
@@ -189,11 +195,19 @@ function getStationCode(line: TransitLineIdentity | null, stationName: string) {
     if (code) return code;
   }
 
+  // 許多地方線（相鉄直通線、富山地方鉄道各線等）在 TRANSIT_LINES 沒有對應的 identity，
+  // 只能直接用 GTFS 原始路線名稱去查外部補充表。
+  if (rawLineName && STATION_CODE_OVERRIDES[rawLineName]) {
+    const overrides = STATION_CODE_OVERRIDES[rawLineName];
+    const code = overrides[stationName] || overrides[jpName] || overrides[norm];
+    if (code) return code;
+  }
+
   return null;
 }
 
 export function getStationCodeForLine(lineName: string, stationName: string) {
-  return getStationCode(getTransitLineIdentity(lineName), stationName);
+  return getStationCode(getTransitLineIdentity(lineName), stationName, lineName);
 }
 
 function findStation(name: string) {

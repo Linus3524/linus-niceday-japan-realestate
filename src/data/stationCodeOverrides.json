@@ -1,0 +1,416 @@
+{
+  "generatedAt": "2026-08-27T16:34:58.432Z",
+  "note": "由 scripts/fill-station-codes.mjs 以 Google Search grounding 補齊，僅收錄通過交叉檢查的車站編號。",
+  "lines": {
+    "富山港線（南富山）": {
+      "南富山駅前": "C01",
+      "大町": "C02",
+      "堀川小泉": "C03",
+      "小泉町": "C04",
+      "西中野": "C05",
+      "広貫堂前": "C06",
+      "上本町": "C07",
+      "西町": "C08",
+      "中町（西町北）": "C09",
+      "荒町": "C10",
+      "桜橋": "C11",
+      "電気ビル前": "C12",
+      "地鉄ビル前": "C13",
+      "電鉄富山駅・エスタ前": "C14",
+      "富山駅": "C15",
+      "オークスカナルパークホテル富山前": "C26",
+      "インテック本社前": "C27",
+      "龍谷富山高校前（永楽町）": "C28",
+      "奥田中学校前": "C29",
+      "下奥井": "C30",
+      "粟島（大阪屋ショップ前）": "C31",
+      "越中中島": "C32",
+      "城川原": "C33",
+      "犬島新町": "C34",
+      "蓮町（馬場記念公園前）": "C35",
+      "萩浦小学校前": "C36",
+      "東岩瀬": "C37",
+      "競輪場前": "C38",
+      "岩瀬浜": "C39"
+    },
+    "JR宇都宮線": {
+      "東大宮": "JU09",
+      "土呂": "JU08",
+      "蓮田": "JU10",
+      "久喜": "JU13",
+      "白岡": "JU11",
+      "新白岡": "JU12",
+      "東鷲宮": "JU14",
+      "栗橋": "JU15"
+    },
+    "富山港線（環状線）": {
+      "新富町": "C16",
+      "県庁前": "C17",
+      "丸の内": "C18",
+      "萩浦小学校前": "C36",
+      "蓮町（馬場記念公園前）": "C38",
+      "東岩瀬": "C40",
+      "犬島新町": "C37",
+      "城川原": "C35",
+      "越中中島": "C33",
+      "粟島（大阪屋ショップ前）": "C32",
+      "下奥井": "C31",
+      "奥田中学校前": "C30",
+      "龍谷富山高校前（永楽町）": "C29",
+      "インテック本社前": "C28",
+      "富山駅": "C15",
+      "オークスカナルパークホテル富山前": "C27",
+      "電鉄富山駅・エスタ前": "C14",
+      "地鉄ビル前": "C13",
+      "電気ビル前": "C12",
+      "桜橋": "C11",
+      "荒町": "C10",
+      "岩瀬浜": "C41",
+      "競輪場前": "C39",
+      "中町（西町北）": "C09",
+      "国際会議場前": "C19",
+      "大手モール": "C20",
+      "グランドプラザ前": "C21"
+    },
+    "富山港線（富山大学前）": {
+      "新富町": "C14",
+      "県庁前": "C13",
+      "富山駅": "C15",
+      "丸の内": "C16",
+      "萩浦小学校前": "C28",
+      "蓮町（馬場記念公園前）": "C29",
+      "東岩瀬": "C30",
+      "犬島新町": "C31",
+      "城川原": "C32",
+      "越中中島": "C33",
+      "粟島（大阪屋ショップ前）": "C34",
+      "下奥井": "C35",
+      "奥田中学校前": "C36",
+      "龍谷富山高校前（永楽町）": "C37",
+      "インテック本社前": "C38",
+      "オークスカナルパークホテル富山前": "C26",
+      "岩瀬浜": "C39",
+      "競輪場前": "C27",
+      "諏訪川原": "C17",
+      "安野屋": "C18",
+      "トヨタモビリティ富山Gスクエア五福前": "C21",
+      "富山大学前": "C22"
+    },
+    "市内軌道線": {
+      "南富山駅前": "C01",
+      "大町": "C02",
+      "堀川小泉": "C03",
+      "小泉町": "C04",
+      "西中野": "C05",
+      "広貫堂前": "C06",
+      "上本町": "C07",
+      "西町": "C08",
+      "中町（西町北）": "C09",
+      "荒町": "C10",
+      "桜橋": "C11",
+      "電気ビル前": "C12",
+      "地鉄ビル前": "C13",
+      "電鉄富山駅・エスタ前": "C14",
+      "富山駅": "C15",
+      "丸の内": "C16",
+      "諏訪川原": "C17",
+      "安野屋": "C18",
+      "新富町": "C19",
+      "県庁前": "C20",
+      "トヨタモビリティ富山Gスクエア五福前": "C21",
+      "富山大学前": "C22"
+    },
+    "JR成田線": {
+      "成田": "JO35",
+      "酒々井": "JO34",
+      "佐倉": "JO33"
+    },
+    "環状線": {
+      "新富町": "C16",
+      "県庁前": "C17",
+      "丸の内": "C18",
+      "富山駅": "C15",
+      "電鉄富山駅・エスタ前": "C14",
+      "地鉄ビル前": "C13",
+      "電気ビル前": "C12",
+      "桜橋": "C11",
+      "荒町": "C10",
+      "中町（西町北）": "C09",
+      "国際会議場前": "C19",
+      "大手モール": "C20",
+      "グランドプラザ前": "C21"
+    },
+    "本線": {
+      "北熊本": "KD08",
+      "亀井": "KD10",
+      "黒髪町": "KD07",
+      "藤崎宮前": "KD06",
+      "八景水谷": "KD11",
+      "堀川": "KD12",
+      "新須屋": "KD13",
+      "須屋": "KD14",
+      "三ツ石": "KD15",
+      "黒石": "KD16",
+      "熊本高専前": "KD17",
+      "再春医療センター前": "KD18",
+      "御代志": "KD19"
+    },
+    "上熊本線": {
+      "上熊本": "KD01",
+      "韓々坂": "KD02",
+      "池田": "KD03",
+      "打越": "KD04",
+      "坪井川公園": "KD05",
+      "北熊本": "KD08"
+    },
+    "JR相鉄直通線": {
+      "西大井": "JS16",
+      "武蔵小杉": "JS15"
+    },
+    "宇都宮芳賀ライトレール線": {
+      "宇都宮駅東口": "01",
+      "東宿郷": "02",
+      "駅東公園前": "03",
+      "峰": "04",
+      "陽東3丁目": "05",
+      "宇都宮大学陽東キャンパス": "06",
+      "平石": "07",
+      "平石中央小学校前": "08",
+      "飛山城跡": "09",
+      "清陵高校前": "10",
+      "清原地区市民センター前": "11",
+      "グリーンスタジアム前": "12",
+      "ゆいの杜西": "13",
+      "ゆいの杜中央": "14",
+      "ゆいの杜東": "15",
+      "芳賀台": "16",
+      "芳賀町工業団地管理センター前": "17",
+      "かしの森公園前": "18",
+      "芳賀・高根沢工業団地": "19"
+    }
+  },
+  "linesWithoutNumbering": [
+    "とさでん路面電車",
+    "JR内房線",
+    "JR外房線",
+    "関鉄常総線",
+    "JR八高線",
+    "上毛線",
+    "JR両毛線",
+    "上信線",
+    "JR水郡線",
+    "JR高崎線",
+    "JR相模線",
+    "JR吾妻線",
+    "小湊鉄道線",
+    "真岡線",
+    "JR水戸線",
+    "鹿島臨海鉄道大洗鹿島線",
+    "JR上越線",
+    "JR久留里線",
+    "いすみ線",
+    "ひたちなか海浜鉄道湊線",
+    "JR成田線我孫子支線",
+    "JR信越本線",
+    "JR烏山線",
+    "JR日光線",
+    "ユーカリが丘線",
+    "JR川越線",
+    "JR鹿島線",
+    "JR水郡線支線",
+    "JR東金線",
+    "関鉄竜ヶ崎線"
+  ],
+  "sources": {
+    "富山港線（南富山）": [
+      {
+        "title": "chitetsu.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH7RmYxQx0HkBDcgWQAb6-LhvJTQBkLJ2Vrv0iBZLqYQq7UsrXNpFh7adN1ctxS2VZSqT4ot_vRJqChMFFQ_sXn_49uVNBZsovCEnZ-ghlXLb1uvW5YVrdN_A=="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE1H6fbYofu3zWoWGgzL1_6BI1h7aTG9jpnShlIdYRYUKOeX_jduizOaaXX4dc1ADNpbKp1_kvD_G_Dw3289lgGbS-8p85uum6rsIp6Jig4aSorFShICOZyrgZKkG7Qz_YM-ZkB2w=="
+      },
+      {
+        "title": "tetsudo-ch.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEoRpwWBJw2mnxG1Do1Sd8EQZByY3gv3IMii0mUcExCN-S7_RFQ4pJPIAiF66_iKGzG-lzfRIJtI030P5ADDRbl1G4_MliK5f9G3x5AGTKSyQVqvSO-Lfk0pg=="
+      },
+      {
+        "title": "fc2.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFGY82N3klnHxXdUOSXepxoxhnBM8IZC8mrY82P3bw6YUq6IcNYYDtjUh0jNaTQZFfg1CCFzOzCkQJe_e53wigBnJcbKefepSgMTgPwcFKkna26Pwt8mK5kGXGEseUEbTAYcLXftGPVo2X89cb39-h9l0ZDCJQ5EaQMkfq3iDXJ69xVWR0--WOXYFFFAxxUdnhju9_yW4lVrO_Y4_s="
+      }
+    ],
+    "JR宇都宮線": [
+      {
+        "title": "wikipedia.org",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF12hw2rFGfPzmPkxyFMJeafpK2phEmi1V6ej2eAhEk8iatkNMfTQ7VSilHC6nHUjAqaqKtc0fqTmwNXQrboGmtdk2vvmtFa8cvqzN-ChyM8PbDUmQhDf61rPO_as1yQpfHnd0YN89O0bknGoxoDscsPB-umx43Kqg="
+      },
+      {
+        "title": "tokyo-train-master.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHh_By8Tnst-79l65-xg5UDW9Uks0P0pHIVLwlYh0ck5iQh8dYlOWL-6K7J7q8WE1M3WhL8B6hr9OsfVp01TWmgkpgjmKo-ZU0CYeUQ9I5MeJNy--Hbs8ZM6GHCGm9XA3az-4uVt9k="
+      },
+      {
+        "title": "yahoo.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHbpkuSvPBhnrCefgf3D7Ley7HO7WMDXIbMxTpk3nOe81kMKQjGRC2krvnNbcM8X0d44hqT5jF8i48D_UXMZ-4kPqfSYuNjo63kzcL9NUrTRjcWdovoysfrnDeLEBx2MG_-GvC0CqHWPZk5j2550qCUOVAH1AmzGSgmljc="
+      },
+      {
+        "title": "wixsite.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKjpZe0ArHSeUkFw4v5QHZCdDsZappy084uHaUrb_Cj5BvQjhl-hW2CdAvz66eGdIPJJXaWTiST0XXkJieCS6OX_J-zesnM3soF9GH0QafqKbGHNWC1pM6ODF9pSxPjvjkRA=="
+      }
+    ],
+    "富山港線（環状線）": [
+      {
+        "title": "chitetsu.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHDg8C9_2dRCogC04MY1UmXLnFd5k5D4B7OhgRR0XqXyh-Sw-sZyZOt59B-6Jt5jRssxFImXazti5I74fSzaRM0F3KXM5rEMiAgP3_LDDy8F3NYtFm8LF6LAA=="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH3MuHuYHdyv_f3v0qxVg7dj1ZE2HHgC5XEjz574er01yeCzBXWq0nUMGmKfpVtZo6uM96Rk076ni_tWvvE8cZB1gnkeo0tsJyWyPpFoZ1GQ2qIik54bNf7tcBSlrNpUKbOFy9qlQ=="
+      },
+      {
+        "title": "fc2.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6CwHM3UyLv366WRuukTpGtLHGYEjkq8gL6xwChmUukddCg7u1j869F-JAbmMdNLIPDyEK2kjhVf5Vw64SanvJZmoKKmNqXZMzCkceetJW4vXeXQEE0jmWtBIGuwlMh1bSlTj6jSe7DB4i456_x6TjyR2e7CcaZQEXUFCE_LGBA4UfT3mkzRSNEGVfhp6ITrpVcYzgJm07wTFTzxc="
+      },
+      {
+        "title": "mapfan.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH2vadhOGk2S51KDXXhhawpWo579QpyliXnlIy-TkPHL0RkQLvhQjgP4M0XLG6wMHAWxl5rSnWeNz4ohycQpLneqYqVqpVVd72fwCZ2-OWg8FO2N2Rk2IfHqZk8Mg=="
+      }
+    ],
+    "富山港線（富山大学前）": [
+      {
+        "title": "chitetsu.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFIq5THe5Rj6uqpDe7GjFvfAkP3DyqA-DsJrirMMVlZaxko1DKqdwbwgRnp9nq0ckiCHpZgd5lqcv20Ek95NJFHbYTQQ5a2_JT3FeeFVoJh7KsHiFV-hPcrzQ=="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFASxkP3FgM7EMZGa_t_3y0CI5FO7GtEmhOQsPjT44Mpi_dmSSTuZP0sTW9lma2ZEtSqyMhDzJS90uUHAxtphT_iM-3sZx57MzR4seL-1_5I_w0bMvhknhg-l20BUkRDt_Iu2Pbjg=="
+      },
+      {
+        "title": "tetsudo-ch.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFakXC8DDPLFT55L2FhE91fDm6z8bHypilTA53k-8uTh9ssviz4hYl7DnYpCTcDDjK9Zy_AHIAfCUwWiz1CdqXfoZNbf4jeM9dmLFeyDYarU406loJrISDj3w=="
+      },
+      {
+        "title": "stationname.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQExdfDaJiZ-IGllA0ynl-qnMHH6YJyAkKiNwqbPUjsBHWquZqGLrccqdRgysPJo69MhKmmNSCvM9Hrtg0Gp7Jrk0W7bDDOHdgJ5jdNBWwvCuwGo8LXKiNUcAYvgLKIK988nLpAd2sGMIhaB8RroX0ic1HcZxZ0pWs4DpX-wlaqUIWJskDSwJt7M3EyLHJ7_8lzNstpqqa9ApwFE1b1TADwT5q-fwCnigu-bQ07mVIuVr6jCZrHEmB5q1BI9imeWid6KgHa3C3rdlRsm4SeFToc6UCq6vet9zVdIx-g2H8NCcgzuuf3MoUS7p6sJ2p2lY1R0E4jSKp1swc3ZImsRHIRNOQ_icb3oo7m5XaC2nQ7OgETHGlhfWQ4JvenWuvg4JC0H8SBTzPvQVThBAWQXHhpheT3hcuGN-ULfO6svIB2Dt17tlb7TaJpq788f-3V6SeSCGMwPq7Wi8Mdm_WoFHbp5CQRI4aILxOZ9IwFonKxZMsvkrXEa_1FJmYUip2o="
+      }
+    ],
+    "市内軌道線": [
+      {
+        "title": "chitetsu.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEdQ0YrQkuoHHHItIcQpxa7HtvEaDrANW_Etp9H4pwd5i3geDDr7CTw172d8bVS7YP91Ba-XVbYIvqXge7IcaLBhsmodsygyOXvjYND0lJJbk4UXQV_s_yhIQ=="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGERVlR6eqghYH5pVxUz1_ma8W73K_iWu46LKODIvMOktQLB1ZO_zYZBNMukyte364DGE5v6vx8cQ6j6c7BSS0SOlMVtXihJ45aB_6hkxW4-4zNFdN90mp1vZpHhPPUjOeAbjd8ow=="
+      },
+      {
+        "title": "response.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE02xm5g6CfrHwd2t4kmF9NjAicGX0kuNwyjDdnGmMLiK2kLi7SlHcPfZg1Wj6A0xdtNZnomWWQEPdYHq8SvoIIgAxSbiSZiJQS-sMBBrLo0TrmMpOxiOTjtiG8-yW4Y_Y3aaqKNxkNuHBJW82VK0ztS7YeO4ne"
+      },
+      {
+        "title": "fc2.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGkytMkKau8jci-I49op165VY-giFuLmQFap7UgN4O5PPkrD9w45A9A5avjL7Wv2cGiCfcTO6buZ3h3ycxKRmmhtbC6VHJnyWgKZJukqFhVmBKk4ZGLM6-SfY5RKpxhVtYSDeFn05AHPFwGzpBhUbThZDfougkuyo58b_HQhcFv46h_fSkWeBSzspfqSPqxeirDJNltKxtDuh_VvYk="
+      }
+    ],
+    "JR成田線": [
+      {
+        "title": "tokyo-train-master.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEOz-1kDZ1lyHVcX215n2FA6UelLloWKbkVvDPOFbvZeCt7goGps9Ziwk0HF7Yd0ytaIESq4VFA_MCrse9AFSYhz89rRHVTl63GDyf_xwgGqBmOu0WMp3jDmtNDN2w8NbAjjQ=="
+      },
+      {
+        "title": "hatosan.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGxCM4k5AZEBFLlzC_MTAJoFgnyervBEp5pVNgGdA1jGAKxdqEeFyAqfkzM7WI57O1b4dj8CKt7E0hUfcYqX1dkedZkSQnWOWtbnDaURoGhpoBk3-sVHdtcwnI="
+      },
+      {
+        "title": "livedoor.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEsxygnefA95TWbgh2uaDAl5NpqTz0458KaNgKwME7wN3GlsFHGC3YYybMFpdPvgDE1RYx3tKiKqFmVE2jC3u7uR0SwcG-ffBZuMQnYKmVk4QbgakMGEeDsCR3C2FIAIJMAol_Mj6cXEA=="
+      },
+      {
+        "title": "nobody.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEVt_2iJXEcq9RCTwXlhv1D7na3b9HjQlMlZaC7N81HBRB1lLkRjNlfDg01uqZkqdnsOAXId5rSVkCOHcaoklrpmiWFadKofalmyWWcPZhJXj1TUqmhr2Eo2N5CaQ=="
+      }
+    ],
+    "環状線": [
+      {
+        "title": "chitetsu.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEmrlirEt1g0QPrVrhZvkCjeEIDgetJYflvHdvpV0MO65hCL4sS4qspc3VRi-10qVMMgaJVtjTH9pGHJ1clPythkqs9nB3uprEpUgE1A91DL11kR0hWuiXJkg=="
+      },
+      {
+        "title": "railf.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFyxilNHHonrZfkRazwsvyJIRyOA05MseRTLsmMdXxz_vFlFX63WuYQKuMVXS7CrtQI2gUCAqb3H3UEze_Re-ZhOIONCyQWXpfi8PIFdfho7jNxoZR9XDJWSM3n7-yGMHVpQw=="
+      },
+      {
+        "title": "livedoor.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHfduw5H8W3ONwhtNeqPRibFNIqGPibuYzW85SGpBPtEu3wcoWdP0_Ccm_kUxPl4x6UCBV6z2V_GO5LK19hb7Ac3jBYoSK65Szi7iqeyJNJRrcAURJnSLHattIpl1-BYMoUIrqQnRgq-w=="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEUxKx6dANghx9aUo4xhSrZT2sEYrUkOQVMjS7R0tWwqOW3N0LWiSkq0WzHuXl3UGW6NHnrkqJerem4sn9g78LuRWJ4dEJkaXzsWyJO0lWeOGEAVIfXrXVALOxeTz3zs5_cIMZWNw=="
+      }
+    ],
+    "本線": [
+      {
+        "title": "trafficnews.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEWtbj9KHnK7LfmEEaze5kL97e-Y9M8L8pmIS8FPJCyM9jWwxuqieIvZHaSutdTreRptsjcr_z4uV8EqdCgLrn8y1lvizTNwUoHZyrriTVAmuUpLqFjNUw="
+      },
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEEvueVd5r8VzyaULRuBvpq20yw0wMkgJPxQb6Tr9Y2GBMIXEdWOZyOjxkRrFi2kPQeVEOPcpDU2u2ibbbuSxgsf5zlJJZmPALroSbnCnFHALgB35Zy0D2t3uTPBIQdRfmCb89Dvg=="
+      },
+      {
+        "title": "sakura.ne.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGea1WiF6bySN91h-MGTdg6HkhhEUn6AHLWnfz5UM7KVLxxrJeXUq5E1sNWb2QzvzWFpjds6iMT78idaaeJ6Gs2Vu7q1ROl6A6ZW0i-0G-dR5RSbiszYuTryvVKSMpaeQliLf8aZTv9T0CFhYeQ4vjVfJhEFq82-ke43eQ="
+      },
+      {
+        "title": "wikipedia.org",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGRw-KtmU9suSfdp8cgbyOvEaqAX_LOt0n86ZgHI7D250BFlUkT1B_P_cQHGFFgFp_2BreXTF2NXQ9Kho3UNLoJC6qy7lW6tSZ5eOMH74t7GN1NuNp5LJ93ylCqG5bV0bMAnfzGA5PgwWTPxmc4GRFsF3UXhVvVyzPLwFFt2bLMvgsMJ9fI1KkttEJnrLBaSrz6VcnQbzyj-7LynSr2C9yD83O6l5o="
+      }
+    ],
+    "上熊本線": [
+      {
+        "title": "mynavi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQgrI06QoeQHWM_aE2kJYN4gWqr6l7-Jxb6Y_lSnALB9ELAx_3dtnfD6MazVNMt_ApS8lskseq3Z0fxCIXLfxUiVmqmqepBnlTuiW2GgT4WCt1GSyjo_0PpV2B1wgRfRVQYam2-Q=="
+      },
+      {
+        "title": "mixi.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFK6WtebeNjnsR0q_ae1gG6IB3NaqYDgCDRXrUTLGXDa_SrmsZZuKmC2XOJcSRXXSLZCyYn1g37-sTE5HE6boEq5UcwG3CmHm_CZUid9bHl_mRkmZsaHGVtZoadLOCK5O0iCFIQF4feuJK0YXRa6A=="
+      },
+      {
+        "title": "railf.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE9WYlVswPKRR36ORD5eS-JV6gEf-5YDzfy5OuGJhPbzoo6cR5XU7-BAo-Ih1jHar6En-z75SKMQ2G5IaQGI5qXKXQlwPnl33naKYo4fc7Sa4XczGyZg29lW13vqxsHFmcPQA=="
+      },
+      {
+        "title": "sakura.ne.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGKXITuq37SxGX_IRkFIfi0aEl1qFKkBnB3KdWwcS7LQDuXOvYqHBCcIrJrHvUFPvZshMj1sO3Uxp2kt4I_ylgDfdjIDswXGWPDPGDpCePKvJvAQO1Mz2ZHmD2hObFcuUsAuh9OV1WSSRgEQQfqq0wGlPIQ73taKOcfZfLF5HWNCoA="
+      }
+    ],
+    "JR相鉄直通線": [
+      {
+        "title": "hatosan.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFLBlEwJ8kAp4Y9IM6_miVB6JglD6zosmWN97IvfNeJLbtYn44GSlyQ9ZIseFab2Pszu9CPWz7-yutcBUIaqrSgESsZ-SDDwmUohdUP9SL_DY7NvEl6diaos-0="
+      },
+      {
+        "title": "jreast.co.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE21WqxFXKTZ_A1NJhIa4aBBhXclrs-HOUYrsarQIZ-RbB65QHbuADowVG-okflixvDabMF6XC_fso8umUEDVXP_ySsFswVUPQ_-4sw71We01lK1tyRIiFwqoI3DZYDLEgMd1IX5fA="
+      },
+      {
+        "title": "hatenablog.com",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEZoe8Pg2FZ3zEzIO7Bf6BQXD_uhy98inxuAUWd0a0HRV5POqL6Wy3cqLw1eITBNIvYNGju-u9pR0_wv13RhK9YZux4lsi9rSo5_EIOHYVppaiMOJNwfwCe698U1ldbUuFZ8-5bafbuvIDPbC4-IQ=="
+      },
+      {
+        "title": "wikipedia.org",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQGnY924fljnT85RyLN0rtAr_ojG6S20D8mEe7pGHEP-pPPodn0VU3iTrmGxn5-wDGuki_znytQbOhAr6p7djkeFXPzOk0OS1RpTHJy8eP9XhC6fx-1bxrc_6yLsPp-7OhqGCjsF4h_dUjAa_xmfIooLH39rQLbx7cwldkzYrrr2faXxBnLWRTJw3xfZjPkG3IJxc="
+      }
+    ],
+    "宇都宮芳賀ライトレール線": [
+      {
+        "title": "dash-dash-dash.jp",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGZS58m8ceXIfsFdjjuXCEiTrxRn-283-R0XMI3DeKkcy4nXLrQHsASSrJaQvAv1p7iaxlMokLicMOvjBsoy6EtlhF7MXAq_GPfNCkw4yUaO2g3_RzPi3wp1hEMaQT-8JbAcmQ="
+      },
+      {
+        "title": "wikipedia.org",
+        "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFh7caNVlZ0Rx4nz9w1hN4u5utVPB5635i6UJD2my4BO84CjhMtq7U1IBFwSGnUSf2Db5A5rVsCzSiL5383wTI7MsjB7TH3xv-ReIc1trzSnaRRVRpiZFG59t_4kPjOaGuL1xeaX7VcoJpO2-J2PQ-S1tJV4FbKv9an6AmPLN4W1UxQwlAnua596MY_xPyiwTg2_J2PMb4R-EAEM3DzhcFX8aUcz7QC2H8AnqS0h_AOdnE2W1MZJf7z-vyi-CW84fJrYUwP2rWaRizGewSqvoeaEF89BQ1FR69Yj92EftMQa7_xTaLNQfitHqRlSBv25yIHAiCuN6h9EPM1LU-U3pdr7d18RtgL_27YUWsKZC5yKlOp"
+      }
+    ]
+  }
+}
