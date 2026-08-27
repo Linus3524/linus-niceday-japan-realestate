@@ -610,7 +610,18 @@ export const budgetModifiers: BudgetModifier[] = [
   { text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
   { text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
   { text: "塔樓建築", price: 15000, type: "plus", category: "building" },
-  { text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" }
+  { text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" },
+  // 以下兩項是台灣客人最常提、但先前完全沒有進價格模型的條件。
+  // 沒有它們的話，指定「乾濕分離」的客人會被拿去對照含 3 點式衛浴的市場中位，
+  // 判斷結果會比實際樂觀。
+  //
+  // 乾濕分離：東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス
+  // 實務行情高約 7,000〜10,000 円，取中間值。
+  { text: "乾濕分離（衛浴分離）", price: 8000, type: "plus", category: "equipment" },
+  // 2 樓以上：同物件同格局，1 樓通常便宜約 3,000 円（多數物件落在 1,000〜5,000）。
+  // 指定 2 樓以上等於把最便宜的那一層排除在外，但 1 樓只佔市場一部分，
+  // 因此溢價取比 1 樓折讓小的 2,000 円，與既有的「房間位於一樓 −3000」互相呼應。
+  { text: "指定 2 樓以上", price: 2000, type: "plus", category: "building" }
 ];
 
 const rentQAItems: QAItem[] = [

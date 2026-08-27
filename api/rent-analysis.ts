@@ -132,6 +132,7 @@ export default async function handler(req: any, res: any) {
             cityGasRequired: { type: Type.BOOLEAN, nullable: true },
             petsAllowed: { type: Type.BOOLEAN, nullable: true },
             petType: { type: Type.STRING, nullable: true },
+            separateBath: { type: Type.BOOLEAN, nullable: true },
             washbasin: { type: Type.BOOLEAN, nullable: true },
             bidet: { type: Type.BOOLEAN, nullable: true },
             elevator: { type: Type.BOOLEAN, nullable: true },
@@ -161,7 +162,7 @@ export default async function handler(req: any, res: any) {
               }
             }
           },
-          required: ["roomType", "areaMin", "maxBudget", "minBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "commuteMaxStations", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
+          required: ["roomType", "areaMin", "maxBudget", "minBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "commuteMaxStations", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "separateBath", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
         },
         systemInstruction: `你是日本租屋需求理解器。使用者會用自由、模糊、跳號或口語的方式描述需求（例如「2.未定」「5.不知道」「可能需要含家具？」），請保留原意並合理結構化。
 

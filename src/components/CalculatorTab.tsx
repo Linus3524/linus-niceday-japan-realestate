@@ -60,7 +60,12 @@ const modifierAvailabilityImpact: Record<number, { supply: number; competition: 
   15: { supply: 2, competition: 0.5 }, 16: { supply: -1, competition: -0.2 }, 17: { supply: -1.6, competition: -0.4 },
   18: { supply: -1.2, competition: -0.2 }, 19: { supply: -1.8, competition: -0.3 }, 20: { supply: -0.8, competition: -0.2 },
   21: { supply: -0.8, competition: -0.1 }, 22: { supply: -1.5, competition: -0.2 }, 23: { supply: -1.2, competition: -0.2 },
-  24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 }
+  24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 },
+  // 27 乾濕分離：市場上仍以 3 點式ユニットバス為大宗，指定分離會篩掉相當比例的房源，
+  // 而且是外國人與年輕租客都想要的條件，競爭也高。
+  27: { supply: 1.6, competition: 1.2 },
+  // 28 指定 2 樓以上：只排除 1 樓，壓縮幅度小；治安與採光考量讓它略微搶手。
+  28: { supply: 0.6, competition: 0.4 }
 };
 
 // 必須與 api/rent-analysis.ts 的 ANALYSIS_RATE_LIMIT 一致。

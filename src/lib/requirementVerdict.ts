@@ -323,6 +323,13 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
   // 預算構不到行情時，先看看是不是「某幾個區其實買得起」——
   // 只講一句「提高到 X 萬」而不說 X 萬對應哪裡，使用者照做仍然找不到房子。
   const affordable = range.segments.filter(seg => seg.low <= budget);
+  // 這兩句先前直接把 affordable 全部串起來，未指定地點時會吐出五十個地名。
+  // 與 drivers 用同一個上限，取最貴的幾個——同樣付得起就先看條件較好的。
+  const affordableNames = (() => {
+    const top = affordable.slice(-SEGMENT_SHOWCASE).reverse().map(seg => seg.district);
+    const rest = affordable.length - top.length;
+    return top.join("、") + (rest > 0 ? `等 ${affordable.length} 個區` : "");
+  })();
   const cheapest = range.segments[0];
 
   if (range.median <= budget) {
@@ -338,11 +345,11 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
     return {
       key: "budget", label: "預算", detail, status: "部分符合",
       headline: range.spread && affordable.length
-        ? `這個預算在${affordable.map(s => s.district).join("、")}找得到，其他區要再往上加。`
+        ? `這個預算在${affordableNames}找得到，其他區要再往上加。`
         : `預算落在行情偏低端，約 ${Math.min(95, Math.max(10, share))}% 的物件在範圍內。`,
       drivers,
       nextStep: range.spread && affordable.length
-        ? `把搜尋集中在${affordable.map(s => s.district).join("、")}，其他區同條件約 ${man(range.median)}。`
+        ? `把搜尋集中在${affordableNames}，其他區同條件約 ${man(range.median)}。`
         : loosenable.length
           ? `鎖定行情較低的車站，或放寬${loosenable.join("、")}。`
           : "往行情較低的車站找，可選數量會明顯增加。",
@@ -548,6 +555,9 @@ function buildingAxis(criteria: RentSearchCriteria): AxisVerdict | null {
 
 function equipmentAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   const equipment = [
+    // 乾濕分離現在是獨立欄位（先前只會以自由文字落在 otherNeeds）。
+    // 沒有列進來的話，它變成只影響估價、卻不影響「設備要求會篩掉多少房源」的判斷。
+    criteria.separateBath ? "乾濕分離" : null,
     criteria.washbasin ? "獨立洗面台" : null,
     criteria.bidet ? "免治馬桶" : null,
     criteria.elevator ? "電梯" : null,
@@ -824,7 +834,48 @@ function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
 
 /* ── 對外 API ─────────────────────────────────────────── */
 
-export function buildAxisVerdicts(criteria: RentSearchCriteria, recommendations: RentRecommendation[]): AxisVerdict[] {
+/**
+ * 把不合理的數值清成「沒填」。
+ *
+ * 數字可能來自模型抽取、正則補抓或使用者直接輸入，三個來源都可能給出負數、
+ * NaN、Infinity 或字串。先前沒有這一層，於是畫面上會出現「上限 -5 萬円」、
+ * 「屋齡 -5 年內」、「上限 NaN 萬円」這種輸出；負預算還會讓 gapRatio 的分母
+ * 變號，把不可能的條件判成「幾乎貼齊行情低端」。
+ *
+ * 清成 null 而不是夾到邊界值：使用者填了離譜的數字，正確的回應是當作沒填、
+ * 請他補一個合理值，而不是幫他假設一個他沒說過的數字。
+ */
+function positive(value: unknown, max: number): number | null {
+  const num = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(num) || num <= 0 || num > max) return null;
+  return num;
+}
+
+function sanitizeCriteria(criteria: RentSearchCriteria): RentSearchCriteria {
+  const maxBudget = positive(criteria.maxBudget, 5_000_000);
+  let minBudget = positive(criteria.minBudget, 5_000_000);
+  // 下限高於上限時捨棄下限：上限是使用者真正的天花板，
+  // 留著會顯示成「15 萬円～8 萬円」這種反過來的區間。
+  if (minBudget != null && maxBudget != null && minBudget > maxBudget) minBudget = null;
+
+  return {
+    ...criteria,
+    maxBudget,
+    minBudget,
+    buildingAgeMax: positive(criteria.buildingAgeMax, 100),
+    walkMinutes: positive(criteria.walkMinutes, 60),
+    commuteMinutes: positive(criteria.commuteMinutes, 180),
+    commutePreferredMinutes: positive(criteria.commutePreferredMinutes, 180),
+    commuteMaxStations: positive(criteria.commuteMaxStations, 50),
+    floorMin: positive(criteria.floorMin, 60),
+    householdSize: positive(criteria.householdSize, 10),
+    areaMin: positive(criteria.areaMin, 500),
+    initialCostBudget: positive(criteria.initialCostBudget, 20_000_000)
+  };
+}
+
+export function buildAxisVerdicts(rawCriteria: RentSearchCriteria, recommendations: RentRecommendation[]): AxisVerdict[] {
+  const criteria = sanitizeCriteria(rawCriteria);
   const range = estimateRequestedRent(criteria);
   return [
     visaAxis(criteria),
@@ -861,6 +912,12 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
     };
   }
 
+  // 「待確認」不是零風險。先前只有預算缺席才降級，其餘待確認軸的 supplyImpact
+  // 記 0，於是「在留資格未知 ＋ 通勤地未知」這種資訊最少的情況反而最容易被判「可行」——
+  // 資訊越少結論越樂觀，方向剛好相反。
+  // 這裡不改各軸的判斷，只在總結時攔住：還有東西沒問到就不給「可行」。
+  const stillPending = axes.filter(axis => axis.status === "待確認");
+
   const explicitReasons = [...blocking, ...adjusting];
   const impactfulReasons = axes
     .filter(axis => axis.supplyImpact > 0 && !explicitReasons.includes(axis))
@@ -877,12 +934,29 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
       loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined
     };
   }
-  if (adjusting.length || totalImpact >= 4) {
+  // 多項條件同時壓縮供給時，線性加總撐不到門檻：預算勉強、屋齡勉強各記 1 分，
+  // 合計 2 分仍判「可行」，使用者照著去找卻處處碰壁。
+  //
+  // 只計「部分符合且真的壓縮供給（impact ≥ 1）」的軸——單看狀態會誤判：
+  // 通勤 40 分鐘會顯示部分符合但 impact 0，那不是限制，只是提醒。
+  const squeezing = axes.filter(axis => axis.status === "部分符合" && axis.supplyImpact >= 1);
+
+  if (adjusting.length || totalImpact >= 4 || squeezing.length >= 2) {
     return {
       level: "需調整",
-      headline: "整體方向可行，但有幾項需要取捨才找得順。",
+      headline: adjusting.length
+        ? "整體方向可行，但有幾項需要取捨才找得順。"
+        : `${squeezing.map(axis => axis.label).join("、")}都只是勉強符合，疊在一起會讓可選房源明顯變少。`,
       reasons,
       loosenFirst: loosenFirst ? `${loosenFirst.label}：${loosenFirst.nextStep}` : undefined
+    };
+  }
+  if (stillPending.length) {
+    return {
+      level: "資料不足",
+      headline: `已填的條件在市場上找得到，補上${stillPending.map(axis => axis.label).join("與")}後就能確認整組需求。`,
+      reasons: stillPending.map(axis => axis.headline),
+      loosenFirst: undefined
     };
   }
   return {

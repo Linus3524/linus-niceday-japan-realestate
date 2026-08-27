@@ -71,6 +71,7 @@ export interface RentSearchCriteria {
   cityGasRequired?: boolean;
   petsAllowed?: boolean;
   petType?: string | null;
+  separateBath?: boolean;
   washbasin?: boolean;
   bidet?: boolean;
   elevator?: boolean;
@@ -447,6 +448,15 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     const floor = prompt.match(/(?:希望)?\s*(\d{1,2})\s*樓以上/i);
     if (floor?.[1]) enriched.floorMin = Number(floor[1]);
   }
+  // 乾濕分離的說法很多（乾濕分離／衛浴分離／浴廁分離／バストイレ別…），
+  // 而且模型常把它丟進 otherNeeds 而不是填在欄位上。
+  // 這裡從原文與 otherNeeds 兩邊補抓，確保它一定會進到價格模型；
+  // 漏掉的話，這個條件對估價的影響就是零，判斷會偏樂觀。
+  if (enriched.separateBath == null) {
+    const SEPARATE_BATH = /乾濕分離|乾溼分離|衛浴分離|浴廁分離|浴室分離|バス・?トイレ別|風呂トイレ別|セパレート/i;
+    const haystack = [prompt, ...(enriched.otherNeeds || []), ...(enriched.unverifiedConditions || [])].join(" ");
+    if (SEPARATE_BATH.test(haystack)) enriched.separateBath = true;
+  }
   // 使用者常一次列出多個可接受的房型，甚至是兩套替代方案
   // （例如「1K/1DK/1LDK 各一間」與「2K/2DK/2LDK 一間可 2 人合租」）。
   // 舊版只取第一個比對結果，會把方案 A 的房型配上方案 B 的預算，得出「1K 卻 13 萬」這種矛盾結果。
@@ -566,6 +576,11 @@ export function getRentModifierIndexes(criteria: RentSearchCriteria) {
   if (criteria.furnished && criteria.furnishedPriority !== "uncertain") indexes.add(15);
   if (criteria.tower) indexes.add(25);
   if (criteria.lpGasAccepted) indexes.add(26);
+  // 乾濕分離與 2 樓以上：先前這兩項完全沒有進價格模型，
+  // 導致指定它們的人被拿去對照「含 3 點式衛浴、含 1 樓」的市場中位，
+  // 個別條件都判「符合」，合起來卻找不到房——這正是綜合難度被低估的來源。
+  if (criteria.separateBath) indexes.add(27);
+  if (criteria.floorMin != null && criteria.floorMin >= 2) indexes.add(28);
   indexes.delete(-1);
   return [...indexes];
 }
