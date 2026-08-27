@@ -2,6 +2,7 @@ import { budgetModifiers } from "../data/rentGuideData.js";
 import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
+import { toJapanesePlaceName } from "./transit.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
 
@@ -160,16 +161,27 @@ export interface CommuteRouteDetails {
   segments: CommuteRouteSegment[];
 }
 
-const normalize = (value?: string | null) => (value || "")
+/**
+ * 地名比對用的正規化。
+ *
+ * 台灣讀者會打繁體（惠比壽、橫濱、學藝大學），資料與日本官方標示用的是日文漢字
+ * （恵比寿、横浜、学芸大学）。先前這裡只手寫了 4 組替換（蔵／恵／黒／渋谷），
+ * 於是「恵比寿」「横浜」「学芸大学」「浅草」「高円寺」通通對不到資料，
+ * 使用者明明打對了站名卻像沒填一樣。
+ *
+ * 專案裡已經有完整的中日漢字對照（transit.ts 的 toJapanesePlaceName，五十餘組），
+ * 這裡直接沿用：把兩邊都轉成同一套日文寫法再比對，繁簡與中日寫法就都能對上。
+ */
+const normalize = (value?: string | null) => toJapanesePlaceName(value || "")
   .toLowerCase()
-  .replace(/涉谷|渋谷/g, "澀谷")
-  .replace(/蔵/g, "藏")
-  .replace(/恵/g, "惠")
-  .replace(/黒/g, "黑")
   .replace(/[\s・･（）()\-]/g, "")
-  .replace(/jr|東京地下鐵|都營|東急|京王|小田急/g, "");
+  .replace(/jr|東京地下鉄|都営|東急|京王|小田急/g, "");
 
 /** 使用者常見的否定寫法；命中就代表「明確不需要」，不可當成需求。 */
+/** 推薦清單長度，以及單一行政區最多佔幾個名額。 */
+const RECOMMENDATION_LIMIT = 9;
+const DISTRICT_QUOTA = 3;
+
 const NEGATION = /(?:不用|不需要|不必|不想|沒有需要|没有需要|無需|无需|不要)/;
 
 /** 判斷某個關鍵詞在原文中是被「要求」還是被「否決」。 */
@@ -596,7 +608,12 @@ export function computeStackedEstimate(
   mods: number[],
   roomType: RoomType
 ) {
-  let estimate = parseFloat(rate[roomType]) * 10000;
+  // roomType 可能是 undefined 或模型吐出的無效值（例如 "castle"），
+  // 直接取用會讓 parseFloat(undefined) 變成 NaN，整條推薦的估價、
+  // 價格區間與預算差額全部帶著 NaN 進到畫面上。
+  // 需求可行性那邊已經有同樣的回退，這裡補齊，兩邊行為才一致。
+  const safeRoomType: RoomType = rate[roomType] ? roomType : "k1";
+  let estimate = parseFloat(rate[safeRoomType]) * 10000;
   for (const index of mods) {
     const mod = budgetModifiers[index];
     if (mod) estimate += adjustedModifier(rate.district, index === 25 ? 15000 : mod.price);
@@ -700,18 +717,66 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       score
     };
   });
-  const exactDistrictCandidates = districtQueries.length
+  // 地理範圍＝「指定的行政區」聯集「指定的車站」。
+  //
+  // 先前只用行政區做硬篩選，車站僅在分數上加 120 分——但分數是在篩選之後才排序的，
+  // 被篩掉的候選根本進不了排序。使用者同時填「目黑區／世田谷區」與
+  // 「元住吉、日吉」（東急東橫線往神奈川那側）時，指定的車站會整批消失，
+  // 六個結果全是目黑區，看起來像系統無視了他填的車站。
+  //
+  // 兩者都是使用者明確講出的地點，取聯集才不會擅自丟掉其中一半；
+  // 排序仍由分數決定，指定車站的 120 分本來就會排在指定行政區的 80 分前面。
+  const inDistrict = districtQueries.length
     ? ranked.filter(item => districtQueries.some(query => normalize(item.district) === query))
     : [];
-  const geographicPool = exactDistrictCandidates.length ? exactDistrictCandidates : ranked;
+  const atStation = wantedStations.length
+    ? ranked.filter(item => item.station && wantedStations.some(wanted => normalize(item.station!) === wanted))
+    : [];
+  const requested = [...inDistrict, ...atStation.filter(item => !inDistrict.includes(item))];
+  // 指定的地點排前面，其餘候選留在後面備用。
+  // 不能只留 requested：使用者只指定兩個車站時，清單就只剩兩筆，
+  // 反而比不填任何地點得到的資訊還少。後面的候選會標成「預算替代」等類型，
+  // 使用者看得出哪些是他指定的、哪些是系統補的。
+  const geographicPool = requested.length
+    ? [...requested, ...ranked.filter(item => !requested.includes(item))]
+    : ranked;
   const directCandidates = criteria.commuteDirectRequired && criteria.commuteStation
     ? geographicPool.filter(item => item.commuteFit === "直達線路")
     : geographicPool;
   const pool = directCandidates.length ? directCandidates : geographicPool;
-  return pool.sort((a, b) => b.score - a.score || a.estimate - b.estimate)
-    .filter((item, index, all) => all.findIndex(candidate => candidate.station === item.station) === index)
-    .slice(0, 6)
-    .map(({ score: _score, ...item }) => item);
+  // 六個結果常常全部落在同一個行政區（例如指定目黑區時，六個都是目黑區的站），
+  // 使用者看不到「同樣條件在別區長什麼樣」。改成九個，並限制每個行政區最多三個，
+  // 讓清單同時回答「這一區有哪些站」與「還有哪些區可以看」。
+  //
+  // 使用者明確指定的車站不受此限：那是他自己講出來的地點，不能因為配額被擠掉。
+  // requested 的成員本來就靠指定車站／行政區的加分排在前面，
+  // 這裡照分數排即可；補進來的候選分數較低，自然落在後段。
+  const sorted = pool
+    .sort((a, b) => b.score - a.score || a.estimate - b.estimate)
+    .filter((item, index, all) => all.findIndex(candidate =>
+      candidate.station === item.station && candidate.district === item.district) === index);
+
+  const perDistrict = new Map<string, number>();
+  const picked: typeof sorted = [];
+  const overflow: typeof sorted = [];
+  for (const item of sorted) {
+    if (picked.length >= RECOMMENDATION_LIMIT) break;
+    const used = perDistrict.get(item.district) || 0;
+    if (item.recommendationType === "指定車站" || used < DISTRICT_QUOTA) {
+      perDistrict.set(item.district, used + 1);
+      picked.push(item);
+    } else {
+      overflow.push(item);
+    }
+  }
+  // 配額讓結果不足九個時（例如使用者只指定了一個區），用分數次高的補回來，
+  // 寧可同區多列幾站，也不要交出比預期少的清單。
+  for (const item of overflow) {
+    if (picked.length >= RECOMMENDATION_LIMIT) break;
+    picked.push(item);
+  }
+
+  return picked.map(({ score: _score, ...item }) => item);
 }
 
 export type CriteriaSummaryCategory = "layout" | "equipment" | "transport" | "special" | "budget";

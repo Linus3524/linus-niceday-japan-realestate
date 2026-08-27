@@ -596,9 +596,12 @@ function layoutAxis(criteria: RentSearchCriteria): AxisVerdict {
       drivers: [], supplyImpact: 1
     };
   }
+  // 這一段是「低於該房型的常見下限」，代表條件寬鬆、幾乎不篩掉房源。
+  // 先前寫成「是常見面積」會誤導：1LDK 指定 25㎡ 其實偏小（常見落在 33㎡ 以上），
+  // 說它是常見面積等於告訴使用者這個數字很標準，實際上他只是把門檻設得很低。
   return {
     key: "layout", label: "格局與面積", detail, status: "符合",
-    headline: `${criteria.areaMin}㎡ 是 ${roomLabel} 的常見面積。`,
+    headline: `${criteria.areaMin}㎡ 低於 ${roomLabel} 的常見下限，面積這一項不會限制選擇。`,
     drivers: [], supplyImpact: 0
   };
 }
