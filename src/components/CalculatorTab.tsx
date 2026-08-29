@@ -1065,7 +1065,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           onClick={() => setRentInputMode("ai")}
                           className={`min-h-11 border-r border-[#9ee2cf] px-3 text-xs font-bold transition-colors ${rentInputMode === "ai" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
                         >
-                          直接描述需求
+                          描述需求
                         </button>
                         <button
                           type="button"
@@ -1074,7 +1074,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           onClick={() => setRentInputMode("structured")}
                           className={`min-h-11 px-3 text-xs font-bold transition-colors ${rentInputMode === "structured" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
                         >
-                          逐項選擇條件
+                          選擇條件
                         </button>
                       </div>
 
