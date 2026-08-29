@@ -837,9 +837,15 @@ const CONDITION_KNOWLEDGE: Array<{ pattern: RegExp; advice: string; impact: 0 | 
 ];
 
 function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | null {
-  // 家具家電已由設備軸處理，這裡不重複列出。
+  // 已有專屬評估軸的結構化條件不能再落入「其他核心條件」。
+  // AI 常會同時回傳 petsAllowed / petType 與 otherNeeds: ["可養貓"]；
+  // 若不排除，同一條需求會在「特殊條件」與此處各顯示一次。
+  const handledByDedicatedAxis = (condition: string) =>
+    (criteria.petsAllowed === true && /可養|能養|寵物|宠物|貓|猫|狗|犬/.test(condition)) ||
+    (criteria.furnished === true && /家具|家電|家电/.test(condition));
+
   const unverified = [...new Set([...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])])]
-    .filter(condition => !(criteria.furnished && /家具|家電|家电/.test(condition)));
+    .filter(condition => !handledByDedicatedAxis(condition));
   if (!unverified.length) return null;
 
   const priorityOf = (condition: string) => criteria.otherNeedPriorities?.[condition] || "required";

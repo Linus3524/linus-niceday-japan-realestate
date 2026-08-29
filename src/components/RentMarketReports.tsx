@@ -278,7 +278,7 @@ const commuteMinutes = (item: RentRecommendation) =>
 /** 沒有分鐘數時的次序：直達 → 需轉乘 → 未指定通勤地。 */
 function commuteFallbackRank(item: RentRecommendation) {
   if (item.commuteFit === "直達線路") return 0;
-  if (item.commuteFit === "需確認轉乘") return 1;
+  if (item.commuteFit === "需轉乘" || item.commuteFit === "需確認轉乘") return 1;
   return 2;
 }
 

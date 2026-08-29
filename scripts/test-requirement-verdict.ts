@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { buildRentRecommendations, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { districtStations } from "../src/data/housingMarket";
 import {
   axisImpactLevel,
   buildAxisVerdicts,
@@ -7,6 +8,7 @@ import {
   hasKnownCommuteStations,
   resolveSearchScope
 } from "../src/lib/requirementVerdict";
+import { commuteFitForTransfers } from "../src/lib/transitRouteApi";
 
 const base: RentSearchCriteria = {
   roomType: "k1",
@@ -30,6 +32,20 @@ const scenarios: Array<{ name: string; run: () => void }> = [
   {
     name: "寵物是高影響但非單項否決",
     run: () => assert.equal(assess({ ...base, petsAllowed: true, petType: "貓" }).overall.level, "有條件可行")
+  },
+  {
+    name: "寵物條件不會在其他核心條件重複出現",
+    run: () => {
+      const result = assess({
+        ...base,
+        petsAllowed: true,
+        petType: "貓",
+        otherNeeds: ["可養貓"],
+        unverifiedConditions: ["可養貓"]
+      });
+      assert.ok(result.axes.some(axis => axis.key === "pet" && axis.detail === "可養貓"));
+      assert.equal(result.axes.some(axis => axis.key === "otherCoreNeeds"), false);
+    }
   },
   {
     name: "不存在行政區不退回預設行情",
@@ -58,6 +74,14 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       const result = assess({ ...base, commuteStation: "火星站", commuteStations: ["火星站"] });
       assert.equal(result.axes.find(axis => axis.key === "commute")?.status, "待確認");
       assert.equal(result.overall.level, "資料不足");
+    }
+  },
+  {
+    name: "實際路線有轉乘時不會標成直達",
+    run: () => {
+      assert.equal(commuteFitForTransfers(0), "直達線路");
+      assert.equal(commuteFitForTransfers(1), "需轉乘");
+      assert.equal(commuteFitForTransfers(2), "需轉乘");
     }
   },
   {
@@ -147,6 +171,25 @@ const scenarios: Array<{ name: string; run: () => void }> = [
           assert.ok(Number.isFinite(item.estimate), `估價應為數字，實際為 ${item.estimate}`);
           assert.ok(Number.isFinite(item.rangeLow) && Number.isFinite(item.rangeHigh));
         }
+      }
+    }
+  },
+  {
+    name: "長站名不會再誤判成內含的短站名",
+    run: () => {
+      const stationNames = [...new Set(Object.values(districtStations).flat().map(station => station.name))];
+      const collisions = stationNames.flatMap(longName => stationNames
+        .filter(shortName => longName !== shortName && longName.includes(shortName))
+        .map(shortName => ({ longName, shortName })));
+      assert.ok(collisions.length > 0, "測試資料中應至少存在一組站名包含關係");
+
+      for (const { longName, shortName } of collisions) {
+        const criteria = enrichRentCriteriaFromPrompt(
+          { ...base, district: null, districts: [], station: null, stations: [], commuteStation: null },
+          `期望車站：${longName}`
+        );
+        assert.ok(criteria.stations?.includes(longName), `${longName} 應被正確辨識`);
+        assert.equal(criteria.stations?.includes(shortName), false, `${longName} 不應額外產生 ${shortName}`);
       }
     }
   },

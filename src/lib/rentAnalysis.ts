@@ -2,7 +2,7 @@ import { getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from
 import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
-import { toJapanesePlaceName } from "./transit.js";
+import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
 
@@ -129,7 +129,7 @@ export interface RentRecommendation {
   fit: "預算內" | "接近預算" | "需調整" | "預算未定";
   recommendationType: "指定車站" | "指定範圍" | "通勤優先" | "預算替代";
   reasons: string[];
-  commuteFit: "直達線路" | "需確認轉乘" | "未指定通勤地";
+  commuteFit: "直達線路" | "需轉乘" | "需確認轉乘" | "未指定通勤地";
   commuteTimeFit: "路線已查詢" | "時間未驗證" | "未指定時間";
   cautions: string[];
   commuteRoute?: CommuteRouteDetails | null;
@@ -181,6 +181,45 @@ const normalize = (value?: string | null) => toJapanesePlaceName(value || "")
   .toLowerCase()
   .replace(/[\s・･（）()\-]/g, "")
   .replace(/jr|東京地下鉄|都営|東急|京王|小田急/g, "");
+
+/**
+ * 從文字擷取車站時採較長名稱優先，避免「元住吉」同時誤中「住吉」。
+ * 若短站名在別處另有獨立出現，因位置不重疊，仍會正常保留。
+ */
+const normalizeStationText = (value: string) => toJapanesePlaceName(value)
+  .toLowerCase()
+  .replace(/[\s・･（）()\-]/g, "");
+
+const stationEntityAliases = (stationName: string) => [...new Set([
+  normalizeStationText(stationName),
+  normalizeStationText(toJapaneseStationName(stationName))
+])].filter(name => name.length >= 2);
+
+function matchStationsInText(text: string): string[] {
+  const normalizedText = normalizeStationText(text);
+  const stations = [...new Map(
+    Object.values(districtStations).flat().flatMap(station =>
+      stationEntityAliases(station.name).map(alias => [`${alias}\u0000${station.name}`, { normalizedName: alias, stationName: station.name }] as const)
+    )
+  ).values()];
+  const matches: Array<{ start: number; end: number; stationName: string }> = [];
+
+  for (const station of stations) {
+    let start = normalizedText.indexOf(station.normalizedName);
+    while (start >= 0) {
+      matches.push({ start, end: start + station.normalizedName.length, stationName: station.stationName });
+      start = normalizedText.indexOf(station.normalizedName, start + 1);
+    }
+  }
+
+  matches.sort((left, right) => left.start - right.start || (right.end - right.start) - (left.end - left.start));
+  const accepted: typeof matches = [];
+  for (const match of matches) {
+    if (accepted.some(existing => match.start < existing.end && match.end > existing.start)) continue;
+    accepted.push(match);
+  }
+  return [...new Set(accepted.map(match => match.stationName))];
+}
 
 /** 使用者常見的否定寫法；命中就代表「明確不需要」，不可當成需求。 */
 /** 推薦結果的安全上限；實際筆數會依候選符合度動態縮短，不會為了達到上限硬補。 */
@@ -344,12 +383,7 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     : undefined);
   const commuteLine = rawCommuteLine;
   if (commuteLine) {
-    const normalizedLine = normalize(commuteLine);
-    const inferredDestinations = [...new Map(
-      Object.values(districtStations).flat()
-        .filter(station => normalize(station.name).length >= 2 && normalizedLine.includes(normalize(station.name)))
-        .map(station => [normalize(station.name), station.name] as const)
-    ).values()];
+    const inferredDestinations = matchStationsInText(commuteLine);
     const displayDestinations = inferredDestinations.map(station => station.replace(/澀谷/g, "渋谷"));
     if (!(enriched.commuteStations || []).length && displayDestinations.length) enriched.commuteStations = displayDestinations;
     if (!enriched.commuteStation && displayDestinations.length) enriched.commuteStation = displayDestinations.join("／");
@@ -390,14 +424,11 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   )];
   enriched.districts = [...new Set([...(enriched.districts || []), enriched.district, ...matchedDistricts].filter(Boolean) as string[])];
 
-  const commuteNames = new Set([...(enriched.commuteStations || []), enriched.commuteStation].filter(Boolean).map(v => normalize(v)));
-  const matchedStations = [...new Map(
-    Object.values(districtStations).flat()
-      .filter(station => normalize(station.name).length >= 2
-        && normalizedResidence.includes(normalize(station.name))
-        && !commuteNames.has(normalize(station.name)))
-      .map(station => [normalize(station.name), station.name] as const)
-  ).values()];
+  const commuteNames = new Set([...(enriched.commuteStations || []), enriched.commuteStation]
+    .filter(Boolean)
+    .flatMap(station => stationEntityAliases(station)));
+  const matchedStations = matchStationsInText(residenceText)
+    .filter(station => !stationEntityAliases(station).some(alias => commuteNames.has(alias)));
   enriched.stations = [...new Set([...(enriched.stations || []), enriched.station, ...matchedStations].filter(Boolean) as string[])];
 
   const knownLines = [...new Set(Object.values(districtStations).flatMap(stations => stations.flatMap(station => station.lines)))];

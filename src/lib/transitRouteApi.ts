@@ -399,6 +399,10 @@ function parseLooseEstimate(raw: GroundedRoute, origin: RouteOrigin, destination
   };
 }
 
+export function commuteFitForTransfers(transfers: number): RentRecommendation["commuteFit"] {
+  return transfers === 0 ? "直達線路" : "需轉乘";
+}
+
 export async function attachCommuteRoutes(criteria: RentSearchCriteria, recommendations: RentRecommendation[]) {
   if (!criteria.commuteStation) return recommendations;
   const destination = criteria.commuteStation.split(/[、,，/／或|・]/).map(value => value.trim()).find(Boolean);
@@ -414,10 +418,20 @@ export async function attachCommuteRoutes(criteria: RentSearchCriteria, recommen
     return recommendations.map(recommendation => {
       const commuteRoute = routes.find(route => normalizedStation(route.originStation) === normalizedStation(recommendation.station || ""));
       if (!commuteRoute) return { ...recommendation, commuteRoute: null };
+      const verifiedCommuteReason = commuteRoute.transfers === 0
+        ? `實際班表為前往 ${commuteRoute.destinationStation} 的直達路線`
+        : `實際班表前往 ${commuteRoute.destinationStation} 需轉乘 ${commuteRoute.transfers} 次`;
       return {
         ...recommendation,
         commuteRoute,
+        // 初篩只用共同路線判斷「可能直達」；取得班表後必須由實際轉乘次數覆寫，
+        // 否則卡片會同時顯示「直達線路」與「轉乘 1 次」。
+        commuteFit: commuteFitForTransfers(commuteRoute.transfers),
         commuteTimeFit: "路線已查詢" as const,
+        reasons: [
+          ...recommendation.reasons.filter(reason => !/有共同線路|轉乘需另行確認/.test(reason)),
+          verifiedCommuteReason
+        ],
         cautions: recommendation.cautions.filter(caution => !caution.includes("分鐘上限尚未"))
       };
     });

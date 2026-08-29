@@ -1056,7 +1056,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                 {calcMode === "rent" ? (
                   <div className="grid grid-cols-1 lg:grid-cols-12">
-                    <div className="space-y-5 border-b border-[#1A2A22] bg-[#e6f6f1] p-6 lg:col-span-5 lg:border-b-0 lg:border-r md:p-8">
+                    <div className="space-y-5 border-b border-[#1A2A22] bg-[#e6f6f1] p-6 font-sans lg:col-span-5 lg:border-b-0 lg:border-r md:p-8">
                       <div className="grid grid-cols-2 border border-[#9ee2cf] bg-white" role="tablist" aria-label="租屋需求輸入方式">
                         <button
                           type="button"
@@ -1430,7 +1430,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         type="button"
                         onClick={analyzeStructuredRent}
                         disabled={analysisLoading}
-                        className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:bg-[#9AA9A2]"
+                        className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:bg-[#9AA9A2] font-sans"
                       >
                         {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                         {analysisLoading ? "正在計算通勤路線…" : aiResult ? "依目前條件重新分析" : "分析可行性與推薦車站"}
