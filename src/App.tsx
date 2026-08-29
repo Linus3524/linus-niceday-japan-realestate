@@ -9,7 +9,7 @@ import {
 import {
   buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseQAs, BuyHouseTermItem
 } from "./data/buyHouseData";
-import { budgetModifiers } from "./data/rentGuideData";
+import { getBudgetModifier, type BudgetModifierId } from "./data/rentGuideData";
 import { hasTowerMansionSupport } from "./lib/calcRules";
 import { RentGuideTab } from "./components/RentGuideTab";
 import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
@@ -306,40 +306,42 @@ export default function App() {
   const [calcMode, setCalcMode] = useState<"rent" | "buy">("rent");
   const [calcDistrict, setCalcDistrict] = useState("新宿區");
   const [calcRoomType, setCalcRoomType] = useState<"r1" | "k1" | "ldk1" | "ldk2">("k1");
-  const [calcModifiers, setCalcModifiers] = useState<number[]>([]); // Selected index array from budgetModifiers
+  const [calcModifiers, setCalcModifiers] = useState<BudgetModifierId[]>([]); // 已勾選的加減價項目 id
   const [calcBuyModifiers, setCalcBuyModifiers] = useState<number[]>([]); // Selected index array from buyBudgetModifiers
   const [calcStation, setCalcStation] = useState<string>("none");
 
   useEffect(() => {
     setCalcStation("none");
     if (!hasTowerMansionSupport(calcDistrict)) {
-      setCalcModifiers(prev => prev.filter(idx => idx !== 25));
+      setCalcModifiers(prev => prev.filter(id => id !== "tower"));
       setCalcBuyModifiers(prev => prev.filter(idx => idx !== 8));
     }
   }, [calcDistrict]);
 
   useEffect(() => {
     setCalcModifiers(prev => {
-      const filtered = prev.filter(idx => {
-        const mod = budgetModifiers[idx];
-        return !mod.applicableLayouts || mod.applicableLayouts.includes(calcRoomType);
+      const filtered = prev.filter(id => {
+        const mod = getBudgetModifier(id);
+        return !mod?.applicableLayouts || mod.applicableLayouts.includes(calcRoomType);
       });
       if (filtered.length !== prev.length) {
         return filtered;
       }
       return prev;
     });
-  }, [calcRoomType, budgetModifiers]);
+  }, [calcRoomType]);
 
   useEffect(() => {
-    const hasNewAge = calcModifiers.includes(10) || calcModifiers.includes(11);
-    const isLargeSize = (calcRoomType === "ldk1" || calcRoomType === "ldk2") || 
-                        ((calcRoomType === "r1" || calcRoomType === "k1") && (calcModifiers.includes(3) || calcModifiers.includes(4)));
-    
-    if (hasNewAge && isLargeSize && !calcModifiers.includes(0)) {
+    // 新成屋 + 大坪數的物件，市場上幾乎都同時配備獨立洗面台與免治馬桶，
+    // 因此自動升級成「兩者兼具」，避免估價低估。
+    const hasNewAge = calcModifiers.includes("age_within_5y") || calcModifiers.includes("age_within_10y");
+    const isLargeSize = (calcRoomType === "ldk1" || calcRoomType === "ldk2") ||
+                        ((calcRoomType === "r1" || calcRoomType === "k1") && (calcModifiers.includes("compact_25sqm") || calcModifiers.includes("compact_30sqm")));
+
+    if (hasNewAge && isLargeSize && !calcModifiers.includes("washbasin_and_bidet")) {
       setCalcModifiers(prev => {
-        if (!prev.includes(0)) {
-          return [...prev.filter(idx => idx !== 1 && idx !== 2), 0];
+        if (!prev.includes("washbasin_and_bidet")) {
+          return [...prev.filter(id => id !== "washbasin_only" && id !== "bidet_only"), "washbasin_and_bidet"];
         }
         return prev;
       });

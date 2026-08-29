@@ -1,24 +1,29 @@
 import { rentRates } from "../data/housingMarket.js";
 import { buyBudgetModifiers } from "../data/buyHouseData.js";
+import type { BudgetModifierId } from "../data/rentGuideData.js";
 
 // 東京都下（多摩地區）城市清單 — 全站共用，判斷是否屬於東京 23 區以外的都下區域
 export const TAMA_CITIES = ["武藏野市", "三鷹市", "立川市", "八王子市", "日野市", "府中市", "調布市", "町田市", "西東京市", "小平市", "多摩市", "狛江市"];
 
-export const rentConflictGroups = [
-  [0, 1, 2], // Washbasin & Toilet combos
-  [3, 4, 22], // Room sizes (Large 1K/1R vs Super Compact 1R/1K)
-  [5, 6],    // 1LDK sizes
-  [7, 8],    // 2LDK sizes
-  [10, 11, 18, 19], // Building Age
-  [12, 13],  // Station size
-  [14, 16, 17], // Walk distance
-  [9, 20],   // Elevator vs 4F+ without elevator
-  [20, 21],  // 4F+ without elevator vs 1st floor
-  [9, 23],   // Auto-lock elevator building vs Wood construction
-  [10, 24],  // 5 years age vs Japanese-style room (Japanese-style room is rare/impossible in brand new buildings)
-  [11, 24],  // 5~10 years age vs Japanese-style room
-  [23, 25],  // Wood construction vs Tower Mansion
-  [20, 25],  // 4F+ without elevator vs Tower Mansion
+/**
+ * 互斥的加減價組合：同一組內只能選一個。
+ * 以 id 表示，因此 budgetModifiers 的排列順序改變時這裡不需要跟著改。
+ */
+export const rentConflictGroups: BudgetModifierId[][] = [
+  ["washbasin_and_bidet", "washbasin_only", "bidet_only"], // 洗面台／免治馬桶的組合
+  ["compact_25sqm", "compact_30sqm", "compact_15_18sqm"],  // 1R/1K 坪數（大坪數 vs 極小坪數）
+  ["ldk1_35sqm", "ldk1_40sqm"],                            // 1LDK 坪數
+  ["ldk2_50sqm", "ldk2_60sqm"],                            // 2LDK 坪數
+  ["age_within_5y", "age_within_10y", "age_over_30y", "age_over_40y"], // 屋齡
+  ["major_station", "minor_station"],                      // 車站等級
+  ["walk_within_5min", "walk_11_15min", "walk_15_20min"],  // 徒步距離
+  ["autolock_elevator", "no_elevator_4f"],                 // 有電梯 vs 4 樓以上無電梯
+  ["no_elevator_4f", "first_floor"],                       // 4 樓以上無電梯 vs 一樓
+  ["autolock_elevator", "wooden"],                         // 自動門電梯大樓 vs 木造
+  ["age_within_5y", "washitsu"],                           // 5 年內新房幾乎不會有和室
+  ["age_within_10y", "washitsu"],                          // 5〜10 年次新房同理
+  ["wooden", "tower"],                                     // 木造 vs 塔樓
+  ["no_elevator_4f", "tower"],                             // 4 樓以上無電梯 vs 塔樓
 ];
 
 export const buyConflictGroups = [
@@ -154,19 +159,15 @@ export const getDynamicBuyModifierMultiplier = (index: number, district: string)
   }
 };
 
-export const isRentModifierDisabled = (index: number, selected: number[], district: string) => {
-  if (index === 25 && !hasTowerMansionSupport(district)) {
-    return true;
-  }
-  if (index === 9 && selected.includes(25)) {
-    return true;
-  }
-  if (index === 21 && selected.includes(25)) {
-    return true;
-  }
-  if (selected.includes(index)) return false;
-  return rentConflictGroups.some(group => 
-    group.includes(index) && group.some(otherIndex => otherIndex !== index && selected.includes(otherIndex))
+export const isRentModifierDisabled = (id: BudgetModifierId, selected: BudgetModifierId[], district: string) => {
+  // 該地區查無塔樓建案時不開放勾選。
+  if (id === "tower" && !hasTowerMansionSupport(district)) return true;
+  // 塔樓本來就含自動門電梯、也不會有一樓住戶，這兩項不該重複加減價。
+  if (id === "autolock_elevator" && selected.includes("tower")) return true;
+  if (id === "first_floor" && selected.includes("tower")) return true;
+  if (selected.includes(id)) return false;
+  return rentConflictGroups.some(group =>
+    group.includes(id) && group.some(other => other !== id && selected.includes(other))
   );
 };
 

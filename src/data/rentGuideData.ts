@@ -39,12 +39,51 @@ export interface RentRate {
   sourceNote?: string;
 }
 
+/**
+ * 加減價項目的穩定識別碼。
+ *
+ * 所有程式邏輯（估價、衝突防呆、供給壓力、UI 勾選狀態）一律以 id 參照，
+ * 因此 budgetModifiers 的陣列順序只影響畫面呈現順序，不具任何語意。
+ * 要新增、刪除或重排項目時，直接改陣列即可，不會牽動其他檔案。
+ */
+export type BudgetModifierId =
+  | "washbasin_and_bidet" | "washbasin_only" | "bidet_only"
+  | "compact_25sqm" | "compact_30sqm"
+  | "ldk1_35sqm" | "ldk1_40sqm"
+  | "ldk2_50sqm" | "ldk2_60sqm"
+  | "autolock_elevator" | "age_within_5y" | "age_within_10y"
+  | "major_station" | "minor_station" | "walk_within_5min" | "furnished"
+  | "walk_11_15min" | "walk_15_20min"
+  | "age_over_30y" | "age_over_40y"
+  | "no_elevator_4f" | "first_floor" | "compact_15_18sqm"
+  | "wooden" | "washitsu"
+  | "tower" | "lp_gas" | "separate_bath" | "floor_2f_plus";
+
+/**
+ * 行情資料的來源標註。每一批資料都要能回答「哪來的、什麼時候的、有多可信」，
+ * 否則過幾個月就沒人分得出哪些數字已經過時、該不該動。
+ */
+export interface RateProvenance {
+  sourceDate: string;
+  confidence: NonNullable<RentRate["confidence"]>;
+  verificationStatus: NonNullable<RentRate["verificationStatus"]>;
+  sourceNote: string;
+}
+
+/** 讓整批資料共用同一組來源標註；個別列自己寫的欄位優先。 */
+const withProvenance = (provenance: RateProvenance, rates: RentRate[]): RentRate[] =>
+  rates.map(rate => ({ ...provenance, ...rate }));
+
 export interface BudgetModifier {
+  /** 穩定識別碼，程式邏輯一律用它參照，不要用陣列索引。 */
+  id: BudgetModifierId;
   text: string;
   price: number;
   type: "plus" | "minus";
   category: "equipment" | "building" | "location" | "subtraction" | "others";
   applicableLayouts?: string[];
+  /** 這個金額的訂定依據。留白代表沿用專案建立時的經驗值（見 budgetModifierMeta）。 */
+  basis?: string;
 }
 
 export interface QAItem {
@@ -458,7 +497,21 @@ export const processSteps: ProcessStep[] = [
   }
 ];
 
-export const rentRates: RentRate[] = [
+/**
+ * 首都圈（東京／神奈川／埼玉／千葉）與關西各區的區級行情。
+ *
+ * 這批數字自專案建立（2026-07）以來沒有再校對過，當初也沒有留下對應的公開統計來源，
+ * 屬於仲介實務經驗值。市場變動時，這批是最該優先重新盤點的資料——
+ * 因此標記為 limited／researched_limited，讓 `npm run data:review` 能把它列出來。
+ */
+const METRO_PROVENANCE: RateProvenance = {
+  sourceDate: "2026-07",
+  confidence: "limited",
+  verificationStatus: "researched_limited",
+  sourceNote: "專案建立時的仲介實務經驗值，未對應單一公開統計來源，建議每年重新校對"
+};
+
+const metroMarketRates: RentRate[] = withProvenance(METRO_PROVENANCE, [
   // 東京都
   { region: "東京都", district: "千代田區", r1: "11.8", k1: "12.2", ldk1: "21.0", ldk2: "35.0" },
   { region: "東京都", district: "港區", r1: "12.5", k1: "12.8", ldk1: "24.5", ldk2: "40.0" },
@@ -556,9 +609,15 @@ export const rentRates: RentRate[] = [
   { region: "大阪", district: "箕面市", r1: "5.2", k1: "5.8", ldk1: "9.0", ldk2: "13.2" },
   { region: "大阪", district: "高槻市", r1: "5.3", k1: "6.0", ldk1: "9.2", ldk2: "13.5" },
   { region: "大阪", district: "枚方市", r1: "4.6", k1: "5.2", ldk1: "8.0", ldk2: "11.0" },
-  { region: "大阪", district: "八尾市", r1: "4.5", k1: "5.1", ldk1: "7.8", ldk2: "10.8" },
+  { region: "大阪", district: "八尾市", r1: "4.5", k1: "5.1", ldk1: "7.8", ldk2: "10.8" }
+]);
 
-  // 全國主要租屋城市第一階段。以 At Home 2026/03「賃料＋管理費・共益費」面積帶平均為基準。
+/**
+ * 全國主要租屋城市第一階段。以 At Home 2026/03「賃料＋管理費・共益費」面積帶平均為基準。
+ * 這批有明確公開來源，更新時直接換掉數字與 sourceDate 即可；
+ * housingMarket.ts 的區級係數會自動跟著連動。
+ */
+const nationalCityRates: RentRate[] = [
   { region: "北海道", district: "札幌市（市平均）", r1: "4.2", k1: "4.4", ldk1: "6.4", ldk2: "9.8", areaGroup: "北海道", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 札幌市募集家賃（面積帶平均）" },
   { region: "宮城", district: "仙台市（市平均）", r1: "5.0", k1: "5.2", ldk1: "8.1", ldk2: "10.1", areaGroup: "東北", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 仙台市募集家賃（面積帶平均）" },
   { region: "愛知", district: "名古屋市（市平均）", r1: "6.2", k1: "6.5", ldk1: "8.5", ldk2: "10.5", areaGroup: "中部", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 名古屋市募集家賃（面積帶平均）" },
@@ -567,6 +626,8 @@ export const rentRates: RentRate[] = [
   { region: "廣島", district: "廣島市（市平均）", r1: "4.5", k1: "4.8", ldk1: "6.7", ldk2: "8.4", areaGroup: "中國", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 廣島市募集家賃（面積帶平均）" },
   { region: "福岡", district: "福岡市（市平均）", r1: "6.2", k1: "6.6", ldk1: "9.3", ldk2: "13.7", areaGroup: "九州", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 福岡市募集家賃（面積帶平均）" }
 ];
+
+export const rentRates: RentRate[] = [...metroMarketRates, ...nationalCityRates];
 
 export const rentAreaGroups: Record<string, string[]> = {
   "北海道": ["北海道"],
@@ -578,51 +639,76 @@ export const rentAreaGroups: Record<string, string[]> = {
   "九州": ["福岡"]
 };
 
+/**
+ * 加減價係數的整體來源標註。
+ *
+ * 這些金額是專案建立時訂定的仲介實務經驗值，沒有對應到單一公開統計，
+ * 個別項目若有明確依據會寫在該項的 basis 欄位。市場變動時整組都該重新檢視。
+ */
+export const budgetModifierMeta = {
+  reviewedAt: "2026-07-14",
+  confidence: "limited" as const,
+  sourceNote: "仲介實務經驗值，未對應單一公開統計來源；個別依據見各項 basis 欄位"
+};
+
 export const budgetModifiers: BudgetModifier[] = [
-  { text: "同時具備獨立洗面台與免治馬桶", price: 10000, type: "plus", category: "equipment" },
-  { text: "僅有獨立洗面台 (無免治馬桶)", price: 3000, type: "plus", category: "equipment" },
-  { text: "僅有免治馬桶 (無獨立洗面台)", price: 3000, type: "plus", category: "equipment" },
+  { id: "washbasin_and_bidet", text: "同時具備獨立洗面台與免治馬桶", price: 10000, type: "plus", category: "equipment" },
+  { id: "washbasin_only", text: "僅有獨立洗面台 (無免治馬桶)", price: 3000, type: "plus", category: "equipment" },
+  { id: "bidet_only", text: "僅有免治馬桶 (無獨立洗面台)", price: 3000, type: "plus", category: "equipment" },
   
-  { text: "1K房型 25平方米以上", price: 5000, type: "plus", category: "equipment", applicableLayouts: ["r1", "k1"] },
-  { text: "1K房型 30平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["r1", "k1"] },
+  { id: "compact_25sqm", text: "1K房型 25平方米以上", price: 5000, type: "plus", category: "equipment", applicableLayouts: ["r1", "k1"] },
+  { id: "compact_30sqm", text: "1K房型 30平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["r1", "k1"] },
   
-  { text: "1LDK房型 35平方米以上", price: 5000, type: "plus", category: "equipment", applicableLayouts: ["ldk1"] },
-  { text: "1LDK房型 40平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["ldk1"] },
+  { id: "ldk1_35sqm", text: "1LDK房型 35平方米以上", price: 5000, type: "plus", category: "equipment", applicableLayouts: ["ldk1"] },
+  { id: "ldk1_40sqm", text: "1LDK房型 40平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["ldk1"] },
   
-  { text: "2LDK房型 50平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
-  { text: "2LDK房型 60平方米以上", price: 20000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
+  { id: "ldk2_50sqm", text: "2LDK房型 50平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
+  { id: "ldk2_60sqm", text: "2LDK房型 60平方米以上", price: 20000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
   
-  { text: "附自動門電梯大樓", price: 5000, type: "plus", category: "building" },
-  { text: "屋齡 5 年內新房", price: 10000, type: "plus", category: "building" },
-  { text: "屋齡 5〜10 年內次新房", price: 5000, type: "plus", category: "building" },
-  { text: "熱門大站 (2條線路以上)", price: 10000, type: "plus", category: "location" },
-  { text: "熱門小站 (1條線路)", price: 5000, type: "plus", category: "location" },
-  { text: "徒步車站 5 分鐘內", price: 5000, type: "plus", category: "location" },
-  { text: "管理公司提供家具家電 (外國人向)", price: 20000, type: "plus", category: "others" },
+  { id: "autolock_elevator", text: "附自動門電梯大樓", price: 5000, type: "plus", category: "building" },
+  { id: "age_within_5y", text: "屋齡 5 年內新房", price: 10000, type: "plus", category: "building" },
+  { id: "age_within_10y", text: "屋齡 5〜10 年內次新房", price: 5000, type: "plus", category: "building" },
+  { id: "major_station", text: "熱門大站 (2條線路以上)", price: 10000, type: "plus", category: "location" },
+  { id: "minor_station", text: "熱門小站 (1條線路)", price: 5000, type: "plus", category: "location" },
+  { id: "walk_within_5min", text: "徒步車站 5 分鐘內", price: 5000, type: "plus", category: "location" },
+  { id: "furnished", text: "管理公司提供家具家電 (外國人向)", price: 20000, type: "plus", category: "others" },
   
-  { text: "徒步車站 11〜15 分鐘", price: -5000, type: "minus", category: "subtraction" },
-  { text: "徒步車站 15〜20 分鐘", price: -10000, type: "minus", category: "subtraction" },
-  { text: "屋齡 30 年以上", price: -5000, type: "minus", category: "subtraction" },
-  { text: "屋齡 40 年以上", price: -10000, type: "minus", category: "subtraction" },
-  { text: "4 樓以上無電梯", price: -5000, type: "minus", category: "subtraction" },
-  { text: "房間位於一樓", price: -3000, type: "minus", category: "subtraction" },
-  { text: "室內空間 15〜18平米", price: -7000, type: "minus", category: "subtraction", applicableLayouts: ["r1", "k1"] },
-  { text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
-  { text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
-  { text: "塔樓建築", price: 15000, type: "plus", category: "building" },
-  { text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" },
+  { id: "walk_11_15min", text: "徒步車站 11〜15 分鐘", price: -5000, type: "minus", category: "subtraction" },
+  { id: "walk_15_20min", text: "徒步車站 15〜20 分鐘", price: -10000, type: "minus", category: "subtraction" },
+  { id: "age_over_30y", text: "屋齡 30 年以上", price: -5000, type: "minus", category: "subtraction" },
+  { id: "age_over_40y", text: "屋齡 40 年以上", price: -10000, type: "minus", category: "subtraction" },
+  { id: "no_elevator_4f", text: "4 樓以上無電梯", price: -5000, type: "minus", category: "subtraction" },
+  { id: "first_floor", text: "房間位於一樓", price: -3000, type: "minus", category: "subtraction" },
+  { id: "compact_15_18sqm", text: "室內空間 15〜18平米", price: -7000, type: "minus", category: "subtraction", applicableLayouts: ["r1", "k1"] },
+  { id: "wooden", text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
+  { id: "washitsu", text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
+  { id: "tower", text: "塔樓建築", price: 15000, type: "plus", category: "building" },
+  { id: "lp_gas", text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" },
   // 以下兩項是台灣客人最常提、但先前完全沒有進價格模型的條件。
   // 沒有它們的話，指定「乾濕分離」的客人會被拿去對照含 3 點式衛浴的市場中位，
   // 判斷結果會比實際樂觀。
   //
   // 乾濕分離：東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス
   // 實務行情高約 7,000〜10,000 円，取中間值。
-  { text: "乾濕分離（衛浴分離）", price: 8000, type: "plus", category: "equipment" },
+  { id: "separate_bath", text: "乾濕分離（衛浴分離）", price: 8000, type: "plus", category: "equipment", basis: "東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス 實務行情高約 7,000〜10,000 円，取中間值" },
   // 2 樓以上：同物件同格局，1 樓通常便宜約 3,000 円（多數物件落在 1,000〜5,000）。
   // 指定 2 樓以上等於把最便宜的那一層排除在外，但 1 樓只佔市場一部分，
   // 因此溢價取比 1 樓折讓小的 2,000 円，與既有的「房間位於一樓 −3000」互相呼應。
-  { text: "指定 2 樓以上", price: 2000, type: "plus", category: "building" }
+  { id: "floor_2f_plus", text: "指定 2 樓以上", price: 2000, type: "plus", category: "building", basis: "1 樓通常便宜約 3,000 円；指定 2 樓以上只排除最便宜的一層，故取小於該折讓的 2,000 円" }
 ];
+
+const budgetModifierById = new Map(budgetModifiers.map(modifier => [modifier.id, modifier]));
+
+/** 以穩定 id 取用加減價項目。查無 id 時回傳 undefined，呼叫端需自行處理。 */
+export function getBudgetModifier(id: BudgetModifierId): BudgetModifier | undefined {
+  return budgetModifierById.get(id);
+}
+
+/** 開發期防呆：id 重複會讓查表默默少一筆，等於整條規則失效。 */
+if (budgetModifierById.size !== budgetModifiers.length) {
+  throw new Error("budgetModifiers 有重複的 id，請確認每個項目的 id 都是唯一的");
+}
+
 
 const rentQAItems: QAItem[] = [
   {

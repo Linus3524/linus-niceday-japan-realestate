@@ -3,7 +3,7 @@ import { stationsWithinHops } from "./localTransitRoute.js";
 import { toJapaneseStationName } from "./transit.js";
 import {
   computeStackedEstimate,
-  getRentModifierIndexes,
+  getRentModifierIds,
   resolveVisaCategory,
   ROOM_TYPE_LABEL,
   type RentRecommendation,
@@ -294,7 +294,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
 }
 
 export function estimateRequestedRent(criteria: RentSearchCriteria): RequestedRentRange | null {
-  const mods = getRentModifierIndexes(criteria);
+  const mods = getRentModifierIds(criteria);
   const scope = resolveSearchScope(criteria);
   const hasScope = scope.districts.size > 0;
 

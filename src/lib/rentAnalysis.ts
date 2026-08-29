@@ -1,4 +1,4 @@
-import { budgetModifiers } from "../data/rentGuideData.js";
+import { getBudgetModifier, type BudgetModifierId } from "../data/rentGuideData.js";
 import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
@@ -574,34 +574,43 @@ function districtScale(district: string) {
 const adjustedModifier = (district: string, price: number) =>
   Math.round((price * districtScale(district)) / 1000) * 1000;
 
-export function getRentModifierIndexes(criteria: RentSearchCriteria) {
-  const indexes = new Set<number>();
-  if (criteria.washbasin && criteria.bidet) indexes.add(0);
-  else if (criteria.washbasin) indexes.add(1);
-  else if (criteria.bidet) indexes.add(2);
+/** 把使用者的搜尋條件對應成加減價項目。回傳穩定 id，不是陣列索引。 */
+export function getRentModifierIds(criteria: RentSearchCriteria): BudgetModifierId[] {
+  const ids = new Set<BudgetModifierId>();
+  if (criteria.washbasin && criteria.bidet) ids.add("washbasin_and_bidet");
+  else if (criteria.washbasin) ids.add("washbasin_only");
+  else if (criteria.bidet) ids.add("bidet_only");
   if (criteria.areaMin) {
-    if (["r1", "k1"].includes(criteria.roomType)) indexes.add(criteria.areaMin >= 30 ? 4 : criteria.areaMin >= 25 ? 3 : -1);
-    if (criteria.roomType === "ldk1") indexes.add(criteria.areaMin >= 40 ? 6 : criteria.areaMin >= 35 ? 5 : -1);
-    if (criteria.roomType === "ldk2") indexes.add(criteria.areaMin >= 60 ? 8 : criteria.areaMin >= 50 ? 7 : -1);
+    if (["r1", "k1"].includes(criteria.roomType)) {
+      if (criteria.areaMin >= 30) ids.add("compact_30sqm");
+      else if (criteria.areaMin >= 25) ids.add("compact_25sqm");
+    }
+    if (criteria.roomType === "ldk1") {
+      if (criteria.areaMin >= 40) ids.add("ldk1_40sqm");
+      else if (criteria.areaMin >= 35) ids.add("ldk1_35sqm");
+    }
+    if (criteria.roomType === "ldk2") {
+      if (criteria.areaMin >= 60) ids.add("ldk2_60sqm");
+      else if (criteria.areaMin >= 50) ids.add("ldk2_50sqm");
+    }
   }
-  if (criteria.elevator || criteria.autoLock) indexes.add(9);
-  if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 5) indexes.add(10);
-  else if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 10) indexes.add(11);
-  if (criteria.walkMinutes && criteria.walkMinutes <= 5) indexes.add(14);
-  else if (criteria.walkMinutes && criteria.walkMinutes >= 15) indexes.add(17);
-  else if (criteria.walkMinutes && criteria.walkMinutes >= 11) indexes.add(16);
+  if (criteria.elevator || criteria.autoLock) ids.add("autolock_elevator");
+  if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 5) ids.add("age_within_5y");
+  else if (criteria.buildingAgeMax != null && criteria.buildingAgeMax <= 10) ids.add("age_within_10y");
+  if (criteria.walkMinutes && criteria.walkMinutes <= 5) ids.add("walk_within_5min");
+  else if (criteria.walkMinutes && criteria.walkMinutes >= 15) ids.add("walk_15_20min");
+  else if (criteria.walkMinutes && criteria.walkMinutes >= 11) ids.add("walk_11_15min");
   // 「有更好」與「尚未確定」都不是必要條件，不應先把家具溢價灌進需求行情。
   // 未標優先級的 furnished=true 維持舊行為，視為必要條件。
-  if (criteria.furnished && criteria.furnishedPriority !== "preferred" && criteria.furnishedPriority !== "uncertain") indexes.add(15);
-  if (criteria.tower) indexes.add(25);
-  if (criteria.lpGasAccepted) indexes.add(26);
+  if (criteria.furnished && criteria.furnishedPriority !== "preferred" && criteria.furnishedPriority !== "uncertain") ids.add("furnished");
+  if (criteria.tower) ids.add("tower");
+  if (criteria.lpGasAccepted) ids.add("lp_gas");
   // 乾濕分離與 2 樓以上：先前這兩項完全沒有進價格模型，
   // 導致指定它們的人被拿去對照「含 3 點式衛浴、含 1 樓」的市場中位，
   // 個別條件都判「符合」，合起來卻找不到房——這正是綜合難度被低估的來源。
-  if (criteria.separateBath) indexes.add(27);
-  if (criteria.floorMin != null && criteria.floorMin >= 2) indexes.add(28);
-  indexes.delete(-1);
-  return [...indexes];
+  if (criteria.separateBath) ids.add("separate_bath");
+  if (criteria.floorMin != null && criteria.floorMin >= 2) ids.add("floor_2f_plus");
+  return [...ids];
 }
 
 type RateRow = (typeof rentRates)[number];
@@ -610,7 +619,7 @@ type RateRow = (typeof rentRates)[number];
 export function computeStackedEstimate(
   rate: RateRow,
   station: StationInfo | null,
-  mods: number[],
+  mods: BudgetModifierId[],
   roomType: RoomType
 ) {
   // roomType 可能是 undefined 或模型吐出的無效值（例如 "castle"），
@@ -619,9 +628,9 @@ export function computeStackedEstimate(
   // 需求可行性那邊已經有同樣的回退，這裡補齊，兩邊行為才一致。
   const safeRoomType: RoomType = rate[roomType] ? roomType : "k1";
   let estimate = parseFloat(rate[safeRoomType]) * 10000;
-  for (const index of mods) {
-    const mod = budgetModifiers[index];
-    if (mod) estimate += adjustedModifier(rate.district, index === 25 ? 15000 : mod.price);
+  for (const id of mods) {
+    const mod = getBudgetModifier(id);
+    if (mod) estimate += adjustedModifier(rate.district, mod.price);
   }
   if (station) {
     estimate += adjustedModifier(rate.district, station.type === "major" ? 10000 : station.type === "regular" ? 5000 : -5000);
@@ -639,7 +648,7 @@ const lineMatches = (left: string, right: string) => {
 };
 
 export function buildRentRecommendations(criteria: RentSearchCriteria): RentRecommendation[] {
-  const mods = getRentModifierIndexes(criteria);
+  const mods = getRentModifierIds(criteria);
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(value => normalize(value));
   const wantedStations = [...(criteria.stations || []), criteria.station].filter(Boolean).map(value => normalize(value));
   const wantedLine = criteria.line || "";

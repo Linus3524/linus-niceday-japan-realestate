@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildRentRecommendations, getRentModifierIndexes, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { buildRentRecommendations, getRentModifierIds, type RentSearchCriteria } from "../src/lib/rentAnalysis";
 import {
   axisImpactLevel,
   buildAxisVerdicts,
@@ -93,9 +93,9 @@ const scenarios: Array<{ name: string; run: () => void }> = [
   {
     name: "選配家具不加入租金溢價",
     run: () => {
-      assert.equal(getRentModifierIndexes({ ...base, furnished: true, furnishedPriority: "preferred" }).includes(15), false);
-      assert.equal(getRentModifierIndexes({ ...base, furnished: true, furnishedPriority: "uncertain" }).includes(15), false);
-      assert.equal(getRentModifierIndexes({ ...base, furnished: true, furnishedPriority: "required" }).includes(15), true);
+      assert.equal(getRentModifierIds({ ...base, furnished: true, furnishedPriority: "preferred" }).includes("furnished"), false);
+      assert.equal(getRentModifierIds({ ...base, furnished: true, furnishedPriority: "uncertain" }).includes("furnished"), false);
+      assert.equal(getRentModifierIds({ ...base, furnished: true, furnishedPriority: "required" }).includes("furnished"), true);
     }
   },
   {

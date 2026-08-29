@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator } from "lucide-react";
-import { budgetModifiers } from "../data/rentGuideData";
+import { budgetModifiers, getBudgetModifier, type BudgetModifierId } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
 import { RentMap } from "./RentMap";
@@ -10,7 +10,7 @@ import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
-import { RECOMMENDATION_LIMIT, RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIndexes, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
+import { RECOMMENDATION_LIMIT, RentRecommendation, RentSearchCriteria, criteriaSummary, getRentModifierIds, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
@@ -23,8 +23,8 @@ interface CalculatorTabProps {
   setCalcDistrict: (d: string) => void;
   calcRoomType: "r1" | "k1" | "ldk1" | "ldk2";
   setCalcRoomType: (t: any) => void;
-  calcModifiers: number[];
-  setCalcModifiers: (m: number[]) => void;
+  calcModifiers: BudgetModifierId[];
+  setCalcModifiers: (m: BudgetModifierId[]) => void;
   calcBuyModifiers: number[];
   setCalcBuyModifiers: (m: number[]) => void;
   calcStation: string;
@@ -44,21 +44,44 @@ const rentSearchFilterOptions: Array<{ key: RentSearchFilter; label: string; not
   { key: "cityGas", label: "都市瓦斯指定", note: "排除 LP 瓦斯物件；實際費率仍依供應商與契約確認", pressure: 2 }
 ];
 
-const modifierAvailabilityImpact: Record<number, { supply: number; competition: number }> = {
-  0: { supply: 1.5, competition: 0.5 }, 1: { supply: 0.6, competition: 0.2 }, 2: { supply: 0.6, competition: 0.2 },
-  3: { supply: 1, competition: 0.3 }, 4: { supply: 1.8, competition: 0.5 }, 5: { supply: 1, competition: 0.3 },
-  6: { supply: 1.8, competition: 0.5 }, 7: { supply: 1.2, competition: 0.4 }, 8: { supply: 2, competition: 0.7 },
-  9: { supply: 1.2, competition: 0.5 }, 10: { supply: 1.8, competition: 1.5 }, 11: { supply: 1, competition: 0.8 },
-  12: { supply: 0.8, competition: 2 }, 13: { supply: 0.4, competition: 1 }, 14: { supply: 1.3, competition: 1.6 },
-  15: { supply: 2, competition: 0.5 }, 16: { supply: -1, competition: -0.2 }, 17: { supply: -1.6, competition: -0.4 },
-  18: { supply: -1.2, competition: -0.2 }, 19: { supply: -1.8, competition: -0.3 }, 20: { supply: -0.8, competition: -0.2 },
-  21: { supply: -0.8, competition: -0.1 }, 22: { supply: -1.5, competition: -0.2 }, 23: { supply: -1.2, competition: -0.2 },
-  24: { supply: -0.7, competition: -0.1 }, 25: { supply: 2.8, competition: 2.5 }, 26: { supply: -0.7, competition: -0.2 },
-  // 27 乾濕分離：市場上仍以 3 點式ユニットバス為大宗，指定分離會篩掉相當比例的房源，
+/**
+ * 每個加減價條件對「供給量」與「競爭度」的影響。
+ * supply 為正代表會篩掉房源、縮小選擇；為負代表放寬條件、選擇變多。
+ * 以 id 為索引，新增條件時在這裡補一筆即可，漏補只會少算壓力、不會錯位。
+ */
+const modifierAvailabilityImpact: Partial<Record<BudgetModifierId, { supply: number; competition: number }>> = {
+  washbasin_and_bidet: { supply: 1.5, competition: 0.5 },
+  washbasin_only: { supply: 0.6, competition: 0.2 },
+  bidet_only: { supply: 0.6, competition: 0.2 },
+  compact_25sqm: { supply: 1, competition: 0.3 },
+  compact_30sqm: { supply: 1.8, competition: 0.5 },
+  ldk1_35sqm: { supply: 1, competition: 0.3 },
+  ldk1_40sqm: { supply: 1.8, competition: 0.5 },
+  ldk2_50sqm: { supply: 1.2, competition: 0.4 },
+  ldk2_60sqm: { supply: 2, competition: 0.7 },
+  autolock_elevator: { supply: 1.2, competition: 0.5 },
+  age_within_5y: { supply: 1.8, competition: 1.5 },
+  age_within_10y: { supply: 1, competition: 0.8 },
+  major_station: { supply: 0.8, competition: 2 },
+  minor_station: { supply: 0.4, competition: 1 },
+  walk_within_5min: { supply: 1.3, competition: 1.6 },
+  furnished: { supply: 2, competition: 0.5 },
+  walk_11_15min: { supply: -1, competition: -0.2 },
+  walk_15_20min: { supply: -1.6, competition: -0.4 },
+  age_over_30y: { supply: -1.2, competition: -0.2 },
+  age_over_40y: { supply: -1.8, competition: -0.3 },
+  no_elevator_4f: { supply: -0.8, competition: -0.2 },
+  first_floor: { supply: -0.8, competition: -0.1 },
+  compact_15_18sqm: { supply: -1.5, competition: -0.2 },
+  wooden: { supply: -1.2, competition: -0.2 },
+  washitsu: { supply: -0.7, competition: -0.1 },
+  tower: { supply: 2.8, competition: 2.5 },
+  lp_gas: { supply: -0.7, competition: -0.2 },
+  // 乾濕分離：市場上仍以 3 點式ユニットバス為大宗，指定分離會篩掉相當比例的房源，
   // 而且是外國人與年輕租客都想要的條件，競爭也高。
-  27: { supply: 1.6, competition: 1.2 },
-  // 28 指定 2 樓以上：只排除 1 樓，壓縮幅度小；治安與採光考量讓它略微搶手。
-  28: { supply: 0.6, competition: 0.4 }
+  separate_bath: { supply: 1.6, competition: 1.2 },
+  // 指定 2 樓以上：只排除 1 樓，壓縮幅度小；治安與採光考量讓它略微搶手。
+  floor_2f_plus: { supply: 0.6, competition: 0.4 }
 };
 
 // 必須與 api/rent-analysis.ts 的 ANALYSIS_RATE_LIMIT 一致。
@@ -144,9 +167,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
     const selectedStation = item.station && availableStations.some(station => station.name === item.station)
       ? item.station
       : "none";
-    const modifiers = getRentModifierIndexes(criteria).filter(index =>
-      (index !== 25 || hasTowerMansionSupport(item.district)) &&
-      !(index === 26 && criteria.cityGasRequired)
+    const modifiers = getRentModifierIds(criteria).filter(id =>
+      (id !== "tower" || hasTowerMansionSupport(item.district)) &&
+      !(id === "lp_gas" && criteria.cityGasRequired)
     );
 
     setCalcMode("rent");
@@ -172,7 +195,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
   const toggleRentSearchFilter = (filter: RentSearchFilter) => {
     if (filter === "cityGas" && !rentSearchFilters.includes("cityGas")) {
-      setCalcModifiers(calcModifiers.filter(index => index !== 26));
+      setCalcModifiers(calcModifiers.filter(id => id !== "lp_gas"));
     }
     setRentSearchFilters(current => current.includes(filter) ? current.filter(item => item !== filter) : [...current, filter]);
   };
@@ -204,12 +227,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
     }
   };
   
-  const getModifierPrice = (modPrice: number, index?: number) => {
+  const getModifierPrice = (modPrice: number, id?: BudgetModifierId) => {
     const scale = getDistrictScale();
     let price = modPrice;
     
     // Custom dynamic adjustment for Tower Mansion based on RoomType
-    if (index === 25) { // Tower Mansion index
+    if (id === "tower") {
       if (calcRoomType === "ldk1") {
         price = 30000;
       } else if (calcRoomType === "ldk2") {
@@ -228,9 +251,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
     const rateString = dData[calcRoomType as keyof typeof dData] as string;
     let rent = parseFloat(rateString) * 10000; // in Yen
     
-    calcModifiers.forEach(idx => {
-      const mod = budgetModifiers[idx];
-      rent += getModifierPrice(mod.price, idx);
+    calcModifiers.forEach(id => {
+      const mod = getBudgetModifier(id);
+      if (mod) rent += getModifierPrice(mod.price, id);
     });
 
     if (calcStation !== "none") {
@@ -253,8 +276,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const getAvailabilityAssessment = () => {
     const selectedFilters = rentSearchFilterOptions.filter(option => rentSearchFilters.includes(option.key));
     const filterPressure = selectedFilters.reduce((total, option) => total + option.pressure, 0);
-    const modifierPressure = calcModifiers.reduce((total, index) => total + (modifierAvailabilityImpact[index]?.supply || 0), 0);
-    const modifierCompetition = calcModifiers.reduce((total, index) => total + (modifierAvailabilityImpact[index]?.competition || 0), 0);
+    const modifierPressure = calcModifiers.reduce((total, id) => total + (modifierAvailabilityImpact[id]?.supply || 0), 0);
+    const modifierCompetition = calcModifiers.reduce((total, id) => total + (modifierAvailabilityImpact[id]?.competition || 0), 0);
     const roomPressure = calcRoomType === "ldk2" ? 2 : calcRoomType === "ldk1" ? 1 : 0;
     const hardFilterFloor = rentSearchFilters.includes("pets") ? 3 : rentSearchFilters.includes("cityGas") ? 2 : 0;
     const supplyPressure = Math.max(hardFilterFloor, filterPressure + modifierPressure + roomPressure, 0);
@@ -280,13 +303,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
           : { label: "競爭較低", tone: "text-[#007d5a]", width: "w-[25%]" };
 
     const restrictiveModifiers = calcModifiers
-      .filter(index => (modifierAvailabilityImpact[index]?.supply || 0) > 0)
-      .map(index => ({ label: budgetModifiers[index].text, pressure: modifierAvailabilityImpact[index].supply }));
+      .filter(id => (modifierAvailabilityImpact[id]?.supply || 0) > 0)
+      .map(id => ({ label: getBudgetModifier(id)?.text || id, pressure: modifierAvailabilityImpact[id]!.supply }));
     const expandingConditions = calcModifiers
-      .filter(index => (modifierAvailabilityImpact[index]?.supply || 0) < 0)
-      .sort((a, b) => modifierAvailabilityImpact[a].supply - modifierAvailabilityImpact[b].supply)
+      .filter(id => (modifierAvailabilityImpact[id]?.supply || 0) < 0)
+      .sort((a, b) => (modifierAvailabilityImpact[a]?.supply || 0) - (modifierAvailabilityImpact[b]?.supply || 0))
       .slice(0, 3)
-      .map(index => budgetModifiers[index].text);
+      .map(id => getBudgetModifier(id)?.text || id);
     const limitingConditions = [
       ...selectedFilters.map(option => ({ label: option.label, pressure: option.pressure })),
       ...restrictiveModifiers
@@ -303,14 +326,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
     return { supply, competition, limitingConditions, expandingConditions, advice, selectedCount: selectedFilters.length, modifierCount: calcModifiers.length };
   };
 
-  const toggleModifier = (index: number) => {
-    if (calcModifiers.includes(index)) {
-      setCalcModifiers(calcModifiers.filter(i => i !== index));
+  const toggleModifier = (id: BudgetModifierId) => {
+    if (calcModifiers.includes(id)) {
+      setCalcModifiers(calcModifiers.filter(other => other !== id));
     } else {
-      if (index === 26) setRentSearchFilters(current => current.filter(filter => filter !== "cityGas"));
-      let nextModifiers = [...calcModifiers, index];
-      if (index === 25) {
-        nextModifiers = nextModifiers.filter(i => i !== 9 && i !== 21);
+      if (id === "lp_gas") setRentSearchFilters(current => current.filter(filter => filter !== "cityGas"));
+      let nextModifiers = [...calcModifiers, id];
+      // 塔樓本來就含自動門電梯、也不會有一樓住戶，選了塔樓就把這兩項取消。
+      if (id === "tower") {
+        nextModifiers = nextModifiers.filter(other => other !== "autolock_elevator" && other !== "first_floor");
       }
       setCalcModifiers(nextModifiers);
     }
@@ -760,14 +784,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <div className="space-y-2.5">
                           <span className="font-bold text-zinc-800 block text-xs tracking-wider">★ 加價升級條件 (配備新穎或位置佳)：</span>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                            {budgetModifiers.filter(m => m.type === "plus" && m.text !== "熱門大站 (2條線路以上)" && m.text !== "熱門小站 (1條線路)" && (!m.applicableLayouts || m.applicableLayouts.includes(calcRoomType))).map((mod) => {
-                              const originalIdx = budgetModifiers.findIndex(m => m.text === mod.text);
-                              const isSelected = calcModifiers.includes(originalIdx);
-                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers, calcDistrict);
-                              const isNoTower = originalIdx === 25 && !hasTowerMansionSupport(calcDistrict);
+                            {budgetModifiers.filter(m => m.type === "plus" && m.id !== "major_station" && m.id !== "minor_station" && (!m.applicableLayouts || m.applicableLayouts.includes(calcRoomType))).map((mod) => {
+                              const isSelected = calcModifiers.includes(mod.id);
+                              const isDisabled = isRentModifierDisabled(mod.id, calcModifiers, calcDistrict);
+                              const isNoTower = mod.id === "tower" && !hasTowerMansionSupport(calcDistrict);
                               return (
                                 <label 
-                                  key={originalIdx} 
+                                  key={mod.id} 
                                   className={`p-2.5 border flex items-start gap-2.5 transition-all ${
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
@@ -781,7 +804,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     type="checkbox"
                                     checked={isSelected}
                                     disabled={isDisabled}
-                                    onChange={() => !isDisabled && toggleModifier(originalIdx)}
+                                    onChange={() => !isDisabled && toggleModifier(mod.id)}
                                     className="mt-0.5 accent-[#00a174]"
                                   />
                                   <div className="flex-grow">
@@ -793,7 +816,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">+ {getModifierPrice(mod.price, originalIdx).toLocaleString()} 円 / 月</div>
+                                    <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">+ {getModifierPrice(mod.price, mod.id).toLocaleString()} 円 / 月</div>
                                   </div>
                                 </label>
                               );
@@ -806,13 +829,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           <span className="font-bold text-zinc-800 block text-xs tracking-wider">★ 扣減價妥協條件 (可接受較舊或步行較遠)：</span>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                             {budgetModifiers.filter(m => m.type === "minus" && (!m.applicableLayouts || m.applicableLayouts.includes(calcRoomType))).map((mod) => {
-                              const originalIdx = budgetModifiers.findIndex(m => m.text === mod.text);
-                              const isSelected = calcModifiers.includes(originalIdx);
-                              const isDisabled = isRentModifierDisabled(originalIdx, calcModifiers, calcDistrict);
-                              const isTowerFirstFloorConflict = originalIdx === 21 && calcModifiers.includes(25);
+                              const isSelected = calcModifiers.includes(mod.id);
+                              const isDisabled = isRentModifierDisabled(mod.id, calcModifiers, calcDistrict);
+                              const isTowerFirstFloorConflict = mod.id === "first_floor" && calcModifiers.includes("tower");
                               return (
                                 <label 
-                                  key={originalIdx} 
+                                  key={mod.id} 
                                   className={`p-2.5 border flex items-start gap-2.5 transition-all ${
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
@@ -826,7 +848,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     type="checkbox"
                                     checked={isSelected}
                                     disabled={isDisabled}
-                                    onChange={() => !isDisabled && toggleModifier(originalIdx)}
+                                    onChange={() => !isDisabled && toggleModifier(mod.id)}
                                     className="mt-0.5 accent-zinc-800"
                                   />
                                   <div className="flex-grow">
@@ -839,7 +861,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       )}
                                     </div>
                                     <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price)).toLocaleString()} 円 / 月</div>
-                                    {originalIdx === 26 && (
+                                    {mod.id === "lp_gas" && (
                                       <div className="mt-1 text-[9px] leading-relaxed text-[#B13818]">租金折讓情境估算；LP 瓦斯使用費可能較高，總居住成本不一定下降。</div>
                                     )}
                                   </div>
@@ -1029,26 +1051,32 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             </div>
                           )}
 
-                          {calcModifiers.length > 0 && (
+                          {calcModifiers.length > 0 && (() => {
+                            const modifierSubtotal = calcModifiers.reduce(
+                              (total, id) => total + getModifierPrice(getBudgetModifier(id)?.price || 0),
+                              0
+                            );
+                            return (
                             <div className="space-y-1.5 border-t border-dashed border-zinc-100 pt-3">
                               <div className="flex justify-between items-baseline font-sans">
                                 <span className="text-zinc-500">條件調整小計：</span>
                                 <span className={`font-bold font-mono ${
-                                  calcModifiers.reduce((acc, cur) => acc + getModifierPrice(budgetModifiers[cur].price), 0) >= 0 
+                                  modifierSubtotal >= 0
                                     ? "text-[#00a174]" 
                                     : "text-green-700"
                                 }`}>
-                                  {calcModifiers.reduce((acc, cur) => acc + getModifierPrice(budgetModifiers[cur].price), 0) >= 0 ? "+" : ""}
-                                  {calcModifiers.reduce((acc, cur) => acc + getModifierPrice(budgetModifiers[cur].price), 0).toLocaleString()} 円
+                                  {modifierSubtotal >= 0 ? "+" : ""}
+                                  {modifierSubtotal.toLocaleString()} 円
                                 </span>
                               </div>
                               <div className="pl-2 border-l border-dashed border-zinc-200 space-y-1 mt-1 text-[11px] leading-relaxed">
-                                {calcModifiers.map((idx) => {
-                                  const mod = budgetModifiers[idx];
+                                {calcModifiers.map((id) => {
+                                  const mod = getBudgetModifier(id);
+                                  if (!mod) return null;
                                   const adjustedPrice = getModifierPrice(mod.price);
                                   const isPlus = mod.type === "plus";
                                   return (
-                                    <div key={idx} className="flex justify-between items-start text-zinc-600 gap-2">
+                                    <div key={id} className="flex justify-between items-start text-zinc-600 gap-2">
                                       <span className="break-all">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
@@ -1061,7 +1089,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 })}
                               </div>
                             </div>
-                          )}
+                            );
+                          })()}
 
                           {/* Relative listing supply and competition assessment */}
                           {(() => {
@@ -1145,8 +1174,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => {
                               const roomTypeLabel = ROOM_TYPE_LABEL[calcRoomType];
                               const stationPart = calcStation !== "none" ? `${calcStation}站附近` : "尚未指定車站";
-                              const upgradeConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "plus").map(index => budgetModifiers[index].text).join("、");
-                              const compromiseConditions = calcModifiers.filter(index => budgetModifiers[index]?.type === "minus").map(index => budgetModifiers[index].text).join("、");
+                              const upgradeConditions = calcModifiers.map(id => getBudgetModifier(id)).filter(mod => mod?.type === "plus").map(mod => mod!.text).join("、");
+                              const compromiseConditions = calcModifiers.map(id => getBudgetModifier(id)).filter(mod => mod?.type === "minus").map(mod => mod!.text).join("、");
                               const searchFilters = rentSearchFilterOptions.filter(option => rentSearchFilters.includes(option.key)).map(option => option.label).join("、");
                               const messageText = `您好，我剛才使用租金預算計算器，請依以下完整條件協助我找房：\n- 地區：${calcDistrict}\n- 車站：${stationPart}\n- 格局：${roomTypeLabel}\n- 推估月租：¥${getCalculatedRent().toLocaleString()}\n${upgradeConditions ? `- 希望條件：${upgradeConditions}\n` : ""}${compromiseConditions ? `- 可接受的妥協：${compromiseConditions}\n` : ""}${searchFilters ? `- 房源篩選條件：${searchFilters}\n` : ""}請分析這組條件的找房難度、應優先保留與可放寬的項目，並告訴我還需要補充哪些資料。若要推薦即時房源，請先確認我的簽證、工作、收入、入住日期與居住人數，不要自行假設。`;
                               handleTabChange("chat");
@@ -1351,9 +1380,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           else if (currentStation?.type === "minor") stationPrice = -5000;
                           if (stationPrice !== 0) lineItems.push({ label: `${toJapaneseStationName(calcStation)}駅等級`, price: getModifierPrice(stationPrice) });
                         }
-                        calcModifiers.forEach(idx => {
-                          const mod = budgetModifiers[idx];
-                          if (mod) lineItems.push({ label: mod.text, price: getModifierPrice(mod.price, idx) });
+                        calcModifiers.forEach(id => {
+                          const mod = getBudgetModifier(id);
+                          if (mod) lineItems.push({ label: mod.text, price: getModifierPrice(mod.price, id) });
                         });
                         const total = getCalculatedRent();
                         const priciestAddOn = [...lineItems].filter(item => item.price > 0).sort((a, b) => b.price - a.price)[0];

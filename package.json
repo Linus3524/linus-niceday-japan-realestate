@@ -11,7 +11,8 @@
     "lint": "tsc --noEmit",
     "transit:build": "node scripts/build-tokyo-transit.mjs",
     "test:requirement-verdict": "tsx scripts/test-requirement-verdict.ts",
-    "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts"
+    "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts",
+    "data:review": "node scripts/review-rent-data.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
