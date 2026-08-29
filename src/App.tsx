@@ -10,6 +10,7 @@ import {
   buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseQAs, BuyHouseTermItem
 } from "./data/buyHouseData";
 import { getBudgetModifier, type BudgetModifierId } from "./data/rentGuideData";
+import type { BuyModifierId } from "./data/buyHouseData";
 import { hasTowerMansionSupport } from "./lib/calcRules";
 import { RentGuideTab } from "./components/RentGuideTab";
 import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
@@ -307,14 +308,14 @@ export default function App() {
   const [calcDistrict, setCalcDistrict] = useState("新宿區");
   const [calcRoomType, setCalcRoomType] = useState<"r1" | "k1" | "ldk1" | "ldk2">("k1");
   const [calcModifiers, setCalcModifiers] = useState<BudgetModifierId[]>([]); // 已勾選的加減價項目 id
-  const [calcBuyModifiers, setCalcBuyModifiers] = useState<number[]>([]); // Selected index array from buyBudgetModifiers
+  const [calcBuyModifiers, setCalcBuyModifiers] = useState<BuyModifierId[]>([]); // 已勾選的買賣加減價項目 id
   const [calcStation, setCalcStation] = useState<string>("none");
 
   useEffect(() => {
     setCalcStation("none");
     if (!hasTowerMansionSupport(calcDistrict)) {
       setCalcModifiers(prev => prev.filter(id => id !== "tower"));
-      setCalcBuyModifiers(prev => prev.filter(idx => idx !== 8));
+      setCalcBuyModifiers(prev => prev.filter(id => id !== "tower"));
     }
   }, [calcDistrict]);
 

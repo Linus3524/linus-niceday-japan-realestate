@@ -1398,7 +1398,24 @@ export const buyHouseQAs = [...buyHouseQAItems].sort(
   (a, b) => (buyQAOrderIndex.get(a.question) ?? Number.MAX_SAFE_INTEGER) - (buyQAOrderIndex.get(b.question) ?? Number.MAX_SAFE_INTEGER)
 );
 
+/**
+ * 買賣加減價項目的穩定識別碼。
+ *
+ * 與租金側同理：所有邏輯（地區係數、衝突防呆、UI 勾選）一律以 id 參照，
+ * buyBudgetModifiers 的陣列順序只影響畫面排序，可自由增刪重排。
+ */
+export type BuyModifierId =
+  | "new_build" | "full_renovation" | "partial_reform" | "as_is"
+  | "vacant" | "tenanted"
+  | "old_earthquake_standard" | "leasehold"
+  | "tower" | "low_rise_apartment"
+  | "walk_within_5min" | "walk_over_15min"
+  | "age_within_5y" | "age_within_10y" | "age_within_15y"
+  | "age_within_20y" | "age_within_25y" | "age_within_30y" | "age_within_40y";
+
 export interface BuyBudgetModifier {
+  /** 穩定識別碼，程式邏輯一律用它參照，不要用陣列索引。 */
+  id: BuyModifierId;
   text: string;
   multiplier: number;
   type: "plus" | "minus";
@@ -1409,6 +1426,7 @@ export interface BuyBudgetModifier {
 export const buyBudgetModifiers: BuyBudgetModifier[] = [
   // Condition/Renovation
   {
+    id: "new_build",
     text: "全新完工成屋 (新築/未入居)",
     multiplier: 0.35,
     type: "plus",
@@ -1416,6 +1434,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "日本全新完工建案溢價極高，品質、設備均屬頂尖，且享有10年瑕疵擔保，但購入即折舊"
   },
   {
+    id: "full_renovation",
     text: "全面現代化翻新 (リノベーション済み)",
     multiplier: 0.20,
     type: "plus",
@@ -1423,6 +1442,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "針對中古屋進行室內骨架重組、管線重拉與廚衛翻新，內部狀況如同新成屋，極受買家喜愛"
   },
   {
+    id: "partial_reform",
     text: "局部基礎翻修 (リフォーム済み)",
     multiplier: 0.08,
     type: "plus",
@@ -1430,6 +1450,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "進行壁紙更換、部分地板、廚具或衛浴更新，適合無大型改動需求"
   },
   {
+    id: "as_is",
     text: "現況不翻修直接過戶 (現状渡し)",
     multiplier: -0.15,
     type: "minus",
@@ -1439,6 +1460,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
 
   // Occupancy Status
   {
+    id: "vacant",
     text: "空室 (即時點交，自住首選)",
     multiplier: 0.08,
     type: "plus",
@@ -1446,6 +1468,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "房屋現況為空屋，買方可實地看房點交、過戶後即可隨時裝潢自住，市面自住買方溢價高"
   },
   {
+    id: "tenanted",
     text: "帶租約出售 (オーナーチェンジ - 投資房)",
     multiplier: -0.10,
     type: "minus",
@@ -1455,6 +1478,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
 
   // Earthquake Resistance Standard
   {
+    id: "old_earthquake_standard",
     text: "舊耐震基準建物 (1981年5月以前建)",
     multiplier: -0.25,
     type: "minus",
@@ -1464,6 +1488,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
 
   // Land Ownership Type
   {
+    id: "leasehold",
     text: "借地權 (非所有權 - 僅擁有地上物權利)",
     multiplier: -0.30,
     type: "minus",
@@ -1473,6 +1498,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
 
   // Building Structure / Amenities
   {
+    id: "tower",
     text: "高級塔樓公寓 (タワーマンション)",
     multiplier: 0.25,
     type: "plus",
@@ -1480,6 +1506,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "20層以上超高層地標性豪宅，公設極度豪華（如24小時管理員、高空大廳、客房服務），資產保值性極強"
   },
   {
+    id: "low_rise_apartment",
     text: "低層木造/輕鋼構公寓 (アパート)",
     multiplier: -0.20,
     type: "minus",
@@ -1487,6 +1514,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "通常不設電梯，隔音與耐震度次於鋼筋混凝土(RC)，雖總價便宜但折舊快，土地持分相對關鍵"
   },
   {
+    id: "walk_within_5min",
     text: "步行 5 分鐘內超精華地段",
     multiplier: 0.12,
     type: "plus",
@@ -1494,6 +1522,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "離地鐵站步行在 5 分鐘內，無論自用、出租或轉售皆是市場最搶手的抗跌物件"
   },
   {
+    id: "walk_over_15min",
     text: "步行 15 分鐘以上較遠地段",
     multiplier: -0.10,
     type: "minus",
@@ -1503,6 +1532,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
 
   // Building Age
   {
+    id: "age_within_5y",
     text: "屋齡 5 年內 (築5年以內)",
     multiplier: 0.18,
     type: "plus",
@@ -1510,6 +1540,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "折舊率極低，內部裝潢與建材均保持極佳狀態，且高機率享有長期新蓋瑕疵擔保"
   },
   {
+    id: "age_within_10y",
     text: "屋齡 10 年內 (築10年以內)",
     multiplier: 0.10,
     type: "plus",
@@ -1517,6 +1548,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "整體硬體仍極新穎，折舊速度開始趨緩，自住與出租皆是市場高流通物件"
   },
   {
+    id: "age_within_15y",
     text: "屋齡 15 年內 (築15年以內)",
     multiplier: 0.04,
     type: "plus",
@@ -1524,6 +1556,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "設備與外觀維護尚佳，多數尚未進行第一次大樓大修繕，入手總價相對平衡"
   },
   {
+    id: "age_within_20y",
     text: "屋齡 20 年內 (築20年以內)",
     multiplier: -0.08,
     type: "minus",
@@ -1531,6 +1564,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "折舊已達一定幅度，設備可能開始出現部分老化，買方常需預留部分小修繕預算"
   },
   {
+    id: "age_within_25y",
     text: "屋齡 25 年內 (築25年以內)",
     multiplier: -0.15,
     type: "minus",
@@ -1538,6 +1572,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "大樓多已進行或即將進行第一次大規模修繕（通常在12-15年），管理費與修繕金可能隨之調漲"
   },
   {
+    id: "age_within_30y",
     text: "屋齡 30 年內 (築30年以內)",
     multiplier: -0.22,
     type: "minus",
@@ -1545,6 +1580,7 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "外觀與公共區域有歲月痕跡，設備多已過保或經歷多次更換，但通常公設比低、使用坪數實在"
   },
   {
+    id: "age_within_40y",
     text: "屋齡 40 年內 (築40年以內)",
     multiplier: -0.30,
     type: "minus",
@@ -1552,6 +1588,19 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
     description: "折舊接近底部，土地持分價值高於地上建物價值，多數大樓管線需要大幅拉皮或更新，入手價格極具優勢"
   }
 ];
+
+const buyModifierById = new Map(buyBudgetModifiers.map(modifier => [modifier.id, modifier]));
+
+/** 以穩定 id 取用買賣加減價項目。 */
+export function getBuyModifier(id: BuyModifierId): BuyBudgetModifier | undefined {
+  return buyModifierById.get(id);
+}
+
+/** 開發期防呆：id 重複會讓查表默默少一筆，等於整條規則失效。 */
+if (buyModifierById.size !== buyBudgetModifiers.length) {
+  throw new Error("buyBudgetModifiers 有重複的 id，請確認每個項目的 id 都是唯一的");
+}
+
 
 // --- 台日買房5大差異數據 ---
 export interface TaiwanJapanCompareItem {

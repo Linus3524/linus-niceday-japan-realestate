@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator } from "lucide-react";
 import { budgetModifiers, getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData";
-import { buyBudgetModifiers } from "../data/buyHouseData";
+import { buyBudgetModifiers, getBuyModifier, type BuyModifierId } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
 import { RentMap } from "./RentMap";
 import {
@@ -25,8 +25,8 @@ interface CalculatorTabProps {
   setCalcRoomType: (t: any) => void;
   calcModifiers: BudgetModifierId[];
   setCalcModifiers: (m: BudgetModifierId[]) => void;
-  calcBuyModifiers: number[];
-  setCalcBuyModifiers: (m: number[]) => void;
+  calcBuyModifiers: BuyModifierId[];
+  setCalcBuyModifiers: (m: BuyModifierId[]) => void;
   calcStation: string;
   setCalcStation: (s: string) => void;
   handleTabChange: (tab: any) => void;
@@ -370,19 +370,19 @@ export function CalculatorTab(props: CalculatorTabProps) {
     const basePrice = annualRent / yieldRate;
     
     let multiplierSum = 1.0;
-    calcBuyModifiers.forEach(idx => {
-      multiplierSum += getDynamicBuyModifierMultiplier(idx, calcDistrict);
+    calcBuyModifiers.forEach(id => {
+      multiplierSum += getDynamicBuyModifierMultiplier(id, calcDistrict);
     });
     
     const finalPrice = basePrice * multiplierSum;
     return Math.max(Math.round(finalPrice / 100000) * 100000, 3000000);
   };
 
-  const toggleBuyModifier = (index: number) => {
-    if (calcBuyModifiers.includes(index)) {
-      setCalcBuyModifiers(calcBuyModifiers.filter(i => i !== index));
+  const toggleBuyModifier = (id: BuyModifierId) => {
+    if (calcBuyModifiers.includes(id)) {
+      setCalcBuyModifiers(calcBuyModifiers.filter(other => other !== id));
     } else {
-      setCalcBuyModifiers([...calcBuyModifiers, index]);
+      setCalcBuyModifiers([...calcBuyModifiers, id]);
     }
   };
 
@@ -891,14 +891,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           <span className="font-bold text-zinc-800 block text-xs tracking-wider">★ 溢價提升條件 (屋況優越、位置頂級或自住優勢)：</span>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                             {buyBudgetModifiers.filter(m => m.type === "plus").map((mod) => {
-                              const originalIdx = buyBudgetModifiers.findIndex(m => m.text === mod.text);
-                              const isSelected = calcBuyModifiers.includes(originalIdx);
-                              const isDisabled = isBuyModifierDisabled(originalIdx, calcBuyModifiers, calcDistrict);
-                              const isNoTower = originalIdx === 8 && !hasTowerMansionSupport(calcDistrict);
-                              const dynamicMult = getDynamicBuyModifierMultiplier(originalIdx, calcDistrict);
+                              const isSelected = calcBuyModifiers.includes(mod.id);
+                              const isDisabled = isBuyModifierDisabled(mod.id, calcBuyModifiers, calcDistrict);
+                              const isNoTower = mod.id === "tower" && !hasTowerMansionSupport(calcDistrict);
+                              const dynamicMult = getDynamicBuyModifierMultiplier(mod.id, calcDistrict);
                               return (
                                 <label 
-                                  key={originalIdx} 
+                                  key={mod.id} 
                                   className={`p-3 border flex items-start gap-2.5 transition-all h-full ${
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
@@ -912,7 +911,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     type="checkbox"
                                     checked={isSelected}
                                     disabled={isDisabled}
-                                    onChange={() => !isDisabled && toggleBuyModifier(originalIdx)}
+                                    onChange={() => !isDisabled && toggleBuyModifier(mod.id)}
                                     className="mt-1 accent-[#00a174]"
                                   />
                                   <div className="flex-grow">
@@ -940,13 +939,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           <span className="font-bold text-zinc-800 block text-xs tracking-wider">★ 可能壓低市場價格的條件（帶租約、舊耐震或土地權利受限）：</span>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                             {buyBudgetModifiers.filter(m => m.type === "minus").map((mod) => {
-                              const originalIdx = buyBudgetModifiers.findIndex(m => m.text === mod.text);
-                              const isSelected = calcBuyModifiers.includes(originalIdx);
-                              const isDisabled = isBuyModifierDisabled(originalIdx, calcBuyModifiers, calcDistrict);
-                              const dynamicMult = getDynamicBuyModifierMultiplier(originalIdx, calcDistrict);
+                              const isSelected = calcBuyModifiers.includes(mod.id);
+                              const isDisabled = isBuyModifierDisabled(mod.id, calcBuyModifiers, calcDistrict);
+                              const dynamicMult = getDynamicBuyModifierMultiplier(mod.id, calcDistrict);
                               return (
                                 <label 
-                                  key={originalIdx} 
+                                  key={mod.id} 
                                   className={`p-3 border flex items-start gap-2.5 transition-all h-full ${
                                     isDisabled
                                       ? "opacity-45 bg-zinc-50 border-zinc-150 text-zinc-400 pointer-events-none cursor-not-allowed select-none"
@@ -960,7 +958,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     type="checkbox"
                                     checked={isSelected}
                                     disabled={isDisabled}
-                                    onChange={() => !isDisabled && toggleBuyModifier(originalIdx)}
+                                    onChange={() => !isDisabled && toggleBuyModifier(mod.id)}
                                     className="mt-1 accent-zinc-800"
                                   />
                                   <div className="flex-grow font-sans">
@@ -1216,12 +1214,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <div className="space-y-1.5 border-t border-dashed border-zinc-100 pt-3">
                               <span className="text-zinc-500 block">條件調整清單：</span>
                               <div className="pl-2 border-l border-dashed border-zinc-200 space-y-1 mt-1 text-[11px] leading-relaxed">
-                                {calcBuyModifiers.map((idx) => {
-                                  const mod = buyBudgetModifiers[idx];
+                                {calcBuyModifiers.map((id) => {
+                                  const mod = getBuyModifier(id);
+                                  if (!mod) return null;
                                   const isPlus = mod.type === "plus";
-                                  const dynamicMult = getDynamicBuyModifierMultiplier(idx, calcDistrict);
+                                  const dynamicMult = getDynamicBuyModifierMultiplier(id, calcDistrict);
                                   return (
-                                    <div key={idx} className="flex justify-between items-start text-zinc-600 gap-2">
+                                    <div key={id} className="flex justify-between items-start text-zinc-600 gap-2">
                                       <span className="break-all font-sans">
                                         {isPlus ? "＋" : "－"} {mod.text}
                                       </span>
@@ -1326,7 +1325,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         <div className="mt-6 pt-2 font-sans">
                           <button 
                             onClick={() => {
-                              const buyConditions = calcBuyModifiers.map(index => buyBudgetModifiers[index]?.text).filter(Boolean).join("、");
+                              const buyConditions = calcBuyModifiers.map(id => getBuyModifier(id)?.text).filter(Boolean).join("、");
                               const messageText = `您好，我剛才使用買房預算計算器，請依以下完整條件協助我評估：\n- 地區：${calcDistrict}\n- 估計物件總價：${(getCalculatedBuyPrice() / 10000).toFixed(0)} 萬日圓\n- 預計貸款比例：${loanRatio}%\n- 試算利率與年期：${annualRate}%／${loanYears} 年\n${buyConditions ? `- 已選條件：${buyConditions}\n` : ""}請分析這組條件的買房可行性、貸款與初期費用風險，以及我還需要補充哪些個人與物件資料。`;
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
