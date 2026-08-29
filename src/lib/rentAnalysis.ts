@@ -1,4 +1,4 @@
-import { getBudgetModifier, type BudgetModifierId } from "../data/rentGuideData.js";
+import { getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData.js";
 import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
@@ -630,7 +630,8 @@ export function computeStackedEstimate(
   let estimate = parseFloat(rate[safeRoomType]) * 10000;
   for (const id of mods) {
     const mod = getBudgetModifier(id);
-    if (mod) estimate += adjustedModifier(rate.district, mod.price);
+    // 用共用取價函式，塔樓等「溢價隨房型變動」的項目才不會與畫面算出不同金額。
+    if (mod) estimate += adjustedModifier(rate.district, getBudgetModifierPrice(mod, safeRoomType));
   }
   if (station) {
     estimate += adjustedModifier(rate.district, station.type === "major" ? 10000 : station.type === "regular" ? 5000 : -5000);

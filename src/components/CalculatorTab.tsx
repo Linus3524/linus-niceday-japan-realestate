@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
 import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator } from "lucide-react";
-import { budgetModifiers, getBudgetModifier, type BudgetModifierId } from "../data/rentGuideData";
+import { budgetModifiers, getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData";
 import { buyBudgetModifiers } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
 import { RentMap } from "./RentMap";
@@ -227,21 +227,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
     }
   };
   
+  // 傳入 id 時一律以共用取價函式解析金額，房型相關的溢價（例如塔樓）才會與推薦引擎一致。
+  // 車站等級那類不屬於 budgetModifiers 的調整，直接傳金額、不帶 id。
   const getModifierPrice = (modPrice: number, id?: BudgetModifierId) => {
     const scale = getDistrictScale();
-    let price = modPrice;
-    
-    // Custom dynamic adjustment for Tower Mansion based on RoomType
-    if (id === "tower") {
-      if (calcRoomType === "ldk1") {
-        price = 30000;
-      } else if (calcRoomType === "ldk2") {
-        price = 50000;
-      } else {
-        price = 15000;
-      }
-    }
-    
+    const modifier = id ? getBudgetModifier(id) : undefined;
+    const price = modifier ? getBudgetModifierPrice(modifier, calcRoomType) : modPrice;
     // Round to nearest 1000
     return Math.round((price * scale) / 1000) * 1000;
   };
@@ -860,7 +851,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price)).toLocaleString()} 円 / 月</div>
+                                    <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price, mod.id)).toLocaleString()} 円 / 月</div>
                                     {mod.id === "lp_gas" && (
                                       <div className="mt-1 text-[9px] leading-relaxed text-[#B13818]">租金折讓情境估算；LP 瓦斯使用費可能較高，總居住成本不一定下降。</div>
                                     )}
@@ -1053,7 +1044,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                           {calcModifiers.length > 0 && (() => {
                             const modifierSubtotal = calcModifiers.reduce(
-                              (total, id) => total + getModifierPrice(getBudgetModifier(id)?.price || 0),
+                              (total, id) => total + getModifierPrice(getBudgetModifier(id)?.price || 0, id),
                               0
                             );
                             return (
@@ -1073,7 +1064,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 {calcModifiers.map((id) => {
                                   const mod = getBudgetModifier(id);
                                   if (!mod) return null;
-                                  const adjustedPrice = getModifierPrice(mod.price);
+                                  const adjustedPrice = getModifierPrice(mod.price, mod.id);
                                   const isPlus = mod.type === "plus";
                                   return (
                                     <div key={id} className="flex justify-between items-start text-zinc-600 gap-2">

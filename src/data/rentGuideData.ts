@@ -46,6 +46,8 @@ export interface RentRate {
  * 因此 budgetModifiers 的陣列順序只影響畫面呈現順序，不具任何語意。
  * 要新增、刪除或重排項目時，直接改陣列即可，不會牽動其他檔案。
  */
+export type BudgetModifierLayout = "r1" | "k1" | "ldk1" | "ldk2";
+
 export type BudgetModifierId =
   | "washbasin_and_bidet" | "washbasin_only" | "bidet_only"
   | "compact_25sqm" | "compact_30sqm"
@@ -82,6 +84,12 @@ export interface BudgetModifier {
   type: "plus" | "minus";
   category: "equipment" | "building" | "location" | "subtraction" | "others";
   applicableLayouts?: string[];
+  /**
+   * 溢價會隨房型變動的項目寫在這裡（例如塔樓：2LDK 的溢價遠高於 1K）。
+   * 查無對應房型時回退到 price。務必透過 getBudgetModifierPrice() 取值，
+   * 不要直接讀 price——否則畫面與推薦引擎會各算各的。
+   */
+  priceByLayout?: Partial<Record<BudgetModifierLayout, number>>;
   /** 這個金額的訂定依據。留白代表沿用專案建立時的經驗值（見 budgetModifierMeta）。 */
   basis?: string;
 }
@@ -682,7 +690,13 @@ export const budgetModifiers: BudgetModifier[] = [
   { id: "compact_15_18sqm", text: "室內空間 15〜18平米", price: -7000, type: "minus", category: "subtraction", applicableLayouts: ["r1", "k1"] },
   { id: "wooden", text: "木造建築", price: -10000, type: "minus", category: "subtraction" },
   { id: "washitsu", text: "和室 (有榻榻米的房間)", price: -5000, type: "minus", category: "subtraction" },
-  { id: "tower", text: "塔樓建築", price: 15000, type: "plus", category: "building" },
+  {
+    id: "tower", text: "塔樓建築", price: 15000, type: "plus", category: "building",
+    // 塔樓的溢價與房型高度相關：單身房型的塔樓溢價有限，
+    // 但 1LDK／2LDK 的塔樓多屬高階建案，溢價遠高於一般大樓。
+    priceByLayout: { ldk1: 30000, ldk2: 50000 },
+    basis: "原本僅寫在計算機 UI 內的房型加價，改置於資料層供估價與推薦共用"
+  },
   { id: "lp_gas", text: "可接受 LP 瓦斯（租金折讓情境）", price: -3000, type: "minus", category: "subtraction" },
   // 以下兩項是台灣客人最常提、但先前完全沒有進價格模型的條件。
   // 沒有它們的話，指定「乾濕分離」的客人會被拿去對照含 3 點式衛浴的市場中位，
@@ -698,6 +712,20 @@ export const budgetModifiers: BudgetModifier[] = [
 ];
 
 const budgetModifierById = new Map(budgetModifiers.map(modifier => [modifier.id, modifier]));
+
+/**
+ * 取得加減價項目在指定房型下的金額。
+ *
+ * 全站唯一的取價入口：畫面試算、條件小計與推薦引擎都必須用它，
+ * 否則同一個條件會在不同地方算出不同金額（塔樓就曾經如此）。
+ */
+export function getBudgetModifierPrice(modifier: BudgetModifier, layout?: string): number {
+  const byLayout = modifier.priceByLayout;
+  if (byLayout && layout && layout in byLayout) {
+    return byLayout[layout as BudgetModifierLayout] ?? modifier.price;
+  }
+  return modifier.price;
+}
 
 /** 以穩定 id 取用加減價項目。查無 id 時回傳 undefined，呼叫端需自行處理。 */
 export function getBudgetModifier(id: BudgetModifierId): BudgetModifier | undefined {
