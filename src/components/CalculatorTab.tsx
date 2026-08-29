@@ -1275,6 +1275,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             disabled={!guidedCommuteStation}
                             className="mt-1.5 h-11 w-full border border-[#1A2A22] bg-white px-2 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
                           >
+                            <option value={15}>15 分內</option>
+                            <option value={20}>20 分內</option>
                             <option value={30}>30 分內</option>
                             <option value={45}>45 分內</option>
                             <option value={60}>60 分內</option>
@@ -1433,7 +1435,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:bg-[#9AA9A2] font-sans"
                       >
                         {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                        {analysisLoading ? "正在計算通勤路線…" : aiResult ? "依目前條件重新分析" : "分析可行性與推薦車站"}
+                        {analysisLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
                       </button>
                       <p className="text-[10px] leading-relaxed text-[#66736C]">
                         不必另外輸入需求；以上選項會直接用來判斷預算落差、供給難度與適合搜尋的車站。
@@ -1471,7 +1473,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:cursor-not-allowed disabled:opacity-45 font-sans"
                             >
                               {aiInputLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                              {aiInputLoading ? "正在對標市場…" : "AI 分析適合地區與預算"}
+                              {aiInputLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
                             </button>
                             <button
                               type="button"
@@ -1631,8 +1633,14 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
               <div className="flex flex-col gap-3 border border-[#DDE3DF] bg-[#FAFCFB] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-xs font-bold text-[#1A2A22]">查看這次評估的詳細計算明細</p>
-                  <p className="mt-1 text-[10px] text-[#66736C]">上方選好的條件會同步到這裡，可再檢查加減價、初期費用與貸款假設。</p>
+                  <p className="text-xs font-bold text-[#1A2A22]">
+                    {calcMode === "rent" ? "查看租屋試算與詳細計算明細" : "查看買房試算與詳細計算明細"}
+                  </p>
+                  <p className="mt-1 text-[10px] text-[#66736C]">
+                    {calcMode === "rent"
+                      ? "上方選好的條件會同步到這裡，可再檢查租金加減價與初期費用。"
+                      : "上方選好的條件會同步到這裡，可再檢查總價加減價、初期費用與貸款假設。"}
+                  </p>
                 </div>
                 <button
                   type="button"
