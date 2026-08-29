@@ -94,6 +94,23 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DZmdPV7E0V2" },
       { url: "https://www.threads.com/@linus3524/post/DZugcCDk3UZ" },
       { url: "https://www.threads.com/@linus3524/post/DbKT2aJk7ag" },
+      {
+        url: "https://www.threads.com/@linus3524/post/Dcbl2qjk_jE",
+        keywords: [
+          "仲介趣事",
+          "日本租屋",
+          "租屋申請",
+          "物件申請",
+          "同時申請",
+          "多重申請",
+          "重複申請",
+          "雙重申請",
+          "取消申請",
+          "多家仲介",
+          "管理公司",
+          "入居申込"
+        ]
+      },
     ],
   },
   {
@@ -186,6 +203,42 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DUkBCbOksVf" },
       { url: "https://www.threads.com/@linus3524/post/DZW8KoBk-YZ" },
       { url: "https://www.threads.com/@linus3524/post/DZ4HQmGE4SC" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DcflRvNE6gd",
+        keywords: [
+          "租屋審查",
+          "外國人審查",
+          "外國人租屋",
+          "東京租屋",
+          "租屋預算",
+          "條件取捨",
+          "屋齡設備",
+          "通勤距離",
+          "車站距離",
+          "新築",
+          "低租金",
+          "七八萬円"
+        ]
+      },
+      {
+        url: "https://www.threads.com/@linus3524/post/DcjDF7jk_Fc",
+        keywords: [
+          "租屋審查",
+          "同時申請",
+          "重複申請",
+          "多家仲介",
+          "審查通過",
+          "取消申請",
+          "初期費用",
+          "初期費用退款",
+          "海外匯款",
+          "退款",
+          "管理公司",
+          "保證公司",
+          "募集資訊不符",
+          "房仲誠信"
+        ]
+      },
     ],
   },
   {
