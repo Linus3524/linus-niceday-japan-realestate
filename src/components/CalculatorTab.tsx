@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { track } from "@vercel/analytics";
-import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator, TrainFront, Check, Plus, X, AlertTriangle } from "lucide-react";
+import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator, Plus, X, AlertTriangle } from "lucide-react";
 import { budgetModifiers, getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData";
 import { buyBudgetModifiers, getBuyModifier, type BuyModifierId } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
@@ -72,7 +72,7 @@ const normalizeRentBudgetSelection = (value: number) =>
   Math.min(RENT_BUDGET_MAX, Math.max(RENT_BUDGET_OPTIONS[0], Math.round(value / 5000) * 5000));
 
 const guidedChoiceClass = (selected: boolean) =>
-  `inline-flex items-center justify-center gap-1.5 border px-3 py-2 text-[11px] font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] focus-visible:ring-offset-2 ${
+  `inline-flex items-center justify-center border px-3 py-2 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] focus-visible:ring-offset-2 ${
     selected
       ? "border-[#007D5A] bg-[#00A174] text-white shadow-[0_4px_10px_rgba(0,161,116,0.20)] hover:bg-[#008F67]"
       : "border-[#D4DDD8] bg-white text-zinc-600 hover:border-[#7DBEAA] hover:bg-[#F3FAF7] hover:text-[#007D5A]"
@@ -1249,53 +1249,40 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         </div>
                       )}
 
-                      <section className="relative overflow-hidden border border-[#CFE3DA] bg-white p-4 shadow-[0_8px_24px_rgba(39,88,70,0.08)]">
-                        <div className="absolute inset-x-0 top-0 h-1 bg-[#00a174]" />
-                        <div className="mb-3 flex items-center gap-2 border-b border-[#E3ECE7] pb-2.5">
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#E2F4ED] text-[#008C68]">
-                            <TrainFront className="h-4 w-4" />
-                          </span>
-                          <p className="text-xs font-bold text-[#1A2A22]">通勤條件</p>
-                          <span className="border border-[#B9D9CE] bg-[#F3FAF7] px-1.5 py-0.5 text-[9px] font-bold text-[#4D675A]">選填</span>
-                        </div>
-                        <div className="grid grid-cols-1 gap-3 bg-[#F6F9F7] p-3 sm:grid-cols-[minmax(0,2fr)_minmax(120px,1fr)]">
-                          <label className="block text-[11px] font-bold text-zinc-700">
-                            通勤目的車站（可輸入搜尋）
-                            <div className="relative mt-1.5">
-                              <input
-                                list="commute-station-options"
-                                value={guidedCommuteStation}
-                                onChange={event => {
-                                  setGuidedCommuteStation(event.target.value);
-                                  if (!event.target.value) setLocationGuardNotice(null);
-                                }}
-                                onBlur={event => setLocationGuardNotice(validateCommuteCompatibility(event.target.value))}
-                                placeholder="例如：渋谷、新宿、東京"
-                                className="h-11 w-full border border-[#AEBDB5] bg-white px-3 pr-9 text-xs outline-none transition-shadow focus:border-[#00a174] focus:ring-2 focus:ring-[#C9EFE3]"
-                              />
-                              <TrainFront className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#66736C]" />
-                              <datalist id="commute-station-options">
-                                {commuteStationOptions.map(station => <option key={station} value={station}>{toJapaneseStationName(station)}駅</option>)}
-                              </datalist>
-                            </div>
-                          </label>
-                          <label className="block text-[11px] font-bold text-zinc-700">
-                            最長通勤時間
-                            <select
-                              value={guidedCommuteMinutes}
-                              onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
-                              disabled={!guidedCommuteStation}
-                              className="mt-1.5 h-11 w-full border border-[#AEBDB5] bg-white px-2 text-xs outline-none transition-shadow focus:border-[#00a174] focus:ring-2 focus:ring-[#C9EFE3] disabled:cursor-not-allowed disabled:border-[#D8E0DC] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
-                            >
-                              <option value={30}>30 分內</option>
-                              <option value={45}>45 分內</option>
-                              <option value={60}>60 分內</option>
-                              <option value={75}>75 分內</option>
-                              <option value={90}>90 分內</option>
-                            </select>
-                          </label>
-                        </div>
-                      </section>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(120px,1fr)]">
+                        <label className="block text-[11px] font-bold text-zinc-700">
+                          通勤目的車站（可輸入搜尋）
+                          <input
+                            list="commute-station-options"
+                            value={guidedCommuteStation}
+                            onChange={event => {
+                              setGuidedCommuteStation(event.target.value);
+                              if (!event.target.value) setLocationGuardNotice(null);
+                            }}
+                            onBlur={event => setLocationGuardNotice(validateCommuteCompatibility(event.target.value))}
+                            placeholder="例如：渋谷、新宿、東京"
+                            className="mt-1.5 h-11 w-full border border-[#1A2A22] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-[#00a174]"
+                          />
+                          <datalist id="commute-station-options">
+                            {commuteStationOptions.map(station => <option key={station} value={station}>{toJapaneseStationName(station)}駅</option>)}
+                          </datalist>
+                        </label>
+                        <label className="block text-[11px] font-bold text-zinc-700">
+                          最長通勤時間
+                          <select
+                            value={guidedCommuteMinutes}
+                            onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
+                            disabled={!guidedCommuteStation}
+                            className="mt-1.5 h-11 w-full border border-[#1A2A22] bg-white px-2 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
+                          >
+                            <option value={30}>30 分內</option>
+                            <option value={45}>45 分內</option>
+                            <option value={60}>60 分內</option>
+                            <option value={75}>75 分內</option>
+                            <option value={90}>90 分內</option>
+                          </select>
+                        </label>
+                      </div>
 
                       <fieldset>
                         <legend className="text-xs font-bold text-zinc-700">希望格局</legend>
@@ -1368,7 +1355,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => selectGuidedFloor(guidedFloorMin >= 2 ? 0 : 2)}
                             className={guidedChoiceClass(guidedFloorMin >= 2)}
                           >
-                            {guidedFloorMin >= 2 && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             2 樓以上
                           </button>
                           <button
@@ -1377,7 +1363,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => toggleRentSearchFilter("pets")}
                             className={guidedChoiceClass(rentSearchFilters.includes("pets"))}
                           >
-                            {rentSearchFilters.includes("pets") && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             可養寵物
                           </button>
                           <button
@@ -1386,7 +1371,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => toggleBathroomFacility("washbasin")}
                             className={guidedChoiceClass(washbasinSelected)}
                           >
-                            {washbasinSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             獨立洗面台
                           </button>
                           <button
@@ -1395,7 +1379,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => toggleBathroomFacility("bidet")}
                             className={guidedChoiceClass(bidetSelected)}
                           >
-                            {bidetSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             免治馬桶
                           </button>
                           <button
@@ -1404,7 +1387,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => toggleBuildingSecurity("autoLock")}
                             className={guidedChoiceClass(guidedAutoLock)}
                           >
-                            {guidedAutoLock && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             自動門
                           </button>
                           <button
@@ -1413,7 +1395,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             onClick={() => toggleBuildingSecurity("elevator")}
                             className={guidedChoiceClass(guidedElevator)}
                           >
-                            {guidedElevator && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                             電梯
                           </button>
                           {([
@@ -1423,7 +1404,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             const selected = calcModifiers.includes(id);
                             return (
                               <button key={id} type="button" aria-pressed={selected} onClick={() => toggleModifier(id)} className={guidedChoiceClass(selected)}>
-                                {selected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                                 {label}
                               </button>
                             );
@@ -1439,7 +1419,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             const selected = rentSearchFilters.includes(id);
                             return (
                               <button key={id} type="button" aria-pressed={selected} onClick={() => toggleRentSearchFilter(id)} className={guidedChoiceClass(selected)}>
-                                {selected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                                 {label}
                               </button>
                             );
