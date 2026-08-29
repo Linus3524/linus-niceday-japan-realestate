@@ -87,7 +87,9 @@ const derivedWardRates: RentRate[] = wardProfiles.flatMap(profile => {
     areaGroup: base.areaGroup,
     sourceDate: base.sourceDate,
     confidence: "medium",
-    sourceNote: "At Home 市平均 × 區域相對係數推估（非區級募集統計）"
+    sourceNote: "At Home 市平均 × 區域相對係數推估（非區級募集統計）",
+    sourceUrl: AT_HOME_2026_URL,
+    includesManagementFee: true
   }));
 });
 
@@ -194,17 +196,17 @@ export const municipalities: MunicipalityRecord[] = marketSeedRates.map(rate => 
 export const rentSnapshots: RentSnapshotRecord[] = marketSeedRates.flatMap(rate => {
   const municipalityId = stableId("mun", rate.region, rate.district);
   const effectiveDate = rate.sourceDate ? `${rate.sourceDate}-01` : "2026-07-01";
-  const isAtHomeCityAverage = Boolean(rate.sourceDate) && rate.confidence !== "limited";
+  const isAtHomeCityAverage = /募集家賃（面積帶平均）/.test(rate.sourceNote || "");
   const layouts: LayoutCode[] = ["r1", "k1", "ldk1", "ldk2"];
   return layouts.map(layout => ({
     id: stableId("rent", municipalityId, layout, effectiveDate),
     municipalityId,
     layout,
     monthlyRentYen: Math.round(parseFloat(rate[layout]) * 10000),
-    includesManagementFee: isAtHomeCityAverage ? true : null,
+    includesManagementFee: rate.includesManagementFee ?? (isAtHomeCityAverage ? true : null),
     effectiveDate,
     sourceLabel: rate.sourceNote || "SUUMO、LIFULL HOME'S、At Home 等日本租屋平台公開資訊",
-    sourceUrl: isAtHomeCityAverage ? AT_HOME_2026_URL : null,
+    sourceUrl: rate.sourceUrl || (isAtHomeCityAverage ? AT_HOME_2026_URL : null),
     confidence: rate.confidence || "medium",
     verificationStatus: rate.verificationStatus || "verified_source",
     sampleSize: null
@@ -271,7 +273,9 @@ export function getCurrentRentRates(): RentRate[] {
       sourceDate: reference.effectiveDate.slice(0, 7),
       confidence: reference.confidence,
       verificationStatus: reference.verificationStatus,
-      sourceNote: reference.sourceLabel
+      sourceNote: reference.sourceLabel,
+      sourceUrl: reference.sourceUrl || undefined,
+      includesManagementFee: reference.includesManagementFee
     };
   });
 }

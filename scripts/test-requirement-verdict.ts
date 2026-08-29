@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildRentRecommendations, getRentModifierIds, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { buildRentRecommendations, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
 import {
   axisImpactLevel,
   buildAxisVerdicts,
@@ -114,11 +114,11 @@ const scenarios: Array<{ name: string; run: () => void }> = [
     }
   },
   {
-    // 只指定車站時，清單一度被截斷成「只有那幾站」，比不填地點得到的資訊還少。
-    name: "只指定少數車站仍給滿推薦數",
+    // 結果不再硬湊九筆，但使用者明確指定的車站不能因動態截點而消失。
+    name: "只指定少數車站仍保留指定結果",
     run: () => {
       const recs = buildRentRecommendations({ ...base, district: undefined, stations: ["新宿"] } as RentSearchCriteria);
-      assert.equal(recs.length, 9);
+      assert.ok(recs.length >= 1 && recs.length <= RECOMMENDATION_LIMIT);
       assert.ok(recs.some(item => item.station === "新宿"));
     }
   },
@@ -151,16 +151,50 @@ const scenarios: Array<{ name: string; run: () => void }> = [
     }
   },
   {
-    // 九個結果全落在同一區的話，使用者看不到「同樣條件在別區長什麼樣」。
+    // 動態結果仍要避免全部落在同一區，至少保留跨區比較；不再強制湊三區九站。
     name: "推薦清單會跨行政區，不會一區洗版",
     run: () => {
       const recs = buildRentRecommendations({ ...base, district: undefined, maxBudget: 150_000 } as RentSearchCriteria);
       const districts = new Set(recs.map(item => item.district));
-      assert.ok(districts.size >= 3, `應橫跨多個行政區，實際只有 ${districts.size} 個`);
+      assert.ok(districts.size >= 2, `應橫跨多個行政區，實際只有 ${districts.size} 個`);
       for (const district of districts) {
         const count = recs.filter(item => item.district === district).length;
         assert.ok(count <= 3, `${district} 佔了 ${count} 個名額，超過上限`);
       }
+    }
+  },
+  {
+    name: "AI 單一摘要不會吃掉原文的複數地區",
+    run: () => {
+      const enriched = enrichRentCriteriaFromPrompt(
+        { ...base, district: "目黑區", districts: [], line: "東急東橫線", lines: [] },
+        "期望地區：目黑區／世田谷區\n希望路線：東急東橫線\n通勤地點：惠比壽"
+      );
+      assert.ok(enriched.districts?.includes("目黑區"));
+      assert.ok(enriched.districts?.includes("世田谷區"));
+      assert.ok(enriched.lines?.length);
+    }
+  },
+  {
+    name: "複數路線都會納入搜尋範圍",
+    run: () => {
+      const scope = resolveSearchScope({ ...base, district: null, line: null, lines: ["東急東橫線", "山手線"] });
+      assert.ok(scope.districts.size > 1);
+      assert.equal(scope.unresolvedLocations.length, 0);
+    }
+  },
+  {
+    name: "免禮金免押金與免費網路會成為獨立條件",
+    run: () => {
+      const criteria = enrichRentCriteriaFromPrompt(
+        { ...base, freeInternet: undefined },
+        "希望免禮金、免押金，也要免費網路"
+      );
+      assert.equal(criteria.noKeyMoney, true);
+      assert.equal(criteria.noDeposit, true);
+      assert.equal(criteria.freeInternet, true);
+      const axes = buildAxisVerdicts(criteria, []);
+      assert.ok(axes.some(axis => axis.key === "initialFeePreference" && axis.supplyImpact === 2));
     }
   }
 ];

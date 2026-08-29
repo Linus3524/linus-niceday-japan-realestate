@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart3, Building2, ChevronDown, Footprints, Home, SlidersHorizontal, TrainFront } from "lucide-react";
 import { rentRates } from "../data/housingMarket";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
@@ -12,15 +12,6 @@ interface Props {
 }
 
 const yen = (value: number) => `¥${Math.round(value / 1000) * 1000}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-function recommendationReasonLabel(reason: string, criteria: RentSearchCriteria) {
-  let label = reason;
-  if (criteria.line) label = label.replaceAll(criteria.line, toJapaneseLineName(criteria.line));
-  const stations = [criteria.commuteStation, ...(criteria.commuteStations || [])].filter((station): station is string => Boolean(station));
-  for (const station of stations) label = label.replaceAll(station, toJapaneseStationName(station));
-  return label;
-}
-
 
 function LayoutTiles({ items }: { items: Array<{ label: string; value: number }> }) {
   // Unify with map colors & hovers:
@@ -217,9 +208,6 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             </div>
             <h4 lang="ja" className="font-jp font-bold text-base text-[#1A2A22] mt-1">{toJapanesePlaceName(item.district)}{item.station ? ` · ${toJapaneseStationName(item.station)}駅` : ""}</h4>
             <p lang="ja" className="font-jp font-medium text-[10px] text-[#8A9590] mt-0.5">{item.lines.map(toJapaneseLineName).join("・") || `${toJapanesePlaceName(item.region)}行政区行情`}</p>
-            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-              {(item.reasons || []).slice(0, 3).map(reason => <span key={reason} className="text-[9px] text-[#3F5147] before:mr-1 before:text-[#00a174] before:content-['✓']">{recommendationReasonLabel(reason, criteria)}</span>)}
-            </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right"><div className="font-mono font-bold text-lg text-[#00a174]">{yen(item.estimate)}</div><div className="text-[10px] text-[#8A9590]">月租中心值</div></div>
@@ -273,14 +261,14 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
  * 預算貼近度加總），也就是陣列原本的順序，所以不做任何重排。
  *
  * 另外兩種是使用者挑房時最常用的兩個角度：先看便宜的、先看通勤方便的。
- * 排序只重排這九筆已經算好的結果，不會重新向後端要資料。
+ * 排序只重排這次分析挑出的結果，不會重新向後端要資料。
  */
 type SortMode = "recommended" | "rent" | "commute";
 
 const SORT_LABEL: Record<SortMode, string> = {
   recommended: "推薦度",
-  rent: "租金低到高",
-  commute: "通勤時間"
+  rent: "租金",
+  commute: "通勤"
 };
 
 /** 查不到路線的卡片沒有分鐘數，一律排在有時間的後面。 */
@@ -320,43 +308,99 @@ function sortRecommendations(items: RentRecommendation[], mode: SortMode) {
 }
 
 export function RentMarketReports({ recommendations, criteria, onApply }: Props) {
-  const [expanded, setExpanded] = useState<number | null>(0);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [expandedDistricts, setExpandedDistricts] = useState<string[]>([]);
   const [sortMode, setSortMode] = useState<SortMode>("recommended");
   const sorted = sortRecommendations(recommendations, sortMode);
+  const groups = Array.from(sorted.reduce((grouped, item) => {
+    const current = grouped.get(item.district) || [];
+    current.push(item);
+    grouped.set(item.district, current);
+    return grouped;
+  }, new Map<string, RentRecommendation[]>()));
+
+  useEffect(() => {
+    setExpanded(null);
+    setExpandedDistricts([]);
+  }, [recommendations]);
+
+  const toggleDistrict = (district: string) => {
+    setExpandedDistricts(current => current.includes(district)
+      ? current.filter(item => item !== district)
+      : [...current, district]);
+  };
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-1.5 border border-[#DDE3DF] bg-[#F5F8F6] p-1 font-sans">
-        <span className="px-2 text-[10px] font-bold text-[#66736C]">排序</span>
-        {(Object.keys(SORT_LABEL) as SortMode[]).map(mode => (
-          <button
-            key={mode}
-            type="button"
-            onClick={() => {
-              setSortMode(mode);
-              // 換排序後展開的仍是第一張，否則展開的會是「排序前那個位置」的卡片。
-              setExpanded(0);
-            }}
-            aria-pressed={sortMode === mode}
-            className={`cursor-pointer px-3 py-1.5 text-[11px] font-bold transition-colors ${
-              sortMode === mode ? "bg-[#00a174] text-white" : "bg-white text-zinc-700 hover:text-[#00a174]"
-            }`}
-          >
-            {SORT_LABEL[mode]}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-2 font-sans">
+        <p className="text-[10px] font-bold text-[#66736C]">
+          找到 {recommendations.length} 個合適車站・分布於 {groups.length} 個行政區
+        </p>
+        <div className="inline-flex items-center border border-[#DDE3DF] bg-[#F5F8F6] p-1">
+          <span className="px-2 text-[9px] font-bold text-[#7A8580]">排序</span>
+          {(Object.keys(SORT_LABEL) as SortMode[]).map(mode => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => {
+                setSortMode(mode);
+                setExpanded(null);
+              }}
+              aria-pressed={sortMode === mode}
+              aria-label={mode === "rent" ? "依租金由低至高排序" : mode === "commute" ? "依通勤時間排序" : "依推薦度排序"}
+              className={`cursor-pointer px-3 py-1.5 text-[10px] font-bold transition-colors ${
+                sortMode === mode ? "bg-[#18181B] text-white" : "bg-white text-zinc-700 hover:text-[#007D5A]"
+              }`}
+            >
+              {SORT_LABEL[mode]}
+            </button>
+          ))}
+        </div>
       </div>
-      {sorted.map((item, index) => (
-        <Report
-          key={`${item.district}-${item.station || index}`}
-          item={item}
-          criteria={criteria}
-          index={index}
-          expanded={expanded === index}
-          onToggle={() => setExpanded(expanded === index ? null : index)}
-          onApply={() => onApply(item)}
-        />
-      ))}
+      {groups.map(([district, items]) => {
+        const districtExpanded = expandedDistricts.includes(district);
+        const low = Math.min(...items.map(item => item.estimate));
+        const high = Math.max(...items.map(item => item.estimate));
+        return (
+          <section key={district}>
+            <button
+              type="button"
+              onClick={() => toggleDistrict(district)}
+              className="flex w-full items-center justify-between gap-4 border-l-4 border-[#00A174] bg-[#F3F8F5] px-4 py-3 text-left transition-colors hover:bg-[#EAF4EF]"
+              aria-expanded={districtExpanded}
+            >
+              <span>
+                <span lang="ja" className="block font-jp text-sm font-bold text-[#1A2A22]">{toJapanesePlaceName(district)}</span>
+                <span className="mt-0.5 block font-sans text-[9px] text-[#66736C]">{items.length} 個車站</span>
+              </span>
+              <span className="flex items-center gap-3">
+                <span className="font-mono text-[10px] font-bold text-[#3F5147]">
+                  {low === high ? yen(low) : `${yen(low)}～${yen(high)}`}
+                </span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${districtExpanded ? "rotate-180" : ""}`} />
+              </span>
+            </button>
+            {districtExpanded && (
+              <div className="mt-2 space-y-2">
+                {items.map(item => {
+                  const reportKey = `${item.district}-${item.station || "district"}`;
+                  return (
+                    <Report
+                      key={reportKey}
+                      item={item}
+                      criteria={criteria}
+                      index={sorted.indexOf(item)}
+                      expanded={expanded === reportKey}
+                      onToggle={() => setExpanded(expanded === reportKey ? null : reportKey)}
+                      onApply={() => onApply(item)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        );
+      })}
       {/* 共通說明全站只出現這一次；卡片內不再重複同樣的免責文字。 */}
       <p className="border-t border-[#DDE3DF] pt-3 font-sans text-[9px] leading-relaxed text-[#8A9590]">
         以上為行政區／車站層級的租金推估與趨勢，非即時空室資料。圖表呈現的是規格差異的方向性，實際物件仍依募集條件為準。

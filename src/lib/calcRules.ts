@@ -19,6 +19,7 @@ export const rentConflictGroups: BudgetModifierId[][] = [
   ["walk_within_5min", "walk_11_15min", "walk_15_20min"],  // 徒步距離
   ["autolock_elevator", "no_elevator_4f"],                 // 有電梯 vs 4 樓以上無電梯
   ["no_elevator_4f", "first_floor"],                       // 4 樓以上無電梯 vs 一樓
+  ["floor_2f_plus", "first_floor"],                        // 指定二樓以上 vs 一樓
   ["autolock_elevator", "wooden"],                         // 自動門電梯大樓 vs 木造
   ["age_within_5y", "washitsu"],                           // 5 年內新房幾乎不會有和室
   ["age_within_10y", "washitsu"],                          // 5〜10 年次新房同理

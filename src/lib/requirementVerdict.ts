@@ -34,6 +34,14 @@ export interface AxisVerdict {
   nextStep?: string;
   /** 對房源數量的壓縮程度 0～3，用於疊加判斷整體可行性。 */
   supplyImpact: number;
+  /**
+   * status 為「待確認」時，說明是哪一種待確認。
+   *
+   * 同一個軸可能因為不同原因無法判斷，而整體結論要給對應的下一步：
+   * 「沒填預算」要叫使用者補預算，「地區查無行情」叫他補預算沒有意義——
+   * 他明明填了，只會反覆重填一個已經填好的欄位。
+   */
+  pendingReason?: "missing-input" | "no-market-data";
 }
 
 export type AxisImpactLevel = "容易達成" | "需要取捨" | "較難兼顧" | "待補資料";
@@ -183,25 +191,27 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
 
   // 路線：一條線橫跨的行政區行情差距很大（西武池袋線從豐島區到所澤市），
   // 少了這段就會只用線上最貴的那一站當基準。
-  const lineQuery = normalizeLine(criteria.line);
-  if (lineQuery.length >= 3) {
+  const lineInputs = [...(criteria.lines || []), criteria.line]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0);
+  let matchedAnyLine = false;
+  for (const lineInput of lineInputs) {
+    const lineQuery = normalizeLine(lineInput);
     let hit = false;
-    for (const [district, stations] of Object.entries(districtStations)) {
-      if (stations.some(station => station.lines.some(line => {
-        const candidate = normalizeLine(line);
-        return candidate.includes(lineQuery) || lineQuery.includes(candidate);
-      }))) {
-        districts.add(normalize(district));
-        hit = true;
+    if (lineQuery.length >= 3) {
+      for (const [district, stations] of Object.entries(districtStations)) {
+        if (stations.some(station => station.lines.some(line => {
+          const candidate = normalizeLine(line);
+          return candidate.includes(lineQuery) || lineQuery.includes(candidate);
+        }))) {
+          districts.add(normalize(district));
+          hit = true;
+          matchedAnyLine = true;
+        }
       }
     }
-    if (hit) sources.push(`${criteria.line}沿線`);
-    else if (criteria.line?.trim() && !unresolvedLocations.includes(criteria.line.trim())) {
-      unresolvedLocations.push(criteria.line.trim());
-    }
-  } else if (criteria.line?.trim() && !unresolvedLocations.includes(criteria.line.trim())) {
-    unresolvedLocations.push(criteria.line.trim());
+    if (!hit && !unresolvedLocations.includes(lineInput.trim())) unresolvedLocations.push(lineInput.trim());
   }
+  if (matchedAnyLine) sources.push("指定沿線");
 
   // 只給通勤目的地時，可住範圍就是「與該站有共同線路的行政區」——
   // 這正是推薦清單挑候選的規則，用同一條規則兩側才會一致。
@@ -267,6 +277,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
     criteria.district,
     ...(criteria.stations || []),
     criteria.station,
+    ...(criteria.lines || []),
     criteria.line,
     criteria.locationPreference,
     ...(criteria.commuteStations || []),
@@ -349,7 +360,7 @@ const SEGMENT_SHOWCASE = 5;
 
 /* ── 各軸判斷 ───────────────────────────────────────────── */
 
-function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | null): AxisVerdict {
+function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | null, outOfRange = false): AxisVerdict {
   const budget = criteria.maxBudget;
   const feeState = criteria.budgetIncludesFees;
   const detail = budget
@@ -359,15 +370,24 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
   if (!budget) {
     return {
       key: "budget", label: "預算", detail: null, status: "待確認",
-      headline: "還沒有月租上限，無法判斷這組條件找不找得到。",
-      drivers: [], nextStep: "補上每月可負擔的租金上限。", supplyImpact: 0
+      headline: outOfRange
+        ? "月租上限超出合理範圍，這個數字沒有被採用。"
+        : "還沒有月租上限，無法判斷這組條件找不找得到。",
+      drivers: [],
+      nextStep: outOfRange
+        ? `請確認金額：月租上限最高只接受到 ${man(MAX_MONTHLY_BUDGET)}，是不是多打了幾個零？`
+        : "補上每月可負擔的租金上限。",
+      supplyImpact: 0,
+      pendingReason: "missing-input"
     };
   }
   if (!range) {
     return {
       key: "budget", label: "預算", detail, status: "待確認",
-      headline: "指定範圍內沒有可用的行情資料。",
-      drivers: [], nextStep: "放寬地區或改指定車站。", supplyImpact: 0
+      headline: "指定範圍內沒有可用的行情資料，無法比對這個預算。",
+      drivers: [], nextStep: "換一個地區或改指定車站，這一區目前沒有收錄行情。",
+      supplyImpact: 0,
+      pendingReason: "no-market-data"
     };
   }
 
@@ -752,6 +772,28 @@ function initialCostAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   };
 }
 
+function initialFeePreferenceAxis(criteria: RentSearchCriteria): AxisVerdict | null {
+  const conditions = [criteria.noKeyMoney ? "免禮金" : null, criteria.noDeposit ? "免押金" : null]
+    .filter(Boolean) as string[];
+  if (!conditions.length) return null;
+  const both = conditions.length === 2;
+  return {
+    key: "initialFeePreference",
+    label: "初期費用條件",
+    detail: conditions.join("・"),
+    status: "部分符合",
+    headline: both
+      ? "同時指定免禮金與免押金可降低初期費用，但會明顯縮小可選房源。"
+      : `${conditions[0]}能降低初期費用，但不是所有物件都有此募集條件。`,
+    drivers: [
+      criteria.noDeposit ? "免押金物件仍可能預收退房清潔費或定額償卻費" : "",
+      criteria.noKeyMoney ? "熱門地區與熱門車站附近的免禮金物件通常更少" : ""
+    ].filter(Boolean),
+    nextStep: both ? "若結果太少，建議先保留免禮金，押金則確認可退還條件後再比較。" : undefined,
+    supplyImpact: both ? 2 : 1
+  };
+}
+
 function petAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   if (criteria.petsAllowed !== true) return null;
   const petLabel = `可養${criteria.petType || "寵物"}`;
@@ -935,18 +977,34 @@ function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
  * 清成 null 而不是夾到邊界值：使用者填了離譜的數字，正確的回應是當作沒填、
  * 請他補一個合理值，而不是幫他假設一個他沒說過的數字。
  */
+/** 月租上限的合理天花板；超過這個數多半是打錯零，不是真的預算。 */
+const MAX_MONTHLY_BUDGET = 5_000_000;
+
 function positive(value: unknown, max: number): number | null {
   const num = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(num) || num <= 0 || num > max) return null;
   return num;
 }
 
+/**
+ * 預算被清洗掉時要能分辨「本來就沒填」與「填了但超出合理範圍」。
+ *
+ * 使用者把 10 萬打成 1000 萬（多按兩個零）時，數值會被 positive() 丟掉，
+ * 畫面接著說「還沒有月租上限」——他明明填了，只會一頭霧水。
+ */
+function budgetOutOfRange(criteria: RentSearchCriteria): boolean {
+  const raw = criteria.maxBudget;
+  if (raw == null || raw === undefined) return false;
+  const num = typeof raw === "number" ? raw : Number(raw);
+  return Number.isFinite(num) && num > 0 && num > MAX_MONTHLY_BUDGET;
+}
+
 function sanitizeCriteria(criteria: RentSearchCriteria): RentSearchCriteria {
   const roomType = Object.prototype.hasOwnProperty.call(ROOM_TYPE_LABEL, criteria.roomType)
     ? criteria.roomType
     : "k1";
-  const maxBudget = positive(criteria.maxBudget, 5_000_000);
-  let minBudget = positive(criteria.minBudget, 5_000_000);
+  const maxBudget = positive(criteria.maxBudget, MAX_MONTHLY_BUDGET);
+  let minBudget = positive(criteria.minBudget, MAX_MONTHLY_BUDGET);
   // 下限高於上限時捨棄下限：上限是使用者真正的天花板，
   // 留著會顯示成「15 萬円～8 萬円」這種反過來的區間。
   if (minBudget != null && maxBudget != null && minBudget > maxBudget) minBudget = null;
@@ -976,7 +1034,7 @@ export function buildAxisVerdicts(rawCriteria: RentSearchCriteria, recommendatio
   const range = estimateRequestedRent(criteria);
   return [
     visaAxis(criteria),
-    budgetAxis(criteria, range),
+    budgetAxis(criteria, range, budgetOutOfRange(rawCriteria)),
     commuteAxis(criteria, recommendations),
     layoutAxis(criteria),
     buildingAxis(criteria),
@@ -984,6 +1042,7 @@ export function buildAxisVerdicts(rawCriteria: RentSearchCriteria, recommendatio
     petAxis(criteria),
     otherCoreNeedsAxis(criteria),
     timingAxis(criteria),
+    initialFeePreferenceAxis(criteria),
     initialCostAxis(criteria)
   ].filter(Boolean) as AxisVerdict[];
 }
@@ -1005,6 +1064,10 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
   // 只有預算缺席才真的無法判斷。沒有通勤目的地仍可評預算、格局、建物等軸，
   // 不該讓整份評估降級成「資料不足」而蓋掉其他結論。
   const pendingKeys = axes.filter(axis => axis.status === "待確認" && axis.key === "budget");
+  // 預算軸有兩種待確認，下一步完全不同：真的沒填要叫他補預算；
+  // 地區查無行情時他明明填了預算，再叫他「補上預算」只會讓人反覆重填
+  // 一個已經填好的欄位，真正該換的是地區。
+  const noMarketData = pendingKeys.some(axis => axis.pendingReason === "no-market-data");
 
   // 最該先放寬的：壓縮供給最多、且有具體下一步的那一項。
   const loosenFirst = [...axes]
@@ -1014,7 +1077,9 @@ export function buildOverallVerdict(axes: AxisVerdict[]): OverallVerdict {
   if (pendingKeys.length) {
     return {
       level: "資料不足",
-      headline: `補上${pendingKeys.map(axis => axis.label).join("與")}後才能判斷這組需求找不找得到。`,
+      headline: noMarketData
+        ? "這個地區目前沒有收錄行情，無法比對預算。換一個地區或指定車站再試一次。"
+        : `補上${pendingKeys.map(axis => axis.label).join("與")}後才能判斷這組需求找不找得到。`,
       reasons: pendingKeys.map(axis => axis.headline),
       pendingLabels
     };

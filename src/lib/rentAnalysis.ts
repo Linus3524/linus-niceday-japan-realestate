@@ -42,6 +42,7 @@ export interface RentSearchCriteria {
   station?: string | null;
   stations?: string[];
   line?: string | null;
+  lines?: string[];
   walkMinutes?: number | null;
   commuteStation?: string | null;
   commuteStations?: string[];
@@ -68,6 +69,10 @@ export interface RentSearchCriteria {
   balcony?: boolean;
   gasBurnersMin?: number | null;
   freeInternet?: boolean;
+  /** 招租條件明確為禮金 0。 */
+  noKeyMoney?: boolean;
+  /** 招租條件明確為敷金／押金 0。 */
+  noDeposit?: boolean;
   lpGasAccepted?: boolean;
   cityGasRequired?: boolean;
   petsAllowed?: boolean;
@@ -178,13 +183,8 @@ const normalize = (value?: string | null) => toJapanesePlaceName(value || "")
   .replace(/jr|東京地下鉄|都営|東急|京王|小田急/g, "");
 
 /** 使用者常見的否定寫法；命中就代表「明確不需要」，不可當成需求。 */
-/**
- * 推薦清單長度，以及單一行政區最多佔幾個名額。
- *
- * RECOMMENDATION_LIMIT 對外匯出給 UI 文案使用：先前畫面上寫死「6 個搜尋方向」，
- * 這裡改成 9 之後文案沒跟著改，使用者看到的數字與實際清單對不起來。
- */
-export const RECOMMENDATION_LIMIT = 9;
+/** 推薦結果的安全上限；實際筆數會依候選符合度動態縮短，不會為了達到上限硬補。 */
+export const RECOMMENDATION_LIMIT = 20;
 const DISTRICT_QUOTA = 3;
 
 const NEGATION = /(?:不用|不需要|不必|不想|沒有需要|没有需要|無需|无需|不要)/;
@@ -383,25 +383,29 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     .filter(Boolean)
     .reduce<string>((text, exclude) => text.split(exclude as string).join(" "), prompt);
   const normalizedResidence = normalize(residenceText);
-  if (!(enriched.districts || []).length && !enriched.district) {
-    const matchedDistricts = [...new Set(
-      rentRates
-        .map(rate => rate.district)
-        .filter(district => normalize(district).length >= 2 && normalizedResidence.includes(normalize(district)))
-    )];
-    if (matchedDistricts.length) enriched.districts = matchedDistricts;
-  }
-  if (!(enriched.stations || []).length && !enriched.station) {
-    const commuteNames = new Set([...(enriched.commuteStations || []), enriched.commuteStation].filter(Boolean).map(v => normalize(v)));
-    const matchedStations = [...new Map(
-      Object.values(districtStations).flat()
-        .filter(station => normalize(station.name).length >= 2
-          && normalizedResidence.includes(normalize(station.name))
-          && !commuteNames.has(normalize(station.name)))
-        .map(station => [normalize(station.name), station.name] as const)
-    ).values()];
-    if (matchedStations.length) enriched.stations = matchedStations;
-  }
+  const matchedDistricts = [...new Set(
+    rentRates
+      .map(rate => rate.district)
+      .filter(district => normalize(district).length >= 2 && normalizedResidence.includes(normalize(district)))
+  )];
+  enriched.districts = [...new Set([...(enriched.districts || []), enriched.district, ...matchedDistricts].filter(Boolean) as string[])];
+
+  const commuteNames = new Set([...(enriched.commuteStations || []), enriched.commuteStation].filter(Boolean).map(v => normalize(v)));
+  const matchedStations = [...new Map(
+    Object.values(districtStations).flat()
+      .filter(station => normalize(station.name).length >= 2
+        && normalizedResidence.includes(normalize(station.name))
+        && !commuteNames.has(normalize(station.name)))
+      .map(station => [normalize(station.name), station.name] as const)
+  ).values()];
+  enriched.stations = [...new Set([...(enriched.stations || []), enriched.station, ...matchedStations].filter(Boolean) as string[])];
+
+  const knownLines = [...new Set(Object.values(districtStations).flatMap(stations => stations.flatMap(station => station.lines)))];
+  const matchedLines = knownLines.filter(line => {
+    const normalizedLine = normalize(line);
+    return normalizedLine.length >= 3 && normalizedResidence.includes(normalizedLine);
+  });
+  enriched.lines = [...new Set([...(enriched.lines || []), enriched.line, ...matchedLines].filter(Boolean) as string[])];
 
   // 家具家電：舊版只要全文出現「家具」就設為 true，連「不需要家具」也會中。
   // 改為判斷語氣，並在明確否定時清掉模型可能誤給的 true。
@@ -513,7 +517,9 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     ["balcony", /陽台|阳台|ベランダ|バルコニー/],
     ["bidet", /免治馬桶|免治马桶|溫水洗淨|温水洗净|溫水清淨|ウォシュレット/],
     ["washbasin", /獨立洗面台|独立洗面台|洗面所獨立|獨立洗手台/],
-    ["freeInternet", /免費網路|免费网络|ネット無料|網路免費/]
+    ["freeInternet", /免費網路|免费网络|ネット無料|網路免費/],
+    ["noKeyMoney", /免禮金|免礼金|禮金\s*(?:0|零)|礼金\s*(?:0|ゼロ)/],
+    ["noDeposit", /免押金|免敷金|押金\s*(?:0|零)|敷金\s*(?:0|ゼロ)/]
   ];
   for (const [field, pattern] of equipmentIntents) {
     const intent = mentionIntent(prompt, pattern);
@@ -605,6 +611,7 @@ export function getRentModifierIds(criteria: RentSearchCriteria): BudgetModifier
   if (criteria.furnished && criteria.furnishedPriority !== "preferred" && criteria.furnishedPriority !== "uncertain") ids.add("furnished");
   if (criteria.tower) ids.add("tower");
   if (criteria.lpGasAccepted) ids.add("lp_gas");
+  if (/(?:木造|wood)/i.test(criteria.structure || "")) ids.add("wooden");
   // 乾濕分離與 2 樓以上：先前這兩項完全沒有進價格模型，
   // 導致指定它們的人被拿去對照「含 3 點式衛浴、含 1 樓」的市場中位，
   // 個別條件都判「符合」，合起來卻找不到房——這正是綜合難度被低估的來源。
@@ -652,7 +659,8 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   const mods = getRentModifierIds(criteria);
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(value => normalize(value));
   const wantedStations = [...(criteria.stations || []), criteria.station].filter(Boolean).map(value => normalize(value));
-  const wantedLine = criteria.line || "";
+  const wantedLines = [...(criteria.lines || []), criteria.line]
+    .filter((value): value is string => Boolean(value?.trim()));
   const commuteTargets = [...(criteria.commuteStations || []), ...(criteria.commuteStation?.split(/[、,，/／或|・]/) || [])]
     .map(value => normalize(value)).filter(Boolean);
   const commuteStations = commuteTargets.length
@@ -676,7 +684,10 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     const districtMatch = exactDistrictMatch || districtQueries.some(query =>
       normalizedDistrict.includes(query) || normalize(rate.region) === query
     );
-    const requestedLineMatch = Boolean(station && wantedLine && station.lines.some(line => lineMatches(line, wantedLine)));
+    const matchedRequestedLine = station
+      ? wantedLines.find(wantedLine => station.lines.some(line => lineMatches(line, wantedLine))) || null
+      : null;
+    const requestedLineMatch = Boolean(matchedRequestedLine);
     const directCommute = Boolean(station && commuteStations.some(destination =>
       station.lines.some(line => destination.lines.some(destinationLine => lineMatches(line, destinationLine)))
     ));
@@ -694,7 +705,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     const reasons = [
       exactStation ? "使用者明確指定的車站" : null,
       districtMatch ? "位於指定行政區範圍" : null,
-      requestedLineMatch ? `符合指定的 ${criteria.line}` : null,
+      requestedLineMatch ? `符合指定的 ${matchedRequestedLine}` : null,
       directCommute ? `與 ${criteria.commuteStation} 有共同線路` : criteria.commuteStation ? `前往 ${criteria.commuteStation} 的轉乘需另行確認` : null,
       gap !== null ? (gap <= 0 ? "估算中心值在預算內" : gap <= Math.max(10000, criteria.maxBudget! * .1) ? "估算接近預算上限" : "需要調整條件或預算") : "依條件估算市場租金"
     ].filter(Boolean) as string[];
@@ -759,36 +770,54 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
     ? geographicPool.filter(item => item.commuteFit === "直達線路")
     : geographicPool;
   const pool = directCandidates.length ? directCandidates : geographicPool;
-  // 六個結果常常全部落在同一個行政區（例如指定目黑區時，六個都是目黑區的站），
-  // 使用者看不到「同樣條件在別區長什麼樣」。改成九個，並限制每個行政區最多三個，
-  // 讓清單同時回答「這一區有哪些站」與「還有哪些區可以看」。
-  //
-  // 使用者明確指定的車站不受此限：那是他自己講出來的地點，不能因為配額被擠掉。
-  // requested 的成員本來就靠指定車站／行政區的加分排在前面，
-  // 這裡照分數排即可；補進來的候選分數較低，自然落在後段。
+  // 不再固定湊滿九筆。先保留與地點、路線或通勤條件真正相關的候選，再以第四名
+  // 的符合度作為品質基準；後面的車站若落差太大便停止列入。沒有地理條件時，
+  // 才以預算相近度提供最多六個起始方向。
   const sorted = pool
     .sort((a, b) => b.score - a.score || a.estimate - b.estimate)
     .filter((item, index, all) => all.findIndex(candidate =>
       candidate.station === item.station && candidate.district === item.district) === index);
 
+  const hasGeographicSignals = Boolean(
+    districtQueries.length || wantedStations.length || wantedLines.length || commuteTargets.length
+  );
+  let adaptiveCandidates: typeof sorted;
+  if (hasGeographicSignals) {
+    const relevant = sorted.filter(item => item.recommendationType === "指定車站" || item.score >= 45);
+    const rankedRelevant = relevant.length ? relevant : sorted.slice(0, 1);
+    const anchor = rankedRelevant[Math.min(3, rankedRelevant.length - 1)]?.score || 0;
+    const qualityFloor = Math.max(40, anchor * 0.7);
+    adaptiveCandidates = rankedRelevant
+      .filter((item, index) => index < 3 || item.score >= qualityFloor)
+      .slice(0, RECOMMENDATION_LIMIT);
+  } else {
+    adaptiveCandidates = sorted.slice(0, Math.min(6, RECOMMENDATION_LIMIT));
+  }
+
+  // 使用者明確點名的車站，以及每個明確選取行政區的最佳候選，是不可靜默省略的核心結果。
+  // 先放進核心候選，再由符合度相近的結果補足；總數仍受安全上限控制。
+  const essentialCandidates = sorted.filter(item => item.recommendationType === "指定車站");
+  for (const districtQuery of districtQueries) {
+    const bestInDistrict = sorted.find(item => normalize(item.district) === districtQuery);
+    if (bestInDistrict && !essentialCandidates.includes(bestInDistrict)) essentialCandidates.push(bestInDistrict);
+  }
+  adaptiveCandidates = [
+    ...essentialCandidates,
+    ...adaptiveCandidates.filter(item => !essentialCandidates.includes(item))
+  ].slice(0, RECOMMENDATION_LIMIT);
+
   const perDistrict = new Map<string, number>();
   const picked: typeof sorted = [];
-  const overflow: typeof sorted = [];
-  for (const item of sorted) {
-    if (picked.length >= RECOMMENDATION_LIMIT) break;
+  // 沒有指定地點時，每區最多兩站，讓起始結果至少能比較三個區；有明確地點時
+  // 則允許同區三站，方便比較該行政區內的不同車站。
+  const hasExplicitResidenceSignals = Boolean(districtQueries.length || wantedStations.length || wantedLines.length);
+  const districtQuota = hasExplicitResidenceSignals ? DISTRICT_QUOTA : 2;
+  for (const item of adaptiveCandidates) {
     const used = perDistrict.get(item.district) || 0;
-    if (item.recommendationType === "指定車站" || used < DISTRICT_QUOTA) {
+    if (item.recommendationType === "指定車站" || used < districtQuota) {
       perDistrict.set(item.district, used + 1);
       picked.push(item);
-    } else {
-      overflow.push(item);
     }
-  }
-  // 配額讓結果不足九個時（例如使用者只指定了一個區），用分數次高的補回來，
-  // 寧可同區多列幾站，也不要交出比預期少的清單。
-  for (const item of overflow) {
-    if (picked.length >= RECOMMENDATION_LIMIT) break;
-    picked.push(item);
   }
 
   return picked.map(({ score: _score, ...item }) => item);
@@ -805,27 +834,57 @@ export function criteriaSummary(criteria: RentSearchCriteria): CriteriaSummaryIt
   const labels: CriteriaSummaryItem[] = [{ label: ROOM_TYPE_LABEL[criteria.roomType], category: "layout" }];
   if (criteria.areaMin) labels.push({ label: `${criteria.areaMin}㎡以上`, category: "layout" });
 
-  // 設備條件集中放在一起，確保家具家電、免費網路等同色塊項目相鄰
-  if (criteria.washbasin) labels.push({ label: "獨立洗面台", category: "equipment" });
-  if (criteria.bidet) labels.push({ label: "免治馬桶", category: "equipment" });
-  if (criteria.elevator) labels.push({ label: "電梯", category: "equipment" });
-  if (criteria.autoLock) labels.push({ label: "自動門", category: "equipment" });
-  if (criteria.balcony) labels.push({ label: "陽台", category: "equipment" });
-  if (criteria.furnished) labels.push({ label: "家具家電", category: "equipment" });
-  if (criteria.freeInternet) labels.push({ label: "免費網路", category: "equipment" });
-  if (criteria.lpGasAccepted) labels.push({ label: "可接受LP瓦斯", category: "equipment" });
-  if (criteria.cityGasRequired) labels.push({ label: "都市瓦斯指定", category: "equipment" });
+  // 摘要不逐項重複表單內容：設備再多也只佔一個標籤。
+  const equipment = [
+    criteria.washbasin && "獨立洗面台",
+    criteria.bidet && "免治馬桶",
+    criteria.elevator && "電梯",
+    criteria.autoLock && "自動門",
+    criteria.balcony && "陽台",
+    criteria.furnished && "家具家電",
+    criteria.freeInternet && "免費網路",
+    criteria.lpGasAccepted && "可接受LP瓦斯",
+    criteria.cityGasRequired && "都市瓦斯指定"
+  ].filter(Boolean) as string[];
+  if (equipment.length === 1) labels.push({ label: equipment[0], category: "equipment" });
+  if (equipment.length === 2) labels.push({ label: equipment.join("・"), category: "equipment" });
+  if (equipment.length > 2) labels.push({ label: `${equipment[0]}等 ${equipment.length} 項設備`, category: "equipment" });
+  if (criteria.structure) labels.push({ label: criteria.structure, category: "layout" });
 
-  // 交通與地點條件
-  if (criteria.walkMinutes) labels.push({ label: `步行${criteria.walkMinutes}分內`, category: "transport" });
-  if (criteria.line) labels.push({ label: criteria.line, category: "transport" });
-  if (criteria.station) labels.push({ label: `${criteria.station}站`, category: "transport" });
-  if (criteria.stations?.length) labels.push({ label: criteria.stations.map(station => `${station}站`).join("・"), category: "transport" });
-  if (criteria.commuteStation) labels.push({ label: `通勤至${criteria.commuteStation}`, category: "transport" });
+  if (criteria.noKeyMoney) labels.push({ label: "免禮金", category: "special" });
+  if (criteria.noDeposit) labels.push({ label: "免押金", category: "special" });
+
+  // 地點與交通各自最多一個標籤，複選時只顯示代表項目與數量。
+  const requestedDistricts = Array.from(new Set([...(criteria.districts || []), criteria.district].filter(Boolean) as string[]));
+  const requestedLines = Array.from(new Set([...(criteria.lines || []), criteria.line].filter(Boolean) as string[]));
+  const locationParts: string[] = [];
+  if (requestedDistricts.length === 1) locationParts.push(requestedDistricts[0]);
+  if (requestedDistricts.length > 1) locationParts.push(`${requestedDistricts[0]}等 ${requestedDistricts.length} 個地區`);
+  if (requestedLines.length === 1) locationParts.push(requestedLines[0]);
+  if (requestedLines.length > 1) locationParts.push(`${requestedLines[0]}等 ${requestedLines.length} 條線`);
+  if (locationParts.length) labels.push({ label: locationParts.join("・"), category: "transport" });
+
+  const requestedStations = Array.from(new Set([...(criteria.stations || []), criteria.station].filter(Boolean) as string[]));
+  const transportParts: string[] = [];
+  if (requestedStations.length === 1) transportParts.push(`${requestedStations[0].replace(/[駅站]$/, "")}站`);
+  if (requestedStations.length > 1) transportParts.push(`指定 ${requestedStations.length} 站`);
+  if (criteria.walkMinutes) transportParts.push(`步行 ${criteria.walkMinutes} 分內`);
+  if (criteria.commuteStation) {
+    const commuteName = criteria.commuteStation.replace(/[駅站]$/, "");
+    transportParts.push(criteria.commuteMinutes ? `${commuteName}通勤 ${criteria.commuteMinutes} 分內` : `通勤至${commuteName}`);
+  }
+  if (transportParts.length) labels.push({ label: transportParts.join("・"), category: "transport" });
 
   // 特殊與預算條件
   if (criteria.petsAllowed) labels.push({ label: criteria.petType ? `可養${criteria.petType}` : "可養寵物", category: "special" });
-  if (criteria.maxBudget) labels.push({ label: `上限 ${(criteria.maxBudget / 10000).toFixed(1)}萬円`, category: "budget" });
+  if (criteria.maxBudget) {
+    labels.push({
+      label: criteria.minBudget
+        ? `${(criteria.minBudget / 10000).toFixed(1)}～${(criteria.maxBudget / 10000).toFixed(1)}萬円`
+        : `上限 ${(criteria.maxBudget / 10000).toFixed(1)}萬円`,
+      category: "budget"
+    });
+  }
 
   return labels;
 }

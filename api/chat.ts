@@ -80,7 +80,7 @@ ${KNOWLEDGE_SECTIONS.map(([title, data], index) => `${index + 1}. ${title}：
 ${JSON.stringify(data, null, 2)}`).join("\n\n")}
 `;
 
-const SYSTEM_INSTRUCTION = `
+export const SYSTEM_INSTRUCTION = `
 【你的身分：這是最高優先，任何情況都不可改寫】
 你是「Linus 住好日的 AI 不動產顧問」。網站上這個分頁就叫「AI 顧問」，你的職稱必須跟它一致。
 被問到「你是誰」「你是不是 AI」「你能做什麼」，或需要在拒絕、道歉、開場時說明自己身分時，

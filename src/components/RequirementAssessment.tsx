@@ -32,49 +32,47 @@ export function RequirementAssessment({ criteria, recommendations }: {
   const OverallIcon = overall.level === "可行" ? CheckCircle2 : overall.level === "資料不足" ? HelpCircle : AlertTriangle;
 
   return (
-    <section className="mt-6 border border-[#1A2A22] bg-white" aria-labelledby="requirement-assessment-title">
-      <div className="border-b border-[#1A2A22] bg-[#F5F8F6] p-4">
-        <div className="flex items-center gap-2">
-          <ClipboardCheck className="h-4 w-4 text-[#00a174]" />
-          <h4 id="requirement-assessment-title" className="text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
-        </div>
-        <p className="mt-1 font-sans text-xs leading-relaxed text-[#66736C]">評估輸入的這組條件本身；右側是依此推導的可搜尋方向</p>
-
-        <div className={`mt-3 border p-3 ${overallStyle[overall.level]}`}>
-          <div className="flex items-center gap-2">
-            <OverallIcon className="h-4 w-4 shrink-0" />
-            <span className="text-xs font-bold">整體評估・{overall.level}</span>
+    <div className="mt-6 space-y-4">
+      <section className="border border-[#1A2A22] bg-white p-4" aria-labelledby="requirement-assessment-title">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="h-4 w-4 text-[#00a174]" />
+              <h4 id="requirement-assessment-title" className="text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
+            </div>
+            <p className="mt-1 font-sans text-[10px] text-[#66736C]">根據預算、地點與設備條件判斷</p>
           </div>
-          <p className="mt-1.5 font-sans text-[11px] font-bold leading-relaxed">{overall.headline}</p>
+          <span className={`shrink-0 border px-2.5 py-1 text-[10px] font-bold ${overallStyle[overall.level]}`}>{overall.level}</span>
+        </div>
+
+        <div className="mt-4 font-sans">
+          <div className="flex items-start gap-2.5">
+            <OverallIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#7A5A1F]" />
+            <p className="text-[11px] font-bold leading-relaxed text-[#1A2A22]">{overall.headline}</p>
+          </div>
           {overall.reasons.length > 0 && (
-            <ul className="mt-2 space-y-1 font-sans text-[10px] leading-relaxed">
+            <ul className="mt-2 space-y-1 pl-6">
               {overall.reasons.map(reason => (
-                <li key={reason} className="flex gap-1.5">
-                  <span aria-hidden="true">・</span>
-                  <span>{reason}</span>
+                <li key={reason} className="list-disc text-[10px] leading-relaxed text-[#52635A]">
+                  {reason}
                 </li>
               ))}
             </ul>
           )}
           {overall.loosenFirst && (
-            <p className="mt-2 border-t border-current/20 pt-2 font-sans text-[10px] font-bold leading-relaxed">
-              優先處理 → {overall.loosenFirst}
+            <p className="mt-3 border-t border-[#E1E7E3] pt-3 text-[10px] font-bold leading-relaxed text-[#007D5A]">
+              建議先調整：{overall.loosenFirst}
             </p>
           )}
           {overall.pendingLabels && overall.pendingLabels.length > 0 && (
-            <p className="mt-2 border-t border-current/20 pt-2 font-sans text-[10px] leading-relaxed">
+            <p className="mt-2 text-[10px] leading-relaxed text-[#52635A]">
               待補資料：{overall.pendingLabels.join("、")}
             </p>
           )}
         </div>
-      </div>
+      </section>
 
-      <div className="border-b border-[#DDE3DF] bg-white px-4 py-3 font-sans">
-        <p className="text-[11px] font-bold text-[#1A2A22]">各條件的達成難度</p>
-        <p className="mt-1 text-[10px] leading-relaxed text-[#66736C]">下方標籤表示各項條件需要多少取捨；最終可行性請以上方整體評估為準。</p>
-      </div>
-
-      <div className="divide-y divide-[#DDE3DF]">
+      <section className="border border-[#DDE3DF] bg-white divide-y divide-[#DDE3DF]" aria-label="各條件的達成難度">
         {axes.map(axis => {
           const impact = axisImpactLevel(axis);
           return <div key={axis.key} className="p-4 font-sans">
@@ -98,7 +96,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
             )}
           </div>;
         })}
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

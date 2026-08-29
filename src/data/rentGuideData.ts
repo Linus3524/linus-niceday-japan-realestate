@@ -37,6 +37,8 @@ export interface RentRate {
   confidence?: "high" | "medium" | "limited";
   verificationStatus?: "verified_source" | "modeled_unverified" | "researched_limited";
   sourceNote?: string;
+  sourceUrl?: string;
+  includesManagementFee?: boolean | null;
 }
 
 /**
@@ -525,7 +527,7 @@ const metroMarketRates: RentRate[] = withProvenance(METRO_PROVENANCE, [
   { region: "東京都", district: "港區", r1: "12.5", k1: "12.8", ldk1: "24.5", ldk2: "40.0" },
   { region: "東京都", district: "中央區", r1: "11.2", k1: "11.5", ldk1: "19.8", ldk2: "30.0" },
   { region: "東京都", district: "澀谷區", r1: "11.5", k1: "12.0", ldk1: "22.5", ldk2: "36.0" },
-  { region: "東京都", district: "目黑區", r1: "9.8", k1: "11.0", ldk1: "18.5", ldk2: "26.0" },
+  { region: "東京都", district: "目黑區", r1: "10.27", k1: "10.92", ldk1: "18.56", ldk2: "24.78", sourceDate: "2026-08", confidence: "high", verificationStatus: "verified_source", sourceNote: "At Home 目黑區刊登物件直近 3 個月平均", sourceUrl: "https://www.athome.co.jp/chintai/souba/tokyo/meguro-city/", includesManagementFee: null },
   { region: "東京都", district: "新宿區", r1: "9.2", k1: "10.8", ldk1: "18.0", ldk2: "28.0" },
   { region: "東京都", district: "台東區", r1: "9.0", k1: "10.5", ldk1: "16.8", ldk2: "23.0" },
   { region: "東京都", district: "江東區", r1: "8.9", k1: "9.8", ldk1: "15.0", ldk2: "21.0" },
@@ -533,7 +535,7 @@ const metroMarketRates: RentRate[] = withProvenance(METRO_PROVENANCE, [
   { region: "東京都", district: "文京區", r1: "8.9", k1: "10.2", ldk1: "17.5", ldk2: "24.0" },
   { region: "東京都", district: "墨田區", r1: "8.8", k1: "9.6", ldk1: "15.5", ldk2: "20.0" },
   { region: "東京都", district: "大田區", r1: "7.8", k1: "8.8", ldk1: "13.5", ldk2: "18.0" },
-  { region: "東京都", district: "世田谷區", r1: "8.1", k1: "9.5", ldk1: "15.8", ldk2: "21.0" },
+  { region: "東京都", district: "世田谷區", r1: "7.92", k1: "8.97", ldk1: "14.82", ldk2: "20.01", sourceDate: "2026-08", confidence: "high", verificationStatus: "verified_source", sourceNote: "At Home 世田谷區刊登物件直近 3 個月平均", sourceUrl: "https://www.athome.co.jp/chintai/souba/tokyo/setagaya-city/", includesManagementFee: null },
   { region: "東京都", district: "中野區", r1: "7.9", k1: "9.2", ldk1: "14.8", ldk2: "20.0" },
   { region: "東京都", district: "豐島區", r1: "8.2", k1: "9.6", ldk1: "15.2", ldk2: "22.0" },
   { region: "東京都", district: "北區", r1: "7.6", k1: "8.9", ldk1: "13.2", ldk2: "18.0" },
@@ -562,13 +564,13 @@ const metroMarketRates: RentRate[] = withProvenance(METRO_PROVENANCE, [
   // 神奈川
   { region: "神奈川", district: "橫濱市西區", r1: "7.5", k1: "8.5", ldk1: "14.0", ldk2: "20.0" },
   { region: "神奈川", district: "橫濱市中區", r1: "7.2", k1: "8.2", ldk1: "13.5", ldk2: "19.5" },
-  { region: "神奈川", district: "橫濱市港北區", r1: "6.8", k1: "7.6", ldk1: "12.0", ldk2: "17.5" },
+  { region: "神奈川", district: "橫濱市港北區", r1: "6.11", k1: "6.86", ldk1: "11.18", ldk2: "14.15", sourceDate: "2026-08", confidence: "high", verificationStatus: "verified_source", sourceNote: "At Home 橫濱市港北區刊登物件直近 3 個月平均", sourceUrl: "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_kohoku-city/", includesManagementFee: null },
   { region: "神奈川", district: "橫濱市神奈川區", r1: "7.0", k1: "7.8", ldk1: "12.5", ldk2: "18.0" },
   { region: "神奈川", district: "橫濱市青葉區", r1: "6.2", k1: "7.0", ldk1: "11.0", ldk2: "15.8" },
   { region: "神奈川", district: "橫濱市戶塚區", r1: "5.8", k1: "6.6", ldk1: "10.2", ldk2: "14.5" },
   { region: "神奈川", district: "橫濱市港南區", r1: "5.5", k1: "6.2", ldk1: "9.8", ldk2: "13.8" },
   { region: "神奈川", district: "川崎市川崎區", r1: "7.5", k1: "8.4", ldk1: "13.2", ldk2: "18.5" },
-  { region: "神奈川", district: "川崎市中原區", r1: "7.8", k1: "8.6", ldk1: "13.8", ldk2: "19.5" },
+  { region: "神奈川", district: "川崎市中原區", r1: "7.19", k1: "7.71", ldk1: "12.69", ldk2: "16.53", sourceDate: "2026-08", confidence: "high", verificationStatus: "verified_source", sourceNote: "At Home 川崎市中原區刊登物件直近 3 個月平均", sourceUrl: "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_nakahara-city/", includesManagementFee: null },
   { region: "神奈川", district: "川崎市高津區", r1: "7.0", k1: "7.8", ldk1: "12.2", ldk2: "17.0" },
   { region: "神奈川", district: "藤澤市", r1: "6.5", k1: "7.2", ldk1: "11.5", ldk2: "16.5" },
   { region: "神奈川", district: "鎌倉市", r1: "6.8", k1: "7.5", ldk1: "12.5", ldk2: "18.0" },
@@ -626,7 +628,7 @@ const metroMarketRates: RentRate[] = withProvenance(METRO_PROVENANCE, [
  * housingMarket.ts 的區級係數會自動跟著連動。
  */
 const nationalCityRates: RentRate[] = [
-  { region: "北海道", district: "札幌市（市平均）", r1: "4.2", k1: "4.4", ldk1: "6.4", ldk2: "9.8", areaGroup: "北海道", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 札幌市募集家賃（面積帶平均）" },
+  { region: "北海道", district: "札幌市（市平均）", r1: "4.2", k1: "4.4", ldk1: "6.4", ldk2: "9.8", areaGroup: "北海道", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 札幌市募集家賃（面積帶平均）", includesManagementFee: true },
   { region: "宮城", district: "仙台市（市平均）", r1: "5.0", k1: "5.2", ldk1: "8.1", ldk2: "10.1", areaGroup: "東北", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 仙台市募集家賃（面積帶平均）" },
   { region: "愛知", district: "名古屋市（市平均）", r1: "6.2", k1: "6.5", ldk1: "8.5", ldk2: "10.5", areaGroup: "中部", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 名古屋市募集家賃（面積帶平均）" },
   { region: "京都", district: "京都市（市平均）", r1: "5.6", k1: "5.9", ldk1: "9.1", ldk2: "12.4", areaGroup: "關西", sourceDate: "2026-03", confidence: "high", sourceNote: "At Home 京都市募集家賃（面積帶平均）" },

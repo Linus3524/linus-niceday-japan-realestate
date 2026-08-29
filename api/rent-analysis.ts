@@ -1,8 +1,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
+import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentRecommendation, RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 import { hasKnownCommuteStations, resolveSearchScope } from "../src/lib/requirementVerdict.js";
 import { lookupMarketRate } from "./market-lookup.js";
+import { SYSTEM_INSTRUCTION } from "./chat.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
@@ -69,6 +70,58 @@ function shouldRetryRentAnalysis(error: any) {
     status >= 500;
 }
 
+async function generateAdvisorAdvice(criteria: RentSearchCriteria, recommendations: RentRecommendation[]) {
+  const recommendationSummary = recommendations.slice(0, 3).map(item => ({
+    district: item.district,
+    station: item.station,
+    estimate: item.estimate,
+    budgetGap: item.budgetGap,
+    fit: item.fit,
+    commuteFit: item.commuteFit,
+    commuteTimeFit: item.commuteTimeFit,
+    commuteMinutes: item.commuteRoute?.totalDurationMinutes ?? null,
+    transfers: item.commuteRoute?.transfers ?? null,
+    cautions: item.cautions
+  }));
+  const response = await getAiClient().models.generateContent({
+    model: "gemini-3.1-flash-lite",
+    contents: [{
+      role: "user",
+      parts: [{ text: `這是租屋條件分析器已完成的結構化結果。請依照 AI 不動產顧問的既有專業規則，提供真正針對本次條件的實務意見。\n\n租屋條件：${JSON.stringify(criteria)}\n前三個搜尋方向：${JSON.stringify(recommendationSummary)}` }]
+    }],
+    config: {
+      temperature: 0.2,
+      maxOutputTokens: 500,
+      systemInstruction: `${SYSTEM_INSTRUCTION}\n\n【計算器內嵌租屋意見】\n這不是一般聊天回覆，而是顯示在試算結果下方的短評。只寫 100～180 字，不要開場、自我介紹、結尾祝福、表情符號、LINE 或聯絡邀請。不得重複月租總額、基準租金、加價明細或推薦車站清單，因為畫面上方已經顯示。請只整理三個有差異化的重點：「整體判斷」、「優先保留」、「可先放寬」。每項一行，以「- 」開頭；如果資料不足，直接指出最影響判斷的缺漏，不要推測。不得聲稱有即時空房。`
+    }
+  });
+  return response.text?.trim() || null;
+}
+
+/**
+ * 判斷 AI 有沒有從這段文字擷取到任何實質的租屋條件。
+ *
+ * roomType 不能拿來判斷——schema 規定它一定要有值，沒提到就填 k1，
+ * 所以連「今天天氣真好」都會有房型。真正代表「這是一則租屋需求」的，
+ * 是預算、地點、通勤、面積這些使用者主動說出來的東西。
+ *
+ * 全部落空時硬給推薦沒有意義：使用者會拿到一組與他無關的車站清單，
+ * 卻不知道系統其實沒看懂他在說什麼。
+ */
+function hasMeaningfulCriteria(criteria: RentSearchCriteria): boolean {
+  const values: unknown[] = [
+    criteria.maxBudget, criteria.minBudget, criteria.initialCostBudget,
+    criteria.district, criteria.station, criteria.line, criteria.commuteStation,
+    criteria.locationPreference, criteria.nearbyAmenity,
+    criteria.areaMin, criteria.buildingAgeMax, criteria.walkMinutes,
+    criteria.commuteMinutes, criteria.floorMin, criteria.visaType,
+    criteria.moveInTiming, criteria.householdSize, criteria.currentResidence,
+  ];
+  if (values.some(value => value !== null && value !== undefined && value !== "")) return true;
+  const lists = [criteria.districts, criteria.stations, criteria.lines, criteria.commuteStations, criteria.otherNeeds];
+  return lists.some(list => Array.isArray(list) && list.length > 0);
+}
+
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
@@ -79,7 +132,16 @@ export default async function handler(req: any, res: any) {
 
   try {
     const prompt = typeof req.body?.prompt === "string" ? req.body.prompt.trim() : "";
-    if (!prompt || prompt.length > MAX_PROMPT_CHARS) {
+    const submittedCriteria = req.body?.criteria && typeof req.body.criteria === "object"
+      ? req.body.criteria as RentSearchCriteria
+      : null;
+    const hasValidStructuredCriteria = Boolean(
+      submittedCriteria &&
+      ["r1", "k1", "ldk1", "ldk2"].includes(submittedCriteria.roomType) &&
+      Number.isFinite(Number(submittedCriteria.maxBudget)) &&
+      Number(submittedCriteria.maxBudget) > 0
+    );
+    if (!hasValidStructuredCriteria && (!prompt || prompt.length > MAX_PROMPT_CHARS)) {
       return res.status(400).json({ error: "請輸入 1～1000 字的租屋需求。" });
     }
     const ip = String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim();
@@ -90,7 +152,16 @@ export default async function handler(req: any, res: any) {
       res.setHeader("Retry-After", String(limit.retryAfter));
       return res.status(429).json({ error: "AI 分析每 3 分鐘最多使用 3 次，請稍候再試。", retryAfter: limit.retryAfter });
     }
-    const generateCriteria = async () => {
+    let criteria: RentSearchCriteria;
+    if (hasValidStructuredCriteria && submittedCriteria) {
+      criteria = {
+        ...submittedCriteria,
+        maxBudget: Number(submittedCriteria.maxBudget),
+        initialCostBudget: submittedCriteria.initialCostBudget ? Number(submittedCriteria.initialCostBudget) : null,
+        commuteMinutes: submittedCriteria.commuteMinutes ? Number(submittedCriteria.commuteMinutes) : null
+      };
+    } else {
+      const generateCriteria = async () => {
       const response = await getAiClient().models.generateContent({
         model: "gemini-3.1-flash-lite",
         contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -110,6 +181,7 @@ export default async function handler(req: any, res: any) {
             station: { type: Type.STRING, nullable: true, description: "移除站或駅字尾的車站名稱。" },
             stations: { type: Type.ARRAY, items: { type: Type.STRING } },
             line: { type: Type.STRING, nullable: true },
+            lines: { type: Type.ARRAY, items: { type: Type.STRING } },
             walkMinutes: { type: Type.NUMBER, nullable: true },
             commuteStation: { type: Type.STRING, nullable: true },
             commuteStations: { type: Type.ARRAY, items: { type: Type.STRING } },
@@ -128,6 +200,8 @@ export default async function handler(req: any, res: any) {
             balcony: { type: Type.BOOLEAN, nullable: true },
             gasBurnersMin: { type: Type.NUMBER, nullable: true },
             freeInternet: { type: Type.BOOLEAN, nullable: true },
+            noKeyMoney: { type: Type.BOOLEAN, nullable: true, description: "使用者明確要求禮金 0／免禮金。" },
+            noDeposit: { type: Type.BOOLEAN, nullable: true, description: "使用者明確要求敷金或押金 0。" },
             lpGasAccepted: { type: Type.BOOLEAN, nullable: true },
             cityGasRequired: { type: Type.BOOLEAN, nullable: true },
             petsAllowed: { type: Type.BOOLEAN, nullable: true },
@@ -162,7 +236,7 @@ export default async function handler(req: any, res: any) {
               }
             }
           },
-          required: ["roomType", "areaMin", "maxBudget", "minBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "commuteMaxStations", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "separateBath", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
+          required: ["roomType", "areaMin", "maxBudget", "minBudget", "budgetIncludesFees", "district", "districts", "station", "stations", "line", "lines", "walkMinutes", "commuteStation", "commuteStations", "commuteMinutes", "commutePreferredMinutes", "commuteMaxStations", "locationPreference", "nearbyAmenity", "amenityWalkMinutes", "buildingAgeMax", "visaType", "visaYears", "structure", "autoLock", "floorMin", "balcony", "gasBurnersMin", "freeInternet", "noKeyMoney", "noDeposit", "lpGasAccepted", "cityGasRequired", "petsAllowed", "petType", "separateBath", "washbasin", "bidet", "elevator", "furnished", "tower", "moveInTiming", "householdSize", "currentResidence", "employmentStartTiming", "initialCostBudget", "otherNeeds", "otherNeedNotes"]
         },
         systemInstruction: `你是日本租屋需求理解器。使用者會用自由、模糊、跳號或口語的方式描述需求（例如「2.未定」「5.不知道」「可能需要含家具？」），請保留原意並合理結構化。
 
@@ -172,7 +246,7 @@ export default async function handler(req: any, res: any) {
 - 「不知道」「未定」「還沒想好」「再看看」代表未指定，對應欄位回傳 null，不要轉成任何條件。
 - 帶問號或「可能」「也許」的條件仍要萃取，但那是不確定的偏好，不是硬性條件。
 
-未指定格局時以 k1 作為搜尋基準。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；同時有理想與最長通勤時間時，理想值放 commutePreferredMinutes，最長值放 commuteMinutes；提到「幾站以內」「五六站就能到」時把站數放 commuteMaxStations（有範圍取寬鬆值），這與通勤時間是不同條件，不要互相換算；無法化成單一車站但仍有意義的描述保留在 locationPreference。
+未指定格局時以 k1 作為搜尋基準。多個希望地區全部放入 districts、主要摘要放入 district；多個希望車站全部放入 stations、主要摘要放入 station；多個希望路線全部放入 lines、主要摘要放入 line。多個通勤目的地全部放入 commuteStations，主要摘要放入 commuteStation；同時有理想與最長通勤時間時，理想值放 commutePreferredMinutes，最長值放 commuteMinutes；提到「幾站以內」「五六站就能到」時把站數放 commuteMaxStations（有範圍取寬鬆值），這與通勤時間是不同條件，不要互相換算；無法化成單一車站但仍有意義的描述保留在 locationPreference。
 
 入住時間、目前居住地、入社時間、同住人數與初期費用上限要分別放入 moveInTiming、currentResidence、employmentStartTiming、householdSize、initialCostBudget；「獨居」等於 householdSize 1。
 
@@ -210,17 +284,25 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
       if (!responseText) throw new Error("Gemini returned an empty rent-analysis response.");
       return JSON.parse(responseText) as RentSearchCriteria;
     };
-    let parsedCriteria: RentSearchCriteria;
-    try {
-      parsedCriteria = await generateCriteria();
-    } catch (firstError) {
-      if (!shouldRetryRentAnalysis(firstError)) throw firstError;
-      console.warn("Gemini rent analysis first attempt failed; retrying once:", firstError);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      parsedCriteria = await generateCriteria();
-    }
+      let parsedCriteria: RentSearchCriteria;
+      try {
+        parsedCriteria = await generateCriteria();
+      } catch (firstError) {
+        if (!shouldRetryRentAnalysis(firstError)) throw firstError;
+        console.warn("Gemini rent analysis first attempt failed; retrying once:", firstError);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        parsedCriteria = await generateCriteria();
+      }
 
-    const criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
+      criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);
+
+      // 只在文字擷取這條路徑檢查：結構化 criteria 進來時預算已經驗過了。
+      if (!hasMeaningfulCriteria(criteria)) {
+        return res.status(400).json({
+          error: "看不太懂這段需求。請描述你的預算、想住的地區或車站，例如「預算 10 萬円，想住新宿區的 1K」。"
+        });
+      }
+    }
 
     // 只有站內資料涵蓋不到時才外部查詢：resolveSearchScope 回傳空集合就代表
     // 使用者指定的地區不在 rentRates 裡（例如名古屋、福岡）。已經有基準值的地區
@@ -234,6 +316,7 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
           ...(criteria.districts || []),
           criteria.station,
           ...(criteria.stations || []),
+          ...(criteria.lines || []),
           criteria.line,
           criteria.locationPreference
         ].find(value => typeof value === "string" && value.trim().length >= 2) || null);
@@ -245,9 +328,17 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
       requestedArea ? lookupMarketRate(requestedArea, criteria.roomType) : Promise.resolve(null)
     ]);
 
+    let advisorAdvice: string | null = null;
+    try {
+      advisorAdvice = await generateAdvisorAdvice(criteria, recommendations);
+    } catch (error) {
+      // 顧問短評是加值內容，失敗時仍保留可行性與車站推薦，不以固定文案冒充 AI 回覆。
+      console.error("Rent advisor advice generation error:", error);
+    }
+
     await recordUsage("rent-analysis", requestCountry(req));
 
-    return res.status(200).json({ criteria, recommendations, marketReference, model: "gemini-3.1-flash-lite" });
+    return res.status(200).json({ criteria, recommendations, marketReference, advisorAdvice, model: hasValidStructuredCriteria ? "structured-form" : "gemini-3.1-flash-lite" });
   } catch (error: any) {
     console.error("Gemini rent analysis error:", error);
     const missingKey = String(error?.message || "").includes("GEMINI_API_KEY");

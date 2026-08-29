@@ -11,6 +11,7 @@ import {
 } from "./data/buyHouseData";
 import { getBudgetModifier, type BudgetModifierId } from "./data/rentGuideData";
 import type { BuyModifierId } from "./data/buyHouseData";
+import { districtStations } from "./data/housingMarket";
 import { hasTowerMansionSupport } from "./lib/calcRules";
 import { RentGuideTab } from "./components/RentGuideTab";
 import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
@@ -312,7 +313,12 @@ export default function App() {
   const [calcStation, setCalcStation] = useState<string>("none");
 
   useEffect(() => {
-    setCalcStation("none");
+    setCalcStation(currentStation => {
+      if (currentStation === "none") return currentStation;
+      const belongsToSelectedDistrict = (districtStations[calcDistrict] || [])
+        .some(station => station.name === currentStation);
+      return belongsToSelectedDistrict ? currentStation : "none";
+    });
     if (!hasTowerMansionSupport(calcDistrict)) {
       setCalcModifiers(prev => prev.filter(id => id !== "tower"));
       setCalcBuyModifiers(prev => prev.filter(id => id !== "tower"));
