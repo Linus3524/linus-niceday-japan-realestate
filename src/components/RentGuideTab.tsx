@@ -27,13 +27,25 @@ const availabilityStyle = {
   "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
 };
 
+function renderDocumentLabel(document: string) {
+  const match = document.match(/^(.*?)\*(\d+)$/);
+  if (!match) return document;
+  const [, text, noteNum] = match;
+  return (
+    <>
+      {text}
+      <sup className="ml-0.5 text-[10px] font-bold text-[#007d5a]">※{noteNum}</sup>
+    </>
+  );
+}
+
 function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
   const [screeningMode, setScreeningMode] = useState<"overseas" | "domestic">("overseas");
   useEffect(() => {
     if (!hasMinimumKnowledgeSearchLength(searchQuery)) return;
     const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-    const overseasText = overseasScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents]).join(" ").toLocaleLowerCase();
-    const domesticText = [domesticScreeningNotice, ...domesticScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents])].join(" ").toLocaleLowerCase();
+    const overseasText = overseasScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])]).join(" ").toLocaleLowerCase();
+    const domesticText = [domesticScreeningNotice, ...domesticScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])])].join(" ").toLocaleLowerCase();
     if (domesticText.includes(normalizedQuery) && !overseasText.includes(normalizedQuery)) {
       setScreeningMode("domestic");
     } else if (overseasText.includes(normalizedQuery)) {
@@ -58,9 +70,26 @@ function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
               <span className={`shrink-0 border px-2.5 py-1 text-[11px] font-bold ${availabilityStyle[profile.availability]}`}>房源量：{profile.availability}</span>
             </div>
             <p className="mt-4 text-xs font-bold tracking-wider text-[#66736C]">申請時建議先準備</p>
-            <ul className="mt-3 space-y-2.5">
-              {profile.documents.map(document => <li key={document} className="flex gap-3 text-sm leading-6 text-[#3F5147]"><span className="mt-0.5 font-bold text-[#00a174]">✓</span><span>{document}</span></li>)}
+            <ul className="mt-3 space-y-2.5 flex-1">
+              {profile.documents.map(document => {
+                const isOptional = document.includes("非必備");
+                return (
+                  <li key={document} className="flex items-start gap-2.5 text-sm leading-6 text-[#3F5147]">
+                    <span className={`mt-0.5 inline-flex h-5 w-4 shrink-0 items-center justify-center font-bold ${isOptional ? "text-[#b87333]" : "text-[#00a174]"}`}>
+                      {isOptional ? "＋" : "✓"}
+                    </span>
+                    <span className="flex-1">{renderDocumentLabel(document)}</span>
+                  </li>
+                );
+              })}
             </ul>
+            {profile.notes && profile.notes.length > 0 && (
+              <div className="mt-4 space-y-1.5 border-t border-dashed border-[#DDE3DF] pt-3 text-xs leading-5 text-[#66736C]">
+                {profile.notes.map((noteItem, idx) => (
+                  <p key={idx}>{noteItem}</p>
+                ))}
+              </div>
+            )}
           </article>
         ))}
       </div>

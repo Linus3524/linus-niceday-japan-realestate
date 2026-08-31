@@ -8,29 +8,112 @@ export interface ScreeningDocumentProfile {
   profile: string;
   documents: string[];
   availability: "多" | "一般" | "最少" | "不一定";
+  notes?: string[];
 }
 
 export const overseasScreeningDocuments: ScreeningDocumentProfile[] = [
-  { profile: "工作簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "僱傭契約書"], availability: "一般" },
-  { profile: "留學簽證", documents: ["護照照片頁", "在留資格認定書（COE）", "入學通知書"], availability: "一般" },
-  { profile: "打工度假簽證", documents: ["護照照片頁", "日本簽證貼紙", "銀行財力或餘額證明"], availability: "最少" }
+  {
+    profile: "工作簽證",
+    documents: ["護照照片頁", "在留資格認定書（COE）", "僱傭條件通知書或內定書*1"],
+    availability: "一般",
+    notes: [
+      "※1 僱傭條件通知書或內定書：需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "留學簽證",
+    documents: ["護照照片頁", "在留資格認定書（COE）", "入學通知書", "銀行財力或餘額證明*1"],
+    availability: "一般",
+    notes: [
+      "※1 銀行財力或餘額證明：建議餘額約需租金 15 個月份以上，可提供留學生本人或是雙親的證明。可接受形式包含：網銀截圖＋存摺封面副本、銀行正式申請的餘額證明、活期帳戶月結單。"
+    ]
+  },
+  {
+    profile: "打工度假簽證",
+    documents: ["護照照片頁", "日本簽證貼紙", "銀行財力或餘額證明*1", "僱傭條件通知書或內定書（非必備）*2"],
+    availability: "最少",
+    notes: [
+      "※1 銀行財力或餘額證明：建議餘額約需租金 15 個月份以上，需契約本人的證明，可接受形式包含：網銀截圖＋存摺封面副本、銀行正式申請的餘額證明、活期帳戶月結單。",
+      "※2 僱傭條件通知書或內定書：若已有工作可附上，需載明薪資待遇且蓋有公司社章。"
+    ]
+  }
 ];
 
 export const domesticScreeningDocuments: ScreeningDocumentProfile[] = [
-  { profile: "尚未入職", documents: ["護照照片頁", "在留卡正反面", "僱傭契約書"], availability: "多" },
-  { profile: "入職未滿三個月", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "已有的薪資明細", "僱傭條件通知書"], availability: "多" },
-  { profile: "入職三個月以上", documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "現有公司源泉票", "三個月薪資明細", "僱傭條件通知書"], availability: "多" },
-  { profile: "轉職中", documents: ["在留卡正反面", "護照照片頁", "新公司內定通知書", "新公司僱傭條件通知書", "舊公司三個月薪資明細（視個案）"], availability: "多" },
-  { profile: "留學簽證", documents: ["護照照片頁", "在留卡正反面", "學生證", "銀行財力或餘額證明"], availability: "一般" },
-  { profile: "打工度假簽證", documents: ["護照照片頁", "在留卡正反面", "銀行財力或餘額證明"], availability: "最少" },
-  { profile: "法人契約（社員入住）", documents: ["公司登記簿謄本", "公司決算書影本", "公司印鑑證明書", "代表者印鑑證明書", "入住者在留卡與護照", "社員證或在職證明", "公司簡介或業務資料"], availability: "不一定" }
+  {
+    profile: "尚未入職",
+    documents: ["護照照片頁", "在留卡正反面", "僱傭條件通知書或內定書*1"],
+    availability: "多",
+    notes: [
+      "※1 僱傭條件通知書或內定書：需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "入職未滿三個月",
+    documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "已有的薪資明細", "僱傭條件通知書或契約書*1"],
+    availability: "多",
+    notes: [
+      "※1 僱傭條件通知書或契約書：需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "入職三個月以上",
+    documents: ["在留卡正反面", "護照照片頁", "日本保險證正反面", "現有公司源泉票", "三個月薪資明細", "僱傭條件通知書或契約書*1"],
+    availability: "多",
+    notes: [
+      "※1 僱傭條件通知書或契約書：需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "轉職中",
+    documents: ["在留卡正反面", "護照照片頁", "新公司僱傭條件通知書或內定書*1", "舊公司三個月薪資明細（視個案）"],
+    availability: "多",
+    notes: [
+      "※1 僱傭條件通知書或內定書：需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "留學簽證",
+    documents: ["護照照片頁", "在留卡正反面", "學生證", "銀行財力或餘額證明*1", "家人海外送金證明"],
+    availability: "一般",
+    notes: [
+      "※1 銀行財力或餘額證明：建議餘額約需租金 15 個月份以上，可提供留學生本人或是雙親的證明。可接受形式包含：網銀截圖＋存摺封面副本、銀行正式申請的餘額證明、活期帳戶月結單。"
+    ]
+  },
+  {
+    profile: "打工度假簽證",
+    documents: ["護照照片頁", "在留卡正反面", "銀行財力或餘額證明*1", "僱傭條件通知書或內定書（非必備）*2"],
+    availability: "最少",
+    notes: [
+      "※1 銀行財力或餘額證明：建議餘額約需租金 15 個月份以上，需契約本人的證明，可接受形式包含：網銀截圖＋存摺封面副本、銀行正式申請的餘額證明、活期帳戶月結單。",
+      "※2 僱傭條件通知書或內定書：若已有工作可附上，需載明薪資待遇且蓋有公司社章。"
+    ]
+  },
+  {
+    profile: "法人契約（社員入住）",
+    documents: [
+      "公司登記簿謄本（履歴事項全部証明書）*1",
+      "公司決算書影本*2",
+      "公司印鑑證明書",
+      "代表者印鑑證明書（非必備）*3",
+      "入住者在留卡與護照",
+      "社員證或在職證明書",
+      "公司簡介或官網資料"
+    ],
+    availability: "不一定",
+    notes: [
+      "※1 公司登記簿謄本：通常需為發行日起 3 個月內之證明。",
+      "※2 公司決算書：新設立法人若尚無決算書，可改提供事業計畫書或公司帳戶存款餘額證明。",
+      "※3 代表者印鑑證明書：非必備項目，通常僅在代表者需擔任連帶保證人或管理公司要求個人保證時才需提供。"
+    ]
+  }
 ];
 
 export const domesticScreeningNotice =
-  "境內申請前通常還需準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。";
+  "境內申請前必須準備：已登錄地址的在留卡、日本保險證、本人日本電話、姓名一致的印章、母國及在日緊急聯絡人資料，以及不記載個人編號的住民票。";
 
 export const screeningDocumentDisclaimer =
-  "以上為 Linus 整理的申請對照表；不同管理公司會依您的簽證與工作條件微調文件清單，送件前均會為您核對最新需求。";
+  "以上為 Linus 整理的申請對照表；不同管理公司與保證公司會依您的簽證與工作條件微調文件清單，審查過程中亦可能視情況要求追加或補交資料，送件前均會為您核對最新需求。";
 
 export const overseasSop = {
   badge: "海外審査",
@@ -106,7 +189,12 @@ export const processReminders = [
 ];
 
 function joinProfiles(profiles: ScreeningDocumentProfile[]) {
-  return profiles.flatMap(profile => [profile.profile, profile.availability, ...profile.documents]);
+  return profiles.flatMap(profile => [
+    profile.profile,
+    profile.availability,
+    ...profile.documents,
+    ...(profile.notes ?? [])
+  ]);
 }
 
 const staticSearchSections: Array<{ id: RentStaticSectionId; text: string }> = [
