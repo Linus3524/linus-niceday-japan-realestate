@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { buildRentRecommendations, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
-import { districtStations } from "../src/data/housingMarket";
+import { buildRentRecommendations, computeStackedEstimate, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { districtStations, rentRates } from "../src/data/housingMarket";
 import {
   axisImpactLevel,
   buildAxisVerdicts,
@@ -105,6 +105,35 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       const output = JSON.stringify(result);
       assert.match(output, /1K/);
       assert.doesNotMatch(output, /undefined|NaN/);
+    }
+  },
+  {
+    name: "3LDK、4K、4DK 都會解析為 3LDK+ 群組",
+    run: () => {
+      for (const layout of ["3LDK", "4K", "4DK"]) {
+        const criteria = enrichRentCriteriaFromPrompt(base, `希望格局：${layout}`);
+        assert.equal(criteria.roomType, "ldk3", `${layout} 應對應到 ldk3`);
+      }
+    }
+  },
+  {
+    name: "3LDK+ 評估會使用更新後的行政區行情",
+    run: () => {
+      const rate = rentRates.find(row => row.district === "新宿區");
+      assert.ok(rate?.ldk3, "新宿區必須有 3LDK+ 行情");
+      const expected = Math.round(parseFloat(rate.ldk3) * 10) * 1000;
+      assert.equal(computeStackedEstimate(rate, null, [], "ldk3"), expected);
+
+      const recommendations = buildRentRecommendations({
+        ...base,
+        roomType: "ldk3",
+        district: "新宿區",
+        commuteStation: null,
+        maxBudget: 400_000
+      });
+      const shinjuku = recommendations.find(item => item.district === "新宿區");
+      assert.ok(shinjuku, "3LDK+ 推薦結果必須保留指定的新宿區");
+      assert.ok(Number.isFinite(shinjuku.estimate) && shinjuku.estimate > 0);
     }
   },
   {
