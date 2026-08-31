@@ -80,6 +80,9 @@ const guidedChoiceClass = (selected: boolean) =>
       : "border-[#D4DDD8] bg-white text-zinc-600 hover:border-[#7DBEAA] hover:bg-[#F3FAF7] hover:text-[#007D5A]"
   }`;
 
+const guidedSelectChevronClass =
+  "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-600 peer-disabled:text-zinc-400";
+
 const districtAreaGroup = (district: string) =>
   rentRates.find(rate => rate.district === district)?.areaGroup || null;
 
@@ -1059,15 +1062,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 setRentMonthlyBudgetMin(nextMinimum);
                                 if (nextMinimum > rentMonthlyBudget) setRentMonthlyBudget(nextMinimum);
                               }}
-                              className="h-full min-w-0 flex-1 appearance-none bg-transparent px-3 pr-14 font-mono text-base font-bold outline-none"
+                              className="peer h-full min-w-0 flex-1 appearance-none bg-transparent px-3 pr-16 font-mono text-base font-bold outline-none"
                             >
                               <option value={0}>不限</option>
                               {RENT_BUDGET_OPTIONS.map(value => (
                                 <option key={`minimum-${value}`} value={value}>{value / 10000}</option>
                               ))}
                             </select>
-                            <span className="pointer-events-none absolute right-7 text-xs font-bold text-zinc-500">萬円</span>
-                            <ChevronDown className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-zinc-500" />
+                            <span className="pointer-events-none absolute right-10 text-xs font-bold text-zinc-500">萬円</span>
+                            <ChevronDown className={guidedSelectChevronClass} />
                           </div>
                           <span aria-hidden="true" className="font-mono text-base font-bold text-[#66736C]">～</span>
                           <div className="relative flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
@@ -1079,14 +1082,14 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 setRentMonthlyBudget(nextMaximum);
                                 if (rentMonthlyBudgetMin > nextMaximum) setRentMonthlyBudgetMin(nextMaximum);
                               }}
-                              className="h-full min-w-0 flex-1 appearance-none bg-transparent px-3 pr-14 font-mono text-base font-bold outline-none"
+                              className="peer h-full min-w-0 flex-1 appearance-none bg-transparent px-3 pr-16 font-mono text-base font-bold outline-none"
                             >
                               {RENT_BUDGET_OPTIONS.map(value => (
                                 <option key={`maximum-${value}`} value={value}>{value / 10000}</option>
                               ))}
                             </select>
-                            <span className="pointer-events-none absolute right-7 text-xs font-bold text-zinc-500">萬円</span>
-                            <ChevronDown className="pointer-events-none absolute right-2 h-3.5 w-3.5 text-zinc-500" />
+                            <span className="pointer-events-none absolute right-10 text-xs font-bold text-zinc-500">萬円</span>
+                            <ChevronDown className={guidedSelectChevronClass} />
                           </div>
                         </div>
                       </fieldset>
@@ -1101,7 +1104,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             id="guided-district-add"
                             value=""
                             onChange={event => addGuidedDistrict(event.target.value)}
-                            className="h-12 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#00a174]"
+                            className="peer h-12 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#00a174]"
                           >
                             <option value="">＋ 新增希望地區</option>
                             {Array.from(new Set(rentRates.map(rate => rate.region))).map(region => (
@@ -1114,7 +1117,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               </optgroup>
                             ))}
                           </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2" />
+                          <ChevronDown className={guidedSelectChevronClass} />
                         </div>
                         {guidedDistrictSelections.length > 0 && (
                           <div className="flex flex-wrap gap-1.5" aria-label="已選希望地區">
@@ -1142,12 +1145,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               value=""
                               onChange={event => addGuidedLine(event.target.value)}
                               disabled={!guidedDistrictSelections.length}
-                              className="h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-9 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
+                              className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
                             >
                               <option value="">＋ 新增希望線路</option>
                               {guidedLineOptions.map(line => <option key={line} value={line} disabled={guidedLineSelections.some(selected => sameGuidedLine(selected, line))}>{toJapaneseLineName(line)}</option>)}
                             </select>
-                            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+                            <ChevronDown className={guidedSelectChevronClass} />
                           </div>
                           {guidedLineSelections.length > 0 && (
                             <div className="flex flex-wrap gap-1.5" aria-label="已選希望線路">
@@ -1236,20 +1239,23 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         </label>
                         <label className="block text-[11px] font-bold text-zinc-700">
                           最長通勤時間
-                          <select
-                            value={guidedCommuteMinutes}
-                            onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
-                            disabled={!guidedCommuteStation}
-                            className="mt-1.5 h-11 w-full border border-[#1A2A22] bg-white px-2 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
-                          >
-                            <option value={15}>15 分內</option>
-                            <option value={20}>20 分內</option>
-                            <option value={30}>30 分內</option>
-                            <option value={45}>45 分內</option>
-                            <option value={60}>60 分內</option>
-                            <option value={75}>75 分內</option>
-                            <option value={90}>90 分內</option>
-                          </select>
+                          <div className="relative mt-1.5">
+                            <select
+                              value={guidedCommuteMinutes}
+                              onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
+                              disabled={!guidedCommuteStation}
+                              className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
+                            >
+                              <option value={15}>15 分內</option>
+                              <option value={20}>20 分內</option>
+                              <option value={30}>30 分內</option>
+                              <option value={45}>45 分內</option>
+                              <option value={60}>60 分內</option>
+                              <option value={75}>75 分內</option>
+                              <option value={90}>90 分內</option>
+                            </select>
+                            <ChevronDown className={guidedSelectChevronClass} />
+                          </div>
                         </label>
                       </div>
 
@@ -1272,47 +1278,59 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <label className="text-[11px] font-bold text-zinc-700">
                           最低面積
-                          <select value={guidedMinArea} onChange={event => selectGuidedArea(Number(event.target.value))} className="mt-1.5 h-10 w-full border border-[#1A2A22] bg-white px-2 text-xs">
-                            <option value={0}>不限</option>
-                            {areaOptions.map(area => <option key={area} value={area}>{area}㎡以上</option>)}
-                          </select>
+                          <div className="relative mt-1.5">
+                            <select value={guidedMinArea} onChange={event => selectGuidedArea(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+                              <option value={0}>不限</option>
+                              {areaOptions.map(area => <option key={area} value={area}>{area}㎡以上</option>)}
+                            </select>
+                            <ChevronDown className={guidedSelectChevronClass} />
+                          </div>
                         </label>
                         <label className="text-[11px] font-bold text-zinc-700">
                           徒步到車站
-                          <select value={guidedWalkMinutes} onChange={event => selectGuidedWalk(Number(event.target.value))} className="mt-1.5 h-10 w-full border border-[#1A2A22] bg-white px-2 text-xs">
-                            <option value={0}>6～10 分／不限</option>
-                            <option value={5}>5 分內</option>
-                            <option value={15}>11～15 分</option>
-                            <option value={20}>16～20 分</option>
-                          </select>
+                          <div className="relative mt-1.5">
+                            <select value={guidedWalkMinutes} onChange={event => selectGuidedWalk(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+                              <option value={0}>6～10 分／不限</option>
+                              <option value={5}>5 分內</option>
+                              <option value={15}>11～15 分</option>
+                              <option value={20}>16～20 分</option>
+                            </select>
+                            <ChevronDown className={guidedSelectChevronClass} />
+                          </div>
                         </label>
                         <label className="text-[11px] font-bold text-zinc-700">
                           屋齡上限
-                          <select value={guidedAgeMax} onChange={event => selectGuidedAge(Number(event.target.value))} className="mt-1.5 h-10 w-full border border-[#1A2A22] bg-white px-2 text-xs">
-                            <option value={0}>不限</option>
-                            <option value={3}>3 年內</option>
-                            <option value={5}>5 年內</option>
-                            <option value={7}>7 年內</option>
-                            <option value={10}>10 年內</option>
-                            <option value={15}>15 年內</option>
-                            <option value={20}>20 年內</option>
-                            <option value={25}>25 年內</option>
-                            <option value={30}>30 年內</option>
-                            <option value={40}>40 年內</option>
-                            <option value={50}>50 年內</option>
-                          </select>
+                          <div className="relative mt-1.5">
+                            <select value={guidedAgeMax} onChange={event => selectGuidedAge(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+                              <option value={0}>不限</option>
+                              <option value={3}>3 年內</option>
+                              <option value={5}>5 年內</option>
+                              <option value={7}>7 年內</option>
+                              <option value={10}>10 年內</option>
+                              <option value={15}>15 年內</option>
+                              <option value={20}>20 年內</option>
+                              <option value={25}>25 年內</option>
+                              <option value={30}>30 年內</option>
+                              <option value={40}>40 年內</option>
+                              <option value={50}>50 年內</option>
+                            </select>
+                            <ChevronDown className={guidedSelectChevronClass} />
+                          </div>
                         </label>
                       </div>
 
                       <label className="block text-[11px] font-bold text-zinc-700">
                         建築結構
-                        <select value={guidedStructure} onChange={event => selectGuidedStructure(event.target.value)} className="mt-1.5 h-10 w-full border border-[#1A2A22] bg-white px-2 text-xs">
-                          <option value="">不限結構</option>
-                          <option value="木造">木造</option>
-                          <option value="鐵骨造">鐵骨造（S 造）</option>
-                          <option value="RC造">鋼筋混凝土（RC 造）</option>
-                          <option value="SRC造">鋼骨鋼筋混凝土（SRC 造）</option>
-                        </select>
+                        <div className="relative mt-1.5">
+                          <select value={guidedStructure} onChange={event => selectGuidedStructure(event.target.value)} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+                            <option value="">不限結構</option>
+                            <option value="木造">木造</option>
+                            <option value="鐵骨造">鐵骨造（S 造）</option>
+                            <option value="RC造">鋼筋混凝土（RC 造）</option>
+                            <option value="SRC造">鋼骨鋼筋混凝土（SRC 造）</option>
+                          </select>
+                          <ChevronDown className={guidedSelectChevronClass} />
+                        </div>
                       </label>
 
                       <fieldset className="border-t border-dashed border-[#C9D2CD] pt-4">
@@ -1418,7 +1436,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <Sparkles className="h-4 w-4" /> AI Market Reality Check
                           </div>
                           <h3 className="mb-3 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
-                            說出理想生活，找到真正住得起的選擇
+                            說出理想生活，找到真住得起的選擇
                           </h3>
                           <div className="mb-5 space-y-3 text-sm leading-relaxed text-[#3F5147] font-sans">
                             <p>告訴我們您的預算、通勤地點與理想條件，我們會整理適合的地區與車站，並估算合理的租金範圍。</p>
@@ -1888,7 +1906,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="text-[10px] text-green-700 mt-0.5 font-mono">− {Math.abs(getModifierPrice(mod.price, mod.id)).toLocaleString()} 円 / 月</div>
+                                    <div className="mt-0.5 font-mono text-[10px] text-[#B13818]">− {Math.abs(getModifierPrice(mod.price, mod.id)).toLocaleString()} 円 / 月</div>
                                     {mod.id === "lp_gas" && (
                                       <div className="mt-1 text-[9px] leading-relaxed text-[#B13818]">租金折讓情境估算；LP 瓦斯使用費可能較高，總居住成本不一定下降。</div>
                                     )}
@@ -2014,7 +2032,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       {isDisabled && <span className="text-[9px] bg-zinc-200 text-zinc-500 font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">衝突鎖定</span>}
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
-                                    <div className="text-[10px] text-green-700 font-bold mt-1 font-mono">
+                                    <div className="mt-1 font-mono text-[10px] font-bold text-[#B13818]">
                                       {Math.abs(dynamicMult * 100).toFixed(0)}% 估值折價
                                     </div>
                                   </div>
@@ -2066,7 +2084,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           </div>
 
                           {calcStation !== "none" && (
-                            <div className="flex justify-between items-baseline font-sans border-t border-dashed border-zinc-100 pt-3">
+                            <div className="flex justify-between items-baseline border-t border-[#E1E6E3] pt-3 font-sans">
                               <span className="text-zinc-500">周邊站點溢折價 (<span lang="ja" className="font-jp">{stationDisplayName}駅</span>)：</span>
                               {(() => {
                                 const currentStation = (districtStations[calcDistrict] || []).find(s => s.name === calcStation);
@@ -2078,7 +2096,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 
                                 const adjustedPrice = getModifierPrice(price);
                                 return (
-                                  <span className={`font-bold font-mono ${adjustedPrice >= 0 ? "text-[#00a174]" : "text-green-700"}`}>
+                                  <span className={`font-bold font-mono ${adjustedPrice >= 0 ? "text-[#00a174]" : "text-[#B13818]"}`}>
                                     {adjustedPrice >= 0 ? "+" : ""}
                                     {adjustedPrice.toLocaleString()} 円
                                   </span>
@@ -2093,30 +2111,33 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               0
                             );
                             return (
-                            <div className="space-y-1.5 border-t border-dashed border-zinc-100 pt-3">
+                            <div className="space-y-2 border-t border-[#E1E6E3] pt-3">
                               <div className="flex justify-between items-baseline font-sans">
                                 <span className="text-zinc-500">條件調整小計：</span>
                                 <span className={`font-bold font-mono ${
                                   modifierSubtotal >= 0
                                     ? "text-[#00a174]" 
-                                    : "text-green-700"
+                                    : "text-[#B13818]"
                                 }`}>
                                   {modifierSubtotal >= 0 ? "+" : ""}
                                   {modifierSubtotal.toLocaleString()} 円
                                 </span>
                               </div>
-                              <div className="pl-2 border-l border-dashed border-zinc-200 space-y-1 mt-1 text-[11px] leading-relaxed">
+                              <div className="divide-y divide-[#E1E6E3] border-y border-[#E1E6E3] text-[11px] leading-relaxed">
                                 {calcModifiers.map((id) => {
                                   const mod = getBudgetModifier(id);
                                   if (!mod) return null;
                                   const adjustedPrice = getModifierPrice(mod.price, mod.id);
                                   const isPlus = mod.type === "plus";
                                   return (
-                                    <div key={id} className="flex justify-between items-start text-zinc-600 gap-2">
-                                      <span className="break-all">
-                                        {isPlus ? "＋" : "－"} {mod.text}
+                                    <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
+                                      <span className="flex min-w-0 items-start gap-1.5 break-all text-zinc-700">
+                                        <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
+                                          {isPlus ? "+" : "−"}
+                                        </span>
+                                        <span>{mod.text}</span>
                                       </span>
-                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#00a174]" : "text-green-700"}`}>
+                                      <span className={`shrink-0 font-mono font-medium ${isPlus ? "text-[#008C68]" : "text-[#B13818]"}`}>
                                         {isPlus ? "+" : ""}
                                         {adjustedPrice.toLocaleString()} 円
                                       </span>
@@ -2132,7 +2153,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           {(() => {
                             const assessment = getAvailabilityAssessment();
                             return (
-                              <div className="border-t border-dashed border-zinc-300 pt-4">
+                              <div className="border-t border-[#D4DDD8] pt-4">
                                 <div className="mb-3 flex items-end justify-between gap-3">
                                   <div>
                                     <span className="block font-bold text-[#00a174]">房源供給與競爭評估</span>
@@ -2182,7 +2203,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           })()}
 
                           {/* Estimation of Initial Fees */}
-                          <div className="pt-4 border-t border-dashed border-zinc-300">
+                          <div className="border-t border-[#D4DDD8] pt-4">
                             <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
                               <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
                               <span>建議準備的初期費用</span>
@@ -2204,11 +2225,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 : pressureCount >= 2 ? 6 : 5;
                               const recommendedCash = monthlyRent * recommendedMultiplier;
                               const cashGap = recommendedCash - rentUpfrontCash;
+                              const locationName = station ? `${toJapaneseStationName(station.name)}駅` : districtDisplayName;
                               const reasons = [
                                 highDemandLocation
                                   ? wantsNoKeyMoney
-                                    ? `${station ? `${toJapaneseStationName(station.name)}駅` : districtDisplayName}屬熱門搜尋範圍，指定免禮金會進一步減少房源`
-                                    : `${station ? `${toJapaneseStationName(station.name)}駅` : districtDisplayName}屬熱門搜尋範圍，不能先假設一定有免禮金物件`
+                                    ? `${locationName}屬熱門地段，免禮金房源通常較少`
+                                    : `${locationName}屬熱門地段，多數房源多有禮金條件`
                                   : null,
                                 hasPetRequirement ? "可養寵物物件可能另有追加敷金或清潔條件" : null,
                                 hasTowerRequirement ? "塔樓大廈常有較高的保證、保險或附帶費用" : null,
@@ -2299,7 +2321,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         </div>
 
                         {/* Rent Disclaimer：全卡只保留這一段，房源供給、初期費用等估算的方法論限制都收在這裡，不再逐段重複。 */}
-                        <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
+                        <div className="mt-4 border-t border-[#E1E6E3] pt-3 text-justify font-sans text-[10px] leading-relaxed text-zinc-400">
                           ※ 行情模型估算；實際租金、供給與初期費用依當期募集物件為準。
                         </div>
                       </>
@@ -2348,20 +2370,23 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           </div>
 
                           {calcBuyModifiers.length > 0 && (
-                            <div className="space-y-1.5 border-t border-dashed border-zinc-100 pt-3">
+                            <div className="space-y-2 border-t border-[#E1E6E3] pt-3">
                               <span className="text-zinc-500 block">條件調整清單：</span>
-                              <div className="pl-2 border-l border-dashed border-zinc-200 space-y-1 mt-1 text-[11px] leading-relaxed">
+                              <div className="divide-y divide-[#E1E6E3] border-y border-[#E1E6E3] text-[11px] leading-relaxed">
                                 {calcBuyModifiers.map((id) => {
                                   const mod = getBuyModifier(id);
                                   if (!mod) return null;
                                   const isPlus = mod.type === "plus";
                                   const dynamicMult = getDynamicBuyModifierMultiplier(id, calcDistrict);
                                   return (
-                                    <div key={id} className="flex justify-between items-start text-zinc-600 gap-2">
-                                      <span className="break-all font-sans">
-                                        {isPlus ? "＋" : "－"} {mod.text}
+                                    <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
+                                      <span className="flex min-w-0 items-start gap-1.5 break-all font-sans text-zinc-700">
+                                        <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
+                                          {isPlus ? "+" : "−"}
+                                        </span>
+                                        <span>{mod.text}</span>
                                       </span>
-                                      <span className={`font-mono shrink-0 ${isPlus ? "text-[#00a174]" : "text-green-700"}`}>
+                                      <span className={`shrink-0 font-mono font-medium ${isPlus ? "text-[#008C68]" : "text-[#B13818]"}`}>
                                         {isPlus ? "+" : "-"}{Math.abs(dynamicMult * 100).toFixed(0)}%
                                       </span>
                                     </div>
@@ -2372,7 +2397,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           )}
 
                           {/* Initial purchase fees section */}
-                          <div className="pt-3 border-t border-dashed border-zinc-200">
+                          <div className="border-t border-[#D4DDD8] pt-3">
                             <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
                               <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
                               <span>購屋初期諸費用概算（一次性過戶費用）：</span>
@@ -2387,7 +2412,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>申請貸款購置 (約總價 9%):</span>
                                 <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
-                              <p className="text-[10px] text-zinc-500 mt-1 pt-1.5 border-t border-dashed border-zinc-200 text-justify flex items-start gap-1">
+                              <p className="mt-1 flex items-start gap-1 border-t border-zinc-200 pt-1.5 text-justify text-[10px] text-zinc-500">
                                 <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
                                 <span>先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。</span>
                               </p>
@@ -2425,10 +2450,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           </div>
 
                           {/* Loan payments section */}
-                          <div className="pt-3 border-t border-dashed border-zinc-200">
+                          <div className="border-t border-[#D4DDD8] pt-3">
                             <span className="text-[#00a174] font-bold block mb-1">銀行貸款與月還款額試算：</span>
                             <div className="bg-zinc-50 p-3 border border-zinc-200 space-y-1.5">
-                              <div className="grid grid-cols-3 gap-2 pb-2 mb-2 border-b border-dashed border-zinc-200">
+                              <div className="mb-2 grid grid-cols-3 gap-2 border-b border-zinc-200 pb-2">
                                 <label className="text-[10px] text-zinc-600">貸款成數 (%)
                                   <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={e => setLoanRatio(Math.min(100, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
                                 </label>
@@ -2447,7 +2472,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 <span>銀行貸款金額 ({loanRatio}%):</span>
                                 <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * loanRatio / 100 / 10000).toFixed(0)} 萬日圓</span>
                               </div>
-                              <div className="flex justify-between font-bold text-[#00a174] text-[11px] md:text-xs border-t border-dashed border-zinc-200 pt-1.5 mt-1">
+                              <div className="mt-1 flex justify-between border-t border-zinc-200 pt-1.5 text-[11px] font-bold text-[#00a174] md:text-xs">
                                 <span>每月本息試算 ({annualRate}%／{loanYears}年):</span>
                                 <span className="font-mono text-[#00a174]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                               </div>

@@ -693,7 +693,7 @@ export const budgetModifiers: BudgetModifier[] = [
   { id: "major_station", text: "熱門大站 (2條線路以上)", price: 10000, type: "plus", category: "location" },
   { id: "minor_station", text: "熱門小站 (1條線路)", price: 5000, type: "plus", category: "location" },
   { id: "walk_within_5min", text: "徒步車站 5 分鐘內", price: 5000, type: "plus", category: "location" },
-  { id: "furnished", text: "管理公司提供家具家電 (外國人向)", price: 20000, type: "plus", category: "others" },
+  { id: "furnished", text: "附傢俱家電", price: 20000, type: "plus", category: "others" },
   
   { id: "walk_11_15min", text: "徒步車站 11〜15 分鐘", price: -5000, type: "minus", category: "subtraction" },
   { id: "walk_15_20min", text: "徒步車站 15〜20 分鐘", price: -10000, type: "minus", category: "subtraction" },
