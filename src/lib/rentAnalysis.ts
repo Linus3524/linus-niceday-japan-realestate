@@ -4,14 +4,15 @@ import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 
-export type RoomType = "r1" | "k1" | "ldk1" | "ldk2";
+export type RoomType = "r1" | "k1" | "ldk1" | "ldk2" | "ldk3";
 
-/** 內部代碼 → 日本實際的格局簡寫（1R, 1K, 1LDK, 2LDK）。 */
+/** 內部代碼 → 日本實際的格局群組簡寫。 */
 export const ROOM_TYPE_LABEL: Record<RoomType, string> = {
   r1: "1R",
   k1: "1K",
   ldk1: "1LDK",
-  ldk2: "2LDK"
+  ldk2: "2LDK",
+  ldk3: "3LDK+"
 };
 
 /** 完整說明標籤 */
@@ -19,7 +20,8 @@ export const ROOM_TYPE_DETAIL_LABEL: Record<RoomType, string> = {
   r1: "1R",
   k1: "1K（包含 1DK）",
   ldk1: "1LDK（包含 2K、2DK）",
-  ldk2: "2LDK"
+  ldk2: "2LDK（包含 3K、3DK）",
+  ldk3: "3LDK+（代表 3LDK、4K、4DK；不混入 4LDK以上）"
 };
 
 /** 包含格局說明標籤 (Hover 顯示) */
@@ -27,7 +29,8 @@ export const ROOM_TYPE_INCLUDES_LABEL: Record<RoomType, string | null> = {
   r1: null,
   k1: "包含 1DK",
   ldk1: "包含 2K、2DK",
-  ldk2: null
+  ldk2: "包含 3K、3DK",
+  ldk3: "代表 3LDK、4K、4DK"
 };
 
 
@@ -514,6 +517,7 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   // 舊版只取第一個比對結果，會把方案 A 的房型配上方案 B 的預算，得出「1K 卻 13 萬」這種矛盾結果。
   // 這裡取「最大的房型」，與同樣取最大值的預算配成一組，確保房型與預算來自同一個方案。
   const ROOM_RANK: Array<[RegExp, RoomType]> = [
+    [/\b(?:3LDK|4K|4DK|4LDK|5K)\b/i, "ldk3"],
     [/\b2LDK\b/i, "ldk2"],
     [/\b2DK\b|\b2K\b|\b1LDK\b/i, "ldk1"],
     [/\b1DK\b|\b1K\b/i, "k1"],

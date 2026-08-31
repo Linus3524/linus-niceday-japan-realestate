@@ -31,7 +31,8 @@ export interface RentRate {
   r1: string; // 1R Average Rent (in万円)
   k1: string; // 1K/1DK Average Rent (in万円)
   ldk1: string; // 1LDK/2K/2DK Average Rent (in万円)
-  ldk2: string; // 2LDK Average Rent (in万円)
+  ldk2: string; // 2LDK/3K/3DK Average Rent (in万円)
+  ldk3?: string; // 3LDK/4K+ representative rent (in万円)
   areaGroup?: "北海道" | "東北" | "關東" | "中部" | "關西" | "中國" | "九州";
   sourceDate?: string;
   confidence?: "high" | "medium" | "limited";
@@ -48,7 +49,7 @@ export interface RentRate {
  * 因此 budgetModifiers 的陣列順序只影響畫面呈現順序，不具任何語意。
  * 要新增、刪除或重排項目時，直接改陣列即可，不會牽動其他檔案。
  */
-export type BudgetModifierLayout = "r1" | "k1" | "ldk1" | "ldk2";
+export type BudgetModifierLayout = "r1" | "k1" | "ldk1" | "ldk2" | "ldk3";
 
 export type BudgetModifierId =
   | "washbasin_and_bidet" | "washbasin_only" | "bidet_only"
@@ -248,6 +249,17 @@ export const initialFees: InitialFeeItem[] = [
     category: "fee"
   },
   {
+    name: "再契約料・再契約手数料",
+    jpName: "再簽約費／再契約手續費",
+    description: "適用於「定期借家契約（定期租賃契約）」。由於定期租約期滿即告終止、法律上無自動更新制度，若房東與租客雙方合意繼續承租，須重新簽署一份新定期租約。此時收取的費用稱為『再契約料』或『再契約手数料』（通常約為 1 個月租金或特定手續費，並同步辦理保險與保證公司的續保）。",
+    warning: "定期借家契約期滿時房東無義務保證續約；若雙方有意再契約，通常需在期滿前 6 個月至 1 年間確認。",
+    keyPoints: [
+      "與普通借家差異：普通借家期滿支付「契約更新料」即可續約；定期借家法律上屬於重新簽約，因此收取的是「再契約料／再契約手續費」。",
+      "費用行情：常見約 0.5～1 個月租金，或固定金額的行政手續費，依圖面招租條件與管理公司規定為準。"
+    ],
+    category: "fee"
+  },
+  {
     name: "短期解約違約金",
     jpName: "短期解約違約金",
     description: "管理公司常會設有居住期限約定（如未滿 1 年或未滿 2 年）。若提前解約可能產生 1～2 個月租金的違約金，常見居住滿 1 年後即可免除。",
@@ -292,7 +304,7 @@ export const specialTerms: SpecialTermItem[] = [
     description: "日本的房屋租約主要分為定期借家契約、普通借家契約與法人契約：",
     category: "term",
     details: [
-      "定期租賃契約 (定期借家契約): 合約期限已事先確定。合約期滿時，租戶必須搬出（但若房東同意，可協商重新簽約繼續居住）。通常租金會比市場行情低一些，適用於短期出租或房東未來有自用需求的情況。",
+      "定期租賃契約 (定期借家契約): 合約期限已事先確定。合約期滿時租約即告終止，原則上租客必須搬出（但若經房東與租客雙方同意，可協商重新簽約並支付『再契約料』繼續居住）。通常租金會比市場行情低一些，常見於屋主短期外派或未來有自用改建需求之物件。",
       "普通租賃契約 (普通借家契約): 契約期間常見為 2 年。期滿後只要正常繳納更新費即可順利續約；若房東要拒絕續約，法律規定須具備極嚴格的正當理由，對租客權益非常有保障。",
       "法人名義簽約 (法人契約): 由公司法人名義簽署合約。通常需要增加敷金或禮金，或需要法人連帶保證人。入住者必須是公司所有人或是其員工，除提交法人登記與財報材料外，入居者也須提交個人身分資料審査。"
     ]

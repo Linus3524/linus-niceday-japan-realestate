@@ -36,7 +36,7 @@ function getAiClient() {
   return client;
 }
 
-const ROOM_LABEL: Record<string, string> = { r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK" };
+const ROOM_LABEL: Record<string, string> = { r1: "1R", k1: "1K／1DK", ldk1: "1LDK／2K／2DK", ldk2: "2LDK／3K／3DK", ldk3: "3LDK／4K／4DK" };
 /** 只接受站內既有的房型代碼，避免把任意字串拼進搜尋語句。 */
 const ALLOWED_ROOM_TYPES = new Set(Object.keys(ROOM_LABEL));
 const MARKET_LOOKUP_TIMEOUT_MS = 10_000;

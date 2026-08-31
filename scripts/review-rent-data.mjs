@@ -9,7 +9,9 @@
  */
 import { execFileSync } from "node:child_process";
 
-const STALE_MONTHS = { high: 18, medium: 12, limited: 12 };
+// At Home is a rolling three-month listing window. Review it quarterly and
+// flag a snapshot after a 100-day grace window.
+const STALE_DAYS = { high: 100, medium: 365, limited: 365 };
 
 const tsx = JSON.parse(execFileSync("npx", ["tsx", "-e", `
   // 讀 housingMarket 的表：那才是估價實際使用的完整清單（含由市平均推導出來的區級資料）。
@@ -32,41 +34,41 @@ const tsx = JSON.parse(execFileSync("npx", ["tsx", "-e", `
   }));
 `], { cwd: process.cwd(), encoding: "utf8", stdio: ["ignore", "pipe", "inherit"] }));
 
-const monthsSince = value => {
-  const match = /^(\d{4})-(\d{2})/.exec(value || "");
+const daysSince = value => {
+  const match = /^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(value || "");
   if (!match) return null;
-  const then = new Date(Number(match[1]), Number(match[2]) - 1, 1);
+  const then = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3] || 1));
   const now = new Date();
-  return (now.getFullYear() - then.getFullYear()) * 12 + (now.getMonth() - then.getMonth());
+  return Math.floor((now.getTime() - then.getTime()) / 86_400_000);
 };
 
 let stale = 0;
 console.log("\n租金行情資料批次\n" + "=".repeat(60));
 for (const batch of tsx.batches.sort((a, b) => (a.sourceDate || "").localeCompare(b.sourceDate || ""))) {
-  const age = monthsSince(batch.sourceDate);
-  const limit = STALE_MONTHS[batch.confidence] ?? 12;
+  const age = daysSince(batch.sourceDate);
+  const limit = STALE_DAYS[batch.confidence] ?? 365;
   // limited／未標註的批次沒有可查證的來源，日期只代表「進到程式碼的時間」而不是調查時點，
   // 因此不論多新都持續提醒，不能因為看起來還新就當作已經校對過。
   const unverified = batch.confidence !== "high" && batch.confidence !== "medium";
   const isStale = unverified || age === null || age >= limit;
   if (isStale) stale++;
-  const reason = unverified ? "來源未經查證" : age === null ? "沒有標註日期" : `已超過 ${limit} 個月的建議校對週期`;
+  const reason = unverified ? "來源未經查證" : age === null ? "沒有標註日期" : `已超過 ${limit} 天的建議校對週期`;
   console.log(`\n${isStale ? "⚠ 建議重新校對" : "✓ 仍在保鮮期"}  ${batch.sourceDate || "未標註日期"}  [${batch.confidence || "未標註可信度"}]`);
   console.log(`  ${batch.districts.length} 個行政區：${batch.districts.slice(0, 3).join("、")}${batch.districts.length > 3 ? ` 等 ${batch.districts.length} 區` : ""}`);
   console.log(`  來源：${batch.notes.length ? batch.notes[0] + (batch.notes.length > 1 ? ` 等 ${batch.notes.length} 種標註` : "") : "未標註"}`);
-  if (age !== null) console.log(`  資料時點距今 ${age} 個月`);
+  if (age !== null) console.log(`  資料時點距今 ${age} 天`);
   if (isStale) console.log(`  原因：${reason}`);
 }
 
-const modifierAge = monthsSince(tsx.modifierMeta.reviewedAt);
+const modifierAge = daysSince(tsx.modifierMeta.reviewedAt);
 // 加減價係數同樣沒有對應公開統計，比照 limited 批次持續提醒。
 const modifierStale = true;
 if (modifierStale) stale++;
 console.log("\n\n加減價係數\n" + "=".repeat(60));
-console.log(`\n${modifierStale ? "⚠ 建議重新校對" : "✓ 仍在保鮮期"}  最後檢視 ${tsx.modifierMeta.reviewedAt}${modifierAge !== null ? `（已經過 ${modifierAge} 個月）` : ""}`);
+console.log(`\n${modifierStale ? "⚠ 建議重新校對" : "✓ 仍在保鮮期"}  最後檢視 ${tsx.modifierMeta.reviewedAt}${modifierAge !== null ? `（已經過 ${modifierAge} 天）` : ""}`);
 console.log(`  共 ${tsx.modifierCount} 項，其中 ${tsx.modifiersWithBasis} 項有寫明訂定依據`);
 console.log(`  來源：${tsx.modifierMeta.sourceNote}`);
-console.log(`  原因：來源未經查證${modifierAge !== null && modifierAge >= 12 ? "，且已超過 12 個月" : ""}`);
+console.log(`  原因：來源未經查證${modifierAge !== null && modifierAge >= 365 ? "，且已超過 12 個月" : ""}`);
 
 console.log(`\n\n總結：${stale ? `${stale} 批資料建議重新校對` : "所有資料都在保鮮期內"}\n`);
 if (stale && process.argv.includes("--ci")) process.exit(1);

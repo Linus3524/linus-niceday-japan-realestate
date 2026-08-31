@@ -1,9 +1,10 @@
 import { rentRates as legacyRentRates, RentRate } from "./rentGuideData.js";
 import { districtStations as legacyDistrictStations, StationInfo } from "./stationData.js";
+import { atHomeRentSnapshotMeta, atHomeRentSnapshots, type AtHomeRentLayout } from "./atHomeRentSnapshot.js";
 
 export type DataConfidence = "high" | "medium" | "limited";
 export type DataVerificationStatus = "verified_source" | "modeled_unverified" | "researched_limited";
-export type LayoutCode = "r1" | "k1" | "ldk1" | "ldk2";
+export type LayoutCode = "r1" | "k1" | "ldk1" | "ldk2" | "ldk3";
 
 export interface PrefectureRecord {
   id: string;
@@ -178,7 +179,44 @@ const secondStageRates: RentRate[] = secondStageMarketSpecs.flatMap(spec => {
   }];
 });
 
-const marketSeedRates = [...legacyRentRates, ...derivedWardRates, ...secondStageRates];
+const legacyMarketSeedRates = [...legacyRentRates, ...derivedWardRates, ...secondStageRates];
+const atHomeSnapshotByDistrict = new Map(atHomeRentSnapshots.map(row => [`${row.region}|${row.district}`, row]));
+const layoutLabel: Record<AtHomeRentLayout, string> = {
+  r1: "1R",
+  k1: "1K／1DK",
+  ldk1: "1LDK／2K／2DK",
+  ldk2: "2LDK／3K／3DK",
+  ldk3: "3LDK／4K／4DK"
+};
+// 使用者看到與試算器使用的萬円行情統一到小數點後一位；
+// 原始日圓值仍完整保留在 atHomeRentSnapshot，避免更新與稽核失真。
+const rentYenToMan = (rentYen: number) => Number((rentYen / 10_000).toFixed(1)).toString();
+
+// The public At Home pages cover the complete geographic set used by the site.
+// Every available layout is replaced with its rolling latest-three-month listing average.
+// A row with fallbackLayouts keeps only those explicitly missing At Home values from the
+// prior model and is surfaced as limited-confidence data in the UI and data review.
+const marketSeedRates: RentRate[] = legacyMarketSeedRates.map(rate => {
+  const snapshot = atHomeSnapshotByDistrict.get(`${rate.region}|${rate.district}`);
+  if (!snapshot) return rate;
+  const fallbacks = snapshot.fallbackLayouts || [];
+  return {
+    ...rate,
+    r1: rentYenToMan(snapshot.r1),
+    k1: rentYenToMan(snapshot.k1),
+    ldk1: rentYenToMan(snapshot.ldk1),
+    ldk2: rentYenToMan(snapshot.ldk2),
+    ldk3: rentYenToMan(snapshot.ldk3),
+    sourceDate: atHomeRentSnapshotMeta.capturedAt,
+    confidence: fallbacks.length ? "limited" : "high",
+    verificationStatus: fallbacks.length ? "researched_limited" : "verified_source",
+    sourceNote: fallbacks.length
+      ? `${atHomeRentSnapshotMeta.sourceLabel}；${fallbacks.map(layout => layoutLabel[layout]).join("、")}因樣本不足沿用前版推估`
+      : atHomeRentSnapshotMeta.sourceLabel,
+    sourceUrl: snapshot.sourceUrl,
+    includesManagementFee: atHomeRentSnapshotMeta.includesManagementFee
+  };
+});
 
 export const prefectures: PrefectureRecord[] = Array.from(new Set(marketSeedRates.map(rate => rate.region))).map(name => ({
   id: stableId("pref", name),
@@ -195,14 +233,16 @@ export const municipalities: MunicipalityRecord[] = marketSeedRates.map(rate => 
 
 export const rentSnapshots: RentSnapshotRecord[] = marketSeedRates.flatMap(rate => {
   const municipalityId = stableId("mun", rate.region, rate.district);
-  const effectiveDate = rate.sourceDate ? `${rate.sourceDate}-01` : "2026-07-01";
+  const effectiveDate = rate.sourceDate
+    ? /^\d{4}-\d{2}-\d{2}$/.test(rate.sourceDate) ? rate.sourceDate : `${rate.sourceDate}-01`
+    : "2026-07-01";
   const isAtHomeCityAverage = /募集家賃（面積帶平均）/.test(rate.sourceNote || "");
-  const layouts: LayoutCode[] = ["r1", "k1", "ldk1", "ldk2"];
+  const layouts: LayoutCode[] = ["r1", "k1", "ldk1", "ldk2", "ldk3"];
   return layouts.map(layout => ({
     id: stableId("rent", municipalityId, layout, effectiveDate),
     municipalityId,
     layout,
-    monthlyRentYen: Math.round(parseFloat(rate[layout]) * 10000),
+    monthlyRentYen: Math.round(parseFloat(rate[layout] || rate.ldk2) * 10000),
     includesManagementFee: rate.includesManagementFee ?? (isAtHomeCityAverage ? true : null),
     effectiveDate,
     sourceLabel: rate.sourceNote || "SUUMO、LIFULL HOME'S、At Home 等日本租屋平台公開資訊",
@@ -256,6 +296,7 @@ const stationLinesByStation = new Map<string, StationLineRecord[]>();
 for (const row of stationLines) stationLinesByStation.set(row.stationId, [...(stationLinesByStation.get(row.stationId) || []), row]);
 
 export function getCurrentRentRates(): RentRate[] {
+  const displayRent = (monthlyRentYen: number) => Number((monthlyRentYen / 10_000).toFixed(1)).toString();
   return municipalities.map(municipality => {
     const prefecture = prefectureById.get(municipality.prefectureId)!;
     const current = (layout: LayoutCode) => rentSnapshots
@@ -265,12 +306,13 @@ export function getCurrentRentRates(): RentRate[] {
     return {
       region: prefecture.name,
       district: municipality.name,
-      r1: (current("r1").monthlyRentYen / 10000).toFixed(1),
-      k1: (reference.monthlyRentYen / 10000).toFixed(1),
-      ldk1: (current("ldk1").monthlyRentYen / 10000).toFixed(1),
-      ldk2: (current("ldk2").monthlyRentYen / 10000).toFixed(1),
+      r1: displayRent(current("r1").monthlyRentYen),
+      k1: displayRent(reference.monthlyRentYen),
+      ldk1: displayRent(current("ldk1").monthlyRentYen),
+      ldk2: displayRent(current("ldk2").monthlyRentYen),
+      ldk3: displayRent(current("ldk3").monthlyRentYen),
       areaGroup: prefecture.areaGroup as RentRate["areaGroup"],
-      sourceDate: reference.effectiveDate.slice(0, 7),
+      sourceDate: reference.effectiveDate,
       confidence: reference.confidence,
       verificationStatus: reference.verificationStatus,
       sourceNote: reference.sourceLabel,

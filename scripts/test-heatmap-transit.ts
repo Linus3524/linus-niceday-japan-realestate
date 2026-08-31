@@ -1,5 +1,5 @@
 import { districtStations } from "../src/data/housingMarket";
-import { buildRentRecommendations, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { buildRentRecommendations, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
 import { findLocalTransitRoute } from "../src/lib/localTransitRoute";
 import { toJapaneseStationName } from "../src/lib/transit";
 
@@ -47,9 +47,11 @@ for (const scenario of scenarios) {
   const topMatches = recommendations[0]?.district === scenario.district;
   const unknown = recommendations.filter(item => item.station && !stationSet.has(item.station));
   const routed = recommendations.filter(item => item.station && findLocalTransitRoute(item.station, scenario.destination)).length;
-  const ok = recommendations.length === 6 && unique.size === recommendations.length && topMatches && !unknown.length;
+  // 推薦清單採動態數量：有明確地理條件時只保留高相關候選，不再為了湊數固定回傳六筆。
+  const hasValidCount = recommendations.length > 0 && recommendations.length <= RECOMMENDATION_LIMIT;
+  const ok = hasValidCount && unique.size === recommendations.length && topMatches && !unknown.length;
   if (!ok) failures.push(`${scenario.name}: 推薦結果異常`);
-  console.log(`${scenario.name}\t${recommendations.map(item => item.station).join("・")}\t${topMatches ? "正確" : "錯誤"}\t${routed}/6\t${ok ? "PASS" : "FAIL"}`);
+  console.log(`${scenario.name}\t${recommendations.map(item => item.station).join("・")}\t${topMatches ? "正確" : "錯誤"}\t${routed}/${recommendations.length}\t${ok ? "PASS" : "FAIL"}`);
 }
 
 // Every heatmap district must at least rank one of its own stations first when

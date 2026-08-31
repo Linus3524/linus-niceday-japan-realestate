@@ -598,8 +598,8 @@ function layoutAxis(criteria: RentSearchCriteria): AxisVerdict {
       drivers: [], supplyImpact: 0
     };
   }
-  const tight = { r1: 28, k1: 28, ldk1: 40, ldk2: 60 }[criteria.roomType];
-  const roomy = { r1: 22, k1: 22, ldk1: 33, ldk2: 50 }[criteria.roomType];
+  const tight = { r1: 28, k1: 28, ldk1: 40, ldk2: 60, ldk3: 85 }[criteria.roomType];
+  const roomy = { r1: 22, k1: 22, ldk1: 33, ldk2: 50, ldk3: 70 }[criteria.roomType];
   if (criteria.areaMin >= tight) {
     return {
       key: "layout", label: "格局與面積", detail, status: "需調整",

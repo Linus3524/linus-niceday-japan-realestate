@@ -137,7 +137,7 @@ export default async function handler(req: any, res: any) {
       : null;
     const hasValidStructuredCriteria = Boolean(
       submittedCriteria &&
-      ["r1", "k1", "ldk1", "ldk2"].includes(submittedCriteria.roomType) &&
+      ["r1", "k1", "ldk1", "ldk2", "ldk3"].includes(submittedCriteria.roomType) &&
       Number.isFinite(Number(submittedCriteria.maxBudget)) &&
       Number(submittedCriteria.maxBudget) > 0
     );
@@ -171,7 +171,7 @@ export default async function handler(req: any, res: any) {
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            roomType: { type: Type.STRING, enum: ["r1", "k1", "ldk1", "ldk2"] },
+            roomType: { type: Type.STRING, enum: ["r1", "k1", "ldk1", "ldk2", "ldk3"] },
             areaMin: { type: Type.NUMBER, nullable: true },
             maxBudget: { type: Type.NUMBER, nullable: true, description: "每月預算上限，單位為日圓；萬円須換算為日圓。" },
             minBudget: { type: Type.NUMBER, nullable: true, description: "使用者給預算區間時的下限，單位為日圓，例如「5萬多到6萬多」填 50000。只給單一數字或上限時填 null。" },

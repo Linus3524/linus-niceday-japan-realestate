@@ -3,13 +3,14 @@ import type { RentRate } from "../data/rentGuideData";
 import { rentRates } from "../data/housingMarket";
 import { MapPin, Info, Lightbulb, Layers } from "lucide-react";
 import { toJapanesePlaceName, toJapanesePrefectureName } from "../lib/transit";
-import { ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
+import { ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL, type RoomType } from "../lib/rentAnalysis";
+import { getBuyMarketEstimate } from "../data/buyMarket";
 
 interface RentMapProps {
   selectedDistrict: string;
   onSelectDistrict: (district: string) => void;
-  roomType: "r1" | "k1" | "ldk1" | "ldk2";
-  onSelectRoomType: (type: "r1" | "k1" | "ldk1" | "ldk2") => void;
+  roomType: RoomType;
+  onSelectRoomType: (type: RoomType) => void;
   mode?: "rent" | "buy";
 }
 
@@ -152,47 +153,38 @@ const thresholdsConfig = {
   r1: { high: 9.5, medHigh: 8.0, mid: 6.5 },
   k1: { high: 10.5, medHigh: 8.5, mid: 7.0 },
   ldk1: { high: 17.0, medHigh: 13.0, mid: 10.0 },
-  ldk2: { high: 24.0, medHigh: 17.0, mid: 13.0 }
+  ldk2: { high: 24.0, medHigh: 17.0, mid: 13.0 },
+  ldk3: { high: 34.0, medHigh: 25.0, mid: 18.0 }
 };
 
 const buyThresholdsConfig = {
   r1: { high: 2500, medHigh: 1800, mid: 1300 },
   k1: { high: 2800, medHigh: 2000, mid: 1500 },
   ldk1: { high: 4800, medHigh: 3500, mid: 2500 },
-  ldk2: { high: 6800, medHigh: 5000, mid: 3500 }
+  ldk2: { high: 6800, medHigh: 5000, mid: 3500 },
+  ldk3: { high: 9000, medHigh: 6800, mid: 4800 }
 };
 
-const getDistrictBuyPrice = (rate: RentRate, roomType: "r1" | "k1" | "ldk1" | "ldk2") => {
-  const rateString = rate[roomType] as string;
+const getDistrictBuyPrice = (rate: RentRate, roomType: RoomType) => {
+  const rateString = (rate[roomType] || rate.ldk2) as string;
   const rentYen = parseFloat(rateString) * 10000;
-  const annualRent = rentYen * 12;
-  
-  const isTama = ["武藏野市", "三鷹市", "立川市", "八王子市", "日野市", "府中市", "調布市", "町田市", "西東京市", "小平市", "多摩市", "狛江市"].includes(rate.district);
-  const isTokyo23 = rate.region === "東京都" && !isTama;
-  
-  let baseYield = 0.05;
-  if (isTokyo23) {
-    baseYield = 0.040;
-  } else if (rate.region === "東京都") {
-    baseYield = 0.054;
-  } else if (rate.region === "神奈川") {
-    baseYield = 0.048;
-  } else if (rate.region === "大阪") {
-    baseYield = 0.052;
-  } else if (rate.region === "埼玉" || rate.region === "千葉") {
-    baseYield = 0.058;
-  }
-  
-  if (roomType === "ldk1") {
-    baseYield -= 0.002;
-  } else if (roomType === "ldk2") {
-    baseYield -= 0.004;
-  } else if (roomType === "r1") {
-    baseYield += 0.002;
-  }
-  
-  const basePrice = annualRent / baseYield;
-  return Math.max(Math.round(basePrice / 100000) * 10, 300);
+  const estimate = getBuyMarketEstimate({
+    region: rate.region,
+    district: rate.district,
+    layout: roomType,
+    monthlyRentYen: rentYen
+  });
+  return Math.max(Math.round(estimate.basePriceYen / 100000) * 10, 300);
+};
+
+const getDistrictBuySource = (rate: RentRate, roomType: RoomType) => {
+  const rateString = (rate[roomType] || rate.ldk2) as string;
+  return getBuyMarketEstimate({
+    region: rate.region,
+    district: rate.district,
+    layout: roomType,
+    monthlyRentYen: parseFloat(rateString) * 10000
+  }).source;
 };
 
 export const RentMap: React.FC<RentMapProps> = ({
@@ -262,6 +254,8 @@ export const RentMap: React.FC<RentMapProps> = ({
   const availableAreaGroups = areaGroupOrder.filter(group => rentRates.some(rate => rate.areaGroup === group));
   const visibleRegions = availableRegions.filter(region => rentRates.some(rate => rate.region === region && rate.areaGroup === activeAreaGroup));
   const regionDisplayName = toJapanesePrefectureName;
+  const latestSourceDate = rentRates.reduce((latest, rate) =>
+    (rate.sourceDate || "") > latest ? rate.sourceDate || latest : latest, "");
 
   return (
     <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
@@ -272,8 +266,8 @@ export const RentMap: React.FC<RentMapProps> = ({
             <MapPin className="w-4 h-4 text-[#00a174]" />
             <span>
               {mode === "buy"
-                ? "2026 日本主要租屋市場房價行情地圖"
-                : "2026 日本主要租屋市場家賃行情地圖"}
+                ? `${latestSourceDate || "最新"} 日本主要中古公寓房價概算地圖`
+                : `${latestSourceDate || "最新"} 日本主要租屋市場家賃行情地圖`}
             </span>
           </h4>
           <p className="text-[10px] text-zinc-500">
@@ -284,10 +278,10 @@ export const RentMap: React.FC<RentMapProps> = ({
         </div>
 
         {/* Room Type Switcher inside Map Component */}
-        {/* 按鈕只放代表性格局（寫全名會讓四顆鈕在手機上擠爆），
+        {/* 按鈕只放代表性格局（寫全名會讓五顆鈕在手機上擠爆），
             實際涵蓋範圍以下方說明與 title 補齊，不讓使用者誤以為只查得到 1K 與 1LDK。 */}
         <div className="flex shrink-0 bg-zinc-100 p-0.5 border border-zinc-300">
-          {(["r1", "k1", "ldk1", "ldk2"] as const).map((type) => {
+          {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((type) => {
             const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
             return (
               <div key={type} className="group relative">
@@ -388,7 +382,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                   onMouseEnter={() => setHoveredWard(rateData)}
                   onMouseLeave={() => setHoveredWard(null)}
                   className={`${isTokyoMap ? "h-[72px]" : "h-[56px]"} p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between rounded-none ${bg} ${border}`}
-                  title={mode === "buy" ? `${toJapanesePlaceName(cell.name)} - 2026行情: ${val.toLocaleString()}萬円` : `${toJapanesePlaceName(cell.name)} - 2026行情: ${val}萬円/月`}
+                  title={mode === "buy"
+                    ? `${toJapanesePlaceName(cell.name)} - ${getDistrictBuySource(rateData, roomType) === "official_transaction" ? "交易資料" : "收益率模型"}: ${val.toLocaleString()}萬円`
+                    : `${toJapanesePlaceName(cell.name)} - ${rateData.sourceDate || latestSourceDate}行情: ${val}萬円/月`}
                 >
                   <div lang="ja" className="font-jp text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{toJapanesePlaceName(cell.name)}</div>
                   <div className={`text-[10px] font-mono font-bold leading-none mt-1.5 ${text}`}>
@@ -405,8 +401,8 @@ export const RentMap: React.FC<RentMapProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 border-t border-dashed border-zinc-200 pt-4 font-sans text-xs">
         {/* Color Legend */}
         <div className="md:col-span-5 space-y-2">
-          <span className="font-bold text-zinc-700 block text-[11px] tracking-wider">
-            {mode === "buy" ? "2026 房價（預估總價）熱力圖例：" : "2026 房租熱力圖例："}
+              <span className="font-bold text-zinc-700 block text-[11px] tracking-wider">
+            {mode === "buy" ? "房價（預估總價）熱力圖例：" : "房租熱力圖例："}
           </span>
           <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-zinc-600">
             <div className="flex items-center gap-1.5">
@@ -462,15 +458,17 @@ export const RentMap: React.FC<RentMapProps> = ({
                       )}
                     </span>
                     <span className="text-[10px] text-zinc-500 font-bold">
-                      {mode === "buy" ? "2026年 預估中古公寓總價" : "2026年 家賃相場"}
+                      {mode === "buy"
+                        ? getDistrictBuySource(activeWard, roomType) === "official_transaction" ? "國交省交易資料" : "租金收益率總價模型"
+                        : `${activeWard.sourceDate || latestSourceDate} 家賃相場`}
                     </span>
                   </div>
-                  {/* 四格使用簡短標籤 (1R, 1K, 1LDK, 2LDK)，Hover 時顯示標籤 (如：包含 1DK) */}
-                  <div className="grid grid-cols-4 gap-1 text-center font-mono">
-                    {(["r1", "k1", "ldk1", "ldk2"] as const).map(type => {
+                  {/* 使用簡短格局標籤，Hover 時顯示群組實際涵蓋範圍（例如包含 1DK）。 */}
+                  <div className="grid grid-cols-5 gap-1 text-center font-mono">
+                    {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map(type => {
                       const isActive = roomType === type;
                       const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
-                      const priceVal = mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : activeWard[type];
+                      const priceVal = mode === "buy" ? getDistrictBuyPrice(activeWard, type).toLocaleString() : (activeWard[type] || activeWard.ldk2);
                       return (
                         <button
                           key={type}
@@ -487,7 +485,8 @@ export const RentMap: React.FC<RentMapProps> = ({
                             {ROOM_TYPE_LABEL[type]}
                           </div>
                           <div className={`text-xs font-semibold leading-tight ${isActive ? "text-[#00a174]" : "text-zinc-800"}`}>
-                            {priceVal}<span className={`text-[10px] font-normal ml-0.5 ${isActive ? "text-[#00a174]" : "text-zinc-500"}`}>萬円</span>
+                            {priceVal}
+                            <span className={`mt-0.5 block text-[10px] font-normal ${isActive ? "text-[#00a174]" : "text-zinc-500"}`}>萬円</span>
                           </div>
 
                           {/* Hover 浮動提示標籤 */}
@@ -507,7 +506,7 @@ export const RentMap: React.FC<RentMapProps> = ({
           ) : (
             <div className="flex items-center gap-2 text-zinc-400 h-full justify-center">
               <Info className="w-4 h-4" />
-              <span className="text-[11px]">將滑鼠游標移到地圖上，可在此看該區 4 種房型完整平均行情！</span>
+              <span className="text-[11px]">將滑鼠游標移到地圖上，可在此看該區 5 種格局群組行情！</span>
             </div>
           )}
         </div>

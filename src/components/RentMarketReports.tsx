@@ -18,12 +18,14 @@ function LayoutTiles({ items }: { items: Array<{ label: string; value: number }>
   // 1R (cheapest) -> Green (#dcfce7 -> #bbf7d0)
   // 1K -> Yellow (#fef9c3 -> #fef08a)
   // 1LDK -> Orange (#ffedd5 -> #fed7aa)
-  // 2LDK (most expensive) -> Red (#fee2e2 -> #fca5a5)
+  // 2LDK -> Red (#fee2e2 -> #fca5a5)
+  // 3LDK+ (most expensive) -> Pink (#fce7f3 -> #fbcfe8)
   const colors = [
     "bg-[#dcfce7] hover:bg-[#bbf7d0]",
     "bg-[#fef9c3] hover:bg-[#fef08a]",
     "bg-[#ffedd5] hover:bg-[#fed7aa]",
-    "bg-[#fee2e2] hover:bg-[#fca5a5]"
+    "bg-[#fee2e2] hover:bg-[#fca5a5]",
+    "bg-[#fce7f3] hover:bg-[#fbcfe8]"
   ];
   const baseline = items[0]?.value || 1;
   return (
@@ -167,7 +169,8 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
   const rate = rentRates.find(entry => entry.district === item.district);
   const layouts = rate ? [
     { label: "1R", value: parseFloat(rate.r1) * 10000 }, { label: "1K", value: parseFloat(rate.k1) * 10000 },
-    { label: "1LDK", value: parseFloat(rate.ldk1) * 10000 }, { label: "2LDK", value: parseFloat(rate.ldk2) * 10000 }
+    { label: "1LDK", value: parseFloat(rate.ldk1) * 10000 }, { label: "2LDK", value: parseFloat(rate.ldk2) * 10000 },
+    { label: "3LDK+", value: parseFloat(rate.ldk3 || rate.ldk2) * 10000 }
   ] : [];
   const ages = [
     { label: "築 5 年內", value: item.estimate * 1.12 }, { label: "築 6-10 年", value: item.estimate * 1.06 },

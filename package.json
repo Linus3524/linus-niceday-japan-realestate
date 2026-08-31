@@ -12,7 +12,13 @@
     "transit:build": "node scripts/build-tokyo-transit.mjs",
     "test:requirement-verdict": "tsx scripts/test-requirement-verdict.ts",
     "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts",
-    "data:review": "node scripts/review-rent-data.mjs"
+    "test:athome-rent": "tsx scripts/test-athome-rent-snapshot.ts",
+    "test:buy-market": "tsx scripts/test-buy-market.ts",
+    "test:market-sources": "tsx scripts/test-market-data-sources.ts",
+    "data:review": "node scripts/review-market-sources.mjs && node scripts/review-rent-data.mjs",
+    "data:review:rent": "node scripts/review-rent-data.mjs",
+    "data:update:athome": "tsx scripts/update-athome-rent-data.ts",
+    "data:update:mlit-buy": "tsx scripts/update-mlit-buy-data.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

@@ -5,13 +5,15 @@ import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderC
 import { budgetModifiers, getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData";
 import { buyBudgetModifiers, getBuyModifier, type BuyModifierId } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
+import { getBuyMarketEstimate, getModeledBuyYieldRate, getOfficialBuyEstimate } from "../data/buyMarket";
+import { MLIT_API_CREDIT } from "../data/marketDataSources";
 import type { StationInfo } from "../data/stationData";
 import { RentMap } from "./RentMap";
 import {
   TAMA_CITIES, hasTowerMansionSupport, getDynamicBuyModifierMultiplier,
   isRentModifierDisabled, isBuyModifierDisabled
 } from "../lib/calcRules";
-import { RentRecommendation, RentSearchCriteria, buildRentRecommendations, getRentModifierIds, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL } from "../lib/rentAnalysis";
+import { RentRecommendation, RentSearchCriteria, buildRentRecommendations, getRentModifierIds, ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL, type RoomType } from "../lib/rentAnalysis";
 import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
@@ -23,8 +25,8 @@ interface CalculatorTabProps {
   setCalcMode: (m: "rent" | "buy") => void;
   calcDistrict: string;
   setCalcDistrict: (d: string) => void;
-  calcRoomType: "r1" | "k1" | "ldk1" | "ldk2";
-  setCalcRoomType: (t: any) => void;
+  calcRoomType: RoomType;
+  setCalcRoomType: (t: RoomType) => void;
   calcModifiers: BudgetModifierId[];
   setCalcModifiers: (m: BudgetModifierId[]) => void;
   calcBuyModifiers: BuyModifierId[];
@@ -311,7 +313,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
     const filterPressure = selectedFilters.reduce((total, option) => total + option.pressure, 0);
     const modifierPressure = calcModifiers.reduce((total, id) => total + (modifierAvailabilityImpact[id]?.supply || 0), 0);
     const modifierCompetition = calcModifiers.reduce((total, id) => total + (modifierAvailabilityImpact[id]?.competition || 0), 0);
-    const modeledAreaCeiling = calcRoomType === "ldk2" ? 60 : calcRoomType === "ldk1" ? 40 : 30;
+    const modeledAreaCeiling = calcRoomType === "ldk3" ? 85 : calcRoomType === "ldk2" ? 60 : calcRoomType === "ldk1" ? 40 : 30;
     const extraAreaPressure = guidedMinArea > modeledAreaCeiling
       ? Math.min(2.5, (guidedMinArea - modeledAreaCeiling) / 5 * 0.45)
       : 0;
@@ -323,7 +325,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
               : guidedAgeMax === 30 ? 0.15
                 : 0;
     const structuredPressure = extraAreaPressure + extraAgePressure;
-    const roomPressure = calcRoomType === "ldk2" ? 2 : calcRoomType === "ldk1" ? 1 : 0;
+    const roomPressure = calcRoomType === "ldk3" ? 3 : calcRoomType === "ldk2" ? 2 : calcRoomType === "ldk1" ? 1 : 0;
     const hardFilterFloor = rentSearchFilters.includes("pets") ? 3 : rentSearchFilters.includes("cityGas") ? 2 : 0;
     const supplyPressure = Math.max(hardFilterFloor, filterPressure + modifierPressure + structuredPressure + roomPressure, 0);
     const supply = supplyPressure >= 8
@@ -459,43 +461,16 @@ export function CalculatorTab(props: CalculatorTabProps) {
     setCalcModifiers(withoutWooden);
   };
 
-  const getBuyYieldRate = () => {
-    const dData = getSelectedDistrictData();
-    const isTama = TAMA_CITIES.includes(dData.district);
-    const isTokyo23 = dData.region === "東京都" && !isTama;
-    
-    let baseYield = 0.05;
-    if (isTokyo23) {
-      baseYield = 0.040;
-    } else if (dData.region === "東京都") {
-      baseYield = 0.054;
-    } else if (dData.region === "神奈川") {
-      baseYield = 0.048;
-    } else if (dData.region === "大阪") {
-      baseYield = 0.052;
-    } else if (dData.region === "埼玉" || dData.region === "千葉") {
-      baseYield = 0.058;
-    }
-    
-    if (calcRoomType === "ldk1") {
-      baseYield -= 0.002;
-    } else if (calcRoomType === "ldk2") {
-      baseYield -= 0.004;
-    } else if (calcRoomType === "r1") {
-      baseYield += 0.002;
-    }
-    
-    return baseYield;
-  };
-
   const getCalculatedBuyPrice = () => {
     const dData = getSelectedDistrictData();
     const rateString = dData[calcRoomType as keyof typeof dData] as string;
     const rentYen = parseFloat(rateString) * 10000;
-    const annualRent = rentYen * 12;
-    
-    const yieldRate = getBuyYieldRate();
-    const basePrice = annualRent / yieldRate;
+    const basePrice = getBuyMarketEstimate({
+      region: dData.region,
+      district: dData.district,
+      layout: calcRoomType,
+      monthlyRentYen: rentYen
+    }).basePriceYen;
     
     let multiplierSum = 1.0;
     calcBuyModifiers.forEach(id => {
@@ -523,38 +498,28 @@ export function CalculatorTab(props: CalculatorTabProps) {
     return Math.max(Math.round(monthly), 0);
   };
 
-  const getDistrictBuyPrice = (district: string, roomType: "r1" | "k1" | "ldk1" | "ldk2") => {
+  const getDistrictBuyPrice = (district: string, roomType: RoomType) => {
     const rate = rentRates.find(d => d.district === district) || rentRates[0];
-    const rateString = rate[roomType] as string;
+    const rateString = (rate[roomType] || rate.ldk2) as string;
     const rentYen = parseFloat(rateString) * 10000;
-    const annualRent = rentYen * 12;
-    
-    const isTama = TAMA_CITIES.includes(rate.district);
-    const isTokyo23 = rate.region === "東京都" && !isTama;
-    
-    let baseYield = 0.05;
-    if (isTokyo23) {
-      baseYield = 0.040;
-    } else if (rate.region === "東京都") {
-      baseYield = 0.054;
-    } else if (rate.region === "神奈川") {
-      baseYield = 0.048;
-    } else if (rate.region === "大阪") {
-      baseYield = 0.052;
-    } else if (rate.region === "埼玉" || rate.region === "千葉") {
-      baseYield = 0.058;
-    }
-    
-    if (roomType === "ldk1") {
-      baseYield -= 0.002;
-    } else if (roomType === "ldk2") {
-      baseYield -= 0.004;
-    } else if (roomType === "r1") {
-      baseYield += 0.002;
-    }
-    
-    const basePrice = annualRent / baseYield;
-    return Math.max(Math.round(basePrice / 100000) * 10, 300);
+    const estimate = getBuyMarketEstimate({
+      region: rate.region,
+      district: rate.district,
+      layout: roomType,
+      monthlyRentYen: rentYen
+    });
+    return Math.max(Math.round(estimate.basePriceYen / 100000) * 10, 300);
+  };
+
+  const getSelectedBuyMarketEstimate = () => {
+    const rate = getSelectedDistrictData();
+    const monthlyRentYen = parseFloat((rate[calcRoomType] || rate.ldk2) as string) * 10000;
+    return getBuyMarketEstimate({
+      region: rate.region,
+      district: rate.district,
+      layout: calcRoomType,
+      monthlyRentYen
+    });
   };
 
   const replaceRentModifierGroup = (group: BudgetModifierId[], nextId?: BudgetModifierId) => {
@@ -579,7 +544,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
     ? [15, 20, 25, 30, 35, 40]
     : calcRoomType === "ldk1"
       ? [25, 30, 35, 40, 45, 50, 55, 60]
-      : [35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
+      : calcRoomType === "ldk2"
+        ? [35, 40, 45, 50, 55, 60, 65, 70, 75, 80]
+        : [50, 60, 70, 80, 90, 100, 110, 120];
   const guidedWalkMinutes = calcModifiers.includes("walk_within_5min") ? 5
     : calcModifiers.includes("walk_15_20min") ? 20
       : calcModifiers.includes("walk_11_15min") ? 15
@@ -595,7 +562,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
     return undefined;
   };
 
-  const selectGuidedRoomType = (type: "r1" | "k1" | "ldk1" | "ldk2") => {
+  const selectGuidedRoomType = (type: RoomType) => {
     setCalcRoomType(type);
     setGuidedMinArea(0);
     replaceRentModifierGroup(areaModifierGroup);
@@ -765,7 +732,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const affordableBuyLow = Math.floor((affordableBuyPrice * 0.9) / 100000) * 100000;
   const affordableBuyFees = affordableBuyPrice * buyFeeRate;
   const affordableDownPayment = affordableBuyPrice * (1 - quickLoanRatio);
-  const roomTypeLabel = calcRoomType === "r1" ? "1R" : calcRoomType === "k1" ? "1K／1DK" : calcRoomType === "ldk1" ? "1LDK" : "2LDK";
+  const roomTypeLabel = ROOM_TYPE_DETAIL_LABEL[calcRoomType];
   const formatManYenNumber = (value: number, maximumFractionDigits = 1) =>
     (value / 10000).toLocaleString("zh-TW", { maximumFractionDigits });
   const formatManYen = (value: number, maximumFractionDigits = 1) =>
@@ -1029,7 +996,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 {calcMode === "rent" ? (
                   <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
                     <p>在開始找房之前，先知道自己的預算能找到什麼樣的房子。</p>
-                    <p>本工具參考 SUUMO、LIFULL HOME'S、At Home 等主要租屋平台公開資訊，結合市場資料與 Linus 的第一線租屋經驗，分析不同地區、格局、設備與預算之間的取捨。</p>
+                    <p>本工具以 At Home 公開刊登物件最近 3 個月的平均租金為地區基準，結合 Linus 的第一線租屋經驗，分析不同地區、格局、設備與預算之間的取捨。</p>
                     <p>完成條件設定後，將估算月租金、初期費用、房源供給與市場競爭程度，協助您更有效率地規劃找房方向。</p>
                     <p className="pt-1 text-[11px] leading-normal text-zinc-400">部分房源樣本較少的地區將以模型推估呈現；實際租金與空室狀況仍以當期募集資訊為準。</p>
                   </div>
@@ -1288,15 +1255,15 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                       <fieldset>
                         <legend className="text-xs font-bold text-zinc-700">希望格局</legend>
-                        <div className="mt-1.5 grid h-11 grid-cols-4 border border-[#1A2A22] bg-white">
-                          {(["r1", "k1", "ldk1", "ldk2"] as const).map((type, index) => (
+                        <div className="mt-1.5 grid h-11 grid-cols-5 border border-[#1A2A22] bg-white">
+                          {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((type, index) => (
                             <button
                               key={type}
                               type="button"
                               onClick={() => selectGuidedRoomType(type)}
-                              className={`border-r border-[#1A2A22] text-[11px] font-bold last:border-r-0 ${calcRoomType === type ? "bg-[#18181B] text-white" : "hover:bg-[#F5F8F6]"}`}
+                              className={`${index > 0 ? "border-l border-[#1A2A22]" : ""} text-[11px] font-bold ${calcRoomType === type ? "bg-[#18181B] text-white" : "hover:bg-[#F5F8F6]"}`}
                             >
-                              {index === 0 ? "1R" : index === 1 ? "1K" : index === 2 ? "1LDK" : "2LDK"}
+                              {ROOM_TYPE_LABEL[type]}
                             </button>
                           ))}
                         </div>
@@ -1689,7 +1656,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 {rentRates.filter(r => r.region === region).map(item => (
                                   <option key={item.district} value={item.district} className="font-sans">
                                     {calcMode === "rent" ? (
-                                      `${toJapanesePlaceName(item.district)} (${ROOM_TYPE_LABEL[calcRoomType]}均價: ${item[calcRoomType]} 萬円/月)`
+                                      `${toJapanesePlaceName(item.district)} (${ROOM_TYPE_LABEL[calcRoomType]}均價: ${Number(item[calcRoomType]).toFixed(1)} 萬円/月)`
                                     ) : (
                                       `${toJapanesePlaceName(item.district)} (${ROOM_TYPE_LABEL[calcRoomType]}估計: ${getDistrictBuyPrice(item.district, calcRoomType).toLocaleString()} 萬円)`
                                     )}
@@ -1705,17 +1672,17 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       {/* Room Type Picker */}
                       <div className="space-y-1.5 font-sans">
                         <label className="text-xs font-bold text-zinc-700">選擇格局大小：</label>
-                        {/* 涵蓋範圍（1K 含 1DK、1LDK 含 2K／2DK）Hover 時顯示浮動標籤，維持按鈕視覺乾淨。 */}
-                        <div className="grid h-12 grid-cols-4 border border-[#1A2A22]">
-                          {(["r1", "k1", "ldk1", "ldk2"] as const).map(id => {
+                        {/* Hover 時顯示每個格局群組的實際涵蓋範圍，維持按鈕視覺乾淨。 */}
+                        <div className="grid h-12 grid-cols-5 border border-[#1A2A22]">
+                          {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((id, index) => {
                             const includesText = ROOM_TYPE_INCLUDES_LABEL[id];
                             return (
-                              <div key={id} className="group relative h-full">
+                              <div key={id} className={`group relative h-full ${index > 0 ? "border-l border-[#1A2A22]" : ""}`}>
                                 <button
                                   type="button"
                                   onClick={() => selectGuidedRoomType(id)}
                                   title={ROOM_TYPE_DETAIL_LABEL[id]}
-                                  className={`h-full w-full border-r border-[#1A2A22] last:border-r-0 text-xs font-medium cursor-pointer transition-colors ${
+                                  className={`h-full w-full text-xs font-medium cursor-pointer transition-colors ${
                                     calcRoomType === id
                                       ? "bg-[#1A2A22] text-white font-semibold"
                                       : "bg-white text-zinc-700 hover:bg-[#F5F8F6]"
@@ -1794,11 +1761,18 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     {calcMode === "buy" && (
                       <div className="text-xs text-zinc-500 flex items-center gap-1.5 bg-[#F5F8F6] p-3 border border-zinc-200 leading-normal font-sans">
                         <Info className="w-4 h-4 text-[#00a174] shrink-0" />
-                        <span>
-                          當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong> 區域，該格局規格下的合理市場中古公寓估計基本總價約為 <strong>
-                            {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}
-                          </strong> 萬日圓（估計投資年收益率約 <strong>{(getBuyYieldRate() * 100).toFixed(2)}%</strong>）。
-                        </span>
+                        {(() => {
+                          const estimate = getSelectedBuyMarketEstimate();
+                          return estimate.source === "official_transaction" ? (
+                            <span>
+                              當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong>，國交省交易中位數基本總價約 <strong>{getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}</strong> 萬日圓（樣本 {estimate.sampleCount} 筆）。
+                            </span>
+                          ) : (
+                            <span>
+                              當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong>，中古公寓模型基本總價約 <strong>{getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}</strong> 萬日圓（假設表面投報率 <strong>{(getModeledBuyYieldRate(getSelectedDistrictData().region, calcDistrict, calcRoomType) * 100).toFixed(1)}%</strong>）。
+                            </span>
+                          );
+                        })()}
                       </div>
                     )}
                     {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
@@ -1809,30 +1783,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     {getSelectedDistrictData().verificationStatus === "researched_limited" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2 text-[11px] leading-relaxed text-[#66583D] font-sans">
                         <strong className="text-[#B13818]">資料待更新：</strong>{getSelectedDistrictData().sourceNote || "目前採用仲介實務行情基準，尚未對應單一公開統計來源。"}
-                      </div>
-                    )}
-                    {calcMode === "rent" && getSelectedDistrictData().sourceDate && getSelectedDistrictData().verificationStatus === "verified_source" && (
-                      <div className="text-[10px] text-[#3F5147] bg-[#e6f6f1] border border-[#9ee2cf] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
-                        <span>
-                          資料基準：{getSelectedDistrictData().sourceUrl ? (
-                            <a href={getSelectedDistrictData().sourceUrl} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#007D5A]">
-                              {getSelectedDistrictData().sourceNote}
-                            </a>
-                          ) : getSelectedDistrictData().sourceNote}
-                        </span>
-                        <span className="font-mono">
-                          {getSelectedDistrictData().sourceDate} · {getSelectedDistrictData().includesManagementFee === true
-                            ? "含管理費／共益費"
-                            : getSelectedDistrictData().includesManagementFee === false
-                              ? "不含管理費／共益費"
-                              : "管理費計入方式未標示"}
-                        </span>
-                      </div>
-                    )}
-                    {calcMode === "buy" && (
-                      <div className="text-[10px] text-[#3F5147] bg-[#e6f6f1] border border-[#9ee2cf] px-3 py-2 font-sans flex flex-wrap justify-between gap-2">
-                        <span>估算基準：行政區租金基準 × 區域參考收益率模型</span>
-                        <span className="font-mono">中古公寓概算 · 未含購置諸費用</span>
                       </div>
                     )}
                   </div>
@@ -2090,7 +2040,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     {calcMode === "rent" ? (
                       <>
                         <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
-                          2026市場推估房租預算：
+                          {getSelectedDistrictData().sourceDate || "最新"} 市場推估房租預算：
                         </h4>
                         
                         {/* The Big Number */}
@@ -2102,7 +2052,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <span className="text-base font-bold text-[#1A2A22]">日圓 / 月</span>
                           </div>
                           <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
-                            約合 <strong>{(getCalculatedRent() / 10000).toFixed(2)}</strong> 萬日圓／月
+                            約合 <strong>{(getCalculatedRent() / 10000).toFixed(1)}</strong> 萬日圓／月
                           </div>
                         </div>
 
@@ -2375,10 +2325,26 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         {/* Breakdown buy details */}
                         <div className="space-y-4 text-xs font-sans">
                           <div>
-                            <span className="text-zinc-500 block">所選規格基本總價 (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：</span>
+                            <span className="text-zinc-500 block">
+                              {getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType)
+                                ? "國交省交易資料基本總價"
+                                : "租金收益率模型基本總價"} (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：
+                            </span>
                             <span className="font-bold text-zinc-800 font-mono">
                               {(getDistrictBuyPrice(calcDistrict, calcRoomType) * 10000).toLocaleString()} 円 ({getDistrictBuyPrice(calcDistrict, calcRoomType)} 萬日圓)
                             </span>
+                            {(() => {
+                              const estimate = getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType);
+                              return estimate ? (
+                                <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">
+                                  樣本 {estimate.sampleCount} 筆，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。
+                                </span>
+                              ) : (
+                                <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">
+                                  此地區目前採用租金 ÷ 假設表面投報率的概算，不代表實際成交價格。
+                                </span>
+                              );
+                            })()}
                           </div>
 
                           {calcBuyModifiers.length > 0 && (
@@ -2510,7 +2476,14 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                         {/* Buy Disclaimer */}
                         <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
-                          * 方法與限制：總價以區域租金基準 ÷ 假設表面投報率，再套用實務折溢價係數估算，並非直接對實價登錄逐筆統計或銀行鑑價。±15% 僅為閱讀概算的波動帶；實際價格還會受面積、樓層、座向、權利、管理、修繕、災害風險及交易背景影響。
+                          {getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType) ? (
+                            <>
+                              * 方法與限制：中心值使用國交省交易資料的行政區／間取り中位數，再套用條件係數；不是銀行鑑價或成交保證。±15% 僅為閱讀概算的波動帶。<br />
+                              <span lang="ja">{MLIT_API_CREDIT}</span>
+                            </>
+                          ) : (
+                            <>* 方法與限制：總價以區域租金基準 ÷ 假設表面投報率，再套用實務折溢價係數估算；不是實際成交統計或銀行鑑價。±15% 僅為閱讀概算的波動帶；實際價格還會受面積、樓層、座向、權利、管理、修繕、災害風險及交易背景影響。</>
+                          )}
                         </div>
                       </>
                     )}
