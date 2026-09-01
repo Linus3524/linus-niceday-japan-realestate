@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { monthRange } from "../api/vercel-analytics";
+import { monthRange, totalsFromEnvironmentAggregate } from "../api/vercel-analytics";
 import { monthOptions, monthlyFeatureTotals } from "../src/components/UsageDashboard";
 import { isTrackableAction } from "../src/lib/usageMetrics";
 
@@ -27,6 +27,14 @@ assert.equal(
 assert.equal(september.until, String(septemberFirstJst.getTime()), "本月應查到現在");
 assert.equal(Number(august.until) + 1, Number(september.since), "相鄰月份不可重疊或缺漏");
 assert.equal(isTrackableAction("wechat-copy"), true, "複製 WeChat ID 應列入聯絡意圖");
+
+assert.deepEqual(
+  totalsFromEnvironmentAggregate({
+    data: [{ environment: "production", visitors: 1, pageviews: 2 }],
+  }),
+  { visitors: 1, pageviews: 2 },
+  "網站總計應使用保留東京時間邊界的 production aggregate",
+);
 
 assert.deepEqual(
   monthlyFeatureTotals({

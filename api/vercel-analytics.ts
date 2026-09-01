@@ -78,6 +78,21 @@ function toRows(payload: any): AggregateRow[] {
   });
 }
 
+/**
+ * 東京時間の月境界を保ったまま production の合計を取り出す。
+ * visits/count はミリ秒を渡しても UTC の日単位へ丸めるため、東京時間の月初に
+ * 前日分が混ざる。aggregate は時刻を保持するので、environment で 1 行にまとめた
+ * 値を合計カードにも使う。
+ */
+export function totalsFromEnvironmentAggregate(payload: any) {
+  const rows = toRows(payload);
+  const production = rows.find(row => row.label === "production") ?? rows[0];
+  return {
+    visitors: production?.visitors ?? 0,
+    pageviews: production?.count ?? 0,
+  };
+}
+
 export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
@@ -110,34 +125,54 @@ export default async function handler(req: any, res: any) {
 
   try {
     const aggregate = (by: string, limit = 5) =>
-      vercelQuery("/v1/query/web-analytics/visits/aggregate", { since, until, by, limit: String(limit) }, apiToken);
+      vercelQuery(
+        "/v1/query/web-analytics/visits/aggregate",
+        {
+          since,
+          until,
+          by,
+          limit: String(limit),
+          // 後台は公開サイトの利用状況を見る場所。Preview の検証アクセスは混ぜない。
+          filter: "environment eq 'production'",
+        },
+        apiToken,
+      );
 
     // 自訂事件查詢在 Hobby 方案會回 402（Vercel 把它列為 Pro 以上功能）。
     // 它只是加分項，不能讓它拖垮整個流量區——先前用 Promise.all 一起等，
     // 結果這一個 402 就讓訪客數、國家、頁面全部消失，畫面只剩一行錯誤訊息。
     const eventsOrEmpty = vercelQuery(
       "/v1/query/web-analytics/events/aggregate",
-      { since, until, by: "eventName", limit: "10" },
+      {
+        since,
+        until,
+        by: "eventName",
+        limit: "10",
+        filter: "environment eq 'production'",
+      },
       apiToken,
     ).catch(error => {
       console.warn("custom events unavailable (ignored):", error?.message);
       return null;
     });
 
-    const [count, countries, pages, referrers, events] = await Promise.all([
-      vercelQuery("/v1/query/web-analytics/visits/count", { since, until }, apiToken),
+    const [environmentTotal, countries, pages, referrers, events] = await Promise.all([
+      // count API は時刻を UTC の日境界へ丸めるため使わない。aggregate はミリ秒境界を保持する。
+      aggregate("environment", 1),
       aggregate("country"),
       aggregate("requestPath"),
       aggregate("referrerHostname"),
       eventsOrEmpty,
     ]);
 
+    const total = totalsFromEnvironmentAggregate(environmentTotal);
+
     return res.json({
       month,
       since,
       until,
-      visitors: Number(count?.data?.visitors) || 0,
-      pageviews: Number(count?.data?.pageviews) || 0,
+      visitors: total.visitors,
+      pageviews: total.pageviews,
       countries: toRows(countries),
       pages: toRows(pages),
       referrers: toRows(referrers),
