@@ -15,6 +15,7 @@
     "test:athome-rent": "tsx scripts/test-athome-rent-snapshot.ts",
     "test:buy-market": "tsx scripts/test-buy-market.ts",
     "test:market-sources": "tsx scripts/test-market-data-sources.ts",
+    "test:admin-metrics": "tsx scripts/test-admin-metrics.ts",
     "data:review": "node scripts/review-market-sources.mjs && node scripts/review-rent-data.mjs",
     "data:review:rent": "node scripts/review-rent-data.mjs",
     "data:update:athome": "tsx scripts/update-athome-rent-data.ts",

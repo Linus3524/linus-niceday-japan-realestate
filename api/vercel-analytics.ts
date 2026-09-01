@@ -25,25 +25,20 @@ interface AggregateRow {
 /**
  * 月份字串換算成查詢區間。
  *
- * until 是「不含」的邊界，日期字串會被當成該日 00:00。所以查本月時不能截到
- * 「今天」——那等於把今天整天的資料排除掉，畫面上會出現有訪客數卻沒有任何
- * 國家與頁面的怪狀態。要截就截到「明天」，今天的資料才進得來。
+ * Vercel 的 since／until 都包含邊界，而且 YYYY-MM-DD 會按 Vercel 的日期邊界
+ * 解讀，無法精確表示日本月份。改傳毫秒時間戳：歷史月份截止在東京月底最後
+ * 1 毫秒，本月截止在查詢當下，讓相鄰月份既不重疊也不漏掉日本凌晨的流量。
  */
 export function monthRange(month: string, now = new Date()) {
   const [year, mon] = month.split("-").map(Number);
-  const start = new Date(Date.UTC(year, mon - 1, 1));
-  const monthEnd = new Date(Date.UTC(year, mon, 1));
-  // 月份選單與站內統計都以東京時間切月，這裡也必須一致。若在日本 9/1 凌晨
-  // 仍用 UTC 算「明天」，會得到 since=9/1、until=9/1 的空查詢區間。
-  const tokyo = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const tomorrow = new Date(Date.UTC(
-    tokyo.getUTCFullYear(),
-    tokyo.getUTCMonth(),
-    tokyo.getUTCDate() + 1,
-  ));
+  const tokyoOffsetMs = 9 * 60 * 60 * 1000;
+  const startMs = Date.UTC(year, mon - 1, 1) - tokyoOffsetMs;
+  const endMs = Date.UTC(year, mon, 1) - tokyoOffsetMs - 1;
+  // UI 不會提供未來月份；Math.max 仍保護直接呼叫 API 時不產生 until < since。
+  const untilMs = Math.max(startMs, Math.min(now.getTime(), endMs));
   return {
-    since: start.toISOString().slice(0, 10),
-    until: (monthEnd > tomorrow ? tomorrow : monthEnd).toISOString().slice(0, 10),
+    since: String(startMs),
+    until: String(untilMs),
   };
 }
 
