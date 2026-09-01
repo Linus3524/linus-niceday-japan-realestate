@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { trackAction } from "../lib/trackView";
 import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList, AlertCircle, Lightbulb } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
+import { PageIntroCard } from "./PageIntroCard";
 
 interface ContactTabProps {
   contactFormType: "rent" | "buy";
@@ -30,15 +31,15 @@ export function ContactTab(props: ContactTabProps) {
               id="pane-contact"
             >
               {/* Preface section */}
-              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="contact-intro">
-                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#007d5a] flex items-center gap-2">
-                  <Smile className="w-5 h-5 text-[#00a174]" />
-                  <span>專業台灣仲介 Linus，陪您安心找到日本的家</span>
-                </h3>
-                <p className="text-xs md:text-sm text-zinc-700 leading-relaxed text-justify font-sans">
+              <PageIntroCard
+                id="contact-intro"
+                icon={Smile}
+                title="專業台灣仲介 Linus，陪您安心找到日本的家"
+              >
+                <p>
                   無論您正準備赴日工作、留學或長期定居，想租屋、買房置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審査條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
                 </p>
-              </div>
+              </PageIntroCard>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start" id="contact-business-layout">
                 {/* Business Card (Left 5 Columns) */}

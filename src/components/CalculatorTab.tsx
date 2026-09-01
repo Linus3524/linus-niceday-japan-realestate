@@ -19,6 +19,7 @@ import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
 import { renderFormattedText } from "../lib/format";
 import { RentCriteriaSummary } from "./RentCriteriaSummary";
+import { PageIntroCard } from "./PageIntroCard";
 
 interface CalculatorTabProps {
   calcMode: "rent" | "buy";
@@ -987,29 +988,36 @@ export function CalculatorTab(props: CalculatorTabProps) {
               </div>
 
               {/* Preface Intro for Calc */}
-              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft" id="calc-intro">
-                <h3 className="text-base font-bold border-b border-[#DDE3DF] pb-2.5 mb-3 text-[#007d5a] flex items-center gap-2 font-sans">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[19px] leading-none text-[#00a174]" aria-hidden="true">calculate</span>
-                  {calcMode === "rent" ? (
-                    <span>日本租屋預算與條件評估</span>
-                  ) : (
-                    <span>日本買房總價與貸款評估</span>
-                  )}
-                </h3>
+              <PageIntroCard
+                id="calc-intro"
+                icon="calculate"
+                title={calcMode === "rent" ? "日本租屋預算與條件評估" : "日本買房總價與貸款評估"}
+                sourceNote={
+                  calcMode === "rent"
+                    ? "資料來源：At Home 公開租金行情、第一線租賃實務數據"
+                    : "資料來源：日本國土交通省 不動產資訊資料庫（不動産情報ライブラリ）中古公寓成交實價"
+                }
+              >
                 {calcMode === "rent" ? (
-                  <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
-                    <p>找房最怕看了一圈才發現超出預算。這個工具能陪您將月租、格局與生活需求整合評估，找出真正容易租到的理想方向。</p>
-                    <p>估算結合了 At Home 公開刊登行情與第一線實務經驗（包含屋齡、設備、車站距離等細節），不只呈現合理月租與初期費用，還會提醒哪些條件可能讓可選房源變少，讓您在正式找房前就能心中有數、做好取捨。</p>
-                    <p className="pt-1 text-[11px] text-zinc-400">資料來源：At Home 公開租金行情、第一線租賃實務數據</p>
-                  </div>
+                  <>
+                    <p>
+                      找房最怕看了一圈才發現超出預算。這個工具能陪您將月租、格局與生活需求整合評估，找出真正容易租到的理想方向。
+                    </p>
+                    <p>
+                      估算結合了 At Home 公開刊登行情與第一線實務經驗（包含屋齡、設備、車站距離等細節），不只呈現合理月租與初期費用，還會提醒哪些條件可能讓可選房源變少，讓您在正式找房前就能心中有數、做好取捨。
+                    </p>
+                  </>
                 ) : (
-                  <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
-                    <p>買房除了看總價，更要算清楚手頭的現金、各項交易費用與每月還款壓力，才不會讓生活負擔過重。</p>
-                    <p>這裡能快速幫您整理出適合的購屋預算區間，並直接對照日本國土交通省的中古公寓實際成交行情。讓您不只清楚「能買多少」，也知道「心儀地區近期大概買在哪裡」，提早規劃自備款與格局，買得踏實又安心。</p>
-                    <p className="pt-1 text-[11px] text-zinc-400">資料來源：日本國土交通省 不動產資訊資料庫（不動産情報ライブラリ）中古公寓成交實價</p>
-                  </div>
+                  <>
+                    <p>
+                      買房除了看總價，更要算清楚手頭的現金、各項交易費用與每月還款壓力，才不會讓生活負擔過重。
+                    </p>
+                    <p>
+                      這裡能快速幫您整理出適合的購屋預算區間，並直接對照日本國土交通省的中古公寓實際成交行情。讓您不只清楚「能買多少」，也知道「心儀地區近期大概買在哪裡」，提早規劃自備款與格局，買得踏實又安心。
+                    </p>
+                  </>
                 )}
-              </div>
+              </PageIntroCard>
 
               {/* Quick budget health check */}
               <section className="border border-[#1A2A22] bg-white" aria-label={calcMode === "rent" ? "租屋需求與市場分析" : "購屋預算快速試算"}>

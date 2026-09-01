@@ -4,6 +4,7 @@ import { Send, ExternalLink } from "lucide-react";
 import { formatMessageText } from "../lib/format";
 import { linusContact } from "../data/rentGuideData";
 import { trackAction } from "../lib/trackView";
+import { PageIntroCard } from "./PageIntroCard";
 
 interface ChatTabProps {
   chatMessages: Array<{ role: "user" | "model"; text: string }>;
@@ -84,18 +85,15 @@ export function ChatTab(props: ChatTabProps) {
               className="space-y-6"
               id="pane-chat"
             >
-              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="chat-header-card">
-                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs tracking-widest font-sans">
-                  AI 顧問
-                </div>
-                <h3 className="text-lg font-bold border-b border-[#DDE3DF] pb-3 mb-3 text-[#007d5a] flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[21px] leading-none text-[#00a174]" aria-hidden="true">smart_toy</span>
-                  <span>Linus ╳ 24 小時 AI 顧問</span>
-                </h3>
-                <p className="text-xs md:text-sm text-zinc-600 leading-relaxed font-sans">
-                  AI 顧問整合了本站的租屋與買房知識：從敷金、審査與找房預算，到買房流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論你正在找租屋、規劃自住買房或評估日本不動產投資，都可以先從這裡開始。
+              <PageIntroCard
+                id="chat-header-card"
+                icon="smart_toy"
+                title="Linus ╳ 24 小時 AI 顧問"
+              >
+                <p>
+                  AI 顧問整合了本站的租屋與買房知識：從敷金、審査與找房預算，到買房流程、貸款、帶租約投資房與民泊規則，都可以直接提問。無論您正在找租屋、規劃自住買房或評估日本不動產投資，都可以先從這裡開始。
                 </p>
-              </div>
+              </PageIntroCard>
 
               {/* Chat Dialog Grid Container */}
               <div className="border border-[#DDE3DF] bg-white h-[600px] flex flex-col justify-between overflow-hidden shadow-colored-soft" id="chat-box-interface">

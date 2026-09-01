@@ -19,6 +19,7 @@ import { renderFormattedText } from "../lib/format";
 import { QACard } from "./QACard";
 import { JapaneseRuby } from "./JapaneseRuby";
 import { TermDetailList } from "./TermDetailList";
+import { PageIntroCard } from "./PageIntroCard";
 
 const availabilityStyle = {
   "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
@@ -229,58 +230,53 @@ export function RentGuideTab(props: RentGuideTabProps) {
               id="pane-cards"
             >
               {/* Preface Section */}
-              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="cards-preface">
-                {/* Traditional Japanese Ribbon Flag decoration */}
-                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
-                  前言 ❀
-                </div>
-                <h3 className="text-xl font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#00a174]" aria-hidden="true">key</span>
-                  <span>致所有來日本打拼的人</span>
-                  <span className="text-[#00a174] text-sm font-normal">By Linus</span>
-                </h3>
-                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#00a174] first-letter:mr-1">
+              <PageIntroCard
+                id="cards-preface"
+                icon="key"
+                title="致所有來日本打拼的人"
+                actions={
+                  <>
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                      <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
+                        <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">calculate</span>
+                        <span>需要估算理想房租預算嗎？</span>
+                      </h4>
+                      <p className="text-xs text-zinc-600 mt-1">
+                        根據東京 23 區實務數據，自動套用免治馬桶、步行時間、屋齡等增減價公式。
+                      </p>
+                      <button 
+                        onClick={() => handleTabChange("calculator")}
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>前往預算計算機</span> <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                      <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
+                        <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
+                        <span>有特定的疑難雜症想直接問 AI 嗎？</span>
+                      </h4>
+                      <p className="text-xs text-zinc-600 mt-1">
+                        本系統已將完整大補帖融入 AI 顧問，支援多輪對話，能快速精準解答。
+                      </p>
+                      <button 
+                        onClick={() => handleTabChange("chat")}
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>開始 AI 找房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </>
+                }
+              >
+                <p>
                   大家好，我是 Linus，目前在日本東京從事不動產仲介工作。來到日本留學、打工度假或就職，找一個能安心落腳的家，往往是最先面對的大事。為了協助大家在初來乍到時，用較短時間看懂日本租屋的制度與常見費用、少走冤枉路，我整理了這份「日本租屋知識大補帖」。
                 </p>
-                <p className="text-zinc-800 leading-relaxed text-justify mt-4">
+                <p>
                   日本租屋有許多和台灣不同的一次性費用，例如禮金、保證公司費用與鑰匙更換費；契約條款也會因物件與管理公司而不同。希望這份租屋知識整理、租金預算計算機與 AI 顧問，能幫您在申請前看懂條件、做好預算。祝您在日本的生活一切順利！❀
                 </p>
-                
-                {/* Visual Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
-                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
-                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
-                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">calculate</span>
-                      <span>需要估算理想房租預算嗎？</span>
-                    </h4>
-                    <p className="text-xs text-zinc-600 mt-1">
-                      根據東京 23 區實務數據，自動套用免治馬桶、步行時間、屋齡等增減價公式。
-                    </p>
-                    <button 
-                      onClick={() => handleTabChange("calculator")}
-                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>前往預算計算機</span> <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
-                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
-                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
-                      <span>有特定的疑難雜症想直接問 AI 嗎？</span>
-                    </h4>
-                    <p className="text-xs text-zinc-600 mt-1">
-                      本系統已將完整大補帖融入 AI 顧問，支援多輪對話，能快速精準解答。
-                    </p>
-                    <button 
-                      onClick={() => handleTabChange("chat")}
-                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>開始 AI 找房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+              </PageIntroCard>
 
               {/* Grid Control & Search Block */}
               <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="kb-filter-bar">

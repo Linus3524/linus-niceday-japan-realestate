@@ -11,6 +11,7 @@ import { SectionHeading } from "./SectionHeading";
 import { matchesAllTokens, tokenizeQuery } from "../lib/search";
 import { JapaneseRuby } from "./JapaneseRuby";
 import { hasMinimumKnowledgeSearchLength } from "../data/rentStaticSearchData";
+import { PageIntroCard } from "./PageIntroCard";
 
 interface BuyGuideTabProps {
   buyCategory: string;
@@ -274,58 +275,53 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               id="pane-buy-house"
             >
               {/* Preface Section */}
-              <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 md:p-8 relative transition-all duration-300 hover:shadow-colored-soft" id="buy-house-preface">
-                {/* Traditional Japanese Ribbon Flag decoration */}
-                <div className="absolute top-0 right-8 bg-[#00a174] text-white px-3 py-1 text-xs select-none uppercase tracking-widest font-sans">
-                  置產 ❀
-                </div>
-                <h3 className="text-xl font-bold border-b border-[#DDE3DF] pb-3 mb-4 flex items-center gap-2">
-                  <span className="material-symbols-rounded shrink-0 select-none text-[22px] leading-none text-[#00a174]" aria-hidden="true">real_estate_agent</span>
-                  <span>日本買房置產</span>
-                  <span className="text-[#00a174] text-sm font-normal">By Linus</span>
-                </h3>
-                <p className="text-zinc-800 leading-relaxed text-justify first-letter:text-2xl first-letter:font-bold first-letter:text-[#00a174] first-letter:mr-1">
+              <PageIntroCard
+                id="buy-house-preface"
+                icon="real_estate_agent"
+                title="日本買房置產"
+                actions={
+                  <>
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                      <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
+                        <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
+                        <span>需要為您評估買房方案或試算嗎？</span>
+                      </h4>
+                      <p className="text-xs text-zinc-600 mt-1">
+                        AI 會優先參考本站整理資料，並在貸款、稅務與住宿法規問題中提示適用條件及確認單位。
+                      </p>
+                      <button 
+                        onClick={() => handleTabChange("chat")}
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>開始 AI 買房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
+                      <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
+                        <Smile className="w-4 h-4 text-[#00a174]" />
+                        <span>需要直接進行日本物件配對？</span>
+                      </h4>
+                      <p className="text-xs text-zinc-600 mt-1">
+                        直接聯絡 Linus，協助您尋找網上公開或未公開的優質房源。
+                      </p>
+                      <button 
+                        onClick={() => handleTabChange("contact")}
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>取得 Linus 聯繫管道</span> <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </>
+                }
+              >
+                <p>
                   許多台灣朋友在日本生活逐漸安定後，也開始規劃買房自住、長期出租，或研究住宿事業。外國人原則上可以取得日本不動產，但產權登記、匯款、融資、稅務與住宿營業各有不同程序；除了房價與表面投報率，還有不少細節需要先釐清。
                 </p>
-                <p className="text-zinc-800 leading-relaxed text-justify mt-4">
+                <p>
                   為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
                 </p>
- 
-                {/* Visual Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-zinc-300 font-sans">
-                  <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
-                      <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
-                      <span>需要為您評估買房方案或試算嗎？</span>
-                    </h4>
-                    <p className="text-xs text-zinc-600 mt-1">
-                      AI 會優先參考本站整理資料，並在貸款、稅務與住宿法規問題中提示適用條件及確認單位。
-                    </p>
-                    <button 
-                      onClick={() => handleTabChange("chat")}
-                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>開始 AI 買房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
- 
-                  <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                    <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
-                      <Smile className="w-4 h-4" />
-                      <span>需要直接進行日本物件配對？</span>
-                    </h4>
-                    <p className="text-xs text-zinc-600 mt-1">
-                      直接聯絡 Linus，協助您尋找網上公開或未公開的優質房源。
-                    </p>
-                    <button 
-                      onClick={() => handleTabChange("contact")}
-                      className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>取得 Linus 聯繫管道</span> <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+              </PageIntroCard>
  
               {/* Grid Control & Search Block */}
               <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="buy-filter-bar">
