@@ -81,14 +81,20 @@ const EVENT_LABEL: Record<string, string> = {
   "rent-analysis-submitted": "送出 AI 需求分析",
 };
 
-function monthOptions() {
+export const ADMIN_METRICS_START_MONTH = "2026-08";
+
+export function monthOptions(now = new Date()) {
   const options: string[] = [];
-  const now = new Date();
-  for (let back = 0; back < 12; back += 1) {
-    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - back, 1));
-    options.push(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
+  const tokyo = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const currentOrdinal = tokyo.getUTCFullYear() * 12 + tokyo.getUTCMonth();
+  const [startYear, startMonth] = ADMIN_METRICS_START_MONTH.split("-").map(Number);
+  const startOrdinal = startYear * 12 + startMonth - 1;
+  for (let ordinal = currentOrdinal; ordinal >= startOrdinal; ordinal -= 1) {
+    const year = Math.floor(ordinal / 12);
+    const month = ordinal % 12 + 1;
+    options.push(`${year}-${String(month).padStart(2, "0")}`);
   }
-  return options;
+  return options.length ? options : [ADMIN_METRICS_START_MONTH];
 }
 
 /** 把 { "17": { chat: 3 } } 轉成依日期排序、且補齊功能欄位的表格列。 */
@@ -100,6 +106,17 @@ function dailyRows(daily: UsageSummary["daily"], features: string[]) {
       counts: features.map(feature => daily[day]?.[feature] ?? 0),
       sum: features.reduce((acc, feature) => acc + (daily[day]?.[feature] ?? 0), 0),
     }));
+}
+
+/** 功能卡片必須跟月份選單同步；跨月累計只留在頁尾作為補充資訊。 */
+export function monthlyFeatureTotals(daily: UsageSummary["daily"]) {
+  const totals: Record<string, number> = {};
+  for (const counts of Object.values(daily)) {
+    for (const [feature, count] of Object.entries(counts)) {
+      totals[feature] = (totals[feature] ?? 0) + (Number(count) || 0);
+    }
+  }
+  return totals;
 }
 
 export function UsageDashboard({ onBack }: { onBack: () => void }) {
@@ -195,6 +212,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
       }))
       .sort((a, b) => b.sum - a.sum);
   }, [data, features]);
+
+  const monthlyTotals = useMemo(
+    () => monthlyFeatureTotals(data?.daily ?? {}),
+    [data],
+  );
 
   if (!token) {
     return (
@@ -402,22 +424,22 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
               功能使用次數
-              <span className="ml-2 font-normal text-xs text-zinc-400">伺服器端實際呼叫</span>
+              <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}・伺服器端實際呼叫</span>
             </h2>
             <div className="mb-6 grid gap-3 sm:grid-cols-2">
               {features.map(feature => (
                 <div key={feature} className="border border-[#DDE3DF] bg-white p-5">
                   <div className="text-xs text-zinc-500">{FEATURE_LABEL[feature] ?? feature}</div>
                   <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
-                    {(data.total[feature] ?? 0).toLocaleString()}
+                    {(monthlyTotals[feature] ?? 0).toLocaleString()}
                   </div>
-                  <div className="mt-1 text-[11px] leading-5 text-zinc-400">累計總次數（所有月份）</div>
+                  <div className="mt-1 text-[11px] leading-5 text-zinc-400">本月完成次數</div>
                 </div>
               ))}
             </div>
 
             <p className="mb-6 text-xs text-zinc-500">
-              上方卡片為累計總數；下方兩張表是 {data.month} 這個月的明細。
+              上方卡片與下方兩張表皆為 {data.month} 這個月的資料。
               這一區只計算真的送出並得到回覆的次數。
             </p>
 

@@ -29,16 +29,27 @@ interface AggregateRow {
  * 「今天」——那等於把今天整天的資料排除掉，畫面上會出現有訪客數卻沒有任何
  * 國家與頁面的怪狀態。要截就截到「明天」，今天的資料才進得來。
  */
-function monthRange(month: string) {
+export function monthRange(month: string, now = new Date()) {
   const [year, mon] = month.split("-").map(Number);
   const start = new Date(Date.UTC(year, mon - 1, 1));
   const monthEnd = new Date(Date.UTC(year, mon, 1));
-  const now = new Date();
-  const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+  // 月份選單與站內統計都以東京時間切月，這裡也必須一致。若在日本 9/1 凌晨
+  // 仍用 UTC 算「明天」，會得到 since=9/1、until=9/1 的空查詢區間。
+  const tokyo = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const tomorrow = new Date(Date.UTC(
+    tokyo.getUTCFullYear(),
+    tokyo.getUTCMonth(),
+    tokyo.getUTCDate() + 1,
+  ));
   return {
     since: start.toISOString().slice(0, 10),
     until: (monthEnd > tomorrow ? tomorrow : monthEnd).toISOString().slice(0, 10),
   };
+}
+
+function currentTokyoMonth(now = new Date()) {
+  const tokyo = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  return `${tokyo.getUTCFullYear()}-${String(tokyo.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
 async function vercelQuery(path: string, params: Record<string, string>, apiToken: string) {
@@ -99,7 +110,7 @@ export default async function handler(req: any, res: any) {
 
   const month = typeof req.query?.month === "string" && /^\d{4}-\d{2}$/.test(req.query.month)
     ? req.query.month
-    : new Date().toISOString().slice(0, 7);
+    : currentTokyoMonth();
   const { since, until } = monthRange(month);
 
   try {
