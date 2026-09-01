@@ -13,7 +13,7 @@ export type TrackableView =
   | "rent-guide" | "buy-guide" | "calculator" | "ai-advisor" | "contact" | "threads" | "policy";
 
 /** 重要動作。與分頁瀏覽分開：這是「做了什麼」，不是「看了哪一區」。 */
-export type TrackableAction = "line-add" | "line-copy" | "line-qr" | "wechat-qr";
+export type TrackableAction = "line-add" | "line-copy" | "line-qr" | "wechat-copy" | "wechat-qr";
 
 // 同一個分頁在短時間內重複回報沒有意義（切走再切回、元件重新掛載都會觸發）。
 // 記住上一個回報的分頁，只在真的換頁時才送。
@@ -70,7 +70,7 @@ export function trackView(view: TrackableView) {
 }
 
 /**
- * 回報重要動作（目前是加 LINE 好友與複製 LINE ID）。
+ * 回報重要動作（加好友、複製 ID 與展開 QR）。
  *
  * 不做去重：同一個人點兩次就是兩次意圖，這裡要看的是「有多少次真的想聯絡」，
  * 而不是有多少人。用 sendBeacon 送出，所以點完立刻跳離開站也不會漏掉。

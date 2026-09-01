@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, LoaderCircle, RefreshCw } from "lucide-react";
 
 /**
@@ -39,6 +39,7 @@ const ACTION_LABEL: Record<string, string> = {
   "line-add": "點擊加 LINE 好友",
   "line-copy": "複製 LINE ID",
   "line-qr": "開啟 LINE QR 掃碼",
+  "wechat-copy": "複製 WeChat ID",
   "wechat-qr": "展開 WeChat QR 掃碼",
 };
 
@@ -47,7 +48,18 @@ const ACTION_SOURCE_NOTE: Record<string, string> = {
   "line-add": "首頁卡片 ＋ 聯絡分頁 ＋ AI 顧問回覆",
   "line-copy": "首頁卡片 ＋ 聯絡分頁",
   "line-qr": "首頁頭像翻卡 ＋ 聯絡分頁展開（合計）",
+  "wechat-copy": "聯絡分頁",
   "wechat-qr": "聯絡分頁展開",
+};
+
+const SOURCE_LABEL: Record<string, string> = {
+  line: "LINE",
+  instagram: "Instagram",
+  facebook: "Facebook",
+  threads: "Threads",
+  qr: "QR Code",
+  card: "名片／宣傳卡",
+  other: "其他來源",
 };
 
 // 名稱必須與前端分頁列一致（App.tsx 的分頁 label），
@@ -130,12 +142,20 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
   const [trafficNote, setTrafficNote] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 月份快速切換時，只允許最後一次請求更新畫面，避免較慢的舊月份回應覆蓋新月份。
+  const loadRequestId = useRef(0);
 
   const load = async (activeToken: string, targetMonth: string) => {
-    if (!activeToken) return;
+    const requestId = ++loadRequestId.current;
+    if (!activeToken) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     setTrafficNote(null);
+    setData(null);
+    setTraffic(null);
 
     // token 走 header 不走查詢字串：網址會被寫進伺服器日誌、瀏覽器歷史與
     // Referer 標頭，把權杖放在那裡等於到處留下副本。
@@ -148,28 +168,36 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
       if (response.status === 401) throw new Error("密碼不正確。");
       if (response.status === 503) throw new Error("伺服器設定不完整（缺少後台密碼或資料庫連線），需要工程協助。");
       if (!response.ok) throw new Error(`讀取失敗（HTTP ${response.status}）。`);
-      setData(await response.json());
+      const body = await response.json();
+      if (requestId === loadRequestId.current) setData(body);
     } catch (err: any) {
-      setError(err?.message || "讀取失敗。");
-      setData(null);
+      if (requestId === loadRequestId.current) {
+        setError(err?.message || "讀取失敗。");
+        setData(null);
+      }
     }
 
     try {
       const response = await flow;
       if (response.ok) {
-        setTraffic(await response.json());
+        const body = await response.json();
+        if (requestId === loadRequestId.current) setTraffic(body);
       } else {
         const body = await response.json().catch(() => null);
         // 501 = 還沒設定 token（待辦），其餘才是真的故障。
-        setTrafficNote(body?.error || `流量數據讀取失敗（HTTP ${response.status}）。`);
-        setTraffic(null);
+        if (requestId === loadRequestId.current) {
+          setTrafficNote(body?.error || `流量數據讀取失敗（HTTP ${response.status}）。`);
+          setTraffic(null);
+        }
       }
     } catch {
-      setTrafficNote("流量數據讀取失敗。");
-      setTraffic(null);
+      if (requestId === loadRequestId.current) {
+        setTrafficNote("流量數據讀取失敗。");
+        setTraffic(null);
+      }
     }
 
-    setLoading(false);
+    if (requestId === loadRequestId.current) setLoading(false);
   };
 
   useEffect(() => { load(token, month); }, [token, month]);
@@ -215,6 +243,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
   const monthlyTotals = useMemo(
     () => monthlyFeatureTotals(data?.daily ?? {}),
+    [data],
+  );
+
+  const sourceRows = useMemo(
+    () => Object.entries(data?.sources ?? {})
+      .map(([source, count]) => ({ source, count: Number(count) || 0 }))
+      .sort((a, b) => b.count - a.count),
     [data],
   );
 
@@ -278,7 +313,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             </button>
             <button
               type="button"
-              onClick={() => { sessionStorage.removeItem(TOKEN_STORAGE_KEY); setToken(""); }}
+              onClick={() => {
+                loadRequestId.current += 1;
+                sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+                setToken("");
+                setData(null);
+                setTraffic(null);
+              }}
               className="h-9 border border-[#C9D8D1] bg-white px-3 text-xs text-zinc-500 hover:border-[#00a174]"
             >
               登出
@@ -299,7 +340,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             </h2>
             <div className="mb-3 grid gap-3 sm:grid-cols-2">
               <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">不重複訪客</div>
+                <div className="text-xs text-zinc-500">每日不重複訪客合計</div>
                 <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
               </div>
               <div className="border border-[#DDE3DF] bg-white p-5">
@@ -321,7 +362,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
                           {row.visitors.toLocaleString()}
                           <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
-                            人／{row.count.toLocaleString()} 次
+                            人次／{row.count.toLocaleString()} 次
                           </span>
                         </span>
                       </li>
@@ -362,6 +403,35 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {data && (
           <>
+            <section className="mb-8">
+              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+                自訂連結來源
+                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}・from／utm_source</span>
+              </h2>
+              <div className="border border-[#DDE3DF] bg-white">
+                {sourceRows.length ? (
+                  <ul className="divide-y divide-[#F5F8F6]">
+                    {sourceRows.map(row => (
+                      <li key={row.source} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
+                        <span className="text-[#3F5147]">
+                          {SOURCE_LABEL[row.source] ?? row.source}
+                          {SOURCE_LABEL[row.source] && (
+                            <span className="ml-2 font-jost text-[11px] text-zinc-400">{row.source}</span>
+                          )}
+                        </span>
+                        <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()} 次</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有帶來源標記的造訪</p>
+                )}
+              </div>
+              <p className="mt-2 text-[11px] leading-5 text-zinc-400">
+                只計算網址帶有 from 或 utm_source 的造訪；直接輸入網址與一般轉介請看上方 Vercel「連結來源」。
+              </p>
+            </section>
+
             {/* 分頁瀏覽：自己記的，因為整站只有一個路徑，Vercel 分不出各分頁 */}
             <section className="mb-8">
               <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">

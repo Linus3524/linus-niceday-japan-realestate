@@ -461,6 +461,7 @@ export default function App() {
   const handleCopyWechat = () => {
     if (linusContact.wechatId) {
       navigator.clipboard.writeText(linusContact.wechatId);
+      trackAction("wechat-copy");
       setCopiedWechat(true);
       setTimeout(() => setCopiedWechat(false), 2000);
     }

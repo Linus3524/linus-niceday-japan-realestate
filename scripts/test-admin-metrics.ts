@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { monthRange } from "../api/vercel-analytics";
 import { monthOptions, monthlyFeatureTotals } from "../src/components/UsageDashboard";
+import { isTrackableAction } from "../src/lib/usageMetrics";
 
 const septemberFirstJst = new Date("2026-08-31T15:30:00.000Z");
 assert.deepEqual(monthOptions(septemberFirstJst), ["2026-09", "2026-08"]);
@@ -25,6 +26,7 @@ assert.equal(
 );
 assert.equal(september.until, String(septemberFirstJst.getTime()), "本月應查到現在");
 assert.equal(Number(august.until) + 1, Number(september.since), "相鄰月份不可重疊或缺漏");
+assert.equal(isTrackableAction("wechat-copy"), true, "複製 WeChat ID 應列入聯絡意圖");
 
 assert.deepEqual(
   monthlyFeatureTotals({
