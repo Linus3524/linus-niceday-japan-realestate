@@ -4,6 +4,7 @@ import { mlitBuySnapshots } from "./mlitBuySnapshot.js";
 export interface OfficialBuyEstimate {
   medianTradePriceYen: number;
   sampleCount: number;
+  windowQuarters: 4 | 8 | 0;
   periodStart: string;
   periodEnd: string;
   sourceUrl: string;
@@ -45,6 +46,7 @@ export function getOfficialBuyEstimate(
   return row ? {
     medianTradePriceYen: row.medianTradePriceYen,
     sampleCount: row.sampleCount,
+    windowQuarters: row.windowQuarters,
     periodStart: row.periodStart,
     periodEnd: row.periodEnd,
     sourceUrl: row.sourceUrl
@@ -70,6 +72,7 @@ export function getBuyMarketEstimate(input: {
     basePriceYen,
     medianTradePriceYen: basePriceYen,
     sampleCount: 0,
+    windowQuarters: 0,
     periodStart: "",
     periodEnd: "",
     sourceUrl: ""

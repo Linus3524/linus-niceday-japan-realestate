@@ -998,16 +998,18 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 </h3>
                 {calcMode === "rent" ? (
                   <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
-                    <p>在開始找房之前，先知道自己的預算能找到什麼樣的房子。</p>
-                    <p>本工具以 At Home 公開刊登物件最近 3 個月的平均租金為地區基準，結合 Linus 的第一線租屋經驗，分析不同地區、格局、設備與預算之間的取捨。</p>
-                    <p>完成條件設定後，將估算月租金、初期費用、房源供給與市場競爭程度，協助您更有效率地規劃找房方向。</p>
-                    <p className="pt-1 text-[11px] leading-normal text-zinc-400">部分房源樣本較少的地區將以模型推估呈現；實際租金與空室狀況仍以當期募集資訊為準。</p>
+                    <p>找房最怕看了很多間，最後才發現喜歡的地區和條件超出預算。這個工具會先陪您把預算、格局和生活需求放在一起比較，找出真正有機會租到的方向。</p>
+                    <p>地區租金以 At Home 最近 3 個月的公開刊登行情為基準，再結合 Linus 在第一線遇到的設備、屋齡、車站距離與房源競爭情況，讓估算不只是冷冰冰的平均數字。</p>
+                    <p>選好條件後，您會看到合理月租、初期費用，以及哪些願望容易讓房源變少。希望在正式找房前，就先幫您避開預算落差，也更安心地決定哪些條件值得保留。</p>
+                    <p className="pt-1 text-[11px] leading-normal text-zinc-400">行情反映刊登租金，實際租金與空室仍以當期房源為準；少數資料不足的組合會清楚標示為模型推估。</p>
                   </div>
                 ) : (
                   <div className="text-xs md:text-[13px] text-zinc-600 leading-relaxed text-justify font-sans space-y-2">
-                    <p>用可準備現金與每月可接受還款額，先算出較穩妥的購屋總價區間、頭期款與交易費用。</p>
+                    <p>買房不只是看總價，更重要的是準備多少現金、每個月還多少，才不會讓生活被房貸壓得太辛苦。這裡會先幫您整理較穩妥的購屋區間、頭期款、交易費用與每月還款。</p>
+                    <p>選定地區後，也能直接對照國土交通省「不動產資訊資料庫」的中古公寓成交行情。資料會優先看最近四季；交易較少時才擴大到最近八季，避免用太久以前的價格判斷現在。</p>
+                    <p>這樣您看到的不只是「最多能買多少」，也能知道喜歡的地區近期大概成交在哪裡，提早調整地區、格局或自備款，找出住得喜歡也負擔得安心的選擇。</p>
                     <p className="text-[11px] text-zinc-400 pt-1 leading-normal">
-                      這裡計算的是資金負擔能力，不代表個別地區或物件的市場估價；實際成交價格與核貸結果仍以物件及金融機構審査為準。
+                      成交行情是行政區與格局的參考起點；每間房子的面積、屋齡、樓層與位置都不同，最後仍要以實際物件及金融機構審査為準。
                     </p>
                   </div>
                 )}
@@ -1777,18 +1779,34 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     })()}
 
                     {calcMode === "buy" && (
-                      <div className="text-xs text-zinc-500 flex items-center gap-1.5 bg-[#F5F8F6] p-3 border border-zinc-200 leading-normal font-sans">
-                        <Info className="w-4 h-4 text-[#00a174] shrink-0" />
+                      <div className="flex items-start gap-2 border border-zinc-200 bg-[#F5F8F6] p-3 font-sans text-xs leading-normal text-zinc-500">
+                        <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
                         {(() => {
                           const estimate = getSelectedBuyMarketEstimate();
                           return estimate.source === "official_transaction" ? (
-                            <span>
-                              當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong>，國交省交易中位數基本總價約 <strong>{getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}</strong> 萬日圓（樣本 {estimate.sampleCount} 筆）。
-                            </span>
+                            <div className="min-w-0 space-y-1">
+                              <div className="font-bold text-zinc-700">
+                                <strong lang="ja" className="font-jp">{districtDisplayName}</strong>・{ROOM_TYPE_LABEL[calcRoomType]} 近{estimate.windowQuarters === 4 ? "四" : "八"}季中古公寓成交價中位數
+                              </div>
+                              <div className="font-mono text-base font-bold text-[#007D5A]">
+                                {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()} 萬日圓
+                              </div>
+                              <div className="text-[10px] leading-relaxed text-zinc-500">
+                                資料來源：國土交通省 不動產資訊資料庫｜統計期間：{estimate.periodStart}～{estimate.periodEnd}｜樣本：{estimate.sampleCount.toLocaleString()} 筆
+                              </div>
+                            </div>
                           ) : (
-                            <span>
-                              當前選定：<strong lang="ja" className="font-jp">{districtDisplayName}</strong>，中古公寓模型基本總價約 <strong>{getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()}</strong> 萬日圓（假設表面投報率 <strong>{(getModeledBuyYieldRate(getSelectedDistrictData().region, calcDistrict, calcRoomType) * 100).toFixed(1)}%</strong>）。
-                            </span>
+                            <div className="min-w-0 space-y-1">
+                              <div className="font-bold text-zinc-700">
+                                <strong lang="ja" className="font-jp">{districtDisplayName}</strong>・{ROOM_TYPE_LABEL[calcRoomType]} 中古公寓總價模型
+                              </div>
+                              <div className="font-mono text-base font-bold text-zinc-700">
+                                {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()} 萬日圓
+                              </div>
+                              <div className="text-[10px] leading-relaxed text-zinc-500">
+                                估算方式：租金收益率模型｜假設表面投報率：{(getModeledBuyYieldRate(getSelectedDistrictData().region, calcDistrict, calcRoomType) * 100).toFixed(1)}%｜此組合尚無足夠成交樣本
+                              </div>
+                            </div>
                           );
                         })()}
                       </div>
@@ -2359,7 +2377,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               const estimate = getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType);
                               return estimate ? (
                                 <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">
-                                  樣本 {estimate.sampleCount} 筆，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。
+                                  近{estimate.windowQuarters === 4 ? "四" : "八"}季樣本 {estimate.sampleCount} 筆，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。
                                 </span>
                               ) : (
                                 <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">

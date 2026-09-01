@@ -5,7 +5,7 @@ export type MarketDataSourceId =
   | "homes-public";
 
 export type MarketDataKind = "rent_listing" | "sale_listing" | "transaction";
-export type IngestionStatus = "enabled" | "pending_credentials" | "manual_only";
+export type IngestionStatus = "enabled" | "manual_only";
 
 export interface MarketDataSourcePolicy {
   id: MarketDataSourceId;
@@ -32,11 +32,11 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     statistic: "不動產交易價格與成約價格",
     publicationCadence: "按季發布；實際資料更新日以官方公告為準",
     reviewCadenceDays: 100,
-    ingestionStatus: "pending_credentials",
+    ingestionStatus: "enabled",
     automatedIngestionAllowed: true,
     sourceUrl: "https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/",
     termsUrl: "https://www.reinfolib.mlit.go.jp/help/termsOfUse/",
-    note: "API 核准並取得金鑰後可啟用；金鑰只放伺服器端，畫面須顯示規約指定 credit。"
+    note: "每季建立交易價格靜態快照；金鑰只放伺服器端，使用成交快照時顯示規約指定 credit。"
   },
   {
     id: "athome-public",

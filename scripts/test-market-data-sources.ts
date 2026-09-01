@@ -11,7 +11,9 @@ for (const id of ["suumo-public", "homes-public"] as const) {
 }
 
 assert.equal(byId.get("mlit-reinfolib")?.automatedIngestionAllowed, true);
+assert.equal(byId.get("mlit-reinfolib")?.ingestionStatus, "enabled");
 assert.match(MLIT_API_CREDIT, /最新性、正確性、完全性等が保証されたものではありません/);
-assert.equal(mlitBuySnapshotMeta.status, mlitBuySnapshots.length ? "ready" : "pending_api_approval");
+assert.equal(mlitBuySnapshotMeta.status, "ready");
+assert.ok(mlitBuySnapshots.length > 0);
 
 console.log(`Market source policy: ${marketDataSources.length} sources; MLIT buy rows: ${mlitBuySnapshots.length}`);

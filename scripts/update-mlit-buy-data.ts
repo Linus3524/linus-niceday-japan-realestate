@@ -1,8 +1,7 @@
 /**
  * Build a static buy-price snapshot from MLIT's official XIT001 API.
  *
- * The API key is never shipped to the browser. After the application is
- * approved, put it in .env.local and run:
+ * The API key is never shipped to the browser. Put it in .env.local and run:
  *
  *   MLIT_REINFOLIB_API_KEY=... npm run data:update:mlit-buy
  *
@@ -30,9 +29,10 @@ const API_KEY = process.env.MLIT_REINFOLIB_API_KEY;
 const OUTPUT_PATH = resolve("src/data/mlitBuySnapshot.ts");
 const SOURCE_URL = "https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/";
 const MIN_SAMPLE_COUNT = 5;
+const ROLLING_WINDOWS = [4, 8] as const;
 
 if (!API_KEY) {
-  throw new Error("缺少 MLIT_REINFOLIB_API_KEY。請等待 API 核准後把金鑰放在 .env.local；不要放進 VITE_ 開頭的前端環境變數。");
+  throw new Error("缺少 MLIT_REINFOLIB_API_KEY。請把金鑰放在 .env.local；不要放進 VITE_ 開頭的前端環境變數。");
 }
 
 const argValue = (name: string) => process.argv.find(arg => arg.startsWith(`--${name}=`))?.split("=")[1];
@@ -46,7 +46,8 @@ const japaneseCharacters: Record<string, string> = {
   "區": "区", "橫": "横", "澀": "渋", "黑": "黒", "戶": "戸", "澤": "沢",
   "豐": "豊", "廣": "広", "靜": "静", "德": "徳", "兒": "児", "繩": "縄",
   "濱": "浜", "稻": "稲", "藝": "芸", "櫻": "桜", "邊": "辺", "龍": "竜",
-  "鹽": "塩", "藏": "蔵", "鄉": "郷", "穗": "穂", "姬": "姫", "霸": "覇"
+  "鹽": "塩", "藏": "蔵", "鄉": "郷", "穗": "穂", "姬": "姫", "霸": "覇",
+  "綠": "緑"
 };
 
 const toJapanese = (value: string) => [...value]
@@ -72,13 +73,24 @@ const layoutAreaBands: Record<LayoutCode, [number, number]> = {
   r1: [12, 24], k1: [18, 35], ldk1: [30, 52], ldk2: [45, 75], ldk3: [65, 130]
 };
 
+const parsePeriod = (period: string) => {
+  const match = /(\d{4})年第(\d)四半期/.exec(period);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const quarter = Number(match[2]);
+  return { key: `${year}-Q${quarter}`, ordinal: year * 4 + quarter - 1 };
+};
+
+const formatPeriodOrdinal = (ordinal: number) =>
+  `${Math.floor(ordinal / 4)}-Q${ordinal % 4 + 1}`;
+
 function transactionLayout(row: MlitTransaction): LayoutCode | null {
   const plan = String(row.FloorPlan || "").normalize("NFKC").toUpperCase().replace(/[\s+]/g, "");
   if (/^(ワンルーム|1R)$/.test(plan)) return "r1";
-  if (/^1K$/.test(plan)) return "k1";
-  if (/^1LDK$/.test(plan)) return "ldk1";
-  if (/^2LDK$/.test(plan)) return "ldk2";
-  if (/^(3LDK|4K|4DK|4LDK|5K|5LDK)/.test(plan)) return "ldk3";
+  if (/^(1K|1DK)$/.test(plan)) return "k1";
+  if (/^(1LDK|2K|2DK)$/.test(plan)) return "ldk1";
+  if (/^(2LDK|3K|3DK)$/.test(plan)) return "ldk2";
+  if (/^(3LDK|4K|4DK|4LDK|5K|5DK|5LDK)/.test(plan)) return "ldk3";
 
   // Some transaction records omit the floor plan. Area bands provide a
   // documented fallback, but an individual record is assigned only when it
@@ -93,7 +105,7 @@ function transactionLayout(row: MlitTransaction): LayoutCode | null {
 }
 
 function targetMatches(target: typeof targetMarkets[number], prefecture: string, municipality: string) {
-  if (normalizePrefecture(prefecture) !== target.region) return false;
+  if (normalizePrefecture(prefecture) !== normalizePrefecture(target.region)) return false;
   const normalizedMunicipality = toJapanese(municipality);
   return target.isCityAggregate
     ? normalizedMunicipality === target.japaneseDistrict || normalizedMunicipality.startsWith(target.japaneseDistrict)
@@ -122,9 +134,18 @@ for (const year of years) {
   }
 }
 
-const buckets = new Map<string, { prices: number[]; periods: string[] }>();
+const availablePeriodOrdinals = transactions
+  .map(transaction => parsePeriod(transaction.Period || "")?.ordinal)
+  .filter((ordinal): ordinal is number => ordinal !== undefined);
+if (!availablePeriodOrdinals.length) throw new Error("API 回傳資料中沒有可辨識的季度。");
+const latestAvailableOrdinal = availablePeriodOrdinals.reduce((latest, ordinal) =>
+  Math.max(latest, ordinal), Number.NEGATIVE_INFINITY);
+
+const buckets = new Map<string, { observations: Array<{ price: number; period: string; ordinal: number }> }>();
 for (const transaction of transactions) {
   if (!/マンション/.test(transaction.Type || "")) continue;
+  const period = parsePeriod(transaction.Period || "");
+  if (!period) continue;
   const layout = transactionLayout(transaction);
   if (!layout) continue;
   const area = Number(transaction.Area);
@@ -137,17 +158,12 @@ for (const transaction of transactions) {
   for (const target of targetMarkets) {
     if (!targetMatches(target, prefecture, municipality)) continue;
     const key = `${target.region}|${target.district}|${layout}`;
-    const bucket = buckets.get(key) || { prices: [], periods: [] };
-    bucket.prices.push(price);
-    if (transaction.Period) bucket.periods.push(transaction.Period);
+    const bucket = buckets.get(key) || { observations: [] };
+    bucket.observations.push({ price, period: period.key, ordinal: period.ordinal });
     buckets.set(key, bucket);
   }
 }
 
-const periodKey = (period: string) => {
-  const match = /(\d{4})年第(\d)四半期/.exec(period);
-  return match ? `${match[1]}-Q${match[2]}` : period;
-};
 const median = (values: number[]) => {
   const sorted = [...values].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
@@ -155,17 +171,29 @@ const median = (values: number[]) => {
 };
 
 const snapshotRows = Array.from(buckets.entries()).flatMap(([key, bucket]) => {
-  if (bucket.prices.length < MIN_SAMPLE_COUNT) return [];
+  const selectedWindow = ROLLING_WINDOWS.find(windowQuarters =>
+    bucket.observations.filter(observation =>
+      observation.ordinal >= latestAvailableOrdinal - windowQuarters + 1 &&
+      observation.ordinal <= latestAvailableOrdinal
+    ).length >= MIN_SAMPLE_COUNT
+  );
+  if (!selectedWindow) return [];
+  const observations = bucket.observations.filter(observation =>
+    observation.ordinal >= latestAvailableOrdinal - selectedWindow + 1 &&
+    observation.ordinal <= latestAvailableOrdinal
+  );
   const [region, district, layout] = key.split("|") as [string, string, LayoutCode];
-  const periods = bucket.periods.map(periodKey).sort();
+  const prices = observations.map(observation => observation.price);
+  const ordinals = observations.map(observation => observation.ordinal).sort((a, b) => a - b);
   return [{
     region,
     district,
     layout,
-    medianTradePriceYen: Math.round(median(bucket.prices) / 100_000) * 100_000,
-    sampleCount: bucket.prices.length,
-    periodStart: periods[0] || String(Math.min(...years)),
-    periodEnd: periods.at(-1) || String(Math.max(...years)),
+    medianTradePriceYen: Math.round(median(prices) / 100_000) * 100_000,
+    sampleCount: observations.length,
+    windowQuarters: selectedWindow,
+    periodStart: formatPeriodOrdinal(ordinals[0]),
+    periodEnd: formatPeriodOrdinal(ordinals.at(-1)!),
     sourceUrl: SOURCE_URL
   }];
 }).sort((a, b) => `${a.region}|${a.district}|${a.layout}`.localeCompare(`${b.region}|${b.district}|${b.layout}`, "ja"));
@@ -173,7 +201,7 @@ const snapshotRows = Array.from(buckets.entries()).flatMap(([key, bucket]) => {
 if (!snapshotRows.length) throw new Error("API 回傳資料中沒有足夠樣本，未覆寫既有快照。");
 
 const generatedAt = new Date().toISOString().slice(0, 10);
-const body = `import type { LayoutCode } from "./housingMarket.js";\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  sampleCount: number;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計した中央値（間取り欠損時は面積帯）",\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n`;
+const body = `import type { LayoutCode } from "./housingMarket.js";\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計した近4四半期優先・不足時近8四半期の中央値（間取り欠損時は面積帯）",\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n`;
 
 await writeFile(OUTPUT_PATH, body, "utf8");
 console.log(`Wrote ${snapshotRows.length} MLIT buy-price rows to ${OUTPUT_PATH}`);

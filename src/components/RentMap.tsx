@@ -445,6 +445,13 @@ export const RentMap: React.FC<RentMapProps> = ({
           {hoveredWard || rentRates.find(r => r.district === selectedDistrict) ? (
             (() => {
               const activeWard = hoveredWard || rentRates.find(r => r.district === selectedDistrict)!;
+              const activeRentYen = parseFloat((activeWard[roomType] || activeWard.ldk2) as string) * 10000;
+              const activeBuyEstimate = mode === "buy" ? getBuyMarketEstimate({
+                region: activeWard.region,
+                district: activeWard.district,
+                layout: roomType,
+                monthlyRentYen: activeRentYen
+              }) : null;
               return (
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
@@ -459,7 +466,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                     </span>
                     <span className="text-[10px] text-zinc-500 font-bold">
                       {mode === "buy"
-                        ? getDistrictBuySource(activeWard, roomType) === "official_transaction" ? "國交省交易資料" : "租金收益率總價模型"
+                        ? activeBuyEstimate?.source === "official_transaction" ? "官方成交資料" : "租金收益率模型"
                         : `${activeWard.sourceDate || latestSourceDate} 家賃相場`}
                     </span>
                   </div>
@@ -500,6 +507,13 @@ export const RentMap: React.FC<RentMapProps> = ({
                       );
                     })}
                   </div>
+                  {activeBuyEstimate && (
+                    <div className="text-[9px] leading-relaxed text-zinc-500">
+                      {activeBuyEstimate.source === "official_transaction"
+                        ? `資料來源：國土交通省 不動產資訊資料庫｜近${activeBuyEstimate.windowQuarters === 4 ? "四" : "八"}季 ${activeBuyEstimate.periodStart}～${activeBuyEstimate.periodEnd}｜樣本 ${activeBuyEstimate.sampleCount.toLocaleString()} 筆`
+                        : "資料來源：租金收益率模型｜目前選定格局沒有足夠成交樣本"}
+                    </div>
+                  )}
                 </div>
               );
             })()

@@ -31,7 +31,7 @@ npm run data:review
 
 ### 國交省買房成交資料
 
-買房試算預留國土交通省不動產資訊資料庫 XIT001 API 快照。API 核准後將金鑰放入伺服器端 `.env.local`，執行 `npm run data:update:mlit-buy`；金鑰不得使用 `VITE_` 前綴或傳到瀏覽器。沒有官方快照或樣本不足時，買房地圖與試算器會共用同一套租金收益率模型並明確標示，不會把 At Home／SUUMO／HOME'S 的刊登價冒充成交價。
+買房試算使用國土交通省不動產資訊資料庫 XIT001 API 靜態快照。金鑰存於伺服器端 `.env.local`，每季執行 `npm run data:update:mlit-buy`；金鑰不得使用 `VITE_` 前綴或傳到瀏覽器。沒有合格官方樣本時，買房地圖與試算器會共用同一套租金收益率模型並明確標示，不會把 At Home／SUUMO／HOME'S 的刊登價冒充成交價。
 
 ## 非公開資料、截圖與社群貼文
 
