@@ -516,11 +516,16 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="mb-6 border border-[#DDE3DF] bg-white">
               <h2 className="border-b border-[#DDE3DF] px-5 py-3 text-sm font-bold text-[#1A2A22]">每日次數</h2>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full min-w-[640px] table-fixed text-sm">
+                  <colgroup>
+                    <col className="w-[38%]" />
+                    {features.map(feature => <col key={feature} />)}
+                    <col className="w-[12%]" />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-[#EEF2F0] text-left text-xs text-zinc-500">
                       <th className="px-5 py-2 font-medium">日期</th>
-                      {features.map(f => <th key={f} className="px-5 py-2 text-right font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
+                      {features.map(f => <th key={f} className="px-5 py-2 text-center font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
                       <th className="px-5 py-2 text-right font-medium">合計</th>
                     </tr>
                   </thead>
@@ -529,7 +534,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       <tr key={row.day} className="border-b border-[#F5F8F6] last:border-0">
                         <td className="px-5 py-2 font-jost tabular-nums text-[#1A2A22]">{data.month}-{row.day}</td>
                         {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-right font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
+                          <td key={index} className="px-5 py-2 text-center font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
                         ))}
                         <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
                       </tr>
@@ -545,11 +550,16 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="border border-[#DDE3DF] bg-white">
               <h2 className="border-b border-[#DDE3DF] px-5 py-3 text-sm font-bold text-[#1A2A22]">來源國家</h2>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full min-w-[640px] table-fixed text-sm">
+                  <colgroup>
+                    <col className="w-[38%]" />
+                    {features.map(feature => <col key={feature} />)}
+                    <col className="w-[12%]" />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-[#EEF2F0] text-left text-xs text-zinc-500">
                       <th className="px-5 py-2 font-medium">國家</th>
-                      {features.map(f => <th key={f} className="px-5 py-2 text-right font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
+                      {features.map(f => <th key={f} className="px-5 py-2 text-center font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
                       <th className="px-5 py-2 text-right font-medium">合計</th>
                     </tr>
                   </thead>
@@ -563,7 +573,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                           )}
                         </td>
                         {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-right font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
+                          <td key={index} className="px-5 py-2 text-center font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
                         ))}
                         <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
                       </tr>
