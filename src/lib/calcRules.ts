@@ -35,7 +35,7 @@ export const buyConflictGroups: BuyModifierId[][] = [
   ["new_build", "full_renovation", "partial_reform", "as_is"], // 屋況／翻修程度
   ["vacant", "tenanted"],                                      // 交屋狀態
   ["tower", "low_rise_apartment"],                             // 建物型態（塔樓 vs 低層公寓）
-  ["walk_within_5min", "walk_over_15min"],                     // 步行距離
+  ["walk_within_5min", "walk_11_15min", "walk_over_15min"],    // 步行距離
   ["new_build", "old_earthquake_standard"],                    // 新成屋 vs 舊耐震
   ["old_earthquake_standard", "tower"],                        // 舊耐震 vs 塔樓
   // 屋齡與「新築」「舊耐震」三者互斥
@@ -126,6 +126,10 @@ export const getDynamicBuyModifierMultiplier = (id: BuyModifierId, district: str
       if (isTokyo23 || region === "大阪") return 0.15;
       if (region === "神奈川") return 0.12;
       return 0.10; // 埼玉、千葉、多摩
+    case "walk_11_15min": // 步行 11～15 分鐘性價比住宅區
+      if (isTokyo23) return -0.06;
+      if (region === "神奈川" || region === "大阪") return -0.08;
+      return -0.10; // 埼玉、千葉、多摩
     case "walk_over_15min": // 步行 15 分鐘以上較遠地段
       if (isTokyo23) return -0.08;
       if (region === "神奈川" || region === "大阪") return -0.12;
@@ -190,3 +194,53 @@ export const isBuyModifierDisabled = (id: BuyModifierId, selected: BuyModifierId
     group.includes(id) && group.some(other => other !== id && selected.includes(other))
   );
 };
+
+export interface WalkTierInfo {
+  id: "0_5" | "6_10" | "11_15" | "16_plus";
+  modifierId?: BuyModifierId;
+  label: string;
+  tag: string;
+  diffPercent: number;
+  multiplier: number;
+}
+
+export const getWalkTierMultipliers = (_region: string, district: string): WalkTierInfo[] => {
+  const p5 = getDynamicBuyModifierMultiplier("walk_within_5min", district);
+  const p11_15 = getDynamicBuyModifierMultiplier("walk_11_15min", district);
+  const p15plus = getDynamicBuyModifierMultiplier("walk_over_15min", district);
+
+  return [
+    {
+      id: "0_5",
+      modifierId: "walk_within_5min",
+      label: "徒步 1～5 分鐘",
+      tag: "流動性最高 · 招租極快",
+      diffPercent: Math.round(p5 * 100),
+      multiplier: 1 + p5
+    },
+    {
+      id: "6_10",
+      label: "徒步 6～10 分鐘",
+      tag: "市場主力 · 生活平衡",
+      diffPercent: 0,
+      multiplier: 1.0
+    },
+    {
+      id: "11_15",
+      modifierId: "walk_11_15min",
+      label: "徒步 11～15 分鐘",
+      tag: "總價親民 · 換大坪數",
+      diffPercent: Math.round(p11_15 * 100),
+      multiplier: 1 + p11_15
+    },
+    {
+      id: "16_plus",
+      modifierId: "walk_over_15min",
+      label: "徒步 15 分以上",
+      tag: "總價最低 · 建議需車位",
+      diffPercent: Math.round(p15plus * 100),
+      multiplier: 1 + p15plus
+    }
+  ];
+};
+

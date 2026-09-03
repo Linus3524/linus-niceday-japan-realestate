@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, TrendingUp, Building2, Footprints, BarChart3, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronUp, TrendingUp, Building2, Footprints, BarChart3, Sparkles, Check } from "lucide-react";
 import type { LayoutCode } from "../data/housingMarket";
 import { getBuyMarketEstimate, getModeledBuyYieldRate } from "../data/buyMarket";
 import { rentRates } from "../data/housingMarket";
 import { toJapanesePlaceName } from "../lib/transit";
-import { TAMA_CITIES } from "../lib/calcRules";
+import { TAMA_CITIES, getWalkTierMultipliers } from "../lib/calcRules";
+import type { BuyModifierId } from "../data/buyHouseData";
 
 interface OfficialMarketInsightProps {
   region: string;
   district: string;
   currentLayout: LayoutCode;
   onSelectLayout?: (layout: LayoutCode) => void;
+  selectedBuyModifiers?: BuyModifierId[];
+  onSelectWalkTier?: (modifierId: BuyModifierId | null) => void;
   className?: string;
 }
 
@@ -20,6 +23,14 @@ const LAYOUT_NAMES: Record<LayoutCode, string> = {
   ldk1: "1LDK / 2K",
   ldk2: "2LDK / 3K",
   ldk3: "3LDK+"
+};
+
+const LAYOUT_ESTIMATED_PING: Record<LayoutCode, number> = {
+  r1: 6.05,
+  k1: 7.56,
+  ldk1: 12.1,
+  ldk2: 16.6,
+  ldk3: 21.2
 };
 
 interface MarketInsightContent {
@@ -188,6 +199,8 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
   district,
   currentLayout,
   onSelectLayout,
+  selectedBuyModifiers = [],
+  onSelectWalkTier,
   className = ""
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -238,6 +251,12 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
   const isOfficial = currentEstimate.source === "official_transaction";
   const jpDistrict = toJapanesePlaceName(district);
   const insight = getRegionalMarketInsight(region, district, currentYield);
+
+  // 100% 共用 calcRules.ts 核心算法計算各步行階梯之折溢價
+  const dynamicWalkTiers = getWalkTierMultipliers(region, district);
+  const activeWalkModifierId = selectedBuyModifiers.find(id =>
+    ["walk_within_5min", "walk_11_15min", "walk_over_15min"].includes(id)
+  );
 
   return (
     <div className={`border border-[#DDE3DF] bg-white text-zinc-700 font-sans transition-all ${className}`}>
@@ -326,7 +345,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
         </p>
       </div>
 
-      {/* 展開區塊：全格局階梯表 + 趨勢分析指南 */}
+      {/* 展開區塊：全格局階梯表 + 步行階梯矩陣 + 趨勢分析指南 */}
       {isExpanded && (
         <div className="border-t border-[#DDE3DF] bg-white p-4 sm:p-5 space-y-5 animate-in fade-in duration-200">
           {/* 格局橫向切換與階梯表 */}
@@ -381,27 +400,114 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
             </div>
           </div>
 
-          {/* 國交省成約統計實務指南（動態適配地區） */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-            <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-3.5 space-y-1.5">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                <Footprints className="w-3.5 h-3.5 text-[#007D5A]" />
-                <span>{insight.stationWalkTitle}</span>
+          {/* 車站徒步距離 vs 房價衰減階梯矩陣（100% 對齊 calcRules 數據） */}
+          <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-2.5">
+              <div>
+                <h5 className="text-xs sm:text-sm font-bold text-[#1A2A22] flex items-center gap-1.5">
+                  <Footprints className="w-4 h-4 text-[#007D5A]" />
+                  <span>{insight.stationWalkTitle}</span>
+                  <span className="text-xs font-normal text-zinc-500">
+                    （依 {LAYOUT_NAMES[currentLayout]} 實價計算）
+                  </span>
+                </h5>
+                <p className="text-[11px] text-zinc-500 mt-0.5">
+                  國交省實價 × 在地溢價模型：點擊卡片可直接勾選下方買房折溢價條件
+                </p>
               </div>
-              <p className="text-[11px] leading-relaxed text-zinc-600">
-                {insight.stationWalkText}
-              </p>
+              <span className="text-[10px] text-zinc-400 font-mono">
+                專有約 {LAYOUT_ESTIMATED_PING[currentLayout]} 坪 (約 {(LAYOUT_ESTIMATED_PING[currentLayout] / 0.3025).toFixed(0)}㎡)
+              </span>
             </div>
 
-            <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-3.5 space-y-1.5">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                <Building2 className="w-3.5 h-3.5 text-[#007D5A]" />
-                <span>{insight.buildingAgeTitle}</span>
-              </div>
-              <p className="text-[11px] leading-relaxed text-zinc-600">
-                {insight.buildingAgeText}
-              </p>
+            {/* 4 個步行階梯卡片（可互動切換） */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {dynamicWalkTiers.map(tier => {
+                const tierPriceMan = Math.round((currentEstimate.basePriceYen * tier.multiplier) / 10000);
+                const pingPriceMan = Math.round(tierPriceMan / LAYOUT_ESTIMATED_PING[currentLayout]);
+                
+                // 判斷是否為當前勾選項目
+                const isSelected = tier.id === "6_10"
+                  ? !activeWalkModifierId
+                  : tier.modifierId === activeWalkModifierId;
+
+                const diffLabel = tier.diffPercent > 0
+                  ? `+${tier.diffPercent}% 溢價`
+                  : tier.diffPercent < 0
+                  ? `${tier.diffPercent}% 折價`
+                  : "基準 100%";
+
+                const diffColor = tier.diffPercent > 0
+                  ? "text-[#007D5A] bg-[#EAF5F0]"
+                  : tier.diffPercent < 0
+                  ? "text-[#B13818] bg-[#FFF0ED]"
+                  : "text-zinc-700 bg-zinc-100";
+
+                const handleClick = () => {
+                  if (tier.id === "6_10") {
+                    onSelectWalkTier?.(null);
+                  } else {
+                    onSelectWalkTier?.(isSelected ? null : tier.modifierId!);
+                  }
+                };
+
+                return (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={handleClick}
+                    className={`p-3 text-left border transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? "border-[#007D5A] bg-white ring-2 ring-[#007D5A]/40 shadow-xs"
+                        : "bg-white border-[#DDE3DF] hover:border-zinc-400 hover:bg-[#FAFCFB]"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className={`font-bold ${isSelected ? "text-[#007D5A]" : "text-zinc-800"}`}>
+                          {tier.label}
+                        </span>
+                        <span className={`text-[9px] px-1.5 py-0.2 rounded-xs font-medium ${diffColor}`}>
+                          {diffLabel}
+                        </span>
+                      </div>
+                      <div className="mt-2 font-jost text-xl sm:text-2xl font-bold text-[#1A2A22]">
+                        {tierPriceMan.toLocaleString()}
+                        <span className="ml-0.5 text-xs font-normal text-zinc-500">萬円</span>
+                      </div>
+                      <div className="mt-0.5 text-[10px] text-zinc-500 font-mono">
+                        約 {pingPriceMan.toLocaleString()} 萬円/坪
+                      </div>
+                    </div>
+                    <div className="mt-2 text-[10px] pt-1.5 border-t border-zinc-100 flex items-center justify-between">
+                      <span className="text-zinc-400 truncate">{tier.tag}</span>
+                      {isSelected && (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#007D5A] shrink-0 ml-1">
+                          <Check className="w-3 h-3" />
+                          {tier.id === "6_10" ? "基準" : "已套用"}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
+
+            {/* 深入在地解讀文字 */}
+            <p className="text-[11px] leading-relaxed text-zinc-600 pt-1">
+              {insight.stationWalkText}
+            </p>
+          </div>
+
+          {/* 屋齡折舊與耐震基準 */}
+          <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-3.5 space-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+              <Building2 className="w-3.5 h-3.5 text-[#007D5A]" />
+              <span>{insight.buildingAgeTitle}</span>
+            </div>
+            <p className="text-[11px] leading-relaxed text-zinc-600">
+              {insight.buildingAgeText}
+            </p>
           </div>
 
           {/* Linus 實務觀點提示（動態適配地區與當前數據） */}

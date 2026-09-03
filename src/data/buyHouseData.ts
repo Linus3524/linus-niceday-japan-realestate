@@ -1409,7 +1409,7 @@ export type BuyModifierId =
   | "vacant" | "tenanted"
   | "old_earthquake_standard" | "leasehold"
   | "tower" | "low_rise_apartment"
-  | "walk_within_5min" | "walk_over_15min"
+  | "walk_within_5min" | "walk_11_15min" | "walk_over_15min"
   | "age_within_5y" | "age_within_10y" | "age_within_15y"
   | "age_within_20y" | "age_within_25y" | "age_within_30y" | "age_within_40y";
 
@@ -1516,15 +1516,23 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
   {
     id: "walk_within_5min",
     text: "步行 5 分鐘內超精華地段",
-    multiplier: 0.12,
+    multiplier: 0.15,
     type: "plus",
     category: "location",
     description: "離地鐵站步行在 5 分鐘內，無論自用、出租或轉售皆是市場最搶手的抗跌物件"
   },
   {
+    id: "walk_11_15min",
+    text: "步行 11～15 分鐘性價比住宅區",
+    multiplier: -0.08,
+    type: "minus",
+    category: "location",
+    description: "距離捷運站稍有腳程，但換取較為寬敞的室內使用面積與安靜住宅環境，性價比極高"
+  },
+  {
     id: "walk_over_15min",
     text: "步行 15 分鐘以上較遠地段",
-    multiplier: -0.10,
+    multiplier: -0.12,
     type: "minus",
     category: "location",
     description: "離捷運站較遠，出租空置風險較高，但對於喜愛清靜自住的買方而言，能以更划算的價格購入更大空間"

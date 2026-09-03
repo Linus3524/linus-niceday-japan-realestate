@@ -1789,6 +1789,16 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         district={calcDistrict}
                         currentLayout={calcRoomType}
                         onSelectLayout={setCalcRoomType}
+                        selectedBuyModifiers={calcBuyModifiers}
+                        onSelectWalkTier={(modifierId) => {
+                          const walkIds: BuyModifierId[] = ["walk_within_5min", "walk_11_15min", "walk_over_15min"];
+                          const filtered = calcBuyModifiers.filter(id => !walkIds.includes(id));
+                          if (modifierId) {
+                            setCalcBuyModifiers([...filtered, modifierId]);
+                          } else {
+                            setCalcBuyModifiers(filtered);
+                          }
+                        }}
                       />
                     )}
                     {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
