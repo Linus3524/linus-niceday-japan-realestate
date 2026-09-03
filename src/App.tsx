@@ -26,6 +26,7 @@ import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 import { UsageDashboard } from "./components/UsageDashboard";
 import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
+import { sanitizeRelatedThreads, type RelatedThread } from "./lib/threadSearch";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -72,6 +73,16 @@ const TAB_VIEW_NAME: Record<AppTab, TrackableView> = {
 function getPolicyPageFromHash(): PolicyPageId | null {
   const hash = window.location.hash.slice(1);
   return POLICY_HASHES.includes(hash as PolicyPageId) ? (hash as PolicyPageId) : null;
+}
+
+function isThreadsHash(hash = window.location.hash) {
+  return hash === "#threads" || hash.startsWith("#threads?");
+}
+
+function getThreadsSearchFromHash(hash = window.location.hash) {
+  if (!isThreadsHash(hash)) return "";
+  const queryString = hash.split("?", 2)[1] || "";
+  return new URLSearchParams(queryString).get("search") || "";
 }
 
 function MobileSceneHero({ heroSet, booting }: { heroSet: number; booting: boolean }) {
@@ -196,7 +207,7 @@ export default function App() {
   // Navigation tabs: 'cards' (租屋知識圖卡), 'buyHouse' (買房知識大補帖), 'calculator' (預算估算), 'chat' (AI問答), 'contact' (聯絡Linus)
   const [activeTab, setActiveTab] = useState<AppTab>("cards");
   const [isMobileHome, setIsMobileHome] = useState(true);
-  const [isThreadsPage, setIsThreadsPage] = useState(() => window.location.hash === "#threads");
+  const [isThreadsPage, setIsThreadsPage] = useState(() => isThreadsHash());
   const [policyPage, setPolicyPage] = useState<PolicyPageId | null>(() => getPolicyPageFromHash());
   // 後台使用量頁；沒有連結指向它，直接輸入 #admin 才會進來。
   const [adminPage, setAdminPage] = useState(() => window.location.hash === "#admin");
@@ -247,7 +258,7 @@ export default function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      setIsThreadsPage(window.location.hash === "#threads");
+      setIsThreadsPage(isThreadsHash());
       setPolicyPage(getPolicyPageFromHash());
       setAdminPage(window.location.hash === "#admin");
       window.scrollTo({ top: 0, behavior: "auto" });
@@ -357,7 +368,7 @@ export default function App() {
 
   // AI Chat States
   const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "model"; text: string }>>([
+  const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "model"; text: string; relatedThreads?: RelatedThread[] }>>([
     {
       role: "model",
       text: "您好！我是 Linus ❀ \n\n歡迎來到日本租屋與買房知識大補帖！不論是在日本租屋、置產投資、房貸規劃還是民宿經營，都歡迎在下方直接提問。\n\n例如：\n- 「海外人士可以在日本貸款買房嗎？」\n- 「民泊新法在東京都 23 區有哪些營業限制？」\n- 「租屋初期費用大概要準備多少？」\n\n有任何疑問，隨時輸入就好！"
@@ -497,7 +508,13 @@ export default function App() {
         throw new Error(data.error || "請求伺服器失敗");
       }
 
-      setChatMessages(prev => [...prev, { role: "model" as const, text: data.reply }]);
+      setChatMessages(prev => [...prev, {
+        role: "model" as const,
+        text: data.reply,
+        // 每次回答都保留本題的高相關文章。若用整段對話去重，使用者再次詢問
+        // 同一主題時會看不到卡片，反而像是推薦功能失效。
+        relatedThreads: sanitizeRelatedThreads(data.relatedThreads, 2)
+      }]);
     } catch (err: any) {
       console.error(err);
       setChatError("AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。");
@@ -649,7 +666,7 @@ export default function App() {
           <img src="/logo-text.svg" alt="LINUS 住好日" />
           <span>精選 THREADS</span>
         </header>
-        <ThreadsCarousel pageMode />
+        <ThreadsCarousel pageMode initialSearchQuery={getThreadsSearchFromHash()} />
       </div>
     );
   }

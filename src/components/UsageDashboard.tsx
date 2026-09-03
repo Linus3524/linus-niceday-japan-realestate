@@ -41,6 +41,12 @@ const ACTION_LABEL: Record<string, string> = {
   "line-qr": "開啟 LINE QR 掃碼",
   "wechat-copy": "複製 WeChat ID",
   "wechat-qr": "展開 WeChat QR 掃碼",
+  "threads-rent-view": "租屋搜尋文章曝光",
+  "threads-rent-click": "租屋搜尋文章點擊",
+  "threads-buy-view": "買房搜尋文章曝光",
+  "threads-buy-click": "買房搜尋文章點擊",
+  "threads-ai-view": "AI 推薦文章曝光",
+  "threads-ai-click": "AI 推薦文章點擊",
 };
 
 /** 標籤下方的小字：說明這個數字合併了哪些入口。 */
@@ -50,6 +56,12 @@ const ACTION_SOURCE_NOTE: Record<string, string> = {
   "line-qr": "首頁頭像翻卡 ＋ 聯絡分頁展開（合計）",
   "wechat-copy": "聯絡分頁",
   "wechat-qr": "聯絡分頁展開",
+  "threads-rent-view": "搜尋結果穩定顯示 0.8 秒後計入",
+  "threads-rent-click": "租屋指南搜尋結果",
+  "threads-buy-view": "搜尋結果穩定顯示 0.8 秒後計入",
+  "threads-buy-click": "買房置產搜尋結果",
+  "threads-ai-view": "AI 回覆下方推薦穩定顯示 0.8 秒後計入",
+  "threads-ai-click": "AI 顧問回覆",
 };
 
 // 常用管道的中文名。沒收錄的標記會直接顯示原字，不影響統計，

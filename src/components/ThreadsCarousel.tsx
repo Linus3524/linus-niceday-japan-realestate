@@ -7,19 +7,14 @@ import {
 } from "react";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { threadCategories, type FeaturedThread } from "../data/featuredThreads";
-import { threadsSearchIndex } from "../data/threadsSearchIndex";
 import { NORTH_EAST_SVG, NorthEastIcon } from "./NorthEastIcon";
+import { searchThreads } from "../lib/threadSearch";
 
 const THREADS_SCRIPT_SRC = "https://www.threads.com/embed.js";
 const CATEGORY_ROTATE_MS = 15_000;
 
 // 搜尋框下方的熱門關鍵字快捷鈕
 const PRESET_KEYWORDS = ["水電", "瓦斯", "打工", "留學", "內見", "初期"];
-
-function threadPostId(url: string) {
-  const match = url.match(/\/post\/([A-Za-z0-9_-]+)/);
-  return match ? match[1] : url;
-}
 
 // 觸發 Threads / Instagram 共用嵌入 SDK 重新掃描頁面上的 blockquote 並轉成 iframe。
 // SDK 尚未載入時做短暫重試，載入後即會渲染。
@@ -65,7 +60,7 @@ function buildSlidesHtml(threads: FeaturedThread[], startIndex: number, total: n
     .join("");
 }
 
-export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
+export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: { pageMode?: boolean; initialSearchQuery?: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const renderedCountRef = useRef(0);
   const isPointerInsideRef = useRef(false);
@@ -77,36 +72,27 @@ export function ThreadsCarousel({ pageMode = false }: { pageMode?: boolean }) {
   const pressedPointerTypeRef = useRef("mouse");
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeSlide, setActiveSlide] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [searchFocused, setSearchFocused] = useState(false);
   const currentCategory = threadCategories[activeCategory];
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
 
-  // 搜尋：只比對貼文「內文」（不含分類名稱，否則整個分類會因名字含關鍵字而全中），
-  // 並依相關性給分後排序——標題附近命中、出現次數多的排前面，順帶提一次的排後面。
+  useEffect(() => {
+    setSearchQuery(initialSearchQuery);
+  }, [initialSearchQuery]);
+
+  // 搜尋與租屋、買房、AI 顧問共用同一套同義詞與相關度排序。
   const searchResults = useMemo(() => {
     if (!isSearching) return [] as FeaturedThread[];
-    const scored: { thread: FeaturedThread; score: number }[] = [];
-    for (const category of threadCategories) {
-      for (const thread of category.threads) {
-        const text = [
-          threadsSearchIndex[threadPostId(thread.url)] ?? "",
-          ...(thread.keywords ?? [])
-        ].join(" ").toLowerCase();
-        const firstIndex = text.indexOf(normalizedQuery);
-        if (firstIndex === -1) continue;
-        const occurrences = text.split(normalizedQuery).length - 1;
-        // 出現在前 60 字（約略是系列標籤＋標題範圍）視為「主題命中」，大幅加權
-        const headlineBonus = firstIndex < 60 ? 100 : 0;
-        const score = headlineBonus + occurrences * 10 - Math.min(firstIndex, 600) * 0.05;
-        scored.push({ thread, score });
-      }
-    }
-    scored.sort((a, b) => b.score - a.score);
-    return scored.map((entry) => entry.thread);
-  }, [normalizedQuery, isSearching]);
+    const byUrl = new Map(
+      threadCategories.flatMap(category => category.threads).map(thread => [thread.url, thread])
+    );
+    return searchThreads(searchQuery, { context: "all", limit: 500 }).results
+      .map(result => byUrl.get(result.url))
+      .filter((thread): thread is FeaturedThread => Boolean(thread));
+  }, [searchQuery, isSearching]);
 
   // currentThreads = 目前實際顯示的清單（搜尋結果或所選分類），
   // 下方拖曳／輪播／批次載入邏輯全部沿用這個清單，不需改動。

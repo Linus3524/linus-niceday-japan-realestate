@@ -5,9 +5,11 @@ import { formatMessageText } from "../lib/format";
 import { linusContact } from "../data/rentGuideData";
 import { trackAction } from "../lib/trackView";
 import { PageIntroCard } from "./PageIntroCard";
+import { RelatedThreads } from "./RelatedThreads";
+import type { RelatedThread } from "../lib/threadSearch";
 
 interface ChatTabProps {
-  chatMessages: Array<{ role: "user" | "model"; text: string }>;
+  chatMessages: Array<{ role: "user" | "model"; text: string; relatedThreads?: RelatedThread[] }>;
   chatInput: string;
   setChatInput: (v: string) => void;
   chatLoading: boolean;
@@ -131,7 +133,16 @@ export function ChatTab(props: ChatTabProps) {
                             ? "bg-white border-zinc-300 text-zinc-800" 
                             : "bg-[#fffdfa] border-[#DDE3DF] text-zinc-900 shadow-sm transition-colors"
                         }`}>
+                          {msg.role === "model" && msg.relatedThreads && msg.relatedThreads.length > 0 && (
+                            <div className="mb-4 flex items-center justify-between gap-3 border border-[#B8D8CB] bg-[#EFF8F4] px-3 py-2.5 font-sans text-left text-[11px] leading-5 text-[#075E46]" role="status">
+                              <span className="font-bold">這則回答附有 {msg.relatedThreads.length} 篇相關實務分享</span>
+                              <span className="shrink-0" aria-hidden="true">往下看 ↓</span>
+                            </div>
+                          )}
                           {formatMessageText(msg.text)}
+                          {msg.role === "model" && msg.relatedThreads && msg.relatedThreads.length > 0 && (
+                            <RelatedThreads threads={msg.relatedThreads} source="ai" compact />
+                          )}
                           {(ctaTargets.byAiText.has(index) || ctaTargets.byQuestionCount.has(index)) && (
                             <>
                               {/* 由問題數觸發的邀請，AI 的回覆本身沒提到 LINE，

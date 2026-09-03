@@ -5,6 +5,7 @@ import { initialFees, specialTerms, processSteps, rentRates, budgetModifiers, ot
 import { buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseCashSteps, buyHouseLoanSteps, signingDocuments, taiwaneseBanks, japaneseBanks, minpakuRules, ryokanRules, buyHouseQAs, buyKnowledgeMeta, buyBudgetModifiers, taiwanJapanCompareData, buyHouseExpenseDetailData, buyHouseTaxLifecycleData } from "./buyHouseData.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 import { overseasScreeningDocuments, domesticScreeningDocuments, domesticScreeningNotice, screeningDocumentDisclaimer, overseasSop, domesticSop, applicationRoutes, processReminders } from "../src/data/rentStaticSearchData.js";
+import { recommendThreadsForAnswer } from "../src/lib/threadSearch.js";
 
 // 這支檔案是 AI 顧問的「唯一實作」。本機 server.ts 只是把 /api/chat 轉接進來
 // （與 rent-analysis 同樣做法），線上 Vercel 直接把它當 serverless function 執行。
@@ -329,7 +330,14 @@ export default async function handler(req: any, res: any) {
 
 提供後我才能更準確整理搜尋方向；即時空室仍建議透過 Line（linus0922）向 Linus 確認喔 ❀`;
     }
-    return res.json({ reply });
+    // 推薦是加值內容；即使索引資料日後有問題，也不能讓已生成的 AI 回答一起失敗。
+    let relatedThreads: ReturnType<typeof recommendThreadsForAnswer> = [];
+    try {
+      relatedThreads = recommendThreadsForAnswer(message, reply, { limit: 2 });
+    } catch (recommendationError) {
+      console.error("Threads recommendation error:", recommendationError);
+    }
+    return res.json({ reply, relatedThreads });
 
   } catch (error: any) {
     console.error("Gemini API Error in Vercel function:", error);

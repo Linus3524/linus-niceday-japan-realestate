@@ -12,6 +12,8 @@ import { matchesAllTokens, tokenizeQuery } from "../lib/search";
 import { JapaneseRuby } from "./JapaneseRuby";
 import { hasMinimumKnowledgeSearchLength } from "../data/rentStaticSearchData";
 import { PageIntroCard } from "./PageIntroCard";
+import { RelatedThreads } from "./RelatedThreads";
+import { searchThreads } from "../lib/threadSearch";
 
 interface BuyGuideTabProps {
   buyCategory: string;
@@ -263,6 +265,9 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
     buyFiltered.fee.length +
     buyFiltered.qa.length +
     staticBuySearchItems.length;
+  const threadMatches = isBuySearchActive
+    ? searchThreads(buySearchQuery, { context: "buy", limit: 3 })
+    : { results: [], total: 0 };
 
   return (
             <motion.div
@@ -392,7 +397,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     <div>
                       <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">買房知識搜尋結果</h3>
                       <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
-                        「{buySearchQuery.trim()}」共找到 {searchResultCount} 筆相關內容
+                        「{buySearchQuery.trim()}」找到 {searchResultCount} 筆站內知識
+                        {threadMatches.total > 0 && `，另有 ${threadMatches.total} 篇實務分享`}
                       </p>
                     </div>
                     <button
@@ -404,13 +410,20 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </button>
                   </div>
 
-                  {searchResultCount === 0 ? (
+                  {searchResultCount === 0 && threadMatches.total === 0 ? (
                     <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
                       <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
                       <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「取得稅」、「貸款」、「非居住者」或「修繕」。</p>
                     </div>
                   ) : (
                     <div className="space-y-7">
+                      <RelatedThreads
+                        threads={threadMatches.results}
+                        total={threadMatches.total}
+                        query={buySearchQuery}
+                        source="buy"
+                      />
+
                       {(buyFiltered.drawing.length > 0 || buyFiltered.fee.length > 0) && (
                         <div>
                           <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
@@ -456,6 +469,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           </div>
                         </div>
                       )}
+
                     </div>
                   )}
                 </section>

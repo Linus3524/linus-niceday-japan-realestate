@@ -20,6 +20,8 @@ import { QACard } from "./QACard";
 import { JapaneseRuby } from "./JapaneseRuby";
 import { TermDetailList } from "./TermDetailList";
 import { PageIntroCard } from "./PageIntroCard";
+import { RelatedThreads } from "./RelatedThreads";
+import { searchThreads } from "../lib/threadSearch";
 
 const availabilityStyle = {
   "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
@@ -218,6 +220,9 @@ export function RentGuideTab(props: RentGuideTabProps) {
     filtered.steps.length +
     filtered.qa.length +
     staticRentSearchItems.length;
+  const threadMatches = isSearchActive
+    ? searchThreads(searchQuery, { context: "rent", limit: 3 })
+    : { results: [], total: 0 };
 
   return (
             <motion.div
@@ -337,7 +342,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     <div>
                       <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">租屋知識搜尋結果</h3>
                       <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
-                        「{searchQuery.trim()}」共找到 {rentSearchResultCount} 筆相關內容
+                        「{searchQuery.trim()}」找到 {rentSearchResultCount} 筆站內知識
+                        {threadMatches.total > 0 && `，另有 ${threadMatches.total} 篇實務分享`}
                       </p>
                     </div>
                     <button
@@ -349,13 +355,20 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </button>
                   </div>
 
-                  {hasNoResults ? (
+                  {hasNoResults && threadMatches.total === 0 ? (
                     <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
                       <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
                       <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「敷金」、「先行契約」、「保證公司」或「審査」。</p>
                     </div>
                   ) : (
                     <div className="space-y-7">
+                      <RelatedThreads
+                        threads={threadMatches.results}
+                        total={threadMatches.total}
+                        query={searchQuery}
+                        source="rent"
+                      />
+
                       {(filtered.fees.length > 0 || filtered.terms.length > 0) && (
                         <div>
                           <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
@@ -408,6 +421,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           </div>
                         </div>
                       )}
+
                     </div>
                   )}
                 </section>
