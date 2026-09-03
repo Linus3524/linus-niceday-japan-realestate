@@ -432,10 +432,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有人從帶標記的連結進來</p>
                 )}
               </div>
-              <p className="mt-2 text-[11px] leading-5 text-zinc-400">
-                只有你自己在網址後面加了標記的連結才會出現在這裡，系統不會自動判斷來源。
-                例如在別人的貼文下留言時貼「你的網址/?from=ig」，有人點進來這裡就會多一次，
-                這樣就分得出哪一則留言真的帶得到人。沒有加標記的一般造訪請看上方的「連結來源」。
+              <p className="mt-2.5 text-xs leading-relaxed text-zinc-400">
+                僅統計帶有自訂標記（如 <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[11px] text-zinc-600">?from=ig</code>）的推廣連結點擊，以追蹤各管道或留言的引流成效；未標記的一般造訪請參考上方「連結來源」。
               </p>
             </section>
 
