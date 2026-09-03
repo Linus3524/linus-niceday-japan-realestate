@@ -75,6 +75,19 @@ const RENT_BUDGET_MAX = RENT_BUDGET_OPTIONS[RENT_BUDGET_OPTIONS.length - 1];
 const normalizeRentBudgetSelection = (value: number) =>
   Math.min(RENT_BUDGET_MAX, Math.max(RENT_BUDGET_OPTIONS[0], Math.round(value / 5000) * 5000));
 
+const RENT_VISA_OPTIONS = [
+  { value: "", label: "不指定 / 尚未確認" },
+  { value: "日本籍", label: "日本籍（本國人）" },
+  { value: "永住者", label: "永住者 / 定住者" },
+  { value: "技術・人文知識・國際業務", label: "工作簽證（就勞 / 技人國 / 正社員）" },
+  { value: "高度人才", label: "高度人才簽證（高薪 / 專業評分）" },
+  { value: "留學", label: "留學簽證（大學 / 大學院 / 專門學校）" },
+  { value: "留學（日本語學校）", label: "留學簽證（日本語學校）" },
+  { value: "打工度假", label: "打工度假簽證（Working Holiday）" },
+  { value: "家族滯在", label: "家族滯在 / 配偶簽證" },
+  { value: "經營管理", label: "經營管理簽證 / 日本法人代表" },
+];
+
 const guidedChoiceClass = (selected: boolean) =>
   `inline-flex items-center justify-center border px-3 py-2 text-[11px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a174] focus-visible:ring-offset-2 ${
     selected
@@ -168,6 +181,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const [guidedStructure, setGuidedStructure] = useState("");
   const [guidedMinArea, setGuidedMinArea] = useState(0);
   const [guidedAgeMax, setGuidedAgeMax] = useState(0);
+  const [guidedVisaType, setGuidedVisaType] = useState("");
+  const [guidedApplicationChannel, setGuidedApplicationChannel] = useState<"domestic" | "overseas">("domestic");
   const [buyAvailableCash, setBuyAvailableCash] = useState(15000000);
   const [buyMonthlyPaymentBudget, setBuyMonthlyPaymentBudget] = useState(180000);
   const [aiPrompt, setAiPrompt] = useState("");
@@ -776,6 +791,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
     walkMinutes: guidedWalkMinutes || null,
     commuteStation: guidedCommuteStation || null,
     commuteMinutes: guidedCommuteStation && guidedCommuteMinutes ? guidedCommuteMinutes : null,
+    visaType: guidedVisaType || null,
+    applicationChannel: guidedApplicationChannel,
     buildingAgeMax: guidedAgeMax || null,
     floorMin: guidedFloorMin || null,
     separateBath: calcModifiers.includes("separate_bath"),
@@ -892,6 +909,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
     setGuidedStructure(normalizeStructureOption(criteria.structure));
     setGuidedMinArea(criteria.areaMin || 0);
     setGuidedAgeMax(criteria.buildingAgeMax || 0);
+    if (criteria.visaType) setGuidedVisaType(criteria.visaType);
+    if (criteria.applicationChannel) setGuidedApplicationChannel(criteria.applicationChannel);
     setCalcModifiers(modifiers);
     const syncNotices = [
       allCandidateDistricts.length > compatibleDistricts.length
@@ -1099,6 +1118,76 @@ export function CalculatorTab(props: CalculatorTabProps) {
                             <ChevronDown className={guidedSelectChevronClass} />
                           </div>
                         </div>
+                      </fieldset>
+
+                      <fieldset>
+                        <div className="flex items-end justify-between gap-3">
+                          <legend className="text-xs font-bold text-zinc-700">在日身分／簽證種類</legend>
+                          <span className="text-[9px] text-[#66736C]">影響房東審查與可承租房源</span>
+                        </div>
+                        <div className="relative mt-1.5 flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
+                          <select
+                            aria-label="在日身分／簽證種類"
+                            value={guidedVisaType}
+                            onChange={event => setGuidedVisaType(event.target.value)}
+                            className="peer h-full w-full appearance-none bg-transparent px-3 pr-10 text-sm font-bold text-[#1A2A22] outline-none"
+                          >
+                            {RENT_VISA_OPTIONS.map(opt => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                          </select>
+                          <ChevronDown className={guidedSelectChevronClass} />
+                        </div>
+                      </fieldset>
+
+                      <fieldset>
+                        <legend className="text-xs font-bold text-zinc-700">希望審查方式</legend>
+                        <div className="mt-1.5 grid grid-cols-2 gap-2 font-sans">
+                          <button
+                            type="button"
+                            onClick={() => setGuidedApplicationChannel("domestic")}
+                            className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${
+                              guidedApplicationChannel === "domestic"
+                                ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
+                                : "border-[#D4DDD8] bg-white text-zinc-700 hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+                            }`}
+                          >
+                            <span className="text-xs font-bold">日本境內審查</span>
+                            <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "domestic" ? "text-white/80" : "text-zinc-400"}`}>
+                              已在日 · 可看房／房源選擇較多
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setGuidedApplicationChannel("overseas")}
+                            className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${
+                              guidedApplicationChannel === "overseas"
+                                ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
+                                : "border-[#D4DDD8] bg-white text-zinc-700 hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+                            }`}
+                          >
+                            <span className="text-xs font-bold">海外跨國審查</span>
+                            <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "overseas" ? "text-white/80" : "text-zinc-400"}`}>
+                              人在海外 · 限支援海審／遠端簽約
+                            </span>
+                          </button>
+                        </div>
+                        {guidedApplicationChannel === "overseas" && (
+                          <div className="mt-2 border-l-4 border-[#007D5A] bg-[#F5F8F6] p-2.5 text-[10px] leading-relaxed text-[#1A2A22]">
+                            <strong className="text-[#007D5A]">Linus 實務提醒：</strong>
+                            {!guidedVisaType ? (
+                              <span>人在海外申請租屋時，管理公司需先確認在留資格種類才能判定受理審查；建議先於上方選擇您的身分／簽證種類。</span>
+                            ) : guidedVisaType.includes("打工度假") ? (
+                              <span>打工度假簽證期限多為 1 年，走海外審查通常嚴格要求租金 12～15 個月以上之存款餘額證明，且強烈建議等物件審查通過後再行訂購機票。</span>
+                            ) : guidedVisaType.includes("留學") ? (
+                              <span>留學生海外審查需備妥入學許可書、在留資格認定證明書（COE）與經費支付人財力證明，建議提早由顧問協助鎖定學生友善物件。</span>
+                            ) : guidedVisaType.includes("日本籍") || guidedVisaType.includes("永住") ? (
+                              <span>具備日本籍或永住資格，審查不受在留資格限制；海外申請主要需配合管理公司之線上 IT 重說與跨國支付初期費用手續。</span>
+                            ) : (
+                              <span>人在海外需挑選支援「線上 IT 重說、接受 COE 審查、海外匯款初期費用」之管理公司。可申請房源相對受限，建議由顧問直接協助篩選可海審物件。</span>
+                            )}
+                          </div>
+                        )}
                       </fieldset>
 
                       <div className="space-y-2">
@@ -2317,7 +2406,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               const compromiseConditions = calcModifiers.map(id => getBudgetModifier(id)).filter(mod => mod?.type === "minus").map(mod => mod!.text).join("、");
                               const searchFilters = rentSearchFilterOptions.filter(option => rentSearchFilters.includes(option.key)).map(option => option.label).join("、");
                               const commuteCondition = guidedCommuteStation ? `${toJapaneseStationName(guidedCommuteStation)}駅，最長 ${guidedCommuteMinutes} 分鐘` : "尚未指定";
-                              const messageText = `您好，我剛才使用租金預算計算器，請依以下完整條件協助我找房：\n- 地區：${calcDistrict}\n- 車站：${stationPart}\n- 通勤條件：${commuteCondition}\n- 格局：${roomTypeLabel}\n- 推估月租：¥${getCalculatedRent().toLocaleString()}\n${upgradeConditions ? `- 希望條件：${upgradeConditions}\n` : ""}${compromiseConditions ? `- 可接受的妥協：${compromiseConditions}\n` : ""}${searchFilters ? `- 房源篩選條件：${searchFilters}\n` : ""}請分析這組條件的找房難度、應優先保留與可放寬的項目，並告訴我還需要補充哪些資料。若要推薦即時房源，請先確認我的簽證、工作、收入、入住日期與居住人數，不要自行假設。`;
+                              const visaPart = guidedVisaType ? `- 在日身分／簽證：${guidedVisaType}\n` : "";
+                              const channelPart = `- 審查方式：${guidedApplicationChannel === "overseas" ? "海外跨國審查（人在海外先行預定）" : "日本境內審查（已在日）"}\n`;
+                              const messageText = `您好，我剛才使用租金預算計算器，請依以下完整條件協助我找房：\n- 地區：${calcDistrict}\n- 車站：${stationPart}\n- 通勤條件：${commuteCondition}\n- 格局：${roomTypeLabel}\n- 推估月租：¥${getCalculatedRent().toLocaleString()}\n${visaPart}${channelPart}${upgradeConditions ? `- 希望條件：${upgradeConditions}\n` : ""}${compromiseConditions ? `- 可接受的妥協：${compromiseConditions}\n` : ""}${searchFilters ? `- 房源篩選條件：${searchFilters}\n` : ""}請分析這組條件的找房難度、應優先保留與可放寬的項目，並告訴我還需要補充哪些資料。若要推薦即時房源，請先確認我的${guidedVisaType ? "" : "簽證、"}工作、收入、入住日期與居住人數，不要自行假設。`;
                               handleTabChange("chat");
                               handleSendMessage(undefined, messageText);
                             }}

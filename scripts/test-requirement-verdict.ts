@@ -268,6 +268,47 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       const axes = buildAxisVerdicts(criteria, []);
       assert.ok(axes.some(axis => axis.key === "initialFeePreference" && axis.supplyImpact === 2));
     }
+  },
+  {
+    name: "打工度假＋海外審查為高難度組合且提示存款證明與買機票順序",
+    run: () => {
+      const result = assess({ ...base, visaType: "打工度假", applicationChannel: "overseas" });
+      const visaAxis = result.axes.find(a => a.key === "visa")!;
+      assert.equal(visaAxis.status, "需調整");
+      assert.ok(visaAxis.supplyImpact >= 5);
+      assert.ok(visaAxis.drivers.some(d => d.includes("存款餘額證明")));
+      assert.ok(visaAxis.nextStep?.includes("購買赴日機票"));
+    }
+  },
+  {
+    name: "留學簽證＋海外審查提示入學許可與COE",
+    run: () => {
+      const result = assess({ ...base, visaType: "留學", applicationChannel: "overseas" });
+      const visaAxis = result.axes.find(a => a.key === "visa")!;
+      assert.equal(visaAxis.status, "符合");
+      assert.ok(visaAxis.drivers.some(d => d.includes("COE")));
+      assert.ok(visaAxis.nextStep?.includes("入學許可書"));
+    }
+  },
+  {
+    name: "日本籍＋海外審查享有國民資格且不苛扣房源分數",
+    run: () => {
+      const result = assess({ ...base, visaType: "日本籍", applicationChannel: "overseas" });
+      const visaAxis = result.axes.find(a => a.key === "visa")!;
+      assert.equal(visaAxis.status, "符合");
+      assert.equal(visaAxis.supplyImpact, 1);
+      assert.ok(visaAxis.drivers.some(d => d.includes("不受在留資格限制")));
+    }
+  },
+  {
+    name: "未指定簽證＋海外審查標記待確認並提示補上簽證",
+    run: () => {
+      const result = assess({ ...base, visaType: null, applicationChannel: "overseas" });
+      const visaAxis = result.axes.find(a => a.key === "visa")!;
+      assert.equal(visaAxis.status, "待確認");
+      assert.ok(visaAxis.headline.includes("在留資格"));
+      assert.ok(visaAxis.nextStep?.includes("補上在留資格"));
+    }
   }
 ];
 

@@ -953,20 +953,67 @@ const VISA_COPY: Record<VisaCategory, { headline: string; drivers: string[] }> =
 function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
   const category = resolveVisaCategory(criteria.visaType);
   const copy = VISA_COPY[category];
-  const detail = criteria.visaType
-    ? `${criteria.visaType}${criteria.visaYears ? `・在留 ${criteria.visaYears} 年` : ""}`
-    : null;
+  const isOverseas = criteria.applicationChannel === "overseas";
+  const channelLabel = isOverseas ? "海外跨國審查" : criteria.applicationChannel === "domestic" ? "境內審查" : null;
+  const detailParts = [
+    criteria.visaType ? `${criteria.visaType}${criteria.visaYears ? `・在留 ${criteria.visaYears} 年` : ""}` : null,
+    channelLabel
+  ].filter(Boolean);
+  const detail = detailParts.length ? detailParts.join("・") : null;
+
+  const drivers = [...copy.drivers];
+  if (isOverseas) {
+    if (category === "workingHoliday") {
+      drivers.push("打工度假＋海外審查為高難度組合：需挑選少數接受 1 年短簽且支援跨國送審之物業");
+      drivers.push("審查通常嚴格要求租金 12～15 個月以上之存款餘額證明");
+    } else if (category === "student") {
+      drivers.push("留學生海外跨國審查：需挑選接受未入境留學生之管理公司，必備入學許可與 COE");
+    } else if (category === "longTerm") {
+      drivers.push("具日本籍或永住資格，審查不受在留資格限制，主要需配合跨國線上契約手續");
+    } else {
+      drivers.push("海外跨國審查：需挑選支援線上 IT 重說與 COE 審查之管理公司，可申請之房源相對受限");
+    }
+  }
+
+  let nextStep: string | undefined;
+  if (category === "unknown") {
+    nextStep = isOverseas
+      ? "人在海外申請需先確認簽證類別，管理公司才能判定審查通道；請補上在留資格。"
+      : "補上在留資格與剩餘期間。";
+  } else if (category === "workingHoliday") {
+    nextStep = isOverseas
+      ? "提前準備 15 個月租金以上的存款餘額證明，並務必在房子審查通過後再購買赴日機票。"
+      : "提前準備存款證明（預金殘高證明），方便仲介快速鎖定可申請的長期物件。";
+  } else if (category === "student" && isOverseas) {
+    nextStep = "提早取得入學許可書與 COE，由顧問鎖定留學生友善之海外審查房源。";
+  } else if (isOverseas) {
+    nextStep = "建議提早由顧問直接鎖定支援海外審查之物件，並備妥護照、在留資格認定書（COE）與財力文件。";
+  }
+
+  const overseasImpact = !isOverseas ? 0 : category === "longTerm" ? 1 : category === "workingHoliday" ? 3 : 2;
+  const baseImpact = category === "workingHoliday" ? 2 : 0;
+  const supplyImpact = baseImpact + overseasImpact;
+
+  let headline = copy.headline;
+  if (isOverseas) {
+    if (category === "unknown") {
+      headline = "人在海外申請需先釐清在留資格，以便挑選對應的審查通道。";
+    } else if (category === "workingHoliday") {
+      headline = "打工度假海外審查門檻較高，需嚴格篩選接受 1 年短簽與海外送件之管理公司。";
+    } else {
+      headline = `${copy.headline}（海外跨國審查通道）`;
+    }
+  }
+
   return {
-    key: "visa", label: "在留資格", detail,
-    status: category === "unknown" ? "待確認" : category === "workingHoliday" ? "部分符合" : "符合",
-    headline: copy.headline,
-    drivers: copy.drivers,
-    nextStep: category === "unknown"
-      ? "補上在留資格與剩餘期間。"
-      : category === "workingHoliday"
-        ? "提前準備存款證明（預金殘高證明），方便仲介快速鎖定可申請的長期物件。"
-        : undefined,
-    supplyImpact: category === "workingHoliday" ? 2 : 0
+    key: "visa",
+    label: "在留與審查",
+    detail,
+    status: category === "unknown" ? "待確認" : (category === "workingHoliday" && isOverseas) ? "需調整" : category === "workingHoliday" ? "部分符合" : "符合",
+    headline,
+    drivers,
+    nextStep,
+    supplyImpact
   };
 }
 
