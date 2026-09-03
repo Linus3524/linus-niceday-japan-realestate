@@ -13,9 +13,13 @@ const POLICY_CONTENT: Record<
     title: string;
     introduction: string;
     sections: PolicySection[];
+    /** 各頁獨立的更新日期：只改了免責聲明卻讓三頁日期一起跳，
+        會讓使用者以為條款也變了，也稀釋了「有更新」這個訊號。 */
+    updatedAt: string;
   }
 > = {
   "site-policy": {
+    updatedAt: "2026 年 7 月 26 日",
     eyebrow: "SITE POLICY",
     title: "網站使用條款",
     introduction:
@@ -54,6 +58,7 @@ const POLICY_CONTENT: Record<
     ],
   },
   privacy: {
+    updatedAt: "2026 年 7 月 26 日",
     eyebrow: "PRIVACY POLICY",
     title: "隱私權政策",
     introduction:
@@ -92,6 +97,7 @@ const POLICY_CONTENT: Record<
     ],
   },
   disclaimer: {
+    updatedAt: "2026 年 9 月 3 日",
     eyebrow: "DISCLAIMER",
     title: "資訊免責聲明",
     introduction:
@@ -110,16 +116,18 @@ const POLICY_CONTENT: Record<
         ],
       },
       {
-        title: "租金行情的資料口徑",
+        title: "租金行情的資料來源",
         paragraphs: [
-          "本站租金行情目前以 At Home 公開家賃相場頁的最近 3 個月刊登物件平均為主要基準，原則上每季更新一次；SUUMO 與 LIFULL HOME'S 僅作同期人工差異檢查，不把不同統計口徑直接平均。資料日期以行情地圖標題顯示的快照日期為準。",
-          "原始快照保存 13 種格局，主畫面整理為 1R、1K／1DK、1LDK／2K／2DK、2LDK／3K／3DK、3LDK／4K／4DK 共 5 組代表值。群組採可用行情的中位數；4LDK以上另行保存，不納入 3LDK+ 代表值。來源頁未明確標示管理費／共益費的計入方式，樣本不足的格局則可能使用模型回退。",
+          "租金行情取自 At Home 公開家賃相場的刊登資料，以行政區與格局分類，採直近 3 個月刊登物件的代表值。行情地圖標題會標示該批資料的快照日期，非即時查詢結果。部分格局因樣本不足，會沿用前一版推估值並於資料中註記。",
+          "此為刊登階段的募集條件，非實際成交金額；各筆刊登是否計入管理費、共益費亦不一致。同一行政區內，屋齡、車站距離、樓層與座向均會造成顯著價差。實際租金請以個別物件的當期募集資料與契約條件為準。",
         ],
       },
       {
-        title: "買房行情的資料口徑",
+        title: "買房行情的資料來源",
         paragraphs: [
-          "買房地圖與試算器會依可用資料，優先採用樣本足夠的行政區交易中位數；沒有足夠成交樣本時，則以行政區租金及假設表面投報率推算中古公寓基本總價。收益率模型並非實際成交統計，畫面會保持概算標示。",
+          "成交價資料取自日本國土交通省「不動產資訊資料庫」（不動産情報ライブラリ）公開 API，以行政區與格局分類，採近 4 個季度的成交價中位數；該分類成交筆數不足時，改以近 8 個季度計算。這是政府登錄的實際成交紀錄，非刊登開價。",
+          "部分行政區與格局的組合成交筆數過少，無法取得具代表性的中位數，則改以當地租金水準與假設收益率回推總價概算，畫面會另行標示為概算值。",
+          "兩種數值均為區域層級的參考基準，不等同於個別物件的鑑價。實際成交價仍受面積、樓層、座向、屋齡、管理與修繕狀況、土地權利、災害風險及交易背景影響，同一棟建物的不同戶亦可能有明顯差距。實際交易請以物件正式資料、現場確認及專業評估為準。",
         ],
       },
       {
@@ -212,7 +220,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
           ))}
         </div>
 
-        <p className="mt-5 text-right font-sans text-xs text-[#7A847E]">最後更新：2026 年 7 月 26 日</p>
+        <p className="mt-5 text-right font-sans text-xs text-[#7A847E]">最後更新：{content.updatedAt}</p>
       </main>
 
       <footer className="border-t border-[#1A2A22] bg-white">
