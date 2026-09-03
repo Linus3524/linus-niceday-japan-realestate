@@ -503,9 +503,11 @@ export default function App() {
         })
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(data.error || "請求伺服器失敗");
+        const requestError = new Error(data.error || "請求伺服器失敗") as Error & { status?: number };
+        requestError.status = response.status;
+        throw requestError;
       }
 
       setChatMessages(prev => [...prev, {
@@ -517,7 +519,11 @@ export default function App() {
       }]);
     } catch (err: any) {
       console.error(err);
-      setChatError("AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。");
+      setChatError(
+        err?.status === 429
+          ? err.message
+          : "AI 顧問目前暫時無法回覆，請稍後再試，或透過 LINE 聯絡 Linus。"
+      );
     } finally {
       setChatLoading(false);
     }

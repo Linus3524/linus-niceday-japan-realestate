@@ -1,7 +1,9 @@
-import { threadCategories, type FeaturedThread } from "../data/featuredThreads";
-import { threadsSearchIndex } from "../data/threadsSearchIndex";
-import { threadImageIndex } from "../data/threadImageIndex";
-import { expandToken, extractKnownSearchTokens, tokenizeQuery } from "./search";
+// 這支模組同時由前端與 Vercel ESM function 使用；副檔名不可省略，否則
+// Vercel 編譯成 JS 後會在 function 啟動時找不到模組。
+import { threadCategories, type FeaturedThread } from "../data/featuredThreads.js";
+import { threadsSearchIndex } from "../data/threadsSearchIndex.js";
+import { threadImageIndex } from "../data/threadImageIndex.js";
+import { expandToken, extractKnownSearchTokens, tokenizeQuery } from "./search.js";
 
 export type ThreadSearchContext = "all" | "rent" | "buy";
 
