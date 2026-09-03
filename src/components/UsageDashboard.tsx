@@ -52,9 +52,13 @@ const ACTION_SOURCE_NOTE: Record<string, string> = {
   "wechat-qr": "聯絡分頁展開",
 };
 
+// 常用管道的中文名。沒收錄的標記會直接顯示原字，不影響統計，
+// 想讓它顯示中文就在這裡加一行。
 const SOURCE_LABEL: Record<string, string> = {
   line: "LINE",
+  ig: "Instagram",
   instagram: "Instagram",
+  fb: "Facebook",
   facebook: "Facebook",
   threads: "Threads",
   qr: "QR Code",
@@ -413,22 +417,25 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <ul className="divide-y divide-[#F5F8F6]">
                     {sourceRows.map(row => (
                       <li key={row.source} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
+                        {/* 每一列都用同樣的樣式：中文名（沒有對照就用標記本身）
+                            加上完整的 ?from= 寫法。先前有中文名的才顯示原標記，
+                            結果一行有兩個字、一行只有一個，看起來像壞掉。 */}
                         <span className="text-[#3F5147]">
                           {SOURCE_LABEL[row.source] ?? row.source}
-                          {SOURCE_LABEL[row.source] && (
-                            <span className="ml-2 font-jost text-[11px] text-zinc-400">{row.source}</span>
-                          )}
+                          <span className="ml-2 font-jost text-[11px] text-zinc-400">?from={row.source}</span>
                         </span>
                         <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()} 次</span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有帶來源標記的造訪</p>
+                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有人從帶標記的連結進來</p>
                 )}
               </div>
               <p className="mt-2 text-[11px] leading-5 text-zinc-400">
-                只計算網址帶有 from 或 utm_source 的造訪；直接輸入網址與一般轉介請看上方 Vercel「連結來源」。
+                只有你自己在網址後面加了標記的連結才會出現在這裡，系統不會自動判斷來源。
+                例如在別人的貼文下留言時貼「你的網址/?from=ig」，有人點進來這裡就會多一次，
+                這樣就分得出哪一則留言真的帶得到人。沒有加標記的一般造訪請看上方的「連結來源」。
               </p>
             </section>
 
