@@ -452,6 +452,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                 layout: roomType,
                 monthlyRentYen: activeRentYen
               }) : null;
+              const activeYield = activeBuyEstimate && activeBuyEstimate.basePriceYen > 0 && activeRentYen > 0
+                ? ((activeRentYen * 12) / activeBuyEstimate.basePriceYen * 100).toFixed(1)
+                : null;
               return (
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
@@ -464,10 +467,20 @@ export const RentMap: React.FC<RentMapProps> = ({
                         <span className="text-[9px] bg-[#00a174] text-white px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
                       )}
                     </span>
-                    <span className="text-[10px] text-zinc-500 font-bold">
-                      {mode === "buy"
-                        ? activeBuyEstimate?.source === "official_transaction" ? "官方成交資料" : "租金收益率模型"
-                        : `${activeWard.sourceDate || latestSourceDate} 家賃相場`}
+                    <span className="text-[10px] text-zinc-500 font-bold flex items-center gap-1.5">
+                      {mode === "buy" ? (
+                        <>
+                          {activeYield && (
+                            <span className="text-[#007D5A] font-semibold">
+                              表面利回約 {activeYield}%
+                            </span>
+                          )}
+                          <span className="text-zinc-300">·</span>
+                          <span>{activeBuyEstimate?.source === "official_transaction" ? "國交省成約" : "租金模型"}</span>
+                        </>
+                      ) : (
+                        `${activeWard.sourceDate || latestSourceDate} 家賃相場`
+                      )}
                     </span>
                   </div>
                   {/* 使用簡短格局標籤，Hover 時顯示群組實際涵蓋範圍（例如包含 1DK）。 */}

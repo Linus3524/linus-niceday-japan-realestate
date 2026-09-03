@@ -19,6 +19,7 @@ import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
 import { renderFormattedText } from "../lib/format";
 import { RentCriteriaSummary } from "./RentCriteriaSummary";
+import { OfficialMarketInsight } from "./OfficialMarketInsight";
 import { PageIntroCard } from "./PageIntroCard";
 
 interface CalculatorTabProps {
@@ -1783,37 +1784,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     })()}
 
                     {calcMode === "buy" && (
-                      <div className="flex items-start gap-2 border border-zinc-200 bg-[#F5F8F6] p-3 font-sans text-xs leading-normal text-zinc-500">
-                        <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
-                        {(() => {
-                          const estimate = getSelectedBuyMarketEstimate();
-                          return estimate.source === "official_transaction" ? (
-                            <div className="min-w-0 space-y-1">
-                              <div className="font-bold text-zinc-700">
-                                <strong lang="ja" className="font-jp">{districtDisplayName}</strong>・{ROOM_TYPE_LABEL[calcRoomType]} 近{estimate.windowQuarters === 4 ? "四" : "八"}季中古公寓成交價中位數
-                              </div>
-                              <div className="font-mono text-base font-bold text-[#007D5A]">
-                                {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()} 萬日圓
-                              </div>
-                              <div className="text-[10px] leading-relaxed text-zinc-500">
-                                資料來源：國土交通省 不動產資訊資料庫｜統計期間：{estimate.periodStart}～{estimate.periodEnd}｜樣本：{estimate.sampleCount.toLocaleString()} 筆
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="min-w-0 space-y-1">
-                              <div className="font-bold text-zinc-700">
-                                <strong lang="ja" className="font-jp">{districtDisplayName}</strong>・{ROOM_TYPE_LABEL[calcRoomType]} 中古公寓總價模型
-                              </div>
-                              <div className="font-mono text-base font-bold text-zinc-700">
-                                {getDistrictBuyPrice(calcDistrict, calcRoomType).toLocaleString()} 萬日圓
-                              </div>
-                              <div className="text-[10px] leading-relaxed text-zinc-500">
-                                估算方式：租金收益率模型｜假設表面投報率：{(getModeledBuyYieldRate(getSelectedDistrictData().region, calcDistrict, calcRoomType) * 100).toFixed(1)}%｜此組合尚無足夠成交樣本
-                              </div>
-                            </div>
-                          );
-                        })()}
-                      </div>
+                      <OfficialMarketInsight
+                        region={getSelectedDistrictData().region}
+                        district={calcDistrict}
+                        currentLayout={calcRoomType}
+                        onSelectLayout={setCalcRoomType}
+                      />
                     )}
                     {getSelectedDistrictData().verificationStatus === "modeled_unverified" && (
                       <div className="border-l-4 border-[#E94E2B] bg-[#FFF9ED] px-3 py-2 text-[11px] leading-relaxed text-[#66583D] font-sans">
