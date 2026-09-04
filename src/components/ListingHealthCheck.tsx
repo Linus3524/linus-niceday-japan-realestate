@@ -10,6 +10,7 @@ import {
   FileText,
   Footprints,
   Info,
+  Landmark,
   LoaderCircle,
   MapPin,
   Navigation,
@@ -26,13 +27,26 @@ import {
 } from "lucide-react";
 import type { AxisStatus } from "../lib/requirementVerdict";
 import type { ListingLocationContext } from "../lib/listingLocation";
-import { normalizeStructure, parseArea, parseGuaranteeFee, formatShikibiki } from "../lib/listingExtraction";
+import {
+  normalizeStructure,
+  parseArea,
+  parseGuaranteeFee,
+  formatShikibiki,
+  isFreeOrZero,
+  parseSalePrice,
+  parseUnitsCount,
+  parseYenAmount,
+  computeTsuboAndSqmPrice,
+  assessRepairReserve,
+  calculateSaleInitialCosts,
+} from "../lib/listingExtraction";
 import { ListingLocationMap } from "./ListingLocationMap";
 
 /**
- * 物件圖紙健檢：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
- * 深度讀取租金、管理費、禮押金與各項雜費，進行所在地區行情比對、
- * 初期費用全面預測試算、實際步行與周邊機能診斷。
+ * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
+ * 支援「租賃圖紙」與「買賣圖紙」，深度萃取金額與特約條款，
+ * 進行行情比對、每坪單價、持有負擔與大樓修繕基金合理性診斷、
+ * 初期費用預測試算、實際步行與周邊機能檢驗。
  */
 
 // 改為單張圖紙上傳：日本不動產物件概要書（マイソク / Maisoku）絕大多數均為單頁橫式（A4/B4），
@@ -42,8 +56,33 @@ const MAX_TOTAL_IMAGE_BYTES = 3 * 1024 * 1024;
 const ACCEPTED_MIME_TYPES = "image/*,application/pdf";
 const MAX_UPLOAD_DIMENSION = 2000;
 const JPEG_QUALITY = 0.8;
+// Gemini 直接讀取掃描型 PDF 時，可能先以較低解析度將整頁光柵化，導致細字誤讀。
+// 先在瀏覽器將單頁圖紙轉成約 180 DPI（A4 橫式長邊約 2,100px）的 JPEG，
+// 能保留小字，同時控制上傳量與圖片 token。
+const MAX_PDF_RENDER_DIMENSION = 2200;
+const PDF_JPEG_QUALITY = 0.88;
 
-const STATUS_STYLE: Record<AxisStatus, { badge: string; box: string }> = {
+const STATUS_STYLE: Record<string, { badge: string; box: string }> = {
+  "合理": {
+    badge: "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
+    box: "border-[#9ee2cf] bg-[#f2faf7]",
+  },
+  "超值": {
+    badge: "border-[#8fd4cb] bg-[#e0f5f0] text-[#00694c]",
+    box: "border-[#8fd4cb] bg-[#eefaf7]",
+  },
+  "條件反映": {
+    badge: "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
+    box: "border-[#DCC8A1] bg-[#FFFDF8]",
+  },
+  "偏高": {
+    badge: "border-[#F4C1A8] bg-[#FFF0E8] text-[#9E3E1B]",
+    box: "border-[#F4C1A8] bg-[#FFF9F5]",
+  },
+  "明顯偏高": {
+    badge: "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]",
+    box: "border-[#F8D2C5] bg-[#FFF5F2]",
+  },
   "符合": {
     badge: "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
     box: "border-[#9ee2cf] bg-[#f2faf7]",
@@ -66,7 +105,82 @@ const STATUS_STYLE: Record<AxisStatus, { badge: string; box: string }> = {
   },
 };
 
+const getStatusStyle = (status?: string | null) => {
+  if (!status) return STATUS_STYLE["待確認"];
+  return STATUS_STYLE[status] || STATUS_STYLE["待確認"];
+};
+
+export interface SaleAnalysisVerdict {
+  salePriceYen: number;
+  salePriceMan: number;
+  areaSqm: number | null;
+  tsuboAndSqm: {
+    tsubo: number | null;
+    tsuboPriceYen: number | null;
+    tsuboPriceMan: number | null;
+    sqmPriceYen: number | null;
+    sqmPriceMan: number | null;
+  };
+  monthlyHoldingCosts: {
+    managementFee: number;
+    repairReserve: number;
+    repairFund: number;
+    otherMonthlyFees: number;
+    totalMonthlyCost: number;
+    items: Array<{ name: string; amount: number; note: string }>;
+  };
+  buildingHealth: {
+    totalUnits: number | null;
+    ageYears: number | null;
+    reservePerSqm: number | null;
+    reserveHealthLevel: "inadequate" | "healthy" | "heavy";
+    reserveHealthText: string;
+    reserveHealthNote: string;
+    scaleRiskLevel: "high_risk" | "medium" | "safe";
+    scaleRiskText: string;
+    scaleRiskNote: string;
+    specialStrengths: string[];
+  };
+  mlitComparison: {
+    region: string;
+    district: string;
+    layout: string;
+    medianPriceYen: number | null;
+    medianPriceMan: number | null;
+    diffPercent: number | null;
+    verdict: "bargain" | "fair" | "premium";
+    verdictText: string;
+    explanation: string;
+    sampleCount?: number;
+    periodEnd?: string;
+    stationWalkFactor: {
+      walkMinutes: number;
+      level: "prime_close" | "standard" | "far";
+      note: string;
+    };
+  } | null;
+  occupancyAssessment: {
+    status: "vacant" | "tenanted_investment" | "occupied_owner" | "unknown";
+    statusText: string;
+    investmentYield?: {
+      monthlyRentYen: number;
+      annualIncomeYen: number;
+      grossYield: number;
+      netYieldEstimated: number | null;
+    };
+    mortgageTaxEligible: boolean | null;
+    mortgageTaxNote: string;
+    renovationNote?: string;
+  };
+  initialCosts: {
+    total: number;
+    percentageOfPrice: number;
+    items: Array<{ id: string; name: string; amount: number; note: string }>;
+  };
+}
+
 interface ExtractedFields {
+  dealType?: string;
   station: string;
   walkTime: string;
   layout: string;
@@ -86,6 +200,22 @@ interface ExtractedFields {
   shikibiki?: string;
   cancellationPenalty?: string;
   renewalFee?: string;
+  supportFee?: string;
+  freeRent?: string;
+  salePrice?: string;
+  totalUnits?: string;
+  repairReserve?: string;
+  repairFund?: string;
+  otherMonthlyFees?: string;
+  occupancyStatus?: string;
+  currentRent?: string;
+  annualIncome?: string;
+  grossYield?: string;
+  landRights?: string;
+  zoning?: string;
+  renovationDetails?: string;
+  managementCompany?: string;
+  managementStyle?: string;
   specialNotes?: string;
 }
 
@@ -109,20 +239,27 @@ export interface InitialCostEstimate {
 }
 
 interface AnalyzeListingResult {
+  dealType?: "sale" | "rent";
   extracted: ExtractedFields;
   parsed: {
     rent: number | null;
     managementFee: number | null;
+    salePrice?: number | null;
     keyMoney: number | null;
     deposit: number | null;
     roomType: string | null;
     area?: number | null;
     structure?: string | null;
+    totalUnits?: number | null;
+    repairReserve?: number | null;
+    repairFund?: number | null;
+    otherMonthlyFees?: number | null;
   };
   range: { low: number; median: number; high: number } | null;
-  verdict: { status: AxisStatus; headline: string; detail: string } | null;
+  verdict: { status: string; headline: string; detail: string } | null;
   initialCostMonths: number | null;
   initialCostEstimate?: InitialCostEstimate | null;
+  saleAnalysis?: SaleAnalysisVerdict | null;
 }
 
 interface ListingCommuteResult {
@@ -154,9 +291,43 @@ function base64Bytes(base64: string): number {
   return Math.floor((base64.length * 3) / 4) - padding;
 }
 
+async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data: string }> {
+  const [pdfjs, workerModule] = await Promise.all([
+    import("pdfjs-dist"),
+    import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+  ]);
+  pdfjs.GlobalWorkerOptions.workerSrc = workerModule.default;
+
+  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
+  const pdf = await loadingTask.promise;
+  try {
+    const page = await pdf.getPage(1);
+    const baseViewport = page.getViewport({ scale: 1 });
+    const scale = MAX_PDF_RENDER_DIMENSION / Math.max(baseViewport.width, baseViewport.height);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+
+    await page.render({ canvas, viewport, background: "rgb(255,255,255)" }).promise;
+    page.cleanup();
+
+    const data = canvas.toDataURL("image/jpeg", PDF_JPEG_QUALITY).split(",")[1] ?? "";
+    if (!data) throw new Error("PDF canvas encode failed");
+    return { mimeType: "image/jpeg", data };
+  } finally {
+    await pdf.destroy();
+  }
+}
+
 async function encodeForUpload(file: File): Promise<{ mimeType: string; data: string }> {
   if (file.type === "application/pdf") {
-    return { mimeType: file.type, data: await fileToBase64(file) };
+    try {
+      return await renderPdfForUpload(file);
+    } catch (error) {
+      console.warn("PDF 高解析度轉圖失敗，改送原始 PDF。", error);
+      return { mimeType: file.type, data: await fileToBase64(file) };
+    }
   }
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
@@ -263,26 +434,42 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
     {
       id: "insuranceFee",
       name: "火災保險／家財保險（2年）",
-      amount: 20000,
-      isFromFlyer: Boolean(result.extracted.insuranceFee),
+      amount: parseYenAmount(result.extracted.insuranceFee) ?? 20000,
+      isFromFlyer: Boolean(parseYenAmount(result.extracted.insuranceFee)),
       note: result.extracted.insuranceFee ? `圖紙標示：${result.extracted.insuranceFee}` : "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
     },
     {
       id: "lockReplacementFee",
       name: "鑰匙更換費（鍵交換代）",
-      amount: 22000,
-      isFromFlyer: Boolean(result.extracted.lockReplacementFee),
-      note: result.extracted.lockReplacementFee ? `圖紙標示：${result.extracted.lockReplacementFee}` : "交屋前換新鎖芯費用（一般鎖約 1.6 萬～2.2 萬円，電子鎖約 3.3 萬円）",
+      amount: isFreeOrZero(result.extracted.lockReplacementFee) ? 0 : (parseYenAmount(result.extracted.lockReplacementFee) ?? 22000),
+      isFromFlyer: isFreeOrZero(result.extracted.lockReplacementFee) || Boolean(parseYenAmount(result.extracted.lockReplacementFee)),
+      note: isFreeOrZero(result.extracted.lockReplacementFee)
+        ? `免換鎖費用（圖紙標示：${result.extracted.lockReplacementFee || "無償"}）`
+        : result.extracted.lockReplacementFee
+        ? `圖紙標示：${result.extracted.lockReplacementFee}`
+        : "交屋前換新鎖芯費用（一般鎖約 1.6 萬～2.2 萬円，電子鎖約 3.3 萬円）",
     },
   ];
 
-  if (deposit === 0 || result.extracted.cleaningFee) {
+  const customCleaning = parseYenAmount(result.extracted.cleaningFee);
+  if (deposit === 0 || customCleaning) {
     items.push({
       id: "cleaningFee",
       name: "退去清掃費／室內清潔費",
-      amount: 44000,
-      isFromFlyer: Boolean(result.extracted.cleaningFee),
+      amount: customCleaning ?? 44000,
+      isFromFlyer: Boolean(customCleaning),
       note: result.extracted.cleaningFee ? `圖紙標示：${result.extracted.cleaningFee}` : "免押金物件通常於簽約初期預收退租清掃費",
+    });
+  }
+
+  const customSupport = parseYenAmount(result.extracted.supportFee);
+  if (customSupport && customSupport > 0) {
+    items.push({
+      id: "supportFee",
+      name: "入居者サポート／24小時生活支援",
+      amount: customSupport,
+      isFromFlyer: true,
+      note: `圖紙標示：${result.extracted.supportFee}（24 小時生活急修與支援服務）`,
     });
   }
 
@@ -302,20 +489,112 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   }
 
   const tips: string[] = [];
+
+  // 1. 租金高性價比／超值物件
+  if (result.verdict?.status === "超值") {
+    tips.push("【💡 高性價比／超值物件】本物件租金＋管理費顯著低於同區同房型市場行情，價格極具競爭力！在東京租屋市場中，此類平價超值房源去化速度極快，若審查通過建議把握簽約時機，以免被其他申請者搶先。");
+  }
+
+  // 2. 免租期（Free Rent）特惠提示
+  if (result.extracted.freeRent && !isFreeOrZero(result.extracted.freeRent)) {
+    tips.push(`【✨ 專屬禮遇・免租期（フリーレント）】圖紙載有「${result.extracted.freeRent}」優惠！起租首月可減免本體租金，實質大幅減輕簽約搬家現金壓力（約省下 ¥${rent.toLocaleString()}）。`);
+  }
+
+  // 3. 初期費用極度親民（3.5 倍以下）
+  if (monthsMultipleMax <= 3.5) {
+    tips.push(`【💰 初期費用極度親民】本物件總初期費用僅約 ${monthsMultipleMax} 個月租金（市場普遍約 4.0～4.8 倍），大幅壓低赴日搬遷的現金流門檻！`);
+  }
+
+  // 4. 禮金與押金動態解析
   if (hasShikibiki) {
     tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${formattedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
   }
   if (keyMoney === 0 && deposit === 0) {
-    tips.push("本物件為「零禮金、零押金」，初期現金壓力極小；但請注意退租時的清潔費或原狀恢復計費約定。");
+    tips.push("【🎉 零禮金・零押金（雙零物件）】免付房東謝禮與押金，初期可直接省下約 2 個月租金負擔；但請特別留意退租時合約約定的基本清掃費與原狀恢復計費特約。");
   } else if (keyMoney === 0) {
-    tips.push("本物件「免禮金」，為您省下致贈房東的謝禮（通常相當於 1 個月租金）。");
+    tips.push("【✨ 免禮金優勢】本物件「免禮金」，為您省下致贈房東的謝禮（相當於省下約 1 個月租金）；所繳押金於扣除退租清潔特約後仍有機會返還。");
   } else if (keyMoney >= rent * 1.5) {
-    tips.push("本物件禮金高達 1.5 個月以上，屬於傳統熱門物件或都心精華地段常見設定，初期成本較高。");
+    const kmMonths = (keyMoney / rent).toFixed(1).replace(/\.0$/, "");
+    tips.push(`【⚠️ 初期負擔偏高】本物件禮金高達 ${kmMonths} 個月，屬於熱門物件或都心精華地段常見設定，初期成本相對較高。`);
   }
-  tips.push("【節費技巧】協調起租日在每月 25 號以後，當月日割租金僅需付數天，可顯著壓低第一筆需匯出的初期款項。");
-  tips.push("【海外審查提醒】海外租客簽約初期費用多需以日本國內銀行匯款，若由海外電匯請預留約 4,000 円日本端受金手續費與匯差。");
+
+  // 5. 免換鎖費用優惠
+  if (isFreeOrZero(result.extracted.lockReplacementFee)) {
+    tips.push("【🔑 免換鎖費優惠】圖紙載明免收換鎖費（鍵交換代 0 円），為您額外省下約 2～4 萬円的交屋雜費。");
+  }
+
+  // 6. 附免費高速網路
+  const allNotes = `${result.extracted.specialNotes || ""}`.toLowerCase();
+  const hasFreeNet = /インターネット無料|ネット無料|wifi無料|シーファイブ|高速ネット無料|光ネット無料/.test(allNotes);
+  if (hasFreeNet) {
+    tips.push("【📶 附免費高速網路】圖紙標示內建免費網路，入居後免自行申辦與綁約，每年實質再為您省下約 5 萬～6 萬円通信開銷。");
+  }
+
+  // 7. 起租日與首期金額浮動說明
+  tips.push("【起租日與首期金額浮動】日本簽約多會預收「起租月剩餘日數之日割租金＋次月完整租金與管理費」。因起租日需配合管理會社規定之最晚起租期限（通常為審查核准後約 10～20 天內，無法隨意延後），若核准的起租日剛好落在下旬（如 25 號後），當月日割天數少，首筆需匯出的初期款項會相對有感降低；若落在月初則日割接近全額。");
+
+  // 8. 海外匯款提醒
+  tips.push("【海外匯款提醒】海外租客簽約初期費用多需以日本國內銀行匯款，若由海外電匯請預留約 4,000 円日本端中繼受金手續費與匯差緩衝。");
 
   return { totalMin, totalMax, monthsMultipleMin, monthsMultipleMax, level, levelText, items, tips };
+}
+
+/**
+ * 前端 fallback 買賣圖紙分析：確保即使後端特定結構缺漏，前端亦能正常算妥數值
+ */
+function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerdict | null {
+  const salePriceYen = result.parsed.salePrice ?? parseSalePrice(result.extracted.salePrice);
+  if (!salePriceYen) return null;
+  const areaSqm = result.parsed.area ?? parseArea(result.extracted.area);
+  const tsuboAndSqm = computeTsuboAndSqmPrice(salePriceYen, areaSqm);
+  const managementFee = result.parsed.managementFee ?? parseYenAmount(result.extracted.managementFee) ?? 0;
+  const repairReserve = result.parsed.repairReserve ?? parseYenAmount(result.extracted.repairReserve) ?? 0;
+  const repairFund = result.parsed.repairFund ?? parseYenAmount(result.extracted.repairFund) ?? 0;
+  const otherMonthlyFees = result.parsed.otherMonthlyFees ?? parseYenAmount(result.extracted.otherMonthlyFees) ?? 0;
+  const totalMonthlyCost = managementFee + repairReserve + repairFund + otherMonthlyFees;
+
+  const totalUnits = result.parsed.totalUnits ?? parseUnitsCount(result.extracted.totalUnits);
+  const reserveAssessment = assessRepairReserve({
+    monthlyRepairCostYen: repairReserve + repairFund,
+    areaSqm,
+    totalUnits,
+  });
+
+  const initialCosts = calculateSaleInitialCosts(salePriceYen);
+
+  return {
+    salePriceYen,
+    salePriceMan: Math.round(salePriceYen / 10000),
+    areaSqm,
+    tsuboAndSqm,
+    monthlyHoldingCosts: {
+      managementFee,
+      repairReserve,
+      repairFund,
+      otherMonthlyFees,
+      totalMonthlyCost,
+      items: [
+        { name: "管理費", amount: managementFee, note: result.extracted.managementCompany || "大樓日常維護與共用部費用" },
+        { name: "修繕積立金", amount: repairReserve, note: "管委會大樓長期修繕儲備基金" },
+        ...(repairFund > 0 ? [{ name: "修繕積立基金（月額）", amount: repairFund, note: "定期追加修繕準備金" }] : []),
+        ...(otherMonthlyFees > 0 ? [{ name: "其他月額雜費", amount: otherMonthlyFees, note: result.extracted.otherMonthlyFees || "町會費或自治費用" }] : []),
+      ],
+    },
+    buildingHealth: {
+      totalUnits,
+      ageYears: null,
+      ...reserveAssessment,
+      specialStrengths: [],
+    },
+    mlitComparison: null,
+    occupancyAssessment: {
+      status: "unknown",
+      statusText: result.extracted.occupancyStatus || "一般買賣物件",
+      mortgageTaxEligible: areaSqm && areaSqm >= 50 ? true : null,
+      mortgageTaxNote: areaSqm && areaSqm >= 50 ? "專有面積達 50㎡ 以上，符合住宅貸款減稅主要面積標準。" : "需查驗謄本內法面積是否達標。",
+    },
+    initialCosts,
+  };
 }
 
 export function ListingHealthCheck() {
@@ -325,6 +604,7 @@ export function ListingHealthCheck() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalyzeListingResult | null>(null);
+  const [analysisMode, setAnalysisMode] = useState<"auto" | "rent" | "sale">("auto");
   const [locationContext, setLocationContext] = useState<ListingLocationContext | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -333,6 +613,7 @@ export function ListingHealthCheck() {
   const [commuteError, setCommuteError] = useState<string | null>(null);
   const [commute, setCommute] = useState<ListingCommuteResult | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
+  const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 當 previewUrl 變動時妥善釋放 object URL，避免記憶體洩漏
@@ -443,7 +724,7 @@ export function ListingHealthCheck() {
       const response = await fetch("/api/analyze-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ files: [encoded] }),
+        body: JSON.stringify({ files: [encoded], mode: analysisMode }),
       });
       const body = await response.json().catch(() => null);
       if (!response.ok) {
@@ -515,7 +796,12 @@ export function ListingHealthCheck() {
     extracted?.structure ||
     null;
 
-  const formattedShikibiki = formatShikibiki(extracted?.shikibiki);
+  const rawShikibiki =
+    extracted?.shikibiki ||
+    extracted?.deposit?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
+    extracted?.specialNotes?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
+    "";
+  const formattedShikibiki = formatShikibiki(rawShikibiki);
   const hasShikibiki = Boolean(formattedShikibiki);
   const hasPenalty = Boolean(
     extracted?.cancellationPenalty &&
@@ -533,17 +819,23 @@ export function ListingHealthCheck() {
         .trim()
     : "";
 
+  const isSaleListing =
+    result?.dealType === "sale" ||
+    Boolean(result?.saleAnalysis) ||
+    Boolean(result?.parsed?.salePrice && result.parsed.salePrice >= 10000000);
+  const saleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
+
   return (
-    <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙健檢">
+    <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
       {/* 區塊頂部標題 */}
       <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00a174]">
-        <Sparkles className="h-4 w-4" /> Listing Reality Check
+        <Sparkles className="h-4 w-4" /> Listing Sheet Analysis
       </div>
       <h3 className="mb-2 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
-        上傳物件圖紙・全面健檢與初期費用預測
+        物件圖紙分析・全面健檢與數值行情預測
       </h3>
-      <p className="mb-6 text-sm leading-relaxed text-[#3F5147]">
-        上傳仲介提供的物件概要書或図面（單張圖紙），AI 將自動提取純租金、管理費、禮押金與各項雜費，深度比對大數據租金行情，並精確拆解入住所需的初期費用。
+      <p className="mb-4 text-sm leading-relaxed text-[#3F5147]">
+        上傳仲介提供的物件概要書或図面（單張圖紙或 PDF 均可）。<strong>系統由 AI 自動辨識「租屋圖紙」或「買賣圖紙」</strong>，深度分析市場實價行情、每坪單價、持有成本與修繕基金合理性、初期費用試算及生活機能地圖。
       </p>
 
       {/* 隱藏的檔案上傳 input */}
@@ -575,14 +867,14 @@ export function ListingHealthCheck() {
             點擊選擇圖紙，或將圖紙直接拖曳至此
           </p>
           <p className="mt-1 text-xs text-[#66736C]">
-            支援單張日本不動產概要書（マイソク / Maisoku）、格局資料照片或 PDF 檔案
+            支援單張日本不動產概要書（租賃物件・中古公寓買賣・投資收租圖紙均可）、照片或 PDF 檔案
           </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-[11px] font-semibold text-[#486355]">
             <span className="bg-[#EAEFEA] px-2 py-0.5">JPG / PNG</span>
             <span className="bg-[#EAEFEA] px-2 py-0.5">WEBP / HEIC</span>
             <span className="bg-[#EAEFEA] px-2 py-0.5">PDF</span>
-            <span className="ml-1 text-[11px] text-[#66736C]">（自動壓縮最佳化，不留存個人資料）</span>
+            <span className="ml-1 text-[11px] text-[#66736C]">（自動最佳化，不留存個人資料）</span>
           </div>
         </div>
       ) : (
@@ -609,7 +901,9 @@ export function ListingHealthCheck() {
                 <p className="mt-1 truncate text-sm font-bold text-[#1A2A22]" title={file.name}>
                   {file.name}
                 </p>
-                <p className="text-[11px] text-[#66736C]">單張圖紙辨識中</p>
+                <p className="text-[11px] text-[#66736C]">
+                  AI 智慧自動辨識（自動區分租賃或買賣分析）
+                </p>
               </div>
             </div>
 
@@ -640,17 +934,17 @@ export function ListingHealthCheck() {
               type="button"
               onClick={analyze}
               disabled={loading}
-              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#18181B] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#2d2d30] disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#18181B] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#2d2d30] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
                   <LoaderCircle className="h-4 w-4 animate-spin" />
-                  <span>正在深度讀取圖紙費用與條件資訊…</span>
+                  <span>正在由 AI 深度解讀圖紙各項數值、條款與特約…</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="h-4 w-4 text-[#00a174]" />
-                  <span>開始圖紙健檢與初期費用試算</span>
+                  <span>開始物件圖紙全面健檢與數值分析</span>
                 </>
               )}
             </button>
@@ -674,57 +968,570 @@ export function ListingHealthCheck() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="bg-[#00a174] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                  健檢完成
+                  {isSaleListing ? "買賣分析完成" : "租賃健檢完成"}
                 </span>
                 <span className="text-xs text-[#AAB8B0]">AI 圖紙結構化分析</span>
               </div>
               <p className="mt-1 text-base font-bold">
-                {stationSummary ? `${stationSummary}駅周邊` : "日本租賃物件"}
+                {stationSummary ? `${stationSummary}駅周邊` : (isSaleListing ? "日本買賣公寓" : "日本租賃物件")}
                 {extracted?.layout ? `・${extracted.layout}` : ""}
                 {displayArea ? `・${displayArea}` : ""}
                 {displayStructure ? `・${displayStructure}` : ""}
               </p>
             </div>
-            {result.verdict && (
-              <span className={`border px-3 py-1 text-xs font-black uppercase tracking-wider ${STATUS_STYLE[result.verdict.status].badge}`}>
-                行情判定：{result.verdict.status}
-              </span>
-            )}
-          </div>
 
-          {/* 模組：大數據租金行情合理度診斷（置於月額負擔上方，排版洗鍊不重複） */}
-          {result.verdict && (
-            <div className={`border p-4 sm:p-5 ${STATUS_STYLE[result.verdict.status].box}`}>
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-2">
-                  <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${STATUS_STYLE[result.verdict.status].badge}`}>
-                    行情診斷：{result.verdict.status}
+            <div className="flex flex-wrap items-center gap-2">
+              {isSaleListing ? (
+                saleAnalysis?.mlitComparison && (
+                  <span className={`border px-3 py-1 text-xs font-black uppercase tracking-wider ${
+                    saleAnalysis.mlitComparison.verdict === "bargain"
+                      ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                      : saleAnalysis.mlitComparison.verdict === "premium"
+                      ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
+                      : "border-[#9ee2cf] bg-[#f2faf7] text-[#007d5a]"
+                  }`}>
+                    實價判定：{saleAnalysis.mlitComparison.verdictText}
                   </span>
-                  <h4 className="text-sm font-bold text-[#1A2A22]">
-                    {result.verdict.headline}
-                  </h4>
-                </div>
-
-                {result.range && (
-                  <div className="flex flex-wrap items-center gap-2 text-xs">
-                    <span className="text-[#66736C]">同站同房型成約區間：</span>
-                    <span className="font-bold text-[#1A2A22]">
-                      {formatYen(result.range.low)} ～ {formatYen(result.range.high)}
-                    </span>
-                    <span className="rounded border border-[#DDE3DF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#007d5a]">
-                      中位數 {formatYen(result.range.median)}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {cleanVerdictDetail && (
-                <p className="mt-2.5 border-t border-[#DDE3DF]/60 pt-2 text-xs leading-relaxed text-[#3F5147]">
-                  💡 <strong>Linus 專業分析：</strong>{cleanVerdictDetail}
-                </p>
+                )
+              ) : (
+                result.verdict && (
+                  <span className={`border px-3 py-1 text-xs font-black uppercase tracking-wider ${getStatusStyle(result.verdict.status).badge}`}>
+                    行情判定：{result.verdict.status}
+                  </span>
+                )
               )}
             </div>
-          )}
+          </div>
+
+          {/* 條件分支：買賣圖紙視角 VS 租賃圖紙視角 */}
+          {isSaleListing && saleAnalysis ? (
+            <>
+              {/* 模組 S1：國土交通省成約實價對比與車站保值評估 */}
+              {saleAnalysis.mlitComparison && (
+                <div
+                  className={`border p-4 sm:p-5 ${
+                    saleAnalysis.mlitComparison.verdict === "bargain"
+                      ? "border-[#9ee2cf] bg-[#f2faf7]"
+                      : saleAnalysis.mlitComparison.verdict === "premium"
+                      ? "border-[#DCC8A1] bg-[#FFFDF8]"
+                      : "border-[#9ee2cf] bg-[#f2faf7]"
+                  }`}
+                >
+                  <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
+                          saleAnalysis.mlitComparison.verdict === "bargain"
+                            ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                            : saleAnalysis.mlitComparison.verdict === "premium"
+                            ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
+                            : "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                        }`}
+                      >
+                        國交省實價對比：{saleAnalysis.mlitComparison.verdictText}
+                      </span>
+                      <h4 className="text-sm font-bold text-[#1A2A22]">
+                        {saleAnalysis.mlitComparison.region}
+                        {saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}中古公寓成約基準
+                      </h4>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="text-[#66736C]">官方成約中位價：</span>
+                      <span className="font-bold text-[#1A2A22]">
+                        約 {saleAnalysis.mlitComparison.medianPriceMan} 萬円
+                      </span>
+                      {saleAnalysis.mlitComparison.diffPercent !== null && (
+                        <span
+                          className={`rounded border px-2 py-0.5 text-[11px] font-bold ${
+                            saleAnalysis.mlitComparison.diffPercent < 0
+                              ? "border-[#9ee2cf] bg-white text-[#007d5a]"
+                              : saleAnalysis.mlitComparison.diffPercent > 10
+                              ? "border-[#E94E2B] bg-white text-[#B13818]"
+                              : "border-[#DDE3DF] bg-white text-[#1A2A22]"
+                          }`}
+                        >
+                          開價相對行情：{saleAnalysis.mlitComparison.diffPercent >= 0 ? `+${saleAnalysis.mlitComparison.diffPercent.toFixed(1)}%` : `${saleAnalysis.mlitComparison.diffPercent.toFixed(1)}%`}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="mt-2.5 border-t border-[#DDE3DF]/60 pt-2 text-xs leading-relaxed text-[#3F5147]">
+                    💡 <strong>Linus 實價行情深度解讀：</strong>
+                    {saleAnalysis.mlitComparison.explanation}
+                  </p>
+
+                  {/* 車站徒步距離資產保值性分析 */}
+                  {saleAnalysis.mlitComparison.stationWalkFactor && (
+                    <div className="mt-2.5 flex items-start gap-2 rounded bg-white/80 p-2.5 text-xs text-[#3F5147] border border-[#DDE3DF]">
+                      <Footprints className="h-4 w-4 shrink-0 text-[#007d5a] mt-0.5" />
+                      <div>
+                        <span className="font-bold text-[#1A2A22]">
+                          車站徒步 {saleAnalysis.mlitComparison.stationWalkFactor.walkMinutes} 分資產流動性評估：
+                        </span>
+                        <span>{saleAnalysis.mlitComparison.stationWalkFactor.note}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 模組 S2：核心買賣數值 Hero 5-Card 網格 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007d5a]">
+                  <Landmark className="h-4 w-4" /> 買賣核心指標與坪單價速覽
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                  {/* 1. 販売總價 */}
+                  <div className="border-2 border-[#00a174] bg-[#f2faf7] p-4">
+                    <p className="text-[11px] font-bold text-[#007d5a]">販売價格（總價）</p>
+                    <p className="mt-1 text-2xl font-black text-[#1A2A22]">
+                      {saleAnalysis.salePriceMan.toLocaleString()}
+                      <span className="text-sm font-bold text-[#007d5a]"> 萬円</span>
+                    </p>
+                    <p className="mt-1 text-[10px] text-[#66736C]">
+                      {formatYen(saleAnalysis.salePriceYen)}
+                    </p>
+                  </div>
+
+                  {/* 2. 坪單價 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <p className="text-[11px] font-bold text-[#66736C]">每坪單價（坪単価）</p>
+                    <p className="mt-1 text-2xl font-black text-[#1A2A22]">
+                      {saleAnalysis.tsuboAndSqm.tsuboPriceMan !== null
+                        ? `${saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)}`
+                        : "—"}
+                      <span className="text-xs font-normal text-[#66736C]"> 萬円/坪</span>
+                    </p>
+                    <p className="mt-1 text-[10px] text-[#66736C]">
+                      {saleAnalysis.tsuboAndSqm.tsubo !== null
+                        ? `專有約 ${saleAnalysis.tsuboAndSqm.tsubo.toFixed(2)} 坪`
+                        : "依專有面積折算"}
+                    </p>
+                  </div>
+
+                  {/* 3. 平米單價 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <p className="text-[11px] font-bold text-[#66736C]">每平米單價（㎡単価）</p>
+                    <p className="mt-1 text-2xl font-black text-[#1A2A22]">
+                      {saleAnalysis.tsuboAndSqm.sqmPriceMan !== null
+                        ? `${saleAnalysis.tsuboAndSqm.sqmPriceMan.toFixed(1)}`
+                        : "—"}
+                      <span className="text-xs font-normal text-[#66736C]"> 萬円/㎡</span>
+                    </p>
+                    <p className="mt-1 text-[10px] text-[#66736C]">
+                      {saleAnalysis.areaSqm ? `專有面積 ${saleAnalysis.areaSqm} ㎡` : "專有面積換算"}
+                    </p>
+                  </div>
+
+                  {/* 4. 每月固定持有成本 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <p className="text-[11px] font-bold text-[#66736C]">每月固定持有支出</p>
+                    <p className="mt-1 text-2xl font-black text-[#1A2A22]">
+                      {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyCost)}
+                      <span className="text-xs font-normal text-[#66736C]"> / 月</span>
+                    </p>
+                    <p className="mt-1 text-[10px] text-[#66736C]">
+                      全年合計約 {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyCost * 12)}
+                    </p>
+                  </div>
+
+                  {/* 5. 社區規模與屋齡 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4 sm:col-span-2 lg:col-span-1">
+                    <p className="text-[11px] font-bold text-[#66736C]">社區規模與屋齡</p>
+                    <p className="mt-1 text-lg font-black text-[#1A2A22]">
+                      {saleAnalysis.buildingHealth.totalUnits ? `${saleAnalysis.buildingHealth.totalUnits} 戶` : "—"}
+                    </p>
+                    <p className="mt-1 text-[11px] font-bold text-[#007d5a]">
+                      {saleAnalysis.buildingHealth.scaleRiskText}
+                    </p>
+                    <p className="text-[10px] text-[#66736C]">
+                      {extracted?.age || "建物屋齡"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 模組 S3：每月固定持有成本逐筆拆解與大樓健康度對比 */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* 左側：每月固定持有負擔逐筆拆解 */}
+                <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4 sm:p-5">
+                  <div className="flex items-center justify-between border-b border-[#DDE3DF] pb-3">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
+                      <Coins className="h-4 w-4 text-[#007d5a]" />
+                      <span>每月持有成本明細（管委會固定費用）</span>
+                    </div>
+                    <span className="text-[11px] font-bold text-[#007d5a]">
+                      月合計 {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyCost)}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 divide-y divide-[#E8ECE9]">
+                    {saleAnalysis.monthlyHoldingCosts.items.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between py-2 text-xs">
+                        <div>
+                          <span className="font-bold text-[#1A2A22]">{item.name}</span>
+                          <p className="text-[10px] text-[#66736C]">{item.note}</p>
+                        </div>
+                        <span className="font-black text-[#1A2A22]">{formatYen(item.amount)}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-3 flex items-center justify-between border-t-2 border-[#1A2A22] pt-2.5 text-xs">
+                    <span className="font-black text-[#1A2A22]">全年持有現金流成本（12個月）：</span>
+                    <span className="text-sm font-black text-[#007d5a]">
+                      {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyCost * 12)} / 年
+                    </span>
+                  </div>
+                  <p className="mt-2 text-[10px] text-[#66736C]">
+                    ※ 不含每年 5~6 月由地方政府課徵之固定資產稅・都市計畫稅（固都稅）。
+                  </p>
+                </div>
+
+                {/* 右側：大樓修繕積立金水位與戶數規模風險診斷 */}
+                <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
+                  <div className="flex items-center justify-between border-b border-[#DDE3DF] pb-3">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
+                      <Building className="h-4 w-4 text-[#007d5a]" />
+                      <span>修繕積立金健康度與大樓風險審查</span>
+                    </div>
+                    <span
+                      className={`border px-2 py-0.5 text-[10px] font-bold ${
+                        saleAnalysis.buildingHealth.reserveHealthLevel === "healthy"
+                          ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                          : saleAnalysis.buildingHealth.reserveHealthLevel === "inadequate"
+                          ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
+                          : "border-[#D6EAF0] bg-[#F2F8FA] text-[#1A2A22]"
+                      }`}
+                    >
+                      {saleAnalysis.buildingHealth.reserveHealthText}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 space-y-3 text-xs">
+                    {/* 每平米修繕金比率 */}
+                    <div className="rounded border border-[#E8ECE9] bg-[#FAFCFB] p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#66736C]">每平米每月修繕積立金：</span>
+                        <span className="text-base font-black text-[#1A2A22]">
+                          {saleAnalysis.buildingHealth.reservePerSqm
+                            ? `¥${saleAnalysis.buildingHealth.reservePerSqm.toLocaleString()} / ㎡`
+                            : "—"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[11px] text-[#007d5a]">
+                        國土交通省長期修繕計畫提撥基準：200 ～ 300 円/㎡/月
+                      </p>
+                      <p className="mt-1.5 text-[11px] leading-relaxed text-[#3F5147]">
+                        {saleAnalysis.buildingHealth.reserveHealthNote}
+                      </p>
+                    </div>
+
+                    {/* 戶數規模分析 */}
+                    <div className="rounded border border-[#E8ECE9] bg-[#FAFCFB] p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#66736C]">戶數規模風險：</span>
+                        <span className="font-bold text-[#1A2A22]">
+                          {saleAnalysis.buildingHealth.scaleRiskText}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">
+                        {saleAnalysis.buildingHealth.scaleRiskNote}
+                      </p>
+                    </div>
+
+                    {/* 維護亮點標籤 */}
+                    {saleAnalysis.buildingHealth.specialStrengths.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span className="text-[10px] font-bold text-[#66736C]">大樓優勢認證：</span>
+                        {saleAnalysis.buildingHealth.specialStrengths.map((str, i) => (
+                          <span
+                            key={i}
+                            className="rounded bg-[#e6f6f1] px-2 py-0.5 text-[11px] font-bold text-[#007d5a]"
+                          >
+                            ✨ {str}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 模組 S4：物件現況、投資收益與自住法務要點 */}
+              <div className="border border-[#1A2A22] bg-[#FAFCFB] p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-[#007d5a]" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#007d5a]">
+                      物件現況・投資回報率與自住法務要點
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-[#1A2A22]">
+                    現況判定：{saleAnalysis.occupancyAssessment.statusText}
+                  </span>
+                </div>
+
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                  {/* 現況與收益性 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <p className="text-xs font-bold text-[#1A2A22]">現況使用與收益分析</p>
+
+                    {saleAnalysis.occupancyAssessment.status === "tenanted_investment" &&
+                    saleAnalysis.occupancyAssessment.investmentYield ? (
+                      <div className="mt-3 space-y-2 text-xs">
+                        <div className="rounded border border-[#00a174] bg-[#f2faf7] p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[#007d5a] font-bold">表面利回り（Gross Yield）：</span>
+                            <span className="text-xl font-black text-[#007d5a]">
+                              {saleAnalysis.occupancyAssessment.investmentYield.grossYield.toFixed(2)}%
+                            </span>
+                          </div>
+                          {saleAnalysis.occupancyAssessment.investmentYield.netYieldEstimated !== null && (
+                            <div className="mt-1 flex items-center justify-between text-[11px]">
+                              <span className="text-[#66736C]">扣除管修實質利回り（Net Yield）：</span>
+                              <span className="font-bold text-[#1A2A22]">
+                                約 {saleAnalysis.occupancyAssessment.investmentYield.netYieldEstimated.toFixed(2)}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                          <div>
+                            <span className="text-[#66736C]">現況月租金收入：</span>
+                            <p className="font-bold text-[#1A2A22]">
+                              {formatYen(saleAnalysis.occupancyAssessment.investmentYield.monthlyRentYen)} / 月
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-[#66736C]">現況年間租金總額：</span>
+                            <p className="font-bold text-[#1A2A22]">
+                              {formatYen(saleAnalysis.occupancyAssessment.investmentYield.annualIncomeYen)} / 年
+                            </p>
+                          </div>
+                        </div>
+
+                        <p className="mt-2 border-t border-[#E8ECE9] pt-2 text-[11px] leading-relaxed text-[#782610] bg-[#FFF5F2] p-2 border border-[#F8D2C5]">
+                          ⚠️ <strong>帶租約物件注意事項：</strong>本物件為「オーナーチェンジ」，現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="mt-3 space-y-2 text-xs">
+                        <div className="rounded border border-[#9ee2cf] bg-[#f2faf7] p-3">
+                          <p className="font-bold text-[#007d5a]">
+                            {saleAnalysis.occupancyAssessment.status === "vacant"
+                              ? "✨ 空室／全室翻新完成物件"
+                              : "🏠 現有屋主居住中（相談引渡）"}
+                          </p>
+                          <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">
+                            {saleAnalysis.occupancyAssessment.status === "vacant"
+                              ? "交屋後可隨時自住入住，或依目前市場行情重新招租，靈活性最高。"
+                              : "交屋時點需配合現屋主搬遷協商，請於簽約前確認引渡猶予期日。"}
+                          </p>
+                        </div>
+
+                        {extracted?.renovationDetails && (
+                          <div className="rounded border border-[#E8ECE9] bg-[#FAFCFB] p-2.5">
+                            <span className="font-bold text-[#1A2A22]">裝修與翻新內容（リノベーション）：</span>
+                            <p className="mt-1 text-[11px] text-[#66736C]">{extracted.renovationDetails}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 自住法務要點與住宅貸款減稅門檻 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <p className="text-xs font-bold text-[#1A2A22]">產權形式與住宅貸款減稅資格審查</p>
+
+                    <div className="mt-3 space-y-2 text-xs">
+                      {/* 住宅貸款減稅檢核 */}
+                      <div className="rounded border border-[#E8ECE9] bg-[#FAFCFB] p-3">
+                        <div className="flex items-center gap-1.5 font-bold">
+                          {saleAnalysis.occupancyAssessment.mortgageTaxEligible ? (
+                            <span className="text-[#007d5a]">✅ 符合住宅貸款減稅主要面積門檻（50㎡）</span>
+                          ) : (
+                            <span className="text-[#7A5A1F]">ℹ️ 專有面積未達 50㎡（自住節稅留意）</span>
+                          )}
+                        </div>
+                        <p className="mt-1.5 text-[11px] leading-relaxed text-[#3F5147]">
+                          {saleAnalysis.occupancyAssessment.mortgageTaxNote}
+                        </p>
+                      </div>
+
+                      {/* 土地權利 */}
+                      <div className="flex items-center justify-between border-t border-[#E8ECE9] pt-2">
+                        <span className="text-[#66736C]">土地權利形式：</span>
+                        <span className="font-bold text-[#1A2A22]">
+                          {extracted?.landRights || "所有權（所有権）"}
+                        </span>
+                      </div>
+
+                      {/* 管理體制 */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#66736C]">管理形態與公司：</span>
+                        <span className="font-bold text-[#1A2A22]">
+                          {extracted?.managementCompany
+                            ? `${extracted.managementCompany}（${extracted?.managementStyle || "委託管理"}）`
+                            : extracted?.managementStyle || "委託管理（日勤/巡迴）"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 規格明細總覽 */}
+                <div className="mt-4 border-t border-[#DDE3DF] pt-3">
+                  <p className="mb-2 text-xs font-bold text-[#1A2A22]">建物與物件規格清單</p>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:grid-cols-4">
+                    <div>
+                      <dt className="text-[#66736C]">格局（間取り）</dt>
+                      <dd className="font-bold text-[#1A2A22]">{extracted?.layout || "—"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[#66736C]">專有面積</dt>
+                      <dd className="font-bold text-[#1A2A22]">{displayArea || "未標明"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[#66736C]">樓層／總階數</dt>
+                      <dd className="font-bold text-[#1A2A22]">{extracted?.floor || "—"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[#66736C]">建築年月／構造</dt>
+                      <dd className="font-bold text-[#1A2A22]">
+                        {extracted?.age || ""} {displayStructure ? `(${displayStructure})` : ""}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+
+              {/* 模組 S5：買方交屋初期諸費用深度試算 */}
+              {saleAnalysis.initialCosts && (
+                <div className="border border-[#1A2A22] bg-white p-5 md:p-6">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007d5a]">
+                        <Wallet className="h-4 w-4" /> 買方交屋諸費用預測試算
+                      </div>
+                      <h4 className="mt-1 text-lg font-bold text-[#1A2A22]">
+                        購屋自備款與法定規費預估
+                      </h4>
+                    </div>
+
+                    <span className="inline-flex self-start border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-1 text-xs font-bold text-[#007d5a]">
+                      諸費用比率：約 {saleAnalysis.initialCosts.percentageOfPrice.toFixed(1)}%
+                    </span>
+                  </div>
+
+                  {/* 總額預估 Banner */}
+                  <div className="mt-4 flex flex-col justify-between gap-4 border border-[#9ee2cf] bg-[#e6f6f1] p-4 sm:flex-row sm:items-center">
+                    <div>
+                      <p className="text-xs font-bold text-[#007d5a]">買方交屋諸費用預估總額</p>
+                      <p className="mt-1 text-2xl font-black text-[#1A2A22] md:text-3xl">
+                        約 {formatYen(saleAnalysis.initialCosts.total)}
+                      </p>
+                      <p className="mt-1 text-xs text-[#3F5147]">
+                        包含仲介手續費、產權登記稅、印花稅、火災保險等法定規費（約為總價之 6%～8%）
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowSaleCostsDetails(!showSaleCostsDetails)}
+                      className="flex shrink-0 items-center justify-center gap-1.5 border border-[#007d5a] bg-white px-4 py-2 text-xs font-bold text-[#007d5a] transition-colors hover:bg-[#d8f1e9] cursor-pointer"
+                    >
+                      {showSaleCostsDetails ? (
+                        <>
+                          <span>收合費用明細</span>
+                          <ChevronUp className="h-4 w-4" />
+                        </>
+                      ) : (
+                        <>
+                          <span>查看諸費用逐項拆解</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* 項目逐筆拆解表格 */}
+                  {showSaleCostsDetails && (
+                    <div className="mt-4 overflow-x-auto border border-[#DDE3DF]">
+                      <table className="w-full text-left text-xs">
+                        <thead className="border-b border-[#DDE3DF] bg-[#F5F8F6] text-[#66736C]">
+                          <tr>
+                            <th className="p-2.5 font-bold">費用項目</th>
+                            <th className="p-2.5 text-right font-bold">預估金額</th>
+                            <th className="p-2.5 font-bold">計算標準與法定依據</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#DDE3DF]">
+                          {saleAnalysis.initialCosts.items.map(item => (
+                            <tr key={item.id} className="hover:bg-[#FAFCFB]">
+                              <td className="p-2.5 font-bold text-[#1A2A22]">{item.name}</td>
+                              <td className="p-2.5 text-right font-bold text-[#007d5a]">
+                                {formatYen(item.amount)}
+                              </td>
+                              <td className="p-2.5 text-[11px] text-[#66736C]">{item.note}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  <div className="mt-4 border border-[#DCC8A1] bg-[#FFFDF8] p-4 text-xs leading-relaxed text-[#7A5A1F]">
+                    <div className="mb-1 flex items-center gap-1.5 font-bold">
+                      <Info className="h-4 w-4 text-[#C18714]" />
+                      <span>Linus 買方資金準備提醒：</span>
+                    </div>
+                    <p>
+                      買賣公寓時，海外買方除物件本體頭期款外，需預留約 <strong>6%～8% 之各項交屋規費</strong>。交屋時還需依日割清算當年度的固定資產稅與當月份的管理費、修繕積立金。
+                    </p>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* 模組：大數據租金行情合理度診斷（置於月額負擔上方，排版洗鍊不重複） */}
+              {result.verdict && (
+                <div className={`border p-4 sm:p-5 ${getStatusStyle(result.verdict.status).box}`}>
+                  <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${getStatusStyle(result.verdict.status).badge}`}>
+                        行情診斷：{result.verdict.status}
+                      </span>
+                      <h4 className="text-sm font-bold text-[#1A2A22]">
+                        {result.verdict.headline}
+                      </h4>
+                    </div>
+
+                    {result.range && (
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="text-[#66736C]">同區域／車站成約區間：</span>
+                        <span className="font-bold text-[#1A2A22]">
+                          {formatYen(result.range.low)} ～ {formatYen(result.range.high)}
+                        </span>
+                        <span className="rounded border border-[#DDE3DF] bg-white px-2 py-0.5 text-[11px] font-bold text-[#007d5a]">
+                          中位數 {formatYen(result.range.median)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {cleanVerdictDetail && (
+                    <p className="mt-2.5 border-t border-[#DDE3DF]/60 pt-2 text-xs leading-relaxed text-[#3F5147]">
+                      💡 <strong>Linus 專業分析：</strong>{cleanVerdictDetail}
+                    </p>
+                  )}
+                </div>
+              )}
 
           {/* 模組 1：每月固定現金支出與條件個別明細 */}
           <div className="space-y-3">
@@ -1036,6 +1843,8 @@ export function ListingHealthCheck() {
               </div>
             )}
           </div>
+        </>
+      )}
 
           {/* 模組 4：地理位置實況、真實步行時間比對與 1.2km 生活機能 */}
           <div className="border-t border-[#DDE3DF] pt-6">

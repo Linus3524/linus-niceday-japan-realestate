@@ -94,14 +94,31 @@ export function parseGuaranteeFee(text: unknown, totalMonthlyCost: number): numb
 }
 
 /**
+ * 判斷文字是否表示無、免費、0、不要
+ */
+export function isFreeOrZero(text: unknown): boolean {
+  if (typeof text !== "string") return false;
+  const cleaned = toHalfWidth(text).trim();
+  if (!cleaned) return false;
+  if (/^(?:0|0円|-|ー|―)$/.test(cleaned)) return true;
+  return /(?:無償|無料|不要|なし|無し|免除)/i.test(cleaned);
+}
+
+/**
  * 格式化敷引標示：
- * 若圖紙寫 "1"、"1ヶ月"、"敷引1ヶ月"、"100%"，轉為清晰的中文說明。
+ * 若圖紙寫 "1"、"1ヶ月"、"敷引1ヶ月"、"解約時敷金償却 1ヶ月"、"100%"，轉為清晰的中文說明。
  */
 export function formatShikibiki(raw: unknown): string {
   if (typeof raw !== "string") return "";
   const cleaned = toHalfWidth(raw).trim();
-  if (!cleaned || /^(?:なし|無|0|不要|-|ー|―)$/i.test(cleaned)) return "";
+  if (!cleaned || isFreeOrZero(cleaned)) return "";
   if (cleaned === "1") return "敷引 1 個月（退租直接扣除、不予退還）";
+
+  const shokyakuMatch = cleaned.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)?/);
+  if (shokyakuMatch) {
+    return `敷引／償却 ${shokyakuMatch[1]} 個月（退租直接扣除、不予退還）`;
+  }
+
   if (/^(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)?$/i.test(cleaned)) {
     const m = cleaned.match(/^(\d+(?:\.\d+)?)/)?.[1];
     return `敷引 ${m} 個月（退租直接扣除、不予退還）`;
@@ -231,3 +248,232 @@ export function normalizeStructure(raw: unknown): string | null {
   return raw.trim() || null;
 }
 
+/**
+ * 解析買賣售價（例如 "7,299万円"、"3,450万"、"6300万円"、"5,488"）
+ */
+export function parseSalePrice(text: unknown): number | null {
+  if (typeof text !== "string") return null;
+  return parseYenAmount(text);
+}
+
+/**
+ * 解析總戶數（例如 "39戸"、"17戸"、"50戸"）
+ */
+export function parseUnitsCount(text: unknown): number | null {
+  if (typeof text !== "string") return null;
+  const cleaned = toHalfWidth(text).trim();
+  const match = cleaned.match(/(\d+)\s*(?:戸|戶|件)?/);
+  if (match) {
+    const val = Number(match[1]);
+    return Number.isFinite(val) && val > 0 ? val : null;
+  }
+  return null;
+}
+
+/**
+ * 解析表面利回り（例如 "4.0%"、"4.00％"）
+ */
+export function parseYieldRate(text: unknown): number | null {
+  if (typeof text !== "string") return null;
+  const cleaned = toHalfWidth(text).trim();
+  const match = cleaned.match(/(\d+(?:\.\d+)?)\s*[%％]/);
+  if (match) {
+    const val = Number(match[1]);
+    return Number.isFinite(val) && val > 0 && val < 50 ? val / 100 : null;
+  }
+  return null;
+}
+
+/**
+ * 計算坪數、坪單價與平米單價
+ */
+export function computeTsuboAndSqmPrice(priceYen: number, areaSqm: number | null) {
+  if (!areaSqm || areaSqm <= 0) {
+    return {
+      tsubo: null,
+      tsuboPriceYen: null,
+      tsuboPriceMan: null,
+      sqmPriceYen: null,
+      sqmPriceMan: null,
+    };
+  }
+  const tsubo = Math.round((areaSqm * 0.3025) * 100) / 100;
+  const tsuboPriceYen = tsubo > 0 ? Math.round(priceYen / tsubo) : null;
+  const tsuboPriceMan = tsuboPriceYen ? Math.round((tsuboPriceYen / 10000) * 10) / 10 : null;
+  const sqmPriceYen = Math.round(priceYen / areaSqm);
+  const sqmPriceMan = Math.round((sqmPriceYen / 10000) * 10) / 10;
+
+  return {
+    tsubo,
+    tsuboPriceYen,
+    tsuboPriceMan,
+    sqmPriceYen,
+    sqmPriceMan,
+  };
+}
+
+/**
+ * 國土交通省修繕積立金指引與大樓戶數規模合理性評估
+ */
+export function assessRepairReserve(params: {
+  monthlyRepairCostYen: number; // 修繕積立金 + 修繕基金
+  areaSqm: number | null;
+  totalUnits: number | null;
+  ageYears?: number | null;
+}) {
+  const { monthlyRepairCostYen, areaSqm, totalUnits, ageYears } = params;
+
+  // 1. 每平米月提撥金額（國交省指引標準通常建議 200 ~ 300 円/㎡/月）
+  const reservePerSqm = areaSqm && areaSqm > 0 ? Math.round(monthlyRepairCostYen / areaSqm) : null;
+
+  let reserveHealthLevel: "inadequate" | "healthy" | "heavy" = "healthy";
+  let reserveHealthText = "提撥適中";
+  let reserveHealthNote = "符合日本國土交通省修繕積立金指引標準（約 200～300 円/㎡/月）。";
+
+  if (reservePerSqm !== null) {
+    if (reservePerSqm < 160) {
+      reserveHealthLevel = "inadequate";
+      reserveHealthText = "提撥偏低";
+      reserveHealthNote = (ageYears && ageYears > 15)
+        ? `每平米僅提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月。屋齡已超過 15 年，需留意大樓修繕儲備金是否不足，未來可能有調漲或徵收一次性修繕一時金的風險。`
+        : `每平米提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月，初期費率較低，依長期修繕計畫未來 10 年通常會逐步階梯式調升。`;
+    } else if (reservePerSqm > 320) {
+      reserveHealthLevel = "heavy";
+      reserveHealthText = "提撥充裕（負擔較重）";
+      reserveHealthNote = `每平米提撥達 ¥${reservePerSqm.toLocaleString()}/㎡/月，管委會提撥積極充足、財務體質穩健，但每月固定持有成本較顯著。`;
+    }
+  }
+
+  // 2. 戶數規模風險判定
+  let scaleRiskLevel: "high_risk" | "medium" | "safe" = "safe";
+  let scaleRiskText = "中大型社區";
+  let scaleRiskNote = "戶數具規模經濟，公共設施維護與大規模修繕每戶分攤平準。";
+
+  if (totalUnits !== null) {
+    if (totalUnits < 20) {
+      scaleRiskLevel = "high_risk";
+      scaleRiskText = "極小規模社區（<20戶）";
+      scaleRiskNote = "⚠️ 總戶數少於 20 戶，每戶分攤電梯保養、外牆清洗與屋頂防水等固定成本壓力較大，管委會運作與欠繳風險需特別留意。";
+    } else if (totalUnits < 50) {
+      scaleRiskLevel = "medium";
+      scaleRiskText = "中小規模社區（20-49戶）";
+      scaleRiskNote = "戶數適中，管委會溝通通常較有效率，建議確認是否有正式長期修繕計劃書。";
+    }
+  }
+
+  return {
+    reservePerSqm,
+    reserveHealthLevel,
+    reserveHealthText,
+    reserveHealthNote,
+    scaleRiskLevel,
+    scaleRiskText,
+    scaleRiskNote,
+  };
+}
+
+/**
+ * 買方初期費用（諸費用）估算
+ */
+export function calculateSaleInitialCosts(salePriceYen: number) {
+  // 1. 仲介手續費（法定上限：總價 3% + 6萬 + 10% 消費稅）
+  const brokerageFee = Math.round((salePriceYen * 0.03 + 60000) * 1.1);
+
+  // 2. 登記免許稅 & 司法書士手續費（所有權移轉、抵當權設定等，約總價 1.5% ~ 2.0%）
+  const registrationAndScrivenerFee = Math.round(salePriceYen * 0.018);
+
+  // 3. 印紙代（契約書印花稅）
+  let stampDuty = 10000;
+  if (salePriceYen > 50000000) stampDuty = 30000;
+  else if (salePriceYen > 10000000) stampDuty = 10000;
+  else stampDuty = 5000;
+
+  // 4. 火災地震保險（概算 10年期）
+  const insuranceFee = 200000;
+
+  // 5. 固定資產稅・都市計畫稅日割精算 & 取得稅備用（約總價 0.5% ~ 1.0%）
+  const taxesProrated = Math.round(salePriceYen * 0.008);
+
+  const total = brokerageFee + registrationAndScrivenerFee + stampDuty + insuranceFee + taxesProrated;
+  const percentageOfPrice = Math.round((total / salePriceYen) * 1000) / 10;
+
+  return {
+    total,
+    percentageOfPrice,
+    items: [
+      {
+        id: "brokerage",
+        name: "仲介手續費（法定上限含稅）",
+        amount: brokerageFee,
+        note: "（總價 × 3% + 6萬円）× 1.1 消費稅",
+      },
+      {
+        id: "registration",
+        name: "登記免許稅與司法書士報酬",
+        amount: registrationAndScrivenerFee,
+        note: "土地與建物所有權移轉登記、抵當權設定及司法書士代辦費（約 1.8%）",
+      },
+      {
+        id: "stamp",
+        name: "不動產買賣契約書印紙代",
+        amount: stampDuty,
+        note: "日本國稅廳印花稅階梯級距",
+      },
+      {
+        id: "insurance",
+        name: "火災保險・地震保險（預估）",
+        amount: insuranceFee,
+        note: "長期火災防護保費（依構造、坪數與投保年期調整）",
+      },
+      {
+        id: "taxes",
+        name: "固定資產稅日割清算與取得稅預備",
+        amount: taxesProrated,
+        note: "交屋日按日計算公租公課日割金，及後續不動產取得稅預備金（約 0.8%）",
+      },
+    ],
+  };
+}
+
+export function parseAgeYears(ageStr?: string | null): number | null {
+  if (!ageStr) return null;
+  const currentYear = new Date().getFullYear();
+
+  // 1. Explicit 築X年, e.g. "築4年", "築15年"
+  const mChiku = ageStr.match(/築\s*(\d+)\s*年/);
+  if (mChiku) return Number(mChiku[1]);
+
+  // 2. 4-digit year, e.g. "2022年", "2018/05", "1998年"
+  const mYear = ageStr.match(/(?:19|20)\d{2}/);
+  if (mYear) {
+    const y = Number(mYear[0]);
+    return Math.max(0, currentYear - y);
+  }
+
+  // 3. Japanese era year: 平成X年, 令和X年, 昭和X年
+  const mReiwa = ageStr.match(/令和\s*(\d+|元)\s*年?/);
+  if (mReiwa) {
+    const y = mReiwa[1] === "元" ? 1 : Number(mReiwa[1]);
+    return Math.max(0, currentYear - (2018 + y));
+  }
+  const mHeisei = ageStr.match(/平成\s*(\d+|元)\s*年?/);
+  if (mHeisei) {
+    const y = mHeisei[1] === "元" ? 1 : Number(mHeisei[1]);
+    return Math.max(0, currentYear - (1988 + y));
+  }
+  const mShowa = ageStr.match(/昭和\s*(\d+|元)\s*年?/);
+  if (mShowa) {
+    const y = mShowa[1] === "元" ? 1 : Number(mShowa[1]);
+    return Math.max(0, currentYear - (1925 + y));
+  }
+
+  // 4. Fallback plain number
+  const mAny = ageStr.match(/(\d+)\s*年/);
+  if (mAny) {
+    const val = Number(mAny[1]);
+    if (val >= 1900) return Math.max(0, currentYear - val);
+    return val;
+  }
+
+  return null;
+}

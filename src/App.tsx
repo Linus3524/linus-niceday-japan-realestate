@@ -316,7 +316,7 @@ export default function App() {
   const [selectedFlowType, setSelectedFlowType] = useState<"cash" | "loan">("cash");
 
   // Budget Calculator States
-  const [calcMode, setCalcMode] = useState<"rent" | "buy">("rent");
+  const [calcMode, setCalcMode] = useState<"rent" | "buy" | "listing">("rent");
   const [calcDistrict, setCalcDistrict] = useState("新宿區");
   const [calcRoomType, setCalcRoomType] = useState<"r1" | "k1" | "ldk1" | "ldk2" | "ldk3">("k1");
   const [calcModifiers, setCalcModifiers] = useState<BudgetModifierId[]>([]); // 已勾選的加減價項目 id

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { track } from "@vercel/analytics";
-import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator, Plus, X, AlertTriangle } from "lucide-react";
+import { MapPin, Info, Smile, Building, Landmark, ChevronDown, Sparkles, LoaderCircle, Receipt, Lightbulb, Calculator, Plus, X, AlertTriangle, FileSearch } from "lucide-react";
 import { budgetModifiers, getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData";
 import { buyBudgetModifiers, getBuyModifier, type BuyModifierId } from "../data/buyHouseData";
 import { rentRates, districtStations } from "../data/housingMarket";
@@ -24,8 +23,8 @@ import { OfficialMarketInsight } from "./OfficialMarketInsight";
 import { PageIntroCard } from "./PageIntroCard";
 
 interface CalculatorTabProps {
-  calcMode: "rent" | "buy";
-  setCalcMode: (m: "rent" | "buy") => void;
+  calcMode: "rent" | "buy" | "listing";
+  setCalcMode: (m: "rent" | "buy" | "listing") => void;
   calcDistrict: string;
   setCalcDistrict: (d: string) => void;
   calcRoomType: RoomType;
@@ -982,11 +981,11 @@ export function CalculatorTab(props: CalculatorTabProps) {
               className="space-y-8"
               id="pane-calculator"
             >
-              {/* Rent vs Buy switcher */}
+              {/* Rent vs Buy vs Listing switcher */}
               <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1" id="calc-mode-switcher font-sans">
                 <button
                   onClick={() => setCalcMode("rent")}
-                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-sans ${
+                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "rent"
                       ? "bg-[#00a174] text-white"
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
@@ -997,7 +996,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 </button>
                 <button
                   onClick={() => setCalcMode("buy")}
-                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all cursor-pointer font-sans ${
+                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "buy"
                       ? "bg-[#00a174] text-white"
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
@@ -1006,20 +1005,49 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   <Landmark className="w-4 h-4 shrink-0" />
                   買房資金試算
                 </button>
+                <button
+                  onClick={() => setCalcMode("listing")}
+                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
+                    calcMode === "listing"
+                      ? "bg-[#00a174] text-white"
+                      : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4 shrink-0" />
+                  物件圖紙分析
+                </button>
               </div>
 
               {/* Preface Intro for Calc */}
               <PageIntroCard
                 id="calc-intro"
-                icon="calculate"
-                title={calcMode === "rent" ? "日本租屋預算與條件評估" : "日本買房總價與貸款評估"}
+                icon={calcMode === "listing" ? FileSearch : Calculator}
+                title={
+                  calcMode === "listing"
+                    ? "日本不動產物件圖紙深度分析"
+                    : calcMode === "rent"
+                    ? "日本租屋預算與條件評估"
+                    : "日本買房總價與貸款評估"
+                }
                 sourceNote={
-                  calcMode === "rent"
+                  calcMode === "listing"
+                    ? "資料來源：日本國土交通省 不動產資訊資料庫（不動産情報ライブラリ）成約實價、At Home 公開數據、國土地理院與 OpenStreetMap"
+                    : calcMode === "rent"
                     ? "資料來源：At Home 公開租金行情、第一線租賃實務數據"
                     : "資料來源：日本國土交通省 不動產資訊資料庫（不動産情報ライブラリ）中古公寓成交實價"
                 }
               >
-                {calcMode === "rent" ? (
+                {calcMode === "listing" ? (
+                  <>
+                    <p>
+                      手上有仲介傳來的物件概要書（図面／マイソク）嗎？上傳單張圖紙或 PDF，AI 將自動識別是租賃還是買賣圖紙，並精準萃取各項金額與特約條款。
+                    </p>
+                    <p>
+                      <strong>買賣物件</strong>：比對日本國土交通省周邊中古公寓成約實價、換算每坪與每平米單價、拆解每月管理費與修繕積立金等固定負擔、檢驗大樓規模（戶數）與修繕基金充足度、計算投資利回り，並預估買方初期諸費用。<br />
+                      <strong>租賃物件</strong>：比對行情合理區間、全面預測試算入住初期費用、排查敷引（押金不退還）等隱藏法務風險，並標出周邊生活機能與通勤路線。
+                    </p>
+                  </>
+                ) : calcMode === "rent" ? (
                   <>
                     <p>
                       找房最怕看了一圈才發現超出預算。這個工具能陪您將月租、格局與生活需求整合評估，找出真正容易租到的理想方向。
@@ -1039,6 +1067,11 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   </>
                 )}
               </PageIntroCard>
+
+              {calcMode === "listing" ? (
+                <ListingHealthCheck />
+              ) : (
+                <>
 
               {/* Quick budget health check */}
               <section className="border border-[#1A2A22] bg-white" aria-label={calcMode === "rent" ? "租屋需求與市場分析" : "購屋預算快速試算"}>
@@ -1712,11 +1745,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   </div>
                 )}
               </section>
-
-              {/* 物件圖紙健檢：獨立卡片，不接在上方「AI 需求分析」的步驟流程裡。
-                  上面回答「我該往哪找」，這裡回答「我手上這間值不值」，是相反的
-                  使用情境，混在同一條流程裡會互相干擾。只在租屋模式顯示。 */}
-              {calcMode === "rent" && <ListingHealthCheck />}
 
               <div className="flex flex-col gap-3 border border-[#DDE3DF] bg-[#FAFCFB] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -2651,6 +2679,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   </div>}
                 </div>
               </div>}
-            </motion.div>
+            </>
+          )}
+        </motion.div>
   );
 }

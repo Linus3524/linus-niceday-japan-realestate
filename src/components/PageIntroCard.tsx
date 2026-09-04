@@ -1,5 +1,25 @@
 import { ReactNode, isValidElement } from "react";
-import { LucideIcon } from "lucide-react";
+import {
+  LucideIcon,
+  Sparkles,
+  Calculator,
+  Bot,
+  Key,
+  Building2,
+  HelpCircle,
+  FileSearch,
+  CheckCircle2,
+} from "lucide-react";
+
+const STRING_ICON_MAP: Record<string, LucideIcon> = {
+  check: FileSearch,
+  calculate: Calculator,
+  smart_toy: Bot,
+  key: Key,
+  real_estate_agent: Building2,
+  contact_support: HelpCircle,
+  sparkles: Sparkles,
+};
 
 interface PageIntroCardProps {
   id?: string;
@@ -37,8 +57,12 @@ export function PageIntroCard({
       return <IconComponent className="h-5 w-5 text-[#00a174]" />;
     }
     if (typeof icon === "string") {
+      const MappedLucide = STRING_ICON_MAP[icon];
+      if (MappedLucide) {
+        return <MappedLucide className="h-5 w-5 text-[#00a174]" />;
+      }
       return (
-        <span className="material-symbols-rounded select-none text-[22px] leading-none text-[#00a174]" aria-hidden="true">
+        <span className="material-symbols-rounded select-none text-[22px] leading-none text-[#00a174] overflow-hidden inline-block w-6 h-6 text-center" aria-hidden="true">
           {icon}
         </span>
       );
