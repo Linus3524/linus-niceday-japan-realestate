@@ -2,29 +2,17 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict } from "../src/lib/requirementVerdict.js";
-import { parseYenAmount, parseMonthsOrYen, normalizeRoomType, stripStationOperatorPrefix } from "../src/lib/listingExtraction.js";
+import { parseYenAmount, parseMonthsOrYen, normalizeRoomType, stripStationOperatorPrefix, parseArea } from "../src/lib/listingExtraction.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 import type { RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 
 /**
  * 物件圖紙健檢：上傳仲介提供的物件概要書／図面圖片，讀取結構化資訊，
- * 與所在地區行情比對租金＋管理費是否合理。
- *
- * 不做的事（見對話討論與 plan）：不接受物件網址（SUUMO／At Home／LIFULL HOME'S
- * 這類平台的自動化存取通常違反其使用條款，且頁面結構不受控）；不算步行時間與
- * 周邊設施（需要精確座標，留待後續有 geocoding 的階段）；只做租賃側，不判斷
- * 買賣物件。
+ * 與所在地區行情比對租金＋管理費是否合理，並提供初期費用深度試算與分析。
  */
 
-// Vercel Function 的請求 body 上限是 4.5MB（硬限制，無法調整）。base64 編碼會讓
-// 原始位元組膨脹約 1.37 倍，所以原始圖片位元組必須抓得比 4.5MB 保守很多，
-// 才留得出 JSON 包裝與其他欄位的空間。3 張圖、合計 3MB 原始位元組是留了
-// 安全邊際後的上限，客戶端與伺服器端都要擋，不能只靠前端擋（前端檢查可被繞過）。
 const MAX_FILES = 3;
 const MAX_TOTAL_IMAGE_BYTES = 3 * 1024 * 1024;
-// 前端會先用 canvas 把能解碼的圖一律轉成 JPEG 再上傳，所以實務上這裡收到的
-// 幾乎都是 image/jpeg。這份清單放寬是為了「瀏覽器解不開而退回原檔」的情形
-// （例如非 Safari 的 HEIC），寧可讓它送出去試，也不要在前端就把使用者擋死。
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
   "image/jpg",
@@ -39,8 +27,6 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
 ]);
 
-// 獨立於 /api/rent-analysis 的限流：vision 呼叫成本較高，兩個功能共用額度會讓
-// 使用者在用其中一個功能時意外卡住另一個，彼此互不相干比較合理。
 const LISTING_CHECK_RATE_LIMIT = 3;
 const LISTING_CHECK_RATE_WINDOW_MS = 300_000;
 const listingCheckRateBuckets = new Map<string, { count: number; resetAt: number }>();
@@ -94,28 +80,19 @@ async function getRateLimit(ip: string) {
 
 interface UploadedFile {
   mimeType: string;
-  data: string; // base64，不含 data URL 前綴
+  data: string;
 }
 
-/** base64 字串還原成原始位元組數的估算：每 4 個 base64 字元代表 3 個位元組。 */
 function estimateBytesFromBase64(base64: string): number {
   const padding = base64.endsWith("==") ? 2 : base64.endsWith("=") ? 1 : 0;
   return Math.floor((base64.length * 3) / 4) - padding;
 }
 
-/**
- * 用拋例外表示驗證失敗，不用 discriminated union 回傳值。
- *
- * 這個專案的 tsconfig 沒開 strictNullChecks（未設定 strict），該設定關閉時
- * `if (!result.ok) return result.error` 這種寫法的型別窄化不會生效
- * （`result.error` 在兩個分支合併後的型別上找不到），tsc 會報錯。
- * instanceof 窄化不受這個設定影響，且與此檔案其餘 try/catch 錯誤處理風格一致。
- */
 class ListingUploadError extends Error {}
 
 function validateFiles(files: unknown): UploadedFile[] {
   if (!Array.isArray(files) || files.length === 0) {
-    throw new ListingUploadError("請上傳至少一張物件概要書或図面的圖片。");
+    throw new ListingUploadError("請上傳物件概要書或図面的圖片或 PDF。");
   }
   if (files.length > MAX_FILES) {
     throw new ListingUploadError(`最多只能同時上傳 ${MAX_FILES} 張圖片。`);
@@ -142,7 +119,7 @@ function validateFiles(files: unknown): UploadedFile[] {
   return validated;
 }
 
-interface ExtractedListingFields {
+export interface ExtractedListingFields {
   station: string;
   walkTime: string;
   layout: string;
@@ -153,11 +130,36 @@ interface ExtractedListingFields {
   age: string;
   floor: string;
   address: string;
+  area: string;
+  structure: string;
+  guaranteeFee: string;
+  lockReplacementFee: string;
+  cleaningFee: string;
+  insuranceFee: string;
+}
+
+export interface InitialCostBreakdownItem {
+  id: string;
+  name: string;
+  amount: number;
+  isFromFlyer: boolean;
+  note: string;
+}
+
+export interface InitialCostEstimate {
+  totalMin: number;
+  totalMax: number;
+  monthsMultipleMin: number;
+  monthsMultipleMax: number;
+  level: "low" | "standard" | "high";
+  levelText: string;
+  items: InitialCostBreakdownItem[];
+  tips: string[];
 }
 
 async function extractListingFields(files: UploadedFile[]): Promise<ExtractedListingFields> {
   const prompt = `
-    分析這份日本不動產物件概要書／図面圖片，抓出欄位內容，原文照抄不要翻譯或換算單位。
+    分析這份日本不動產物件概要書／図面圖片，精準抓出各欄位內容，原文照抄不要翻譯或換算單位。
 
     車站與徒步時間（重要）：
     - 掃描整份文件，找出所有標示的車站與各自的徒步分鐘數。
@@ -167,12 +169,25 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
       （例如 station="新宿,代々木上原" walkTime="8,12"）。
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
 
-    金額欄位：
-    - rent（賃料／家賃）、managementFee（管理費／共益費）、keyMoney（礼金）、deposit（敷金）
-      照文件上寫的原文格式抓取，例如 "10.5万円" 或 "1ヶ月"，不要自己換算成數字。
-    - 找不到的欄位留空字串，不要猜測或用 0 代替。
+    租金與各項契約費用（重要）：
+    - rent（賃料／家賃）：照原文抓取，例如 "10.5万円" 或 "98,000円"。
+    - managementFee（管理費／共益費）：照原文抓取，例如 "8,000円"，若寫込み或無則寫 "0円"。
+    - keyMoney（礼金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
+    - deposit（敷金／保証金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
+    - guaranteeFee（保証会社費用／初回保証料）：照原文，例如 "50%"、"総賃料50%"、"4.5万円"。
+    - lockReplacementFee（鍵交換代／シリンダー交換代）：照原文，例如 "22,000円"。
+    - cleaningFee（退去時清掃費／室内クリーニング代／敷引／償却）：照原文，例如 "44,000円"。
+    - insuranceFee（火災保険／家財保険料）：照原文，例如 "20,000円"。
 
-    其他欄位：layout（間取り，例如 "1LDK"）、age（築年數）、floor（所在階）、address（地址／所在地）。
+    物件規格欄位：
+    - layout（間取り，例如 "1K"、"1LDK"、"2DK"）。
+    - area（専有面積／平米數，例如 "25.4㎡"、"30.12m2"）。
+    - structure（建物構造，例如 "RC造"、"鉄骨造"、"木造"）。
+    - age（築年數／建築年月，例如 "築8年"、"2016年3月"）。
+    - floor（所在階／總階數，例如 "4階 / 10階建"）。
+    - address（所在地／住所）。
+
+    找不到的欄位留空字串，不要猜測或用 0 代替。
   `;
 
   const response = await getAiClient().models.generateContent({
@@ -191,16 +206,27 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
         properties: {
           station: { type: Type.STRING, description: "所有車站名稱，逗號分隔" },
           walkTime: { type: Type.STRING, description: "對應車站的徒步分鐘數，逗號分隔，順序需與 station 一致" },
-          layout: { type: Type.STRING, description: "間取り，例如 1LDK、2DK" },
+          layout: { type: Type.STRING, description: "間取り，例如 1LDK、2DK、1K" },
           rent: { type: Type.STRING, description: "賃料／家賃，原文格式" },
           managementFee: { type: Type.STRING, description: "管理費／共益費，原文格式" },
           keyMoney: { type: Type.STRING, description: "礼金，原文格式" },
-          deposit: { type: Type.STRING, description: "敷金，原文格式" },
-          age: { type: Type.STRING },
-          floor: { type: Type.STRING },
-          address: { type: Type.STRING },
+          deposit: { type: Type.STRING, description: "敷金／保証金，原文格式" },
+          age: { type: Type.STRING, description: "築年數／建築年月" },
+          floor: { type: Type.STRING, description: "所在階" },
+          address: { type: Type.STRING, description: "地址／所在地" },
+          area: { type: Type.STRING, description: "専有面積，例如 25.4㎡" },
+          structure: { type: Type.STRING, description: "建物構造，例如 RC造" },
+          guaranteeFee: { type: Type.STRING, description: "保證公司費用，照原文" },
+          lockReplacementFee: { type: Type.STRING, description: "鍵交換費用，照原文" },
+          cleaningFee: { type: Type.STRING, description: "退去清掃費／敷引，照原文" },
+          insuranceFee: { type: Type.STRING, description: "火災保險費用，照原文" },
         },
-        required: ["station", "walkTime", "layout", "rent", "managementFee", "keyMoney", "deposit", "age", "floor", "address"],
+        required: [
+          "station", "walkTime", "layout", "rent", "managementFee",
+          "keyMoney", "deposit", "age", "floor", "address",
+          "area", "structure", "guaranteeFee", "lockReplacementFee",
+          "cleaningFee", "insuranceFee"
+        ],
       },
     },
   });
@@ -208,6 +234,172 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
   const text = response.text;
   if (!text) throw new Error("empty analyze-listing response");
   return JSON.parse(text) as ExtractedListingFields;
+}
+
+function calculateInitialCostBreakdown(params: {
+  rent: number;
+  managementFee: number | null;
+  keyMoney: number | null;
+  deposit: number | null;
+  extractedKeyMoney: string;
+  extractedDeposit: string;
+  extractedGuaranteeFee?: string;
+  extractedLockReplacementFee?: string;
+  extractedCleaningFee?: string;
+  extractedInsuranceFee?: string;
+}): InitialCostEstimate {
+  const { rent, managementFee, keyMoney, deposit } = params;
+  const totalMonthlyCost = rent + (managementFee ?? 0);
+
+  const items: InitialCostBreakdownItem[] = [];
+
+  // 1. 敷金（押金）
+  const depositAmount = deposit ?? 0;
+  items.push({
+    id: "deposit",
+    name: "敷金（押金）",
+    amount: depositAmount,
+    isFromFlyer: Boolean(params.extractedDeposit),
+    note: depositAmount === 0 ? "免押金（需留意退租時是否有預收清掃費條款）" : "擔保性質費用，退租扣除修繕後退還餘額",
+  });
+
+  // 2. 禮金（礼金）
+  const keyMoneyAmount = keyMoney ?? 0;
+  items.push({
+    id: "keyMoney",
+    name: "禮金（礼金）",
+    amount: keyMoneyAmount,
+    isFromFlyer: Boolean(params.extractedKeyMoney),
+    note: keyMoneyAmount === 0 ? "免禮金（無須贈與房東謝禮，初期負擔大幅減輕）" : "贈與房東之謝禮，退租時不予退還",
+  });
+
+  // 3. 次月預付前家賃（1 個月完整租金與管理費）
+  items.push({
+    id: "advanceRent",
+    name: "前家賃（次月完整租金與管理費）",
+    amount: totalMonthlyCost,
+    isFromFlyer: true,
+    note: "簽約時預先支付入住次月之全額租金與管理費",
+  });
+
+  // 4. 起租月日割租金（預估半個月）
+  const proratedRent = Math.round(totalMonthlyCost * 0.5);
+  items.push({
+    id: "proratedRent",
+    name: "起租月日割租金（按日計租預估）",
+    amount: proratedRent,
+    isFromFlyer: false,
+    note: "以月中 15 天起租試算；若起租日靠近月底（例如 25 號後）可降至更低",
+  });
+
+  // 5. 保證會社初回保證料
+  const customGuarantee = parseYenAmount(params.extractedGuaranteeFee);
+  const guaranteeAmount = customGuarantee ?? Math.round(totalMonthlyCost * 0.5);
+  items.push({
+    id: "guaranteeFee",
+    name: "保證會社初回保證料",
+    amount: guaranteeAmount,
+    isFromFlyer: Boolean(params.extractedGuaranteeFee),
+    note: params.extractedGuaranteeFee
+      ? `圖紙標示：${params.extractedGuaranteeFee}`
+      : "外國籍租客多需加入保證公司，一般常態為總月租之 50%～100%",
+  });
+
+  // 6. 仲介手續費
+  const brokerageFee = Math.round(rent * 1.1);
+  items.push({
+    id: "brokerageFee",
+    name: "仲介手續費（仲介手数料）",
+    amount: brokerageFee,
+    isFromFlyer: false,
+    note: "日本國土交通省法定上限為 1 個月租金 + 10% 消費稅",
+  });
+
+  // 7. 火災保險費
+  const customInsurance = parseYenAmount(params.extractedInsuranceFee);
+  const insuranceAmount = customInsurance ?? 20000;
+  items.push({
+    id: "insuranceFee",
+    name: "火災保險／家財保險（2年）",
+    amount: insuranceAmount,
+    isFromFlyer: Boolean(params.extractedInsuranceFee),
+    note: params.extractedInsuranceFee
+      ? `圖紙標示：${params.extractedInsuranceFee}`
+      : "保障租客財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
+  });
+
+  // 8. 鑰匙更換費
+  const customLock = parseYenAmount(params.extractedLockReplacementFee);
+  const lockAmount = customLock ?? 22000;
+  items.push({
+    id: "lockReplacementFee",
+    name: "鑰匙更換費（鍵交換代）",
+    amount: lockAmount,
+    isFromFlyer: Boolean(params.extractedLockReplacementFee),
+    note: params.extractedLockReplacementFee
+      ? `圖紙標示：${params.extractedLockReplacementFee}`
+      : "交屋前換新鎖芯（一般鎖約 1.6 萬～2.2 萬円，電子防盜鎖約 3.3 萬円）",
+  });
+
+  // 9. 退去清掃費
+  const customCleaning = parseYenAmount(params.extractedCleaningFee);
+  const cleaningAmount = customCleaning ?? (depositAmount === 0 ? 44000 : 0);
+  if (cleaningAmount > 0) {
+    items.push({
+      id: "cleaningFee",
+      name: "退去清掃費／室內清潔費",
+      amount: cleaningAmount,
+      isFromFlyer: Boolean(params.extractedCleaningFee),
+      note: params.extractedCleaningFee
+        ? `圖紙標示：${params.extractedCleaningFee}`
+        : "免押金物件通常於簽約時預收退租清掃費",
+    });
+  }
+
+  // totalMin: 假設月底起租（不計入日割租金）
+  const totalMin = items
+    .filter(item => item.id !== "proratedRent")
+    .reduce((sum, item) => sum + item.amount, 0);
+
+  // totalMax: 包含半個月日割租金
+  const totalMax = items.reduce((sum, item) => sum + item.amount, 0);
+
+  const monthsMultipleMin = totalMonthlyCost > 0 ? Number((totalMin / totalMonthlyCost).toFixed(1)) : 0;
+  const monthsMultipleMax = totalMonthlyCost > 0 ? Number((totalMax / totalMonthlyCost).toFixed(1)) : 0;
+
+  let level: "low" | "standard" | "high" = "standard";
+  let levelText = "市場標準常態（約 3.5 ～ 4.8 倍）";
+
+  if (monthsMultipleMax <= 3.5) {
+    level = "low";
+    levelText = "極度優惠（3.5 倍以下）";
+  } else if (monthsMultipleMax >= 5.0) {
+    level = "high";
+    levelText = "初期負擔偏高（5.0 倍以上）";
+  }
+
+  const tips: string[] = [];
+  if (keyMoneyAmount === 0 && depositAmount === 0) {
+    tips.push("本物件為「零禮金、零押金」，初期現金壓力極小；但請特別注意退租時的清潔費與原狀恢復計費特約條款。");
+  } else if (keyMoneyAmount === 0) {
+    tips.push("本物件「免禮金」，為您省下致贈房東的謝禮（相當於省下約 1 個月租金）。");
+  } else if (keyMoneyAmount >= rent * 1.5) {
+    tips.push("本物件禮金高達 1.5 個月以上，屬於熱門物件或都心精華地段常見設定，初期成本相對較高。");
+  }
+
+  tips.push("【節費建議】協調起租日在每月 25 號以後，當月日割租金僅需支付數天，可顯著壓低第一筆需匯出的初期總金額。");
+  tips.push("【海外審查提醒】海外租客簽約初期費用多需以日本國內銀行匯款，若由海外電匯請預留約 4,000 円日本端受金手續費與匯差。");
+
+  return {
+    totalMin,
+    totalMax,
+    monthsMultipleMin,
+    monthsMultipleMax,
+    level,
+    levelText,
+    items,
+    tips,
+  };
 }
 
 export default async function handler(req: any, res: any) {
@@ -232,8 +424,7 @@ export default async function handler(req: any, res: any) {
 
     const extracted = await extractListingFields(files);
 
-    // 三個欄位都空的話，這張圖大概不是物件概要書——誠實說看不懂，
-    // 不要硬湊一份幾乎全空的「分析結果」出來。
+    // 三個欄位都空的話，這張圖大概不是物件概要書——誠實說看不懂
     if (!extracted.station.trim() && !extracted.layout.trim() && !extracted.rent.trim()) {
       return res.status(422).json({ error: "無法從這張圖片讀出物件資訊，請確認上傳的是物件概要書或図面。" });
     }
@@ -265,14 +456,36 @@ export default async function handler(req: any, res: any) {
       ? ((keyMoney ?? 0) + (deposit ?? 0)) / rent
       : null;
 
+    const initialCostEstimate = rent !== null ? calculateInitialCostBreakdown({
+      rent,
+      managementFee,
+      keyMoney,
+      deposit,
+      extractedKeyMoney: extracted.keyMoney,
+      extractedDeposit: extracted.deposit,
+      extractedGuaranteeFee: extracted.guaranteeFee,
+      extractedLockReplacementFee: extracted.lockReplacementFee,
+      extractedCleaningFee: extracted.cleaningFee,
+      extractedInsuranceFee: extracted.insuranceFee,
+    }) : null;
+
     await recordUsage("listing-check", requestCountry(req));
 
     return res.status(200).json({
       extracted,
-      parsed: { rent, managementFee, keyMoney, deposit, roomType },
+      parsed: {
+        rent,
+        managementFee,
+        keyMoney,
+        deposit,
+        roomType,
+        area: parseArea(extracted.area),
+        structure: extracted.structure || null,
+      },
       range,
       verdict,
       initialCostMonths,
+      initialCostEstimate,
       model: "gemini-3.1-flash-lite",
     });
   } catch (error: any) {

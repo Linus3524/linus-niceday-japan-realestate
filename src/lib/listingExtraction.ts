@@ -124,3 +124,23 @@ export function normalizeRoomType(text: unknown): RoomType | null {
 
   return null;
 }
+
+/**
+ * 解析專有面積字串（例如 "25.4㎡"、"25.4m2"、"25.4平米" 或 "7.68坪"）。
+ */
+export function parseArea(text: unknown): number | null {
+  if (typeof text !== "string") return null;
+  const cleaned = toHalfWidth(text).trim();
+  const match = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|平米|米|坪)/i);
+  if (match) {
+    let val = Number(match[1]);
+    if (cleaned.includes("坪")) val = Math.round(val * 3.30578 * 10) / 10;
+    return Number.isFinite(val) && val > 0 ? val : null;
+  }
+  const plainNum = cleaned.match(/^(\d+(?:\.\d+)?)$/);
+  if (plainNum) {
+    const val = Number(plainNum[1]);
+    return Number.isFinite(val) && val > 0 && val < 500 ? val : null;
+  }
+  return null;
+}
