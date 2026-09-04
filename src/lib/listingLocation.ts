@@ -13,6 +13,8 @@ export interface ListingAmenity {
   name: string;
   distanceMeters: number;
   source: "openstreetmap" | "mlit";
+  lat?: number;
+  lon?: number;
 }
 
 export interface ListingStationWalk {
@@ -24,6 +26,8 @@ export interface ListingStationWalk {
   slowMinutes: number;
   differenceMinutes: number | null;
   needsAttention: boolean;
+  lat?: number;
+  lon?: number;
 }
 
 export interface ListingLocationContext {
@@ -368,7 +372,19 @@ async function mlitFacilities(point: GeoPoint): Promise<ListingAmenity[]> {
       const name = String(feature?.properties?.[spec.nameKey] || "").trim();
       if (!name || !Number.isFinite(facilityPoint.lat) || !Number.isFinite(facilityPoint.lon)) return [];
       const distance = distanceMeters(point, facilityPoint);
-      return distance <= 1200 ? [{ category: spec.category, label: spec.label, name, distanceMeters: distance, source: "mlit" as const }] : [];
+      return distance <= 1200
+        ? [
+            {
+              category: spec.category,
+              label: spec.label,
+              name,
+              distanceMeters: distance,
+              source: "mlit" as const,
+              lat: facilityPoint.lat,
+              lon: facilityPoint.lon,
+            },
+          ]
+        : [];
     });
   }));
   return results.flatMap(result => result.status === "fulfilled" ? result.value : []);
@@ -391,7 +407,17 @@ function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[]
     const dedupe = `${category}:${name}`;
     if (seen.has(dedupe)) return [];
     seen.add(dedupe);
-    return [{ category, label, name, distanceMeters: distanceMeters(point, facilityPoint), source: "openstreetmap" as const }];
+    return [
+      {
+        category,
+        label,
+        name,
+        distanceMeters: distanceMeters(point, facilityPoint),
+        source: "openstreetmap" as const,
+        lat: facilityPoint.lat,
+        lon: facilityPoint.lon,
+      },
+    ];
   });
 }
 
@@ -427,7 +453,16 @@ export async function getListingLocationContext(address: string, stations: strin
       const times = walkingTimes(distance);
       const advertised = advertisedMinutes[index] ?? null;
       const difference = advertised === null ? null : times.normalMinutes - advertised;
-      stationWalks.push({ station: toJapaneseStationName(station), distanceMeters: distance, advertisedMinutes: advertised, ...times, differenceMinutes: difference, needsAttention: difference !== null && difference >= 3 });
+      stationWalks.push({
+        station: toJapaneseStationName(station),
+        distanceMeters: distance,
+        advertisedMinutes: advertised,
+        ...times,
+        differenceMinutes: difference,
+        needsAttention: difference !== null && difference >= 3,
+        lat: match.point.lat,
+        lon: match.point.lon,
+      });
     } catch {
       // A route provider failure should not hide all other location context.
     }

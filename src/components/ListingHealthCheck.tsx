@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import type { AxisStatus } from "../lib/requirementVerdict";
 import type { ListingLocationContext } from "../lib/listingLocation";
+import { ListingLocationMap } from "./ListingLocationMap";
 
 /**
  * 物件圖紙健檢：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -897,10 +898,11 @@ export function ListingHealthCheck() {
 
             {locationContext && (
               <div className="space-y-4">
-                <div className="flex flex-wrap items-start justify-between gap-2 bg-[#F5F8F6] p-3 text-xs">
-                  <div>
-                    <p className="text-[#66736C]">定位地址</p>
-                    <p className="mt-0.5 font-bold text-[#1A2A22]">{locationContext.matchedAddress}</p>
+                {/* 定位地址標頭列 */}
+                <div className="flex flex-wrap items-center justify-between gap-2 bg-[#F5F8F6] p-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[#66736C]">定位地址：</span>
+                    <span className="font-bold text-[#1A2A22]">{locationContext.matchedAddress}</span>
                   </div>
                   <a
                     className="font-bold text-[#007d5a] underline underline-offset-2 hover:text-[#005a41]"
@@ -916,72 +918,77 @@ export function ListingHealthCheck() {
                   <p key={notice} className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">{notice}</p>
                 ))}
 
+                {/* 實際步行時間比對：改為緊湊俐落的水平卡片，不再鬆散佔位 */}
                 {locationContext.stationWalks.length > 0 && (
-                  <div>
-                    <div className="mb-2 flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
-                      <Footprints className="h-4 w-4 text-[#00a174]" /> 實際路徑步行時間比對
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
+                        <Footprints className="h-4 w-4 text-[#00a174]" />
+                        <span>真實道路步行時間比對</span>
+                      </div>
+                      <span className="text-[10px] text-[#66736C]">依公開道路步行路徑計算</span>
                     </div>
-                    <div className="space-y-2">
+
+                    <div className="space-y-2.5">
                       {locationContext.stationWalks.map(walk => (
-                        <div key={walk.station} className={`border p-3.5 ${walk.needsAttention ? "border-[#DCC8A1] bg-[#FFF9ED]" : "border-[#DDE3DF] bg-white"}`}>
-                          <div className="flex items-baseline justify-between gap-2">
-                            <p className="text-sm font-bold text-[#1A2A22]">{walk.station}駅</p>
-                            <p className="text-[11px] text-[#66736C]">真實道路距離約 {walk.distanceMeters.toLocaleString("zh-TW")}m</p>
+                        <div
+                          key={walk.station}
+                          className={`flex flex-col justify-between gap-3 border p-3 transition-colors sm:flex-row sm:items-center ${
+                            walk.needsAttention ? "border-[#DCC8A1] bg-[#FFFDF8]" : "border-[#E8ECE9] bg-[#FAFCFB]"
+                          }`}
+                        >
+                          {/* 車站與距離 */}
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-black text-[#1A2A22]">{walk.station}駅</span>
+                              <span className="bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] border border-[#DDE3DF]">
+                                約 {walk.distanceMeters.toLocaleString("zh-TW")}m
+                              </span>
+                            </div>
+                            {walk.advertisedMinutes !== null && (
+                              <p className={`mt-1 text-[11px] ${walk.needsAttention ? "font-bold text-[#7A5A1F]" : "text-[#66736C]"}`}>
+                                圖紙標示 {walk.advertisedMinutes} 分；以一般速度計算
+                                {walk.differenceMinutes && walk.differenceMinutes > 0
+                                  ? `多約 ${walk.differenceMinutes} 分鐘`
+                                  : "大致相符"}
+                              </p>
+                            )}
                           </div>
-                          <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
-                            <div className="border border-[#E8ECE9] bg-[#FAFCFB] p-2">
-                              <p className="text-[10px] text-[#66736C]">快走步伐</p>
-                              <p className="text-sm font-bold text-[#1A2A22]">{walk.fastMinutes} 分</p>
+
+                          {/* 3 段速度緊湊膠囊 */}
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            <div className="border border-[#DDE3DF] bg-white px-2.5 py-1 text-center">
+                              <span className="block text-[9px] text-[#66736C]">快步</span>
+                              <span className="block text-xs font-bold text-[#1A2A22]">{walk.fastMinutes}分</span>
                             </div>
-                            <div className="border border-[#00a174] bg-[#e6f6f1] p-2">
-                              <p className="text-[10px] text-[#007d5a]">一般步行常態</p>
-                              <p className="text-sm font-bold text-[#007d5a]">{walk.normalMinutes} 分</p>
+                            <div className="border border-[#00a174] bg-[#e6f6f1] px-3 py-1 text-center">
+                              <span className="block text-[9px] font-bold text-[#007d5a]">一般常態</span>
+                              <span className="block text-sm font-black text-[#007d5a]">{walk.normalMinutes}分</span>
                             </div>
-                            <div className="border border-[#E8ECE9] bg-[#FAFCFB] p-2">
-                              <p className="text-[10px] text-[#66736C]">慢走／雨天行李</p>
-                              <p className="text-sm font-bold text-[#1A2A22]">{walk.slowMinutes} 分</p>
+                            <div className="border border-[#DDE3DF] bg-white px-2.5 py-1 text-center">
+                              <span className="block text-[9px] text-[#66736C]">雨天/行李</span>
+                              <span className="block text-xs font-bold text-[#1A2A22]">{walk.slowMinutes}分</span>
                             </div>
                           </div>
-                          {walk.advertisedMinutes !== null && (
-                            <p className={`mt-2 text-[11px] ${walk.needsAttention ? "font-bold text-[#7A5A1F]" : "text-[#66736C]"}`}>
-                              圖紙標示 {walk.advertisedMinutes} 分；以一般速度計算{walk.differenceMinutes && walk.differenceMinutes > 0 ? `多約 ${walk.differenceMinutes} 分鐘` : "大致相符"}。
-                            </p>
-                          )}
                         </div>
                       ))}
                     </div>
-                    <p className="mt-1.5 text-[10px] leading-relaxed text-[#66736C]">
-                      依公開地圖的真實步行道路換算；紅綠燈等候、坡度、天候與月台入口深度均會造成個人差異。
-                    </p>
                   </div>
                 )}
 
-                {locationContext.amenities.length > 0 && (
-                  <div>
-                    <div className="mb-2 flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
-                      <Store className="h-4 w-4 text-[#00a174]" /> 1.2 公里內生活機能設施
+                {/* 互動地圖與周邊生活機能：將房屋與所有周邊設施直接標記在地圖上 */}
+                <div className="border border-[#DDE3DF] bg-white p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#1A2A22]">
+                      <Store className="h-4 w-4 text-[#00a174]" />
+                      <span>周邊 1.2 公里生活機能與互動地圖</span>
                     </div>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {(["convenience", "supermarket", "pharmacy", "medical", "school", "park"] as const).map(category => {
-                        const items = locationContext.amenities.filter(item => item.category === category);
-                        if (!items.length) return null;
-                        return (
-                          <div key={category} className="border border-[#DDE3DF] bg-white p-3">
-                            <p className="mb-1.5 text-[11px] font-bold text-[#007d5a]">{items[0].label}</p>
-                            <ul className="space-y-1 text-xs text-[#3F5147]">
-                              {items.map(item => (
-                                <li key={`${item.source}-${item.name}`} className="flex justify-between gap-2">
-                                  <span className="truncate">{item.name}</span>
-                                  <span className="shrink-0 text-[#66736C]">約 {item.distanceMeters}m</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <span className="text-[10px] text-[#66736C]">點擊地圖標記可看名稱與距離</span>
                   </div>
-                )}
+
+                  {/* 核心組件：地圖視覺化標出本物件與所有周邊設施 */}
+                  <ListingLocationMap context={locationContext} />
+                </div>
 
                 {/* 資料來源與免責聲明：純繁體中文呈現，不混合日文字句 */}
                 <div className="border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">
