@@ -2,7 +2,14 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict } from "../src/lib/requirementVerdict.js";
-import { parseYenAmount, parseMonthsOrYen, normalizeRoomType, stripStationOperatorPrefix, parseArea } from "../src/lib/listingExtraction.js";
+import {
+  parseYenAmount,
+  parseMonthsOrYen,
+  normalizeRoomType,
+  stripStationOperatorPrefix,
+  parseArea,
+  normalizeStructure,
+} from "../src/lib/listingExtraction.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 import type { RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 
@@ -136,6 +143,10 @@ export interface ExtractedListingFields {
   lockReplacementFee: string;
   cleaningFee: string;
   insuranceFee: string;
+  shikibiki: string;
+  cancellationPenalty: string;
+  renewalFee: string;
+  specialNotes: string;
 }
 
 export interface InitialCostBreakdownItem {
@@ -179,13 +190,27 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
     - cleaningFee（退去時清掃費／室内クリーニング代／敷引／償却）：照原文，例如 "44,000円"。
     - insuranceFee（火災保険／家財保険料）：照原文，例如 "20,000円"。
 
-    物件規格欄位：
+    物件規格欄位（請格外仔細，務必尋找提取）：
     - layout（間取り，例如 "1K"、"1LDK"、"2DK"）。
-    - area（専有面積／平米數，例如 "25.4㎡"、"30.12m2"）。
-    - structure（建物構造，例如 "RC造"、"鉄骨造"、"木造"）。
+    - area（専有面積／平米數／坪數）：
+      * 請仔細在表格、間取り圖旁或建物概要搜尋「専有面積」「専有」「面積」「床面積」「建物面積」等標記。
+      * 常見格式如 "25.40㎡"、"25.40m2"、"25.40m²"、"25.4平米"、"7.68坪"、"15.5帖"。
+      * 圖紙上有任何面積標示，務必抓出，格式如 "25.40㎡"，不可遺漏！
+    - structure（建物構造／構造・規模）：
+      * 請仔細在「構造」「建物構造」「構造・規模」搜尋。
+      * 常見寫法：英文簡稱如 RC、SRC、S、ALC、PC、W；日文漢字如 鉄筋コンクリート造、鉄骨鉄筋コンクリート造、鉄骨造、軽量鉄骨造、重量鉄骨造、木造等。
+      * 即使只有簡寫如 "RC"、"SRC"、"S"、"木造"，也務必提取！
     - age（築年數／建築年月，例如 "築8年"、"2016年3月"）。
     - floor（所在階／總階數，例如 "4階 / 10階建"）。
     - address（所在地／住所）。
+
+    特約條款與注意事項（極重要，牽涉承租人權益）：
+    - shikibiki（敷引／償却）：若敷金有標註「敷引」「償却」等不退還約定，原文照抄（例如 "敷引1ヶ月"、"解約時敷金1ヶ月償却"、"償却50%"）。若無或寫なし則寫 "なし"。
+    - cancellationPenalty（短期解約違約金）：備考或特約是否有違約金？例如 "1年未満解約時賃料1ヶ月"。無則寫 "なし"。
+    - renewalFee（更新料）：契約更新費用，例如 "新賃料1ヶ月"、"更新料なし"。
+    - specialNotes（其他特約・注意事項・生活限制）：
+      請完整掃描備考、特約欄、設備條件，抓出所有重要規定，例如：
+      保證公司加入要求、退去清掃費負擔、寵物規定（如 "ペット不可" 或 "ペット相談/敷金1ヶ月増"）、樂器規定、二人入居規定、24小時支援服務等。
 
     找不到的欄位留空字串，不要猜測或用 0 代替。
   `;
@@ -220,12 +245,17 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
           lockReplacementFee: { type: Type.STRING, description: "鍵交換費用，照原文" },
           cleaningFee: { type: Type.STRING, description: "退去清掃費／敷引，照原文" },
           insuranceFee: { type: Type.STRING, description: "火災保險費用，照原文" },
+          shikibiki: { type: Type.STRING, description: "敷引／償却約定，例如 敷引1ヶ月 或 なし" },
+          cancellationPenalty: { type: Type.STRING, description: "短期解約違約金，例如 1年未満解約時1ヶ月 或 なし" },
+          renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
+          specialNotes: { type: Type.STRING, description: "備考與特約注意事項，例如 保證公司利用必須、寵物不可、退去時清掃費等" },
         },
         required: [
           "station", "walkTime", "layout", "rent", "managementFee",
           "keyMoney", "deposit", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
-          "cleaningFee", "insuranceFee"
+          "cleaningFee", "insuranceFee", "shikibiki", "cancellationPenalty",
+          "renewalFee", "specialNotes"
         ],
       },
     },
@@ -247,6 +277,7 @@ function calculateInitialCostBreakdown(params: {
   extractedLockReplacementFee?: string;
   extractedCleaningFee?: string;
   extractedInsuranceFee?: string;
+  extractedShikibiki?: string;
 }): InitialCostEstimate {
   const { rent, managementFee, keyMoney, deposit } = params;
   const totalMonthlyCost = rent + (managementFee ?? 0);
@@ -255,12 +286,17 @@ function calculateInitialCostBreakdown(params: {
 
   // 1. 敷金（押金）
   const depositAmount = deposit ?? 0;
+  const hasShikibiki = Boolean(params.extractedShikibiki && !/^(?:なし|無|0|不要)$/i.test(params.extractedShikibiki.trim()));
   items.push({
     id: "deposit",
     name: "敷金（押金）",
     amount: depositAmount,
     isFromFlyer: Boolean(params.extractedDeposit),
-    note: depositAmount === 0 ? "免押金（需留意退租時是否有預收清掃費條款）" : "擔保性質費用，退租扣除修繕後退還餘額",
+    note: depositAmount === 0
+      ? "免押金（需留意退租時是否有預收清掃費或特約條款）"
+      : hasShikibiki
+      ? `擔保性質費用（⚠️ 含「${params.extractedShikibiki}」扣除約定，退租時不退還）`
+      : "擔保性質費用，退租扣除修繕後退還餘額",
   });
 
   // 2. 禮金（礼金）
@@ -379,6 +415,9 @@ function calculateInitialCostBreakdown(params: {
   }
 
   const tips: string[] = [];
+  if (hasShikibiki) {
+    tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${params.extractedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
+  }
   if (keyMoneyAmount === 0 && depositAmount === 0) {
     tips.push("本物件為「零禮金、零押金」，初期現金壓力極小；但請特別注意退租時的清潔費與原狀恢復計費特約條款。");
   } else if (keyMoneyAmount === 0) {
@@ -467,6 +506,7 @@ export default async function handler(req: any, res: any) {
       extractedLockReplacementFee: extracted.lockReplacementFee,
       extractedCleaningFee: extracted.cleaningFee,
       extractedInsuranceFee: extracted.insuranceFee,
+      extractedShikibiki: extracted.shikibiki,
     }) : null;
 
     await recordUsage("listing-check", requestCountry(req));
@@ -480,7 +520,7 @@ export default async function handler(req: any, res: any) {
         deposit,
         roomType,
         area: parseArea(extracted.area),
-        structure: extracted.structure || null,
+        structure: normalizeStructure(extracted.structure),
       },
       range,
       verdict,

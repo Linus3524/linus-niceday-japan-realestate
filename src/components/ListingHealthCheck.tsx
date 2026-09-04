@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import type { AxisStatus } from "../lib/requirementVerdict";
 import type { ListingLocationContext } from "../lib/listingLocation";
+import { normalizeStructure, parseArea } from "../lib/listingExtraction";
 import { ListingLocationMap } from "./ListingLocationMap";
 
 /**
@@ -82,6 +83,10 @@ interface ExtractedFields {
   lockReplacementFee?: string;
   cleaningFee?: string;
   insuranceFee?: string;
+  shikibiki?: string;
+  cancellationPenalty?: string;
+  renewalFee?: string;
+  specialNotes?: string;
 }
 
 export interface InitialCostBreakdownItem {
@@ -198,13 +203,21 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   const deposit = result.parsed.deposit ?? 0;
   const keyMoney = result.parsed.keyMoney ?? 0;
 
+  const hasShikibiki = Boolean(
+    result.extracted.shikibiki && !/^(?:なし|無|0|不要)$/i.test(result.extracted.shikibiki.trim())
+  );
+
   const items: InitialCostBreakdownItem[] = [
     {
       id: "deposit",
       name: "敷金（押金）",
       amount: deposit,
       isFromFlyer: Boolean(result.extracted.deposit),
-      note: deposit === 0 ? "免押金（需留意退租時之原狀恢復或預收清掃費條款）" : "擔保性質費用，退租扣除自然折舊外之修繕後退還餘額",
+      note: deposit === 0
+        ? "免押金（需留意退租時之原狀恢復或預收清掃費條款）"
+        : hasShikibiki
+        ? `擔保性質費用（⚠️ 含「${result.extracted.shikibiki}」扣除約定，退租時不退還）`
+        : "擔保性質費用，退租扣除自然折舊外之修繕後退還餘額",
     },
     {
       id: "keyMoney",
@@ -283,6 +296,9 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   }
 
   const tips: string[] = [];
+  if (hasShikibiki) {
+    tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${result.extracted.shikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
+  }
   if (keyMoney === 0 && deposit === 0) {
     tips.push("本物件為「零禮金、零押金」，初期現金壓力極小；但請注意退租時的清潔費或原狀恢復計費約定。");
   } else if (keyMoney === 0) {
@@ -482,6 +498,30 @@ export function ListingHealthCheck() {
     ? extracted.station.split(/[,，]/).map(s => s.trim()).filter(Boolean).join("、")
     : null;
 
+  const parsedArea = parsed?.area ?? parseArea(extracted?.area);
+  const displayArea = parsedArea
+    ? `${parsedArea} ㎡（約 ${(parsedArea / 3.30578).toFixed(1)} 坪）`
+    : extracted?.area || null;
+
+  const displayStructure =
+    parsed?.structure ||
+    normalizeStructure(extracted?.structure) ||
+    extracted?.structure ||
+    null;
+
+  const hasShikibiki = Boolean(
+    extracted?.shikibiki &&
+      !/^(?:なし|無|0|不要)$/i.test(extracted.shikibiki.trim())
+  );
+  const hasPenalty = Boolean(
+    extracted?.cancellationPenalty &&
+      !/^(?:なし|無|0)$/i.test(extracted.cancellationPenalty.trim())
+  );
+  const hasRenewal = Boolean(
+    extracted?.renewalFee &&
+      !/^(?:なし|無|0)$/i.test(extracted.renewalFee.trim())
+  );
+
   return (
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙健檢">
       {/* 區塊頂部標題 */}
@@ -630,7 +670,8 @@ export function ListingHealthCheck() {
               <p className="mt-1 text-base font-bold">
                 {stationSummary ? `${stationSummary}駅周邊` : "日本租賃物件"}
                 {extracted?.layout ? `・${extracted.layout}` : ""}
-                {extracted?.area ? `（${extracted.area}）` : ""}
+                {displayArea ? `・${displayArea}` : ""}
+                {displayStructure ? `・${displayStructure}` : ""}
               </p>
             </div>
             {result.verdict && (
@@ -704,8 +745,7 @@ export function ListingHealthCheck() {
                 <div>
                   <dt className="text-[#66736C]">專有面積</dt>
                   <dd className="font-bold text-[#1A2A22]">
-                    {extracted?.area || (parsed?.area ? `${parsed.area} ㎡` : "—")}
-                    {parsed?.area ? `（約 ${(parsed.area / 3.30578).toFixed(1)} 坪）` : ""}
+                    {displayArea || "未於圖面載明"}
                   </dd>
                 </div>
                 <div>
@@ -724,13 +764,108 @@ export function ListingHealthCheck() {
                 </div>
                 <div>
                   <dt className="text-[#66736C]">建物構造</dt>
-                  <dd className="font-bold text-[#1A2A22]">{extracted?.structure || "—"}</dd>
+                  <dd className="font-bold text-[#1A2A22]">
+                    {displayStructure || "未於圖面載明"}
+                  </dd>
                 </div>
               </dl>
               {extracted?.address && (
                 <div className="mt-3 border-t border-[#E8ECE9] pt-2 text-xs">
                   <span className="text-[#66736C]">所在地：</span>
                   <span className="font-bold text-[#1A2A22]">{extracted.address}</span>
+                </div>
+              )}
+            </div>
+
+            {/* 模組：圖紙契約重要特約與法務注意事項（敷引、違約金、更新料、生活規範） */}
+            <div className="border border-[#1A2A22] bg-[#FAFCFB] p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-3">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4 text-[#007d5a]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#007d5a]">
+                    圖紙契約重要特約與法務注意事項
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-[#66736C]">
+                  日本租屋特約條款審查
+                </span>
+              </div>
+
+              {/* 1. 敷引／償却（最關鍵法務警示） */}
+              {hasShikibiki ? (
+                <div className="mt-3.5 border-2 border-[#E94E2B] bg-[#FFF5F2] p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#B13818]" />
+                    <div className="space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="bg-[#B13818] px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                          ⚠️ 關鍵條款警告
+                        </span>
+                        <strong className="text-sm font-black text-[#B13818]">
+                          圖紙載有「敷引／償却」不退還約定：{extracted?.shikibiki}
+                        </strong>
+                      </div>
+                      <p className="text-xs leading-relaxed text-[#782610]">
+                        <strong>Linus 深度解析：</strong>
+                        日本關西、中部與部分特定租賃契約會約定「敷引 / 償却」。雖然在圖面上寫在「敷金（押金）」欄位，但載明「{extracted?.shikibiki}」代表退租時該筆金額<strong>將被直接扣除沒收、絕不退還</strong>！其法律實質性質等同於「變相禮金」或「強制預收原狀恢復費」。這意味著搬走時這筆錢無法退回，初期預算應直接將其視為不可回收之沉沒成本。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-3.5 flex items-center gap-2.5 border border-[#9ee2cf] bg-[#f2faf7] p-3 text-xs text-[#007d5a]">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  <p className="leading-relaxed">
+                    <strong>敷引約定：</strong>圖紙未發現「敷引／償却」扣除條款。退租時敷金將依日本國交省《原狀恢復指南》，僅扣除承租人故意或過失之修繕費用，餘額全數退還。
+                  </p>
+                </div>
+              )}
+
+              {/* 2. 違約金、更新料、保證會社條款網格 */}
+              <div className="mt-3.5 grid gap-3 sm:grid-cols-3">
+                {/* 短期解約違約金 */}
+                <div className="border border-[#DDE3DF] bg-white p-3.5">
+                  <p className="text-[11px] font-bold text-[#66736C]">短期解約違約金</p>
+                  <p className="mt-1 text-xs font-black text-[#1A2A22]">
+                    {hasPenalty ? extracted?.cancellationPenalty : "未特別標註（依常態條款）"}
+                  </p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
+                    {hasPenalty
+                      ? "⚠️ 注意：若在約定期限內提早解約搬家，需支付約定之違約金。"
+                      : "日本多為 2 年期契約，通常約定未滿 1 年退租罰 1 個月租金，請簽約前再次核對重要事項說明書。"}
+                  </p>
+                </div>
+
+                {/* 契約更新料 */}
+                <div className="border border-[#DDE3DF] bg-white p-3.5">
+                  <p className="text-[11px] font-bold text-[#66736C]">契約更新料</p>
+                  <p className="mt-1 text-xs font-black text-[#1A2A22]">
+                    {hasRenewal ? extracted?.renewalFee : "每 2 年新租金 1 個月（常態）"}
+                  </p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
+                    每 2 年續約時支付給房東之更新謝禮；請留意仲介管理公司是否另收取更新事務手續費（通常約 0.25～0.5 個月）。
+                  </p>
+                </div>
+
+                {/* 保證公司利用 */}
+                <div className="border border-[#DDE3DF] bg-white p-3.5">
+                  <p className="text-[11px] font-bold text-[#66736C]">保證會社與火災保險</p>
+                  <p className="mt-1 text-xs font-black text-[#1A2A22]">
+                    {extracted?.guaranteeFee ? `保證料：${extracted.guaranteeFee}` : "外國籍利用必須"}
+                  </p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
+                    外國籍租客原則上必須加入日本家賃債務保證會社；除初回保證料外，次年起多有每年約 1 萬円之更新保證料。
+                  </p>
+                </div>
+              </div>
+
+              {/* 3. 特約事項與生活限制備註 */}
+              {extracted?.specialNotes && !/^(?:なし|無|0)$/i.test(extracted.specialNotes.trim()) && (
+                <div className="mt-3 border border-[#DDE3DF] bg-white p-3.5">
+                  <p className="text-xs font-bold text-[#1A2A22]">圖紙其他特約・生活規範與備考事項：</p>
+                  <div className="mt-1.5 text-xs leading-relaxed text-[#3F5147] whitespace-pre-line bg-[#FAFCFB] p-2.5 border border-[#E8ECE9]">
+                    {extracted.specialNotes}
+                  </div>
                 </div>
               )}
             </div>

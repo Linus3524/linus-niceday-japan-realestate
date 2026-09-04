@@ -448,24 +448,25 @@ export async function getListingLocationContext(address: string, stations: strin
     const station = stations[index];
     const match = nearestStation(elements, geocoded.point, station) || nearestOfficialStation(officialStations, station);
     if (!match) continue;
+    let distance = match.distance;
     try {
-      const distance = await routeFootDistance(geocoded.point, match.point);
-      const times = walkingTimes(distance);
-      const advertised = advertisedMinutes[index] ?? null;
-      const difference = advertised === null ? null : times.normalMinutes - advertised;
-      stationWalks.push({
-        station: toJapaneseStationName(station),
-        distanceMeters: distance,
-        advertisedMinutes: advertised,
-        ...times,
-        differenceMinutes: difference,
-        needsAttention: difference !== null && difference >= 3,
-        lat: match.point.lat,
-        lon: match.point.lon,
-      });
+      distance = await routeFootDistance(geocoded.point, match.point);
     } catch {
-      // A route provider failure should not hide all other location context.
+      distance = Math.round(match.distance * 1.25);
     }
+    const times = walkingTimes(distance);
+    const advertised = advertisedMinutes[index] ?? null;
+    const difference = advertised === null ? null : times.normalMinutes - advertised;
+    stationWalks.push({
+      station: toJapaneseStationName(station),
+      distanceMeters: distance,
+      advertisedMinutes: advertised,
+      ...times,
+      differenceMinutes: difference,
+      needsAttention: difference !== null && difference >= 3,
+      lat: match.point.lat,
+      lon: match.point.lon,
+    });
   }
   const mlit = await mlitFacilities(geocoded.point);
   const amenities = [...osmAmenities(elements, geocoded.point), ...mlit]

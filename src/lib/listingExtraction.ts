@@ -126,15 +126,16 @@ export function normalizeRoomType(text: unknown): RoomType | null {
 }
 
 /**
- * 解析專有面積字串（例如 "25.4㎡"、"25.4m2"、"25.4平米" 或 "7.68坪"）。
+ * 解析專有面積字串（例如 "25.4㎡"、"25.40m2"、"25.40m²"、"25.4平米"、"7.68坪" 或 "15.5帖"）。
  */
 export function parseArea(text: unknown): number | null {
   if (typeof text !== "string") return null;
   const cleaned = toHalfWidth(text).trim();
-  const match = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|平米|米|坪)/i);
+  const match = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|m²|平米|米|坪|帖|畳)/i);
   if (match) {
     let val = Number(match[1]);
     if (cleaned.includes("坪")) val = Math.round(val * 3.30578 * 10) / 10;
+    else if (/帖|畳/.test(cleaned)) val = Math.round(val * 1.62 * 10) / 10;
     return Number.isFinite(val) && val > 0 ? val : null;
   }
   const plainNum = cleaned.match(/^(\d+(?:\.\d+)?)$/);
@@ -144,3 +145,21 @@ export function parseArea(text: unknown): number | null {
   }
   return null;
 }
+
+/**
+ * 建物構造英文代碼或日文縮寫正規化為完整中文標示。
+ */
+export function normalizeStructure(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const s = toHalfWidth(raw).trim().toUpperCase();
+  if (/SRC|鉄骨鉄筋/.test(s)) return "SRC造（鋼骨鋼筋混凝土）";
+  if (/RC|鉄筋/.test(s)) return "RC造（鋼筋混凝土）";
+  if (/軽量鉄骨/.test(s)) return "輕量鐵骨造";
+  if (/重量鉄骨/.test(s)) return "重量鐵骨造";
+  if (/S造|鉄骨|STEEL/.test(s)) return "S造（鐵骨造）";
+  if (/木造|WOOD|W造/.test(s)) return "木造";
+  if (/ALC/.test(s)) return "ALC造（輕質氣泡混凝土）";
+  if (/PC|プレキャスト/.test(s)) return "PC造（預鑄混凝土）";
+  return raw.trim() || null;
+}
+
