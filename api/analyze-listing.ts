@@ -9,6 +9,8 @@ import {
   stripStationOperatorPrefix,
   parseArea,
   normalizeStructure,
+  parseGuaranteeFee,
+  formatShikibiki,
 } from "../src/lib/listingExtraction.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 import type { RentSearchCriteria } from "../src/lib/rentAnalysis.js";
@@ -205,12 +207,21 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
     - address（所在地／住所）。
 
     特約條款與注意事項（極重要，牽涉承租人權益）：
-    - shikibiki（敷引／償却）：若敷金有標註「敷引」「償却」等不退還約定，原文照抄（例如 "敷引1ヶ月"、"解約時敷金1ヶ月償却"、"償却50%"）。若無或寫なし則寫 "なし"。
-    - cancellationPenalty（短期解約違約金）：備考或特約是否有違約金？例如 "1年未満解約時賃料1ヶ月"。無則寫 "なし"。
-    - renewalFee（更新料）：契約更新費用，例如 "新賃料1ヶ月"、"更新料なし"。
+    - shikibiki（敷引／償却／敷金償却）：
+      * 極重要！請務必仔細檢查圖紙右上角或右側的「費用／條件表格」：
+        表格中除了「敷金」「礼金」外，通常有獨立並列的「敷引」「償却金」「償却」等欄位儲存格！
+        例如圖紙表格中常見：
+        「敷金」格為 1（或 1ヶ月）
+        「礼金」格為 1（或 1ヶ月）
+        「敷引」格為 1（或 1ヶ月）！
+      * 只要表格中的「敷引」或「償却金」「償却」儲存格有填寫任何數字或文字（例如 "1"、"1ヶ月"、"100%"、"50%"、"実費"），就代表有敷引！
+      * 或在備考、特約欄標記「敷引」「解約時敷金1ヶ月償却」「退去時敷金1ヶ月引」等。
+      * 務必照實填入 shikibiki（例如填 "1ヶ月" 或 "1" 或 "敷引1ヶ月"），絕對不可以忽略表格中的「敷引」一欄而填寫 "なし" 或空白！若確認表格該欄為 "-"、"なし" 或無此欄位才填 "なし"。
+    - cancellationPenalty（短期解約違約金）：備考或特約是否有違約金？例如 "6ヶ月未満解約時総賃料1ヶ月" 或 "1年未満解約時賃料1ヶ月"。無則寫 "なし"。
+    - renewalFee（更新料）：契約更新費用，例如 "1.5ヶ月(新賃料)" 或 "新賃料1ヶ月"、"更新料なし"。
     - specialNotes（其他特約・注意事項・生活限制）：
-      請完整掃描備考、特約欄、設備條件，抓出所有重要規定，例如：
-      保證公司加入要求、退去清掃費負擔、寵物規定（如 "ペット不可" 或 "ペット相談/敷金1ヶ月増"）、樂器規定、二人入居規定、24小時支援服務等。
+      請完整掃描備考、特約欄、設備條件、その他費用，抓出所有重要規定與雜費，例如：
+      保證公司加入要求（如 "初回保証料70% 月次保証料1%"）、鍵交換費（如 "29,700円"）、契約事務手續費（如 "11,000円"）、退去時清掃費（如 "ハウスクリーニング代62,700円"）、月次費用（如 "Concierge24: 990円"）、寵物規定（如 "ペット不可"）、樂器規定、二人入居規定、防犯或安心服務等。
 
     找不到的欄位留空字串，不要猜測或用 0 代替。
   `;
@@ -286,7 +297,8 @@ function calculateInitialCostBreakdown(params: {
 
   // 1. 敷金（押金）
   const depositAmount = deposit ?? 0;
-  const hasShikibiki = Boolean(params.extractedShikibiki && !/^(?:なし|無|0|不要)$/i.test(params.extractedShikibiki.trim()));
+  const formattedShikibiki = formatShikibiki(params.extractedShikibiki);
+  const hasShikibiki = Boolean(formattedShikibiki);
   items.push({
     id: "deposit",
     name: "敷金（押金）",
@@ -295,7 +307,7 @@ function calculateInitialCostBreakdown(params: {
     note: depositAmount === 0
       ? "免押金（需留意退租時是否有預收清掃費或特約條款）"
       : hasShikibiki
-      ? `擔保性質費用（⚠️ 含「${params.extractedShikibiki}」扣除約定，退租時不退還）`
+      ? `擔保性質費用（⚠️ 含「${formattedShikibiki}」扣除約定，退租時不退還）`
       : "擔保性質費用，退租扣除修繕後退還餘額",
   });
 
@@ -329,14 +341,16 @@ function calculateInitialCostBreakdown(params: {
   });
 
   // 5. 保證會社初回保證料
-  const customGuarantee = parseYenAmount(params.extractedGuaranteeFee);
+  const customGuarantee = parseGuaranteeFee(params.extractedGuaranteeFee, totalMonthlyCost);
   const guaranteeAmount = customGuarantee ?? Math.round(totalMonthlyCost * 0.5);
   items.push({
     id: "guaranteeFee",
     name: "保證會社初回保證料",
     amount: guaranteeAmount,
-    isFromFlyer: Boolean(params.extractedGuaranteeFee),
-    note: params.extractedGuaranteeFee
+    isFromFlyer: Boolean(customGuarantee),
+    note: customGuarantee
+      ? `圖紙標示：${params.extractedGuaranteeFee}（以月總租金 ¥${totalMonthlyCost.toLocaleString()} 計）`
+      : params.extractedGuaranteeFee
       ? `圖紙標示：${params.extractedGuaranteeFee}`
       : "外國籍租客多需加入保證公司，一般常態為總月租之 50%～100%",
   });
@@ -416,7 +430,7 @@ function calculateInitialCostBreakdown(params: {
 
   const tips: string[] = [];
   if (hasShikibiki) {
-    tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${params.extractedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
+    tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${formattedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
   }
   if (keyMoneyAmount === 0 && depositAmount === 0) {
     tips.push("本物件為「零禮金、零押金」，初期現金壓力極小；但請特別注意退租時的清潔費與原狀恢復計費特約條款。");

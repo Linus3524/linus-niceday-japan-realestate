@@ -2,20 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
-  Building2,
   Compass,
   ExternalLink,
-  GraduationCap,
-  HeartPulse,
   Info,
-  Layers,
-  MapPin,
-  Maximize2,
-  Pill,
-  ShoppingBag,
-  Store,
-  TrainFront,
-  Trees,
 } from "lucide-react";
 import type { ListingLocationContext, ListingAmenity, ListingStationWalk } from "../lib/listingLocation";
 
@@ -25,14 +14,14 @@ interface ListingLocationMapProps {
 
 const CATEGORY_CONFIG: Record<
   ListingAmenity["category"],
-  { label: string; icon: string; bg: string; text: string; border: string; badgeBg: string }
+  { label: string; icon: string; bg: string; text: string; border: string }
 > = {
-  convenience: { label: "超商", icon: "🏪", bg: "#e6f6f1", text: "#007d5a", border: "#9ee2cf", badgeBg: "#007d5a" },
-  supermarket: { label: "超市", icon: "🛒", bg: "#FFF4E5", text: "#B76E00", border: "#FFD599", badgeBg: "#B76E00" },
-  pharmacy: { label: "藥妝", icon: "💊", bg: "#EBF5FF", text: "#1E65B8", border: "#B9DCFF", badgeBg: "#1E65B8" },
-  medical: { label: "醫療", icon: "🏥", bg: "#FDE8E8", text: "#C81E1E", border: "#F8B4B4", badgeBg: "#C81E1E" },
-  school: { label: "學校", icon: "🏫", bg: "#F3E8FF", text: "#7E22CE", border: "#D8B4FE", badgeBg: "#7E22CE" },
-  park: { label: "公園", icon: "🌳", bg: "#EAF5EA", text: "#2B8A3E", border: "#B2E2B2", badgeBg: "#2B8A3E" },
+  convenience: { label: "超商", icon: "🏪", bg: "#e6f6f1", text: "#007d5a", border: "#9ee2cf" },
+  supermarket: { label: "超市", icon: "🛒", bg: "#FFF4E5", text: "#B76E00", border: "#FFD599" },
+  pharmacy: { label: "藥妝", icon: "💊", bg: "#EBF5FF", text: "#1E65B8", border: "#B9DCFF" },
+  medical: { label: "醫療", icon: "🏥", bg: "#FDE8E8", text: "#C81E1E", border: "#F8B4B4" },
+  school: { label: "學校", icon: "🏫", bg: "#F3E8FF", text: "#7E22CE", border: "#D8B4FE" },
+  park: { label: "公園", icon: "🌳", bg: "#EAF5EA", text: "#2B8A3E", border: "#B2E2B2" },
 };
 
 function getAmenityPoint(
@@ -50,7 +39,6 @@ function getAmenityPoint(
   ) {
     return [amenity.lat, amenity.lon];
   }
-  // 萬一經緯度缺漏時的確定性周邊半徑發散演算，確保所有標記必定呈現在地圖上
   const distM = Math.max(80, amenity.distanceMeters || 300);
   const angle = ((index * 61.8 + 25) % 360) * (Math.PI / 180);
   const dLat = (distM / 111320) * Math.cos(angle);
@@ -90,7 +78,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
   const { coordinate, matchedAddress, stationWalks, amenities } = context;
 
-  // 動態切換 marker 的高亮 CSS 樣式
+  // 動態切換 marker 的高亮 CSS 樣式，不改變座標或造成跳動
   useEffect(() => {
     markerMapRef.current.forEach((marker, id) => {
       const el = marker.getElement();
@@ -132,40 +120,41 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
     // 1. 本物件 Marker（醒目綠色房屋圖標）
     const propertyIcon = L.divIcon({
-      className: "custom-property-pin",
+      className: "custom-property-pin-wrapper",
       html: `
         <div style="
           position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 42px;
-          height: 42px;
+          width: 40px;
+          height: 40px;
           background: #007d5a;
           color: white;
           border-radius: 50%;
           border: 3px solid #ffffff;
           box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-          font-size: 20px;
+          font-size: 19px;
           cursor: pointer;
+          transform: translate(-50%, -100%);
         ">
           🏠
           <div style="
             position: absolute;
-            bottom: -7px;
+            bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-top: 8px solid #007d5a;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 7px solid #007d5a;
           "></div>
         </div>
       `,
-      iconSize: [42, 49],
-      iconAnchor: [21, 49],
-      popupAnchor: [0, -49],
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
+      popupAnchor: [0, -42],
     });
 
     const propertyMarker = L.marker([coordinate.lat, coordinate.lon], { icon: propertyIcon })
@@ -178,35 +167,22 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       );
     markerMapRef.current.set("property", propertyMarker);
 
-    // 2. 車站 Marker
+    // 2. 車站 Marker（自適應膠囊長度，字體不溢出）
     stationWalks.forEach((walk, idx) => {
       const [lat, lon] = getStationPoint(walk, coordinate, idx);
       const stationKey = `station-${idx}-${walk.station}`;
 
       const stationIcon = L.divIcon({
-        className: "custom-station-pin",
+        className: "custom-pin-container",
         html: `
-          <div style="
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: #1A2A22;
-            color: white;
-            padding: 4px 9px;
-            border-radius: 16px;
-            border: 2px solid #ffffff;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-            font-size: 11px;
-            font-weight: bold;
-            white-space: nowrap;
-          ">
-            <span>🚆</span>
-            <span>${walk.station}駅 (${walk.normalMinutes}分)</span>
+          <div class="custom-capsule-badge station-capsule">
+            <span class="pin-icon">🚆</span>
+            <span class="pin-text">${walk.station}駅 (${walk.normalMinutes}分)</span>
           </div>
         `,
-        iconSize: [124, 28],
-        iconAnchor: [62, 28],
-        popupAnchor: [0, -28],
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+        popupAnchor: [0, -16],
       });
 
       const marker = L.marker([lat, lon], { icon: stationIcon })
@@ -232,7 +208,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       markerMapRef.current.set(stationKey, marker);
     });
 
-    // 3. 周邊生活機能 Marker
+    // 3. 周邊生活機能 Marker（膠囊自適應寬度，無文字溢出問題）
     amenities.forEach((amenity, idx) => {
       const amenityKey = `amenity-${amenity.category}-${idx}`;
       if (activeCategory !== "all" && amenity.category !== activeCategory) return;
@@ -244,35 +220,19 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         bg: "#F5F8F6",
         text: "#1A2A22",
         border: "#DDE3DF",
-        badgeBg: "#1A2A22",
       };
 
-      const displayName = amenity.name.length > 8 ? `${amenity.name.slice(0, 8)}…` : amenity.name;
-
       const amenityIcon = L.divIcon({
-        className: "custom-amenity-pin",
+        className: "custom-pin-container",
         html: `
-          <div style="
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: ${conf.bg};
-            color: ${conf.text};
-            border: 1.5px solid ${conf.border};
-            padding: 3px 7px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-          ">
-            <span>${conf.icon}</span>
-            <span>${displayName}</span>
+          <div class="custom-capsule-badge" style="background: ${conf.bg}; color: ${conf.text}; border-color: ${conf.border};">
+            <span class="pin-icon">${conf.icon}</span>
+            <span class="pin-text">${amenity.name}</span>
           </div>
         `,
-        iconSize: [88, 24],
-        iconAnchor: [44, 24],
-        popupAnchor: [0, -24],
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+        popupAnchor: [0, -16],
       });
 
       const marker = L.marker([lat, lon], { icon: amenityIcon })
@@ -293,13 +253,15 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       marker.on("mouseover", () => {
         setHoveredId(amenityKey);
         marker.openPopup();
+      });
+      marker.on("mouseout", () => {
+        setHoveredId(null);
+      });
+      marker.on("click", () => {
         const cardEl = document.getElementById(`card-${amenityKey}`);
         if (cardEl) {
           cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
-      });
-      marker.on("mouseout", () => {
-        setHoveredId(null);
       });
 
       markerMapRef.current.set(amenityKey, marker);
@@ -317,7 +279,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     });
 
     if (points.length > 1) {
-      map.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 16 });
+      map.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16 });
     }
 
     return () => {
@@ -328,16 +290,17 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     };
   }, [coordinate.lat, coordinate.lon, matchedAddress, stationWalks, amenities, mapMode, activeCategory]);
 
+  // 滑鼠懸停下方卡片：僅開啟氣球與高亮，不平移地圖以杜絕抖動跳動
   const handleCardHover = (key: string | null) => {
     setHoveredId(key);
     if (!key) return;
     const marker = markerMapRef.current.get(key);
-    if (marker && mapInstanceRef.current) {
+    if (marker) {
       marker.openPopup();
-      mapInstanceRef.current.panTo(marker.getLatLng(), { animate: true, duration: 0.35 });
     }
   };
 
+  // 點擊下方卡片時才平滑移動置中
   const handleCardClick = (key: string) => {
     const marker = markerMapRef.current.get(key);
     if (marker && mapInstanceRef.current) {
@@ -357,7 +320,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         points.push(getAmenityPoint(a, coordinate, idx));
       }
     });
-    mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 16 });
+    mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16 });
   };
 
   const categories = [
@@ -379,20 +342,46 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   return (
     <div className="space-y-3 font-sans">
       <style>{`
-        .custom-property-pin {
-          transition: transform 0.2s ease;
+        .custom-pin-container {
+          background: transparent !important;
+          border: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          overflow: visible !important;
+          pointer-events: none;
         }
-        .custom-amenity-pin {
-          transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        .custom-capsule-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 3px 8px;
+          border-radius: 9999px;
+          border: 1.5px solid #DDE3DF;
+          box-shadow: 0 2px 7px rgba(0,0,0,0.18);
+          font-size: 11px;
+          font-weight: 700;
+          white-space: nowrap;
+          max-width: 220px;
+          width: max-content;
+          pointer-events: auto;
           cursor: pointer;
+          transform: translate(-50%, -50%);
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
-        .custom-station-pin {
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          cursor: pointer;
+        .custom-capsule-badge .pin-text {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 170px;
         }
-        .is-active-marker {
-          transform: scale(1.28) translateY(-5px) !important;
-          filter: drop-shadow(0 6px 16px rgba(0, 125, 90, 0.45)) !important;
+        .station-capsule {
+          background: #1A2A22;
+          color: #ffffff;
+          border-color: #ffffff;
+        }
+        .is-active-marker .custom-capsule-badge {
+          box-shadow: 0 0 0 3px #007d5a, 0 6px 16px rgba(0,0,0,0.3) !important;
+          border-color: #007d5a !important;
           z-index: 99999 !important;
         }
         .leaflet-popup-content-wrapper {
@@ -493,11 +482,11 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
         <div className="flex items-center gap-1 text-[11px] font-medium text-[#007d5a]">
           <Info className="h-3.5 w-3.5" />
-          <span>滑鼠懸停下方設施，地圖將同步高亮並開啟資訊</span>
+          <span>滑鼠懸停下方設施同步標記；點擊可聚焦該位置</span>
         </div>
       </div>
 
-      {/* 設施快速卡片清單（支援懸停與地圖聯動） */}
+      {/* 設施快速卡片清單 */}
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filteredAmenities.map(amenity => {
           const conf = CATEGORY_CONFIG[amenity.category] || {
@@ -506,7 +495,6 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             bg: "#F5F8F6",
             text: "#1A2A22",
             border: "#DDE3DF",
-            badgeBg: "#1A2A22",
           };
           const walkMin = Math.ceil(amenity.distanceMeters / 75);
           const isHovered = hoveredId === amenity.key;
@@ -520,17 +508,16 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               onClick={() => handleCardClick(amenity.key)}
               className={`flex cursor-pointer items-center justify-between gap-2 border p-2.5 transition-all ${
                 isHovered
-                  ? "border-[#007d5a] bg-[#e6f6f1] shadow-md -translate-y-0.5"
+                  ? "border-[#007d5a] bg-[#e6f6f1] shadow-md"
                   : "border-[#DDE3DF] bg-white hover:border-[#9ee2cf] hover:bg-[#FAFCFB]"
               }`}
             >
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <span
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm transition-transform"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm"
                   style={{
                     backgroundColor: conf.bg,
                     color: conf.text,
-                    transform: isHovered ? "scale(1.15)" : "scale(1)",
                   }}
                 >
                   {conf.icon}
@@ -550,7 +537,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               <div className="shrink-0 text-right">
                 <span className="block text-xs font-black text-[#007d5a]">約 {amenity.distanceMeters}m</span>
                 <span className="block text-[9px] font-semibold text-[#66736C]">
-                  {isHovered ? "地圖定位中" : "點擊定位"}
+                  {isHovered ? "已標記" : "點擊聚焦"}
                 </span>
               </div>
             </div>

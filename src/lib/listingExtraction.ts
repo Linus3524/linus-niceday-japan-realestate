@@ -29,19 +29,87 @@ export function parseYenAmount(text: unknown): number | null {
   const cleaned = toHalfWidth(text).replace(/,/g, "").trim();
   if (!cleaned) return null;
 
+  // 若含有百分比符號，絕對不可當作日圓金額！
+  if (/[%％]/.test(cleaned)) return null;
+
   const manMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*万/);
   if (manMatch) {
     const value = Math.round(Number(manMatch[1]) * 10000);
     return Number.isFinite(value) && value > 0 ? value : null;
   }
 
-  const plainMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*円?/);
-  if (plainMatch) {
-    const value = Math.round(Number(plainMatch[1]));
+  // 若有明確的「円」單位，且非單一小額百分比數字
+  const yenMatch = cleaned.match(/(\d{2,10})\s*円/);
+  if (yenMatch) {
+    const value = Math.round(Number(yenMatch[1]));
     return Number.isFinite(value) && value > 0 ? value : null;
   }
 
+  // 純數字格式且必須大於等於 1000 円，避免「70」或「1」被誤判為 70 円
+  const plainMatch = cleaned.match(/^(\d{4,10})$/);
+  if (plainMatch) {
+    const value = Math.round(Number(plainMatch[1]));
+    return Number.isFinite(value) && value >= 1000 ? value : null;
+  }
+
   return null;
+}
+
+/**
+ * 解析保證會社初回保證料：
+ * 1. 百分比（例如 "初回保証料70％"、"70%"、"総賃料の50%"）：總租金（租金＋管理費）乘以比例
+ * 2. 幾個月（例如 "0.5ヶ月"、"1ヶ月"）：總租金乘以月數
+ * 3. 固定日圓金額（例如 "45,000円"、"5万円"）
+ */
+export function parseGuaranteeFee(text: unknown, totalMonthlyCost: number): number | null {
+  if (typeof text !== "string") return null;
+  const cleaned = toHalfWidth(text).trim();
+  if (!cleaned) return null;
+
+  // 1. 百分比格式（例如 "初回保証料70％"、"70%"）
+  const percentMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*[%％]/);
+  if (percentMatch) {
+    const rate = Number(percentMatch[1]) / 100;
+    if (Number.isFinite(rate) && rate > 0 && rate <= 2.0 && totalMonthlyCost > 0) {
+      return Math.round(totalMonthlyCost * rate);
+    }
+  }
+
+  // 2. 幾個月格式（例如 "0.5ヶ月"、"1ヶ月"）
+  const monthsMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)/);
+  if (monthsMatch) {
+    const months = Number(monthsMatch[1]);
+    if (Number.isFinite(months) && months > 0 && months <= 3 && totalMonthlyCost > 0) {
+      return Math.round(totalMonthlyCost * months);
+    }
+  }
+
+  // 3. 固定金額格式（例如 "45,000円"、"5万円"）
+  const yen = parseYenAmount(cleaned);
+  if (yen && yen >= 10000) {
+    return yen;
+  }
+
+  return null;
+}
+
+/**
+ * 格式化敷引標示：
+ * 若圖紙寫 "1"、"1ヶ月"、"敷引1ヶ月"、"100%"，轉為清晰的中文說明。
+ */
+export function formatShikibiki(raw: unknown): string {
+  if (typeof raw !== "string") return "";
+  const cleaned = toHalfWidth(raw).trim();
+  if (!cleaned || /^(?:なし|無|0|不要|-|ー|―)$/i.test(cleaned)) return "";
+  if (cleaned === "1") return "敷引 1 個月（退租直接扣除、不予退還）";
+  if (/^(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)?$/i.test(cleaned)) {
+    const m = cleaned.match(/^(\d+(?:\.\d+)?)/)?.[1];
+    return `敷引 ${m} 個月（退租直接扣除、不予退還）`;
+  }
+  if (/[%％]/.test(cleaned)) {
+    return `敷金償却 ${cleaned}（退租扣除約定）`;
+  }
+  return cleaned;
 }
 
 /**
