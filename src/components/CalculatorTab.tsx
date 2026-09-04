@@ -19,6 +19,7 @@ import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
 import { renderFormattedText } from "../lib/format";
 import { RentCriteriaSummary } from "./RentCriteriaSummary";
+import { ListingHealthCheck } from "./ListingHealthCheck";
 import { OfficialMarketInsight } from "./OfficialMarketInsight";
 import { PageIntroCard } from "./PageIntroCard";
 
@@ -1711,6 +1712,11 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   </div>
                 )}
               </section>
+
+              {/* 物件圖紙健檢：獨立卡片，不接在上方「AI 需求分析」的步驟流程裡。
+                  上面回答「我該往哪找」，這裡回答「我手上這間值不值」，是相反的
+                  使用情境，混在同一條流程裡會互相干擾。只在租屋模式顯示。 */}
+              {calcMode === "rent" && <ListingHealthCheck />}
 
               <div className="flex flex-col gap-3 border border-[#DDE3DF] bg-[#FAFCFB] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>

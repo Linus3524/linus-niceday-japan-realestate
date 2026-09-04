@@ -14,6 +14,7 @@ import marketLookupHandler from "./api/market-lookup";
 import usageStatsHandler from "./api/usage-stats";
 import vercelAnalyticsHandler from "./api/vercel-analytics";
 import trackViewHandler from "./api/track-view";
+import analyzeListingHandler from "./api/analyze-listing";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -132,6 +133,15 @@ app.get("/api/vercel-analytics", async (req, res) => {
 // 市場行情即時查詢。與可行性判斷分離，只作參考顯示。
 app.post("/api/market-lookup", async (req, res) => {
   await marketLookupHandler(req, res);
+});
+
+// 物件圖紙健檢：上傳圖片轉 base64 送進 Gemini vision，body 比一般 JSON 請求大得多。
+// 全站預設的 app.use(express.json()) 只有 100kb，這裡單獨放寬到 5mb
+// （只影響這條路由，不放寬其他 API 的預設限制）；Vercel 線上的硬上限是 4.5MB，
+// 這裡設稍高一點讓「太大」的請求先在本機被 express 擋下，錯誤訊息一致，
+// 而不是本機能過、線上卻被 Vercel 用平台層級的 413 打回來。
+app.post("/api/analyze-listing", express.json({ limit: "5mb" }), async (req, res) => {
+  await analyzeListingHandler(req, res);
 });
 
 // Q&A and Chat endpoint

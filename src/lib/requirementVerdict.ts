@@ -492,6 +492,61 @@ function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRange | nu
   };
 }
 
+export interface ListingPriceVerdict {
+  status: AxisStatus;
+  headline: string;
+  detail: string;
+}
+
+/**
+ * 判斷「這個物件的租金＋管理費」相對所在地區行情是高是低，供圖紙健檢功能使用。
+ *
+ * 刻意不重用 budgetAxis：那個函式回答的是「使用者的預算該不該調整」，措辭是
+ * 「建議將月租上限提高到...」「建議考慮調整搜尋區域」；這裡要回答的是相反的
+ * 問題——「這個已經選定的物件，價格合不合理」，直接借用會講出文不對題的建議
+ * （對著一個已經確定要看的物件叫使用者「調整搜尋區域」沒有意義）。
+ */
+export function buildListingPriceVerdict(
+  totalMonthlyCost: number,
+  range: RequestedRentRange | null
+): ListingPriceVerdict {
+  if (!range) {
+    return {
+      status: "待確認",
+      headline: "查無這個地區與房型的行情資料，無法判斷這個價格合不合理。",
+      detail: "可能是圖紙上的車站無法辨識，或這個房型在行情資料庫中樣本不足。",
+    };
+  }
+
+  if (totalMonthlyCost < range.low) {
+    const gapPercent = Math.round(((range.low - totalMonthlyCost) / range.low) * 100);
+    return {
+      status: "部分符合",
+      headline: `租金＋管理費 ${man(totalMonthlyCost)} 低於行情低端約 ${gapPercent}%。`,
+      detail: "價格明顯偏低不一定是壞事，但建議留意是否有圖紙上未列出的額外成本，或屋齡、樓層、周邊環境等條件上的取捨。",
+    };
+  }
+
+  if (totalMonthlyCost <= range.high) {
+    const nearMedian = Math.abs(totalMonthlyCost - range.median) / Math.max(1, range.median) <= 0.05;
+    const belowMedian = totalMonthlyCost < range.median;
+    return {
+      status: nearMedian ? "符合" : "部分符合",
+      headline: nearMedian
+        ? `租金＋管理費 ${man(totalMonthlyCost)} 落在行情中位附近，屬合理範圍。`
+        : `租金＋管理費 ${man(totalMonthlyCost)} 落在行情偏${belowMedian ? "低" : "高"}端，仍屬合理範圍。`,
+      detail: `這個地區與房型的行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。`,
+    };
+  }
+
+  const gapPercent = Math.round(((totalMonthlyCost - range.high) / range.high) * 100);
+  return {
+    status: gapPercent <= 15 ? "需調整" : "難度高",
+    headline: `租金＋管理費 ${man(totalMonthlyCost)} 高於行情高端約 ${gapPercent}%。`,
+    detail: "建議向仲介確認加價的具體原因（例如新裝潢、高樓層、免費網路、自動鎖等額外條件），而非單純接受「比較貴」。",
+  };
+}
+
 function commuteAxis(criteria: RentSearchCriteria, recommendations: RentRecommendation[]): AxisVerdict {
   const target = criteria.commuteStation;
   const detail = [

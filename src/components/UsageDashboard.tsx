@@ -14,6 +14,7 @@ const TOKEN_STORAGE_KEY = "linus-analytics-token";
 const FEATURE_LABEL: Record<string, string> = {
   "chat": "AI 顧問對話",
   "rent-analysis": "AI 需求分析",
+  "listing-check": "物件圖紙健檢",
 };
 
 const COUNTRY_LABEL: Record<string, string> = {

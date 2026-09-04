@@ -27,6 +27,10 @@
     {
       "source": "/api/track-view",
       "destination": "/api/track-view"
+    },
+    {
+      "source": "/api/analyze-listing",
+      "destination": "/api/analyze-listing"
     }
   ]
 }

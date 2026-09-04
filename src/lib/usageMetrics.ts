@@ -17,7 +17,7 @@ import { Redis } from "@upstash/redis";
  *   linus:usage:geo:2026-08    → { "chat:TW": 30, "chat:JP": 12 }
  */
 
-export type UsageFeature = "chat" | "rent-analysis";
+export type UsageFeature = "chat" | "rent-analysis" | "listing-check";
 
 /**
  * 分頁瀏覽。
