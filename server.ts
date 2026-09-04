@@ -15,6 +15,7 @@ import usageStatsHandler from "./api/usage-stats";
 import vercelAnalyticsHandler from "./api/vercel-analytics";
 import trackViewHandler from "./api/track-view";
 import analyzeListingHandler from "./api/analyze-listing";
+import listingLocationHandler from "./api/listing-location";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -22,12 +23,29 @@ const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
 // Body parser
-app.use(express.json());
+//
+// 物件圖紙健檢要傳 base64 圖片，body 遠大於一般 JSON 請求，需要放寬上限。
+// 但 express 的全域 middleware 會先跑，路由層再掛一個 limit 較大的 express.json()
+// 是沒有用的——請求早就被這裡的預設 100kb 擋掉並回 413 了。所以放寬必須在這一層做，
+// 且只針對那一條路由，其他 API 維持預設 100kb，不要整站一起放寬。
+// （線上 Vercel 的平台硬上限是 4.5MB，這裡設 5mb 讓真正過大的請求在本機也會被擋，
+// 錯誤訊息與線上一致，而不是本機能過、線上才被平台層打回來。）
+const jsonParserDefault = express.json();
+const jsonParserLarge = express.json({ limit: "5mb" });
+app.use((req, res, next) => {
+  if (req.path === "/api/analyze-listing") return jsonParserLarge(req, res, next);
+  return jsonParserDefault(req, res, next);
+});
 
 // express.json 的預設錯誤頁會在開發環境回傳 HTML 與堆疊；API 一律維持 JSON 格式。
 app.use((error: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (error instanceof SyntaxError && Number((error as any).status) === 400 && "body" in error) {
     return res.status(400).json({ error: "請提供有效的 JSON 格式。" });
+  }
+  // body 超過 parser 上限時 express 預設回傳 HTML，前端只能顯示「HTTP 413」這種
+  // 對使用者毫無意義的訊息，這裡改成講得清楚的 JSON。
+  if (Number((error as any).status) === 413 || (error as any).type === "entity.too.large") {
+    return res.status(413).json({ error: "上傳內容過大，請壓縮圖片或減少張數後再試。" });
   }
   return next(error);
 });
@@ -135,13 +153,15 @@ app.post("/api/market-lookup", async (req, res) => {
   await marketLookupHandler(req, res);
 });
 
-// 物件圖紙健檢：上傳圖片轉 base64 送進 Gemini vision，body 比一般 JSON 請求大得多。
-// 全站預設的 app.use(express.json()) 只有 100kb，這裡單獨放寬到 5mb
-// （只影響這條路由，不放寬其他 API 的預設限制）；Vercel 線上的硬上限是 4.5MB，
-// 這裡設稍高一點讓「太大」的請求先在本機被 express 擋下，錯誤訊息一致，
-// 而不是本機能過、線上卻被 Vercel 用平台層級的 413 打回來。
-app.post("/api/analyze-listing", express.json({ limit: "5mb" }), async (req, res) => {
+// 物件圖紙健檢：上傳圖片轉 base64 送進 Gemini vision。
+// body 上限的放寬在上方 body parser 那一層處理（路由層再掛一次沒有作用）。
+app.post("/api/analyze-listing", async (req, res) => {
   await analyzeListingHandler(req, res);
+});
+
+// 第二階段：圖紙地址定位、步行路線、周邊機能與使用者指定通勤目的地。
+app.post("/api/listing-location", async (req, res) => {
+  await listingLocationHandler(req, res);
 });
 
 // Q&A and Chat endpoint

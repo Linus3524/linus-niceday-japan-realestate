@@ -157,6 +157,7 @@ export function toJapanesePlaceName(value: string) {
     .replace(/關/g, "関").replace(/鐵/g, "鉄").replace(/總/g, "総").replace(/檢/g, "検")
     .replace(/瀨/g, "瀬").replace(/德/g, "徳").replace(/豐/g, "豊").replace(/靜/g, "静")
     .replace(/姬/g, "姫").replace(/縣/g, "県").replace(/廳/g, "庁").replace(/兒/g, "児")
+    .replace(/榮/g, "栄").replace(/號/g, "号").replace(/臺/g, "台")
     .replace(/圓/g, "円").replace(/增/g, "増").replace(/與/g, "与").replace(/鄉/g, "郷")
     .replace(/實/g, "実").replace(/螢/g, "蛍").replace(/國/g, "国").replace(/內/g, "内")
     .replace(/攝/g, "摂").replace(/寶/g, "宝").replace(/氣/g, "気").replace(/譽/g, "誉")

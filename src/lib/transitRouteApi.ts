@@ -153,6 +153,15 @@ async function resolveRoutes(origins: RouteOrigin[], destination: string) {
   return routes;
 }
 
+/**
+ * 物件健檢的通勤查詢共用既有路線來源與驗證邏輯。
+ * 呼叫端只需要一個物件最近車站，不必組成 RentRecommendation。
+ */
+export async function resolveListingCommuteRoute(originStation: string, destinationStation: string, context = "") {
+  const routes = await resolveRoutes([{ station: originStation, context }], destinationStation);
+  return routes[0] || null;
+}
+
 function routeReference() {
   const date = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const weekday = () => new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Tokyo", weekday: "short" }).format(date);

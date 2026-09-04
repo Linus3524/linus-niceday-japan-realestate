@@ -22,7 +22,22 @@ import type { RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 // 安全邊際後的上限，客戶端與伺服器端都要擋，不能只靠前端擋（前端檢查可被繞過）。
 const MAX_FILES = 3;
 const MAX_TOTAL_IMAGE_BYTES = 3 * 1024 * 1024;
-const ALLOWED_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "application/pdf"]);
+// 前端會先用 canvas 把能解碼的圖一律轉成 JPEG 再上傳，所以實務上這裡收到的
+// 幾乎都是 image/jpeg。這份清單放寬是為了「瀏覽器解不開而退回原檔」的情形
+// （例如非 Safari 的 HEIC），寧可讓它送出去試，也不要在前端就把使用者擋死。
+const ALLOWED_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+  "image/gif",
+  "image/bmp",
+  "image/tiff",
+  "image/avif",
+  "application/pdf",
+]);
 
 // 獨立於 /api/rent-analysis 的限流：vision 呼叫成本較高，兩個功能共用額度會讓
 // 使用者在用其中一個功能時意外卡住另一個，彼此互不相干比較合理。
@@ -113,7 +128,7 @@ function validateFiles(files: unknown): UploadedFile[] {
     const mimeType = (file as any).mimeType;
     const data = (file as any).data;
     if (typeof mimeType !== "string" || !ALLOWED_MIME_TYPES.has(mimeType)) {
-      throw new ListingUploadError("只接受 JPG、PNG、WEBP、HEIC 或 PDF 檔案。");
+      throw new ListingUploadError("這個檔案格式無法讀取，請改用圖片檔（JPG、PNG、HEIC 等）或 PDF。");
     }
     if (typeof data !== "string" || !data) {
       throw new ListingUploadError("圖片內容讀取失敗，請重新上傳。");
