@@ -75,7 +75,7 @@ export function axisImpactLevel(axis: AxisVerdict): AxisImpactLevel {
 }
 
 const yen = (value: number) => `¥${(Math.round(value / 1000) * 1000).toLocaleString("en-US")}`;
-const man = (value: number) => `${(value / 10000).toFixed(1).replace(/\.0$/, "")} 萬円`;
+const man = (value: number) => `${Math.round(value / 10000).toLocaleString()} 萬円`;
 
 /**
  * 預算專用：無條件捨去到 0.1 萬，不四捨五入。
@@ -824,7 +824,7 @@ export function buildSalePriceVerdict(input: {
     insightPoints.push({
       id: "factor",
             tag: "條件加權",
-      title: "條件加權",
+      title: "",
       content: factorContent,
       type: "factor",
     });
@@ -868,39 +868,6 @@ export function buildSalePriceVerdict(input: {
       type: "market",
     });
     points.push(`• 【市面刊登對照】：${content}`);
-  }
-
-  // 4. Linus 實務建議
-  if (diffPercent > 10) {
-    const content = `談判錨點 ${man(expectedPriceYen)}～${man(fairHigh)}。請仲介說明加價理由（翻新、管理狀態、角部屋等），而非僅以地段帶過。`;
-    insightPoints.push({
-      id: "advice",
-            tag: "出價建議",
-      title: "出價建議",
-      content,
-      type: "advice",
-    });
-    points.push(`• 【Linus 實務建議】：${content}`);
-  } else if (diffPercent < -10) {
-    const content = "低於行情通常有原因。確認屋況、權利形態（定期借地權）、是否帶租約，以及管理費與修繕積立金。";
-    insightPoints.push({
-      id: "advice",
-            tag: "出價建議",
-      title: "低價查驗",
-      content,
-      type: "advice",
-    });
-    points.push(`• 【Linus 實務建議】：${content}`);
-  } else {
-    const content = `開價與行情相符。內見後可以 ${man(expectedPriceYen)} 附近出價。`;
-    insightPoints.push({
-      id: "advice",
-            tag: "出價建議",
-      title: "出價建議",
-      content,
-      type: "advice",
-    });
-    points.push(`• 【Linus 實務建議】：${content}`);
   }
 
   explanation = points.join("\n\n");

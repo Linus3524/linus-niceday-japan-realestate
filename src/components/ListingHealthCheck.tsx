@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   Coins,
-  ExternalLink,
   FileSpreadsheet,
   FileText,
   Footprints,
@@ -17,15 +16,11 @@ import {
   MapPin,
   Navigation,
   RefreshCw,
-  Scale,
   Search,
   ShieldAlert,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkles,
   Store,
-  Target,
-  Lightbulb,
   TrainFront,
   Trash2,
   UploadCloud,
@@ -75,73 +70,6 @@ interface InsightBulletItem {
   tag: string;
   title?: string;
   text: string;
-}
-
-function getInsightBulletItems(mlitComparison: {
-  explanation: string;
-  insightPoints?: Array<{
-    id: string;
-    icon: string;
-    tag: string;
-    title: string;
-    content: string;
-    type?: string;
-  }>;
-}): InsightBulletItem[] {
-  if (mlitComparison.insightPoints && mlitComparison.insightPoints.length > 0) {
-    return mlitComparison.insightPoints.map(p => ({
-      id: p.id,
-      iconType: (p.type as any) || "verdict",
-      tag: p.tag,
-      title: p.title,
-      text: p.content,
-    }));
-  }
-
-  const rawText = mlitComparison.explanation || "";
-  const lines = rawText.split(/\n+/).map(l => l.trim()).filter(Boolean);
-  const items: InsightBulletItem[] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const match = line.match(/^•\s*【(.*?)】[：:](.*)$/);
-    if (match) {
-      const tag = match[1].trim();
-      const text = match[2].trim();
-      let iconType: "verdict" | "factor" | "market" | "advice" = "verdict";
-      if (tag.includes("條件") || tag.includes("溢價") || tag.includes("優勢")) iconType = "factor";
-      else if (tag.includes("刊登") || tag.includes("市場")) iconType = "market";
-      else if (tag.includes("建議") || tag.includes("Linus")) iconType = "advice";
-
-      items.push({
-        id: `parsed-${i}`,
-        iconType,
-        tag,
-        text,
-      });
-    } else {
-      let iconType: "verdict" | "factor" | "market" | "advice" = "verdict";
-      let tag = "行情解讀";
-      if (line.includes("建議") || line.includes("談判") || line.includes("出價")) {
-        iconType = "advice";
-        tag = "Linus 實務建議";
-      } else if (line.includes("刊登") || line.includes("At Home") || line.includes("REINS")) {
-        iconType = "market";
-        tag = "市面刊登對照";
-      } else if (line.includes("條件") || line.includes("屋齡") || line.includes("徒步")) {
-        iconType = "factor";
-        tag = "條件優勢拆解";
-      }
-      items.push({
-        id: `parsed-${i}`,
-        iconType,
-        tag,
-        text: line.replace(/^•\s*/, ""),
-      });
-    }
-  }
-
-  return items;
 }
 
 const STATUS_STYLE: Record<string, { badge: string; box: string }> = {
@@ -1060,7 +988,7 @@ export function ListingHealthCheck() {
             <button
               type="button" onClick={analyze}
               disabled={loading}
-              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#1A2A22] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#1A2A22] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
+              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#1A2A22] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
               {loading ? (
                 <>
                   <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -1088,52 +1016,17 @@ export function ListingHealthCheck() {
       {/* 分析結果呈現區塊 */}
       {result && (
         <div className="mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
-          {/* 結果頂部 Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#1A2A22] p-4 text-white">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="bg-[#00A174] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                  {isSaleListing ? "買賣分析完成" : "租賃健檢完成"}
-                </span>
-                <span className="text-xs text-[#8A9590]">AI 圖紙結構化分析</span>
-              </div>
-              <p className="mt-1 text-base font-bold">
-                {stationSummary ? `${stationSummary}駅周邊`: (isSaleListing ? "日本買賣公寓" : "日本租賃物件")}
-                {extracted?.layout ? `・${extracted.layout}`: ""}
-                {displayArea ? `・${displayArea}`: ""}
-                {displayStructure ? `・${displayStructure}`: ""}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {isSaleListing ? (
-                saleAnalysis?.mlitComparison && (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {/* 國交省成約中位判定 */}
-                    <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
-                      saleAnalysis.mlitComparison.verdict === "bargain"? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]": saleAnalysis.mlitComparison.verdict === "premium"? "border-[#EAB879] bg-[#FEF3C7] text-[#D97706]": "border-[#9EE2CF] bg-[#F5F8F6] text-[#007D5A]"}`}>
-                      國交省實價成約：{saleAnalysis.mlitComparison.verdictText}
-                      {saleAnalysis.mlitComparison.rawDiffPercent != null && `(${saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}${saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%)`}
-                    </span>
-
-                    {/* 市場開價判定 */}
-                    {saleAnalysis.mlitComparison.listingVerdictText && (
-                      <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
-                        saleAnalysis.mlitComparison.listingVerdict === "below"? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]": saleAnalysis.mlitComparison.listingVerdict === "above"? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]": "border-[#9EE2CF] bg-[#F5F8F6] text-[#007D5A]"}`}>
-                        市場開價：{saleAnalysis.mlitComparison.listingVerdictText}
-                        {saleAnalysis.mlitComparison.listingDiffPercent != null && `(${saleAnalysis.mlitComparison.listingDiffPercent >= 0 ? "+" : ""}${saleAnalysis.mlitComparison.listingDiffPercent.toFixed(1)}%)`}
-                      </span>
-                    )}
-                  </div>
-                )
-              ) : (
-                result.verdict && (
-                  <span className={`border px-3 py-1 text-xs font-black uppercase tracking-wider ${getStatusStyle(result.verdict.status).badge}`}>
-                    行情判定：{result.verdict.status}
-                  </span>
-                )
-              )}
-            </div>
+          {/* 物件標題 */}
+          <div className="border-b border-[#DDE3DF] pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#66736C]">
+              {isSaleListing ? "買賣圖紙分析" : "租賃圖紙健檢"}
+            </p>
+            <h3 className="mt-1 text-lg font-bold text-[#1A2A22] md:text-xl">
+              {stationSummary ? `${stationSummary}駅周邊` : (isSaleListing ? "日本買賣公寓" : "日本租賃物件")}
+            </h3>
+            <p className="mt-1 text-xs text-[#3F5147]">
+              {[extracted?.layout, displayArea, displayStructure, extracted?.age].filter(Boolean).join("　·　")}
+            </p>
           </div>
 
           {/* 建物名稱・實價歷史即時核對區塊 */}
@@ -1143,10 +1036,9 @@ export function ListingHealthCheck() {
                 {/* 建物名稱輸入與編輯 */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
-                      <Building className="h-3 w-3 text-[#00A174]" /> 建物名稱・同棟歷史價格核對
-                    </span>
-                    <span className="text-[11px] text-[#66736C]">（支援即時手動修改以精準搜尋）</span>
+                    <Building className="h-3.5 w-3.5 text-[#66736C]" />
+                    <span className="text-xs font-bold text-[#1A2A22]">建物名稱</span>
+                    <span className="text-[11px] text-[#66736C]">可修改後重新查詢</span>
                   </div>
                   <div className="mt-2 flex items-center gap-2 max-w-md">
                     <div className="relative flex-1">
@@ -1184,327 +1076,142 @@ export function ListingHealthCheck() {
           {/* 條件分支：買賣圖紙視角 VS 租賃圖紙視角 */}
           {isSaleListing && saleAnalysis ? (
             <>
-              {/* 模組 S1：國土交通省成約實價 & 市場開價多維深度比對 */}
-              {saleAnalysis.mlitComparison && (
-                <div className="border border-[#1A2A22]/20 bg-white p-5 sm:p-6 shadow-sm">
-                  {/* 區塊標題與區域規格 */}
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF] pb-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                          <Scale className="h-3 w-3 text-[#00A174]" /> 行情對比
-                        </span>
-                        <h4 className="text-base font-black text-[#1A2A22]">
-                          {saleAnalysis.mlitComparison.region}
-                          {saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}中古公寓成約基準
-                        </h4>
-                      </div>
+              {/* 模組 S1：價格定位（國交省成交實價 vs 市場在售開價 vs 本案開價） */}
+              {saleAnalysis.mlitComparison && (() => {
+                const c = saleAnalysis.mlitComparison;
+                const man = (v: number | null | undefined) =>
+                  v == null ? null : Math.round(v).toLocaleString();
+                // 價格軸：涵蓋所有標記點，左右各留 8% 邊距
+                const points = [
+                  c.medianPriceMan,
+                  c.typicalListingPriceMan,
+                  saleAnalysis.salePriceMan,
+                  c.fairLowMan,
+                  c.fairHighMan,
+                ].filter((v): v is number => typeof v === "number" && v > 0);
+                const lo = Math.min(...points);
+                const hi = Math.max(...points);
+                const pad = (hi - lo) * 0.08 || 1;
+                const axisLo = lo - pad;
+                const axisHi = hi + pad;
+                const pos = (v: number) => ((v - axisLo) / (axisHi - axisLo)) * 100;
+                const markers = [
+                  { v: c.medianPriceMan, label: "官方成交中位", tone: "#007D5A" },
+                  { v: c.typicalListingPriceMan, label: "在售平均", tone: "#3F626D" },
+                  { v: saleAnalysis.salePriceMan, label: "本案開價", tone: "#B13818" },
+                ].filter(m => typeof m.v === "number" && m.v > 0) as Array<{ v: number; label: string; tone: string }>;
+
+                return (
+                  <div className="border border-[#DDE3DF] bg-white p-5 sm:p-6">
+                    <div className="border-b border-[#DDE3DF] pb-3">
+                      <h4 className="text-sm font-bold text-[#1A2A22]">價格定位</h4>
+                      <p className="mt-1 text-xs text-[#66736C]">
+                        {c.district}・{c.layout} 中古公寓
+                      </p>
                     </div>
 
-                  </div>
-
-                  {/* 核心三柱比對卡片矩陣：圖紙賣價 VS 實價登錄 VS 現在市場在售行情 */}
-                  <div className="mt-5 grid gap-3.5 sm:grid-cols-3">
-                    {/* 柱 1：本案圖紙賣價 (待檢驗目標) */}
-                    <div className="flex flex-col justify-between border-2 border-[#1A2A22] bg-[#F5F8F6] p-4 shadow-sm">
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                            本案開價
-                          </span>
-                        </div>
-
-                        <div className="mt-3">
-                          <p className="text-2xl font-black text-[#1A2A22] font-mono">
-                            {saleAnalysis.salePriceMan.toLocaleString()}
-                            <span className="text-sm font-bold text-[#66736C]"> 萬円</span>
-                          </p>
-                        </div>
-
-                        <div className="mt-2 text-xs font-bold text-[#1A2A22] space-y-0.5">
-                          {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && (
-                            <p className="text-[11px] text-[#3F5147]">
-                              每坪約 <span className="font-mono font-black">{saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)}</span> 萬円
-                            </p>
-                          )}
-                          {saleAnalysis.tsuboAndSqm.sqmPriceYen != null && (
-                            <p className="text-[11px] text-[#66736C]">
-                              每㎡約 <span className="font-mono">{(saleAnalysis.tsuboAndSqm.sqmPriceYen / 10000).toFixed(1)}</span> 萬円
-                              {saleAnalysis.areaSqm ? `（專有面積 ${saleAnalysis.areaSqm}㎡）`: ""}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
+                    {/* 本案開價 */}
+                    <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <span className="text-3xl font-bold text-[#1A2A22]">
+                        {saleAnalysis.salePriceMan.toLocaleString()}
+                        <span className="ml-1 text-base font-normal text-[#66736C]">萬円</span>
+                      </span>
+                      <span className="text-xs text-[#66736C]">
+                        {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && `每坪 ${Math.round(saleAnalysis.tsuboAndSqm.tsuboPriceMan)} 萬`}
+                        {saleAnalysis.tsuboAndSqm.sqmPriceYen != null && `　·　每㎡ ${Math.round(saleAnalysis.tsuboAndSqm.sqmPriceYen / 10000)} 萬`}
+                        {saleAnalysis.areaSqm ? `　·　${saleAnalysis.areaSqm}㎡` : ""}
+                      </span>
                     </div>
 
-                    {/* 柱 2：國土交通省 官方實價登錄成約基準 */}
-                    <div className="flex flex-col justify-between border-2 border-[#00A174]/40 bg-[#F5F8F6] p-4 shadow-2xs transition-all hover:border-[#00A174]">
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1 bg-[#00A174] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                            官方成交行情
-                          </span>
-                          <span className="text-[10px] text-[#66736C]">成交中位數</span>
-                        </div>
-
-                        <div className="mt-3">
-                          <p className="text-2xl font-black text-[#007D5A] font-mono">
-                            約 {saleAnalysis.mlitComparison.medianPriceMan?.toLocaleString()}
-                            <span className="text-sm font-bold text-[#007D5A]/70"> 萬円</span>
-                          </p>
-                        </div>
-
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                          {saleAnalysis.mlitComparison.rawDiffPercent != null && (
-                            <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black ${
-                              saleAnalysis.mlitComparison.rawDiffPercent > 10
-                                ? "bg-[#FBDFD2] text-[#B13818]": saleAnalysis.mlitComparison.rawDiffPercent < -5
-                                ? "bg-[#E6F6F1] text-[#007D5A]": "bg-[#FEF3C7] text-[#D97706]"}`}>
-                              本案開價 {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%
-                            </span>
-                          )}
-                          <span className="text-[10px] font-medium text-[#66736C]">
-                            {saleAnalysis.mlitComparison.verdictText}
-                          </span>
-                        </div>
-
-                        {/* 平米單價換算本案面積 */}
-                        {saleAnalysis.mlitComparison.medianSqmPriceYen && saleAnalysis.areaSqm && (
-                          <div className="mt-2.5 border-t border-[#9EE2CF]/60 pt-2 text-[11px] text-[#007D5A]">
-                            <span className="font-semibold text-[#1A2A22]">
-                              依本案 {saleAnalysis.areaSqm}㎡ 單價換算：
-                            </span>
-                            <span className="font-bold text-[#007D5A] ml-1">
-                              約 {Math.round((saleAnalysis.mlitComparison.medianSqmPriceYen * saleAnalysis.areaSqm) / 10000).toLocaleString()} 萬円
-                            </span>
-                          </div>
+                    {/* 價格軸 */}
+                    <div className="mt-6 pb-1">
+                      <div className="relative h-1.5 w-full bg-[#F5F8F6]">
+                        {c.fairLowMan != null && c.fairHighMan != null && (
+                          <div
+                            className="absolute inset-y-0 bg-[#E6F6F1]"
+                            style={{ left: `${pos(c.fairLowMan)}%`, width: `${pos(c.fairHighMan) - pos(c.fairLowMan)}%` }}
+                          />
                         )}
-                      </div>
-
-                      <div className="mt-3 border-t border-[#9EE2CF]/60 pt-2.5 text-[10px] text-[#66736C] space-y-0.5">
-                        <p>
-                          樣本統計：{saleAnalysis.mlitComparison.sampleCount != null ? `${saleAnalysis.mlitComparison.sampleCount} 筆成約`: "多筆成交"}
-                          {saleAnalysis.mlitComparison.periodStart && saleAnalysis.mlitComparison.periodEnd
-                            ? `(${saleAnalysis.mlitComparison.periodStart}～${saleAnalysis.mlitComparison.periodEnd})`: ""}
-                        </p>
-                        <p className="text-[#8A9590]">官方過戶紀錄，非開價。</p>
-                      </div>
-                    </div>
-
-                    {/* 柱 3：市場在售公開刊登開價基準 */}
-                    <div className="flex flex-col justify-between border-2 border-[#EAB879] bg-[#FEF3C7] p-4 shadow-2xs transition-all hover:border-[#EAB879]">
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1 bg-[#EAB879] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#D97706]">
-                            市場在售開價
-                          </span>
-                          <span className="text-[10px] text-[#66736C]">刊登平均</span>
-                        </div>
-
-                        <div className="mt-3">
-                          <p className="text-2xl font-black text-[#D97706] font-mono">
-                            約 {saleAnalysis.mlitComparison.typicalListingPriceMan?.toLocaleString()}
-                            <span className="text-sm font-bold text-[#D97706]/70"> 萬円</span>
-                          </p>
-                        </div>
-
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                          {saleAnalysis.mlitComparison.listingDiffPercent != null && (
-                            <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black ${
-                              saleAnalysis.mlitComparison.listingDiffPercent > 10
-                                ? "bg-[#FBDFD2] text-[#B13818]": saleAnalysis.mlitComparison.listingDiffPercent < -5
-                                ? "bg-[#E6F6F1] text-[#007D5A]": "bg-[#FEF3C7] text-[#D97706]"}`}>
-                              本案開價 {saleAnalysis.mlitComparison.listingDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.listingDiffPercent.toFixed(1)}%
-                            </span>
-                          )}
-                          <span className="text-[10px] font-medium text-[#D97706]">
-                            {saleAnalysis.mlitComparison.listingVerdictText || "高於典型開價"}
-                          </span>
-                        </div>
-
-                        <div className="mt-2.5 border-t border-[#EAB879]/60 pt-2 text-[11px] text-[#D97706]">
-                          <p>
-                            {saleAnalysis.mlitComparison.listingBenchmarkSourceUrl ? (
-                              <a
-                                href={saleAnalysis.mlitComparison.listingBenchmarkSourceUrl}
-                                target="_blank" rel="noreferrer" className="font-bold underline decoration-[#EAB879] underline-offset-2">
-                                {saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}
-                              </a>
-                            ) : (
-                              <span>{saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}</span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 border-t border-[#EAB879]/60 pt-2.5 text-[10px] text-[#66736C] space-y-0.5">
-                        <p className="text-[#8A9590]">賣方開價，通常有 5〜10% 議價空間。</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Linus 深度行情解讀 Card - 結構化分列點呈現 */}
-                  {(() => {
-                    const insightItems = getInsightBulletItems(saleAnalysis.mlitComparison);
-                    const standardItems = insightItems.filter(item => item.iconType !== "advice");
-                    const adviceItem = insightItems.find(item => item.iconType === "advice");
-
-                    return (
-                      <div className="mt-4 border-l-4 border-[#00A174] border-t border-r border-b border-[#9EE2CF] bg-[#F5F8F6] p-4 sm:p-5">
-                        {/* 頂部 Header */}
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF]/70 pb-3">
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center bg-[#00A174]/15 text-[#007D5A]">
-                              <Sparkles className="h-3.5 w-3.5" />
-                            </div>
-                            <h4 className="text-xs font-black uppercase tracking-wider text-[#007D5A]">
-                              Linus 實價行情深度解讀
-                            </h4>
-                          </div>
-
-                          <span
-                            className={`inline-flex self-start border px-2.5 py-0.5 text-[11px] font-bold ${
-                              saleAnalysis.mlitComparison.verdict === "bargain"? "border-[#9EE2CF] bg-white text-[#007D5A]": saleAnalysis.mlitComparison.verdict === "premium"? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]": "border-[#DDE3DF] bg-white text-[#1A2A22]"}`}
-                          >
-                            實價成約判定：{saleAnalysis.mlitComparison.verdictText}
-                          </span>
-                        </div>
-
-                        {/* 分列點清單 (Bullet Items) */}
-                        <div className="mt-3.5 space-y-2.5">
-                          {standardItems.map((item) => {
-                            const isVerdict = item.iconType === "verdict";
-                            const isFactor = item.iconType === "factor";
-                            const isMarket = item.iconType === "market";
-
-                            return (
-                              <div
-                                key={item.id}
-                                className="flex items-start gap-2.5 bg-white p-3 border border-[#DDE3DF] transition-all hover:border-[#9EE2CF]">
-                                <div className="mt-0.5 shrink-0">
-                                  {isVerdict && (
-                                    <div className="flex h-6 w-6 items-center justify-center bg-[#E6F6F1] text-[#007D5A]">
-                                      <Target className="h-3.5 w-3.5" />
-                                    </div>
-                                  )}
-                                  {isFactor && (
-                                    <div className="flex h-6 w-6 items-center justify-center bg-[#F5F8F6] text-[#3F5147]">
-                                      <Scale className="h-3.5 w-3.5" />
-                                    </div>
-                                  )}
-                                  {isMarket && (
-                                    <div className="flex h-6 w-6 items-center justify-center bg-[#F5F8F6] text-[#66736C]">
-                                      <Store className="h-3.5 w-3.5" />
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="flex-1 space-y-1">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span
-                                      className={` px-1.5 py-0.5 text-[10px] font-bold ${
-                                        isVerdict
-                                          ? "bg-[#E6F6F1] text-[#007D5A]": isFactor
-                                          ? "bg-[#F5F8F6] text-[#3F5147]": "bg-[#F5F8F6] text-[#66736C]"}`}
-                                    >
-                                      {item.tag}
-                                    </span>
-                                    {item.title && (
-                                      <span className="text-xs font-bold text-[#1A2A22]">
-                                        {item.title}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <p className="text-xs leading-relaxed text-[#3F5147]">
-                                    {item.text}
-                                  </p>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* 壓軸亮點：Linus 實務談判建議 (琥珀金微光卡片) */}
-                        {adviceItem && (
-                          <div className="mt-3 border-l-4 border-[#D97706] border border-[#EAB879] bg-[#FEF3C7] p-3.5 sm:p-4">
-                            <div className="flex items-center gap-2 text-xs font-bold text-[#D97706]">
-                              <Lightbulb className="h-4 w-4 text-[#D97706] shrink-0" />
-                              <span>{adviceItem.tag}：{adviceItem.title || "出價與談判攻防建議"}</span>
-                            </div>
-                            <p className="mt-1.5 text-xs leading-relaxed text-[#D97706]">
-                              {adviceItem.text}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-
-                  {/* 價格校準因子明細透明展開 */}
-                  {saleAnalysis.mlitComparison.priceFactors && saleAnalysis.mlitComparison.priceFactors.length > 0 && (
-                    <div className="mt-4 border border-[#DDE3DF] bg-white p-4">
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF]/60 pb-2.5">
-                        <p className="text-xs font-bold text-[#1A2A22]">
-                          條件校準（基準：{saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout} 成交中位 {saleAnalysis.mlitComparison.medianPriceMan} 萬円）
-                        </p>
-                        <span className="text-[10px] text-[#66736C]">
-                          全區樣本 {saleAnalysis.mlitComparison.sampleCount} 筆・{saleAnalysis.mlitComparison.periodStart}～{saleAnalysis.mlitComparison.periodEnd}
-                        </span>
-                      </div>
-
-
-                      {/* 校準因子 Chips Grid */}
-                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                        {saleAnalysis.mlitComparison.priceFactors.map((factor, index) => (
-                          <div key={index} className="flex items-center justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-2 text-xs">
-                            <span className="font-bold text-[#1A2A22]">{factor.label}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-[#66736C]">{factor.note}</span>
-                              <span className={`font-black font-mono text-xs px-1.5 py-0.5 ${
-                                factor.ratePercent > 0
-                                  ? "bg-[#FBDFD2] text-[#B13818]": factor.ratePercent < 0
-                                  ? "bg-[#E6F6F1] text-[#007D5A]": "bg-[#DDE3DF] text-[#66736C]"}`}>
-                                {factor.ratePercent >= 0 ? "+" : ""}{factor.ratePercent}%
-                              </span>
-                            </div>
-                          </div>
+                        {markers.map(m => (
+                          <div
+                            key={m.label}
+                            className="absolute top-1/2 h-3.5 w-0.5 -translate-y-1/2"
+                            style={{ left: `${pos(m.v)}%`, backgroundColor: m.tone }}
+                          />
                         ))}
                       </div>
 
-                      {saleAnalysis.mlitComparison.rawDiffPercent != null && (
-                        <p className="mt-3 border-t border-[#DDE3DF] pt-2 text-[10px] leading-relaxed text-[#66736C]">
-                          {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}% 是相對區域成交中位數；
-                          {saleAnalysis.mlitComparison.diffPercent != null && `${saleAnalysis.mlitComparison.diffPercent >= 0 ? "+" : ""}${saleAnalysis.mlitComparison.diffPercent.toFixed(1)}% 是加入面積、車站與樓層條件後的差距。`}
+                      {c.fairLowMan != null && c.fairHighMan != null && (
+                        <p className="mt-2 text-[10px] text-[#66736C]">
+                          淺色區間為合理成交範圍 {man(c.fairLowMan)}～{man(c.fairHighMan)} 萬円
                         </p>
                       )}
-                    </div>
-                  )}
 
-                  {/* 警示與資產評估 */}
-                  {saleAnalysis.mlitComparison.priceCautions?.map((caution, index) => (
-                    <div key={index} className="mt-3 flex items-start gap-2 border border-[#EAB879] bg-[#FEF3C7] p-3 text-xs leading-relaxed text-[#D97706]">
-                      <AlertCircle className="h-4 w-4 shrink-0 text-[#B13818] mt-0.5" />
-                      <div>
-                        <strong className="font-bold text-[#B13818]">注意：</strong> {caution}
+                      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                        {markers.map(m => (
+                          <div key={m.label} className="border-l-2 pl-2.5" style={{ borderColor: m.tone }}>
+                            <p className="text-[11px] text-[#66736C]">{m.label}</p>
+                            <p className="text-sm font-bold text-[#1A2A22]">{m.v.toLocaleString()} 萬円</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
 
-                  {/* 車站徒步保值性 */}
-                  {saleAnalysis.mlitComparison.stationWalkFactor && (
-                    <div className="mt-3 flex items-start gap-2.5 border border-[#9EE2CF] bg-[#F5F8F6] p-3 text-xs text-[#3F5147]">
-                      <Footprints className="h-4 w-4 shrink-0 text-[#007D5A] mt-0.5" />
-                      <div>
-                        <span className="font-bold text-[#1A2A22]">
-                          車站徒步 {saleAnalysis.mlitComparison.stationWalkFactor.walkMinutes} 分資產流動性評估：
-                        </span>
-                        <span className="ml-1 leading-relaxed">{saleAnalysis.mlitComparison.stationWalkFactor.note}</span>
+                    {/* 一句話結論 */}
+                    <p className="mt-5 border-t border-[#DDE3DF] pt-4 text-sm leading-relaxed text-[#1A2A22]">
+                      本案開價
+                      {c.rawDiffPercent != null && (
+                        <>高於官方成交中位 <strong className="font-bold">{Math.abs(Math.round(c.rawDiffPercent))}%</strong></>
+                      )}
+                      {c.listingDiffPercent != null && (
+                        <>，{c.listingDiffPercent >= 0 ? "高於" : "低於"}在售平均 <strong className="font-bold">{Math.abs(Math.round(c.listingDiffPercent))}%</strong></>
+                      )}
+                      。
+                      {c.diffPercent != null && c.fairHighMan != null && (
+                        <>納入面積、車站距離與樓層條件後，{saleAnalysis.salePriceMan > c.fairHighMan ? "仍高於合理區間上緣" : "落在合理區間內"}。</>
+                      )}
+                    </p>
+
+                    {/* 溢價因素 */}
+                    {c.priceFactors && c.priceFactors.length > 0 && (
+                      <div className="mt-5 border-t border-[#DDE3DF] pt-4">
+                        <h5 className="text-xs font-bold text-[#1A2A22]">溢價因素</h5>
+                        <p className="mt-1 text-[11px] text-[#66736C]">
+                          相對 {c.district} 同房型成交中位 {c.medianPriceMan?.toLocaleString()} 萬円的加減幅度
+                        </p>
+                        <dl className="mt-3 divide-y divide-[#DDE3DF] border-t border-[#DDE3DF]">
+                          {[...c.priceFactors].sort((a, b) => Math.abs(b.ratePercent) - Math.abs(a.ratePercent)).map((f, i) => (
+                            <div key={i} className="flex items-baseline justify-between gap-3 py-2">
+                              <dt className="shrink-0 text-xs font-bold text-[#1A2A22]">{f.label}</dt>
+                              <dd className="flex flex-1 items-baseline justify-end gap-3">
+                                <span className="text-right text-[11px] text-[#66736C]">{f.note}</span>
+                                <span className={`w-12 shrink-0 text-right text-xs font-bold ${
+                                  f.ratePercent > 0 ? "text-[#B13818]" : f.ratePercent < 0 ? "text-[#007D5A]" : "text-[#8A9590]"
+                                }`}>
+                                  {f.ratePercent > 0 ? "+" : ""}{f.ratePercent}%
+                                </span>
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
                       </div>
+                    )}
+
+                    {/* 資料來源與限制 */}
+                    <div className="mt-5 border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">
+                      <p>
+                        官方成交：國土交通省實價登錄 {c.sampleCount} 筆
+                        {c.periodStart && c.periodEnd ? `（${c.periodStart}～${c.periodEnd}）` : ""}
+                        {c.listingBenchmarkSourceLabel ? `　·　在售：${c.listingBenchmarkSourceLabel} ${c.listingBenchmarkPeriod || ""}` : ""}
+                      </p>
+                      <p className="mt-1">在售為賣方開價，通常有 5〜10% 議價空間，非成交價。</p>
+                      {c.priceCautions?.map((caution, i) => (
+                        <p key={i} className="mt-1 text-[#D97706]">{caution}</p>
+                      ))}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              })()}
 
               {/* 模組 S2：核心買賣數值 Hero 5-Card 網格 */}
               <div className="space-y-3">
@@ -1530,7 +1237,7 @@ export function ListingHealthCheck() {
                     <p className="text-[11px] font-bold text-[#66736C]">每坪單價（坪単価）</p>
                     <p className="mt-1 text-2xl font-black text-[#1A2A22]">
                       {saleAnalysis.tsuboAndSqm.tsuboPriceMan !== null
-                        ? `${saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)}`: "—"}
+                        ? `${Math.round(saleAnalysis.tsuboAndSqm.tsuboPriceMan)}`: "—"}
                       <span className="text-xs font-normal text-[#66736C]"> 萬円/坪</span>
                     </p>
                     <p className="mt-1 text-[10px] text-[#66736C]">
@@ -1544,7 +1251,7 @@ export function ListingHealthCheck() {
                     <p className="text-[11px] font-bold text-[#66736C]">每平米單價（㎡単価）</p>
                     <p className="mt-1 text-2xl font-black text-[#1A2A22]">
                       {saleAnalysis.tsuboAndSqm.sqmPriceMan !== null
-                        ? `${saleAnalysis.tsuboAndSqm.sqmPriceMan.toFixed(1)}`: "—"}
+                        ? `${Math.round(saleAnalysis.tsuboAndSqm.sqmPriceMan)}`: "—"}
                       <span className="text-xs font-normal text-[#66736C]"> 萬円/㎡</span>
                     </p>
                     <p className="mt-1 text-[10px] text-[#66736C]">
