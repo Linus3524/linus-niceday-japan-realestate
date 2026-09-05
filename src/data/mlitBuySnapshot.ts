@@ -26,7 +26,7 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "region": "愛知",
     "district": "刈谷市",
     "layout": "ldk3",
-    "medianTradePriceYen": 19000000,
+    "medianTradePriceYen": 12345600,
     "sampleCount": 13,
     "windowQuarters": 4,
     "periodStart": "2025-Q2",
