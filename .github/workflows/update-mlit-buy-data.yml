@@ -37,16 +37,28 @@ jobs:
           MLIT_REINFOLIB_API_KEY: ${{ secrets.MLIT_REINFOLIB_API_KEY }}
         run: npm run data:update:mlit-buy
 
+      # 只有 generatedAt（產生日期）變動不算變動——行情數字沒動就沒有東西要審。
+      # 每次都開一個「只改日期」的 PR 會養成直接 merge 的習慣，等到真的有異常
+      # 變動時反而不會細看，比不開 PR 更危險。
       - name: Check for changes
         id: diff
         run: |
-          if git diff --quiet -- src/data/mlitBuySnapshot.ts; then
+          SUBSTANTIVE=$(git diff -U0 -- src/data/mlitBuySnapshot.ts \
+            | grep -E '^[+-][^+-]' \
+            | grep -v 'generatedAt' \
+            || true)
+          if [ -z "$SUBSTANTIVE" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "快照內容沒有變化，這一輪不需要開 PR。"
+            echo "行情數字沒有變化（僅產生日期不同），這一輪不需要開 PR。"
+            git checkout -- src/data/mlitBuySnapshot.ts
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "rows=$(grep -c '\"district\":' src/data/mlitBuySnapshot.ts)" >> "$GITHUB_OUTPUT"
-            echo "period=$(grep -o 'latestPeriod: \"[^\"]*\"' src/data/mlitBuySnapshot.ts | head -1 | cut -d'\"' -f2)" >> "$GITHUB_OUTPUT"
+            # 用 node 取季別：先前用 grep + cut -d'\"' 取值，cut 的分隔符必須是
+            # 單一字元，兩字元的 \" 會讓 cut 失敗而回傳空字串（PR 標題出現「（）」）。
+            {
+              echo "rows=$(grep -c '"district":' src/data/mlitBuySnapshot.ts)"
+              echo "period=$(node -e "const s=require('fs').readFileSync('src/data/mlitBuySnapshot.ts','utf8');const m=s.match(/latestPeriod:\s*\"([^\"]+)\"/);console.log(m?m[1]:'unknown')")"
+            } >> "$GITHUB_OUTPUT"
           fi
 
       # 資料變動後要確認整個站還是建得起來，避免把壞掉的快照送進 PR。
