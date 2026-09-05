@@ -13,7 +13,7 @@ export interface MlitBuySnapshotRow {
 }
 
 export const mlitBuySnapshotMeta = {
-  generatedAt: "2026-09-01" as string | null,
+  generatedAt: "2026-09-05" as string | null,
   latestPeriod: "2026-Q1",
   sourceId: "mlit-reinfolib" as const,
   status: "ready" as "pending_api_approval" | "ready",
@@ -26,7 +26,7 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "region": "愛知",
     "district": "刈谷市",
     "layout": "ldk3",
-    "medianTradePriceYen": 12345600,
+    "medianTradePriceYen": 19000000,
     "sampleCount": 13,
     "windowQuarters": 4,
     "periodStart": "2025-Q2",
