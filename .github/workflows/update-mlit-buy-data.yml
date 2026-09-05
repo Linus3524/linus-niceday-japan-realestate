@@ -1,0 +1,86 @@
+name: Update MLIT buy-price snapshot
+
+# 國交省的成約實價每季發布。快照是寫死在 repo 裡的靜態檔，不會自己更新，
+# 放著不管就會愈來愈舊，而買賣圖紙健檢的價格判定直接以它為基準。
+#
+# 每月 1 日跑一次（不是每季）：新季別的實際釋出時間不固定，按月檢查才能在
+# 釋出後幾週內就跟上；沒有新資料時 diff 為空，workflow 會直接結束，成本極低。
+on:
+  schedule:
+    - cron: "0 21 1 * *" # 每月 1 日 06:00 JST（UTC 21:00，前一日）
+  workflow_dispatch: # 也可以手動觸發，例如確認新季別已經發布時
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 腳本自帶防呆：抓不到季度、樣本不足、或筆數較既有快照縮水超過 20%
+      # 都會直接 throw，讓這一步失敗並保留舊快照，而不是寫進壞資料。
+      - name: Refresh snapshot from MLIT API
+        env:
+          MLIT_REINFOLIB_API_KEY: ${{ secrets.MLIT_REINFOLIB_API_KEY }}
+        run: npm run data:update:mlit-buy
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet -- src/data/mlitBuySnapshot.ts; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "快照內容沒有變化，這一輪不需要開 PR。"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "rows=$(grep -c '\"district\":' src/data/mlitBuySnapshot.ts)" >> "$GITHUB_OUTPUT"
+            echo "period=$(grep -o 'latestPeriod: \"[^\"]*\"' src/data/mlitBuySnapshot.ts | head -1 | cut -d'\"' -f2)" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 資料變動後要確認整個站還是建得起來，避免把壞掉的快照送進 PR。
+      - name: Verify build with new data
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          npm run lint
+          npm run test:requirement-verdict
+          npm run build
+
+      # 走 PR 而不是直接推 main：這些數字直接決定買賣圖紙健檢對客戶說
+      # 「這個開價合不合理」，值得先看過 diff 再上線。
+      - name: Open pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="data/mlit-buy-snapshot-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add src/data/mlitBuySnapshot.ts
+          git commit -m "chore(data): 更新國交省成約實價快照至 ${{ steps.diff.outputs.period }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "chore(data): 更新國交省成約實價快照（${{ steps.diff.outputs.period }}）" \
+            --body "自動排程更新國土交通省成約實價快照。
+
+          - 最新季別：\`${{ steps.diff.outputs.period }}\`
+          - 分桶筆數：${{ steps.diff.outputs.rows }}
+          - 型別檢查、需求判定回歸測試與 production build 均已通過
+
+          這份快照是買賣圖紙健檢價格判定的基準。合併前建議快速看一下 diff：
+          若某些行政區的中位數出現異常大的跳動，可能代表該區近期成交量少、
+          統計視窗滑動所致，而非行情真的劇烈變動。" \
+            --base main \
+            --head "$BRANCH"

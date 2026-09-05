@@ -12,6 +12,7 @@ dotenv.config({ path: [".env.local", ".env"] });
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { rentRates, type LayoutCode } from "../src/data/housingMarket.js";
+import { LAYOUT_AREA_BANDS } from "../src/data/buyMarket.js";
 
 interface MlitTransaction {
   Type?: string;
@@ -36,6 +37,19 @@ if (!API_KEY) {
 }
 
 const argValue = (name: string) => process.argv.find(arg => arg.startsWith(`--${name}=`))?.split("=")[1];
+const allowShrink = process.argv.includes("--allow-shrink");
+
+// 既有快照的筆數，用來判斷這次抓取是否異常縮水（見下方 RETENTION_FLOOR）。
+// 讀不到檔（第一次建立）時為 0，代表沒有可比對的基準，不做這項檢查。
+const existingRowCount = await (async () => {
+  if (allowShrink) return 0;
+  try {
+    const { mlitBuySnapshots } = await import("../src/data/mlitBuySnapshot.js");
+    return mlitBuySnapshots.length;
+  } catch {
+    return 0;
+  }
+})();
 const currentYear = new Date().getFullYear();
 const years = (argValue("years") || `${currentYear - 2},${currentYear - 1},${currentYear}`)
   .split(",").map(Number).filter(Number.isInteger);
@@ -69,9 +83,9 @@ const targetMarkets = rentRates.map(rate => {
   return { region: rate.region, district: rate.district, japaneseDistrict, isCityAggregate };
 });
 
-const layoutAreaBands: Record<LayoutCode, [number, number]> = {
-  r1: [12, 24], k1: [18, 35], ldk1: [30, 52], ldk2: [45, 75], ldk3: [65, 130]
-};
+// 面積帶定義集中在 src/data/buyMarket.ts，與行情比對邏輯共用同一份，
+// 避免這裡改了篩選條件、比對端卻還用舊的面積帶而口徑不一致。
+const layoutAreaBands = LAYOUT_AREA_BANDS;
 
 const parsePeriod = (period: string) => {
   const match = /(\d{4})年第(\d)四半期/.exec(period);
@@ -199,6 +213,18 @@ const snapshotRows = Array.from(buckets.entries()).flatMap(([key, bucket]) => {
 }).sort((a, b) => `${a.region}|${a.district}|${a.layout}`.localeCompare(`${b.region}|${b.district}|${b.layout}`, "ja"));
 
 if (!snapshotRows.length) throw new Error("API 回傳資料中沒有足夠樣本，未覆寫既有快照。");
+
+// 只擋「完全沒資料」不夠。API 可能回 200 但內容殘缺（額度用盡、上游暫時性問題），
+// 這時筆數會從數百掉到數十卻照樣覆寫，把整份行情資料悄悄弄壞——而且因為檔案有更新、
+// 看起來還像成功了。行政區與房型的組合短期內不會大幅減少，所以筆數明顯縮水
+// 一定是抓取出問題，寧可中止讓排程失敗、留著舊快照，也不要寫進壞資料。
+const RETENTION_FLOOR = 0.8;
+if (existingRowCount > 0 && snapshotRows.length < existingRowCount * RETENTION_FLOOR) {
+  throw new Error(
+    `新資料僅 ${snapshotRows.length} 筆，較既有快照的 ${existingRowCount} 筆減少超過 ${Math.round((1 - RETENTION_FLOOR) * 100)}%，` +
+    `判定為抓取異常，已中止並保留原快照。若確認是資料來源本身的正常變動，請加上 --allow-shrink 重跑。`
+  );
+}
 
 const generatedAt = new Date().toISOString().slice(0, 10);
 const body = `import type { LayoutCode } from "./housingMarket.js";\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計した近4四半期優先・不足時近8四半期の中央値（間取り欠損時は面積帯）",\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n`;
