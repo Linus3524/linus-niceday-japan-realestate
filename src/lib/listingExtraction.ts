@@ -14,7 +14,9 @@ import type { RoomType } from "./rentAnalysis.js";
  * 被規則運算式在句點處截斷，"10.5万円" 誤判成 "5万円"（少一個零頭）。
  */
 function toHalfWidth(value: string): string {
-  return value.replace(/[０-９Ａ-Ｚａ-ｚ．，]/g, char =>
+  // 一併轉全形加號「＋」：真實販売図面的間取常寫成 "1SLDK＋WIC"，
+  // 漏了它會讓收納標記剝不掉，房型比對不到分桶而整塊行情消失。
+  return value.replace(/[０-９Ａ-Ｚａ-ｚ．，＋]/g, char =>
     String.fromCharCode(char.charCodeAt(0) - 0xfee0)
   );
 }
@@ -181,16 +183,54 @@ export function stripStationOperatorPrefix(text: unknown): string | null {
   return cleaned || null;
 }
 
+/**
+ * 解析所在階與建物總樓層。
+ *
+ * 所在階寫法：「3階」「7階部分」「16階」「B1階」；
+ * 總樓層通常不在所在階欄位，而是混在構造欄位裡：
+ * 「鉄筋コンクリート造7階建」「鉄筋コンクリート造21階建/地下1階」。
+ *
+ * 兩者要一起看才有意義：「7階」在 7 階建是頂樓、在 21 階建只是中低樓層，
+ * 光看樓層數字無法判斷這是不是高樓層溢價。
+ */
+export function parseFloorInfo(floorText: unknown, structureText?: unknown): {
+  floor: number | null;
+  totalFloors: number | null;
+} {
+  const floorRaw = typeof floorText === "string" ? toHalfWidth(floorText) : "";
+  const structureRaw = typeof structureText === "string" ? toHalfWidth(structureText) : "";
+
+  // 地下樓層以負數表示，避免與地上同名樓層混淆。
+  const basement = floorRaw.match(/(?:B|地下)\s*(\d+)\s*階?/i);
+  const aboveGround = floorRaw.match(/(\d+)\s*階/);
+  const floor = basement
+    ? -Number(basement[1])
+    : aboveGround
+      ? Number(aboveGround[1])
+      : null;
+
+  // 「地下1階」也會寫成 ○階建 的鄰居，只取「○階建」這種明確的總樓層寫法。
+  const totalMatch = `${structureRaw} ${floorRaw}`.match(/(\d+)\s*階建/);
+  const totalFloors = totalMatch ? Number(totalMatch[1]) : null;
+
+  const valid = (n: number | null) => (n !== null && Number.isFinite(n) && Math.abs(n) <= 100 ? n : null);
+  return { floor: valid(floor), totalFloors: valid(totalFloors) };
+}
+
 export function normalizeRoomType(text: unknown): RoomType | null {
   if (typeof text !== "string") return null;
 
-  // "1LDK+S"／"1SLDK"（納戸／服務房）不影響房間數分桶，先拿掉再比對核心格局。
+  // 收納空間標記不影響房間數分桶，先拿掉再比對核心格局：
+  // +S／+N（納戸）、+WIC（步入式衣帽間）、+SIC（玄關收納），
+  // 以及夾在中間的 S（"1SLDK" 就是 1LDK 附納戸，實測真實販売図面很常這樣寫）。
   const cleaned = toHalfWidth(text)
     .toUpperCase()
     .replace(/\s/g, "")
     .replace(/[（(].*?[）)]/g, "")
+    .replace(/\+(?:WIC|SIC|N|S)$/i, "")
     .replace(/\+?S$/i, "")
-    .replace(/^S/i, "");
+    .replace(/^S/i, "")
+    .replace(/S(?=(?:LDK|DK|K)$)/i, "");
 
   const rMatch = cleaned.match(/^(\d+)R$/);
   if (rMatch) return rMatch[1] === "1" ? "r1" : null;
