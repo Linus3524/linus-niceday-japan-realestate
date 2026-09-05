@@ -1117,8 +1117,8 @@ export function ListingHealthCheck() {
                         <span className="ml-1 text-base font-normal text-[#66736C]">萬円</span>
                       </span>
                       <span className="text-xs text-[#66736C]">
-                        {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && `每坪 ${Math.round(saleAnalysis.tsuboAndSqm.tsuboPriceMan)} 萬`}
-                        {saleAnalysis.tsuboAndSqm.sqmPriceYen != null && `　·　每㎡ ${Math.round(saleAnalysis.tsuboAndSqm.sqmPriceYen / 10000)} 萬`}
+                        {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && `每坪 ${saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)} 萬`}
+                        {saleAnalysis.tsuboAndSqm.sqmPriceYen != null && `　·　每㎡ ${(saleAnalysis.tsuboAndSqm.sqmPriceYen / 10000).toFixed(1)} 萬`}
                         {saleAnalysis.areaSqm ? `　·　${saleAnalysis.areaSqm}㎡` : ""}
                       </span>
                     </div>
@@ -1237,7 +1237,7 @@ export function ListingHealthCheck() {
                     <p className="text-[11px] font-bold text-[#66736C]">每坪單價（坪単価）</p>
                     <p className="mt-1 text-2xl font-black text-[#1A2A22]">
                       {saleAnalysis.tsuboAndSqm.tsuboPriceMan !== null
-                        ? `${Math.round(saleAnalysis.tsuboAndSqm.tsuboPriceMan)}`: "—"}
+                        ? `${saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)}`: "—"}
                       <span className="text-xs font-normal text-[#66736C]"> 萬円/坪</span>
                     </p>
                     <p className="mt-1 text-[10px] text-[#66736C]">
@@ -1251,7 +1251,7 @@ export function ListingHealthCheck() {
                     <p className="text-[11px] font-bold text-[#66736C]">每平米單價（㎡単価）</p>
                     <p className="mt-1 text-2xl font-black text-[#1A2A22]">
                       {saleAnalysis.tsuboAndSqm.sqmPriceMan !== null
-                        ? `${Math.round(saleAnalysis.tsuboAndSqm.sqmPriceMan)}`: "—"}
+                        ? `${saleAnalysis.tsuboAndSqm.sqmPriceMan.toFixed(1)}`: "—"}
                       <span className="text-xs font-normal text-[#66736C]"> 萬円/㎡</span>
                     </p>
                     <p className="mt-1 text-[10px] text-[#66736C]">
