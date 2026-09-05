@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import {
   AlertCircle,
-  ArrowUpRight,
   Building,
   CheckCircle2,
   ChevronDown,
@@ -665,17 +664,7 @@ export function ListingHealthCheck() {
   const [commute, setCommute] = useState<ListingCommuteResult | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
-  const [customBuildingName, setCustomBuildingName] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // 當辨識出建物名稱時，自動帶入可編輯狀態
-  useEffect(() => {
-    if (result?.extracted?.buildingName) {
-      setCustomBuildingName(result.extracted.buildingName.trim());
-    } else {
-      setCustomBuildingName("");
-    }
-  }, [result]);
 
   // 當 previewUrl 變動時妥善釋放 object URL，避免記憶體洩漏
   useEffect(() => {
@@ -884,10 +873,8 @@ export function ListingHealthCheck() {
     Boolean(result?.saleAnalysis) ||
     Boolean(result?.parsed?.salePrice && result.parsed.salePrice >= 10000000);
   const saleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
-  const buildingName = (customBuildingName !== "" ? customBuildingName : (extracted?.buildingName || "")).trim();
+  const buildingName = (extracted?.buildingName || "").trim();
   // Google 智慧容錯直達（以 site:mansion-review.jp 搜尋，徹底解決平假名／片假名／漢字登錄差異與 Brave 檔腳本問題）
-  const googleMansionReviewUrl = buildingName
-    ? `https://www.google.com/search?q=${encodeURIComponent('site:mansion-review.jp ' + buildingName)}`: null;
 
   return (
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
@@ -1021,57 +1008,15 @@ export function ListingHealthCheck() {
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#66736C]">
               {isSaleListing ? "買賣圖紙分析" : "租賃圖紙健檢"}
             </p>
-            <h3 className="mt-1 text-lg font-bold text-[#1A2A22] md:text-xl">
-              {stationSummary ? `${stationSummary}駅周邊` : (isSaleListing ? "日本買賣公寓" : "日本租賃物件")}
-            </h3>
-            <p className="mt-1 text-xs text-[#3F5147]">
-              {[extracted?.layout, displayArea, displayStructure, extracted?.age].filter(Boolean).join("　·　")}
-            </p>
-          </div>
-
-          {/* 建物名稱・實價歷史即時核對區塊 */}
-          {buildingName && (
-            <div className="border border-[#1A2A22]/20 bg-gradient-to-r from-[#F5F8F6] via-[#F5F8F6] to-[#E6F6F1] p-4 sm:p-5 shadow-xs transition-all">
-              <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:justify-between">
-                {/* 建物名稱輸入與編輯 */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <Building className="h-3.5 w-3.5 text-[#66736C]" />
-                    <span className="text-xs font-bold text-[#1A2A22]">建物名稱</span>
-                    <span className="text-[11px] text-[#66736C]">可修改後重新查詢</span>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2 max-w-md">
-                    <div className="relative flex-1">
-                      <input
-                        type="text" value={customBuildingName}
-                        onChange={(e) => setCustomBuildingName(e.target.value)}
-                        placeholder="請輸入或修改建物名稱..." className="w-full border-2 border-[#1A2A22]/30 bg-white px-3 py-2 text-sm font-bold text-[#1A2A22] shadow-2xs transition-colors focus:border-[#00A174] focus:outline-none focus:ring-2 focus:ring-[#00A174]/20"/>
-                      {customBuildingName !== extracted?.buildingName && extracted?.buildingName && (
-                        <button
-                          type="button" onClick={() => setCustomBuildingName(extracted.buildingName || "")}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-bold text-[#007D5A] hover:bg-[#E6F6F1] transition-colors">
-                          還原圖紙名稱
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {googleMansionReviewUrl && (
-                  <a
-                    href={googleMansionReviewUrl}
-                    target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 shrink-0 items-center gap-1.5 border border-[#1A2A22] bg-[#1A2A22] px-4 text-xs font-bold text-white transition-colors hover:bg-[#3F5147]">
-                    <span>查詢同棟成交紀錄</span>
-                    <ArrowUpRight className="h-3.5 w-3.5" />
-                  </a>
-                )}
-              </div>
-
-              <p className="mt-2.5 border-t border-[#DDE3DF] pt-2.5 text-[11px] leading-relaxed text-[#66736C]">
-                大樓名稱在圖紙與各資料庫常有漢字／假名差異，搜不到時可直接修改上方名稱再查一次。
+            <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 className="text-lg font-bold text-[#1A2A22] md:text-xl">
+                {buildingName || (stationSummary ? `${stationSummary}駅周邊` : (isSaleListing ? "日本買賣公寓" : "日本租賃物件"))}
+              </h3>
+              <p className="text-xs text-[#3F5147]">
+                {[stationSummary ? `${stationSummary}駅周邊` : null, extracted?.layout, displayArea, displayStructure, extracted?.age].filter(Boolean).join("　·　")}
               </p>
             </div>
-          )}
+          </div>
 
           {/* 條件分支：買賣圖紙視角 VS 租賃圖紙視角 */}
           {isSaleListing && saleAnalysis ? (
