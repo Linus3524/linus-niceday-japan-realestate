@@ -149,6 +149,7 @@ function validateFiles(files: unknown): UploadedFile[] {
 
 export interface ExtractedListingFields {
   dealType: string; // "sale" 或 "rent"
+  buildingName: string;
   station: string;
   walkTime: string;
   transitAccess: string;
@@ -257,6 +258,7 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
 
     物件種類判斷（dealType，極重要）：
     - 判斷這份圖紙是「買賣物件（sale）」還是「租賃物件（rent）」。
+    - buildingName：逐字提取物件名／建物名／マンション名（不含房號）；找不到時留空，不可拿地址或仲介公司名代替。
     - 若圖紙出現「売買」「売マンション」「中古マンション」「オーナーチェンジ」「販売価格」「価格(税込)」「専有面積」「修繕積立金」等買賣特徵，dealType 填 "sale"。
     - 若為一般租屋（「賃貸」「賃料」「家賃」「敷金」「礼金」「更新料」），dealType 填 "rent"。
 
@@ -345,6 +347,7 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
         type: Type.OBJECT,
         properties: {
           dealType: { type: Type.STRING, description: "sale 或 rent" },
+          buildingName: { type: Type.STRING, description: "物件名／建物名／マンション名；不含房號，找不到留空" },
           station: { type: Type.STRING, description: "所有車站名稱，逗號分隔" },
           walkTime: { type: Type.STRING, description: "對應車站的徒步分鐘數，逗號分隔，順序需與 station 一致" },
           transitAccess: { type: Type.STRING, description: "交通欄全部列的原文，每列保留路線、車站及徒歩分鐘" },
@@ -386,7 +389,7 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
           specialNotes: { type: Type.STRING, description: "備考與特約注意事項" },
         },
         required: [
-          "dealType", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
+          "dealType", "buildingName", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
           "keyMoney", "deposit", "leaseTerms", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
@@ -921,6 +924,7 @@ function buildSaleAnalysis(params: {
         verdict: priceVerdict.verdict,
         verdictText: priceVerdict.verdictText,
         explanation: priceVerdict.explanation,
+        insightPoints: priceVerdict.insightPoints,
         expectedPriceMan: priceVerdict.expectedPriceMan,
         fairLowMan: priceVerdict.fairLowMan,
         fairHighMan: priceVerdict.fairHighMan,

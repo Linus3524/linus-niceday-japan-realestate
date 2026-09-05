@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import {
   AlertCircle,
+  ArrowUpRight,
   Building,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
   Coins,
+  ExternalLink,
   FileSpreadsheet,
   FileText,
   Footprints,
@@ -15,10 +17,15 @@ import {
   MapPin,
   Navigation,
   RefreshCw,
+  Scale,
+  Search,
   ShieldAlert,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   Store,
+  Target,
+  Lightbulb,
   TrainFront,
   Trash2,
   UploadCloud,
@@ -62,6 +69,81 @@ const JPEG_QUALITY = 0.8;
 // 能保留小字，同時控制上傳量與圖片 token。
 const MAX_PDF_RENDER_DIMENSION = 2200;
 const PDF_JPEG_QUALITY = 0.88;
+
+interface InsightBulletItem {
+  id: string;
+  iconType: "verdict" | "factor" | "market" | "advice";
+  tag: string;
+  title?: string;
+  text: string;
+}
+
+function getInsightBulletItems(mlitComparison: {
+  explanation: string;
+  insightPoints?: Array<{
+    id: string;
+    icon: string;
+    tag: string;
+    title: string;
+    content: string;
+    type?: string;
+  }>;
+}): InsightBulletItem[] {
+  if (mlitComparison.insightPoints && mlitComparison.insightPoints.length > 0) {
+    return mlitComparison.insightPoints.map(p => ({
+      id: p.id,
+      iconType: (p.type as any) || "verdict",
+      tag: p.tag,
+      title: p.title,
+      text: p.content,
+    }));
+  }
+
+  const rawText = mlitComparison.explanation || "";
+  const lines = rawText.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const items: InsightBulletItem[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const match = line.match(/^•\s*【(.*?)】[：:](.*)$/);
+    if (match) {
+      const tag = match[1].trim();
+      const text = match[2].trim();
+      let iconType: "verdict" | "factor" | "market" | "advice" = "verdict";
+      if (tag.includes("條件") || tag.includes("溢價") || tag.includes("優勢")) iconType = "factor";
+      else if (tag.includes("刊登") || tag.includes("市場")) iconType = "market";
+      else if (tag.includes("建議") || tag.includes("Linus")) iconType = "advice";
+
+      items.push({
+        id: `parsed-${i}`,
+        iconType,
+        tag,
+        text,
+      });
+    } else {
+      let iconType: "verdict" | "factor" | "market" | "advice" = "verdict";
+      let tag = "行情解讀";
+      if (line.includes("建議") || line.includes("談判") || line.includes("出價")) {
+        iconType = "advice";
+        tag = "Linus 實務建議";
+      } else if (line.includes("刊登") || line.includes("At Home") || line.includes("REINS")) {
+        iconType = "market";
+        tag = "市面刊登對照";
+      } else if (line.includes("條件") || line.includes("屋齡") || line.includes("徒步")) {
+        iconType = "factor";
+        tag = "條件優勢拆解";
+      }
+      items.push({
+        id: `parsed-${i}`,
+        iconType,
+        tag,
+        text: line.replace(/^•\s*/, ""),
+      });
+    }
+  }
+
+  return items;
+}
 
 const STATUS_STYLE: Record<string, { badge: string; box: string }> = {
   "合理": {
@@ -180,6 +262,14 @@ export interface SaleAnalysisVerdict {
     verdict: "bargain" | "fair" | "premium";
     verdictText: string;
     explanation: string;
+    insightPoints?: Array<{
+      id: string;
+      icon: string;
+      tag: string;
+      title: string;
+      content: string;
+      type?: "verdict" | "factor" | "market" | "advice";
+    }>;
     sampleCount?: number;
     periodStart?: string;
     periodEnd?: string;
@@ -213,6 +303,7 @@ export interface SaleAnalysisVerdict {
 
 interface ExtractedFields {
   dealType?: string;
+  buildingName?: string;
   station: string;
   walkTime: string;
   layout: string;
@@ -653,7 +744,17 @@ export function ListingHealthCheck() {
   const [commute, setCommute] = useState<ListingCommuteResult | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
+  const [customBuildingName, setCustomBuildingName] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 當辨識出建物名稱時，自動帶入可編輯狀態
+  useEffect(() => {
+    if (result?.extracted?.buildingName) {
+      setCustomBuildingName(result.extracted.buildingName.trim());
+    } else {
+      setCustomBuildingName("");
+    }
+  }, [result]);
 
   // 當 previewUrl 變動時妥善釋放 object URL，避免記憶體洩漏
   useEffect(() => {
@@ -863,6 +964,23 @@ export function ListingHealthCheck() {
     Boolean(result?.saleAnalysis) ||
     Boolean(result?.parsed?.salePrice && result.parsed.salePrice >= 10000000);
   const saleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
+  const buildingName = (customBuildingName !== "" ? customBuildingName : (extracted?.buildingName || "")).trim();
+  // Google 智慧容錯直達（以 site:mansion-review.jp 搜尋，徹底解決平假名／片假名／漢字登錄差異與 Brave 檔腳本問題）
+  const googleMansionReviewUrl = buildingName
+    ? `https://www.google.com/search?q=${encodeURIComponent('site:mansion-review.jp ' + buildingName)}`
+    : null;
+  // Mansion Review 站內乾淨搜尋（移除易出錯的 direct_search_mname=1）
+  const mansionReviewDirectUrl = buildingName
+    ? `https://www.mansion-review.jp/mansion/?mname=${encodeURIComponent(buildingName)}&search=1`
+    : null;
+  // SUUMO 同棟大樓中古行情搜尋
+  const suumoBuildingUrl = buildingName
+    ? `https://suumo.jp/ms/chuko/tokyo/city/?keyword=${encodeURIComponent(buildingName)}`
+    : null;
+  // LIFULL HOME'S 同棟大樓搜尋
+  const homesBuildingUrl = buildingName
+    ? `https://www.homes.co.jp/mansion/b-list/?keyword=${encodeURIComponent(buildingName)}`
+    : null;
 
   return (
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
@@ -1022,21 +1140,33 @@ export function ListingHealthCheck() {
             <div className="flex flex-wrap items-center gap-2">
               {isSaleListing ? (
                 saleAnalysis?.mlitComparison && (
-                  <span className={`border px-3 py-1 text-xs font-black uppercase tracking-wider ${
-                    saleAnalysis.mlitComparison.listingVerdict === "below"
-                      ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
-                      : saleAnalysis.mlitComparison.listingVerdict === "above"
-                      ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
-                      : saleAnalysis.mlitComparison.listingVerdict === "typical"
-                      ? "border-[#9ee2cf] bg-[#f2faf7] text-[#007d5a]"
-                      : saleAnalysis.mlitComparison.verdict === "premium"
-                      ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
-                      : "border-[#9ee2cf] bg-[#f2faf7] text-[#007d5a]"
-                  }`}>
-                    {saleAnalysis.mlitComparison.listingVerdictText
-                      ? `市場開價判定：${saleAnalysis.mlitComparison.listingVerdictText}`
-                      : `成約行情判定：${saleAnalysis.mlitComparison.verdictText}`}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {/* 國交省成約中位判定 */}
+                    <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
+                      saleAnalysis.mlitComparison.verdict === "bargain"
+                        ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                        : saleAnalysis.mlitComparison.verdict === "premium"
+                        ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
+                        : "border-[#9ee2cf] bg-[#f2faf7] text-[#007d5a]"
+                    }`}>
+                      國交省實價成約：{saleAnalysis.mlitComparison.verdictText}
+                      {saleAnalysis.mlitComparison.rawDiffPercent != null && ` (${saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}${saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%)`}
+                    </span>
+
+                    {/* 市場開價判定 */}
+                    {saleAnalysis.mlitComparison.listingVerdictText && (
+                      <span className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
+                        saleAnalysis.mlitComparison.listingVerdict === "below"
+                          ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                          : saleAnalysis.mlitComparison.listingVerdict === "above"
+                          ? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"
+                          : "border-[#9ee2cf] bg-[#f2faf7] text-[#007d5a]"
+                      }`}>
+                        市場開價：{saleAnalysis.mlitComparison.listingVerdictText}
+                        {saleAnalysis.mlitComparison.listingDiffPercent != null && ` (${saleAnalysis.mlitComparison.listingDiffPercent >= 0 ? "+" : ""}${saleAnalysis.mlitComparison.listingDiffPercent.toFixed(1)}%)`}
+                      </span>
+                    )}
+                  </div>
                 )
               ) : (
                 result.verdict && (
@@ -1048,103 +1178,315 @@ export function ListingHealthCheck() {
             </div>
           </div>
 
+          {/* 建物名稱・實價歷史即時核對區塊 */}
+          {buildingName && (
+            <div className="border border-[#1A2A22]/20 bg-gradient-to-r from-[#F9FBFA] via-[#F4F8F6] to-[#EEF5F1] p-4 sm:p-5 shadow-xs transition-all">
+              <div className="flex flex-col gap-3.5 lg:flex-row lg:items-center lg:justify-between">
+                {/* 建物名稱輸入與編輯 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
+                      <Building className="h-3 w-3 text-[#00a174]" /> 建物名稱・同棟歷史價格核對
+                    </span>
+                    <span className="text-[11px] text-[#66736C]">（支援即時手動修改以精準搜尋）</span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 max-w-md">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={customBuildingName}
+                        onChange={(e) => setCustomBuildingName(e.target.value)}
+                        placeholder="請輸入或修改建物名稱..."
+                        className="w-full border-2 border-[#1A2A22]/30 bg-white px-3 py-2 text-sm font-bold text-[#1A2A22] shadow-2xs transition-colors focus:border-[#00a174] focus:outline-none focus:ring-2 focus:ring-[#00a174]/20"
+                      />
+                      {customBuildingName !== extracted?.buildingName && extracted?.buildingName && (
+                        <button
+                          type="button"
+                          onClick={() => setCustomBuildingName(extracted.buildingName || "")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F2F5F3] px-2 py-0.5 text-[11px] font-bold text-[#007d5a] hover:bg-[#e6f6f1] transition-colors"
+                        >
+                          還原圖紙名稱
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 搜尋跳轉按鈕組 */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 lg:pt-0">
+                  {/* 首選：Google 智慧直達（最強容錯假名/漢字/英日文差異） */}
+                  {googleMansionReviewUrl && (
+                    <a
+                      href={googleMansionReviewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1.5 bg-[#00a174] px-4 py-2 text-xs font-black text-white shadow-xs transition-all hover:bg-[#008761] hover:shadow cursor-pointer"
+                      title="透過 Google 智慧容錯直達 Mansion Review 大樓歷史頁面，自動處理漢字（如住利）、平假名（如すみとし）與別名出入"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Google 智慧直達同棟（推薦・容錯）</span>
+                      <ArrowUpRight className="h-3.5 w-3.5 opacity-90" />
+                    </a>
+                  )}
+
+                  {/* 次選：Mansion Review 站內直接搜尋 */}
+                  {mansionReviewDirectUrl && (
+                    <a
+                      href={mansionReviewDirectUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1.5 border border-[#1A2A22] bg-white px-3.5 py-2 text-xs font-bold text-[#1A2A22] transition-colors hover:bg-[#F2F5F3] cursor-pointer"
+                      title="於マンションレビュー進行站內直接搜尋"
+                    >
+                      <span>Mansion Review 站內</span>
+                      <ExternalLink className="h-3 w-3 text-[#66736C]" />
+                    </a>
+                  )}
+
+                  {/* 第三方備援：SUUMO / HOME'S */}
+                  {suumoBuildingUrl && (
+                    <a
+                      href={suumoBuildingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1 border border-[#DDE3DF] bg-white px-2.5 py-2 text-xs font-semibold text-[#486355] transition-colors hover:bg-[#F9FBFA] cursor-pointer"
+                      title="於 SUUMO 查詢此大樓中古待售與歷史紀錄"
+                    >
+                      <span>SUUMO</span>
+                      <ExternalLink className="h-2.5 w-2.5 text-[#8A9590]" />
+                    </a>
+                  )}
+
+                  {homesBuildingUrl && (
+                    <a
+                      href={homesBuildingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1 border border-[#DDE3DF] bg-white px-2.5 py-2 text-xs font-semibold text-[#486355] transition-colors hover:bg-[#F9FBFA] cursor-pointer"
+                      title="於 LIFULL HOME'S 查詢此大樓"
+                    >
+                      <span>HOME'S</span>
+                      <ExternalLink className="h-2.5 w-2.5 text-[#8A9590]" />
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* 貼心說明備註 */}
+              <div className="mt-3 flex items-start gap-2 border-t border-[#DDE3DF]/70 pt-2.5 text-[11px] leading-relaxed text-[#3F5147]">
+                <Info className="h-3.5 w-3.5 shrink-0 text-[#007d5a] mt-0.5" />
+                <p>
+                  <strong>日本大樓登錄名稱特性：</strong>日本不動產大樓名稱在圖紙（図面）與網路各大資料庫登記時，常有<strong>漢字／平假名／片假名</strong>差異（例如本案圖紙標示「住利」，Mansion Review 等網站常登錄為「すみとし」；亦常見本館／住吉館／塔樓英日文寫法不同）。若站內直接搜尋未命中，強烈建議點擊<strong>「Google 智慧直達同棟（推薦・容錯）」</strong>（具備自然語言搜尋與別名對照，可精準直達該棟行情），亦可直接在左側修改名稱後重新點擊。
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* 條件分支：買賣圖紙視角 VS 租賃圖紙視角 */}
           {isSaleListing && saleAnalysis ? (
             <>
-              {/* 模組 S1：國土交通省成約實價對比與車站保值評估 */}
+              {/* 模組 S1：國土交通省成約實價 & 市場開價多維深度比對 */}
               {saleAnalysis.mlitComparison && (
-                <div
-                  className={`border p-4 sm:p-5 ${
-                    saleAnalysis.mlitComparison.listingVerdict === "below"
-                      ? "border-[#9ee2cf] bg-[#f2faf7]"
-                      : saleAnalysis.mlitComparison.listingVerdict === "above"
-                      ? "border-[#DCC8A1] bg-[#FFFDF8]"
-                      : saleAnalysis.mlitComparison.listingVerdict === "typical"
-                      ? "border-[#9ee2cf] bg-[#f2faf7]"
-                      : saleAnalysis.mlitComparison.verdict === "premium"
-                      ? "border-[#DCC8A1] bg-[#FFFDF8]"
-                      : "border-[#9ee2cf] bg-[#f2faf7]"
-                  }`}
-                >
-                  <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
-                          saleAnalysis.mlitComparison.listingVerdict === "below"
-                            ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
-                            : saleAnalysis.mlitComparison.listingVerdict === "above"
-                            ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
-                            : saleAnalysis.mlitComparison.listingVerdict === "typical"
-                            ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
-                            : saleAnalysis.mlitComparison.verdict === "premium"
-                            ? "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]"
-                            : "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
-                        }`}
-                      >
-                        {saleAnalysis.mlitComparison.listingVerdictText
-                          ? `市場開價對比：${saleAnalysis.mlitComparison.listingVerdictText}`
-                          : `國交省實價對比：${saleAnalysis.mlitComparison.verdictText}`}
-                      </span>
-                      <h4 className="text-sm font-bold text-[#1A2A22]">
-                        {saleAnalysis.mlitComparison.region}
-                        {saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}中古公寓成約基準
-                      </h4>
+                <div className="border border-[#1A2A22]/20 bg-white p-5 sm:p-6 shadow-sm">
+                  {/* 區塊標題與區域規格 */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF] pb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                          <Scale className="h-3 w-3 text-[#00a174]" /> 實價與市場行情客觀對比
+                        </span>
+                        <h4 className="text-base font-black text-[#1A2A22]">
+                          {saleAnalysis.mlitComparison.region}
+                          {saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}中古公寓成約基準
+                        </h4>
+                      </div>
+                      <p className="mt-1 text-xs text-[#66736C]">
+                        同步客觀比對【本案圖紙賣價】、【國土交通省實價登錄成約價】與【現在市場在售公開開價】三大真實數據。
+                      </p>
                     </div>
 
-                  </div>
-
-                  <div className={`mt-3 grid gap-2 ${saleAnalysis.mlitComparison.typicalListingPriceMan != null ? "sm:grid-cols-2" : ""}`}>
-                    <div className="border border-[#DDE3DF] bg-white/80 p-3">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#66736C]">成約行情基準</p>
-                      <div className="mt-1 flex flex-wrap items-baseline gap-2">
-                        <span className="text-lg font-black text-[#1A2A22]">
-                          約 {saleAnalysis.mlitComparison.expectedPriceMan ?? saleAnalysis.mlitComparison.medianPriceMan} 萬円
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                      {saleAnalysis.mlitComparison.rawDiffPercent != null && (
+                        <span className={`rounded border px-2 py-0.5 text-[11px] font-bold ${
+                          saleAnalysis.mlitComparison.rawDiffPercent > 10
+                            ? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"
+                            : saleAnalysis.mlitComparison.rawDiffPercent < -5
+                            ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                            : "border-[#DDE3DF] bg-[#FFF9ED] text-[#7A5A1F]"
+                        }`}>
+                          相對實價登錄：{saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%
                         </span>
-                        {saleAnalysis.mlitComparison.diffPercent !== null && (
-                          <span className="text-[11px] font-bold text-[#66736C]">
-                            本案開價 {saleAnalysis.mlitComparison.diffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.diffPercent.toFixed(1)}%
-                          </span>
-                        )}
-                      </div>
-                      {saleAnalysis.mlitComparison.fairLowMan != null && saleAnalysis.mlitComparison.fairHighMan != null && (
-                        <p className="mt-0.5 text-[10px] text-[#66736C]">
-                          國交省成交實價經條件校準・合理區間 {saleAnalysis.mlitComparison.fairLowMan}～{saleAnalysis.mlitComparison.fairHighMan} 萬円
-                        </p>
+                      )}
+                      {saleAnalysis.mlitComparison.listingDiffPercent != null && (
+                        <span className={`rounded border px-2 py-0.5 text-[11px] font-bold ${
+                          saleAnalysis.mlitComparison.listingDiffPercent > 10
+                            ? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"
+                            : saleAnalysis.mlitComparison.listingDiffPercent < -5
+                            ? "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]"
+                            : "border-[#DDE3DF] bg-[#FFF9ED] text-[#7A5A1F]"
+                        }`}>
+                          相對在售行情：{saleAnalysis.mlitComparison.listingDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.listingDiffPercent.toFixed(1)}%
+                        </span>
                       )}
                     </div>
+                  </div>
 
-                    {saleAnalysis.mlitComparison.typicalListingPriceMan != null && (
-                      <div className="border border-[#9ee2cf] bg-[#F7FCFA] p-3">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#007d5a]">市場典型開價基準</p>
-                        <div className="mt-1 flex flex-wrap items-baseline gap-2">
-                          <span className="text-lg font-black text-[#1A2A22]">
-                            約 {saleAnalysis.mlitComparison.typicalListingPriceMan} 萬円
+                  {/* 核心三柱比對卡片矩陣：圖紙賣價 VS 實價登錄 VS 現在市場在售行情 */}
+                  <div className="mt-5 grid gap-3.5 sm:grid-cols-3">
+                    {/* 柱 1：本案圖紙賣價 (待檢驗目標) */}
+                    <div className="flex flex-col justify-between border-2 border-[#1A2A22] bg-[#FAFBFB] p-4 shadow-sm">
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1 bg-[#1A2A22] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                            📍 本案圖紙賣價
                           </span>
+                          <span className="text-[10px] font-bold text-[#1A2A22]">圖紙公開開價</span>
+                        </div>
+
+                        <div className="mt-3">
+                          <p className="text-2xl font-black text-[#1A2A22] font-mono">
+                            {saleAnalysis.salePriceMan.toLocaleString()}
+                            <span className="text-sm font-bold text-[#66736C]"> 萬円</span>
+                          </p>
+                        </div>
+
+                        <div className="mt-2 text-xs font-bold text-[#1A2A22] space-y-0.5">
+                          {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && (
+                            <p className="text-[11px] text-[#3F5147]">
+                              每坪約 <span className="font-mono font-black">{saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)}</span> 萬円
+                            </p>
+                          )}
+                          {saleAnalysis.tsuboAndSqm.sqmPriceYen != null && (
+                            <p className="text-[11px] text-[#66736C]">
+                              每㎡約 <span className="font-mono">{Math.round(saleAnalysis.tsuboAndSqm.sqmPriceYen / 10000)}</span> 萬円
+                              {saleAnalysis.areaSqm ? `（專有面積 ${saleAnalysis.areaSqm}㎡）` : ""}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-3 border-t border-[#DDE3DF]/60 pt-2.5 text-[10px] text-[#66736C] space-y-0.5">
+                        <p className="font-medium text-[#1A2A22]">
+                          ※ 仲介銷售図面（Maisoku）標示之開價總額，為本次比對分析目標。
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 柱 2：國土交通省 官方實價登錄成約基準 */}
+                    <div className="flex flex-col justify-between border-2 border-[#00a174]/40 bg-[#F4FBF8] p-4 shadow-2xs transition-all hover:border-[#00a174]">
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1 bg-[#00a174] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                            🏛️ 國交省實價登錄
+                          </span>
+                          <span className="text-[10px] font-bold text-[#007d5a]">官方真實成約中位</span>
+                        </div>
+
+                        <div className="mt-3">
+                          <p className="text-2xl font-black text-[#007d5a] font-mono">
+                            約 {saleAnalysis.mlitComparison.medianPriceMan?.toLocaleString()}
+                            <span className="text-sm font-bold text-[#007d5a]/70"> 萬円</span>
+                          </p>
+                        </div>
+
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                          {saleAnalysis.mlitComparison.rawDiffPercent != null && (
+                            <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black ${
+                              saleAnalysis.mlitComparison.rawDiffPercent > 10
+                                ? "bg-[#FBDFD2] text-[#B13818]"
+                                : saleAnalysis.mlitComparison.rawDiffPercent < -5
+                                ? "bg-[#e6f6f1] text-[#007d5a]"
+                                : "bg-[#FFF9ED] text-[#7A5A1F]"
+                            }`}>
+                              本案開價 {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%
+                            </span>
+                          )}
+                          <span className="text-[10px] font-medium text-[#66736C]">
+                            {saleAnalysis.mlitComparison.verdictText}
+                          </span>
+                        </div>
+
+                        {/* 平米單價換算本案面積 */}
+                        {saleAnalysis.mlitComparison.medianSqmPriceYen && saleAnalysis.areaSqm && (
+                          <div className="mt-2.5 border-t border-[#9ee2cf]/60 pt-2 text-[11px] text-[#007d5a]">
+                            <span className="font-semibold text-[#1A2A22]">
+                              依本案 {saleAnalysis.areaSqm}㎡ 單價換算：
+                            </span>
+                            <span className="font-bold text-[#007d5a] ml-1">
+                              約 {Math.round((saleAnalysis.mlitComparison.medianSqmPriceYen * saleAnalysis.areaSqm) / 10000).toLocaleString()} 萬円
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 border-t border-[#9ee2cf]/60 pt-2.5 text-[10px] text-[#66736C] space-y-0.5">
+                        <p>
+                          樣本統計：{saleAnalysis.mlitComparison.sampleCount != null ? `${saleAnalysis.mlitComparison.sampleCount} 筆成約` : "多筆成交"}
+                          {saleAnalysis.mlitComparison.periodStart && saleAnalysis.mlitComparison.periodEnd
+                            ? ` (${saleAnalysis.mlitComparison.periodStart}～${saleAnalysis.mlitComparison.periodEnd})`
+                            : ""}
+                        </p>
+                        <p className="text-[#8A9590]">
+                          ※ 官方過戶成交紀錄，無仲介或賣方開價灌水。
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 柱 3：市場在售公開刊登開價基準 */}
+                    <div className="flex flex-col justify-between border-2 border-[#DCC8A1] bg-[#FFFCF7] p-4 shadow-2xs transition-all hover:border-[#C4AF82]">
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1 bg-[#DCC8A1] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#7A5A1F]">
+                            🏷️ 現在市場在售行情
+                          </span>
+                          <span className="text-[10px] font-bold text-[#7A5A1F]">同區市面刊登平均</span>
+                        </div>
+
+                        <div className="mt-3">
+                          <p className="text-2xl font-black text-[#7A5A1F] font-mono">
+                            約 {saleAnalysis.mlitComparison.typicalListingPriceMan?.toLocaleString()}
+                            <span className="text-sm font-bold text-[#7A5A1F]/70"> 萬円</span>
+                          </p>
+                        </div>
+
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
                           {saleAnalysis.mlitComparison.listingDiffPercent != null && (
-                            <span className={`text-[11px] font-bold ${saleAnalysis.mlitComparison.listingVerdict === "above" ? "text-[#B13818]" : "text-[#007d5a]"}`}>
+                            <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black ${
+                              saleAnalysis.mlitComparison.listingDiffPercent > 10
+                                ? "bg-[#FBDFD2] text-[#B13818]"
+                                : saleAnalysis.mlitComparison.listingDiffPercent < -5
+                                ? "bg-[#e6f6f1] text-[#007d5a]"
+                                : "bg-[#FFF9ED] text-[#7A5A1F]"
+                            }`}>
                               本案開價 {saleAnalysis.mlitComparison.listingDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.listingDiffPercent.toFixed(1)}%
                             </span>
                           )}
+                          <span className="text-[10px] font-medium text-[#7A5A1F]">
+                            {saleAnalysis.mlitComparison.listingVerdictText || "高於典型開價"}
+                          </span>
                         </div>
-                        <p className="mt-0.5 text-[10px] text-[#66736C]">
-                          {saleAnalysis.mlitComparison.listingBenchmarkSourceUrl ? (
-                            <a
-                              href={saleAnalysis.mlitComparison.listingBenchmarkSourceUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="font-bold text-[#007d5a] underline decoration-[#9ee2cf] underline-offset-2"
-                            >
-                              {saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}
-                            </a>
-                          ) : (
-                            <>{saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}</>
-                          )}{" "}
-                          {saleAnalysis.mlitComparison.listingBenchmarkKind === "public_listing_average"
-                            ? `${saleAnalysis.mlitComparison.listingBenchmarkScopeLabel || "同區同房型"}公開刊登平均`
-                            : `${saleAnalysis.mlitComparison.listingBenchmarkScopeLabel || "區域"}新規登錄／成約㎡單價差${saleAnalysis.mlitComparison.listingPremiumRatePercent != null ? ` ${saleAnalysis.mlitComparison.listingPremiumRatePercent.toFixed(1)}%` : ""}`}
-                        </p>
-                        <p className="mt-1 text-[10px] text-[#66736C]">
-                          三大公開販售行情核對：{" "}
+
+                        <div className="mt-2.5 border-t border-[#DCC8A1]/60 pt-2 text-[11px] text-[#7A5A1F]">
+                          <p>
+                            {saleAnalysis.mlitComparison.listingBenchmarkSourceUrl ? (
+                              <a
+                                href={saleAnalysis.mlitComparison.listingBenchmarkSourceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-bold underline decoration-[#DCC8A1] underline-offset-2"
+                              >
+                                {saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}
+                              </a>
+                            ) : (
+                              <span>{saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 border-t border-[#DCC8A1]/60 pt-2.5 text-[10px] text-[#66736C] space-y-0.5">
+                        <p>
+                          三大在售核對：{" "}
                           {publicSaleMarketCrossChecks.map((source, index) => (
                             <span key={source.label}>
                               {index > 0 ? "・" : ""}
@@ -1154,95 +1496,241 @@ export function ListingHealthCheck() {
                             </span>
                           ))}
                         </p>
+                        <p className="text-[#8A9590]">
+                          ※ 房產入口網賣方開價，通常隱含 5~10% 開價議價空間。
+                        </p>
                       </div>
-                    )}
+                    </div>
                   </div>
 
-                  <p className="mt-2.5 border-t border-[#DDE3DF]/60 pt-2 text-xs leading-relaxed text-[#3F5147]">
-                    💡 <strong>Linus 實價行情深度解讀：</strong>
-                    {saleAnalysis.mlitComparison.explanation}
-                  </p>
+                  {/* 視覺化價格光譜橫條 (Price Spectrum Gauge) */}
+                  <div className="mt-5 border border-[#DDE3DF] bg-[#FAFBFB] p-4.5">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#1A2A22]">
+                      <span className="flex items-center gap-1.5">
+                        <SlidersHorizontal className="h-4 w-4 text-[#007d5a]" /> 三大價格維度定位對比
+                      </span>
+                      <span className="text-[11px] text-[#66736C]">圖紙賣價 vs 實價登錄成約價 vs 現在在售開價</span>
+                    </div>
 
-                  {/* 校準明細：把「預期價為什麼不等於分桶中位數」攤開讓使用者自己檢查，
-                      不要只丟一個結論數字。每一項都可能與他手上的認知不同，
-                      看得到才有辦法質疑。 */}
+                    {/* 光譜長條圖 */}
+                    <div className="mt-3.5 relative">
+                      {/* 背景光譜軌道 */}
+                      <div className="h-3 w-full rounded-full bg-gradient-to-r from-[#e6f6f1] via-[#FFF9ED] to-[#FBDFD2] relative overflow-hidden" />
+
+                      {/* 3 個關鍵價格標記 */}
+                      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 text-center">
+                        {/* 國交省成約 */}
+                        <div className="border-l-2 border-[#00a174] pl-2 text-left bg-[#F4FBF8] p-2 rounded-r">
+                          <p className="text-[10px] text-[#007d5a] font-bold">🏛️ 國交省實價登錄</p>
+                          <p className="text-xs font-black text-[#1A2A22]">
+                            約 {saleAnalysis.mlitComparison.medianPriceMan} 萬円
+                          </p>
+                          <p className="text-[10px] text-[#66736C]">官方成交中位數</p>
+                        </div>
+
+                        {/* 市場在售開價 */}
+                        {saleAnalysis.mlitComparison.typicalListingPriceMan && (
+                          <div className="border-l-2 border-[#DCC8A1] pl-2 text-left bg-[#FFFCF7] p-2 rounded-r">
+                            <p className="text-[10px] text-[#7A5A1F] font-bold">🏷️ 現在市場在售開價</p>
+                            <p className="text-xs font-black text-[#1A2A22]">
+                              約 {saleAnalysis.mlitComparison.typicalListingPriceMan} 萬円
+                            </p>
+                            <p className="text-[10px] text-[#66736C]">門戶網站刊登平均</p>
+                          </div>
+                        )}
+
+                        {/* 本案開價 */}
+                        <div className="border-l-2 border-[#B13818] pl-2 text-left bg-[#FBDFD2]/40 p-2 rounded-r">
+                          <p className="text-[10px] font-black text-[#B13818]">📍 本案圖紙賣價</p>
+                          <p className="text-xs font-black text-[#B13818]">
+                            {saleAnalysis.salePriceMan} 萬円
+                            {saleAnalysis.mlitComparison.rawDiffPercent != null && ` (+${saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%)`}
+                          </p>
+                          <p className="text-[10px] text-[#B13818]">待健檢開價目標</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Linus 深度行情解讀 Card - 結構化分列點呈現 */}
+                  {(() => {
+                    const insightItems = getInsightBulletItems(saleAnalysis.mlitComparison);
+                    const standardItems = insightItems.filter(item => item.iconType !== "advice");
+                    const adviceItem = insightItems.find(item => item.iconType === "advice");
+
+                    return (
+                      <div className="mt-4 border-l-4 border-[#00a174] border-t border-r border-b border-[#9ee2cf] bg-[#F7FCFA] p-4 sm:p-5">
+                        {/* 頂部 Header */}
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF]/70 pb-3">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#00a174]/15 text-[#007d5a]">
+                              <Sparkles className="h-3.5 w-3.5" />
+                            </div>
+                            <h4 className="text-xs font-black uppercase tracking-wider text-[#007d5a]">
+                              Linus 實價行情深度解讀
+                            </h4>
+                          </div>
+
+                          <span
+                            className={`inline-flex self-start rounded border px-2.5 py-0.5 text-[11px] font-bold ${
+                              saleAnalysis.mlitComparison.verdict === "bargain"
+                                ? "border-[#9ee2cf] bg-white text-[#007d5a]"
+                                : saleAnalysis.mlitComparison.verdict === "premium"
+                                ? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]"
+                                : "border-[#DDE3DF] bg-white text-[#1A2A22]"
+                            }`}
+                          >
+                            實價成約判定：{saleAnalysis.mlitComparison.verdictText}
+                          </span>
+                        </div>
+
+                        {/* 分列點清單 (Bullet Items) */}
+                        <div className="mt-3.5 space-y-2.5">
+                          {standardItems.map((item) => {
+                            const isVerdict = item.iconType === "verdict";
+                            const isFactor = item.iconType === "factor";
+                            const isMarket = item.iconType === "market";
+
+                            return (
+                              <div
+                                key={item.id}
+                                className="flex items-start gap-2.5 rounded bg-white p-3 border border-[#E3ECE7] transition-all hover:border-[#9ee2cf]"
+                              >
+                                <div className="mt-0.5 shrink-0">
+                                  {isVerdict && (
+                                    <div className="flex h-6 w-6 items-center justify-center rounded bg-[#e6f6f1] text-[#007d5a]">
+                                      <Target className="h-3.5 w-3.5" />
+                                    </div>
+                                  )}
+                                  {isFactor && (
+                                    <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F0F4F2] text-[#3F5147]">
+                                      <Scale className="h-3.5 w-3.5" />
+                                    </div>
+                                  )}
+                                  {isMarket && (
+                                    <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F5F8F6] text-[#66736C]">
+                                      <Store className="h-3.5 w-3.5" />
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="flex-1 space-y-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span
+                                      className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                                        isVerdict
+                                          ? "bg-[#e6f6f1] text-[#007d5a]"
+                                          : isFactor
+                                          ? "bg-[#F0F4F2] text-[#3F5147]"
+                                          : "bg-[#F5F8F6] text-[#66736C]"
+                                      }`}
+                                    >
+                                      {item.tag}
+                                    </span>
+                                    {item.title && (
+                                      <span className="text-xs font-bold text-[#1A2A22]">
+                                        {item.title}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-xs leading-relaxed text-[#2D3E35]">
+                                    {item.text}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* 壓軸亮點：Linus 實務談判建議 (琥珀金微光卡片) */}
+                        {adviceItem && (
+                          <div className="mt-3 border-l-4 border-[#C18714] border border-[#DCC8A1] bg-[#FFFDF8] p-3.5 sm:p-4">
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#A87212]">
+                              <Lightbulb className="h-4 w-4 text-[#C18714] shrink-0" />
+                              <span>{adviceItem.tag}：{adviceItem.title || "出價與談判攻防建議"}</span>
+                            </div>
+                            <p className="mt-1.5 text-xs leading-relaxed text-[#7A5A1F]">
+                              {adviceItem.text}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* 價格校準因子明細透明展開 */}
                   {saleAnalysis.mlitComparison.priceFactors && saleAnalysis.mlitComparison.priceFactors.length > 0 && (
-                    <div className="mt-2.5 border border-[#DDE3DF] bg-white/80 p-2.5">
-                      <p className="text-[11px] font-bold text-[#1A2A22]">
-                        價格校準依據（基準：{saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}成約中位 {saleAnalysis.mlitComparison.medianPriceMan} 萬円）
-                      </p>
-                      {/* 資料期間與樣本數要跟結論放在一起。用 5 筆一年前的成交算出來的判斷，
-                          不該和用 100 筆最新成交算出來的長得一模一樣。 */}
-                      {(saleAnalysis.mlitComparison.periodEnd || saleAnalysis.mlitComparison.sampleCount != null) && (
-                        <p className="mt-0.5 text-[10px] text-[#66736C]">
-                          國土交通省成約實價
-                          {saleAnalysis.mlitComparison.periodStart && saleAnalysis.mlitComparison.periodEnd
-                            ? `・資料期間 ${saleAnalysis.mlitComparison.periodStart}～${saleAnalysis.mlitComparison.periodEnd}`
-                            : saleAnalysis.mlitComparison.periodEnd
-                            ? `・資料期間至 ${saleAnalysis.mlitComparison.periodEnd}`
-                            : ""}
-                          {saleAnalysis.mlitComparison.sampleCount != null ? `・成交樣本 ${saleAnalysis.mlitComparison.sampleCount} 筆` : ""}
+                    <div className="mt-4 border border-[#DDE3DF] bg-white p-4">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-[#DDE3DF]/60 pb-2.5">
+                        <p className="text-xs font-bold text-[#1A2A22]">
+                          價格校準因子明細（基準：{saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}成約中位 {saleAnalysis.mlitComparison.medianPriceMan} 萬円）
                         </p>
-                      )}
+                        <span className="text-[10px] text-[#66736C]">
+                          成約資料期間：{saleAnalysis.mlitComparison.periodStart}～{saleAnalysis.mlitComparison.periodEnd}・{saleAnalysis.mlitComparison.sampleCount} 筆樣本
+                        </span>
+                      </div>
+
                       {saleAnalysis.mlitComparison.areaBasisNote && (
-                        <p className="mt-1 text-[11px] text-[#66736C]">{saleAnalysis.mlitComparison.areaBasisNote}</p>
+                        <p className="mt-2 text-[11px] text-[#66736C]">{saleAnalysis.mlitComparison.areaBasisNote}</p>
                       )}
+
                       {saleAnalysis.mlitComparison.marketAgeBand && (
                         <p className="mt-1 text-[11px] text-[#66736C]">
                           屋齡已由同築年帶成交㎡單價控制
-                          {saleAnalysis.mlitComparison.marketAgeBandScope === "district"
-                            ? "（同區跨房型備援）"
-                            : "（同區同房型）"}
-                          {saleAnalysis.mlitComparison.marketAgeBandSampleCount != null
-                            ? `・分層樣本 ${saleAnalysis.mlitComparison.marketAgeBandSampleCount} 筆`
-                            : ""}
+                          {saleAnalysis.mlitComparison.marketAgeBandScope === "district" ? "（同區跨房型備援）" : "（同區同房型）"}
+                          {saleAnalysis.mlitComparison.marketAgeBandSampleCount != null ? `・分層樣本 ${saleAnalysis.mlitComparison.marketAgeBandSampleCount} 筆` : ""}
                           ；樣本不足時才回退到原本的屋齡係數。
                         </p>
                       )}
-                      <ul className="mt-1.5 space-y-1">
+
+                      {/* 校準因子 Chips Grid */}
+                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
                         {saleAnalysis.mlitComparison.priceFactors.map((factor, index) => (
-                          <li key={index} className="flex items-baseline gap-2 text-[11px] text-[#3F5147]">
-                            <span
-                              className={`min-w-[3.2rem] shrink-0 text-right font-bold ${
-                                factor.ratePercent > 0
-                                  ? "text-[#B13818]"
-                                  : factor.ratePercent < 0
-                                  ? "text-[#007d5a]"
-                                  : "text-[#66736C]"
-                              }`}
-                            >
-                              {factor.ratePercent >= 0 ? "+" : ""}{factor.ratePercent}%
-                            </span>
+                          <div key={index} className="flex items-center justify-between border border-[#ECEFEC] bg-[#FAFCFB] p-2 text-xs">
                             <span className="font-bold text-[#1A2A22]">{factor.label}</span>
-                            <span className="text-[#66736C]">{factor.note}</span>
-                          </li>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[11px] text-[#66736C]">{factor.note}</span>
+                              <span className={`font-black font-mono text-xs px-1.5 py-0.5 ${
+                                factor.ratePercent > 0
+                                  ? "bg-[#FBDFD2] text-[#B13818]"
+                                  : factor.ratePercent < 0
+                                  ? "bg-[#e6f6f1] text-[#007d5a]"
+                                  : "bg-[#EAEFEA] text-[#66736C]"
+                              }`}>
+                                {factor.ratePercent >= 0 ? "+" : ""}{factor.ratePercent}%
+                              </span>
+                            </div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
+
                       {saleAnalysis.mlitComparison.rawDiffPercent != null && (
-                        <p className="mt-1.5 border-t border-[#DDE3DF]/60 pt-1.5 text-[10px] text-[#66736C]">
-                          未校準時，開價相對分桶中位數為 {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}
-                          {saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%；該中位數混合了不同面積、屋齡與車站距離的成交，未經校準不宜直接當作議價依據。
+                        <p className="mt-3 border-t border-[#DDE3DF]/60 pt-2 text-[10px] text-[#66736C] leading-relaxed">
+                          💡 <strong>條件加權試算說明：</strong>未考慮個別屋況時，本案開價相對分桶成交中位數為 {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%；該中位數涵蓋了不同面積與屋齡之成約。若進一步納入專有面積、車站步行與樓層等客觀條件加權試算，本案開價相對同條件行情區間仍偏高約 {saleAnalysis.mlitComparison.diffPercent != null && saleAnalysis.mlitComparison.diffPercent >= 0 ? "+" : ""}{saleAnalysis.mlitComparison.diffPercent?.toFixed(1)}%，買方具備實質議價折讓空間。
                         </p>
                       )}
                     </div>
                   )}
 
-                  {/* 舊耐震這類會影響貸款與減稅資格的事，不能只算進價格係數就算了 */}
+                  {/* 警示與資產評估 */}
                   {saleAnalysis.mlitComparison.priceCautions?.map((caution, index) => (
-                    <p key={index} className="mt-2 border border-[#DCC8A1] bg-[#FFF9ED] p-2.5 text-[11px] leading-relaxed text-[#7A5A1F]">
-                      ⚠️ {caution}
-                    </p>
+                    <div key={index} className="mt-3 flex items-start gap-2 border border-[#DCC8A1] bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">
+                      <AlertCircle className="h-4 w-4 shrink-0 text-[#B13818] mt-0.5" />
+                      <div>
+                        <strong className="font-bold text-[#B13818]">注意：</strong> {caution}
+                      </div>
+                    </div>
                   ))}
 
-                  {/* 車站徒步距離資產保值性分析 */}
+                  {/* 車站徒步保值性 */}
                   {saleAnalysis.mlitComparison.stationWalkFactor && (
-                    <div className="mt-2.5 flex items-start gap-2 rounded bg-white/80 p-2.5 text-xs text-[#3F5147] border border-[#DDE3DF]">
+                    <div className="mt-3 flex items-start gap-2.5 border border-[#9ee2cf] bg-[#F4FBF8] p-3 text-xs text-[#3F5147]">
                       <Footprints className="h-4 w-4 shrink-0 text-[#007d5a] mt-0.5" />
                       <div>
                         <span className="font-bold text-[#1A2A22]">
                           車站徒步 {saleAnalysis.mlitComparison.stationWalkFactor.walkMinutes} 分資產流動性評估：
                         </span>
-                        <span>{saleAnalysis.mlitComparison.stationWalkFactor.note}</span>
+                        <span className="ml-1 leading-relaxed">{saleAnalysis.mlitComparison.stationWalkFactor.note}</span>
                       </div>
                     </div>
                   )}

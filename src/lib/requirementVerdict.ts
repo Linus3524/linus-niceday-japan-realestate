@@ -546,10 +546,20 @@ export interface SalePriceFactor {
   note: string;
 }
 
+export interface SalePriceInsightPoint {
+  id: string;
+  icon: string;
+  tag: string;
+  title: string;
+  content: string;
+  type: "verdict" | "factor" | "market" | "advice";
+}
+
 export interface SalePriceVerdict {
   verdict: "bargain" | "fair" | "premium";
   verdictText: string;
   explanation: string;
+  insightPoints: SalePriceInsightPoint[];
   /** 相對「經條件校準後的預期價」的價差 */
   diffPercent: number;
   /** 相對「未校準的分桶中位總價」的價差，保留舊口徑供對照 */
@@ -763,34 +773,156 @@ export function buildSalePriceVerdict(input: {
   let verdictText: string;
   let explanation: string;
 
+  const points: string[] = [];
+  const insightPoints: SalePriceInsightPoint[] = [];
+
+  // 1. 行情落點與合理區間
+  const areaCalcPhrase = areaAdjusted && areaSqm !== null
+    ? `按本案實際面積（${areaSqm}㎡）換算`
+    : "以該房型中位數為基準";
+
   if (salePriceYen < fairLow) {
     verdict = "bargain";
-    verdictText = "低於條件校準後的預期價";
-    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 低於此區間約 ${Math.abs(diffPercent)}%，價格具競爭力。便宜通常有原因，建議確認屋況、權利形態（是否為定期借地權）、有無租約在身，以及管理費與修繕積立金是否偏高。`;
+    verdictText = "低於市場客觀試算區間";
+    const content = `以該區同房型成交實價為基礎，經${areaCalcPhrase}與客觀條件加權試算後，市場成交行情區間約落在 ${man(fairLow)}～${man(fairHigh)} 萬円（推估基準約 ${man(expectedPriceYen)} 萬円）。本案開價 ${man(salePriceYen)} 低於此區間約 ${Math.abs(diffPercent)}%，價格具競爭力。`;
+    insightPoints.push({
+      id: "verdict",
+      icon: "🎯",
+      tag: "實價行情落點",
+      title: "開價低於市場客觀試算區間",
+      content,
+      type: "verdict",
+    });
+    points.push(`• 【實價行情落點】：${content}`);
   } else if (salePriceYen <= fairHigh) {
     verdict = "fair";
-    verdictText = "落在條件校準後的合理區間";
-    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 落在區間內，與屋齡、車站距離、樓層與面積條件相符。`;
+    verdictText = "落在市場客觀試算區間";
+    const content = `以該區同房型成交實價為基礎，經${areaCalcPhrase}與客觀條件加權試算後，市場成交行情區間約落在 ${man(fairLow)}～${man(fairHigh)} 萬円（推估基準約 ${man(expectedPriceYen)} 萬円）。本案開價 ${man(salePriceYen)} 落在區間內，與屋齡、車站距離、樓層與面積條件相符。`;
+    insightPoints.push({
+      id: "verdict",
+      icon: "🎯",
+      tag: "實價行情落點",
+      title: "開價落在市場客觀試算區間",
+      content,
+      type: "verdict",
+    });
+    points.push(`• 【實價行情落點】：${content}`);
   } else {
     verdict = "premium";
-    verdictText = "高於條件校準後的預期價";
-    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 高出約 ${diffPercent}%，且這個差距已經扣除屋齡、車站距離與樓層帶來的合理溢價。建議請仲介具體說明加價理由（例如室內全面翻新、管理狀態特別良好、稀少的角部屋或大陽台），而不是只以「地段好」帶過。`;
+    verdictText = "高於市場客觀試算區間";
+    const content = `以該區同房型成交實價為基礎，經${areaCalcPhrase}與客觀條件加權試算後，市場成交行情區間約落在 ${man(fairLow)}～${man(fairHigh)} 萬円（推估基準約 ${man(expectedPriceYen)} 萬円）。本案開價 ${man(salePriceYen)} 高出約 +${diffPercent}%，且這個差距已經扣除屋齡、車站距離與樓層帶來的合理溢價。`;
+    insightPoints.push({
+      id: "verdict",
+      icon: "🎯",
+      tag: "實價行情落點",
+      title: "開價高於市場客觀試算區間",
+      content,
+      type: "verdict",
+    });
+    points.push(`• 【實價行情落點】：${content}`);
   }
 
+  // 2. 條件加權與溢價拆解
+  if (factors.length > 0) {
+    const factorContent = diffPercent > 0
+      ? `本案具備「${factorSummary}」等客觀條件。目前的開價差距已經扣除這些客觀加分項目，代表超出部分仍顯著高於精算後的合理水準。`
+      : `本案具備「${factorSummary}」之客觀條件，已完整反映於合理成交區間之推估中。`;
+    insightPoints.push({
+      id: "factor",
+      icon: "⚖️",
+      tag: "條件優勢拆解",
+      title: "個別客觀條件加權分析",
+      content: factorContent,
+      type: "factor",
+    });
+    points.push(
+      diffPercent > 0
+        ? `• 【條件溢價拆解】：${factorContent}`
+        : `• 【條件優勢對應】：${factorContent}`
+    );
+  }
+
+  // 3. 市面公開刊登對照
   if (listingBenchmark?.kind === "public_listing_average" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
-    explanation += ` 同時對照 ${listingBenchmark.sourceLabel}（${listingBenchmark.scopeLabel}），公開販售平均約 ${man(typicalListingPriceYen)}；本案開價相對該刊登平均${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。公開刊登平均尚未控制面積、屋齡、樓層與裝修，且不是成交價，因此只作第二層市場核對。`;
+    const content = `同時對照 ${listingBenchmark.sourceLabel}（${listingBenchmark.scopeLabel}），公開販售平均約 ${man(typicalListingPriceYen)}；本案開價相對該刊登平均${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。公開刊登平均尚未控制面積、屋齡、樓層與裝修，且不是成交價，因此只作第二層市場核對。`;
+    insightPoints.push({
+      id: "market",
+      icon: "📊",
+      tag: "市面刊登對照",
+      title: `在售公開刊登平均：約 ${man(typicalListingPriceYen)}`,
+      content,
+      type: "market",
+    });
+    points.push(`• 【市面刊登對照】：${content}`);
   } else if (listingBenchmark?.kind === "reins_ratio" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
     const premiumPercent = Math.round(listingPremiumRate! * 1000) / 10;
     const discountPercent = Math.round(reinsImpliedDiscountFromListingRate(listingBenchmark) * 1000) / 10;
-    explanation += ` 同期 ${listingBenchmark.sourceLabel} 顯示，${listingBenchmark.market}新規登錄㎡單價比成約㎡單價高 ${premiumPercent}%（成約價換算約比新規開價低 ${discountPercent}%）。套用這個市場層級口徑後，本案的典型開價基準約 ${man(typicalListingPriceYen)}，本案開價相對該基準${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。這是兩組市場物件的平均差距，不代表本案一定能議價相同比例。`;
+    const content = `同期 ${listingBenchmark.sourceLabel} 顯示，${listingBenchmark.market}新規登錄㎡單價比成約㎡單價高 ${premiumPercent}%（成約價換算約比新規開價低 ${discountPercent}%）。套用這個市場層級口徑後，本案的典型開價基準約 ${man(typicalListingPriceYen)}，本案開價相對該基準${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。這是兩組市場物件的平均差距，不代表本案一定能議價相同比例。`;
+    insightPoints.push({
+      id: "market",
+      icon: "📊",
+      tag: "市面刊登對照",
+      title: `REINS 市場新規開價基準：約 ${man(typicalListingPriceYen)}`,
+      content,
+      type: "market",
+    });
+    points.push(`• 【市面刊登對照】：${content}`);
   } else {
-    explanation += " 目前沒有這個地區可直接對照的公開『成約價 vs 新規開價』同口徑統計，因此只呈現國交省成約行情，不推估市場典型開價。";
+    const content = "目前沒有這個地區可直接對照的公開『成約價 vs 新規開價』同口徑統計，因此只呈現國交省成約行情，不推估市場典型開價。";
+    insightPoints.push({
+      id: "market",
+      icon: "📊",
+      tag: "市面刊登對照",
+      title: "市場刊登對照說明",
+      content,
+      type: "market",
+    });
+    points.push(`• 【市面刊登對照】：${content}`);
   }
+
+  // 4. Linus 實務建議
+  if (diffPercent > 10) {
+    const content = `開價高於合理成交區間上限，建議請仲介具體說明加價理由（例如室內全面翻新、管理狀態特別良好、稀少的角部屋或大陽台），而不是只以「地段好」帶過。出價時建議以 ${man(expectedPriceYen)}～${man(fairHigh)} 作為談判錨點。`;
+    insightPoints.push({
+      id: "advice",
+      icon: "💡",
+      tag: "Linus 實務建議",
+      title: "議價攻防指引與談判參考",
+      content,
+      type: "advice",
+    });
+    points.push(`• 【Linus 實務建議】：${content}`);
+  } else if (diffPercent < -10) {
+    const content = "便宜通常有原因，建議確認屋況、權利形態（是否為定期借地權）、有無租約在身，以及管理費與修繕積立金是否偏高。";
+    insightPoints.push({
+      id: "advice",
+      icon: "💡",
+      tag: "Linus 實務建議",
+      title: "低價查驗防踩雷指引",
+      content,
+      type: "advice",
+    });
+    points.push(`• 【Linus 實務建議】：${content}`);
+  } else {
+    const content = `開價與市場條件相符，若屋況符合期待，出價時可依現場內見屋況以 ${man(expectedPriceYen)} 附近作為談判參考。`;
+    insightPoints.push({
+      id: "advice",
+      icon: "💡",
+      tag: "Linus 實務建議",
+      title: "議價攻防指引與談判參考",
+      content,
+      type: "advice",
+    });
+    points.push(`• 【Linus 實務建議】：${content}`);
+  }
+
+  explanation = points.join("\n\n");
 
   return {
     verdict,
     verdictText,
     explanation,
+    insightPoints,
     diffPercent,
     rawDiffPercent,
     expectedPriceMan: toMan(expectedPriceYen),
