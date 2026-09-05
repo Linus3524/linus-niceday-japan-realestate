@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
+import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict, buildSalePriceVerdict, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
   parseYenAmount,
   parseMonthsOrYen,
@@ -19,12 +19,14 @@ import {
   assessRepairReserve,
   calculateSaleInitialCosts,
   parseAgeYears,
+  parseFloorInfo,
 } from "../src/lib/listingExtraction.js";
 import { getOfficialBuyEstimate } from "../src/data/buyMarket.js";
+import { mlitBuySnapshotMeta } from "../src/data/mlitBuySnapshot.js";
 import { districtStations, rentRates } from "../src/data/housingMarket.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
-import type { RentSearchCriteria } from "../src/lib/rentAnalysis.js";
+import { ROOM_TYPE_DETAIL_LABEL, type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import type { LayoutCode } from "../src/data/housingMarket.js";
 
 /**
@@ -168,6 +170,7 @@ export interface ExtractedListingFields {
   // 買賣專用欄位
   salePrice: string;
   totalUnits: string;
+  buildingFloors: string;
   repairReserve: string;
   repairFund: string;
   otherMonthlyFees: string;
@@ -279,7 +282,14 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
     買賣物件專屬欄位（若為買賣圖紙，請格外仔細精準提取）：
     - salePrice（販売価格／価格）：照原文，例如 "7,299万円"、"3,450万円"、"6,300万円"、"5,488万円"、"5,980万円"。
     - totalUnits（総戸数／戸数）：照原文，例如 "50戸"、"39戸"、"26戸"、"17戸"、"42戸"。
+    - buildingFloors（建物總樓層）：只填地上總樓層的數字，例如 "7"、"21"、"9"。
+      常見於構造欄位（"鉄筋コンクリート造21階建"、"RC造・地上9階建"）或物件概要。
+      這個欄位很重要：同樣是 7 樓，在 7 層建物是頂樓、在 21 層建物只是中低樓層，
+      沒有總樓層就無法判斷樓層價值。找不到才留空字串。
     - repairReserve（修繕積立金）：照原文，例如 "6,100円"、"4,120円"、"14,230円"、"12,100円"。
+    - managementFee（管理費）：買賣圖紙同樣一定要抓。它幾乎都緊鄰「修繕積立金」出現，
+      常見寫法是「管理費 9,300円/月」或表格中「管理費・修繕積立金」並排。
+      只有在圖紙上真的找不到時才留空字串，不要因為這是買賣圖紙就略過這個欄位。
     - repairFund（修繕積立基金／積立基金）：照原文，例如 "2,180円"（有些物件每月另有積立基金）。若無則填空字串。
     - otherMonthlyFees（町会費／協力金／自治会費／その他月額費用）：照原文，例如 "町会費 300円"、"協力金 2,000円"、"町会費 200円"。
     - occupancyStatus（現況）：照原文，例如 "空室"、"賃貸中"、"居住中"、"オーナーチェンジ"。
@@ -355,6 +365,7 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
           renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
           salePrice: { type: Type.STRING, description: "販売価格，例如 7,299万円" },
           totalUnits: { type: Type.STRING, description: "総戸数，例如 39戸" },
+          buildingFloors: { type: Type.STRING, description: "建物地上總樓層數字，例如 21" },
           repairReserve: { type: Type.STRING, description: "修繕積立金，例如 6,100円" },
           repairFund: { type: Type.STRING, description: "修繕積立基金，例如 2,180円" },
           otherMonthlyFees: { type: Type.STRING, description: "町会費、協力金等其他月額雜費" },
@@ -374,7 +385,7 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
           "keyMoney", "deposit", "leaseTerms", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
-          "renewalFee", "salePrice", "totalUnits", "repairReserve", "repairFund",
+          "renewalFee", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
           "otherMonthlyFees", "occupancyStatus", "currentRent", "annualIncome",
           "grossYield", "landRights", "zoning", "renovationDetails",
           "managementCompany", "managementStyle", "specialNotes"
@@ -787,28 +798,54 @@ function buildSaleAnalysis(params: {
   const primaryStation = stations[0] ?? "";
   const locationInfo = resolveDistrictAndRegion(extracted.address, primaryStation);
   let mlitComparison = null;
-  const layoutCode = (normalizeRoomType(layout) as LayoutCode | null) ?? "ldk1";
+  // 不能在辨識不到房型時預設任何一桶。實價快照是「總價中位數」，
+  // 房型分桶就是它唯一的規模控制；套錯桶不是誤差、是拿完全不同規模的物件在比。
+  // 例：4LDK 在 normalizeRoomType 依設計回傳 null（行情資料本身不收錄 4LDK 以上），
+  // 舊版 fallback 成 ldk1 後，新宿一間 4LDK 85㎡ 開價 1.28 億會被拿去比 1LDK 的
+  // 5,800 萬中位數，判成「高於行情 +120%」；比對正確的 ldk3（中位 1.5 億）
+  // 其實是低於行情約 15%。結論剛好相反，寧可不給結論也不能給反的。
+  const layoutCode = normalizeRoomType(layout) as LayoutCode | null;
 
-  if (locationInfo) {
+  if (locationInfo && layoutCode) {
     const officialEstimate = getOfficialBuyEstimate(locationInfo.region, locationInfo.district, layoutCode);
     const medianPriceYen = officialEstimate?.medianTradePriceYen ?? null;
     if (medianPriceYen && medianPriceYen > 0) {
-      const diffPercent = Math.round(((salePriceYen - medianPriceYen) / medianPriceYen) * 1000) / 10;
-      let verdict: "bargain" | "fair" | "premium" = "fair";
-      let verdictText = "符合該區成交行情區間";
-      let explanation = `國土交通省成約實價統計「${locationInfo.region}${locationInfo.district}」同房型中古公寓成交中位數為 ¥${(medianPriceYen / 10000).toLocaleString()} 萬。本案開價落在合理範圍。`;
+      // 取「最近的那一站」，不是圖紙上列的第一站。實測ナビウス高円寺南
+      // 第一站是中野 11 分、第二站東高円寺才 5 分，用第一站會低估近站優勢。
+      const walkCandidates = walkTimes
+        .map(w => parseInt(String(w).match(/\d+/)?.[0] || "", 10))
+        .filter(n => Number.isFinite(n) && n > 0);
+      const minWalkMinutes = walkCandidates.length ? Math.min(...walkCandidates) : null;
 
-      if (diffPercent < -12) {
-        verdict = "bargain";
-        verdictText = "低於該區成約中位數（價格具競爭力）";
-        explanation = `本案開價比該區同房型成約中位數低約 ${Math.abs(diffPercent)}%，總價極具優勢，建議確認是否有格局限制或屋況需整理。`;
-      } else if (diffPercent > 18) {
-        verdict = "premium";
-        verdictText = "高於該區成約中位數（需檢視溢價支撐）";
-        explanation = `本案開價高於該區同房型成約中位數約 +${diffPercent}%。在日本市場中，此類溢價通常源自「精華站點近站（徒步5分內）」、「全室新規精裝修（如R1住宅認證）」或「高樓層/角部屋大陽台」等稀缺優勢支撐。`;
+      // 總樓層（○階建）不一定出現在構造欄位，也可能落在物件備註裡，
+      // 兩邊一起掃才不會漏。少了它就分不出「7階建的7樓」和「21階建的16樓」。
+      const floorInfo = parseFloorInfo(
+        extracted.floor,
+        `${extracted.buildingFloors ? `${extracted.buildingFloors}階建` : ""} ${extracted.structure || ""} ${extracted.specialNotes || ""}`
+      );
+      const priceVerdict = buildSalePriceVerdict({
+        salePriceYen,
+        medianPriceYen,
+        layout: layoutCode,
+        areaSqm,
+        ageYears,
+        walkMinutes: minWalkMinutes,
+        floor: floorInfo.floor,
+        totalFloors: floorInfo.totalFloors,
+        renovationNotes: `${extracted.renovationDetails || ""} ${extracted.specialNotes || ""}`,
+        sampleCount: officialEstimate?.sampleCount ?? null,
+      });
+
+      // 冷門地區的分桶會因為近 4 季樣本不足而把統計視窗往前滑，
+      // 資料期間就落後於最新季。這件事必須講出來，否則使用者無從判斷
+      // 這個結論用的是上季的市況、還是一年多前的市況。
+      if (officialEstimate?.periodEnd && officialEstimate.periodEnd !== mlitBuySnapshotMeta.latestPeriod) {
+        priceVerdict.cautions.push(
+          `這個地區與房型的成交資料只涵蓋到 ${officialEstimate.periodEnd}（最新可得為 ${mlitBuySnapshotMeta.latestPeriod}），代表近期成交量少。若期間內行情有明顯變動，這個基準會偏離現況。`
+        );
       }
 
-      const walkNum = parseInt(walkTimes[0] || "0", 10) || 7;
+      const walkNum = minWalkMinutes ?? 7;
       const stationWalkFactor = walkNum <= 5
         ? { walkMinutes: walkNum, level: "prime_close" as const, note: "徒步 5 分鐘內黃金地段：資產保值性與抗跌力最高，享市場溢價支撐。" }
         : walkNum <= 10
@@ -818,15 +855,31 @@ function buildSaleAnalysis(params: {
       mlitComparison = {
         region: locationInfo.region,
         district: locationInfo.district,
-        layout,
+        // 顯示「實際比對用的分桶」而不是圖紙原文房型。畫面上寫的是
+        // 「○○中古公寓成約基準」，用原文會讓它宣稱比對了一個其實沒比的房型。
+        layout: ROOM_TYPE_DETAIL_LABEL[layoutCode],
+        listingLayout: layout,
         medianPriceYen,
         medianPriceMan: Math.round(medianPriceYen / 10000),
-        diffPercent,
-        verdict,
-        verdictText,
-        explanation,
+        // diffPercent 改為「相對條件校準後預期價」的價差，這才是使用者要的
+        // 「這個開價合不合理」；未校準的中位數價差另存 rawDiffPercent 供對照。
+        diffPercent: priceVerdict.diffPercent,
+        rawDiffPercent: priceVerdict.rawDiffPercent,
+        verdict: priceVerdict.verdict,
+        verdictText: priceVerdict.verdictText,
+        explanation: priceVerdict.explanation,
+        expectedPriceMan: priceVerdict.expectedPriceMan,
+        fairLowMan: priceVerdict.fairLowMan,
+        fairHighMan: priceVerdict.fairHighMan,
+        areaAdjusted: priceVerdict.areaAdjusted,
+        areaBasisNote: priceVerdict.areaBasisNote,
+        priceFactors: priceVerdict.factors,
+        priceCautions: priceVerdict.cautions,
         sampleCount: officialEstimate?.sampleCount,
+        periodStart: officialEstimate?.periodStart,
         periodEnd: officialEstimate?.periodEnd,
+        latestPeriod: mlitBuySnapshotMeta.latestPeriod,
+        snapshotGeneratedAt: mlitBuySnapshotMeta.generatedAt,
         stationWalkFactor,
       };
     }

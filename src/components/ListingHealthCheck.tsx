@@ -144,15 +144,31 @@ export interface SaleAnalysisVerdict {
   mlitComparison: {
     region: string;
     district: string;
+    /** 實際比對用的行情分桶標籤（非圖紙原文房型） */
     layout: string;
+    /** 圖紙上寫的原文房型 */
+    listingLayout?: string;
     medianPriceYen: number | null;
     medianPriceMan: number | null;
+    /** 相對「條件校準後預期價」的價差 */
     diffPercent: number | null;
+    /** 相對「未校準分桶中位數」的價差，供對照 */
+    rawDiffPercent?: number | null;
+    expectedPriceMan?: number | null;
+    fairLowMan?: number | null;
+    fairHighMan?: number | null;
+    areaAdjusted?: boolean;
+    areaBasisNote?: string;
+    priceFactors?: Array<{ label: string; ratePercent: number; note: string }>;
+    priceCautions?: string[];
     verdict: "bargain" | "fair" | "premium";
     verdictText: string;
     explanation: string;
     sampleCount?: number;
+    periodStart?: string;
     periodEnd?: string;
+    latestPeriod?: string;
+    snapshotGeneratedAt?: string | null;
     stationWalkFactor: {
       walkMinutes: number;
       level: "prime_close" | "standard" | "far";
@@ -1037,10 +1053,15 @@ export function ListingHealthCheck() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="text-[#66736C]">官方成約中位價：</span>
+                      <span className="text-[#66736C]">本案預期價：</span>
                       <span className="font-bold text-[#1A2A22]">
-                        約 {saleAnalysis.mlitComparison.medianPriceMan} 萬円
+                        約 {saleAnalysis.mlitComparison.expectedPriceMan ?? saleAnalysis.mlitComparison.medianPriceMan} 萬円
                       </span>
+                      {saleAnalysis.mlitComparison.fairLowMan != null && saleAnalysis.mlitComparison.fairHighMan != null && (
+                        <span className="text-[11px] text-[#66736C]">
+                          （合理區間 {saleAnalysis.mlitComparison.fairLowMan}～{saleAnalysis.mlitComparison.fairHighMan} 萬円）
+                        </span>
+                      )}
                       {saleAnalysis.mlitComparison.diffPercent !== null && (
                         <span
                           className={`rounded border px-2 py-0.5 text-[11px] font-bold ${
@@ -1061,6 +1082,65 @@ export function ListingHealthCheck() {
                     💡 <strong>Linus 實價行情深度解讀：</strong>
                     {saleAnalysis.mlitComparison.explanation}
                   </p>
+
+                  {/* 校準明細：把「預期價為什麼不等於分桶中位數」攤開讓使用者自己檢查，
+                      不要只丟一個結論數字。每一項都可能與他手上的認知不同，
+                      看得到才有辦法質疑。 */}
+                  {saleAnalysis.mlitComparison.priceFactors && saleAnalysis.mlitComparison.priceFactors.length > 0 && (
+                    <div className="mt-2.5 border border-[#DDE3DF] bg-white/80 p-2.5">
+                      <p className="text-[11px] font-bold text-[#1A2A22]">
+                        價格校準依據（基準：{saleAnalysis.mlitComparison.district}・{saleAnalysis.mlitComparison.layout}成約中位 {saleAnalysis.mlitComparison.medianPriceMan} 萬円）
+                      </p>
+                      {/* 資料期間與樣本數要跟結論放在一起。用 5 筆一年前的成交算出來的判斷，
+                          不該和用 100 筆最新成交算出來的長得一模一樣。 */}
+                      {(saleAnalysis.mlitComparison.periodEnd || saleAnalysis.mlitComparison.sampleCount != null) && (
+                        <p className="mt-0.5 text-[10px] text-[#66736C]">
+                          國土交通省成約實價
+                          {saleAnalysis.mlitComparison.periodStart && saleAnalysis.mlitComparison.periodEnd
+                            ? `・資料期間 ${saleAnalysis.mlitComparison.periodStart}～${saleAnalysis.mlitComparison.periodEnd}`
+                            : saleAnalysis.mlitComparison.periodEnd
+                            ? `・資料期間至 ${saleAnalysis.mlitComparison.periodEnd}`
+                            : ""}
+                          {saleAnalysis.mlitComparison.sampleCount != null ? `・成交樣本 ${saleAnalysis.mlitComparison.sampleCount} 筆` : ""}
+                        </p>
+                      )}
+                      {saleAnalysis.mlitComparison.areaBasisNote && (
+                        <p className="mt-1 text-[11px] text-[#66736C]">{saleAnalysis.mlitComparison.areaBasisNote}</p>
+                      )}
+                      <ul className="mt-1.5 space-y-1">
+                        {saleAnalysis.mlitComparison.priceFactors.map((factor, index) => (
+                          <li key={index} className="flex items-baseline gap-2 text-[11px] text-[#3F5147]">
+                            <span
+                              className={`min-w-[3.2rem] shrink-0 text-right font-bold ${
+                                factor.ratePercent > 0
+                                  ? "text-[#B13818]"
+                                  : factor.ratePercent < 0
+                                  ? "text-[#007d5a]"
+                                  : "text-[#66736C]"
+                              }`}
+                            >
+                              {factor.ratePercent >= 0 ? "+" : ""}{factor.ratePercent}%
+                            </span>
+                            <span className="font-bold text-[#1A2A22]">{factor.label}</span>
+                            <span className="text-[#66736C]">{factor.note}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      {saleAnalysis.mlitComparison.rawDiffPercent != null && (
+                        <p className="mt-1.5 border-t border-[#DDE3DF]/60 pt-1.5 text-[10px] text-[#66736C]">
+                          未校準時，開價相對分桶中位數為 {saleAnalysis.mlitComparison.rawDiffPercent >= 0 ? "+" : ""}
+                          {saleAnalysis.mlitComparison.rawDiffPercent.toFixed(1)}%；該中位數混合了不同面積、屋齡與車站距離的成交，未經校準不宜直接當作議價依據。
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 舊耐震這類會影響貸款與減稅資格的事，不能只算進價格係數就算了 */}
+                  {saleAnalysis.mlitComparison.priceCautions?.map((caution, index) => (
+                    <p key={index} className="mt-2 border border-[#DCC8A1] bg-[#FFF9ED] p-2.5 text-[11px] leading-relaxed text-[#7A5A1F]">
+                      ⚠️ {caution}
+                    </p>
+                  ))}
 
                   {/* 車站徒步距離資產保值性分析 */}
                   {saleAnalysis.mlitComparison.stationWalkFactor && (

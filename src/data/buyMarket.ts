@@ -15,6 +15,24 @@ export interface BuyMarketEstimate extends OfficialBuyEstimate {
   basePriceYen: number;
 }
 
+/**
+ * 建立實價快照時，各房型分桶採計的專有面積範圍（㎡）。
+ *
+ * 這是 scripts/update-mlit-buy-data.ts 篩選成交紀錄的條件，也就是說
+ * 每個分桶的中位總價，就是「這個面積帶之內」的成交中位數。要把總價中位數
+ * 還原成可比較的單價，必須用同一組面積帶，否則兩邊的口徑會對不上——
+ * 所以定義放在這裡由雙方共用，不讓腳本自己留一份會各自飄移的複本。
+ */
+export const LAYOUT_AREA_BANDS: Record<LayoutCode, [number, number]> = {
+  r1: [12, 24], k1: [18, 35], ldk1: [30, 52], ldk2: [45, 75], ldk3: [65, 130]
+};
+
+/** 面積帶中點，作為該分桶「代表面積」的估計值。 */
+export function layoutBandMidArea(layout: LayoutCode): number {
+  const [min, max] = LAYOUT_AREA_BANDS[layout];
+  return (min + max) / 2;
+}
+
 const tamaCities = new Set([
   "武藏野市", "三鷹市", "立川市", "八王子市", "日野市", "府中市",
   "調布市", "町田市", "西東京市", "小平市", "多摩市", "狛江市"

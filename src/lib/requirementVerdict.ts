@@ -1,4 +1,5 @@
-import { rentRates, districtStations } from "../data/housingMarket.js";
+import { rentRates, districtStations, type LayoutCode } from "../data/housingMarket.js";
+import { LAYOUT_AREA_BANDS, layoutBandMidArea } from "../data/buyMarket.js";
 import { stationsWithinHops } from "./localTransitRoute.js";
 import { toJapaneseStationName } from "./transit.js";
 import {
@@ -531,6 +532,200 @@ export interface ListingPriceVerdict {
  * 診斷狀態使用不動產實務自然詞彙：
  * 「合理」「超值」「條件反映（合理品質溢價）」「偏高」「明顯偏高」「待確認」
  */
+export interface SalePriceFactor {
+  label: string;
+  ratePercent: number;
+  note: string;
+}
+
+export interface SalePriceVerdict {
+  verdict: "bargain" | "fair" | "premium";
+  verdictText: string;
+  explanation: string;
+  /** 相對「經條件校準後的預期價」的價差 */
+  diffPercent: number;
+  /** 相對「未校準的分桶中位總價」的價差，保留舊口徑供對照 */
+  rawDiffPercent: number;
+  expectedPriceMan: number;
+  fairLowMan: number;
+  fairHighMan: number;
+  areaAdjusted: boolean;
+  areaBasisNote: string;
+  factors: SalePriceFactor[];
+  cautions: string[];
+}
+
+/**
+ * 買賣開價合理度：把實價分桶中位數校準成「這一戶的預期價」再比較。
+ *
+ * 為什麼不能直接拿開價比中位數：
+ * 分桶中位數是「該區、該房型、該面積帶」的成交中位「總價」，一個 ldk2 分桶
+ * 涵蓋 45～75㎡，同分桶內最小與最大戶的合理總價可以差到六成以上。不先把面積
+ * 拉齊就比，等於拿不同大小的房子互比；屋齡（日本中古折價極陡）與徒步分鐘
+ * 同理，中位數把各種屋齡與距離全部混在一起。
+ *
+ * 校準兩步：
+ * 1. 面積：用建立快照時的同一組面積帶中點當分桶代表面積，把中位總價換算成
+ *    這一戶實際面積對應的價格（等同於改用單價比較，只是講法更直觀）。
+ * 2. 條件：屋齡、徒步、樓層各自給一個相對基準的溢價／折價率再乘上去。
+ *
+ * 得到預期價後給一個容許區間，落在區間內才算合理——中位數本身是點估計，
+ * 個別成交本來就會上下浮動，硬要求貼齊單一數字會把正常的物件判成異常。
+ */
+export function buildSalePriceVerdict(input: {
+  salePriceYen: number;
+  medianPriceYen: number;
+  layout: LayoutCode;
+  areaSqm: number | null;
+  ageYears: number | null;
+  walkMinutes: number | null;
+  floor: number | null;
+  totalFloors: number | null;
+  renovationNotes?: string;
+  /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
+  sampleCount?: number | null;
+}): SalePriceVerdict {
+  const { salePriceYen, medianPriceYen, layout, areaSqm, ageYears, walkMinutes, floor, totalFloors } = input;
+
+  const factors: SalePriceFactor[] = [];
+  const cautions: string[] = [];
+
+  // ── 1. 面積校準 ──
+  const bandMid = layoutBandMidArea(layout);
+  const [bandMin, bandMax] = LAYOUT_AREA_BANDS[layout];
+  // 面積落在分桶帶之外代表房型分桶本身就不太適用，這時不做線性外推，
+  // 硬換算會把誤差放大；改用未校準中位數並在說明裡講清楚。
+  const areaUsable = areaSqm !== null && areaSqm >= bandMin * 0.7 && areaSqm <= bandMax * 1.3;
+  const areaAdjusted = areaUsable && areaSqm !== null;
+  const areaBaseline = areaAdjusted && areaSqm !== null
+    ? medianPriceYen * (areaSqm / bandMid)
+    : medianPriceYen;
+  const areaBasisNote = areaAdjusted && areaSqm !== null
+    ? `已按專有面積校準：分桶代表面積約 ${bandMid}㎡，本案 ${areaSqm}㎡。`
+    : areaSqm === null
+      ? "圖紙未讀到專有面積，僅能比對分桶中位總價，精度較低。"
+      : `本案 ${areaSqm}㎡ 落在 ${layout} 分桶採計範圍（${bandMin}～${bandMax}㎡）之外，未做面積換算。`;
+
+  // ── 2. 屋齡（日本中古住宅價格對屋齡最敏感；基準為市場庫存主力 20～25 年）──
+  let ageRate = 0;
+  if (ageYears !== null) {
+    if (ageYears <= 3) { ageRate = 0.25; factors.push({ label: "屋齡", ratePercent: 25, note: `築 ${ageYears} 年（新築／準新築）` }); }
+    else if (ageYears <= 5) { ageRate = 0.20; factors.push({ label: "屋齡", ratePercent: 20, note: `築 ${ageYears} 年（淺築新古屋）` }); }
+    else if (ageYears <= 10) { ageRate = 0.12; factors.push({ label: "屋齡", ratePercent: 12, note: `築 ${ageYears} 年（10 年內）` }); }
+    else if (ageYears <= 15) { ageRate = 0.06; factors.push({ label: "屋齡", ratePercent: 6, note: `築 ${ageYears} 年` }); }
+    else if (ageYears <= 25) { ageRate = 0; factors.push({ label: "屋齡", ratePercent: 0, note: `築 ${ageYears} 年（中古主力屋齡，等同基準）` }); }
+    else if (ageYears <= 30) { ageRate = -0.08; factors.push({ label: "屋齡", ratePercent: -8, note: `築 ${ageYears} 年` }); }
+    else if (ageYears <= 40) { ageRate = -0.18; factors.push({ label: "屋齡", ratePercent: -18, note: `築 ${ageYears} 年（築古）` }); }
+    else { ageRate = -0.28; factors.push({ label: "屋齡", ratePercent: -28, note: `築 ${ageYears} 年（高齡物件）` }); }
+
+    // 1981 年 6 月前確認申請的舊耐震，除了折價還牽涉貸款與減稅資格。
+    const oldQuakeStandardAge = new Date().getFullYear() - 1981;
+    if (ageYears >= oldQuakeStandardAge) {
+      cautions.push("屋齡推算可能屬於「舊耐震基準」（1981年6月以前）。舊耐震會影響銀行承貸成數與年限，也不能直接適用住宅ローン控除，需取得耐震基準適合証明。請向仲介確認確切的建築確認日期。");
+    }
+  }
+
+  // ── 3. 車站徒步（基準為徒步 8～10 分）──
+  let walkRate = 0;
+  if (walkMinutes !== null) {
+    if (walkMinutes <= 3) { walkRate = 0.12; factors.push({ label: "車站距離", ratePercent: 12, note: `最近站徒步 ${walkMinutes} 分（極近站）` }); }
+    else if (walkMinutes <= 5) { walkRate = 0.08; factors.push({ label: "車站距離", ratePercent: 8, note: `最近站徒步 ${walkMinutes} 分` }); }
+    else if (walkMinutes <= 7) { walkRate = 0.04; factors.push({ label: "車站距離", ratePercent: 4, note: `最近站徒步 ${walkMinutes} 分` }); }
+    else if (walkMinutes <= 10) { walkRate = 0; factors.push({ label: "車站距離", ratePercent: 0, note: `最近站徒步 ${walkMinutes} 分（等同基準）` }); }
+    else if (walkMinutes <= 15) { walkRate = -0.06; factors.push({ label: "車站距離", ratePercent: -6, note: `最近站徒步 ${walkMinutes} 分（略遠）` }); }
+    else { walkRate = -0.12; factors.push({ label: "車站距離", ratePercent: -12, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）` }); }
+  }
+
+  // ── 4. 樓層 ──
+  let floorRate = 0;
+  if (floor !== null) {
+    const ratio = totalFloors && totalFloors > 0 ? floor / totalFloors : null;
+    if (floor <= 0) { floorRate = -0.08; factors.push({ label: "樓層", ratePercent: -8, note: "地下樓層（採光與濕氣條件受限）" }); }
+    else if (floor === 1) { floorRate = -0.05; factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）" }); }
+    else if (ratio !== null && totalFloors !== null && totalFloors >= 15 && ratio >= 0.8) {
+      floorRate = 0.10; factors.push({ label: "樓層", ratePercent: 10, note: `${floor} 樓／共 ${totalFloors} 樓（高層塔樓上段，眺望與稀少性溢價）` });
+    } else if (ratio !== null && ratio >= 0.5) {
+      floorRate = 0.04; factors.push({ label: "樓層", ratePercent: 4, note: `${floor} 樓／共 ${totalFloors} 樓（中高樓層）` });
+    } else if (floor >= 3) {
+      floorRate = 0.02; factors.push({ label: "樓層", ratePercent: 2, note: `${floor} 樓（避開低樓層折價）` });
+    } else {
+      factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓` });
+    }
+  }
+
+  // ── 5. 翻新 ──
+  let renoRate = 0;
+  const reno = `${input.renovationNotes || ""}`.toLowerCase();
+  if (/リノベーション|リフォーム済|full renovation|フルリノベ|全面改装/.test(reno)) {
+    renoRate = 0.05;
+    factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝" });
+  }
+
+  // 單一因子已各自設限，總和再夾一次，避免多個正因子疊加成不合理的高預期價。
+  const totalRate = Math.max(-0.4, Math.min(0.5, ageRate + walkRate + floorRate + renoRate));
+  const expectedPriceYen = areaBaseline * (1 + totalRate);
+
+  // 面積校準過的預期價較可信，容許區間可以收窄；沒校準時放寬，
+  // 否則等於用一個本來就不精準的基準去做精準的指控。
+  // 樣本少的分桶，中位數本身就不穩定（快照的採計下限只有 5 筆）。
+  // 這種情況要放寬容許區間——否則等於拿一個抖動很大的基準去做精確的指控，
+  // 讓使用者誤以為結論的可信度跟樣本充足的地區一樣高。
+  const sampleCount = input.sampleCount ?? null;
+  const samplePenalty = sampleCount === null ? 0.03 : sampleCount >= 30 ? 0 : sampleCount >= 15 ? 0.03 : 0.06;
+  if (sampleCount !== null && sampleCount < 15) {
+    cautions.push(`這個地區與房型的成交樣本只有 ${sampleCount} 筆，中位數容易被個別特殊物件拉偏。本結論僅供粗略參考，建議再對照實際在售的同類物件。`);
+  }
+  const tolerance = (areaAdjusted ? 0.15 : 0.22) + samplePenalty;
+  const fairLow = expectedPriceYen * (1 - tolerance);
+  const fairHigh = expectedPriceYen * (1 + tolerance);
+
+  const diffPercent = Math.round(((salePriceYen - expectedPriceYen) / expectedPriceYen) * 1000) / 10;
+  const rawDiffPercent = Math.round(((salePriceYen - medianPriceYen) / medianPriceYen) * 1000) / 10;
+
+  const toMan = (v: number) => Math.round(v / 10000);
+  const factorSummary = factors.length
+    ? factors.map(f => `${f.label} ${f.ratePercent >= 0 ? "+" : ""}${f.ratePercent}%`).join("、")
+    : "圖紙未讀到可校準的條件";
+
+  let verdict: "bargain" | "fair" | "premium";
+  let verdictText: string;
+  let explanation: string;
+
+  if (salePriceYen < fairLow) {
+    verdict = "bargain";
+    verdictText = "低於條件校準後的預期價";
+    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 低於此區間約 ${Math.abs(diffPercent)}%，價格具競爭力。便宜通常有原因，建議確認屋況、權利形態（是否為定期借地權）、有無租約在身，以及管理費與修繕積立金是否偏高。`;
+  } else if (salePriceYen <= fairHigh) {
+    verdict = "fair";
+    verdictText = "落在條件校準後的合理區間";
+    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 落在區間內，與屋齡、車站距離、樓層與面積條件相符。`;
+  } else {
+    verdict = "premium";
+    verdictText = "高於條件校準後的預期價";
+    explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 高出約 ${diffPercent}%，且這個差距已經扣除屋齡、車站距離與樓層帶來的合理溢價。建議請仲介具體說明加價理由（例如室內全面翻新、管理狀態特別良好、稀少的角部屋或大陽台），而不是只以「地段好」帶過。`;
+  }
+
+  // 口徑差異必須講明：實價統計是「成約價」，圖紙上寫的是「開價」。
+  // 日本中古市場成交價普遍低於開價，兩者直接相比本來就會系統性偏高，
+  // 不講清楚會讓每一件物件看起來都偏貴，判斷失去意義。
+  explanation += "（註：比較基準為國交省的「成約價」統計，而圖紙上是「開價」。日本中古市場的成交價通常低於開價，因此開價略高於預期價屬常態，重點在於高出的幅度是否有具體條件支撐。）";
+
+  return {
+    verdict,
+    verdictText,
+    explanation,
+    diffPercent,
+    rawDiffPercent,
+    expectedPriceMan: toMan(expectedPriceYen),
+    fairLowMan: toMan(fairLow),
+    fairHighMan: toMan(fairHigh),
+    areaAdjusted,
+    areaBasisNote,
+    factors,
+    cautions,
+  };
+}
+
 export function buildListingPriceVerdict(
   totalMonthlyCost: number,
   range: RequestedRentRange | null,
