@@ -615,49 +615,49 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
 
   // 1. 租金高性價比／超值物件
   if (result.verdict?.status === "超值") {
-    tips.push("【高性價比／超值物件】本物件租金＋管理費顯著低於同區同房型市場行情，價格極具競爭力！在東京租屋市場中，此類平價超值房源去化速度極快，若審查通過建議把握簽約時機，以免被其他申請者搶先。");
+    tips.push("【低於行情】租金＋管理費低於同區同房型行情。這類物件去化較快，審查通過後建議儘早決定。");
   }
 
   // 2. 免租期（Free Rent）特惠提示
   if (result.extracted.freeRent && !isFreeOrZero(result.extracted.freeRent)) {
-    tips.push(`【專屬禮遇・免租期（フリーレント）】圖紙載有「${result.extracted.freeRent}」優惠！起租首月可減免本體租金，實質大幅減輕簽約搬家現金壓力（約省下 ¥${rent.toLocaleString()}）。`);
+    tips.push(`【免租期】圖紙載明「${result.extracted.freeRent}」，首月可減免租金，約省 ¥${rent.toLocaleString()}。`);
   }
 
   // 3. 初期費用極度親民（3.5 倍以下）
   if (monthsMultipleMax <= 3.5) {
-    tips.push(`【初期費用極度親民】本物件總初期費用僅約 ${monthsMultipleMax} 個月租金（市場普遍約 4.0～4.8 倍），大幅壓低赴日搬遷的現金流門檻！`);
+    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.0～4.8 倍。`);
   }
 
   // 4. 禮金與押金動態解析
   if (hasShikibiki) {
-    tips.push(`【重要特約・敷引（押金不退還）】圖紙載有「${formattedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
+    tips.push(`【敷引特約】圖紙載明「${formattedShikibiki}」。這筆押金退租時直接扣除、不退還，性質等同禮金，請計入預算。`);
   }
   if (keyMoney === 0 && deposit === 0) {
-    tips.push("【零禮金・零押金（雙零物件）】免付房東謝禮與押金，初期可直接省下約 2 個月租金負擔；但請特別留意退租時合約約定的基本清掃費與原狀恢復計費特約。");
+    tips.push("【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。");
   } else if (keyMoney === 0) {
-    tips.push("【免禮金優勢】本物件「免禮金」，為您省下致贈房東的謝禮（相當於省下約 1 個月租金）；所繳押金於扣除退租清潔特約後仍有機會返還。");
+    tips.push("【免禮金】省約 1 個月租金。押金扣除退租清潔特約後仍可能返還。");
   } else if (keyMoney >= rent * 1.5) {
     const kmMonths = (keyMoney / rent).toFixed(1).replace(/\.0$/, "");
-    tips.push(`【初期負擔偏高】本物件禮金高達 ${kmMonths} 個月，屬於熱門物件或都心精華地段常見設定，初期成本相對較高。`);
+    tips.push(`【禮金偏高】禮金 ${kmMonths} 個月，常見於熱門地段，初期成本較高。`);
   }
 
   // 5. 免換鎖費用優惠
   if (isFreeOrZero(result.extracted.lockReplacementFee)) {
-    tips.push("【免換鎖費優惠】圖紙載明免收換鎖費（鍵交換代 0 円），為您額外省下約 2～4 萬円的交屋雜費。");
+    tips.push("【免換鎖費】圖紙載明鍵交換代 0 円，省約 2～4 萬円。");
   }
 
   // 6. 附免費高速網路
   const allNotes = `${result.extracted.specialNotes || ""}`.toLowerCase();
   const hasFreeNet = /インターネット無料|ネット無料|wifi無料|シーファイブ|高速ネット無料|光ネット無料/.test(allNotes);
   if (hasFreeNet) {
-    tips.push("【附免費高速網路】圖紙標示內建免費網路，入居後免自行申辦與綁約，每年實質再為您省下約 5 萬～6 萬円通信開銷。");
+    tips.push("【附免費網路】免自行申辦，年省約 5～6 萬円。");
   }
 
   // 7. 起租日與首期金額浮動說明
-  tips.push("【起租日與首期金額浮動】日本簽約多會預收「起租月剩餘日數之日割租金＋次月完整租金與管理費」。因起租日需配合管理會社規定之最晚起租期限（通常為審查核准後約 10～20 天內，無法隨意延後），若核准的起租日剛好落在下旬（如 25 號後），當月日割天數少，首筆需匯出的初期款項會相對有感降低；若落在月初則日割接近全額。");
+  tips.push("【起租日影響首期】首期預收「起租月日割租金＋次月完整租金與管理費」。起租日通常在審查通過後 10～20 天內，若落在下旬，日割天數少、首筆金額較低。");
 
   // 8. 海外匯款提醒
-  tips.push("【海外匯款提醒】海外租客簽約初期費用多需以日本國內銀行匯款，若由海外電匯請預留約 4,000 円日本端中繼受金手續費與匯差緩衝。");
+  tips.push("【海外匯款】初期費用多需由日本國內銀行匯款。海外電匯請預留約 4,000 円日本端手續費與匯差。");
 
   return { totalMin, totalMax, monthsMultipleMin, monthsMultipleMax, level, levelText, items, tips };
 }
@@ -977,8 +977,8 @@ export function ListingHealthCheck() {
       {/* 隱藏的檔案上傳 input */}
       <input
         ref={inputRef}
-        type="file"accept={ACCEPTED_MIME_TYPES}
-        className="hidden"onChange={handleFileSelect}
+        type="file" accept={ACCEPTED_MIME_TYPES}
+        className="hidden" onChange={handleFileSelect}
       />
 
       {/* 現代化拖曳上傳 Dropzone */}
@@ -1041,15 +1041,15 @@ export function ListingHealthCheck() {
 
             <div className="flex shrink-0 items-center gap-2">
               <button
-                type="button"onClick={() => inputRef.current?.click()}
+                type="button" onClick={() => inputRef.current?.click()}
                 disabled={loading}
                 className="flex items-center gap-1.5 border border-[#8A9590] bg-white px-3.5 py-2 text-xs font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6] disabled:opacity-45">
                 <RefreshCw className="h-3.5 w-3.5" /> 更換圖紙
               </button>
               <button
-                type="button"onClick={removeFile}
+                type="button" onClick={removeFile}
                 disabled={loading}
-                aria-label="移除圖紙"className="flex items-center gap-1.5 border border-[#E94E2B] bg-white px-3 py-2 text-xs font-bold text-[#B13818] transition-colors hover:bg-[#FBDFD2] disabled:opacity-45">
+                aria-label="移除圖紙" className="flex items-center gap-1.5 border border-[#E94E2B] bg-white px-3 py-2 text-xs font-bold text-[#B13818] transition-colors hover:bg-[#FBDFD2] disabled:opacity-45">
                 <Trash2 className="h-3.5 w-3.5" /> 移除
               </button>
             </div>
@@ -1058,7 +1058,7 @@ export function ListingHealthCheck() {
           {/* 開始分析按鈕 */}
           <div className="mt-4 border-t border-[#DDE3DF] pt-4">
             <button
-              type="button"onClick={analyze}
+              type="button" onClick={analyze}
               disabled={loading}
               className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#1A2A22] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#1A2A22] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
               {loading ? (
@@ -1151,12 +1151,12 @@ export function ListingHealthCheck() {
                   <div className="mt-2 flex items-center gap-2 max-w-md">
                     <div className="relative flex-1">
                       <input
-                        type="text"value={customBuildingName}
+                        type="text" value={customBuildingName}
                         onChange={(e) => setCustomBuildingName(e.target.value)}
-                        placeholder="請輸入或修改建物名稱..."className="w-full border-2 border-[#1A2A22]/30 bg-white px-3 py-2 text-sm font-bold text-[#1A2A22] shadow-2xs transition-colors focus:border-[#00A174] focus:outline-none focus:ring-2 focus:ring-[#00A174]/20"/>
+                        placeholder="請輸入或修改建物名稱..." className="w-full border-2 border-[#1A2A22]/30 bg-white px-3 py-2 text-sm font-bold text-[#1A2A22] shadow-2xs transition-colors focus:border-[#00A174] focus:outline-none focus:ring-2 focus:ring-[#00A174]/20"/>
                       {customBuildingName !== extracted?.buildingName && extracted?.buildingName && (
                         <button
-                          type="button"onClick={() => setCustomBuildingName(extracted.buildingName || "")}
+                          type="button" onClick={() => setCustomBuildingName(extracted.buildingName || "")}
                           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-bold text-[#007D5A] hover:bg-[#E6F6F1] transition-colors">
                           還原圖紙名稱
                         </button>
@@ -1168,7 +1168,7 @@ export function ListingHealthCheck() {
                 {googleMansionReviewUrl && (
                   <a
                     href={googleMansionReviewUrl}
-                    target="_blank"rel="noopener noreferrer"className="inline-flex min-h-10 shrink-0 items-center gap-1.5 border border-[#1A2A22] bg-[#1A2A22] px-4 text-xs font-bold text-white transition-colors hover:bg-[#3F5147]">
+                    target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 shrink-0 items-center gap-1.5 border border-[#1A2A22] bg-[#1A2A22] px-4 text-xs font-bold text-white transition-colors hover:bg-[#3F5147]">
                     <span>查詢同棟成交紀錄</span>
                     <ArrowUpRight className="h-3.5 w-3.5" />
                   </a>
@@ -1328,7 +1328,7 @@ export function ListingHealthCheck() {
                             {saleAnalysis.mlitComparison.listingBenchmarkSourceUrl ? (
                               <a
                                 href={saleAnalysis.mlitComparison.listingBenchmarkSourceUrl}
-                                target="_blank"rel="noreferrer"className="font-bold underline decoration-[#EAB879] underline-offset-2">
+                                target="_blank" rel="noreferrer" className="font-bold underline decoration-[#EAB879] underline-offset-2">
                                 {saleAnalysis.mlitComparison.listingBenchmarkSourceLabel} {saleAnalysis.mlitComparison.listingBenchmarkPeriod}
                               </a>
                             ) : (
@@ -1854,7 +1854,7 @@ export function ListingHealthCheck() {
                     </div>
 
                     <button
-                      type="button"onClick={() => setShowSaleCostsDetails(!showSaleCostsDetails)}
+                      type="button" onClick={() => setShowSaleCostsDetails(!showSaleCostsDetails)}
                       className="flex shrink-0 items-center justify-center gap-1.5 border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1] cursor-pointer">
                       {showSaleCostsDetails ? (
                         <>
@@ -2081,7 +2081,7 @@ export function ListingHealthCheck() {
                 </div>
 
                 <button
-                  type="button"onClick={() => setShowInitialCostDetails(!showInitialCostDetails)}
+                  type="button" onClick={() => setShowInitialCostDetails(!showInitialCostDetails)}
                   className="flex shrink-0 items-center justify-center gap-1.5 border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1]">
                   {showInitialCostDetails ? (
                     <>
@@ -2268,7 +2268,7 @@ export function ListingHealthCheck() {
             )}
 
             {locationError && !locationLoading && (
-              <p className="bg-[#FEF3C7] p-3 text-xs leading-relaxed text-[#D97706]">{locationError}</p>
+              <p className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">{locationError}</p>
             )}
 
             {locationContext && (
@@ -2280,14 +2280,14 @@ export function ListingHealthCheck() {
                     <span className="font-bold text-[#1A2A22]">{locationContext.matchedAddress}</span>
                   </div>
                   <a
-                    className="font-bold text-[#007D5A] underline underline-offset-2 hover:text-[#007D5A]"href={`https://www.google.com/maps/search/?api=1&query=${locationContext.coordinate.lat},${locationContext.coordinate.lon}`}
-                    target="_blank"rel="noreferrer">
+                    className="font-bold text-[#007D5A] underline underline-offset-2 hover:text-[#087154]" href={`https://www.google.com/maps/search/?api=1&query=${locationContext.coordinate.lat},${locationContext.coordinate.lon}`}
+                    target="_blank" rel="noreferrer">
                     在 Google Maps 開啟確認
                   </a>
                 </div>
 
                 {locationContext.notices?.map(notice => (
-                  <p key={notice} className="bg-[#FEF3C7] p-3 text-xs leading-relaxed text-[#D97706]">{notice}</p>
+                  <p key={notice} className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">{notice}</p>
                 ))}
 
                 {/* 實際步行時間比對：改為緊湊俐落的水平卡片，不再鬆散佔位 */}
@@ -2306,7 +2306,7 @@ export function ListingHealthCheck() {
                         <div
                           key={walk.station}
                           className={`flex flex-col justify-between gap-3 border p-3 transition-colors sm:flex-row sm:items-center ${
-                            walk.needsAttention ? "border-[#EAB879] bg-[#FEF3C7]" : "border-[#DDE3DF] bg-[#F5F8F6]"}`}
+                            walk.needsAttention ? "border-[#DCC8A1] bg-[#FFFDF8]" : "border-[#E8ECE9] bg-[#FAFCFB]"}`}
                         >
                           {/* 車站與距離 */}
                           <div className="min-w-0">
@@ -2317,7 +2317,7 @@ export function ListingHealthCheck() {
                               </span>
                             </div>
                             {walk.advertisedMinutes !== null && (
-                              <p className={`mt-1 text-[11px] ${walk.needsAttention ? "font-bold text-[#D97706]" : "text-[#66736C]"}`}>
+                              <p className={`mt-1 text-[11px] ${walk.needsAttention ? "font-bold text-[#7A5A1F]" : "text-[#66736C]"}`}>
                                 圖紙標示 {walk.advertisedMinutes} 分；以一般速度計算
                                 {walk.differenceMinutes && walk.differenceMinutes > 0
                                   ? `多約 ${walk.differenceMinutes} 分鐘`: "大致相符"}
@@ -2386,9 +2386,9 @@ export function ListingHealthCheck() {
                 value={commuteDestination}
                 onChange={event => setCommuteDestination(event.target.value)}
                 onKeyDown={event => { if (event.key === "Enter") void analyzeCommute(); }}
-                placeholder="例如：東京都新宿区西新宿2-8-1 或 新宿駅"className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
+                placeholder="例如：東京都新宿区西新宿2-8-1 或 新宿駅" className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
               <button
-                type="button"onClick={analyzeCommute}
+                type="button" onClick={analyzeCommute}
                 disabled={!commuteDestination.trim() || commuteLoading || locationLoading || (!locationContext?.stationWalks.length && !result.extracted.station)}
                 className="flex min-h-11 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-xs font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45">
                 {commuteLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
