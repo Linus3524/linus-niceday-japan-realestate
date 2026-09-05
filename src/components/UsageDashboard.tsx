@@ -48,6 +48,9 @@ const ACTION_LABEL: Record<string, string> = {
   "threads-buy-click": "買房搜尋文章點擊",
   "threads-ai-view": "AI 推薦文章曝光",
   "threads-ai-click": "AI 推薦文章點擊",
+  "calculator-applied": "套用推薦條件到試算",
+  "rent-analysis-submitted-structured-form": "租屋分析送出（選擇條件）",
+  "rent-analysis-submitted-natural-language": "租屋分析送出（描述需求）",
 };
 
 /** 標籤下方的小字：說明這個數字合併了哪些入口。 */

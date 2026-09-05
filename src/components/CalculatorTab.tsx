@@ -17,6 +17,7 @@ import { RentMarketReports } from "./RentMarketReports";
 import { RequirementAssessment } from "./RequirementAssessment";
 import { toJapaneseLineName, toJapanesePlaceName, toJapanesePrefectureName, toJapaneseStationName } from "../lib/transit";
 import { renderFormattedText } from "../lib/format";
+import { trackAction } from "../lib/trackView";
 import { RentCriteriaSummary } from "./RentCriteriaSummary";
 import { ListingHealthCheck } from "./ListingHealthCheck";
 import { OfficialMarketInsight } from "./OfficialMarketInsight";
@@ -239,7 +240,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
       criteria.gasBurnersMin && criteria.gasBurnersMin >= 2 ? "twoBurners" : null,
       criteria.cityGasRequired ? "cityGas" : null
     ].filter(Boolean) as RentSearchFilter[]);
-    track("calculator-applied", { mode: calcMode, roomType: criteria.roomType });
+    trackAction("calculator-applied");
     setAppliedNotice(`已將「${toJapanesePlaceName(item.district)}${selectedStation !== "none" ? `・${toJapaneseStationName(selectedStation)}駅` : ""}」及需求條件同步帶入上方表單與下方租金條件。`);
     setShowAdvancedTools(true);
 
@@ -826,8 +827,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
     setAppliedNotice(null);
     setAnalysisNotice(null);
     setAiResult(current => current ? { ...current, advisorAdvice: null } : current);
+    // 埋點放在 setLoading 之前：這行若拋錯，會跳過下面的 try，
+    // 連帶 finally 的 setAnalysisLoading(false) 也不會執行，按鈕就永遠卡在讀取中。
+    trackAction("rent-analysis-submitted-structured-form");
     setAnalysisLoading(true);
-    track("rent-analysis-submitted", { source: "structured-form", recommendationCount: baseRecommendations.length, hasCommuteStation: Boolean(criteria.commuteStation) });
     try {
       const response = await fetch("/api/rent-analysis", {
         method: "POST",
@@ -941,12 +944,13 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
   const analyzeNaturalLanguageRent = async () => {
     if (!aiPrompt.trim() || aiInputLoading) return;
+    // 同上：埋點必須在 setAiInputLoading(true) 之前，才不會把讀取狀態卡死。
+    trackAction("rent-analysis-submitted-natural-language");
     setAiInputLoading(true);
     setAiInputError(null);
     setAnalysisNotice(null);
     setAppliedNotice(null);
     setAiResult(current => current ? { ...current, advisorAdvice: null } : current);
-    track("rent-analysis-submitted", { source: "natural-language" });
     try {
       const response = await fetch("/api/rent-analysis", {
         method: "POST",

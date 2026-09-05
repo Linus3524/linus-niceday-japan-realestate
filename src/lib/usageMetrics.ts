@@ -47,6 +47,11 @@ export const TRACKABLE_ACTIONS = [
   "threads-rent-view", "threads-rent-click",
   "threads-buy-view", "threads-buy-click",
   "threads-ai-view", "threads-ai-click",
+  // 送出方式編進事件名，與上面 threads-* 同一套慣例：
+  // recordAction 只依事件名累計次數，不存屬性，要分辨維度就只能從名字分。
+  "calculator-applied",
+  "rent-analysis-submitted-structured-form",
+  "rent-analysis-submitted-natural-language",
 ] as const;
 export type TrackableAction = (typeof TRACKABLE_ACTIONS)[number];
 
