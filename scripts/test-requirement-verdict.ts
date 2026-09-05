@@ -347,7 +347,7 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       assert.equal(verdict.typicalListingPriceMan, 6757);
       assert.equal(verdict.listingDiffPercent, -11.5);
       assert.equal(verdict.listingVerdict, "below");
-      assert.match(verdict.explanation, /不代表本案一定能議價相同比例/);
+      assert.match(verdict.explanation, /不代表本案可議相同幅度/);
     }
   },
   {
@@ -368,7 +368,7 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       });
       assert.equal(verdict.typicalListingPriceMan, null);
       assert.equal(verdict.listingVerdict, null);
-      assert.match(verdict.explanation, /不推估市場典型開價/);
+      assert.match(verdict.explanation, /沒有同口徑的在售統計/);
     }
   },
   {
@@ -391,7 +391,7 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       assert.equal(verdict.typicalListingPriceMan, Math.round(benchmark.averageListingPriceYen / 10_000));
       assert.equal(verdict.listingDiffPercent, 0);
       assert.equal(verdict.listingBenchmarkKind, "public_listing_average");
-      assert.match(verdict.explanation, /公開刊登平均尚未控制面積/);
+      assert.match(verdict.explanation, /刊登價非成交價/);
     }
   },
   {
