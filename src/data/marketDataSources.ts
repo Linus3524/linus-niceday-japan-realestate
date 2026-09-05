@@ -1,5 +1,6 @@
 export type MarketDataSourceId =
   | "mlit-reinfolib"
+  | "reins-market-watch"
   | "athome-public"
   | "suumo-public"
   | "homes-public";
@@ -39,6 +40,19 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     note: "每季建立交易價格靜態快照；金鑰只放伺服器端，使用成交快照時顯示規約指定 credit。"
   },
   {
+    id: "reins-market-watch",
+    label: "東日本／中部／近畿／西日本 REINS 公開市況",
+    kinds: ["transaction", "sale_listing"],
+    statistic: "區域中古公寓成約㎡單價；有公開新規登錄㎡單價的區域並列使用",
+    publicationCadence: "每月發布；本站人工複核後更新小型常數",
+    reviewCadenceDays: 40,
+    ingestionStatus: "manual_only",
+    automatedIngestionAllowed: false,
+    sourceUrl: "https://www.reins.or.jp/library/",
+    termsUrl: "https://www.reins.or.jp/",
+    note: "首都圈、中部圈、近畿圈建立市場典型開價備援；西日本公開摘要只有成約統計，不臆造新規開價。兩組物件的市場平均差距不等於個案可議價幅度。"
+  },
+  {
     id: "athome-public",
     label: "At Home 公開相場頁",
     kinds: ["rent_listing", "sale_listing"],
@@ -47,9 +61,9 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     reviewCadenceDays: 100,
     ingestionStatus: "enabled",
     automatedIngestionAllowed: true,
-    sourceUrl: "https://www.athome.co.jp/chintai/souba/",
+    sourceUrl: "https://www.athome.co.jp/souba/",
     termsUrl: "https://www.athome.co.jp/",
-    note: "每季建立靜態快照；正式站不會在使用者請求期間即時抓取 At Home。"
+    note: "租金與中古公寓公開刊登行情各自建立靜態快照；正式站不會在使用者請求期間即時抓取 At Home。"
   },
   {
     id: "suumo-public",

@@ -20,9 +20,14 @@ import {
   calculateSaleInitialCosts,
   parseAgeYears,
   parseFloorInfo,
+  parseMandatoryMonthlyFees,
+  parseEffectiveRepairReserve,
 } from "../src/lib/listingExtraction.js";
 import { getOfficialBuyEstimate } from "../src/data/buyMarket.js";
-import { mlitBuySnapshotMeta } from "../src/data/mlitBuySnapshot.js";
+import { mlitBuySnapshotMeta, mlitBuySnapshots } from "../src/data/mlitBuySnapshot.js";
+import { atHomeNationwideRentSnapshots } from "../src/data/atHomeNationwideRentSnapshot.js";
+import { getNationwideRentBenchmark } from "../src/data/nationwideRentMarket.js";
+import { getSaleListingBenchmark } from "../src/data/saleListingMarket.js";
 import { districtStations, rentRates } from "../src/data/housingMarket.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
@@ -286,12 +291,12 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
       常見於構造欄位（"鉄筋コンクリート造21階建"、"RC造・地上9階建"）或物件概要。
       這個欄位很重要：同樣是 7 樓，在 7 層建物是頂樓、在 21 層建物只是中低樓層，
       沒有總樓層就無法判斷樓層價值。找不到才留空字串。
-    - repairReserve（修繕積立金）：照原文，例如 "6,100円"、"4,120円"、"14,230円"、"12,100円"。
+    - repairReserve（修繕積立金）：若備註載有「月額○円に改定」，優先填改定後的新金額；否則照主欄原文，例如 "6,100円"、"4,120円"、"14,230円"、"12,100円"。
     - managementFee（管理費）：買賣圖紙同樣一定要抓。它幾乎都緊鄰「修繕積立金」出現，
       常見寫法是「管理費 9,300円/月」或表格中「管理費・修繕積立金」並排。
       只有在圖紙上真的找不到時才留空字串，不要因為這是買賣圖紙就略過這個欄位。
     - repairFund（修繕積立基金／積立基金）：照原文，例如 "2,180円"（有些物件每月另有積立基金）。若無則填空字串。
-    - otherMonthlyFees（町会費／協力金／自治会費／その他月額費用）：照原文，例如 "町会費 300円"、"協力金 2,000円"、"町会費 200円"。
+    - otherMonthlyFees（町会費／協力金／自治会費／其他每戶固定月費）：照原文，例如 "町会費 300円"、"協力金 2,000円"。停車場、駐輪場、バイク置場等只有使用者才付的選配費用不得填入。
     - occupancyStatus（現況）：照原文，例如 "空室"、"賃貸中"、"居住中"、"オーナーチェンジ"。
     - currentRent（現行家賃／月額収入，若為投資型／賃貸中）：照原文，例如 "115,000円"。
     - annualIncome（年間収入／年額収入，若為投資型／賃貸中）：照原文，例如 "1,380,000円"。
@@ -647,6 +652,24 @@ const normalizeStation = (value?: string | null) =>
 const normalizeAddressText = (value?: string | null) => (value || "")
   .toLowerCase()
   .replace(/涉谷|渋谷/g, "澀谷")
+  .replace(/廣|広/g, "広")
+  .replace(/德|徳/g, "徳")
+  .replace(/靜|静/g, "静")
+  .replace(/繩|縄/g, "縄")
+  .replace(/兒|児/g, "児")
+  .replace(/覇|霸/g, "霸")
+  .replace(/姫|姬/g, "姬")
+  .replace(/浜|濱/g, "濱")
+  .replace(/稲|稻/g, "稻")
+  .replace(/芸|藝/g, "藝")
+  .replace(/桜|櫻/g, "櫻")
+  .replace(/辺|邊/g, "邊")
+  .replace(/竜|龍/g, "龍")
+  .replace(/塩|鹽/g, "鹽")
+  .replace(/蔵|藏/g, "藏")
+  .replace(/郷|鄉/g, "鄉")
+  .replace(/穂|穗/g, "穗")
+  .replace(/緑|綠/g, "綠")
   .replace(/区/g, "區")
   .replace(/沢/g, "澤")
   .replace(/戸/g, "戶")
@@ -654,19 +677,38 @@ const normalizeAddressText = (value?: string | null) => (value || "")
   .replace(/黒/g, "黑")
   .replace(/[\s・･（）()\-]/g, "");
 
-function resolveDistrictAndRegion(address: string, station: string): { district: string; region: string } | null {
+const nationwideListingMarkets = [...new Map(
+  [...mlitBuySnapshots, ...atHomeNationwideRentSnapshots]
+    .map(row => [`${row.region}|${row.district}`, { district: row.district, region: row.region }])
+).values()].sort((a, b) => b.district.length - a.district.length);
+
+export function resolveDistrictAndRegion(address: string, station: string): { district: string; region: string } | null {
   const cleanAddr = (address || "").replace(/\s+/g, "");
 
   if (cleanAddr) {
     const normAddr = normalizeAddressText(cleanAddr);
 
-    // 優先比對完整行政區資料庫（按名稱長度降序排序，避免「中央」先於「中央區」等短字誤擊）
-    const sortedRates = [...rentRates].sort((a, b) => b.district.length - a.district.length);
-    for (const rate of sortedRates) {
-      const baseName = rate.district.replace(/[區市町]$/, "");
-      if (baseName.length >= 2 && normAddr.includes(normalizeAddressText(baseName))) {
-        return { district: rate.district, region: rate.region };
+    // 直接使用國交省全國成交快照中的市區町村，不再受租金頁原本 210 個地區限制。
+    // 完整名稱優先，並用都道府縣消除「府中市」等跨縣同名市的歧義。
+    const matches = nationwideListingMarkets.filter(market => {
+      const district = normalizeAddressText(market.district.replace("（市平均）", ""));
+      return district.length >= 2 && normAddr.includes(district);
+    });
+    if (matches.length) {
+      const addressRegion = [...new Set(nationwideListingMarkets.map(market => market.region))].find(regionName => {
+        const region = normalizeAddressText(regionName).replace(/[都道府県]$/, "");
+        return region.length >= 2 && normAddr.includes(region);
+      });
+      if (addressRegion) {
+        // 同名市が他県にしかない（例如広島県府中市但快照只有東京都府中市）時，
+        // 寧可回傳無資料，也不能把它錯配到另一個都道府縣。
+        return matches.find(market => market.region === addressRegion) ?? null;
       }
+      const prefectureMatch = matches.find(market => {
+        const region = normalizeAddressText(market.region).replace(/[都道府県]$/, "");
+        return region.length >= 2 && normAddr.includes(region);
+      });
+      return prefectureMatch || matches[0];
     }
   }
 
@@ -699,6 +741,7 @@ function resolveDistrictAndRegion(address: string, station: string): { district:
 
   // Fallback to station
   const cleanStation = (station || "").trim();
+  if (!cleanStation) return null;
   if (cleanStation.includes("船橋")) return { district: "船橋市", region: "千葉" };
   for (const [dist, stations] of Object.entries(districtStations)) {
     if (stations.some(s => {
@@ -730,9 +773,10 @@ function buildSaleAnalysis(params: {
 
   // 2. Monthly holding costs
   const managementFee = parseYenAmount(extracted.managementFee) ?? 0;
-  const repairReserve = parseYenAmount(extracted.repairReserve) ?? 0;
+  const repairReserve = parseEffectiveRepairReserve(extracted.repairReserve, extracted.specialNotes) ?? 0;
+  const originalRepairReserve = parseYenAmount(extracted.repairReserve) ?? 0;
   const repairFund = parseYenAmount(extracted.repairFund) ?? 0;
-  const otherMonthlyFees = parseYenAmount(extracted.otherMonthlyFees) ?? 0;
+  const otherMonthlyFees = parseMandatoryMonthlyFees(extracted.otherMonthlyFees) ?? 0;
   const totalMonthlyHoldingCost = managementFee + repairReserve + repairFund + otherMonthlyFees;
 
   const holdingCostItems = [
@@ -746,7 +790,9 @@ function buildSaleAnalysis(params: {
     {
       name: "修繕積立金",
       amount: repairReserve,
-      note: "管委會大樓長期重大修繕儲備基金",
+      note: repairReserve !== originalRepairReserve
+        ? `已依圖紙備註採改定後月額（原主欄 ${originalRepairReserve.toLocaleString("ja-JP")} 円）`
+        : "管委會大樓長期重大修繕儲備基金",
     },
   ];
   if (repairFund > 0) {
@@ -807,7 +853,7 @@ function buildSaleAnalysis(params: {
   const layoutCode = normalizeRoomType(layout) as LayoutCode | null;
 
   if (locationInfo && layoutCode) {
-    const officialEstimate = getOfficialBuyEstimate(locationInfo.region, locationInfo.district, layoutCode);
+    const officialEstimate = getOfficialBuyEstimate(locationInfo.region, locationInfo.district, layoutCode, ageYears);
     const medianPriceYen = officialEstimate?.medianTradePriceYen ?? null;
     if (medianPriceYen && medianPriceYen > 0) {
       // 取「最近的那一站」，不是圖紙上列的第一站。實測ナビウス高円寺南
@@ -826,6 +872,8 @@ function buildSaleAnalysis(params: {
       const priceVerdict = buildSalePriceVerdict({
         salePriceYen,
         medianPriceYen,
+        medianSqmPriceYen: officialEstimate?.medianSqmPriceYen ?? null,
+        ageControlledByMarket: officialEstimate?.ageBand !== null,
         layout: layoutCode,
         areaSqm,
         ageYears,
@@ -833,7 +881,8 @@ function buildSaleAnalysis(params: {
         floor: floorInfo.floor,
         totalFloors: floorInfo.totalFloors,
         renovationNotes: `${extracted.renovationDetails || ""} ${extracted.specialNotes || ""}`,
-        sampleCount: officialEstimate?.sampleCount ?? null,
+        sampleCount: officialEstimate?.ageBandSampleCount ?? officialEstimate?.sampleCount ?? null,
+        listingBenchmark: getSaleListingBenchmark(locationInfo.region, locationInfo.district, layoutCode),
       });
 
       // 冷門地區的分桶會因為近 4 季樣本不足而把統計視窗往前滑，
@@ -861,6 +910,10 @@ function buildSaleAnalysis(params: {
         listingLayout: layout,
         medianPriceYen,
         medianPriceMan: Math.round(medianPriceYen / 10000),
+        medianSqmPriceYen: officialEstimate?.medianSqmPriceYen ?? null,
+        marketAgeBand: officialEstimate?.ageBand ?? null,
+        marketAgeBandSampleCount: officialEstimate?.ageBandSampleCount ?? null,
+        marketAgeBandScope: officialEstimate?.ageBandScope ?? null,
         // diffPercent 改為「相對條件校準後預期價」的價差，這才是使用者要的
         // 「這個開價合不合理」；未校準的中位數價差另存 rawDiffPercent 供對照。
         diffPercent: priceVerdict.diffPercent,
@@ -871,6 +924,17 @@ function buildSaleAnalysis(params: {
         expectedPriceMan: priceVerdict.expectedPriceMan,
         fairLowMan: priceVerdict.fairLowMan,
         fairHighMan: priceVerdict.fairHighMan,
+        typicalListingPriceMan: priceVerdict.typicalListingPriceMan,
+        listingDiffPercent: priceVerdict.listingDiffPercent,
+        listingVerdict: priceVerdict.listingVerdict,
+        listingVerdictText: priceVerdict.listingVerdictText,
+        listingPremiumRatePercent: priceVerdict.listingPremiumRatePercent,
+        impliedDiscountFromListingPercent: priceVerdict.impliedDiscountFromListingPercent,
+        listingBenchmarkPeriod: priceVerdict.listingBenchmarkPeriod,
+        listingBenchmarkSourceUrl: priceVerdict.listingBenchmarkSourceUrl,
+        listingBenchmarkSourceLabel: priceVerdict.listingBenchmarkSourceLabel,
+        listingBenchmarkKind: priceVerdict.listingBenchmarkKind,
+        listingBenchmarkScopeLabel: priceVerdict.listingBenchmarkScopeLabel,
         areaAdjusted: priceVerdict.areaAdjusted,
         areaBasisNote: priceVerdict.areaBasisNote,
         priceFactors: priceVerdict.factors,
@@ -1015,7 +1079,7 @@ export default async function handler(req: any, res: any) {
     if (rent !== null) {
       const totalMonthlyCost = rent + (managementFee ?? 0);
 
-      // 1. 解析所在地行政區與都道府縣（支援全日本 210 行政區，含東京 23 區與市部）
+      // 1. 解析所在地行政區與都道府縣（At Home 全國公開租金市場）
       const locationInfo = resolveDistrictAndRegion(extracted.address, stations[0] ?? "");
       const district = locationInfo?.district ?? null;
 
@@ -1035,7 +1099,28 @@ export default async function handler(req: any, res: any) {
         stations: validStations.length > 0 ? validStations : undefined,
       };
 
-      range = roomType ? estimateRequestedRent(criteria as RentSearchCriteria) : null;
+      const nationwideRent = locationInfo && roomType
+        ? getNationwideRentBenchmark(locationInfo.region, locationInfo.district, roomType)
+        : null;
+      range = nationwideRent
+        ? {
+            low: nationwideRent.lowRentYen,
+            median: nationwideRent.medianRentYen,
+            high: nationwideRent.highRentYen,
+            sampleCount: 1,
+            basis: `${nationwideRent.district}・At Home 公開刊登行情`,
+            segments: [{
+              district: nationwideRent.district,
+              low: nationwideRent.lowRentYen,
+              median: nationwideRent.medianRentYen,
+              high: nationwideRent.highRentYen,
+            }],
+            spread: false,
+            sourceUrl: nationwideRent.sourceUrl,
+            sourceLabel: nationwideRent.sourceLabel,
+            sourceDate: nationwideRent.capturedAt,
+          }
+        : roomType ? estimateRequestedRent(criteria as RentSearchCriteria) : null;
 
       // 3. Fallback 防護網：若 estimateRequestedRent 仍為 null，但我們已知行政區與房型，直接由 rentRates / At Home 快照推估
       if (!range && district && roomType) {
@@ -1138,9 +1223,9 @@ export default async function handler(req: any, res: any) {
         area,
         structure: normalizeStructure(extracted.structure),
         totalUnits: parseUnitsCount(extracted.totalUnits),
-        repairReserve: parseYenAmount(extracted.repairReserve),
+        repairReserve: parseEffectiveRepairReserve(extracted.repairReserve, extracted.specialNotes),
         repairFund: parseYenAmount(extracted.repairFund),
-        otherMonthlyFees: parseYenAmount(extracted.otherMonthlyFees),
+        otherMonthlyFees: parseMandatoryMonthlyFees(extracted.otherMonthlyFees),
       },
       range,
       verdict,

@@ -1,4 +1,4 @@
-name: Update MLIT buy-price snapshot
+name: Update nationwide sale-market snapshots
 
 # 國交省的成約實價每季發布。快照是寫死在 repo 裡的靜態檔，不會自己更新，
 # 放著不管就會愈來愈舊，而買賣圖紙健檢的價格判定直接以它為基準。
@@ -37,26 +37,36 @@ jobs:
           MLIT_REINFOLIB_API_KEY: ${{ secrets.MLIT_REINFOLIB_API_KEY }}
         run: npm run data:update:mlit-buy
 
+      # 公開開價快照的目標市區町村來自剛更新的國交省快照，必須排在其後。
+      # 正式 API 不即時存取入口網站；只由這個受審查的批次產生靜態檔。
+      - name: Refresh At Home public asking-price snapshot
+        run: npm run data:update:athome-sale
+
+      - name: Refresh nationwide At Home rent snapshot
+        run: npm run data:update:athome-rent-national
+
       # 只有 generatedAt（產生日期）變動不算變動——行情數字沒動就沒有東西要審。
       # 每次都開一個「只改日期」的 PR 會養成直接 merge 的習慣，等到真的有異常
       # 變動時反而不會細看，比不開 PR 更危險。
       - name: Check for changes
         id: diff
         run: |
-          SUBSTANTIVE=$(git diff -U0 -- src/data/mlitBuySnapshot.ts \
+          SUBSTANTIVE=$(git diff -U0 -- src/data/mlitBuySnapshot.ts src/data/atHomeSaleSnapshot.ts src/data/atHomeNationwideRentSnapshot.ts \
             | grep -E '^[+-][^+-]' \
-            | grep -v 'generatedAt' \
+            | grep -Ev 'generatedAt|capturedAt' \
             || true)
           if [ -z "$SUBSTANTIVE" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "行情數字沒有變化（僅產生日期不同），這一輪不需要開 PR。"
-            git checkout -- src/data/mlitBuySnapshot.ts
+            git checkout -- src/data/mlitBuySnapshot.ts src/data/atHomeSaleSnapshot.ts src/data/atHomeNationwideRentSnapshot.ts
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
             # 用 node 取季別：先前用 grep + cut -d'\"' 取值，cut 的分隔符必須是
             # 單一字元，兩字元的 \" 會讓 cut 失敗而回傳空字串（PR 標題出現「（）」）。
             {
               echo "rows=$(grep -c '"district":' src/data/mlitBuySnapshot.ts)"
+              echo "listing_rows=$(grep -c '"askingPrices":' src/data/atHomeSaleSnapshot.ts)"
+              echo "rent_rows=$(grep -c '"rents":' src/data/atHomeNationwideRentSnapshot.ts)"
               echo "period=$(node -e "const s=require('fs').readFileSync('src/data/mlitBuySnapshot.ts','utf8');const m=s.match(/latestPeriod:\s*\"([^\"]+)\"/);console.log(m?m[1]:'unknown')")"
             } >> "$GITHUB_OUTPUT"
           fi
@@ -66,6 +76,9 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: |
           npm run lint
+          npm run test:buy-market
+          npm run test:market-sources
+          npm run test:athome-rent
           npm run test:requirement-verdict
           npm run build
 
@@ -76,19 +89,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH="data/mlit-buy-snapshot-$(date -u +%Y%m%d)"
+          BRANCH="data/sale-market-snapshots-$(date -u +%Y%m%d)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/data/mlitBuySnapshot.ts
-          git commit -m "chore(data): 更新國交省成約實價快照至 ${{ steps.diff.outputs.period }}"
+          git add src/data/mlitBuySnapshot.ts src/data/atHomeSaleSnapshot.ts src/data/atHomeNationwideRentSnapshot.ts
+          git commit -m "chore(data): 更新全國成交與公開開價快照"
           git push origin "$BRANCH"
           gh pr create \
-            --title "chore(data): 更新國交省成約實價快照（${{ steps.diff.outputs.period }}）" \
-            --body "自動排程更新國土交通省成約實價快照。
+            --title "chore(data): 更新全國成交與公開開價快照（${{ steps.diff.outputs.period }}）" \
+            --body "自動排程更新國土交通省成交實價與 At Home 公開開價快照。
 
           - 最新季別：\`${{ steps.diff.outputs.period }}\`
           - 分桶筆數：${{ steps.diff.outputs.rows }}
+          - 公開開價市區町村：${{ steps.diff.outputs.listing_rows }}
+          - 公開租金市區町村：${{ steps.diff.outputs.rent_rows }}
           - 型別檢查、需求判定回歸測試與 production build 均已通過
 
           這份快照是買賣圖紙健檢價格判定的基準。合併前建議快速看一下 diff：

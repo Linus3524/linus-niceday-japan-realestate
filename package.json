@@ -23,6 +23,8 @@
     "data:review": "node scripts/review-market-sources.mjs && node scripts/review-rent-data.mjs",
     "data:review:rent": "node scripts/review-rent-data.mjs",
     "data:update:athome": "tsx scripts/update-athome-rent-data.ts",
+    "data:update:athome-rent-national": "tsx scripts/update-athome-rent-nationwide.ts",
+    "data:update:athome-sale": "tsx scripts/update-athome-sale-data.ts",
     "data:update:mlit-buy": "tsx scripts/update-mlit-buy-data.ts"
   },
   "dependencies": {

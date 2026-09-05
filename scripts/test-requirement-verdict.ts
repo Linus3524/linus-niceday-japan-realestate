@@ -5,10 +5,22 @@ import {
   axisImpactLevel,
   buildAxisVerdicts,
   buildOverallVerdict,
+  buildSalePriceVerdict,
   hasKnownCommuteStations,
   resolveSearchScope
 } from "../src/lib/requirementVerdict";
 import { commuteFitForTransfers } from "../src/lib/transitRouteApi";
+import { parseEffectiveRepairReserve, parseMandatoryMonthlyFees } from "../src/lib/listingExtraction";
+import {
+  getReinsSaleListingBenchmark,
+  REINS_CHUBU_SALE_LISTING_BENCHMARK,
+  REINS_KINKI_SALE_LISTING_BENCHMARK,
+  REINS_METRO_SALE_LISTING_BENCHMARK,
+  reinsImpliedDiscountFromListingRate,
+  reinsNewListingPremiumRate,
+} from "../src/data/reinsSaleMarket";
+import { getSaleListingBenchmark } from "../src/data/saleListingMarket";
+import { resolveDistrictAndRegion } from "../api/analyze-listing";
 
 const base: RentSearchCriteria = {
   roomType: "k1",
@@ -308,6 +320,163 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       assert.equal(visaAxis.status, "待確認");
       assert.ok(visaAxis.headline.includes("在留資格"));
       assert.ok(visaAxis.nextStep?.includes("補上在留資格"));
+    }
+  },
+  {
+    name: "首都圈買賣同時提供成約與市場典型開價兩層基準",
+    run: () => {
+      const benchmark = getReinsSaleListingBenchmark("東京都");
+      assert.equal(benchmark, REINS_METRO_SALE_LISTING_BENCHMARK);
+      assert.equal(Math.round(reinsNewListingPremiumRate(benchmark!) * 1000) / 10, 40);
+      assert.equal(Math.round(reinsImpliedDiscountFromListingRate(benchmark!) * 1000) / 10, 28.6);
+
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 59_800_000,
+        medianPriceYen: 46_400_000,
+        layout: "ldk2",
+        areaSqm: 60,
+        ageYears: 22,
+        walkMinutes: 9,
+        floor: 5,
+        totalFloors: 10,
+        sampleCount: 40,
+        listingBenchmark: benchmark,
+      });
+
+      assert.equal(verdict.expectedPriceMan, 4826);
+      assert.equal(verdict.typicalListingPriceMan, 6757);
+      assert.equal(verdict.listingDiffPercent, -11.5);
+      assert.equal(verdict.listingVerdict, "below");
+      assert.match(verdict.explanation, /不代表本案一定能議價相同比例/);
+    }
+  },
+  {
+    name: "中部與近畿使用各自 REINS，無基準時不套用首都圈數字",
+    run: () => {
+      assert.equal(getReinsSaleListingBenchmark("愛知"), REINS_CHUBU_SALE_LISTING_BENCHMARK);
+      assert.equal(getReinsSaleListingBenchmark("大阪"), REINS_KINKI_SALE_LISTING_BENCHMARK);
+      assert.equal(getReinsSaleListingBenchmark("福岡"), null);
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 30_000_000,
+        medianPriceYen: 30_000_000,
+        layout: "ldk1",
+        areaSqm: 41,
+        ageYears: 22,
+        walkMinutes: 9,
+        floor: 3,
+        totalFloors: 8,
+      });
+      assert.equal(verdict.typicalListingPriceMan, null);
+      assert.equal(verdict.listingVerdict, null);
+      assert.match(verdict.explanation, /不推估市場典型開價/);
+    }
+  },
+  {
+    name: "全國公開販售快照優先使用同區同房型 At Home 平均",
+    run: () => {
+      const benchmark = getSaleListingBenchmark("東京都", "中央區", "ldk1");
+      assert.equal(benchmark?.kind, "public_listing_average");
+      if (benchmark?.kind !== "public_listing_average") throw new Error("Expected public listing benchmark");
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: benchmark.averageListingPriceYen,
+        medianPriceYen: 60_000_000,
+        layout: "ldk1",
+        areaSqm: null,
+        ageYears: null,
+        walkMinutes: null,
+        floor: null,
+        totalFloors: null,
+        listingBenchmark: benchmark,
+      });
+      assert.equal(verdict.typicalListingPriceMan, Math.round(benchmark.averageListingPriceYen / 10_000));
+      assert.equal(verdict.listingDiffPercent, 0);
+      assert.equal(verdict.listingBenchmarkKind, "public_listing_average");
+      assert.match(verdict.explanation, /公開刊登平均尚未控制面積/);
+    }
+  },
+  {
+    name: "全國地址會辨識政令市行政區且不會跨縣誤配同名市",
+    run: () => {
+      assert.deepEqual(resolveDistrictAndRegion("福岡県北九州市小倉北区魚町1-2", ""), {
+        region: "福岡", district: "北九州市小倉北区"
+      });
+      assert.deepEqual(resolveDistrictAndRegion("大阪府大阪市中央区", ""), {
+        region: "大阪", district: "大阪市中央區"
+      });
+      assert.deepEqual(resolveDistrictAndRegion("広島県府中市", ""), {
+        region: "廣島", district: "府中市"
+      });
+      assert.deepEqual(resolveDistrictAndRegion("沖縄県那覇市久茂地", ""), {
+        region: "沖繩", district: "那霸市"
+      });
+      assert.equal(resolveDistrictAndRegion("辨識不到的地址", ""), null);
+    }
+  },
+  {
+    name: "非塔樓最上階會使用獨立樓層溢價",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 30_000_000,
+        medianPriceYen: 30_000_000,
+        layout: "ldk1",
+        areaSqm: 41,
+        ageYears: null,
+        walkMinutes: null,
+        floor: 7,
+        totalFloors: 7,
+      });
+      const floorFactor = verdict.factors.find(factor => factor.label === "樓層");
+      assert.equal(floorFactor?.ratePercent, 6);
+      assert.match(floorFactor?.note || "", /最上階/);
+    }
+  },
+  {
+    name: "同屋齡帶㎡單價不會再疊加手估屋齡係數",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 50_000_000,
+        medianPriceYen: 30_000_000,
+        medianSqmPriceYen: 1_000_000,
+        ageControlledByMarket: true,
+        layout: "ldk1",
+        areaSqm: 40,
+        ageYears: 5,
+        walkMinutes: null,
+        floor: null,
+        totalFloors: null,
+      });
+      assert.equal(verdict.expectedPriceMan, 4000);
+      assert.equal(verdict.factors.find(factor => factor.label === "屋齡")?.ratePercent, 0);
+      assert.match(verdict.areaBasisNote, /成交㎡單價中位數/);
+    }
+  },
+  {
+    name: "真實販売図面的全面翻新明細會套用翻新係數",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 50_000_000,
+        medianPriceYen: 45_000_000,
+        layout: "ldk1",
+        areaSqm: 40,
+        ageYears: null,
+        walkMinutes: null,
+        floor: null,
+        totalFloors: null,
+        renovationNotes: "キッチン・トイレ・洗面台・浴室・給排水管交換、床フローリング・壁・天井クロス貼替",
+      });
+      assert.equal(verdict.factors.find(factor => factor.label === "翻新")?.ratePercent, 5);
+    }
+  },
+  {
+    name: "可選停車位不會混入固定月費，改定後修繕金會優先",
+    run: () => {
+      assert.equal(parseMandatoryMonthlyFees("駐車場：有(月額29,000円)、駐輪場：有(月額300円)"), null);
+      assert.equal(parseMandatoryMonthlyFees("町会費 200円、インターネット使用料 1,100円"), 1300);
+      assert.equal(parseMandatoryMonthlyFees("300円／月（町会費）"), 300);
+      assert.equal(
+        parseEffectiveRepairReserve("月額4,600円", "2025年12月分より修繕積立金、月額7,300円に改定。"),
+        7300,
+      );
     }
   }
 ];

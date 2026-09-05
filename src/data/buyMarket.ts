@@ -3,6 +3,13 @@ import { mlitBuySnapshots } from "./mlitBuySnapshot.js";
 
 export interface OfficialBuyEstimate {
   medianTradePriceYen: number;
+  /** 優先為同屋齡帶、否則同區同房型的成交㎡單價中位數。 */
+  medianSqmPriceYen: number | null;
+  medianAreaSqm: number | null;
+  ageBand: MlitBuyAgeBand | null;
+  ageBandSampleCount: number | null;
+  /** 屋齡單價來自同房型，或同行政區跨房型的備援樣本。 */
+  ageBandScope: "layout" | "district" | null;
   sampleCount: number;
   windowQuarters: 4 | 8 | 0;
   periodStart: string;
@@ -26,6 +33,17 @@ export interface BuyMarketEstimate extends OfficialBuyEstimate {
 export const LAYOUT_AREA_BANDS: Record<LayoutCode, [number, number]> = {
   r1: [12, 24], k1: [18, 35], ldk1: [30, 52], ldk2: [45, 75], ldk3: [65, 130]
 };
+
+export type MlitBuyAgeBand = "age_0_10" | "age_11_20" | "age_21_30" | "age_31_40" | "age_41_plus";
+
+export function mlitAgeBandForAge(ageYears: number | null | undefined): MlitBuyAgeBand | null {
+  if (ageYears === null || ageYears === undefined || !Number.isFinite(ageYears) || ageYears < 0) return null;
+  if (ageYears <= 10) return "age_0_10";
+  if (ageYears <= 20) return "age_11_20";
+  if (ageYears <= 30) return "age_21_30";
+  if (ageYears <= 40) return "age_31_40";
+  return "age_41_plus";
+}
 
 /** 面積帶中點，作為該分桶「代表面積」的估計值。 */
 export function layoutBandMidArea(layout: LayoutCode): number {
@@ -56,19 +74,51 @@ export function getModeledBuyYieldRate(region: string, district: string, layout:
 export function getOfficialBuyEstimate(
   region: string,
   district: string,
-  layout: LayoutCode
+  layout: LayoutCode,
+  ageYears?: number | null
 ): OfficialBuyEstimate | null {
   const row = mlitBuySnapshots.find(item =>
     item.region === region && item.district === district && item.layout === layout
   );
-  return row ? {
+  if (!row) return null;
+  const requestedAgeBand = mlitAgeBandForAge(ageYears);
+  const ageEntry = requestedAgeBand ? row.ageBands?.[requestedAgeBand] : null;
+  const districtAgeCandidates = requestedAgeBand && !ageEntry
+    ? mlitBuySnapshots
+      .filter(item => item.region === region && item.district === district)
+      .flatMap(item => {
+        const entry = item.ageBands?.[requestedAgeBand];
+        return entry ? [{ ...entry, layout: item.layout }] : [];
+      })
+      .sort((a, b) => a.medianSqmPriceYen - b.medianSqmPriceYen)
+    : [];
+  const districtAgeSampleCount = districtAgeCandidates.reduce((sum, entry) => sum + entry.sampleCount, 0);
+  let districtAgeMedianSqmPriceYen: number | null = null;
+  if (districtAgeSampleCount > 0) {
+    const midpoint = districtAgeSampleCount / 2;
+    let cumulative = 0;
+    for (const entry of districtAgeCandidates) {
+      cumulative += entry.sampleCount;
+      if (cumulative >= midpoint) {
+        districtAgeMedianSqmPriceYen = entry.medianSqmPriceYen;
+        break;
+      }
+    }
+  }
+  const hasDistrictAgeFallback = !ageEntry && districtAgeMedianSqmPriceYen !== null;
+  return {
     medianTradePriceYen: row.medianTradePriceYen,
+    medianSqmPriceYen: ageEntry?.medianSqmPriceYen ?? districtAgeMedianSqmPriceYen ?? row.medianSqmPriceYen ?? null,
+    medianAreaSqm: row.medianAreaSqm ?? null,
+    ageBand: ageEntry || hasDistrictAgeFallback ? requestedAgeBand : null,
+    ageBandSampleCount: ageEntry?.sampleCount ?? (hasDistrictAgeFallback ? districtAgeSampleCount : null),
+    ageBandScope: ageEntry ? "layout" : hasDistrictAgeFallback ? "district" : null,
     sampleCount: row.sampleCount,
     windowQuarters: row.windowQuarters,
     periodStart: row.periodStart,
     periodEnd: row.periodEnd,
     sourceUrl: row.sourceUrl
-  } : null;
+  };
 }
 
 export function getBuyMarketEstimate(input: {
@@ -76,8 +126,9 @@ export function getBuyMarketEstimate(input: {
   district: string;
   layout: LayoutCode;
   monthlyRentYen: number;
+  ageYears?: number | null;
 }): BuyMarketEstimate {
-  const official = getOfficialBuyEstimate(input.region, input.district, input.layout);
+  const official = getOfficialBuyEstimate(input.region, input.district, input.layout, input.ageYears);
   if (official) return {
     ...official,
     source: "official_transaction",
@@ -89,6 +140,11 @@ export function getBuyMarketEstimate(input: {
     source: "rent_yield_model",
     basePriceYen,
     medianTradePriceYen: basePriceYen,
+    medianSqmPriceYen: null,
+    medianAreaSqm: null,
+    ageBand: null,
+    ageBandSampleCount: null,
+    ageBandScope: null,
     sampleCount: 0,
     windowQuarters: 0,
     periodStart: "",

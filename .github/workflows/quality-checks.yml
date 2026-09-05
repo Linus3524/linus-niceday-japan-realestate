@@ -27,5 +27,11 @@ jobs:
       - name: Run requirement regressions
         run: npm run test:requirement-verdict
 
+      - name: Verify nationwide sale-market snapshots
+        run: |
+          npm run test:athome-rent
+          npm run test:buy-market
+          npm run test:market-sources
+
       - name: Build production bundle
         run: npm run build

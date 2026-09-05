@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { atHomeRentSnapshotMeta, atHomeRentSnapshots } from "../src/data/atHomeRentSnapshot.js";
 import { rentRates } from "../src/data/housingMarket.js";
+import { atHomeNationwideRentSnapshotMeta, atHomeNationwideRentSnapshots } from "../src/data/atHomeNationwideRentSnapshot.js";
+import { getNationwideRentBenchmark } from "../src/data/nationwideRentMarket.js";
 
 const groupedLayouts = {
   r1: ["oneRoom"],
@@ -48,4 +50,18 @@ assert.ok(rentRates.every(row => [row.r1, row.k1, row.ldk1, row.ldk2, row.ldk3]
   .every(value => /^\d+(?:\.\d)?$/.test(value || ""))), "display rent values must use at most one decimal place");
 assert.equal(atHomeRentSnapshots.filter(row => row.detailedRents.ldk3 !== null).length, 210, "3LDK must cover all districts");
 
-console.log(`At Home rent snapshot: ${atHomeRentSnapshots.length} districts, ${atHomeRentSnapshots.length * 5 - fallbacks.length} sourced layout groups, ${fallbacks.length} fallback`);
+assert.ok(atHomeNationwideRentSnapshots.length >= 1_150, "nationwide snapshot must retain broad municipality coverage");
+assert.equal(atHomeNationwideRentSnapshots.length, atHomeNationwideRentSnapshotMeta.municipalityCount);
+assert.equal(new Set(atHomeNationwideRentSnapshots.map(row => `${row.region}|${row.district}`)).size, atHomeNationwideRentSnapshots.length);
+assert.equal(new Set(atHomeNationwideRentSnapshots.map(row => row.region)).size, 47);
+assert.ok(atHomeNationwideRentSnapshotMeta.layoutValueCount >= 4_500);
+for (const row of atHomeNationwideRentSnapshots) {
+  assert.ok(Object.values(row.rents).some(value => value !== null), `${row.region}/${row.district} must have a source value`);
+  for (const value of Object.values(row.rents)) assert.ok(value === null || (Number.isInteger(value) && value > 0));
+}
+const matsumoto = getNationwideRentBenchmark("長野", "松本市", "k1");
+assert.equal(matsumoto?.medianRentYen, 48_273);
+assert.match(matsumoto?.sourceUrl || "", /athome\.co\.jp\/chintai\/souba\/nagano\/matsumoto-city/);
+assert.equal(getNationwideRentBenchmark("沖繩", "石垣市", "k1"), null);
+
+console.log(`At Home rent: curated ${atHomeRentSnapshots.length} districts; nationwide ${atHomeNationwideRentSnapshotMeta.municipalityCount} municipalities / ${atHomeNationwideRentSnapshotMeta.layoutValueCount} layout values`);

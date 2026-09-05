@@ -12,15 +12,20 @@ dotenv.config({ path: [".env.local", ".env"] });
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { rentRates, type LayoutCode } from "../src/data/housingMarket.js";
-import { LAYOUT_AREA_BANDS } from "../src/data/buyMarket.js";
+import { LAYOUT_AREA_BANDS, mlitAgeBandForAge, type MlitBuyAgeBand } from "../src/data/buyMarket.js";
 
 interface MlitTransaction {
   Type?: string;
+  Prefecture?: string;
   Municipality?: string;
   TradePrice?: string;
   FloorPlan?: string;
   Area?: string;
   Period?: string;
+  BuildingYear?: string;
+  TimeToNearestStation?: string;
+  UnitPrice?: string;
+  Structure?: string;
 }
 
 interface MlitResponse { status?: string; data?: MlitTransaction[] }
@@ -77,10 +82,37 @@ const normalizePrefecture = (value: string) => {
     : normalized.replace(/[府県]$/, "");
 };
 
-const targetMarkets = rentRates.map(rate => {
+const preferredRegionNames = new Map<string, string>();
+const preferredDistrictNames = new Map<string, string>();
+for (const rate of rentRates) {
+  const prefecture = normalizePrefecture(rate.region);
+  preferredRegionNames.set(prefecture, rate.region);
   const japaneseDistrict = toJapanese(rate.district).replace("（市平均）", "");
-  const isCityAggregate = rate.district.includes("（市平均）") || (!japaneseDistrict.endsWith("区") && japaneseDistrict.endsWith("市"));
-  return { region: rate.region, district: rate.district, japaneseDistrict, isCityAggregate };
+  preferredDistrictNames.set(`${prefecture}|${japaneseDistrict}`, rate.district);
+}
+
+const canonicalMarket = (prefecture: string, municipality: string) => {
+  const normalizedPrefecture = normalizePrefecture(prefecture);
+  const japaneseDistrict = toJapanese(municipality).trim();
+  if (!normalizedPrefecture || !japaneseDistrict) return null;
+  return {
+    region: preferredRegionNames.get(normalizedPrefecture) || normalizedPrefecture,
+    district: preferredDistrictNames.get(`${normalizedPrefecture}|${japaneseDistrict}`) || japaneseDistrict,
+  };
+};
+
+const aggregateMarkets = rentRates.flatMap(rate => {
+  const prefecture = normalizePrefecture(rate.region);
+  const japaneseDistrict = toJapanese(rate.district).replace("（市平均）", "");
+  const designatedCityAverages = new Set([
+    "相模原市", "新潟市", "静岡市", "浜松市", "岡山市", "北九州市", "熊本市"
+  ]);
+  const cityPrefix = rate.district.includes("（市平均）")
+    ? japaneseDistrict
+    : ["横浜", "川崎"].includes(japaneseDistrict)
+      ? `${japaneseDistrict}市`
+      : designatedCityAverages.has(japaneseDistrict) ? japaneseDistrict : null;
+  return cityPrefix ? [{ region: rate.region, district: rate.district, prefecture, cityPrefix }] : [];
 });
 
 // 面積帶定義集中在 src/data/buyMarket.ts，與行情比對邏輯共用同一份，
@@ -97,6 +129,13 @@ const parsePeriod = (period: string) => {
 
 const formatPeriodOrdinal = (ordinal: number) =>
   `${Math.floor(ordinal / 4)}-Q${ordinal % 4 + 1}`;
+
+function transactionAgeBand(row: MlitTransaction, periodKey: string): MlitBuyAgeBand | null {
+  const buildingYear = Number(String(row.BuildingYear || "").match(/\d{4}/)?.[0]);
+  const tradeYear = Number(periodKey.slice(0, 4));
+  if (!Number.isInteger(buildingYear) || !Number.isInteger(tradeYear)) return null;
+  return mlitAgeBandForAge(Math.max(0, tradeYear - buildingYear));
+}
 
 function transactionLayout(row: MlitTransaction): LayoutCode | null {
   const plan = String(row.FloorPlan || "").normalize("NFKC").toUpperCase().replace(/[\s+]/g, "");
@@ -116,14 +155,6 @@ function transactionLayout(row: MlitTransaction): LayoutCode | null {
   };
   return (Object.entries(coreBands) as Array<[LayoutCode, [number, number]]>)
     .find(([, [min, max]]) => area >= min && area <= max)?.[0] || null;
-}
-
-function targetMatches(target: typeof targetMarkets[number], prefecture: string, municipality: string) {
-  if (normalizePrefecture(prefecture) !== normalizePrefecture(target.region)) return false;
-  const normalizedMunicipality = toJapanese(municipality);
-  return target.isCityAggregate
-    ? normalizedMunicipality === target.japaneseDistrict || normalizedMunicipality.startsWith(target.japaneseDistrict)
-    : normalizedMunicipality === target.japaneseDistrict;
 }
 
 async function fetchTransactions(area: string, year: number) {
@@ -155,7 +186,22 @@ if (!availablePeriodOrdinals.length) throw new Error("API 回傳資料中沒有�
 const latestAvailableOrdinal = availablePeriodOrdinals.reduce((latest, ordinal) =>
   Math.max(latest, ordinal), Number.NEGATIVE_INFINITY);
 
-const buckets = new Map<string, { observations: Array<{ price: number; period: string; ordinal: number }> }>();
+interface BuyObservation {
+  price: number;
+  area: number;
+  sqmPrice: number;
+  period: string;
+  ordinal: number;
+  ageBand: MlitBuyAgeBand | null;
+  structure: string | null;
+}
+
+const buckets = new Map<string, { observations: BuyObservation[] }>();
+const addObservation = (key: string, observation: BuyObservation) => {
+  const bucket = buckets.get(key) || { observations: [] };
+  bucket.observations.push(observation);
+  buckets.set(key, bucket);
+};
 for (const transaction of transactions) {
   if (!/マンション/.test(transaction.Type || "")) continue;
   const period = parsePeriod(transaction.Period || "");
@@ -168,13 +214,28 @@ for (const transaction of transactions) {
   const price = Number(transaction.TradePrice);
   if (!Number.isFinite(price) || price < 1_000_000 || price > 1_000_000_000) continue;
   const municipality = transaction.Municipality || "";
-  const prefecture = String((transaction as MlitTransaction & { Prefecture?: string }).Prefecture || "");
-  for (const target of targetMarkets) {
-    if (!targetMatches(target, prefecture, municipality)) continue;
-    const key = `${target.region}|${target.district}|${layout}`;
-    const bucket = buckets.get(key) || { observations: [] };
-    bucket.observations.push({ price, period: period.key, ordinal: period.ordinal });
-    buckets.set(key, bucket);
+  const market = canonicalMarket(transaction.Prefecture || "", municipality);
+  if (!market) continue;
+  const sourceUnitPrice = Number(transaction.UnitPrice);
+  const sqmPrice = Number.isFinite(sourceUnitPrice) && sourceUnitPrice > 0
+    ? sourceUnitPrice
+    : price / area;
+  const observation: BuyObservation = {
+    price,
+    area,
+    sqmPrice,
+    period: period.key,
+    ordinal: period.ordinal,
+    ageBand: transactionAgeBand(transaction, period.key),
+    structure: transaction.Structure?.trim() || null,
+  };
+  addObservation(`${market.region}|${market.district}|${layout}`, observation);
+
+  const normalizedPrefecture = normalizePrefecture(transaction.Prefecture || "");
+  const japaneseMunicipality = toJapanese(municipality);
+  for (const aggregate of aggregateMarkets) {
+    if (aggregate.prefecture !== normalizedPrefecture || !japaneseMunicipality.startsWith(aggregate.cityPrefix)) continue;
+    addObservation(`${aggregate.region}|${aggregate.district}|${layout}`, observation);
   }
 }
 
@@ -198,12 +259,36 @@ const snapshotRows = Array.from(buckets.entries()).flatMap(([key, bucket]) => {
   );
   const [region, district, layout] = key.split("|") as [string, string, LayoutCode];
   const prices = observations.map(observation => observation.price);
+  const sqmPrices = observations.map(observation => observation.sqmPrice);
+  const areas = observations.map(observation => observation.area);
   const ordinals = observations.map(observation => observation.ordinal).sort((a, b) => a - b);
+  const ageBands = Object.fromEntries(
+    (["age_0_10", "age_11_20", "age_21_30", "age_31_40", "age_41_plus"] as MlitBuyAgeBand[])
+      .map(ageBand => {
+        const matches = observations.filter(observation => observation.ageBand === ageBand);
+        return matches.length >= MIN_SAMPLE_COUNT
+          ? [ageBand, {
+              medianSqmPriceYen: Math.round(median(matches.map(observation => observation.sqmPrice)) / 1000) * 1000,
+              sampleCount: matches.length,
+            }]
+          : null;
+      })
+      .filter((entry): entry is [MlitBuyAgeBand, { medianSqmPriceYen: number; sampleCount: number }] => entry !== null)
+  );
+  const structureCounts = Object.fromEntries(
+    [...new Set(observations.map(observation => observation.structure).filter((value): value is string => Boolean(value)))]
+      .map(structure => [structure, observations.filter(observation => observation.structure === structure).length])
+  );
   return [{
     region,
     district,
     layout,
     medianTradePriceYen: Math.round(median(prices) / 100_000) * 100_000,
+    medianSqmPriceYen: Math.round(median(sqmPrices) / 1000) * 1000,
+    medianAreaSqm: Math.round(median(areas) * 10) / 10,
+    ageBands,
+    buildingYearSampleCount: observations.filter(observation => observation.ageBand !== null).length,
+    structureCounts,
     sampleCount: observations.length,
     windowQuarters: selectedWindow,
     periodStart: formatPeriodOrdinal(ordinals[0]),
@@ -227,7 +312,13 @@ if (existingRowCount > 0 && snapshotRows.length < existingRowCount * RETENTION_F
 }
 
 const generatedAt = new Date().toISOString().slice(0, 10);
-const body = `import type { LayoutCode } from "./housingMarket.js";\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計した近4四半期優先・不足時近8四半期の中央値（間取り欠損時は面積帯）",\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n`;
+const prefectureCount = new Set(snapshotRows.map(row => row.region)).size;
+const municipalityCount = new Set(snapshotRows.map(row => `${row.region}|${row.district}`)).size;
+const body = `import type { LayoutCode } from "./housingMarket.js";\nimport type { MlitBuyAgeBand } from "./buyMarket.js";\n\nexport interface MlitBuyAgeBandSnapshot {\n  medianSqmPriceYen: number;\n  sampleCount: number;\n}\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  medianSqmPriceYen: number;\n  medianAreaSqm: number;\n  ageBands: Partial<Record<MlitBuyAgeBand, MlitBuyAgeBandSnapshot>>;\n  buildingYearSampleCount: number;\n  structureCounts: Record<string, number>;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",\n  sourceFieldCoverage: { buildingYear: true, structure: true, timeToNearestStation: false, unitPriceDerivedWhenMissing: true },\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n`;
 
-await writeFile(OUTPUT_PATH, body, "utf8");
+const finalBody = body.replace(
+  '  methodology: "中古マンション等の取引価格を行政区・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",',
+  `  methodology: "全47都道府県の中古マンション等を市区町村・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",\n  prefectureCount: ${prefectureCount},\n  municipalityCount: ${municipalityCount},`
+);
+await writeFile(OUTPUT_PATH, finalBody, "utf8");
 console.log(`Wrote ${snapshotRows.length} MLIT buy-price rows to ${OUTPUT_PATH}`);

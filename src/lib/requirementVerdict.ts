@@ -1,5 +1,10 @@
 import { rentRates, districtStations, type LayoutCode } from "../data/housingMarket.js";
 import { LAYOUT_AREA_BANDS, layoutBandMidArea } from "../data/buyMarket.js";
+import {
+  reinsImpliedDiscountFromListingRate,
+  reinsNewListingPremiumRate,
+} from "../data/reinsSaleMarket.js";
+import type { SaleListingBenchmark } from "../data/saleListingMarket.js";
 import { stationsWithinHops } from "./localTransitRoute.js";
 import { toJapaneseStationName } from "./transit.js";
 import {
@@ -125,6 +130,9 @@ export interface RequestedRentRange {
    * 低端在他不想住的地方。所以 true 時文案要改成分段講，不要給單一區間。
    */
   spread: boolean;
+  sourceUrl?: string;
+  sourceLabel?: string;
+  sourceDate?: string;
 }
 
 export interface RentSegment {
@@ -549,6 +557,18 @@ export interface SalePriceVerdict {
   expectedPriceMan: number;
   fairLowMan: number;
   fairHighMan: number;
+  /** 公開刊登平均，或 REINS 新規登録口徑換算的市場典型開價。 */
+  typicalListingPriceMan: number | null;
+  listingDiffPercent: number | null;
+  listingVerdict: "below" | "typical" | "above" | null;
+  listingVerdictText: string | null;
+  listingPremiumRatePercent: number | null;
+  impliedDiscountFromListingPercent: number | null;
+  listingBenchmarkPeriod: string | null;
+  listingBenchmarkSourceUrl: string | null;
+  listingBenchmarkSourceLabel: string | null;
+  listingBenchmarkKind: SaleListingBenchmark["kind"] | null;
+  listingBenchmarkScopeLabel: string | null;
   areaAdjusted: boolean;
   areaBasisNote: string;
   factors: SalePriceFactor[];
@@ -575,6 +595,10 @@ export interface SalePriceVerdict {
 export function buildSalePriceVerdict(input: {
   salePriceYen: number;
   medianPriceYen: number;
+  /** MLIT 成交紀錄直接算出的㎡單價；有同屋齡帶樣本時應傳該分層中位數。 */
+  medianSqmPriceYen?: number | null;
+  /** true 代表 medianSqmPriceYen 已控制本案屋齡，不再疊加手估屋齡係數。 */
+  ageControlledByMarket?: boolean;
   layout: LayoutCode;
   areaSqm: number | null;
   ageYears: number | null;
@@ -584,6 +608,8 @@ export function buildSalePriceVerdict(input: {
   renovationNotes?: string;
   /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
   sampleCount?: number | null;
+  /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
+  listingBenchmark?: SaleListingBenchmark | null;
 }): SalePriceVerdict {
   const { salePriceYen, medianPriceYen, layout, areaSqm, ageYears, walkMinutes, floor, totalFloors } = input;
 
@@ -598,10 +624,14 @@ export function buildSalePriceVerdict(input: {
   const areaUsable = areaSqm !== null && areaSqm >= bandMin * 0.7 && areaSqm <= bandMax * 1.3;
   const areaAdjusted = areaUsable && areaSqm !== null;
   const areaBaseline = areaAdjusted && areaSqm !== null
-    ? medianPriceYen * (areaSqm / bandMid)
+    ? input.medianSqmPriceYen && input.medianSqmPriceYen > 0
+      ? input.medianSqmPriceYen * areaSqm
+      : medianPriceYen * (areaSqm / bandMid)
     : medianPriceYen;
   const areaBasisNote = areaAdjusted && areaSqm !== null
-    ? `已按專有面積校準：分桶代表面積約 ${bandMid}㎡，本案 ${areaSqm}㎡。`
+    ? input.medianSqmPriceYen && input.medianSqmPriceYen > 0
+      ? `已用國交省成交㎡單價中位數直接換算本案 ${areaSqm}㎡，不再以房型面積帶中點近似。`
+      : `已按專有面積校準：分桶代表面積約 ${bandMid}㎡，本案 ${areaSqm}㎡。`
     : areaSqm === null
       ? "圖紙未讀到專有面積，僅能比對分桶中位總價，精度較低。"
       : `本案 ${areaSqm}㎡ 落在 ${layout} 分桶採計範圍（${bandMin}～${bandMax}㎡）之外，未做面積換算。`;
@@ -609,7 +639,10 @@ export function buildSalePriceVerdict(input: {
   // ── 2. 屋齡（日本中古住宅價格對屋齡最敏感；基準為市場庫存主力 20～25 年）──
   let ageRate = 0;
   if (ageYears !== null) {
-    if (ageYears <= 3) { ageRate = 0.25; factors.push({ label: "屋齡", ratePercent: 25, note: `築 ${ageYears} 年（新築／準新築）` }); }
+    if (input.ageControlledByMarket) {
+      factors.push({ label: "屋齡", ratePercent: 0, note: `築 ${ageYears} 年（已使用同屋齡帶成交㎡單價，不重複加權）` });
+    }
+    else if (ageYears <= 3) { ageRate = 0.25; factors.push({ label: "屋齡", ratePercent: 25, note: `築 ${ageYears} 年（新築／準新築）` }); }
     else if (ageYears <= 5) { ageRate = 0.20; factors.push({ label: "屋齡", ratePercent: 20, note: `築 ${ageYears} 年（淺築新古屋）` }); }
     else if (ageYears <= 10) { ageRate = 0.12; factors.push({ label: "屋齡", ratePercent: 12, note: `築 ${ageYears} 年（10 年內）` }); }
     else if (ageYears <= 15) { ageRate = 0.06; factors.push({ label: "屋齡", ratePercent: 6, note: `築 ${ageYears} 年` }); }
@@ -644,6 +677,8 @@ export function buildSalePriceVerdict(input: {
     else if (floor === 1) { floorRate = -0.05; factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）" }); }
     else if (ratio !== null && totalFloors !== null && totalFloors >= 15 && ratio >= 0.8) {
       floorRate = 0.10; factors.push({ label: "樓層", ratePercent: 10, note: `${floor} 樓／共 ${totalFloors} 樓（高層塔樓上段，眺望與稀少性溢價）` });
+    } else if (ratio === 1 && totalFloors !== null) {
+      floorRate = 0.06; factors.push({ label: "樓層", ratePercent: 6, note: `${floor} 樓／共 ${totalFloors} 樓（最上階，無樓上噪音與稀少性溢價）` });
     } else if (ratio !== null && ratio >= 0.5) {
       floorRate = 0.04; factors.push({ label: "樓層", ratePercent: 4, note: `${floor} 樓／共 ${totalFloors} 樓（中高樓層）` });
     } else if (floor >= 3) {
@@ -656,7 +691,18 @@ export function buildSalePriceVerdict(input: {
   // ── 5. 翻新 ──
   let renoRate = 0;
   const reno = `${input.renovationNotes || ""}`.toLowerCase();
-  if (/リノベーション|リフォーム済|full renovation|フルリノベ|全面改装/.test(reno)) {
+  const renovationComponentCount = [
+    /キッチン/,
+    /浴室|ユニットバス/,
+    /トイレ/,
+    /洗面/,
+    /フローリング|フロアタイル|床.*貼替/,
+    /クロス.*貼替|壁.*天井.*クロス/,
+  ].filter(pattern => pattern.test(reno)).length;
+  if (
+    /リノベーション|リフォーム済|full renovation|フルリノベ|全面改装|内装(?:工事)?完成済/.test(reno)
+    || renovationComponentCount >= 4
+  ) {
     renoRate = 0.05;
     factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝" });
   }
@@ -682,6 +728,32 @@ export function buildSalePriceVerdict(input: {
   const diffPercent = Math.round(((salePriceYen - expectedPriceYen) / expectedPriceYen) * 1000) / 10;
   const rawDiffPercent = Math.round(((salePriceYen - medianPriceYen) / medianPriceYen) * 1000) / 10;
 
+  // ── 6. 公開販售市場第二基準 ──
+  const listingBenchmark = input.listingBenchmark ?? null;
+  const listingPremiumRate = listingBenchmark?.kind === "reins_ratio"
+    ? reinsNewListingPremiumRate(listingBenchmark)
+    : null;
+  const typicalListingPriceYen = listingBenchmark?.kind === "public_listing_average"
+    ? listingBenchmark.averageListingPriceYen
+    : listingPremiumRate === null ? null : expectedPriceYen * (1 + listingPremiumRate);
+  const listingDiffPercent = typicalListingPriceYen === null
+    ? null
+    : Math.round(((salePriceYen - typicalListingPriceYen) / typicalListingPriceYen) * 1000) / 10;
+  const listingVerdict = listingDiffPercent === null
+    ? null
+    : listingDiffPercent < -10
+      ? "below" as const
+      : listingDiffPercent > 10
+        ? "above" as const
+        : "typical" as const;
+  const listingVerdictText = listingVerdict === "below"
+    ? "低於市場典型開價"
+    : listingVerdict === "above"
+      ? "高於市場典型開價"
+      : listingVerdict === "typical"
+        ? "與市場典型開價相當"
+        : null;
+
   const toMan = (v: number) => Math.round(v / 10000);
   const factorSummary = factors.length
     ? factors.map(f => `${f.label} ${f.ratePercent >= 0 ? "+" : ""}${f.ratePercent}%`).join("、")
@@ -705,10 +777,15 @@ export function buildSalePriceVerdict(input: {
     explanation = `以該區同房型成交中位數為基礎，${areaBasisNote}再依「${factorSummary}」校準後，這一戶的預期價約 ${man(expectedPriceYen)}（合理區間 ${man(fairLow)}～${man(fairHigh)}）。開價 ${man(salePriceYen)} 高出約 ${diffPercent}%，且這個差距已經扣除屋齡、車站距離與樓層帶來的合理溢價。建議請仲介具體說明加價理由（例如室內全面翻新、管理狀態特別良好、稀少的角部屋或大陽台），而不是只以「地段好」帶過。`;
   }
 
-  // 口徑差異必須講明：實價統計是「成約價」，圖紙上寫的是「開價」。
-  // 日本中古市場成交價普遍低於開價，兩者直接相比本來就會系統性偏高，
-  // 不講清楚會讓每一件物件看起來都偏貴，判斷失去意義。
-  explanation += "（註：比較基準為國交省的「成約價」統計，而圖紙上是「開價」。日本中古市場的成交價通常低於開價，因此開價略高於預期價屬常態，重點在於高出的幅度是否有具體條件支撐。）";
+  if (listingBenchmark?.kind === "public_listing_average" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
+    explanation += ` 同時對照 ${listingBenchmark.sourceLabel}（${listingBenchmark.scopeLabel}），公開販售平均約 ${man(typicalListingPriceYen)}；本案開價相對該刊登平均${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。公開刊登平均尚未控制面積、屋齡、樓層與裝修，且不是成交價，因此只作第二層市場核對。`;
+  } else if (listingBenchmark?.kind === "reins_ratio" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
+    const premiumPercent = Math.round(listingPremiumRate! * 1000) / 10;
+    const discountPercent = Math.round(reinsImpliedDiscountFromListingRate(listingBenchmark) * 1000) / 10;
+    explanation += ` 同期 ${listingBenchmark.sourceLabel} 顯示，${listingBenchmark.market}新規登錄㎡單價比成約㎡單價高 ${premiumPercent}%（成約價換算約比新規開價低 ${discountPercent}%）。套用這個市場層級口徑後，本案的典型開價基準約 ${man(typicalListingPriceYen)}，本案開價相對該基準${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%，判定為「${listingVerdictText}」。這是兩組市場物件的平均差距，不代表本案一定能議價相同比例。`;
+  } else {
+    explanation += " 目前沒有這個地區可直接對照的公開『成約價 vs 新規開價』同口徑統計，因此只呈現國交省成約行情，不推估市場典型開價。";
+  }
 
   return {
     verdict,
@@ -719,6 +796,19 @@ export function buildSalePriceVerdict(input: {
     expectedPriceMan: toMan(expectedPriceYen),
     fairLowMan: toMan(fairLow),
     fairHighMan: toMan(fairHigh),
+    typicalListingPriceMan: typicalListingPriceYen === null ? null : toMan(typicalListingPriceYen),
+    listingDiffPercent,
+    listingVerdict,
+    listingVerdictText,
+    listingPremiumRatePercent: listingPremiumRate === null ? null : Math.round(listingPremiumRate * 1000) / 10,
+    impliedDiscountFromListingPercent: listingBenchmark?.kind === "reins_ratio"
+      ? Math.round(reinsImpliedDiscountFromListingRate(listingBenchmark) * 1000) / 10
+      : null,
+    listingBenchmarkPeriod: listingBenchmark?.period ?? null,
+    listingBenchmarkSourceUrl: listingBenchmark?.sourceUrl ?? null,
+    listingBenchmarkSourceLabel: listingBenchmark?.sourceLabel ?? null,
+    listingBenchmarkKind: listingBenchmark?.kind ?? null,
+    listingBenchmarkScopeLabel: listingBenchmark?.scopeLabel ?? null,
     areaAdjusted,
     areaBasisNote,
     factors,

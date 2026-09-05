@@ -58,6 +58,46 @@ export function parseYenAmount(text: unknown): number | null {
 }
 
 /**
+ * 解析買賣物件每戶必須負擔的其他月費。
+ *
+ * 圖紙常把停車場、駐輪場與機車位的「使用者付費」混在附近；它們不是每戶固定
+ * 持有成本，不能因為文字裡第一個金額很大就整筆算入。只採計有明確固定費用標籤
+ * 的項目，並支援一列同時列出多項月費。
+ */
+export function parseMandatoryMonthlyFees(text: unknown): number | null {
+  if (typeof text !== "string") return null;
+  const cleaned = toHalfWidth(text).replace(/,/g, "");
+  if (!cleaned.trim()) return null;
+
+  const label = /町会費|町内会費|自治会費|協力金|外部所有者協力金|組合費|管理組合費|インターネット(?:使用)?料|CATV(?:使用)?料|有線放送料|その他月額費用/i;
+  const amounts = cleaned
+    .split(/[、，。;；\n]/)
+    .filter(clause => label.test(clause))
+    .flatMap(clause => [...clause.matchAll(/(\d{1,10})\s*円/g)])
+    .map(match => Number(match[1]))
+    .filter(value => Number.isFinite(value) && value > 0);
+  if (!amounts.length) return null;
+  return amounts.reduce((sum, value) => sum + value, 0);
+}
+
+/**
+ * 修繕積立金的主欄偶爾仍印舊額，並在備註寫「○月分より月額○円に改定」。
+ * 估算持有成本時應採改定額；原始擷取文字仍保留，方便使用者回看圖紙。
+ */
+export function parseEffectiveRepairReserve(repairText: unknown, notes: unknown): number | null {
+  const base = parseYenAmount(repairText);
+  if (typeof notes !== "string") return base;
+
+  const cleaned = toHalfWidth(notes).replace(/,/g, "");
+  const revisedAmounts = [...cleaned.matchAll(
+    /修繕積立金[^。\n]{0,60}?月額\s*(\d{1,10})\s*円[^。\n]{0,24}?(?:改定|変更|増額)/g,
+  )]
+    .map(match => Number(match[1]))
+    .filter(value => Number.isFinite(value) && value > 0);
+  return revisedAmounts.at(-1) ?? base;
+}
+
+/**
  * 解析保證會社初回保證料：
  * 1. 百分比（例如 "初回保証料70％"、"70%"、"総賃料の50%"）：總租金（租金＋管理費）乘以比例
  * 2. 幾個月（例如 "0.5ヶ月"、"1ヶ月"）：總租金乘以月數
