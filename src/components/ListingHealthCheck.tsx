@@ -1013,7 +1013,7 @@ export function ListingHealthCheck() {
                 {buildingName || (stationSummary ? `${stationSummary}駅周邊` : (isSaleListing ? "日本買賣公寓" : "日本租賃物件"))}
               </h3>
               <p className="text-xs text-[#3F5147]">
-                {[stationSummary ? `${stationSummary}駅周邊` : null, extracted?.layout, displayArea, displayStructure, extracted?.age].filter(Boolean).join("　·　")}
+                {[stationSummary ? `${stationSummary}駅周邊` : null, extracted?.layout, displayArea, extracted?.floor, displayStructure, extracted?.age].filter(Boolean).join("　·　")}
               </p>
             </div>
           </div>
@@ -1103,7 +1103,7 @@ export function ListingHealthCheck() {
                     </div>
 
                     {/* 一句話結論 */}
-                    <p className="mt-5 border-t border-[#DDE3DF] pt-4 text-sm leading-relaxed text-[#1A2A22]">
+                    <p className="mt-5 text-sm leading-relaxed text-[#1A2A22]">
                       本案開價
                       {c.rawDiffPercent != null && (
                         <>高於官方成交中位 <strong className="font-bold">{Math.abs(Math.round(c.rawDiffPercent))}%</strong></>
@@ -1119,14 +1119,14 @@ export function ListingHealthCheck() {
 
                     {/* 溢價因素 */}
                     {c.priceFactors && c.priceFactors.length > 0 && (
-                      <div className="mt-5 border-t border-[#DDE3DF] pt-4">
+                      <div className="mt-5">
                         <h5 className="text-xs font-bold text-[#1A2A22]">溢價因素</h5>
                         <p className="mt-1 text-[11px] text-[#66736C]">
                           相對 {c.district} 同房型成交中位 {c.medianPriceMan?.toLocaleString()} 萬円的加減幅度
                         </p>
-                        <dl className="mt-3 divide-y divide-[#DDE3DF] border-t border-[#DDE3DF]">
+                        <dl className="mt-3 divide-y divide-[#DDE3DF]">
                           {[...c.priceFactors].sort((a, b) => Math.abs(b.ratePercent) - Math.abs(a.ratePercent)).map((f, i) => (
-                            <div key={i} className="flex items-baseline justify-between gap-3 py-2">
+                            <div key={i} className="flex items-baseline justify-between gap-3 py-2 first:pt-0">
                               <dt className="shrink-0 text-xs font-bold text-[#1A2A22]">{f.label}</dt>
                               <dd className="flex flex-1 items-baseline justify-end gap-3">
                                 <span className="text-right text-[11px] text-[#66736C]">{f.note}</span>
@@ -1143,7 +1143,7 @@ export function ListingHealthCheck() {
                     )}
 
                     {/* 資料來源與限制 */}
-                    <div className="mt-5 border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">
+                    <div className="mt-5 text-[11px] leading-relaxed text-[#66736C]">
                       <p>
                         官方成交：國土交通省實價登錄 {c.sampleCount} 筆
                         {c.periodStart && c.periodEnd ? `（${c.periodStart}～${c.periodEnd}）` : ""}
@@ -1449,30 +1449,6 @@ export function ListingHealthCheck() {
                   </div>
                 </div>
 
-                {/* 規格明細總覽 */}
-                <div className="mt-4 border-t border-[#DDE3DF] pt-3">
-                  <p className="mb-2 text-xs font-bold text-[#1A2A22]">建物與物件規格清單</p>
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:grid-cols-4">
-                    <div>
-                      <dt className="text-[#66736C]">格局（間取り）</dt>
-                      <dd className="font-bold text-[#1A2A22]">{extracted?.layout || "—"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[#66736C]">專有面積</dt>
-                      <dd className="font-bold text-[#1A2A22]">{displayArea || "未標明"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[#66736C]">樓層／總階數</dt>
-                      <dd className="font-bold text-[#1A2A22]">{extracted?.floor || "—"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-[#66736C]">建築年月／構造</dt>
-                      <dd className="font-bold text-[#1A2A22]">
-                        {extracted?.age || ""} {displayStructure ? `(${displayStructure})`: ""}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
               </div>
 
               {/* 模組 S5：買方交屋初期諸費用深度試算 */}
