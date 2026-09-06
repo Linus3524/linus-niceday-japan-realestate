@@ -62,6 +62,11 @@ const JPEG_QUALITY = 0.8;
 // 能保留小字，同時控制上傳量與圖片 token。
 const MAX_PDF_RENDER_DIMENSION = 2200;
 const PDF_JPEG_QUALITY = 0.88;
+// 部分 PDF（常見於特定不動產軟體輸出的內嵌日文字型）會讓 pdf.js 的
+// page.render() 永遠不 resolve、也不 reject——不是「渲染很慢」，是真的卡死。
+// 這種情況 try/catch 完全攔不到，使用者會看到分析永遠轉圈。
+// 用逾時把它視同渲染失敗，走既有的「改送原始 PDF」備援路徑。
+const PDF_RENDER_TIMEOUT_MS = 10000;
 
 interface InsightBulletItem {
   id: string;
@@ -347,6 +352,16 @@ function base64Bytes(base64: string): number {
   return Math.floor((base64.length * 3) / 4) - padding;
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} 逾時（${ms}ms）`)), ms);
+    promise.then(
+      value => { clearTimeout(timer); resolve(value); },
+      error => { clearTimeout(timer); reject(error); }
+    );
+  });
+}
+
 async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data: string }> {
   const [pdfjs, workerModule] = await Promise.all([
     import("pdfjs-dist"),
@@ -365,7 +380,13 @@ async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data:
     canvas.width = Math.ceil(viewport.width);
     canvas.height = Math.ceil(viewport.height);
 
-    await page.render({ canvas, viewport, background: "rgb(255,255,255)" }).promise;
+    const renderTask = page.render({ canvas, viewport, background: "rgb(255,255,255)" });
+    try {
+      await withTimeout(renderTask.promise, PDF_RENDER_TIMEOUT_MS, "PDF 渲染");
+    } catch (error) {
+      renderTask.cancel();
+      throw error;
+    }
     page.cleanup();
 
     const data = canvas.toDataURL("image/jpeg", PDF_JPEG_QUALITY).split(",")[1] ?? "";
