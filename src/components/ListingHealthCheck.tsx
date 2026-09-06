@@ -362,6 +362,30 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 }
 
+/**
+ * 判斷畫布是不是一片空白。取樣間隔取質數，避免剛好與規律的表格線對齊而誤判。
+ * 實際的物件概要書滿版都是文字、表格與照片，非白像素遠高於門檻；
+ * 渲染失敗的空白頁則趨近於 0。
+ */
+function canvasHasContent(canvas: HTMLCanvasElement): boolean {
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  if (!context) return false;
+  let pixels: Uint8ClampedArray;
+  try {
+    pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+  } catch {
+    // 讀不到像素時不要因此擋掉正常流程，交給後續步驟判斷。
+    return true;
+  }
+  let sampled = 0;
+  let inked = 0;
+  for (let i = 0; i < pixels.length; i += 4 * 17) {
+    sampled++;
+    if (pixels[i] < 245 || pixels[i + 1] < 245 || pixels[i + 2] < 245) inked++;
+  }
+  return sampled > 0 && inked / sampled > 0.005;
+}
+
 async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data: string }> {
   const [pdfjs, workerModule] = await Promise.all([
     import("pdfjs-dist"),
@@ -389,6 +413,14 @@ async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data:
     }
     page.cleanup();
 
+    // render() 有可能「成功回傳」卻畫出一張全白的圖：內嵌字型載入失敗時，
+    // 部分瀏覽器不是卡死而是靜靜地什麼都不畫。這種空白 JPEG 送到後端，
+    // AI 自然讀不出任何欄位，使用者只會看到「無法從這張圖片讀出物件資訊」。
+    // 這裡實際檢查畫布內容，空白就視同渲染失敗，改送原始 PDF。
+    if (!canvasHasContent(canvas)) {
+      throw new Error("PDF 渲染結果為空白畫面");
+    }
+
     const data = canvas.toDataURL("image/jpeg", PDF_JPEG_QUALITY).split(",")[1] ?? "";
     if (!data) throw new Error("PDF canvas encode failed");
     return { mimeType: "image/jpeg", data };
@@ -397,13 +429,27 @@ async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data:
   }
 }
 
-async function encodeForUpload(file: File): Promise<{ mimeType: string; data: string }> {
+/**
+ * PDF 一律以原始檔為底稿送出，能成功轉出的高解析度圖再額外附上。
+ *
+ * 原因：pdf.js 對某些不動產軟體輸出的 PDF 會卡死或畫出空白，而原始 PDF 交給
+ * 後端模型判讀反而穩定（同兩份問題檔案各測三次皆正確讀出欄位）。反過來，
+ * 掃描型 PDF 又需要前端高解析度轉圖才能保住小字。兩份一起送就能同時覆蓋
+ * 這兩種情況，任一份可讀就不會再出現「無法讀出物件資訊」。
+ */
+async function encodeForUpload(file: File): Promise<Array<{ mimeType: string; data: string }>> {
   if (file.type === "application/pdf") {
+    const raw = { mimeType: file.type, data: await fileToBase64(file) };
     try {
-      return await renderPdfForUpload(file);
+      const rendered = await renderPdfForUpload(file);
+      const combinedBytes = base64Bytes(raw.data) + base64Bytes(rendered.data);
+      // 超過上傳上限時捨棄轉出的圖，保留一定讀得到的原始 PDF。
+      if (combinedBytes <= MAX_TOTAL_IMAGE_BYTES) return [rendered, raw];
+      console.warn("PDF 轉圖後總量超過上限，只送原始 PDF。");
+      return [raw];
     } catch (error) {
-      console.warn("PDF 高解析度轉圖失敗，改送原始 PDF。", error);
-      return { mimeType: file.type, data: await fileToBase64(file) };
+      console.warn("PDF 高解析度轉圖失敗，只送原始 PDF。", error);
+      return [raw];
     }
   }
   try {
@@ -422,9 +468,9 @@ async function encodeForUpload(file: File): Promise<{ mimeType: string; data: st
 
     const data = canvas.toDataURL("image/jpeg", JPEG_QUALITY).split(",")[1] ?? "";
     if (!data) throw new Error("canvas encode failed");
-    return { mimeType: "image/jpeg", data };
+    return [{ mimeType: "image/jpeg", data }];
   } catch {
-    return { mimeType: file.type, data: await fileToBase64(file) };
+    return [{ mimeType: file.type, data: await fileToBase64(file) }];
   }
 }
 
@@ -786,7 +832,7 @@ export function ListingHealthCheck() {
 
     try {
       const encoded = await encodeForUpload(file);
-      const totalBytes = base64Bytes(encoded.data);
+      const totalBytes = encoded.reduce((sum, item) => sum + base64Bytes(item.data), 0);
       if (totalBytes > MAX_TOTAL_IMAGE_BYTES) {
         setError(`圖片壓縮後仍超過 ${Math.round(MAX_TOTAL_IMAGE_BYTES / 1024 / 1024)}MB 上限，請改用 JPG／PNG 格式再試。`);
         return;
@@ -795,7 +841,7 @@ export function ListingHealthCheck() {
       const response = await fetch("/api/analyze-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ files: [encoded], mode: analysisMode }),
+        body: JSON.stringify({ files: encoded, mode: analysisMode }),
       });
       const body = await response.json().catch(() => null);
       if (!response.ok) {
