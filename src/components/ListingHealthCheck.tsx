@@ -67,6 +67,8 @@ const PDF_JPEG_QUALITY = 0.88;
 // 這種情況 try/catch 完全攔不到，使用者會看到分析永遠轉圈。
 // 用逾時把它視同渲染失敗，走既有的「改送原始 PDF」備援路徑。
 const PDF_RENDER_TIMEOUT_MS = 10000;
+// 還原後的版面文字長度上限，避免異常大的圖紙把請求撐爆。
+const MAX_LAYOUT_TEXT_CHARS = 6000;
 
 interface InsightBulletItem {
   id: string;
@@ -386,15 +388,63 @@ function canvasHasContent(canvas: HTMLCanvasElement): boolean {
   return sampled > 0 && inked / sampled > 0.005;
 }
 
-async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data: string }> {
+/**
+ * 依座標把 PDF 文字層還原成「一行＝圖紙上的一列」的文字。
+ *
+ * 這類圖紙的費用表在畫面上是整齊的格線，但 PDF 內部的文字順序是散的，
+ * 標籤與數值不相鄰，AI 只能猜哪個值屬於哪一列——實測會把敷引讀成「-」、
+ * 把礼金讀成「1ヶ月」。還原成正確列序後再交給 AI，對位就穩定正確。
+ *
+ * 這一步只讀文字層、不需要 canvas 繪製，因此就算渲染失敗也拿得到。
+ */
+async function extractPdfLayoutText(pdf: any): Promise<string> {
+  const page = await pdf.getPage(1);
+  const content = await page.getTextContent();
+  const items = content.items
+    .map((item: any) => ({ x: item.transform[4], y: item.transform[5], text: String(item.str || "").trim() }))
+    .filter((item: { text: string }) => item.text);
+
+  const rows: Array<{ y: number; items: Array<{ x: number; text: string }> }> = [];
+  for (const item of items.sort((a: any, b: any) => b.y - a.y)) {
+    // 同一列的字有輕微高低差（例如 586.2 與 584.5），4pt 內視為同列；
+    // 相鄰兩列間距約 7pt 以上，不會誤併。
+    const row = rows.find(candidate => Math.abs(candidate.y - item.y) <= 4);
+    if (row) {
+      row.items.push(item);
+      row.y = (row.y + item.y) / 2;
+    } else {
+      rows.push({ y: item.y, items: [item] });
+    }
+  }
+  return rows
+    .map(row => row.items.sort((a, b) => a.x - b.x).map(item => item.text).join("　"))
+    .join("\n")
+    .slice(0, MAX_LAYOUT_TEXT_CHARS);
+}
+
+async function renderPdfForUpload(file: File): Promise<{ rendered: { mimeType: string; data: string } | null; layoutText: string }> {
   const [pdfjs, workerModule] = await Promise.all([
     import("pdfjs-dist"),
     import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
   ]);
   pdfjs.GlobalWorkerOptions.workerSrc = workerModule.default;
 
-  const loadingTask = pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
+  // 日本圖紙用 CID 編碼的日文字型，少了 CMap 與標準字型會整頁渲染成空白或亂碼。
+  // 資源由 scripts/copy-pdfjs-assets.mjs 在 build 前複製到 public/pdfjs/。
+  const loadingTask = pdfjs.getDocument({
+    data: new Uint8Array(await file.arrayBuffer()),
+    cMapUrl: "/pdfjs/cmaps/",
+    cMapPacked: true,
+    standardFontDataUrl: "/pdfjs/standard_fonts/",
+  });
   const pdf = await loadingTask.promise;
+  // 版面文字先取：它不依賴 canvas，就算後面渲染失敗也要保住這份對位資訊。
+  let layoutText = "";
+  try {
+    layoutText = await extractPdfLayoutText(pdf);
+  } catch (error) {
+    console.warn("PDF 版面文字還原失敗，僅送圖與原檔。", error);
+  }
   try {
     const page = await pdf.getPage(1);
     const baseViewport = page.getViewport({ scale: 1 });
@@ -423,7 +473,11 @@ async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data:
 
     const data = canvas.toDataURL("image/jpeg", PDF_JPEG_QUALITY).split(",")[1] ?? "";
     if (!data) throw new Error("PDF canvas encode failed");
-    return { mimeType: "image/jpeg", data };
+    return { rendered: { mimeType: "image/jpeg", data }, layoutText };
+  } catch (error) {
+    // 渲染失敗不影響已取得的版面文字，照樣回傳給後端當對位依據。
+    console.warn("PDF 高解析度轉圖失敗，改以原始 PDF 與版面文字分析。", error);
+    return { rendered: null, layoutText };
   } finally {
     await pdf.destroy();
   }
@@ -437,19 +491,22 @@ async function renderPdfForUpload(file: File): Promise<{ mimeType: string; data:
  * 掃描型 PDF 又需要前端高解析度轉圖才能保住小字。兩份一起送就能同時覆蓋
  * 這兩種情況，任一份可讀就不會再出現「無法讀出物件資訊」。
  */
-async function encodeForUpload(file: File): Promise<Array<{ mimeType: string; data: string }>> {
+async function encodeForUpload(file: File): Promise<{ files: Array<{ mimeType: string; data: string }>; layoutText: string }> {
   if (file.type === "application/pdf") {
     const raw = { mimeType: file.type, data: await fileToBase64(file) };
     try {
-      const rendered = await renderPdfForUpload(file);
+      const { rendered, layoutText } = await renderPdfForUpload(file);
+      if (!rendered) return { files: [raw], layoutText };
       const combinedBytes = base64Bytes(raw.data) + base64Bytes(rendered.data);
-      // 超過上傳上限時捨棄轉出的圖，保留一定讀得到的原始 PDF。
-      if (combinedBytes <= MAX_TOTAL_IMAGE_BYTES) return [rendered, raw];
-      console.warn("PDF 轉圖後總量超過上限，只送原始 PDF。");
-      return [raw];
+      // 超過上傳上限時捨棄轉出的圖，保留一定讀得到的原始 PDF 與版面文字。
+      if (combinedBytes > MAX_TOTAL_IMAGE_BYTES) {
+        console.warn("PDF 轉圖後總量超過上限，只送原始 PDF。");
+        return { files: [raw], layoutText };
+      }
+      return { files: [rendered, raw], layoutText };
     } catch (error) {
-      console.warn("PDF 高解析度轉圖失敗，只送原始 PDF。", error);
-      return [raw];
+      console.warn("PDF 前處理失敗，只送原始 PDF。", error);
+      return { files: [raw], layoutText: "" };
     }
   }
   try {
@@ -468,9 +525,9 @@ async function encodeForUpload(file: File): Promise<Array<{ mimeType: string; da
 
     const data = canvas.toDataURL("image/jpeg", JPEG_QUALITY).split(",")[1] ?? "";
     if (!data) throw new Error("canvas encode failed");
-    return [{ mimeType: "image/jpeg", data }];
+    return { files: [{ mimeType: "image/jpeg", data }], layoutText: "" };
   } catch {
-    return [{ mimeType: file.type, data: await fileToBase64(file) }];
+    return { files: [{ mimeType: file.type, data: await fileToBase64(file) }], layoutText: "" };
   }
 }
 
@@ -831,7 +888,7 @@ export function ListingHealthCheck() {
     setCommuteError(null);
 
     try {
-      const encoded = await encodeForUpload(file);
+      const { files: encoded, layoutText } = await encodeForUpload(file);
       const totalBytes = encoded.reduce((sum, item) => sum + base64Bytes(item.data), 0);
       if (totalBytes > MAX_TOTAL_IMAGE_BYTES) {
         setError(`圖片壓縮後仍超過 ${Math.round(MAX_TOTAL_IMAGE_BYTES / 1024 / 1024)}MB 上限，請改用 JPG／PNG 格式再試。`);
@@ -841,7 +898,7 @@ export function ListingHealthCheck() {
       const response = await fetch("/api/analyze-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ files: encoded, mode: analysisMode }),
+        body: JSON.stringify({ files: encoded, mode: analysisMode, layoutText }),
       });
       const body = await response.json().catch(() => null);
       if (!response.ok) {

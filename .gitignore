@@ -10,3 +10,6 @@ coverage/
 .env*.local
 scratch/
 tmp/
+
+# 由 scripts/copy-pdfjs-assets.mjs 從 node_modules 複製，不進版控
+public/pdfjs/

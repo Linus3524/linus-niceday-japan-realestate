@@ -41,6 +41,8 @@ import type { LayoutCode } from "../src/data/housingMarket.js";
 
 const MAX_FILES = 3;
 const MAX_TOTAL_IMAGE_BYTES = 3 * 1024 * 1024;
+// 前端依座標還原的版面文字長度上限，需與 ListingHealthCheck 的設定一致。
+const MAX_LAYOUT_TEXT_CHARS = 6000;
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
   "image/jpg",
@@ -199,88 +201,18 @@ function leaseTermValue(row: string, labels: string[]) {
   return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|不要)`, "i"))?.[1]?.trim() || null;
 }
 
-/**
- * 修正「更新料」被錯位讀進其他費用欄位的問題。
- *
- * 這類圖紙的費用區是「標籤欄＋數值欄」並排的表格，PDF 文字層順序又是亂的，
- * 模型很容易把更新料的值填到敷金、礼金或敷引。實測同一家仲介的兩份圖紙，
- * 更新料 1.5ヶ月(新賃料) 分別被誤讀成敷引（B）與礼金（A）。
- *
- * 判斷依據是「新賃料」：那是更新料專用寫法（更新後以新租金計算），
- * 敷金、礼金、敷引都不會這樣標示。抓到就把該欄位清成「なし」，
- * 並在更新料本身沒值時把它歸還回去。
- *
- * 敷引特別重要——誤判會顯示「退租直接扣除、不予退還」的警告，
- * 等於憑空嚇走一筆不存在的費用，寧可漏報也不能誤報。
- *
- * 刻意不採用「數值與更新料相同就視為錯位」：更新料 1ヶ月 搭配敷引 1ヶ月
- * 在關西是常見的真實組合，那條規則會把真正該示警的案件誤殺。
- */
-const RENEWAL_FEE_MARKER = "新賃料";
-
-const MISALIGNMENT_TARGETS = [
-  { field: "deposit", labels: ["敷金", "保証金"] },
-  { field: "keyMoney", labels: ["礼金"] },
-  { field: "shikibiki", labels: ["償却金", "敷金償却", "償却", "敷引"] },
-] as const;
-
-const ALL_FEE_LABELS = ["敷金償却", "敷金", "保証金", "礼金", "償却金", "償却", "敷引", "更新事務手数料", "更新料"];
-
-/**
- * 從 leaseTerms 原文取出某組標籤後面的值（未經截斷，才看得到「新賃料」）。
- * 必須在遇到下一個費用標籤時停下來，否則會把後面欄位的值一起吃進來，
- * 導致敷金誤判成含「新賃料」而被清空。
- */
-function rawValueNearLabels(leaseTerms: string, labels: readonly string[]): string {
-  const row = leaseTerms.normalize("NFKC");
-  const stop = ALL_FEE_LABELS.join("|");
-  const pattern = new RegExp(`(?:${labels.join("|")})\\s*[:：]?\\s*((?:(?!${stop})[^/、,，;；\\n]){0,24})`);
-  return (row.match(pattern)?.[1] || "").trim();
-}
-
-function repairRenewalFeeMisalignment(extracted: ExtractedListingFields): ExtractedListingFields {
-  const leaseTerms = extracted.leaseTerms || "";
-  const repaired = { ...extracted };
-  let stolenValue = "";
-
-  for (const { field, labels } of MISALIGNMENT_TARGETS) {
-    const current = (repaired[field] || "").normalize("NFKC");
-    // 值本身就帶「新賃料」，或 leaseTerms 裡該標籤後方是更新料寫法
-    // （既有的 leaseTermValue 會把值截成「1.5ヶ月」而看不到關鍵字，故需查原文）。
-    const nearLabel = rawValueNearLabels(leaseTerms, labels);
-    if (!current.includes(RENEWAL_FEE_MARKER) && !nearLabel.includes(RENEWAL_FEE_MARKER)) continue;
-
-    stolenValue = stolenValue || (current.includes(RENEWAL_FEE_MARKER) ? current : nearLabel.trim());
-    console.warn("analyze-listing: 費用欄位疑似誤讀更新料，已改判為無", {
-      field,
-      value: repaired[field],
-      leaseTerms,
-    });
-    repaired[field] = "なし";
-  }
-
-  // 更新料本身沒讀到值時，把被錯放的值歸還回去。
-  if (stolenValue) {
-    const renewalFee = (repaired.renewalFee || "").normalize("NFKC").trim();
-    if (!renewalFee || /^(?:なし|無し|不要|-|ー|―)$/.test(renewalFee)) {
-      repaired.renewalFee = stolenValue;
-    }
-  }
-  return repaired;
-}
-
 function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListingFields {
   const row = extracted.leaseTerms || "";
-  if (!row.trim()) return repairRenewalFeeMisalignment(extracted);
+  if (!row.trim()) return extracted;
   const deposit = leaseTermValue(row, ["敷金", "保証金"]);
   const keyMoney = leaseTermValue(row, ["礼金"]);
   const shikibiki = leaseTermValue(row, ["償却金", "敷金償却", "償却", "敷引"]);
-  return repairRenewalFeeMisalignment({
+  return {
     ...extracted,
     deposit: deposit || extracted.deposit,
     keyMoney: keyMoney || extracted.keyMoney,
     shikibiki: shikibiki || extracted.shikibiki,
-  });
+  };
 }
 
 function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedListingFields {
@@ -322,7 +254,7 @@ export interface InitialCostEstimate {
   tips: string[];
 }
 
-async function extractListingFields(files: UploadedFile[]): Promise<ExtractedListingFields> {
+async function extractListingFields(files: UploadedFile[], layoutText = ""): Promise<ExtractedListingFields> {
   const prompt = `
     分析這份日本不動產物件概要書／図面圖片或 PDF，精準抓出各欄位內容，原文照抄不要翻譯或換算單位。
 
@@ -402,12 +334,19 @@ async function extractListingFields(files: UploadedFile[]): Promise<ExtractedLis
     找不到的欄位留空字串，不要猜測或用 0 代替。
   `;
 
+  // 圖紙的費用表在畫面上是整齊格線，但 PDF 內部文字順序是散的，模型只能猜
+  // 哪個值屬於哪一列（實測會把敷引讀成「-」、礼金讀成「1ヶ月」）。前端依座標
+  // 還原出的版面文字保有正確列序，作為對位依據能顯著提升準確度。
+  const layoutHint = layoutText
+    ? `\n\n以下是從這份圖紙的文字層依座標還原的版面文字，同一行代表圖紙上的同一列。\n欄位對位請以這份還原文字為準，它比自行判讀 PDF 內部順序可靠：\n---\n${layoutText}\n---`
+    : "";
+
   const response = await getAiClient().models.generateContent({
     model: "gemini-3.1-flash-lite",
     contents: {
       parts: [
         ...files.map(file => ({ inlineData: file })),
-        { text: prompt },
+        { text: prompt + layoutHint },
       ],
     },
     config: {
@@ -519,7 +458,7 @@ function calculateInitialCostBreakdown(params: {
     note: depositAmount === 0
       ? "免押金（需留意退租時是否有預收清掃費或特約條款）"
       : hasShikibiki
-      ? `擔保性質費用（⚠️ 含「${formattedShikibiki}」扣除約定，退租時不退還）`
+      ? `擔保性質費用（含「${formattedShikibiki}」扣除約定，退租時不退還）`
       : "擔保性質費用，退租扣除修繕後退還餘額",
   });
 
@@ -659,50 +598,50 @@ function calculateInitialCostBreakdown(params: {
 
   // 1. 租金高性價比／超值物件
   if (params.marketVerdict?.status === "超值") {
-    tips.push("【💡 高性價比／超值物件】本物件租金＋管理費顯著低於同區同房型市場行情，價格極具競爭力！在東京租屋市場中，此類平價超值房源去化速度極快，若審查通過建議把握簽約時機，以免被其他申請者搶先。");
+    tips.push("【低於行情】租金＋管理費低於同區同房型行情。這類物件去化較快，審查通過後建議儘早決定。");
   }
 
   // 2. 免租期（Free Rent）特惠提示
   const hasFreeRent = Boolean(params.extractedFreeRent && !isFreeOrZero(params.extractedFreeRent));
   if (hasFreeRent) {
-    tips.push(`【✨ 專屬禮遇・免租期（フリーレント）】圖紙載有「${params.extractedFreeRent}」優惠！起租首月可減免本體租金，實質大幅減輕簽約搬家現金壓力（約省下 ¥${rent.toLocaleString()}）。`);
+    tips.push(`【免租期】圖紙載明「${params.extractedFreeRent}」，首月可減免租金，約省 ¥${rent.toLocaleString()}。`);
   }
 
   // 3. 初期費用極度親民（3.5 倍以下）
   if (monthsMultipleMax <= 3.5) {
-    tips.push(`【💰 初期費用極度親民】本物件總初期費用僅約 ${monthsMultipleMax} 個月租金（市場普遍約 4.0～4.8 倍），大幅壓低赴日搬遷的現金流門檻！`);
+    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.0～4.8 倍。`);
   }
 
   // 4. 禮金與押金動態解析
   if (hasShikibiki) {
-    tips.push(`【⚠️ 重要特約・敷引（押金不退還）】圖紙載有「${formattedShikibiki}」，此約定表示退租時該筆押金將直接扣除沒收、絕不退還，實質形同額外禮金，請務必納入預算考量。`);
+    tips.push(`【敷引特約】圖紙載明「${formattedShikibiki}」。這筆押金退租時直接扣除、不退還，性質等同禮金，請計入預算。`);
   }
   if (keyMoneyAmount === 0 && depositAmount === 0) {
-    tips.push("【🎉 零禮金・零押金（雙零物件）】免付房東謝禮與押金，初期可直接省下約 2 個月租金負擔；但請特別留意退租時合約約定的基本清掃費與原狀恢復計費特約。");
+    tips.push("【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。");
   } else if (keyMoneyAmount === 0) {
-    tips.push("【✨ 免禮金優勢】本物件「免禮金」，為您省下致贈房東的謝禮（相當於省下約 1 個月租金）；所繳押金於扣除退租清潔特約後仍有機會返還。");
+    tips.push("【免禮金】省約 1 個月租金。押金扣除退租清潔特約後仍可能返還。");
   } else if (keyMoneyAmount >= rent * 1.5) {
     const kmMonths = (keyMoneyAmount / rent).toFixed(1).replace(/\.0$/, "");
-    tips.push(`【⚠️ 初期負擔偏高】本物件禮金高達 ${kmMonths} 個月，屬於熱門物件或都心精華地段常見設定，初期成本相對較高。`);
+    tips.push(`【禮金偏高】禮金 ${kmMonths} 個月，常見於熱門地段，初期成本較高。`);
   }
 
   // 5. 免換鎖費用優惠
   if (isLockFree) {
-    tips.push("【🔑 免換鎖費優惠】圖紙載明免收換鎖費（鍵交換代 0 円），為您額外省下約 2～4 萬円的交屋雜費。");
+    tips.push("【免換鎖費】圖紙載明鍵交換代 0 円，省約 2～4 萬円。");
   }
 
   // 6. 附免費高速網路
   const allNotes = `${params.specialNotes || ""}`.toLowerCase();
   const hasFreeNet = /インターネット無料|ネット無料|wifi無料|シーファイブ|高速ネット無料|光ネット無料/.test(allNotes);
   if (hasFreeNet) {
-    tips.push("【📶 附免費高速網路】圖紙標示內建免費網路，入居後免自行申辦與綁約，每年實質再為您省下約 5 萬～6 萬円通信開銷。");
+    tips.push("【附免費網路】免自行申辦，年省約 5～6 萬円。");
   }
 
   // 7. 起租日與首期金額浮動說明
-  tips.push("【起租日與首期金額浮動】日本簽約多會預收「起租月剩餘日數之日割租金＋次月完整租金與管理費」。因起租日需配合管理會社規定之最晚起租期限（通常為審查核准後約 10～20 天內，無法隨意延後），若核准的起租日剛好落在下旬（如 25 號後），當月日割天數少，首筆需匯出的初期款項會相對有感降低；若落在月初則日割接近全額。");
+  tips.push("【起租日影響首期】首期預收「起租月日割租金＋次月完整租金與管理費」。起租日通常在審查通過後 10～20 天內，若落在下旬，日割天數少、首筆金額較低。");
 
   // 8. 海外匯款提醒
-  tips.push("【海外匯款提醒】海外租客簽約初期費用多需以日本國內銀行匯款，若由海外電匯請預留約 4,000 円日本端中繼受金手續費與匯差緩衝。");
+  tips.push("【海外匯款】初期費用多需由日本國內銀行匯款。海外電匯請預留約 4,000 円日本端手續費與匯差。");
 
   return {
     totalMin,
@@ -1114,7 +1053,11 @@ export default async function handler(req: any, res: any) {
     const hasCoreFields = (fields: ExtractedListingFields) =>
       Boolean(fields.station.trim() || fields.layout.trim() || fields.rent.trim() || fields.salePrice.trim());
 
-    let extracted = await extractListingFields(files);
+    const layoutText = typeof req.body?.layoutText === "string"
+      ? req.body.layoutText.slice(0, MAX_LAYOUT_TEXT_CHARS)
+      : "";
+
+    let extracted = await extractListingFields(files, layoutText);
     if (!hasCoreFields(extracted)) {
       // 部分圖紙（常見於特定不動產軟體輸出、內嵌字型有問題的 PDF）偶爾會讓 Gemini
       // 這次抽取剛好四個核心欄位都槓龜；同一份檔案重試一次，實測能救回相當比例，
@@ -1123,7 +1066,7 @@ export default async function handler(req: any, res: any) {
         fileCount: files.length,
         mimeTypes: files.map(file => file.mimeType),
       });
-      extracted = await extractListingFields(files);
+      extracted = await extractListingFields(files, layoutText);
     }
 
     // 租賃與買賣核心欄位檢查
