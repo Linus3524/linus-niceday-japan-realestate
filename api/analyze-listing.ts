@@ -199,9 +199,38 @@ function leaseTermValue(row: string, labels: string[]) {
   return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|不要)`, "i"))?.[1]?.trim() || null;
 }
 
+/**
+ * 敷引／償却是高風險欄位：判定成立會對使用者顯示「退租直接扣除、不予退還」的警告，
+ * 誤判等於憑空嚇走一筆根本不存在的費用，因此寧可漏報也不能誤報。
+ *
+ * 這類圖紙的費用欄是「標籤欄＋數值欄」並排，模型容易把「更新料」的值錯位讀成敷引，
+ * 實測兩份圖紙都出現這個錯位。判斷依據是「新賃料」這個字眼：那是更新料專用寫法
+ * （更新後以新租金計算），敷引不會這樣標示。
+ *
+ * 刻意不採用「敷引與更新料數值相同就視為錯位」這條規則：更新料 1ヶ月 搭配
+ * 敷引 1ヶ月 在關西是常見的真實組合，那樣會把真正該示警的案件誤殺。
+ */
+const RENEWAL_FEE_MARKER = "新賃料";
+
+function shikibikiLooksLikeRenewalFee(extracted: ExtractedListingFields): boolean {
+  if ((extracted.shikibiki || "").normalize("NFKC").includes(RENEWAL_FEE_MARKER)) return true;
+  // leaseTerms 的原文裡，償却／敷引標籤後面若緊接著更新料寫法，代表模型把兩欄讀混了。
+  // 這一步必須在數值被正規表達式截斷成「1.5ヶ月」之前判斷，否則就看不到「新賃料」。
+  const row = (extracted.leaseTerms || "").normalize("NFKC");
+  const nearLabel = row.match(/(?:償却金|敷金償却|償却|敷引)\s*[:：]?\s*([^\/、,，;；\n]{0,24})/);
+  return Boolean(nearLabel?.[1]?.includes(RENEWAL_FEE_MARKER));
+}
+
 function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListingFields {
+  const misread = shikibikiLooksLikeRenewalFee(extracted);
+  if (misread) {
+    console.warn("analyze-listing: 敷引疑似誤讀更新料，已改判為無", {
+      shikibiki: extracted.shikibiki,
+      leaseTerms: extracted.leaseTerms,
+    });
+  }
   const row = extracted.leaseTerms || "";
-  if (!row.trim()) return extracted;
+  if (!row.trim()) return misread ? { ...extracted, shikibiki: "なし" } : extracted;
   const deposit = leaseTermValue(row, ["敷金", "保証金"]);
   const keyMoney = leaseTermValue(row, ["礼金"]);
   const shikibiki = leaseTermValue(row, ["償却金", "敷金償却", "償却", "敷引"]);
@@ -209,7 +238,7 @@ function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListin
     ...extracted,
     deposit: deposit || extracted.deposit,
     keyMoney: keyMoney || extracted.keyMoney,
-    shikibiki: shikibiki || extracted.shikibiki,
+    shikibiki: misread ? "なし" : (shikibiki || extracted.shikibiki),
   };
 }
 
