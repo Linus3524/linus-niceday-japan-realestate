@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp,
   Coins,
+  ExternalLink,
   FileSpreadsheet,
   FileText,
   Maximize2,
@@ -423,6 +424,75 @@ async function extractPdfLayoutText(pdf: any): Promise<string> {
     .slice(0, MAX_LAYOUT_TEXT_CHARS);
 }
 
+/**
+ * 取得 PDF 首頁的長寬比，用來讓預覽框貼合圖紙比例。
+ * 只讀 viewport 尺寸、不做 canvas 渲染，因此不受渲染卡死問題影響。
+ */
+async function readPdfAspectRatio(file: File): Promise<number | null> {
+  try {
+    const [pdfjs, workerModule] = await Promise.all([
+      import("pdfjs-dist"),
+      import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+    ]);
+    pdfjs.GlobalWorkerOptions.workerSrc = workerModule.default;
+    const pdf = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+    try {
+      const viewport = (await pdf.getPage(1)).getViewport({ scale: 1 });
+      return viewport.height > 0 ? viewport.width / viewport.height : null;
+    } finally {
+      await pdf.destroy();
+    }
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 將 PDF 首頁高解析度轉成 JPEG 縮圖供介面預覽。
+ * 徹底消除瀏覽器原生 PDF 檢視器在非滿版或不同比例下產生巨大黑底與醜陋控制列的問題。
+ */
+async function renderPdfPreview(file: File): Promise<{ blobUrl: string; aspect: number } | null> {
+  try {
+    const [pdfjs, workerModule] = await Promise.all([
+      import("pdfjs-dist"),
+      import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+    ]);
+    pdfjs.GlobalWorkerOptions.workerSrc = workerModule.default;
+
+    const loadingTask = pdfjs.getDocument({
+      data: new Uint8Array(await file.arrayBuffer()),
+      cMapUrl: "/pdfjs/cmaps/",
+      cMapPacked: true,
+      standardFontDataUrl: "/pdfjs/standard_fonts/",
+    });
+    const pdf = await loadingTask.promise;
+    try {
+      const page = await pdf.getPage(1);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const aspect = baseViewport.height > 0 ? baseViewport.width / baseViewport.height : 1.414;
+      // 1800px 上限：兼顧日本圖紙極小字體的銳利度與快速渲染 (<100ms)
+      const scale = Math.min(2.5, 1800 / Math.max(baseViewport.width, baseViewport.height));
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+
+      const renderTask = page.render({ canvas, viewport, background: "rgb(255,255,255)" });
+      await withTimeout(renderTask.promise, 5000, "PDF 預覽轉圖");
+      page.cleanup();
+
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
+      if (!blob) return null;
+      return { blobUrl: URL.createObjectURL(blob), aspect };
+    } finally {
+      await pdf.destroy();
+    }
+  } catch (error) {
+    console.warn("PDF 預覽轉圖失敗，降級為原生預覽", error);
+    return null;
+  }
+}
+
 async function renderPdfForUpload(file: File): Promise<{ rendered: { mimeType: string; data: string } | null; layoutText: string }> {
   const [pdfjs, workerModule] = await Promise.all([
     import("pdfjs-dist"),
@@ -775,7 +845,9 @@ function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerd
 export function ListingHealthCheck() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [showFullPreview, setShowFullPreview] = useState(false);
+  const [previewAspect, setPreviewAspect] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -802,12 +874,13 @@ export function ListingHealthCheck() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [showFullPreview]);
 
-  // 當 previewUrl 變動時妥善釋放 object URL，避免記憶體洩漏
+  // 當 previewUrl 或 previewImageUrl 變動時妥善釋放 object URL，避免記憶體洩漏
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
     };
-  }, [previewUrl]);
+  }, [previewUrl, previewImageUrl]);
 
   const selectSingleFile = (selectedFile: File) => {
     setError(null);
@@ -816,12 +889,49 @@ export function ListingHealthCheck() {
     setCommute(null);
 
     if (previewUrl) URL.revokeObjectURL(previewUrl);
+    if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
 
     setFile(selectedFile);
     setShowFullPreview(false);
-    // PDF 也要有預覽：交給瀏覽器原生 PDF 檢視器渲染，使用者才能自行核對分析數值。
-    const previewable = selectedFile.type.startsWith("image/") || selectedFile.type === "application/pdf";
-    setPreviewUrl(previewable ? URL.createObjectURL(selectedFile) : null);
+
+    const isPdf = selectedFile.type === "application/pdf";
+    const isImg = selectedFile.type.startsWith("image/");
+
+    if (isImg) {
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
+      setPreviewImageUrl(url);
+      setPreviewAspect(null);
+      const img = new Image();
+      img.onload = () => {
+        if (img.naturalHeight > 0) {
+          setPreviewAspect(img.naturalWidth / img.naturalHeight);
+        }
+      };
+      img.src = url;
+    } else if (isPdf) {
+      const rawUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(rawUrl);
+      setPreviewImageUrl(null);
+      setPreviewAspect(null);
+
+      // 1. 快速先讀取尺寸比例（通常 10~20ms 內完成，立刻貼合比例）
+      void readPdfAspectRatio(selectedFile).then((aspect) => {
+        if (aspect) setPreviewAspect(aspect);
+      });
+
+      // 2. 背景轉為高畫質圖片預覽（消除瀏覽器原生 PDF 檢視器的黑色空底與控制列）
+      void renderPdfPreview(selectedFile).then((rendered) => {
+        if (rendered) {
+          setPreviewImageUrl(rendered.blobUrl);
+          setPreviewAspect(rendered.aspect);
+        }
+      });
+    } else {
+      setPreviewUrl(null);
+      setPreviewImageUrl(null);
+      setPreviewAspect(null);
+    }
   };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
@@ -850,8 +960,11 @@ export function ListingHealthCheck() {
   const removeFile = () => {
     setShowFullPreview(false);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
+    if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
     setFile(null);
     setPreviewUrl(null);
+    setPreviewImageUrl(null);
+    setPreviewAspect(null);
     setResult(null);
     setLocationContext(null);
     setCommute(null);
@@ -1066,27 +1179,46 @@ export function ListingHealthCheck() {
         <div className="border border-[#1A2A22] bg-[#F5F8F6] p-4 md:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3.5 overflow-hidden">
-              {previewUrl && !isPdfPreview ? (
+              {previewImageUrl ? (
                 <button
                   type="button"
                   onClick={() => setShowFullPreview(true)}
                   aria-label="放大檢視圖紙"
-                  className="relative h-24 w-24 shrink-0 overflow-hidden border border-[#DDE3DF] bg-white transition-colors hover:border-[#00A174]"
+                  className="group relative shrink-0 overflow-hidden border border-[#DDE3DF] bg-white shadow-xs transition-all hover:border-[#00A174] hover:shadow-sm cursor-pointer"
+                  style={{
+                    height: "84px",
+                    aspectRatio: previewAspect ? `${previewAspect}` : (isPdfPreview ? "1.414" : "1"),
+                    maxWidth: "135px",
+                    minWidth: "60px",
+                  }}
+                  title="點擊放大檢視圖紙"
                 >
-                  <img src={previewUrl} alt="圖紙預覽" className="h-full w-full object-cover" />
+                  <img src={previewImageUrl} alt="圖紙縮圖" className="h-full w-full object-contain" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#1A2A22]/50 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Maximize2 className="h-4 w-4 text-white" />
+                  </div>
                 </button>
               ) : previewUrl && isPdfPreview ? (
                 <button
                   type="button"
                   onClick={() => setShowFullPreview(true)}
                   aria-label="放大檢視圖紙"
-                  className="relative h-24 w-24 shrink-0 overflow-hidden border border-[#DDE3DF] bg-white transition-colors hover:border-[#00A174]"
+                  className="group relative flex shrink-0 items-center justify-center overflow-hidden border border-[#DDE3DF] bg-white shadow-xs transition-all hover:border-[#00A174]"
+                  style={{
+                    height: "84px",
+                    aspectRatio: previewAspect ? `${previewAspect}` : "1.414",
+                    maxWidth: "135px",
+                    minWidth: "60px",
+                  }}
+                  title="點擊放大檢視圖紙"
                 >
-                  {/* PDF 用瀏覽器原生檢視器產生縮圖；pointer-events 關閉讓點擊落在外層按鈕 */}
-                  <iframe src={`${previewUrl}#toolbar=0&navpanes=0`} title="圖紙預覽" className="pointer-events-none h-[300%] w-[300%] origin-top-left scale-[0.333] border-0" />
+                  <div className="flex flex-col items-center justify-center gap-1 text-[#007D5A]">
+                    <LoaderCircle className="h-5 w-5 animate-spin" />
+                    <span className="text-[10px] font-bold">縮圖生成中</span>
+                  </div>
                 </button>
               ) : (
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#007D5A]">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#007D5A]">
                   <FileText className="h-8 w-8" />
                 </div>
               )}
@@ -1153,7 +1285,7 @@ export function ListingHealthCheck() {
       )}
 
       {/* 全螢幕圖紙檢視 */}
-      {showFullPreview && previewUrl && (
+      {showFullPreview && (previewImageUrl || previewUrl) && (
         <div
           className="fixed inset-0 z-50 flex flex-col bg-[#1A2A22]/90 p-4 md:p-8"
           role="dialog"
@@ -1162,21 +1294,46 @@ export function ListingHealthCheck() {
           onClick={() => setShowFullPreview(false)}
         >
           <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
-            <span className="text-sm font-bold text-white">{file?.name || "原始圖紙"}</span>
-            <button
-              type="button"
-              onClick={() => setShowFullPreview(false)}
-              className="flex items-center gap-1.5 border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-white/20"
-            >
-              <X className="h-3.5 w-3.5" /> 關閉
-            </button>
+            <span className="truncate text-sm font-bold text-white">{file?.name || "原始圖紙"}</span>
+            <div className="flex items-center gap-2">
+              {isPdfPreview && previewUrl && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(previewUrl, "_blank");
+                  }}
+                  className="flex items-center gap-1.5 border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-white/20"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> 開啟 PDF 原檔
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowFullPreview(false)}
+                className="flex items-center gap-1.5 border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-white/20"
+              >
+                <X className="h-3.5 w-3.5" /> 關閉
+              </button>
+            </div>
           </div>
-          <div className="min-h-0 flex-1 bg-white" onClick={event => event.stopPropagation()}>
-            {isPdfPreview ? (
-              <iframe src={previewUrl} title="原始圖紙放大檢視" className="h-full w-full border-0" />
-            ) : (
-              <img src={previewUrl} alt="原始圖紙放大檢視" className="h-full w-full object-contain" />
-            )}
+          <div
+            className="flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-white/5 p-2 sm:p-4"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {previewImageUrl ? (
+              <img
+                src={previewImageUrl}
+                alt="原始圖紙放大檢視"
+                className="max-h-full max-w-full object-contain shadow-2xl"
+              />
+            ) : isPdfPreview && previewUrl ? (
+              <iframe
+                src={previewUrl}
+                title="原始圖紙放大檢視"
+                className="h-full w-full border-0 bg-white"
+              />
+            ) : null}
           </div>
         </div>
       )}
@@ -1200,35 +1357,80 @@ export function ListingHealthCheck() {
           </div>
 
           {/* 原始圖紙對照：讓使用者能自行核對下方分析數值是否與圖紙相符 */}
-          {previewUrl && (
-            <div className="border border-[#DDE3DF] bg-white">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] px-4 py-2.5">
+          {(previewImageUrl || previewUrl) && (
+            <div className="overflow-hidden border border-[#DDE3DF] bg-white shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] bg-[#F5F8F6] px-4 py-2.5">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-3.5 w-3.5 text-[#66736C]" />
-                  <span className="text-xs font-bold text-[#1A2A22]">原始圖紙</span>
-                  <span className="text-[11px] text-[#66736C]">可對照下方分析數值</span>
+                  <FileText className="h-3.5 w-3.5 text-[#007D5A]" />
+                  <span className="text-xs font-bold text-[#1A2A22]">原始圖紙對照</span>
+                  <span className="text-[11px] text-[#66736C]">可核對下方各項分析數值</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowFullPreview(true)}
-                  className="flex items-center gap-1.5 border border-[#8A9590] bg-white px-3 py-1.5 text-[11px] font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6]"
-                >
-                  <Maximize2 className="h-3 w-3" /> 放大檢視
-                </button>
+                <div className="flex items-center gap-2">
+                  {isPdfPreview && previewUrl && (
+                    <button
+                      type="button"
+                      onClick={() => window.open(previewUrl, "_blank")}
+                      className="hidden sm:inline-flex items-center gap-1 border border-[#DDE3DF] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#3F5147] transition-colors hover:border-[#8A9590] hover:text-[#1A2A22]"
+                    >
+                      <ExternalLink className="h-3 w-3" /> 新分頁開啟 PDF
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowFullPreview(true)}
+                    className="flex items-center gap-1.5 border border-[#8A9590] bg-white px-3 py-1.5 text-[11px] font-bold text-[#1A2A22] transition-colors hover:border-[#00A174] hover:bg-[#F5F8F6]"
+                  >
+                    <Maximize2 className="h-3 w-3" /> 放大檢視
+                  </button>
+                </div>
               </div>
-              {isPdfPreview ? (
-                <iframe
-                  src={previewUrl}
-                  title="原始圖紙"
-                  className="h-[520px] w-full border-0 bg-[#F5F8F6]"
-                />
-              ) : (
-                <img
-                  src={previewUrl}
-                  alt="原始圖紙"
-                  className="max-h-[520px] w-full bg-[#F5F8F6] object-contain"
-                />
-              )}
+
+              {/* 圖片對照主體：徹底貼合圖片比例，去除任何黑底與死板高度 */}
+              <div
+                className="group relative flex cursor-zoom-in items-center justify-center bg-[#F5F8F6] p-3 sm:p-5"
+                onClick={() => setShowFullPreview(true)}
+                title="點擊放大檢視原始圖紙"
+              >
+                {previewImageUrl ? (
+                  <div
+                    className="relative w-full overflow-hidden border border-[#DDE3DF] bg-white shadow-xs transition-shadow duration-200 group-hover:shadow-md"
+                    style={{
+                      aspectRatio: previewAspect ? `${previewAspect}` : undefined,
+                      maxWidth: previewAspect && previewAspect < 0.9 ? "600px" : "100%",
+                    }}
+                  >
+                    <img
+                      src={previewImageUrl}
+                      alt="原始圖紙對照"
+                      className="block h-full w-full object-contain select-none"
+                      loading="lazy"
+                    />
+                    {/* 浮動提示標籤 */}
+                    <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 rounded-sm bg-[#1A2A22]/80 px-2.5 py-1 text-xs font-medium text-white shadow-xs backdrop-blur-xs transition-opacity duration-200 group-hover:bg-[#007D5A]">
+                      <Maximize2 className="h-3 w-3" />
+                      <span>點擊放大檢視</span>
+                    </div>
+                  </div>
+                ) : isPdfPreview && previewUrl ? (
+                  /* 轉圖中或降級情況：以計算後的長寬比撐開，避免產生黑底 */
+                  <div
+                    className="relative w-full overflow-hidden border border-[#DDE3DF] bg-white"
+                    style={{
+                      aspectRatio: previewAspect ? `${previewAspect}` : "1.414",
+                    }}
+                  >
+                    <iframe
+                      src={`${previewUrl}#toolbar=0&navpanes=0`}
+                      title="原始圖紙"
+                      className="h-full w-full border-0"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-64 w-full items-center justify-center bg-white text-[#66736C]">
+                    <FileText className="h-8 w-8 text-[#8A9590]" />
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
