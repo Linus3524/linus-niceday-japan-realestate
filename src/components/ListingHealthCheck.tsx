@@ -8,6 +8,7 @@ import {
   Coins,
   FileSpreadsheet,
   FileText,
+  Maximize2,
   Footprints,
   Info,
   Landmark,
@@ -774,6 +775,7 @@ function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerd
 export function ListingHealthCheck() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showFullPreview, setShowFullPreview] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -789,6 +791,16 @@ export function ListingHealthCheck() {
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 全螢幕檢視時支援 Esc 關閉
+  useEffect(() => {
+    if (!showFullPreview) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowFullPreview(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showFullPreview]);
 
   // 當 previewUrl 變動時妥善釋放 object URL，避免記憶體洩漏
   useEffect(() => {
@@ -806,11 +818,10 @@ export function ListingHealthCheck() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
 
     setFile(selectedFile);
-    if (selectedFile.type.startsWith("image/")) {
-      setPreviewUrl(URL.createObjectURL(selectedFile));
-    } else {
-      setPreviewUrl(null);
-    }
+    setShowFullPreview(false);
+    // PDF 也要有預覽：交給瀏覽器原生 PDF 檢視器渲染，使用者才能自行核對分析數值。
+    const previewable = selectedFile.type.startsWith("image/") || selectedFile.type === "application/pdf";
+    setPreviewUrl(previewable ? URL.createObjectURL(selectedFile) : null);
   };
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
@@ -837,6 +848,7 @@ export function ListingHealthCheck() {
   };
 
   const removeFile = () => {
+    setShowFullPreview(false);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setFile(null);
     setPreviewUrl(null);
@@ -998,6 +1010,7 @@ export function ListingHealthCheck() {
     Boolean(result?.parsed?.salePrice && result.parsed.salePrice >= 10000000);
   const saleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
   const buildingName = (extracted?.buildingName || "").trim();
+  const isPdfPreview = file?.type === "application/pdf";
   // Google 智慧容錯直達（以 site:mansion-review.jp 搜尋，徹底解決平假名／片假名／漢字登錄差異與 Brave 檔腳本問題）
 
   return (
@@ -1053,12 +1066,27 @@ export function ListingHealthCheck() {
         <div className="border border-[#1A2A22] bg-[#F5F8F6] p-4 md:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3.5 overflow-hidden">
-              {previewUrl ? (
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden border border-[#DDE3DF] bg-white">
+              {previewUrl && !isPdfPreview ? (
+                <button
+                  type="button"
+                  onClick={() => setShowFullPreview(true)}
+                  aria-label="放大檢視圖紙"
+                  className="relative h-24 w-24 shrink-0 overflow-hidden border border-[#DDE3DF] bg-white transition-colors hover:border-[#00A174]"
+                >
                   <img src={previewUrl} alt="圖紙預覽" className="h-full w-full object-cover" />
-                </div>
+                </button>
+              ) : previewUrl && isPdfPreview ? (
+                <button
+                  type="button"
+                  onClick={() => setShowFullPreview(true)}
+                  aria-label="放大檢視圖紙"
+                  className="relative h-24 w-24 shrink-0 overflow-hidden border border-[#DDE3DF] bg-white transition-colors hover:border-[#00A174]"
+                >
+                  {/* PDF 用瀏覽器原生檢視器產生縮圖；pointer-events 關閉讓點擊落在外層按鈕 */}
+                  <iframe src={`${previewUrl}#toolbar=0&navpanes=0`} title="圖紙預覽" className="pointer-events-none h-[300%] w-[300%] origin-top-left scale-[0.333] border-0" />
+                </button>
               ) : (
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#007D5A]">
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#007D5A]">
                   <FileText className="h-8 w-8" />
                 </div>
               )}
@@ -1124,6 +1152,35 @@ export function ListingHealthCheck() {
         </div>
       )}
 
+      {/* 全螢幕圖紙檢視 */}
+      {showFullPreview && previewUrl && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-[#1A2A22]/90 p-4 md:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label="原始圖紙放大檢視"
+          onClick={() => setShowFullPreview(false)}
+        >
+          <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
+            <span className="text-sm font-bold text-white">{file?.name || "原始圖紙"}</span>
+            <button
+              type="button"
+              onClick={() => setShowFullPreview(false)}
+              className="flex items-center gap-1.5 border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-white/20"
+            >
+              <X className="h-3.5 w-3.5" /> 關閉
+            </button>
+          </div>
+          <div className="min-h-0 flex-1 bg-white" onClick={event => event.stopPropagation()}>
+            {isPdfPreview ? (
+              <iframe src={previewUrl} title="原始圖紙放大檢視" className="h-full w-full border-0" />
+            ) : (
+              <img src={previewUrl} alt="原始圖紙放大檢視" className="h-full w-full object-contain" />
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 分析結果呈現區塊 */}
       {result && (
         <div className="mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
@@ -1141,6 +1198,39 @@ export function ListingHealthCheck() {
               </p>
             </div>
           </div>
+
+          {/* 原始圖紙對照：讓使用者能自行核對下方分析數值是否與圖紙相符 */}
+          {previewUrl && (
+            <div className="border border-[#DDE3DF] bg-white">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-3.5 w-3.5 text-[#66736C]" />
+                  <span className="text-xs font-bold text-[#1A2A22]">原始圖紙</span>
+                  <span className="text-[11px] text-[#66736C]">可對照下方分析數值</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFullPreview(true)}
+                  className="flex items-center gap-1.5 border border-[#8A9590] bg-white px-3 py-1.5 text-[11px] font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6]"
+                >
+                  <Maximize2 className="h-3 w-3" /> 放大檢視
+                </button>
+              </div>
+              {isPdfPreview ? (
+                <iframe
+                  src={previewUrl}
+                  title="原始圖紙"
+                  className="h-[520px] w-full border-0 bg-[#F5F8F6]"
+                />
+              ) : (
+                <img
+                  src={previewUrl}
+                  alt="原始圖紙"
+                  className="max-h-[520px] w-full bg-[#F5F8F6] object-contain"
+                />
+              )}
+            </div>
+          )}
 
           {/* 條件分支：買賣圖紙視角 VS 租賃圖紙視角 */}
           {isSaleListing && saleAnalysis ? (
