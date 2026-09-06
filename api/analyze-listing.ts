@@ -1041,15 +1041,27 @@ export default async function handler(req: any, res: any) {
       return res.status(429).json({ error: "物件健檢每 5 分鐘最多使用 3 次，請稍候再試。", retryAfter: limit.retryAfter });
     }
 
-    const extracted = await extractListingFields(files);
+    const hasCoreFields = (fields: ExtractedListingFields) =>
+      Boolean(fields.station.trim() || fields.layout.trim() || fields.rent.trim() || fields.salePrice.trim());
+
+    let extracted = await extractListingFields(files);
+    if (!hasCoreFields(extracted)) {
+      // 部分圖紙（常見於特定不動產軟體輸出、內嵌字型有問題的 PDF）偶爾會讓 Gemini
+      // 這次抽取剛好四個核心欄位都槓龜；同一份檔案重試一次，實測能救回相當比例，
+      // 成本只是多一次呼叫，比讓使用者重新上傳划算。
+      console.warn("analyze-listing: 核心欄位皆為空，重試一次", {
+        fileCount: files.length,
+        mimeTypes: files.map(file => file.mimeType),
+      });
+      extracted = await extractListingFields(files);
+    }
 
     // 租賃與買賣核心欄位檢查
-    if (
-      !extracted.station.trim() &&
-      !extracted.layout.trim() &&
-      !extracted.rent.trim() &&
-      !extracted.salePrice.trim()
-    ) {
+    if (!hasCoreFields(extracted)) {
+      console.error("analyze-listing: 重試後仍無法讀出核心欄位", {
+        fileCount: files.length,
+        mimeTypes: files.map(file => file.mimeType),
+      });
       return res.status(422).json({ error: "無法從這張圖片讀出物件資訊，請確認上傳的是物件概要書或図面。" });
     }
 
