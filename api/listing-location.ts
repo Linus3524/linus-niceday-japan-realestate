@@ -23,12 +23,12 @@ function cleanString(value: unknown, max = 120) {
 
 function stationList(value: unknown) {
   if (!Array.isArray(value)) return [];
-  return value.map(item => cleanString(item, 40)).filter(Boolean).slice(0, 3);
+  return value.map(item => cleanString(item, 40)).filter(Boolean).slice(0, 5);
 }
 
 function walkMinutes(value: unknown) {
   if (!Array.isArray(value)) return [];
-  return value.slice(0, 3).map(item => {
+  return value.slice(0, 5).map(item => {
     const number = Number(item);
     return Number.isFinite(number) && number > 0 && number <= 120 ? Math.round(number) : null;
   });

@@ -8,7 +8,7 @@ export interface GeoPoint {
 }
 
 export interface ListingAmenity {
-  category: "convenience" | "supermarket" | "pharmacy" | "park" | "medical" | "school";
+  category: "convenience" | "supermarket" | "pharmacy" | "park" | "medical" | "school" | "department_store" | "sports_centre" | "fitness_centre" | "police";
   label: string;
   name: string;
   distanceMeters: number;
@@ -241,9 +241,10 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean) {
   const hit = cached<OsmElement[]>(key);
   if (hit) return hit;
   const amenityQuery = includeAmenities ? `
-    nwr(around:1200,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist)$"];
+    nwr(around:1200,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist|department_store)$"];
     nwr(around:1200,${point.lat},${point.lon})[amenity=pharmacy];
-    nwr(around:1200,${point.lat},${point.lon})[leisure=park];` : "";
+    nwr(around:1200,${point.lat},${point.lon})[amenity=police];
+    nwr(around:1200,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];` : "";
   const query = `[out:json][timeout:15];(${amenityQuery}
     nwr(around:2500,${point.lat},${point.lon})[railway~"^(station|halt)$"];
     nwr(around:2500,${point.lat},${point.lon})[public_transport=station];
@@ -402,6 +403,10 @@ function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[]
     if (tags.shop === "convenience") [category, label] = ["convenience", "超商"];
     else if (tags.shop === "supermarket") [category, label] = ["supermarket", "超市"];
     else if (tags.shop === "chemist" || tags.amenity === "pharmacy") [category, label] = ["pharmacy", "藥妝／藥局"];
+    else if (tags.shop === "department_store") [category, label] = ["department_store", "百貨公司"];
+    else if (tags.leisure === "sports_centre") [category, label] = ["sports_centre", "運動中心"];
+    else if (tags.leisure === "fitness_centre") [category, label] = ["fitness_centre", "健身房"];
+    else if (tags.amenity === "police") [category, label] = ["police", "警察局"];
     else if (tags.leisure === "park") [category, label] = ["park", "公園"];
     if (!category) return [];
     const dedupe = `${category}:${name}`;
@@ -444,7 +449,7 @@ export async function getListingLocationContext(address: string, stations: strin
     }
   }
   const stationWalks: ListingStationWalk[] = [];
-  for (let index = 0; index < stations.slice(0, 3).length; index++) {
+  for (let index = 0; index < stations.slice(0, 5).length; index++) {
     const station = stations[index];
     const match = nearestStation(elements, geocoded.point, station) || nearestOfficialStation(officialStations, station);
     if (!match) continue;

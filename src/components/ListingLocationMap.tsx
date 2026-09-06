@@ -21,7 +21,12 @@ const CATEGORY_CONFIG: Record<
   pharmacy: { label: "藥妝", icon: "💊", bg: "#EBF5FF", text: "#1E65B8", border: "#B9DCFF" },
   medical: { label: "醫療", icon: "🏥", bg: "#FDE8E8", text: "#C81E1E", border: "#F8B4B4" },
   school: { label: "學校", icon: "🏫", bg: "#F3E8FF", text: "#7E22CE", border: "#D8B4FE" },
-  park: { label: "公園", icon: "🌳", bg: "#EAF5EA", text: "#2B8A3E", border: "#B2E2B2" },
+  // 原本與超商同屬淺薄荷綠、色相太接近，改為黃綠色系拉開差異。
+  park: { label: "公園", icon: "🌳", bg: "#F1F8DE", text: "#5B7F00", border: "#D3E89A" },
+  department_store: { label: "百貨", icon: "🏬", bg: "#FDE7F3", text: "#BE185D", border: "#F9C6DE" },
+  sports_centre: { label: "運動中心", icon: "🏟️", bg: "#E0F7FA", text: "#00838F", border: "#80DEEA" },
+  fitness_centre: { label: "健身房", icon: "💪", bg: "#F5E6DC", text: "#8B4513", border: "#E8C4A8" },
+  police: { label: "警察局", icon: "🚓", bg: "#E8EAF6", text: "#303F9F", border: "#C5CAE9" },
 };
 
 function getAmenityPoint(
@@ -323,14 +328,14 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16 });
   };
 
+  // 類別清單直接由 CATEGORY_CONFIG 推導，新增分類時只需要改那一處。
   const categories = [
     { id: "all", label: "全部設施", count: amenities.length },
-    { id: "convenience", label: "超商", count: amenities.filter(a => a.category === "convenience").length },
-    { id: "supermarket", label: "超市", count: amenities.filter(a => a.category === "supermarket").length },
-    { id: "pharmacy", label: "藥妝", count: amenities.filter(a => a.category === "pharmacy").length },
-    { id: "medical", label: "醫療", count: amenities.filter(a => a.category === "medical").length },
-    { id: "school", label: "學校", count: amenities.filter(a => a.category === "school").length },
-    { id: "park", label: "公園", count: amenities.filter(a => a.category === "park").length },
+    ...(Object.keys(CATEGORY_CONFIG) as ListingAmenity["category"][]).map(id => ({
+      id,
+      label: CATEGORY_CONFIG[id].label,
+      count: amenities.filter(a => a.category === id).length,
+    })),
   ].filter(c => c.id === "all" || c.count > 0);
 
   const filteredAmenities = activeCategory === "all"
