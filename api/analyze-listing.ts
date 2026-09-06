@@ -200,46 +200,87 @@ function leaseTermValue(row: string, labels: string[]) {
 }
 
 /**
- * 敷引／償却是高風險欄位：判定成立會對使用者顯示「退租直接扣除、不予退還」的警告，
- * 誤判等於憑空嚇走一筆根本不存在的費用，因此寧可漏報也不能誤報。
+ * 修正「更新料」被錯位讀進其他費用欄位的問題。
  *
- * 這類圖紙的費用欄是「標籤欄＋數值欄」並排，模型容易把「更新料」的值錯位讀成敷引，
- * 實測兩份圖紙都出現這個錯位。判斷依據是「新賃料」這個字眼：那是更新料專用寫法
- * （更新後以新租金計算），敷引不會這樣標示。
+ * 這類圖紙的費用區是「標籤欄＋數值欄」並排的表格，PDF 文字層順序又是亂的，
+ * 模型很容易把更新料的值填到敷金、礼金或敷引。實測同一家仲介的兩份圖紙，
+ * 更新料 1.5ヶ月(新賃料) 分別被誤讀成敷引（B）與礼金（A）。
  *
- * 刻意不採用「敷引與更新料數值相同就視為錯位」這條規則：更新料 1ヶ月 搭配
- * 敷引 1ヶ月 在關西是常見的真實組合，那樣會把真正該示警的案件誤殺。
+ * 判斷依據是「新賃料」：那是更新料專用寫法（更新後以新租金計算），
+ * 敷金、礼金、敷引都不會這樣標示。抓到就把該欄位清成「なし」，
+ * 並在更新料本身沒值時把它歸還回去。
+ *
+ * 敷引特別重要——誤判會顯示「退租直接扣除、不予退還」的警告，
+ * 等於憑空嚇走一筆不存在的費用，寧可漏報也不能誤報。
+ *
+ * 刻意不採用「數值與更新料相同就視為錯位」：更新料 1ヶ月 搭配敷引 1ヶ月
+ * 在關西是常見的真實組合，那條規則會把真正該示警的案件誤殺。
  */
 const RENEWAL_FEE_MARKER = "新賃料";
 
-function shikibikiLooksLikeRenewalFee(extracted: ExtractedListingFields): boolean {
-  if ((extracted.shikibiki || "").normalize("NFKC").includes(RENEWAL_FEE_MARKER)) return true;
-  // leaseTerms 的原文裡，償却／敷引標籤後面若緊接著更新料寫法，代表模型把兩欄讀混了。
-  // 這一步必須在數值被正規表達式截斷成「1.5ヶ月」之前判斷，否則就看不到「新賃料」。
-  const row = (extracted.leaseTerms || "").normalize("NFKC");
-  const nearLabel = row.match(/(?:償却金|敷金償却|償却|敷引)\s*[:：]?\s*([^\/、,，;；\n]{0,24})/);
-  return Boolean(nearLabel?.[1]?.includes(RENEWAL_FEE_MARKER));
+const MISALIGNMENT_TARGETS = [
+  { field: "deposit", labels: ["敷金", "保証金"] },
+  { field: "keyMoney", labels: ["礼金"] },
+  { field: "shikibiki", labels: ["償却金", "敷金償却", "償却", "敷引"] },
+] as const;
+
+const ALL_FEE_LABELS = ["敷金償却", "敷金", "保証金", "礼金", "償却金", "償却", "敷引", "更新事務手数料", "更新料"];
+
+/**
+ * 從 leaseTerms 原文取出某組標籤後面的值（未經截斷，才看得到「新賃料」）。
+ * 必須在遇到下一個費用標籤時停下來，否則會把後面欄位的值一起吃進來，
+ * 導致敷金誤判成含「新賃料」而被清空。
+ */
+function rawValueNearLabels(leaseTerms: string, labels: readonly string[]): string {
+  const row = leaseTerms.normalize("NFKC");
+  const stop = ALL_FEE_LABELS.join("|");
+  const pattern = new RegExp(`(?:${labels.join("|")})\\s*[:：]?\\s*((?:(?!${stop})[^/、,，;；\\n]){0,24})`);
+  return (row.match(pattern)?.[1] || "").trim();
+}
+
+function repairRenewalFeeMisalignment(extracted: ExtractedListingFields): ExtractedListingFields {
+  const leaseTerms = extracted.leaseTerms || "";
+  const repaired = { ...extracted };
+  let stolenValue = "";
+
+  for (const { field, labels } of MISALIGNMENT_TARGETS) {
+    const current = (repaired[field] || "").normalize("NFKC");
+    // 值本身就帶「新賃料」，或 leaseTerms 裡該標籤後方是更新料寫法
+    // （既有的 leaseTermValue 會把值截成「1.5ヶ月」而看不到關鍵字，故需查原文）。
+    const nearLabel = rawValueNearLabels(leaseTerms, labels);
+    if (!current.includes(RENEWAL_FEE_MARKER) && !nearLabel.includes(RENEWAL_FEE_MARKER)) continue;
+
+    stolenValue = stolenValue || (current.includes(RENEWAL_FEE_MARKER) ? current : nearLabel.trim());
+    console.warn("analyze-listing: 費用欄位疑似誤讀更新料，已改判為無", {
+      field,
+      value: repaired[field],
+      leaseTerms,
+    });
+    repaired[field] = "なし";
+  }
+
+  // 更新料本身沒讀到值時，把被錯放的值歸還回去。
+  if (stolenValue) {
+    const renewalFee = (repaired.renewalFee || "").normalize("NFKC").trim();
+    if (!renewalFee || /^(?:なし|無し|不要|-|ー|―)$/.test(renewalFee)) {
+      repaired.renewalFee = stolenValue;
+    }
+  }
+  return repaired;
 }
 
 function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListingFields {
-  const misread = shikibikiLooksLikeRenewalFee(extracted);
-  if (misread) {
-    console.warn("analyze-listing: 敷引疑似誤讀更新料，已改判為無", {
-      shikibiki: extracted.shikibiki,
-      leaseTerms: extracted.leaseTerms,
-    });
-  }
   const row = extracted.leaseTerms || "";
-  if (!row.trim()) return misread ? { ...extracted, shikibiki: "なし" } : extracted;
+  if (!row.trim()) return repairRenewalFeeMisalignment(extracted);
   const deposit = leaseTermValue(row, ["敷金", "保証金"]);
   const keyMoney = leaseTermValue(row, ["礼金"]);
   const shikibiki = leaseTermValue(row, ["償却金", "敷金償却", "償却", "敷引"]);
-  return {
+  return repairRenewalFeeMisalignment({
     ...extracted,
     deposit: deposit || extracted.deposit,
     keyMoney: keyMoney || extracted.keyMoney,
-    shikibiki: misread ? "なし" : (shikibiki || extracted.shikibiki),
-  };
+    shikibiki: shikibiki || extracted.shikibiki,
+  });
 }
 
 function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedListingFields {
