@@ -694,6 +694,20 @@ function formatYen(amount: number | null | undefined): string {
   return `¥${amount.toLocaleString("ja-JP")}`;
 }
 
+function formatManagementSummary(company?: string, style?: string): string {
+  const rawCompany = company?.trim() || "";
+  const cleanCompany = rawCompany.replace(/[（(].*$/, "").trim();
+  const inferredStyle = style?.trim() || rawCompany.match(/[（(](.*)[）)]$/)?.[1] || "";
+  const cleanStyle = inferredStyle
+    .replace(/[（(]\s*/g, "／")
+    .replace(/\s*[）)]/g, "")
+    .replace(/[\/／]+/g, "／")
+    .replace(/^／|／$/g, "")
+    .trim();
+
+  return [cleanCompany, cleanStyle].filter(Boolean).join("・") || "委託管理／日勤・巡迴";
+}
+
 function summarizeTaxEstimationBasis(basis?: string | null): string | null {
   if (!basis?.trim()) return null;
   if (/圖紙|圖面/.test(basis) && /未載明|未記載|沒有/.test(basis)) {
@@ -1713,7 +1727,6 @@ export function ListingHealthCheck() {
                 const axisHi = Math.max(...axisPoints);
                 const axisPad = (axisHi - axisLo) * 0.06 || axisHi * 0.06 || 1;
                 const pos = (v: number) => ((v - (axisLo - axisPad)) / ((axisHi + axisPad) - (axisLo - axisPad))) * 100;
-                const clampPos = (n: number) => Math.min(93, Math.max(7, n));
 
                 // 本案沿用租賃圖紙診斷的同一組語意色票（STATUS_STYLE）：
                 // 落在區間內是綠、明顯高於上緣才是紅，不再不分結論一律深紅。
@@ -1774,22 +1787,22 @@ export function ListingHealthCheck() {
                       {/* 兩張子卡直接當網格項目，不再多包一層外框（避免框中框） */}
                       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
                       {/* ── 左：本案開價 ＋ 三方對照 ＋ 價格區間軸 ── */}
-                      <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                        <div className="grid gap-4 sm:grid-cols-[minmax(0,220px)_minmax(0,1fr)] sm:items-start">
-                          <div>
+                      <div className="border border-[#DDE3DF] bg-white p-4 sm:px-5 sm:pb-2 sm:pt-5">
+                        <div className="grid gap-6 sm:grid-cols-3 sm:items-stretch">
+                          <div className="self-stretch border-l-[3px] border-[#007D5A] pl-3">
                             <div className="flex flex-wrap items-center gap-2">
-                              <p className="text-xs font-bold text-[#1A2A22]">本案開價</p>
-                              <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
+                              <p className="text-base font-bold text-[#1A2A22]">本案開價</p>
+                              <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#007D5A]">
                                 中古公寓
                               </span>
                             </div>
                             <p className="mt-1 flex items-baseline gap-1">
-                              <span className="text-[40px] font-black leading-[0.95] tracking-tight text-[#1A2A22] tabular-nums">
+                              <span className="text-[54px] font-black leading-[0.95] tracking-tight text-[#1A2A22] tabular-nums">
                                 {priceMan.toLocaleString()}
                               </span>
-                              <span className="text-base font-bold text-[#3F5147]">萬円</span>
+                              <span className="text-xl font-bold text-[#3F5147]">萬円</span>
                             </p>
-                            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[#66736C]">
+                            <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#66736C]">
                               {saleAnalysis.areaSqm && (
                                 <span className="tabular-nums">{saleAnalysis.areaSqm} ㎡</span>
                               )}
@@ -1802,128 +1815,135 @@ export function ListingHealthCheck() {
                             </div>
                           </div>
 
-                          {/* 三方對照：每欄同時給總價與坪單價，才能跨面積比較 */}
-                          <div className="grid gap-x-3 gap-y-3 sm:grid-cols-3">
-                            {[...benchmarks.map(b => ({
-                              key: b.key, label: b.label, value: b.value, tone: b.tone, strong: false,
-                            })), {
-                              key: "this", label: "本案開價", value: priceMan, tone: fairState.accent, strong: true,
-                            }].map(item => (
-                              <div key={item.key} className="border-l-2 pl-2.5" style={{ borderColor: item.tone }}>
-                                <p className={`text-[11px] ${item.strong ? "font-bold text-[#1A2A22]" : "text-[#66736C]"}`}>
-                                  {item.label}
-                                </p>
-                                <p className="mt-0.5 text-lg font-bold tabular-nums" style={{ color: item.strong ? item.tone : "#1A2A22" }}>
-                                  {item.value.toLocaleString()}
-                                  <span className="ml-0.5 text-[10px] font-normal text-[#66736C]">萬円</span>
-                                </p>
-                                {tsuboOf(item.value) && (
-                                  <p className="mt-0.5 text-[10px] tabular-nums text-[#8A9590]">
-                                    每坪 {tsuboOf(item.value)} 萬円
+                          <div className="min-w-0 sm:col-span-2">
+                            {/* 價格與來源共用同一網格：兩組靠右排列，並維持上下色線對齊。 */}
+                            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-[max-content_max-content] lg:justify-end">
+                              {benchmarks.map(item => (
+                                <div key={item.key} className="min-w-[180px] border-l-2 pl-2.5" style={{ borderColor: item.tone }}>
+                                  <p
+                                    className="text-[11px] font-bold"
+                                    style={{ color: item.tone }}
+                                  >
+                                    {item.label}
                                   </p>
-                                )}
-                              </div>
-                            ))}
+                                  <p className="mt-0.5 text-lg font-bold tabular-nums text-[#1A2A22]">
+                                    {item.value.toLocaleString()}
+                                    <span className="ml-0.5 text-[10px] font-normal text-[#66736C]">萬円</span>
+                                  </p>
+                                  {tsuboOf(item.value) && (
+                                    <p className="mt-0.5 text-[10px] tabular-nums text-[#8A9590]">
+                                      每坪 {tsuboOf(item.value)} 萬円
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+
+                              <p className="mt-1 text-[9px] font-bold tracking-wide text-[#8A9590] sm:col-span-2">資料與計算方式</p>
+                              <p className="border-l-2 pl-2 text-[9px] leading-relaxed text-[#66736C]" style={{ borderColor: "#0284C7" }}>
+                                <strong className="font-bold text-[#0284C7]">實價登錄</strong>
+                                <span>：國土交通省實價登錄 {c.sampleCount} 筆。</span>
+                              </p>
+                              {c.listingBenchmarkSourceLabel && (
+                                <p className="border-l-2 pl-2 text-[9px] leading-relaxed text-[#66736C]" style={{ borderColor: "#FB923C" }}>
+                                  <strong className="font-bold text-[#FB923C]">市場在售</strong>
+                                  <span>：{c.listingBenchmarkSourceLabel}。</span>
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
 
                         {/* 價格區間軸 */}
                         {hasFairRange && (
-                          <div className="mt-6 border-t border-[#DDE3DF] pt-5">
+                          <div className="mt-6 border-t border-[#E8ECE9] pt-5">
                             <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                              <p className="text-xs font-bold text-[#1A2A22]">該區域同類物件合理價格區間</p>
-                              <p className="text-[11px] font-bold tabular-nums text-[#3F5147]">
+                              <p className="text-sm font-black text-[#1A2A22]">該區域同類物件合理價格區間</p>
+                              <p className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-1 text-xs font-black tabular-nums text-[#1A2A22]">
                                 {man(fairLow)} 〜 {man(fairHigh)} 萬円
                               </p>
                             </div>
 
-                            <div className="relative mt-12 h-2 w-full bg-[#EDF1EF]">
-                              <div
-                                className="absolute inset-y-0 bg-[#E6F6F1]"
-                                style={{ left: `${pos(fairLow as number)}%`, width: `${pos(fairHigh as number) - pos(fairLow as number)}%` }}
-                              />
-                              {/* 區間上下限刻度 */}
-                              {[fairLow as number, fairHigh as number].map(v => (
-                                <div key={v} className="absolute -top-1 h-4 w-[2px] -translate-x-1/2 bg-[#8A9590]" style={{ left: `${pos(v)}%` }} />
-                              ))}
-                              {/* 兩個行情基準：實價登錄晴藍、市場在售暖橘，與上方三方對照的色條一致 */}
-                              {benchmarks.map(b => (
+                            <div className="mt-4 px-4 pt-12 sm:px-6">
+                              <div className="relative h-3 w-full bg-[#E1E7E4]">
                                 <div
-                                  key={b.key}
-                                  className="absolute -top-1.5 h-5 w-[2px] -translate-x-1/2"
-                                  style={{ left: `${pos(b.value)}%`, backgroundColor: b.tone }}
+                                  className="absolute inset-y-0 bg-[#CFEFE5]"
+                                  style={{ left: `${pos(fairLow as number)}%`, width: `${pos(fairHigh as number) - pos(fairLow as number)}%` }}
                                 />
-                              ))}
-                              {/* 本案：帶標籤的指標，顏色即結論 */}
-                              {/* 標籤、箭頭與刻度線必須共用同一個 X：
-                                  舊版標籤群組用 clampPos、刻度線用原始 pos，且刻度線沒有置中位移，
-                                  3px 寬的線是從 X 往右畫，於是箭頭永遠偏左約 1.5px。 */}
-                              <div
-                                className="absolute -top-9 z-10 flex -translate-x-1/2 flex-col items-center"
-                                style={{ left: `${pos(priceMan)}%` }}
-                              >
-                                <span
-                                  className="whitespace-nowrap px-2 py-1 text-center text-[10px] font-bold leading-tight text-white"
-                                  style={{ backgroundColor: fairState.accent }}
+                                {/* 上下限刻度、數字標籤與本案指標全部共用同一個 X 座標。 */}
+                                {[fairLow as number, fairHigh as number].map(v => (
+                                  <div key={v} className="absolute -top-1.5 h-6 w-[3px] -translate-x-1/2 bg-[#718078]" style={{ left: `${pos(v)}%` }} />
+                                ))}
+                                {benchmarks.map(b => (
+                                  <div
+                                    key={b.key}
+                                    className="absolute -top-2 h-7 w-[3px] -translate-x-1/2"
+                                    style={{ left: `${pos(b.value)}%`, backgroundColor: b.tone }}
+                                  />
+                                ))}
+                                <div
+                                  className="absolute -top-12 z-10 flex -translate-x-1/2 flex-col items-center"
+                                  style={{ left: `${pos(priceMan)}%` }}
                                 >
-                                  本案
-                                  <span className="ml-1 tabular-nums">{priceMan.toLocaleString()}</span>
-                                </span>
-                                <span
-                                  className="h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent"
-                                  style={{ borderTopColor: fairState.accent }}
+                                  <span
+                                    className="whitespace-nowrap px-3 py-1.5 text-center text-[11px] font-black leading-tight text-white shadow-sm"
+                                    style={{ backgroundColor: fairState.accent }}
+                                  >
+                                    本案 <span className="tabular-nums">{priceMan.toLocaleString()}</span>
+                                  </span>
+                                  <span
+                                    className="h-0 w-0 border-x-[6px] border-t-[6px] border-x-transparent"
+                                    style={{ borderTopColor: fairState.accent }}
+                                  />
+                                </div>
+                                <div
+                                  className="absolute -top-2 h-7 w-[3px] -translate-x-1/2"
+                                  style={{ left: `${pos(priceMan)}%`, backgroundColor: fairState.accent }}
                                 />
                               </div>
-                              <div
-                                className="absolute -top-1.5 h-5 w-[3px] -translate-x-1/2"
-                                style={{ left: `${pos(priceMan)}%`, backgroundColor: fairState.accent }}
-                              />
-                            </div>
 
-                            <div className="relative mt-2 h-7">
-                              <span
-                                className="absolute -translate-x-1/2 text-center text-[10px] leading-tight text-[#66736C]"
-                                style={{ left: `${clampPos(pos(fairLow as number))}%` }}
-                              >
-                                <span className="block font-bold tabular-nums text-[#1A2A22]">{man(fairLow)}</span>
-                                （下限）
-                              </span>
-                              {/* 兩個行情基準的標籤：太靠近上下限、或彼此太近時會疊字。
-                                  這種情況只保留當作校準基準的實價登錄平均，另一個維持刻度即可
-                                  （數字在上方三方對照已經給過）。 */}
-                              {(() => {
-                                const edges = [pos(fairLow as number), pos(fairHigh as number)];
-                                const clear = (p: number) => edges.every(e => Math.abs(p - e) >= 10);
-                                const shown = benchmarks.filter(b => clear(pos(b.value)));
-                                const spaced = shown.length === 2
-                                  && Math.abs(pos(shown[0].value) - pos(shown[1].value)) < 12
-                                  ? shown.filter(b => b.key === "official")
-                                  : shown;
-                                return spaced.map(b => (
-                                  <span
-                                    key={b.key}
-                                    className="absolute -translate-x-1/2 text-center text-[10px] leading-tight"
-                                    style={{ left: `${clampPos(pos(b.value))}%`, color: b.tone === "#FB923C" ? "#C2410C" : b.tone }}
-                                  >
-                                    <span className="block font-bold tabular-nums">{man(b.value)}</span>
-                                    （{b.label}）
-                                  </span>
-                                ));
-                              })()}
-                              <span
-                                className="absolute -translate-x-1/2 text-center text-[10px] leading-tight text-[#66736C]"
-                                style={{ left: `${clampPos(pos(fairHigh as number))}%` }}
-                              >
-                                <span className="block font-bold tabular-nums text-[#1A2A22]">{man(fairHigh)}</span>
-                                （上限）
-                              </span>
+                              <div className="relative mt-3 h-8">
+                                <span
+                                  className="absolute min-w-[56px] -translate-x-1/2 text-center text-[10px] font-semibold leading-tight text-[#66736C]"
+                                  style={{ left: `${pos(fairLow as number)}%` }}
+                                >
+                                  <span className="block text-xs font-black tabular-nums text-[#1A2A22]">{man(fairLow)}</span>
+                                  下限
+                                </span>
+                                {/* 行情標籤與刻度同樣共用原始座標；過近時僅保留實價登錄平均。 */}
+                                {(() => {
+                                  const edges = [pos(fairLow as number), pos(fairHigh as number)];
+                                  const clear = (p: number) => edges.every(e => Math.abs(p - e) >= 10);
+                                  const shown = benchmarks.filter(b => clear(pos(b.value)));
+                                  const spaced = shown.length === 2
+                                    && Math.abs(pos(shown[0].value) - pos(shown[1].value)) < 12
+                                    ? shown.filter(b => b.key === "official")
+                                    : shown;
+                                  return spaced.map(b => (
+                                    <span
+                                      key={b.key}
+                                      className="absolute min-w-[72px] -translate-x-1/2 text-center text-[10px] font-semibold leading-tight"
+                                      style={{ left: `${pos(b.value)}%`, color: b.tone }}
+                                    >
+                                      <span className="block text-xs font-black tabular-nums">{man(b.value)}</span>
+                                      {b.label}
+                                    </span>
+                                  ));
+                                })()}
+                                <span
+                                  className="absolute min-w-[56px] -translate-x-1/2 text-center text-[10px] font-semibold leading-tight text-[#66736C]"
+                                  style={{ left: `${pos(fairHigh as number)}%` }}
+                                >
+                                  <span className="block text-xs font-black tabular-nums text-[#1A2A22]">{man(fairHigh)}</span>
+                                  上限
+                                </span>
+                              </div>
                             </div>
                           </div>
                         )}
                       </div>
 
                       {/* ── 右：相對位置 ── */}
-                      <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
+                      <div className="border border-[#DDE3DF] bg-white p-4 sm:px-5 sm:pb-2 sm:pt-5">
                         <p className="text-xs font-bold text-[#1A2A22]">相對位置</p>
 
                         <div className="mt-3 space-y-3">
@@ -1996,19 +2016,15 @@ export function ListingHealthCheck() {
                         </div>
 
                         <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                        <p className="flex items-start gap-1.5 border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-1.5 text-[10px] leading-relaxed text-[#66736C]">
-                          <Info className="mt-px h-3 w-3 shrink-0 text-[#8A9590]" />
-                          <span>長度條以 ±{FACTOR_SCALE}% 為滿格，% 僅代表相對區域平均的影響</span>
-                        </p>
-
-                        <dl className="mt-3 divide-y divide-[#DDE3DF]">
+                        <dl className="divide-y divide-[#DDE3DF]">
                           {[...c.priceFactors]
                             .sort((a, b) => Math.abs(b.ratePercent) - Math.abs(a.ratePercent))
                             .map((f, i) => {
                               const Icon = factorIcon(f.label);
                               const up = f.ratePercent > 0;
                               const down = f.ratePercent < 0;
-                              const tone = up ? "#D97706" : down ? "#007D5A" : "#8A9590";
+                              // 與上方價格定位共用色票：市場在售橘、本案價格綠。
+                              const tone = up ? "#FB923C" : down ? "#007D5A" : "#8A9590";
                               const width = Math.min(100, (Math.abs(f.ratePercent) / FACTOR_SCALE) * 100);
                               return (
                                 <div key={i} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
@@ -2034,22 +2050,10 @@ export function ListingHealthCheck() {
                             })}
                         </dl>
 
-                        {/* 資料與計算方式：純註腳，緊接在最後一列因素之後，不再多隔一條線 */}
-                        <div className="mt-3">
-                          <p className="text-[10px] font-bold text-[#8A9590]">資料與計算方式</p>
-                          <p className="mt-1 flex items-center gap-x-3 overflow-x-auto whitespace-nowrap text-[10px] leading-relaxed text-[#8A9590]">
-                            <span>
-                              <strong className="font-bold text-[#0284C7]">實價登錄</strong>：國土交通省實價登錄 {c.sampleCount} 筆
-                            </span>
-                            {c.listingBenchmarkSourceLabel && (
-                              <span>
-                                <strong className="font-bold text-[#C2410C]">市場在售</strong>：{c.listingBenchmarkSourceLabel}
-                              </span>
-                            )}
-                            <span>在售為賣方開價，非成交價。</span>
-                          </p>
                         </div>
-                        </div>
+                        <p className="text-[10px] leading-relaxed text-[#8A9590]">
+                          長度條以 ±{FACTOR_SCALE}% 為滿格，% 僅代表相對區域平均的影響
+                        </p>
                       </div>
                     )}
 
@@ -2138,7 +2142,7 @@ export function ListingHealthCheck() {
                       return (
                         <div
                           key={card.key}
-                          className={`p-4 ${card.primary
+                          className={`p-3 sm:p-3.5 ${card.primary
                             ? "border-2 border-[#00A174] bg-[#F5F8F6]"
                             : "border border-[#DDE3DF] bg-white"}`}
                         >
@@ -2151,22 +2155,22 @@ export function ListingHealthCheck() {
                               {card.label}
                             </p>
                           </div>
-                          <p className="mt-2 flex items-baseline gap-1 text-2xl font-black text-[#1A2A22] tabular-nums">
-                            {card.value}
-                            {card.unit && (
-                              <span className="text-xs font-normal text-[#66736C]">
-                                {card.unit}
-                              </span>
-                            )}
-                          </p>
-                          {card.tag && (
-                            <p className="mt-1.5">
+                          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <p className="flex items-baseline gap-1 text-2xl font-black text-[#1A2A22] tabular-nums">
+                              {card.value}
+                              {card.unit && (
+                                <span className="text-xs font-normal text-[#66736C]">
+                                  {card.unit}
+                                </span>
+                              )}
+                            </p>
+                            {card.tag && (
                               <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-bold text-[#007D5A]">
                                 {card.tag}
                               </span>
-                            </p>
-                          )}
-                          <p className="mt-1 text-[10px] text-[#66736C]">{card.sub}</p>
+                            )}
+                          </div>
+                          <p className="mt-1.5 text-[10px] text-[#66736C]">{card.sub}</p>
                         </div>
                       );
                     })}
@@ -2461,44 +2465,44 @@ export function ListingHealthCheck() {
                 <div className="grid gap-4 lg:grid-cols-2">
                   {/* 現況與收益性 */}
                   <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                    <p className="text-xs font-bold text-[#1A2A22]">現況使用與收益分析</p>
+                    <p className="text-sm font-bold text-[#1A2A22]">現況使用與收益分析</p>
 
                     {saleAnalysis.occupancyAssessment.status === "tenanted_investment" &&
                     saleAnalysis.occupancyAssessment.investmentYield ? (
-                      <div className="mt-3 space-y-2 text-xs">
-                        <div className=" border border-[#00A174] bg-[#F5F8F6] p-3">
-                          <div className="flex items-center justify-between">
+                      <div className="mt-4 space-y-4 text-xs">
+                        <div className="border-l-[3px] border-[#00A174] bg-[#F5F8F6] px-4 py-3">
+                          <div className="flex items-baseline justify-between gap-4">
                             <span className="font-bold text-[#007D5A]">表面租金報酬率</span>
-                            <span className="text-xl font-black text-[#007D5A]">
+                            <span className="text-2xl font-black leading-none text-[#007D5A] tabular-nums">
                               {saleAnalysis.occupancyAssessment.investmentYield.grossYield.toFixed(2)}%
                             </span>
                           </div>
                           {saleAnalysis.occupancyAssessment.investmentYield.netYieldEstimated !== null && (
-                            <div className="mt-1 flex items-center justify-between text-[11px]">
+                            <div className="mt-2 flex items-center justify-between gap-4 border-t border-[#DDE3DF] pt-2 text-[11px]">
                               <span className="text-[#66736C]">實質租金報酬率（扣除管理費與修繕積立金）</span>
-                              <span className="font-bold text-[#1A2A22]">
+                              <span className="shrink-0 font-bold text-[#1A2A22] tabular-nums">
                                 約 {saleAnalysis.occupancyAssessment.investmentYield.netYieldEstimated.toFixed(2)}%
                               </span>
                             </div>
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                        <div className="grid grid-cols-2 gap-x-8 gap-y-3 px-1 text-xs">
                           <div>
-                            <span className="text-[#66736C]">現況月租金收入：</span>
-                            <p className="font-bold text-[#1A2A22]">
+                            <span className="text-[11px] text-[#66736C]">現況月租金收入</span>
+                            <p className="mt-1 font-bold text-[#1A2A22] tabular-nums">
                               {formatYen(saleAnalysis.occupancyAssessment.investmentYield.monthlyRentYen)} / 月
                             </p>
                           </div>
                           <div>
-                            <span className="text-[#66736C]">現況年間租金總額：</span>
-                            <p className="font-bold text-[#1A2A22]">
+                            <span className="text-[11px] text-[#66736C]">現況年間租金總額</span>
+                            <p className="mt-1 font-bold text-[#1A2A22] tabular-nums">
                               {formatYen(saleAnalysis.occupancyAssessment.investmentYield.annualIncomeYen)} / 年
                             </p>
                           </div>
                         </div>
 
-                        <p className="mt-2 border-t border-[#DDE3DF] pt-2 text-[11px] leading-relaxed text-[#B13818] bg-[#FBDFD2] p-2 border border-[#FBDFD2]"><strong>帶租約物件注意事項：</strong>本物件為「オーナーチェンジ」，現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
+                        <p className="border-l-[3px] border-[#D95D39] bg-[#FBDFD2] px-4 py-3 text-[11px] leading-relaxed text-[#B13818]"><strong>帶租約物件注意事項：</strong>本物件為「オーナーチェンジ」，現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
                         </p>
                       </div>
                     ) : (
@@ -2524,13 +2528,17 @@ export function ListingHealthCheck() {
 
                   {/* 自住法務要點與住宅貸款減稅門檻 */}
                   <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                    <p className="text-xs font-bold text-[#1A2A22]">產權形式與住宅貸款減稅資格審查</p>
+                    <p className="text-sm font-bold text-[#1A2A22]">產權形式與住宅貸款減稅資格審查</p>
 
-                    <div className="mt-3 space-y-2 text-xs">
+                    <div className="mt-4 text-xs">
                       {/* 住宅貸款減稅檢核 */}
-                      <div className=" border border-[#DDE3DF] bg-[#F5F8F6] p-3">
+                      <div className={`px-4 py-3 ${
+                        saleAnalysis.occupancyAssessment.mortgageTaxEligible
+                          ? "border-l-[3px] border-[#00A174] bg-[#F5F8F6]"
+                          : "border border-[#EAB879] bg-[#FEF3C7]"
+                      }`}>
                         {/* 原本用文字符號 ℹ 當提醒標記，在小字級下幾乎看不見，改用實心告警圖示 */}
-                        <div className="flex items-start gap-1.5 font-bold">
+                        <div className="flex items-start gap-2 font-bold">
                           {saleAnalysis.occupancyAssessment.mortgageTaxEligible ? (
                             <>
                               <CheckCircle2 className="mt-px h-4 w-4 shrink-0 text-[#007D5A]" />
@@ -2538,32 +2546,33 @@ export function ListingHealthCheck() {
                             </>
                           ) : (
                             <>
-                              <AlertCircle className="mt-px h-4 w-4 shrink-0 text-[#D97706]" />
+                              <Info className="mt-px h-4 w-4 shrink-0 text-[#D97706]" />
                               <span className="text-[#D97706]">專有面積未達 50㎡（自住節稅留意）</span>
                             </>
                           )}
                         </div>
-                        <p className="mt-1.5 text-[11px] leading-relaxed text-[#3F5147]">
+                        <p className="mt-2 text-[11px] leading-relaxed text-[#3F5147]">
                           {saleAnalysis.occupancyAssessment.mortgageTaxNote}
                         </p>
                       </div>
 
-                      {/* 土地權利 */}
-                      <div className="flex items-center justify-between border-t border-[#DDE3DF] pt-2">
-                        <span className="text-[#66736C]">土地權利形式：</span>
-                        <span className="font-bold text-[#1A2A22]">
+                      <dl className="mt-3 divide-y divide-[#E8ECE9]">
+                        {/* 土地權利 */}
+                        <div className="grid grid-cols-[120px_minmax(0,1fr)] items-start gap-4 py-2.5">
+                          <dt className="text-[#66736C]">土地權利形式</dt>
+                          <dd className="text-right font-bold text-[#1A2A22]">
                           {extracted?.landRights || "所有權（所有権）"}
-                        </span>
-                      </div>
+                          </dd>
+                        </div>
 
-                      {/* 管理體制 */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-[#66736C]">管理形態與公司：</span>
-                        <span className="font-bold text-[#1A2A22]">
-                          {extracted?.managementCompany
-                            ? `${extracted.managementCompany}（${extracted?.managementStyle || "委託管理"}）`: extracted?.managementStyle || "委託管理（日勤/巡迴）"}
-                        </span>
-                      </div>
+                        {/* 管理體制 */}
+                        <div className="grid grid-cols-[120px_minmax(0,1fr)] items-start gap-4 py-2.5">
+                          <dt className="text-[#66736C]">管理形態與公司</dt>
+                          <dd className="text-right font-bold leading-relaxed text-[#1A2A22]">
+                          {formatManagementSummary(extracted?.managementCompany, extracted?.managementStyle)}
+                          </dd>
+                        </div>
+                      </dl>
                     </div>
                   </div>
                 </div>
