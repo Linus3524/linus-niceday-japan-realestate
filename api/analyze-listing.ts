@@ -4,6 +4,7 @@ import { Redis } from "@upstash/redis";
 import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict, buildSalePriceVerdict, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
   parseYenAmount,
+  parseNonNegativeYenAmount,
   parseMonthsOrYen,
   normalizeRoomType,
   stripStationOperatorPrefix,
@@ -18,6 +19,7 @@ import {
   computeTsuboAndSqmPrice,
   assessRepairReserve,
   calculateSaleInitialCosts,
+  assessRealEstateAcquisitionTax,
   parseAgeYears,
   parseFloorInfo,
   parseMandatoryMonthlyFees,
@@ -179,6 +181,7 @@ export interface ExtractedListingFields {
   renewalFee: string;
   supportFee: string;
   freeRent: string;
+  balconyArea?: string;
   // 買賣專用欄位
   salePrice: string;
   totalUnits: string;
@@ -195,6 +198,14 @@ export interface ExtractedListingFields {
   renovationDetails: string;
   managementCompany: string;
   managementStyle: string;
+  fixedAssetTax: number;
+  cityPlanningTax: number;
+  realEstateAcquisitionTax: number;
+  buildingAssessedValue: number;
+  landAcquisitionTaxAfterRelief: number;
+  registrationFee: number;
+  landRightsRatio: string;
+  taxEstimationBasis: string;
   specialNotes: string;
   otherConditions?: string;
   facilities?: string;
@@ -267,6 +278,10 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - 判斷這份圖紙是「買賣物件（sale）」還是「租賃物件（rent）」。
     - buildingName：逐字提取物件名／建物名／マンション名（不含房號）；找不到時留空，不可拿地址或仲介公司名代替。
     - roomNumber：逐字提取房號／部屋番号／号室（例如 "602号室"、"1103号室"、"201"、"B102" 等；若圖紙有標註號室請務必抓出，無則留空）。
+    - 買賣図面（中古マンション販売図面）同樣要抓房號，且房號常不在獨立欄位，請額外掃描這些位置：
+      物件名／マンション名後方（例如「レグノ・セレーノ 803号室」）、「所在階／部屋番号」「階／号室」合併欄
+      （例如「8階／803号室」時 roomNumber 填 "803号室"、floor 填 "8階"）、標題列、備考欄與圖面右上角的管理編號旁。
+    - roomNumber 只填房號本身，不可把樓層（"8階"）、棟別以外的地址或坪數一起填入。
     - 若圖紙出現「売買」「売マンション」「中古マンション」「オーナーチェンジ」「販売価格」「価格(税込)」「専有面積」「修繕積立金」等買賣特徵，dealType 填 "sale"。
     - 若為一般租屋（「賃貸」「賃料」「家賃」「敷金」「礼金」「更新料」），dealType 填 "rent"。
 
@@ -297,6 +312,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     買賣物件專屬欄位（若為買賣圖紙，請格外仔細精準提取）：
     - salePrice（販売価格／価格）：照原文，例如 "7,299万円"、"3,450万円"、"6,300万円"、"5,488万円"、"5,980万円"。
     - totalUnits（総戸数／戸数）：照原文，例如 "50戸"、"39戸"、"26戸"、"17戸"、"42戸"。
+    - balconyArea（バルコニー面積／バルコニー）：照原文抓陽台面積，例如 "5.42㎡"、"5.42㎡(約1.63坪)"、"8.10m2"。無標示則留空。
     - buildingFloors（建物總樓層）：只填地上總樓層的數字，例如 "7"、"21"、"9"。
       常見於構造欄位（"鉄筋コンクリート造21階建"、"RC造・地上9階建"）或物件概要。
       這個欄位很重要：同樣是 7 樓，在 7 層建物是頂樓、在 21 層建物只是中低樓層，
@@ -316,6 +332,19 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - renovationDetails（リノベーション内容／工事履歴）：例如 "2026年6月完成、R1住宅適合、給排水管交換、2022年立駐解体"。
     - managementCompany（管理会社）：例如 "東急コミュニティー"、"伏見管理サービス"、"南海ビルサービス"。
     - managementStyle（管理形態／管理方式）：例如 "全部委託 (日勤)"、"全部委託 (巡回)"。
+
+    買方稅費評價推算（只有買賣圖紙需要；金額一律輸出整數日圓）：
+    - fixedAssetTax、cityPlanningTax：若圖紙載有年度稅額，優先逐字精確採用。若未載明，依下列方式推算年度稅額：
+      1. 優先尋找「敷地権割合」（例如 1234/5678）並填入 landRightsRatio，據此換算土地持分面積。
+      2. 土地依所在地路線價／合理地價推估固定資產評價額；小規模住宅用地的固定資產稅課稅標準採 1/6、都市計畫稅採 1/3。
+      3. 建物以壁芯專有面積 × 1.1 公設分擔係數，依 RC／SRC 約 20 萬円/㎡、木造約 10 萬円/㎡為重建基準，再按屋齡經年減點折舊。
+      4. 固定資產稅率採 1.4%，都市計畫稅率採 0.3%。只輸出全年稅額，不要自行做交屋日分攤。
+    - buildingAssessedValue：輸出推算使用的建物固定資產評價額，讓程式端能獨立複核取得稅，不可只輸出扣除後稅額。
+    - landAcquisitionTaxAfterRelief：輸出土地住宅減免後仍應繳的不動產取得稅；沒有可靠依據時可填 0，但不可把建物稅混入。
+    - realEstateAcquisitionTax：依建物固定資產評價額推算。2026 年 4 月 1 日後，只有「買方本人取得後自住」、床面積 40～240㎡，且為 1982 年後興建或有新耐震證明時，才可將建物評價額扣除 1,200 萬円後乘 3%。
+      圖紙若為「賃貸中」「オーナーチェンジ」或投資物件，絕對不可套用自住扣除，必須以建物評價額 × 3% 加上土地減免後稅額。扣除後為 0 也必須在 taxEstimationBasis 明示符合的三項條件。
+    - registrationFee：合併推算登録免許税與司法書士報酬，依圖紙可得評價資訊及登記內容估算；缺乏明細時採成交總價約 0.8%～1.2% 的合理值，不得固定使用 1.8%。
+    - taxEstimationBasis：使用繁體中文、最多 35 字，只說明稅額是圖紙載明或 AI 概算；不可列公式、數字、敷地權分數、折舊過程或重複減免判斷，不可輸出日文句子。
 
     物件規格欄位（請格外仔細，務必尋找提取）：
     - layout（間取り，例如 "1K"、"1LDK"、"2DK"、"2LDK"）。
@@ -402,6 +431,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
           facilities: { type: Type.STRING, description: "室內與建物設備清單（逗號分隔）。注意表格打圈式只有打圈標記的才算具備，未打圈者切勿填入" },
           salePrice: { type: Type.STRING, description: "販売価格，例如 7,299万円" },
+          balconyArea: { type: Type.STRING, description: "バルコニー面積，例如 5.42㎡，未標示則留空" },
           totalUnits: { type: Type.STRING, description: "総戸数，例如 39戸" },
           buildingFloors: { type: Type.STRING, description: "建物地上總樓層數字，例如 21" },
           repairReserve: { type: Type.STRING, description: "修繕積立金，例如 6,100円" },
@@ -416,6 +446,14 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           renovationDetails: { type: Type.STRING, description: "翻修內容與工事履歷" },
           managementCompany: { type: Type.STRING, description: "管理會社" },
           managementStyle: { type: Type.STRING, description: "管理形態與方式" },
+          fixedAssetTax: { type: Type.NUMBER, description: "全年固定資產稅（日圓整數；圖紙未載明時依評價邏輯推算）" },
+          cityPlanningTax: { type: Type.NUMBER, description: "全年都市計畫稅（日圓整數；圖紙未載明時依評價邏輯推算）" },
+          realEstateAcquisitionTax: { type: Type.NUMBER, description: "不動產取得稅（日圓整數；適用自用中古住宅扣除後可為 0）" },
+          buildingAssessedValue: { type: Type.NUMBER, description: "推算使用的建物固定資產評價額（日圓整數、扣除前）" },
+          landAcquisitionTaxAfterRelief: { type: Type.NUMBER, description: "土地住宅減免後的不動產取得稅（日圓整數）" },
+          registrationFee: { type: Type.NUMBER, description: "登録免許税與司法書士報酬合計（日圓整數）" },
+          landRightsRatio: { type: Type.STRING, description: "圖紙的敷地権割合，例如 1234/5678；無則留空" },
+          taxEstimationBasis: { type: Type.STRING, description: "稅費辨識或推算所用依據摘要" },
           specialNotes: { type: Type.STRING, description: "備考與特約注意事項" },
         },
         required: [
@@ -423,10 +461,12 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           "keyMoney", "deposit", "leaseTerms", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
-          "renewalFee", "facilities", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
+          "renewalFee", "facilities", "balconyArea", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
           "otherMonthlyFees", "occupancyStatus", "currentRent", "annualIncome",
           "grossYield", "landRights", "zoning", "renovationDetails",
-          "managementCompany", "managementStyle", "specialNotes"
+          "managementCompany", "managementStyle", "fixedAssetTax", "cityPlanningTax",
+          "realEstateAcquisitionTax", "buildingAssessedValue", "landAcquisitionTaxAfterRelief",
+          "registrationFee", "landRightsRatio", "taxEstimationBasis", "specialNotes"
         ],
       },
     },
@@ -914,6 +954,12 @@ function buildSaleAnalysis(params: {
         floor: floorInfo.floor,
         totalFloors: floorInfo.totalFloors,
         renovationNotes: `${extracted.renovationDetails || ""} ${extracted.specialNotes || ""}`,
+        // 現況欄常只寫「集金代行」「賃貸中」；有現行租金／年收入／表面利回的圖紙
+        // 本質上就是帶租約出售，一併視為オーナーチェンジ。備註欄不納入，
+        // 避免「賃貸管理契約は引継ぎ」這類字樣造成誤判。
+        occupancyStatus: `${extracted.occupancyStatus || ""} ${
+          extracted.currentRent || extracted.annualIncome || extracted.grossYield ? "賃貸中" : ""
+        }`,
         sampleCount: officialEstimate?.ageBandSampleCount ?? officialEstimate?.sampleCount ?? null,
         listingBenchmark: getSaleListingBenchmark(locationInfo.region, locationInfo.district, layoutCode),
       });
@@ -1012,7 +1058,25 @@ function buildSaleAnalysis(params: {
   }
 
   // 6. Initial Costs
-  const initialCosts = calculateSaleInitialCosts(salePriceYen);
+  const acquisitionTaxAssessment = assessRealEstateAcquisitionTax({
+    buildingAssessedValueYen: parseNonNegativeYenAmount(extracted.buildingAssessedValue),
+    landTaxAfterReliefYen: parseNonNegativeYenAmount(extracted.landAcquisitionTaxAfterRelief),
+    fallbackTaxYen: parseNonNegativeYenAmount(extracted.realEstateAcquisitionTax),
+    areaSqm,
+    ageYears,
+    occupancyStatus: `${extracted.occupancyStatus || ""} ${isTenanted ? "賃貸中" : ""}`,
+  });
+
+  const initialCosts = calculateSaleInitialCosts(salePriceYen, {
+    monthlyManagementFeeYen: managementFee,
+    monthlyRepairReserveYen: repairReserve + repairFund,
+    fixedAssetTaxYen: parseNonNegativeYenAmount(extracted.fixedAssetTax),
+    cityPlanningTaxYen: parseNonNegativeYenAmount(extracted.cityPlanningTax),
+    acquisitionTaxYen: acquisitionTaxAssessment.amount,
+    acquisitionTaxNote: acquisitionTaxAssessment.note,
+    registrationFeeYen: parseNonNegativeYenAmount(extracted.registrationFee),
+    prepaidMonths: 3,
+  });
 
   return {
     salePriceYen,

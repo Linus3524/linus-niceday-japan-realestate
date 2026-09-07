@@ -86,6 +86,11 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     highlight: true,
   },
   {
+    pattern: /1口(?:ガス)?コンロ|1口キッチン|ガスコンロ\s*[（(]?\s*1口/i,
+    category: "廚房烹飪",
+    nameZh: "1 口瓦斯爐",
+  },
+  {
     pattern: /IHクッキングヒーター|IHコンロ|IHキッチン|IH/i,
     category: "廚房烹飪",
     nameZh: "IH 電磁烹飪爐",
@@ -131,7 +136,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     highlight: true,
   },
   {
-    pattern: /オートロック/i,
+    pattern: /オートロック|防盗自動門鎖|防盜自動門鎖/i,
     category: "門禁安全",
     nameZh: "防盜自動門鎖",
     highlight: true,
@@ -139,7 +144,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
   {
     pattern: /防犯カメラ/i,
     category: "門禁安全",
-    nameZh: "24H 防犯監視錄影",
+    nameZh: "防盜監視攝影機",
     highlight: true,
   },
   {
@@ -153,6 +158,17 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     category: "門禁安全",
     nameZh: "24 小時緊急通報系統",
     highlight: true,
+  },
+  {
+    pattern: /多重セキュリティシステム|セキュリティシステム/i,
+    category: "門禁安全",
+    nameZh: "多重門禁保全系統",
+    highlight: true,
+  },
+  {
+    pattern: /インターホン/i,
+    category: "門禁安全",
+    nameZh: "室內對講機",
   },
 
   // 4. 大樓公設與便利
@@ -196,7 +212,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
   {
     pattern: /外壁タイル張り|外壁タイル/i,
     category: "大樓公設",
-    nameZh: "外壁高級磁磚飾面",
+    nameZh: "外牆磁磚飾面",
   },
   {
     pattern: /駅まで平坦/i,
@@ -204,7 +220,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     nameZh: "鄰近車站道路平坦",
   },
   {
-    pattern: /駐輪場/i,
+    pattern: /駐輪場|駐輪スペース/i,
     category: "大樓公設",
     nameZh: "自行車停放處",
   },
@@ -221,9 +237,29 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
 
   // 5. 室內舒適與格局
   {
-    pattern: /エアコン(?:\s*(\d+)基)?/i,
+    pattern: /ポーチ|玄関ポーチ/i,
     category: "室內舒適",
-    nameZh: "冷暖變頻空調",
+    nameZh: "玄關門廊",
+  },
+  {
+    pattern: /2面採光|二面採光|二方向採光/i,
+    category: "室內舒適",
+    nameZh: "雙面採光",
+  },
+  {
+    pattern: /バルコニー洗置|バルコニー洗濯機置場/i,
+    category: "室內舒適",
+    nameZh: "陽台洗衣機置場",
+  },
+  {
+    pattern: /パウダールーム/i,
+    category: "衛浴水洗",
+    nameZh: "化妝盥洗室",
+  },
+  {
+    pattern: /エアコン(?:\s*[（(]?\s*(\d+)基)?/i,
+    category: "室內舒適",
+    nameZh: "冷暖空調",
   },
   {
     pattern: /床暖房/i,
@@ -232,12 +268,17 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     highlight: true,
   },
   {
-    pattern: /居室床材フローリング|フローリング|全居室フローリング/i,
+    pattern: /全居室フローリング/i,
     category: "室內舒適",
     nameZh: "全室木質地板",
   },
   {
-    pattern: /バルコニー|ベランダ/i,
+    pattern: /居室床材フローリング|フローリング/i,
+    category: "室內舒適",
+    nameZh: "木質地板",
+  },
+  {
+    pattern: /(?:専用|專用)?(?:バルコニー|ベランダ|陽台)/i,
     category: "室內舒適",
     nameZh: "專用陽台",
   },
@@ -248,19 +289,19 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     highlight: true,
   },
   {
+    pattern: /シューズインクローゼット|シューズボックス|下駄箱|SIC/i,
+    category: "室內舒適",
+    nameZh: "收納鞋櫃",
+  },
+  {
     pattern: /クローゼット|収納/i,
     category: "室內舒適",
     nameZh: "收納衣櫃",
   },
   {
-    pattern: /シューズボックス|シューズインクローゼット|SIC/i,
-    category: "室內舒適",
-    nameZh: "收納鞋櫃",
-  },
-  {
     pattern: /分譲タイプ/i,
     category: "室內舒適",
-    nameZh: "分讓建材規格",
+    nameZh: "分售住宅規格",
     highlight: true,
     note: "防音與建材規格較佳",
   },
@@ -279,6 +320,11 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     note: "月省約 4,000～5,000 円",
   },
   {
+    pattern: /光ファイバー|光回線/i,
+    category: "通訊網路",
+    nameZh: "光纖網路",
+  },
+  {
     pattern: /BSアンテナ|BS|CSアンテナ|CS/i,
     category: "通訊網路",
     nameZh: "BS／CS 衛星電視支援",
@@ -287,6 +333,126 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     pattern: /CATV/i,
     category: "通訊網路",
     nameZh: "CATV 有線電視設備",
+  },
+  // ── 買賣図面常見、原本沒收錄而直接落回日文原文的項目 ──
+  {
+    pattern: /(?:専用)?トランク(?:・?ルーム)?|専用倉庫|物置/i,
+    category: "大樓公設",
+    nameZh: "個人儲藏室",
+    highlight: true,
+    note: "住戶專用的大樓倉庫空間",
+  },
+  {
+    pattern: /ガス給湯器|給湯器|給湯|エコジョーズ/i,
+    category: "衛浴水洗",
+    nameZh: "瓦斯熱水器",
+  },
+  {
+    pattern: /エコキュート/i,
+    category: "衛浴水洗",
+    nameZh: "電熱水器（EcoCute）",
+  },
+  {
+    pattern: /内廊下|内廊下設計|ホテルライク/i,
+    category: "大樓公設",
+    nameZh: "飯店式內廊道",
+    highlight: true,
+    note: "走廊在建物內部，隱私與防風雨較佳",
+  },
+  {
+    pattern: /外廊下/i,
+    category: "大樓公設",
+    nameZh: "外廊道設計",
+  },
+  {
+    pattern: /トレーニング(?:室|ルーム)|フィットネス|ジム/i,
+    category: "大樓公設",
+    nameZh: "住戶專用健身房",
+    highlight: true,
+  },
+  {
+    pattern: /ラウンジ|コミュニティルーム|パーティールーム/i,
+    category: "大樓公設",
+    nameZh: "住戶交誼廳",
+  },
+  {
+    pattern: /ゲストルーム/i,
+    category: "大樓公設",
+    nameZh: "訪客住宿套房",
+  },
+  {
+    pattern: /コンシェルジュ|フロントサービス/i,
+    category: "大樓公設",
+    nameZh: "大樓管家服務",
+    highlight: true,
+  },
+  {
+    pattern: /24時間有人管理/i,
+    category: "大樓公設",
+    nameZh: "24 小時人員駐點管理",
+    highlight: true,
+  },
+  {
+    pattern: /管理人(?:常駐|日勤|巡回)|管理員常駐/i,
+    category: "大樓公設",
+    nameZh: "管理員駐點",
+  },
+  {
+    pattern: /オートロック付.*エントランス|エントランスホール/i,
+    category: "大樓公設",
+    nameZh: "大廳門廳",
+  },
+  {
+    pattern: /ペット(?:可|相談|飼育可)/i,
+    category: "其他設備",
+    nameZh: "可飼養寵物",
+    highlight: true,
+    note: "仍須確認管理規約的品種與體型限制",
+  },
+  {
+    pattern: /角部屋|角住戸/i,
+    category: "室內舒適",
+    nameZh: "邊間住戶",
+    highlight: true,
+    note: "採光與通風面較多",
+  },
+  {
+    pattern: /南向き|南向|南面採光/i,
+    category: "室內舒適",
+    nameZh: "南向採光",
+    highlight: true,
+  },
+  {
+    pattern: /二重(?:サッシ|窓)|複層ガラス|ペアガラス/i,
+    category: "室內舒適",
+    nameZh: "雙層隔音氣密窗",
+    highlight: true,
+  },
+  {
+    pattern: /床下収納/i,
+    category: "室內舒適",
+    nameZh: "地板下收納",
+  },
+  {
+    pattern: /リフォーム済|リノベーション済|full renovation|全面改装/i,
+    category: "其他設備",
+    nameZh: "已整體翻新",
+    highlight: true,
+  },
+  {
+    pattern: /集会所|集会室/i,
+    category: "大樓公設",
+    nameZh: "住戶集會室",
+  },
+  {
+    pattern: /洋室\s*[（(]?\s*\d+(?:\.\d+)?\s*畳/i,
+    category: "室內舒適",
+    nameZh: "西式房間",
+  },
+  {
+    pattern: /(?:駐輪場|バイク置場).*有|屋根付き駐輪場/i,
+    category: "大樓公設",
+    nameZh: "有頂自行車停放處",
   },
 ];
 
@@ -324,9 +490,13 @@ export function parseEquipmentList(rawFacilities?: string | string[] | null): Pa
           seenKeys.add(rule.nameZh);
           // 特別抓取冷氣數量（例如「エアコン2基」）
           let nameZh = rule.nameZh;
-          const airConCount = token.match(/エアコン\s*(\d+)基/i);
+          const airConCount = token.match(/エアコン\s*[（(]?\s*(\d+)基/i);
           if (airConCount) {
             nameZh = `冷暖變頻空調（${airConCount[1]} 台）`;
+          }
+          const westernRoomSize = token.match(/洋室\s*[（(]?\s*(\d+(?:\.\d+)?)\s*畳/i);
+          if (westernRoomSize) {
+            nameZh = `西式房間（${westernRoomSize[1]} 帖）`;
           }
           results.push({
             key: rule.nameZh,
@@ -366,7 +536,11 @@ export function parseEquipmentList(rawFacilities?: string | string[] | null): Pa
 
   return results.filter(item => {
     // 1. 若已有「乾濕分離」，移除次級浴室/廁所殘留標籤
-    if (hasSeparatedBath && (item.nameZh === "獨立浴室" || item.nameZh === "專用衛生間" || /バス有?|風呂有?/i.test(item.rawJa))) {
+    if (hasSeparatedBath && (
+      item.nameZh === "獨立浴室" ||
+      item.nameZh === "專用衛生間" ||
+      /^(?:専用)?バス(?:有)?$|^風呂(?:有)?$/i.test(item.rawJa)
+    )) {
       return false;
     }
     // 2. 若已有具體瓦斯爐規格（如 2 口瓦斯爐），移除籠統的「瓦斯爐具」或「系統廚房」

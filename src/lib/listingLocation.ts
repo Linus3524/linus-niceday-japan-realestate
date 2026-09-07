@@ -19,6 +19,7 @@ export interface ListingAmenity {
 
 export interface ListingStationWalk {
   station: string;
+  source: "flyer" | "nearby";
   distanceMeters: number;
   advertisedMinutes: number | null;
   fastMinutes: number;
@@ -50,7 +51,19 @@ type OsmElement = {
   tags?: Record<string, string>;
 };
 
-type StationPoint = { name: string; point: GeoPoint; distance: number };
+type StationPoint = {
+  name: string;
+  point: GeoPoint;
+  distance: number;
+  hasSubway?: boolean;
+  hasSurfaceRail?: boolean;
+};
+type StationWalkSeed = {
+  station: string;
+  advertisedMinutes: number | null;
+  source: ListingStationWalk["source"];
+  match: StationPoint;
+};
 type AddressConfidence = "high" | "medium";
 type AddressCandidate = { value: string; confidence: AddressConfidence; method: "normalized" | "street" | "area" | "web" };
 type GeocodedAddress = { point: GeoPoint; matchedAddress: string; confidence: AddressConfidence; method: AddressCandidate["method"] };
@@ -246,14 +259,15 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
   const key = `osm:${includeAmenities ? "all" : "stations"}:${rounded}`;
   const hit = cached<OsmElement[]>(key);
   if (hit) return hit;
-  // 使用 nw (node + way) 取代 nwr，排除極耗資源且容易超時的 relations；適度收斂半徑大幅提升速度與可靠度
+  // 使用 nw (node + way) 取代 nwr，排除極耗資源且容易超時的 relations。
+  // 鐵路站查到 4km 是為了能定位圖紙明列但步行較遠的站；自動補站仍在後段限制為 1.8km。
   const amenityQuery = includeAmenities ? `
     nw(around:900,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist|department_store)$"];
     nw(around:900,${point.lat},${point.lon})[amenity~"^(pharmacy|police|post_office|hospital|clinic|school)$"];
     nw(around:900,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];` : "";
   const query = `[out:json][timeout:8];(${amenityQuery}
-    nw(around:1800,${point.lat},${point.lon})[railway~"^(station|halt)$"];
-    nw(around:1800,${point.lat},${point.lon})[public_transport=station];
+    nw(around:4000,${point.lat},${point.lon})[railway~"^(station|halt)$"];
+    nw(around:4000,${point.lat},${point.lon})[public_transport=station];
   );out center tags;`;
 
   try {
@@ -283,26 +297,37 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
 }
 
 function nearestStation(elements: OsmElement[], origin: GeoPoint, requestedName?: string) {
-  const wanted = normalizeStation(requestedName || "");
-  const candidates = elements.flatMap(element => {
+  return nearestOfficialStation(osmStationPoints(elements, origin), requestedName);
+}
+
+function osmStationPoints(elements: OsmElement[], origin: GeoPoint): StationPoint[] {
+  const byName = new Map<string, StationPoint>();
+  for (const element of elements) {
+    // public_transport=station 也可能代表巴士總站；附近車站補充只採鐵路站點。
+    if (!/^(station|halt)$/.test(String(element.tags?.railway || ""))) continue;
     const point = elementPoint(element);
     const name = String(element.tags?.["name:ja"] || element.tags?.name || "").trim();
-    if (!point || !name || (!element.tags?.railway && element.tags?.public_transport !== "station")) return [];
-    const normalized = normalizeStation(name);
-    const isExact = Boolean(wanted && normalized === wanted);
-    const isMatch = !wanted || isExact || normalized.includes(wanted) || wanted.includes(normalized);
-    if (!isMatch) return [];
-    return [{
+    if (!point || !name) continue;
+    const station: StationPoint = {
       name: toJapaneseStationName(name),
       point,
       distance: distanceMeters(origin, point),
-      isExact,
-    }];
-  }).sort((a, b) => {
-    if (a.isExact !== b.isExact) return a.isExact ? -1 : 1;
-    return a.distance - b.distance;
-  });
-  return candidates[0] || null;
+      hasSubway: element.tags?.station === "subway" || element.tags?.subway === "yes",
+      hasSurfaceRail: element.tags?.train === "yes" || (Boolean(element.tags?.railway) && element.tags?.station !== "subway"),
+    };
+    const key = normalizeStation(station.name);
+    const existing = byName.get(key);
+    // 同一大型車站常按路線出現多個節點，只保留離物件最近的入口／站點。
+    if (key) {
+      const closest = !existing || station.distance < existing.distance ? station : existing;
+      byName.set(key, {
+        ...closest,
+        hasSubway: Boolean(existing?.hasSubway || station.hasSubway),
+        hasSurfaceRail: Boolean(existing?.hasSurfaceRail || station.hasSurfaceRail),
+      });
+    }
+  }
+  return [...byName.values()].sort((left, right) => left.distance - right.distance);
 }
 
 function coordinatePoints(value: unknown): GeoPoint[] {
@@ -351,6 +376,74 @@ function nearestOfficialStation(stations: StationPoint[], requestedName?: string
     return a.station.distance - b.station.distance;
   });
   return candidates[0]?.station || null;
+}
+
+function mergeNearbyStationPoints(...groups: StationPoint[][]) {
+  const byName = new Map<string, StationPoint>();
+  for (const station of groups.flat()) {
+    const key = normalizeStation(station.name);
+    const existing = byName.get(key);
+    if (key && station.distance <= 1_800) {
+      const closest = !existing || station.distance < existing.distance ? station : existing;
+      byName.set(key, {
+        ...closest,
+        hasSubway: Boolean(existing?.hasSubway || station.hasSubway),
+        hasSurfaceRail: Boolean(existing?.hasSurfaceRail || station.hasSurfaceRail),
+      });
+    }
+  }
+  return [...byName.values()].sort((left, right) => left.distance - right.distance);
+}
+
+function selectStationWalkSeeds(
+  stations: string[],
+  advertisedMinutes: Array<number | null>,
+  osmStations: StationPoint[],
+  officialStations: StationPoint[],
+  maximum = 3,
+) {
+  const seeds: StationWalkSeed[] = [];
+  const used = new Set<string>();
+
+  // 圖紙刊載站優先保留；同站因多條路線重複出現時只算一站。
+  for (let index = 0; index < stations.length && seeds.length < maximum; index++) {
+    const station = toJapaneseStationName(stations[index]);
+    const key = normalizeStation(station);
+    if (!key || used.has(key)) continue;
+    const match = nearestOfficialStation(osmStations, station) || nearestOfficialStation(officialStations, station);
+    if (!match) continue;
+    used.add(key);
+    seeds.push({ station, advertisedMinutes: advertisedMinutes[index] ?? null, source: "flyer", match });
+  }
+
+  // 圖紙不足三站時，以物件附近實際鐵路站補足，不把補充站冒充為圖紙刊載內容。
+  const listedMatches = seeds.map(seed => seed.match);
+  const flyerIsSubwayOnly = listedMatches.length > 0
+    && listedMatches.every(match => match.hasSubway && !match.hasSurfaceRail);
+  const flyerIsSurfaceOnly = listedMatches.length > 0
+    && listedMatches.every(match => match.hasSurfaceRail && !match.hasSubway);
+  const nearby = mergeNearbyStationPoints(osmStations, officialStations).sort((left, right) => {
+    // 附近補站優先提供不同運輸型態，再以距離排序，避免只列出功能重疊的相鄰地鐵站。
+    const leftAlternative = flyerIsSubwayOnly ? left.hasSurfaceRail : flyerIsSurfaceOnly ? left.hasSubway : false;
+    const rightAlternative = flyerIsSubwayOnly ? right.hasSurfaceRail : flyerIsSurfaceOnly ? right.hasSubway : false;
+    if (Boolean(leftAlternative) !== Boolean(rightAlternative)) return leftAlternative ? -1 : 1;
+    return left.distance - right.distance;
+  });
+
+  const nearbySlots = maximum - seeds.length;
+  let nearbyCandidates = 0;
+  for (const match of nearby) {
+    if (nearbyCandidates >= nearbySlots + 4) break;
+    const key = normalizeStation(match.name);
+    if (!key || used.has(key)) continue;
+    // 一般步速 15 分鐘的理論上限為 1,125m；直線已超過者不必再呼叫道路路由。
+    if (match.distance > 1_125) continue;
+    used.add(key);
+    seeds.push({ station: toJapaneseStationName(match.name), advertisedMinutes: null, source: "nearby", match });
+    nearbyCandidates++;
+  }
+
+  return seeds;
 }
 
 async function routeFootDistance(from: GeoPoint, to: GeoPoint) {
@@ -476,8 +569,11 @@ export async function getListingLocationContext(address: string, stations: strin
     mlitFacilities(geocoded.point).catch(() => [] as ListingAmenity[]),
   ]);
 
+  const osmStations = osmStationPoints(elements, geocoded.point);
   let officialStations: StationPoint[] = [];
-  if (!elements.length) {
+  const needsOfficialStationFallback = !osmStations.length
+    || stations.some(station => !nearestOfficialStation(osmStations, station));
+  if (needsOfficialStationFallback) {
     try {
       officialStations = await mlitStations(geocoded.point);
     } catch {
@@ -485,32 +581,32 @@ export async function getListingLocationContext(address: string, stations: strin
     }
   }
 
-  const topStations = stations.slice(0, 5);
-  const stationWalks = (await Promise.all(
-    topStations.map(async (station, index) => {
-      const match = nearestStation(elements, geocoded.point, station) || nearestOfficialStation(officialStations, station);
-      if (!match) return null;
-      let distance = match.distance;
+  const stationSeeds = selectStationWalkSeeds(stations, advertisedMinutes, osmStations, officialStations);
+  const stationWalks: ListingStationWalk[] = [];
+  for (const seed of stationSeeds) {
+      if (stationWalks.length >= 3) break;
+      let distance = seed.match.distance;
       try {
-        distance = await routeFootDistance(geocoded.point, match.point);
+        distance = await routeFootDistance(geocoded.point, seed.match.point);
       } catch {
-        distance = Math.round(match.distance * 1.25);
+        distance = Math.round(seed.match.distance * 1.25);
       }
       const times = walkingTimes(distance);
-      const advertised = advertisedMinutes[index] ?? null;
+      if (seed.source === "nearby" && times.normalMinutes > 15) continue;
+      const advertised = seed.advertisedMinutes;
       const difference = advertised === null ? null : times.normalMinutes - advertised;
-      return {
-        station: toJapaneseStationName(station),
+      stationWalks.push({
+        station: seed.station,
+        source: seed.source,
         distanceMeters: distance,
         advertisedMinutes: advertised,
         ...times,
         differenceMinutes: difference,
         needsAttention: difference !== null && difference >= 3,
-        lat: match.point.lat,
-        lon: match.point.lon,
-      } as ListingStationWalk;
-    })
-  )).filter((item): item is ListingStationWalk => item !== null);
+        lat: seed.match.point.lat,
+        lon: seed.match.point.lon,
+      });
+  }
 
   const amenities = [...osmAmenities(elements, geocoded.point), ...mlit]
     .sort((a, b) => a.distanceMeters - b.distanceMeters)

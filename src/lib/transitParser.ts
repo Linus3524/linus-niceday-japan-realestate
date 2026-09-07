@@ -15,7 +15,7 @@ const allStations = Object.values(districtStations).flat();
  */
 function cleanStationName(raw: string): string {
   let cleaned = raw
-    .replace(/[／/「」]/g, " ")
+    .replace(/[／/「」『』《》〈〉【】]/g, " ")
     .replace(/[\(（].*?[\)）]/g, "") // 移除 (東京)、（東京都）等括號後綴
     .replace(/駅$/, "")
     .trim();
@@ -35,10 +35,10 @@ function cleanStationName(raw: string): string {
 export function lookupStationLines(stationName: string): string {
   const clean = cleanStationName(stationName);
   const targetJp = toJapaneseStationName(clean);
-  const found = allStations.find(s => {
-    const sJp = toJapaneseStationName(cleanStationName(s.name));
-    return sJp === targetJp || sJp.includes(targetJp) || targetJp.includes(sJp);
-  });
+  // 只接受完全一致。舊版還允許互相包含，會把「新宿西口」比對成「新宿」，
+  // 直接掛上新宿站那一長串路線（實測 都営大江戸線 被換成 10 條線）。
+  // 站名互為子字串的在日本很常見（新宿／新宿西口／西新宿），寧可不標也不能標錯。
+  const found = allStations.find(s => toJapaneseStationName(cleanStationName(s.name)) === targetJp);
   return found ? found.lines.join("・") : "";
 }
 
@@ -68,7 +68,7 @@ export function parseTransitStations(
     const officialLines = lookupStationLines(station);
 
     // 整合路線名稱
-    const cleanLinePart = linePart ? linePart.replace(/[／/「」]/g, "").trim() : "";
+    const cleanLinePart = linePart ? linePart.replace(/[／/「」『』《》〈〉【】]/g, "").trim() : "";
     const mergedLine = cleanLinePart || officialLines;
 
     const existing = seenMap.get(normKey);

@@ -57,6 +57,17 @@ export function parseYenAmount(text: unknown): number | null {
   return null;
 }
 
+/** 與 parseYenAmount 相同，但供稅費推算欄位接受合法的 0 円與 JSON 數字。 */
+export function parseNonNegativeYenAmount(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value >= 0 ? Math.round(value) : null;
+  }
+  if (typeof value !== "string") return null;
+  const cleaned = toHalfWidth(value).replace(/,/g, "").trim();
+  if (/^(?:0|0円|なし|無し|免税|非課税)$/i.test(cleaned)) return 0;
+  return parseYenAmount(cleaned);
+}
+
 /**
  * 解析買賣物件每戶必須負擔的其他月費。
  *
@@ -214,6 +225,9 @@ export function stripStationOperatorPrefix(text: unknown): string | null {
   if (typeof text !== "string") return null;
   const cleaned = text
     .trim()
+    // 図面常把站名寫成「ＪＲ総武線 『大久保』駅」，引號留著會讓站名比對失敗，
+    // 進而讓不同車站被回退到同一個座標（實測大久保與新大久保都被算成 366m）。
+    .replace(/[『』「」《》〈〉【】]/g, "")
     .replace(/^(?:JR|ＪＲ)/i, "")
     .replace(/^(?:東京メトロ|東京地下鉄|都営地下鉄|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくばエクスプレス)/, "")
     // "○○線 ○○駅" 這種前面還帶路線名的寫法，取最後一段當站名。
@@ -317,7 +331,8 @@ export function parseArea(text: unknown): number | null {
 export function normalizeStructure(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   const s = toHalfWidth(raw).trim().toUpperCase();
-  if (/SRC|鉄骨鉄筋/.test(s)) return "SRC造（鋼骨鋼筋混凝土）";
+  // 「鉄骨・鉄筋コンクリート造」中間帶分隔符，沒放寬會掉到下一條 /鉄筋/ 而誤判成 RC。
+  if (/SRC|鉄骨[・･\s]*鉄筋|鋼骨[・･\s]*鋼筋/.test(s)) return "SRC造（鋼骨鋼筋混凝土）";
   if (/RC|鉄筋/.test(s)) return "RC造（鋼筋混凝土）";
   if (/軽量鉄骨/.test(s)) return "輕量鐵骨造";
   if (/重量鉄骨/.test(s)) return "重量鐵骨造";
@@ -407,19 +422,19 @@ export function assessRepairReserve(params: {
   const reservePerSqm = areaSqm && areaSqm > 0 ? Math.round(monthlyRepairCostYen / areaSqm) : null;
 
   let reserveHealthLevel: "inadequate" | "healthy" | "heavy" = "healthy";
-  let reserveHealthText = "提撥適中";
+  let reserveHealthText = "積立金水準適中";
   let reserveHealthNote = "符合日本國土交通省修繕積立金指引標準（約 200～300 円/㎡/月）。";
 
   if (reservePerSqm !== null) {
     if (reservePerSqm < 160) {
       reserveHealthLevel = "inadequate";
-      reserveHealthText = "提撥偏低";
+      reserveHealthText = "積立金水準偏低";
       reserveHealthNote = (ageYears && ageYears > 15)
         ? `每平米僅提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月。屋齡已超過 15 年，需留意大樓修繕儲備金是否不足，未來可能有調漲或徵收一次性修繕一時金的風險。`
         : `每平米提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月，初期費率較低，依長期修繕計畫未來 10 年通常會逐步階梯式調升。`;
     } else if (reservePerSqm > 320) {
       reserveHealthLevel = "heavy";
-      reserveHealthText = "提撥充裕（負擔較重）";
+      reserveHealthText = "積立金水準偏高";
       reserveHealthNote = `每平米提撥達 ¥${reservePerSqm.toLocaleString()}/㎡/月，管委會提撥積極充足、財務體質穩健，但每月固定持有成本較顯著。`;
     }
   }
@@ -452,30 +467,127 @@ export function assessRepairReserve(params: {
   };
 }
 
+export interface SaleInitialCostOptions {
+  handoverDate?: string;
+  prepaidMonths?: number;
+  monthlyManagementFeeYen?: number;
+  monthlyRepairReserveYen?: number;
+  fixedAssetTaxYen?: number | null;
+  cityPlanningTaxYen?: number | null;
+  acquisitionTaxYen?: number | null;
+  acquisitionTaxNote?: string;
+  registrationFeeYen?: number | null;
+  insuranceFeeYen?: number;
+}
+
+export interface AcquisitionTaxAssessmentInput {
+  buildingAssessedValueYen: number | null;
+  landTaxAfterReliefYen?: number | null;
+  fallbackTaxYen?: number | null;
+  areaSqm: number | null;
+  ageYears: number | null;
+  occupancyStatus?: string | null;
+}
+
 /**
- * 買方初期費用（諸費用）估算
+ * 2026-04-01 起的中古住宅取得稅自住優惠防呆。
+ * 租賃中／オーナーチェンジ一定不套自住扣除；空室僅以「買方自住」假設試算。
  */
-export function calculateSaleInitialCosts(salePriceYen: number) {
-  // 1. 仲介手續費（法定上限：總價 3% + 6萬 + 10% 消費稅）
-  const brokerageFee = Math.round((salePriceYen * 0.03 + 60000) * 1.1);
+export function assessRealEstateAcquisitionTax(input: AcquisitionTaxAssessmentInput) {
+  const status = input.occupancyStatus || "";
+  const isTenanted = /賃貸中|オーナーチェンジ|投資/i.test(status);
+  const meetsArea = input.areaSqm !== null && input.areaSqm >= 40 && input.areaSqm <= 240;
+  const meetsSeismic = input.ageYears !== null && input.ageYears <= 44;
+  const reliefApplied = !isTenanted && meetsArea && meetsSeismic;
+  const buildingValue = input.buildingAssessedValueYen;
+  const landTax = Math.max(0, Math.round(input.landTaxAfterReliefYen ?? 0));
 
-  // 2. 登記免許稅 & 司法書士手續費（所有權移轉、抵當權設定等，約總價 1.5% ~ 2.0%）
-  const registrationAndScrivenerFee = Math.round(salePriceYen * 0.018);
+  let amount: number | null = null;
+  if (buildingValue !== null) {
+    const buildingTaxBase = reliefApplied ? Math.max(0, buildingValue - 12_000_000) : buildingValue;
+    amount = Math.max(0, Math.round(buildingTaxBase * 0.03) + landTax);
+  } else if (input.fallbackTaxYen !== null && input.fallbackTaxYen !== undefined) {
+    // 舊 API 回應沒有建物評價額時只可沿用非零結果；租賃中物件的 0 円不可採信。
+    amount = isTenanted && input.fallbackTaxYen === 0 ? null : Math.max(0, Math.round(input.fallbackTaxYen));
+  }
 
-  // 3. 印紙代（契約書印花稅）
-  let stampDuty = 10000;
-  if (salePriceYen > 50000000) stampDuty = 30000;
-  else if (salePriceYen > 10000000) stampDuty = 10000;
-  else stampDuty = 5000;
+  const note = isTenanted
+    ? "租賃中／オーナーチェンジ物件不符合買方自住要件，未套用 1,200 萬円建物評價額扣除"
+    : !meetsArea
+      ? `專有面積未落在 2026 年 4 月起的 40～240㎡門檻內，未套用自住中古住宅扣除`
+      : !meetsSeismic
+        ? "未確認為 1982 年後興建或具新耐震證明，未套用自住中古住宅扣除"
+        : "以買方取得後自住為前提，並符合 40～240㎡及新耐震條件，建物評價額扣除 1,200 萬円後按 3% 試算";
 
-  // 4. 火災地震保險（概算 10年期）
-  const insuranceFee = 200000;
+  return { amount, reliefApplied, isTenanted, meetsArea, meetsSeismic, note };
+}
 
-  // 5. 固定資產稅・都市計畫稅日割精算 & 取得稅備用（約總價 0.5% ~ 1.0%）
-  const taxesProrated = Math.round(salePriceYen * 0.008);
+/** 日本國稅廳「不動產讓渡契約書」現行輕減稅率（適用至 2027-03-31）。 */
+export function getRealEstateStampDuty(salePriceYen: number): number {
+  if (salePriceYen < 10000) return 0;
+  if (salePriceYen <= 500000) return 200;
+  if (salePriceYen <= 1000000) return 500;
+  if (salePriceYen <= 5000000) return 1000;
+  if (salePriceYen <= 10000000) return 5000;
+  if (salePriceYen <= 50000000) return 10000;
+  if (salePriceYen <= 100000000) return 30000;
+  if (salePriceYen <= 500000000) return 60000;
+  if (salePriceYen <= 1000000000) return 160000;
+  if (salePriceYen <= 5000000000) return 320000;
+  return 480000;
+}
 
-  const total = brokerageFee + registrationAndScrivenerFee + stampDuty + insuranceFee + taxesProrated;
-  const percentageOfPrice = Math.round((total / salePriceYen) * 1000) / 10;
+function saleCostDateInfo(dateText?: string) {
+  const fallback = new Date();
+  const parsed = dateText ? new Date(`${dateText}T00:00:00`) : fallback;
+  const date = Number.isNaN(parsed.getTime()) ? fallback : parsed;
+  const year = date.getFullYear();
+  const start = new Date(year, 0, 1);
+  const nextYear = new Date(year + 1, 0, 1);
+  const end = new Date(year, 11, 31);
+  const dayMs = 24 * 60 * 60 * 1000;
+  return {
+    dateText: `${year}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
+    remainingDays: Math.max(0, Math.round((end.getTime() - date.getTime()) / dayMs) + 1),
+    daysInYear: Math.round((nextYear.getTime() - start.getTime()) / dayMs),
+  };
+}
+
+/**
+ * 買方交屋諸費用：法定公式由程式精算，只有需要固定資產評價額的項目接收 AI 辨識／推算值。
+ */
+export function calculateSaleInitialCosts(salePriceYen: number, options: SaleInitialCostOptions = {}) {
+  const brokerageFee = Math.floor((salePriceYen * 0.03 + 60000) * 1.1);
+
+  const registrationWasEstimated = options.registrationFeeYen == null;
+  const registrationAndScrivenerFee = Math.max(
+    0,
+    Math.round(options.registrationFeeYen ?? salePriceYen * 0.01),
+  );
+  const stampDuty = getRealEstateStampDuty(salePriceYen);
+  const insuranceFee = Math.max(0, Math.round(options.insuranceFeeYen ?? 200000));
+
+  const fixedAssetTaxYen = Math.max(0, Math.round(options.fixedAssetTaxYen ?? 0));
+  const cityPlanningTaxYen = Math.max(0, Math.round(options.cityPlanningTaxYen ?? 0));
+  const annualPropertyTaxes = fixedAssetTaxYen + cityPlanningTaxYen;
+  const dateInfo = saleCostDateInfo(options.handoverDate);
+  const taxesProrated = Math.floor(annualPropertyTaxes * dateInfo.remainingDays / dateInfo.daysInYear);
+
+  const acquisitionTaxWasEstimated = options.acquisitionTaxYen == null;
+  const acquisitionTax = Math.max(0, Math.round(options.acquisitionTaxYen ?? 0));
+  const prepaidMonths = Math.min(24, Math.max(0, Math.round(options.prepaidMonths ?? 3)));
+  const monthlyManagementFeeYen = Math.max(0, Math.round(options.monthlyManagementFeeYen ?? 0));
+  const monthlyRepairReserveYen = Math.max(0, Math.round(options.monthlyRepairReserveYen ?? 0));
+  const managementPrepayment = (monthlyManagementFeeYen + monthlyRepairReserveYen) * prepaidMonths;
+
+  const total = brokerageFee
+    + registrationAndScrivenerFee
+    + stampDuty
+    + insuranceFee
+    + taxesProrated
+    + acquisitionTax
+    + managementPrepayment;
+  const percentageOfPrice = salePriceYen > 0 ? Math.round((total / salePriceYen) * 1000) / 10 : 0;
 
   return {
     total,
@@ -491,7 +603,9 @@ export function calculateSaleInitialCosts(salePriceYen: number) {
         id: "registration",
         name: "登記免許稅與司法書士報酬",
         amount: registrationAndScrivenerFee,
-        note: "土地與建物所有權移轉登記、抵當權設定及司法書士代辦費（約 1.8%）",
+        note: registrationWasEstimated
+          ? "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+          : "AI 依圖紙、固定資產評價與登記內容複合推算（通常約房價 0.8%～1.2%）",
       },
       {
         id: "stamp",
@@ -503,15 +617,39 @@ export function calculateSaleInitialCosts(salePriceYen: number) {
         id: "insurance",
         name: "火災保險・地震保險（預估）",
         amount: insuranceFee,
-        note: "長期火災防護保費（依構造、坪數與投保年期調整）",
+        note: "依建物構造、專有面積、保障內容與投保期間調整",
       },
       {
-        id: "taxes",
-        name: "固定資產稅日割清算與取得稅預備",
+        id: "propertyTaxProration",
+        name: "固定資產稅・都市計畫稅日割清算",
         amount: taxesProrated,
-        note: "交屋日按日計算公租公課日割金，及後續不動產取得稅預備金（約 0.8%）",
+        note: annualPropertyTaxes > 0
+          ? `AI 辨識／推算年額 ${annualPropertyTaxes.toLocaleString("ja-JP")} 円 × 交屋後 ${dateInfo.remainingDays}/${dateInfo.daysInYear} 日`
+          : "圖紙與 AI 均未取得固都稅年額，目前未計入；請以賣方納稅通知書清算",
+      },
+      {
+        id: "acquisitionTax",
+        name: "不動產取得稅",
+        amount: acquisitionTax,
+        note: options.acquisitionTaxNote || (acquisitionTaxWasEstimated
+          ? "尚無圖紙評價資料或 AI 推算值，目前未計入；取得後以都道府縣核定通知為準"
+          : acquisitionTax > 0
+          ? "AI 依建物評價額、專有面積與新耐震／自用住宅減免條件推算"
+          : "以買方自住假設套用中古住宅扣除後為 0 円；仍以都道府縣核定通知為準"),
+      },
+      {
+        id: "managementPrepayment",
+        name: "管理費與修繕積立金預繳",
+        amount: managementPrepayment,
+        note: `（管理費 ${monthlyManagementFeeYen.toLocaleString("ja-JP")} 円 + 修繕積立金 ${monthlyRepairReserveYen.toLocaleString("ja-JP")} 円）× ${prepaidMonths} 個月`,
       },
     ],
+    settings: {
+      handoverDate: dateInfo.dateText,
+      remainingDays: dateInfo.remainingDays,
+      daysInYear: dateInfo.daysInYear,
+      prepaidMonths,
+    },
   };
 }
 

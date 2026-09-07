@@ -140,7 +140,10 @@ const normalize = (value: string) => value
   .replace(/[\s・･（）()\-/／]/g, "");
 
 export function toJapaneseStationName(value: string) {
-  const cleaned = value.replace(/\s*(?:車站|站|駅)\s*$/, "").trim();
+  const cleaned = value
+    .replace(/[『』「」《》〈〉【】]/g, "")
+    .replace(/\s*(?:車站|站|駅)\s*$/, "")
+    .trim();
   if (JAPANESE_STATION_NAMES[cleaned]) return JAPANESE_STATION_NAMES[cleaned];
   return toJapanesePlaceName(cleaned);
 }

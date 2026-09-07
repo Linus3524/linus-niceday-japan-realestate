@@ -183,7 +183,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         html: `
           <div class="custom-capsule-badge station-capsule">
             <span class="pin-icon">🚉</span>
-            <span class="pin-text">${walk.station}駅 (${walk.normalMinutes}分)</span>
+            <span class="pin-text">${walk.station}駅</span>
           </div>
         `,
         iconSize: [0, 0],
@@ -196,10 +196,14 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         .bindPopup(
           `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
             <strong style="font-size: 13px; color: #1A2A22;">🚉 ${walk.station}駅</strong><br/>
+            <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : "圖紙刊載車站"}</span><br/>
             <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
             <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
               常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
             </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(walk.station + "駅 " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
+              在 Google 地圖查看 ↗
+            </a>
           </div>`
         );
 
@@ -336,20 +340,51 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   };
 
   // 類別清單直接由 CATEGORY_CONFIG 推導，新增分類時只需要改那一處。
+  // 車站在地圖上有標記，卻沒出現在下方清單裡，等於少了最重要的一類機能。
+  // 這裡把車站併進同一份清單（key 沿用地圖 marker 的 key，才能連動聚焦），
+  // 並排在最前面。車站用實際道路步行時間，不像設施是用距離換算的。
+  const STATION_CONF = { label: "車站", icon: "🚉", bg: "#E6F6F1", text: "#007D5A", border: "#9EE2CF" };
+
+  const stationItems = stationWalks.map((walk, idx) => ({
+    key: `station-${idx}-${walk.station}`,
+    name: `${walk.station}駅`,
+    distanceMeters: walk.distanceMeters,
+    walkMinutes: walk.normalMinutes,
+    conf: STATION_CONF,
+    isStation: true,
+    stationSource: walk.source,
+  }));
+
+  const amenityItems = amenities.map((a, idx) => ({
+    key: `amenity-${a.category}-${idx}`,
+    name: a.name,
+    distanceMeters: a.distanceMeters,
+    walkMinutes: Math.ceil(a.distanceMeters / 75),
+    conf: CATEGORY_CONFIG[a.category] || { label: "設施", icon: "📍", bg: "#F5F8F6", text: "#1A2A22", border: "#DDE3DF" },
+    isStation: false,
+    stationSource: undefined,
+    category: a.category as string,
+  }));
+
   const categories = [
-    { id: "all", label: "全部設施", count: amenities.length },
+    { id: "all", label: "全部", count: stationItems.length + amenityItems.length },
+    ...(stationItems.length > 0 ? [{ id: "station", label: STATION_CONF.label, count: stationItems.length }] : []),
     ...(Object.keys(CATEGORY_CONFIG) as ListingAmenity["category"][]).map(id => ({
-      id,
+      id: id as string,
       label: CATEGORY_CONFIG[id].label,
       count: amenities.filter(a => a.category === id).length,
     })),
   ].filter(c => c.id === "all" || c.count > 0);
 
-  const filteredAmenities = activeCategory === "all"
-    ? amenities.map((a, idx) => ({ ...a, key: `amenity-${a.category}-${idx}` }))
-    : amenities
-        .map((a, idx) => ({ ...a, key: `amenity-${a.category}-${idx}` }))
-        .filter(a => a.category === activeCategory);
+  // 清單一律照離物件的實際距離排序。把車站硬插在最前面會破壞這個規則，
+  // 讓「48m 的公園」排在「366m 的車站」後面，看起來像沒排序。
+  const filteredAmenities = (
+    activeCategory === "all"
+      ? [...stationItems, ...amenityItems]
+      : activeCategory === "station"
+        ? stationItems
+        : amenityItems.filter(a => a.category === activeCategory)
+  ).sort((a, b) => a.distanceMeters - b.distanceMeters);
 
   return (
     <div className="space-y-3 font-sans">
@@ -492,23 +527,22 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 text-[11px] font-medium text-[#007d5a]">
-          <Info className="h-3.5 w-3.5" />
-          <span>滑鼠懸停下方設施同步標記；點擊可聚焦該位置</span>
+      </div>
+
+      {/* 設施互動與顯示範圍提示：簡潔淺色呈現，移除黃色大色塊 */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#66736C]">
+        <div className="flex items-center gap-1.5">
+          <Info className="h-3.5 w-3.5 text-[#8A9590] shrink-0" />
+          <span>點擊或懸停下方項目可連動聚焦地圖；車站先列圖紙刊載站，再補足附近車站，合計最多 3 站；生活機能各類別取最近 3 處。</span>
         </div>
+        <span className="text-[#8A9590]">※ 完整周邊店家請參考地圖實景</span>
       </div>
 
       {/* 設施快速卡片清單 */}
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filteredAmenities.map(amenity => {
-          const conf = CATEGORY_CONFIG[amenity.category] || {
-            label: "設施",
-            icon: "📍",
-            bg: "#F5F8F6",
-            text: "#1A2A22",
-            border: "#DDE3DF",
-          };
-          const walkMin = Math.ceil(amenity.distanceMeters / 75);
+          const conf = amenity.conf;
+          const walkMin = amenity.walkMinutes;
           const isHovered = hoveredId === amenity.key;
 
           return (
@@ -539,7 +573,9 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
                     {amenity.name}
                   </p>
                   <div className="flex items-center gap-1.5 text-[10px] text-[#66736C]">
-                    <span className="font-semibold text-[#007d5a]">{conf.label}</span>
+                    <span className="font-semibold text-[#007d5a]">
+                      {amenity.isStation && amenity.stationSource === "nearby" ? "附近補充" : conf.label}
+                    </span>
                     <span>•</span>
                     <span>步行約 {walkMin} 分</span>
                   </div>

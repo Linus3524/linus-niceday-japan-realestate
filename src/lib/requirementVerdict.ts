@@ -621,6 +621,8 @@ export function buildSalePriceVerdict(input: {
   floor: number | null;
   totalFloors: number | null;
   renovationNotes?: string;
+  /** 圖紙上的現況欄（賃貸中／オーナーチェンジ／空室／居住中等），用來判斷是否為帶租約物件 */
+  occupancyStatus?: string;
   /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
   sampleCount?: number | null;
   /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
@@ -722,8 +724,29 @@ export function buildSalePriceVerdict(input: {
     factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝" });
   }
 
+  // ── 5.5 現況（帶租約 vs 空室）──
+  // 實價登錄的成交母體以「空室交屋、自住買方」為主，帶租約（オーナーチェンジ）物件
+  // 本來就該比同一戶的空屋價低：買方無法自己入居、必須沿用現行租約與租金，
+  // 融資多半只能走利率較高的投資用貸款，也不適用住宅ローン控除。
+  // 反過來說，空室即入居可與翻新後販售的空屋，賣的正是自住買方的溢價。
+  let occupancyRate = 0;
+  const occupancy = `${input.occupancyStatus || ""}`;
+  const isTenanted = /賃貸中|オーナーチェンジ|賃借人|入居中|集金代行|サブリース/.test(occupancy);
+  const isVacant = /空室|空家|空き|即入居|即引渡/.test(occupancy);
+  if (isTenanted) {
+    occupancyRate = -0.12;
+    factors.push({
+      label: "現況",
+      ratePercent: -12,
+      note: "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除",
+    });
+    cautions.push("帶租約物件的價格主要由現行租金與收益率決定，與空屋自住行情不同口徑。除了本頁的成交比對，請一併確認現行租約的租金水準、剩餘期間與退租後的預估租金。");
+  } else if (isVacant) {
+    factors.push({ label: "現況", ratePercent: 0, note: "空室即引渡（與實價登錄的自住成交同口徑，等同基準）" });
+  }
+
   // 單一因子已各自設限，總和再夾一次，避免多個正因子疊加成不合理的高預期價。
-  const totalRate = Math.max(-0.4, Math.min(0.5, ageRate + walkRate + floorRate + renoRate));
+  const totalRate = Math.max(-0.4, Math.min(0.5, ageRate + walkRate + floorRate + renoRate + occupancyRate));
   const expectedPriceYen = areaBaseline * (1 + totalRate);
 
   // 面積校準過的預期價較可信，容許區間可以收窄；沒校準時放寬，
