@@ -433,7 +433,14 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     .flatMap(station => stationEntityAliases(station)));
   const matchedStations = matchStationsInText(residenceText)
     .filter(station => !stationEntityAliases(station).some(alias => commuteNames.has(alias)));
-  enriched.stations = [...new Set([...(enriched.stations || []), enriched.station, ...matchedStations].filter(Boolean) as string[])];
+  const rawStationCandidates = [...(enriched.stations || []), enriched.station, ...matchedStations].filter(Boolean) as string[];
+  const seenStationNorms = new Set<string>();
+  enriched.stations = rawStationCandidates.filter(st => {
+    const norm = toJapaneseStationName(st.replace(/[\(（].*?[\)）]/g, "").replace(/[駅站]$/, "").trim());
+    if (seenStationNorms.has(norm)) return false;
+    seenStationNorms.add(norm);
+    return true;
+  });
 
   const knownLines = [...new Set(Object.values(districtStations).flatMap(stations => stations.flatMap(station => station.lines)))];
   const matchedLines = knownLines.filter(line => {

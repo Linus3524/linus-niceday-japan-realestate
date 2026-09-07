@@ -8,7 +8,7 @@ export interface GeoPoint {
 }
 
 export interface ListingAmenity {
-  category: "convenience" | "supermarket" | "pharmacy" | "park" | "medical" | "school" | "department_store" | "sports_centre" | "fitness_centre" | "police";
+  category: "convenience" | "supermarket" | "pharmacy" | "park" | "medical" | "school" | "department_store" | "sports_centre" | "fitness_centre" | "police" | "post_office";
   label: string;
   name: string;
   distanceMeters: number;
@@ -55,11 +55,17 @@ type AddressConfidence = "high" | "medium";
 type AddressCandidate = { value: string; confidence: AddressConfidence; method: "normalized" | "street" | "area" | "web" };
 type GeocodedAddress = { point: GeoPoint; matchedAddress: string; confidence: AddressConfidence; method: AddressCandidate["method"] };
 
-const APP_USER_AGENT = process.env.TRANSITOUS_USER_AGENT || "LINUS-NiceDay/1.0 (https://linus-niceday-japan-realestate.vercel.app/)";
+const APP_USER_AGENT = process.env.TRANSITOUS_USER_AGENT || "LINUS-NiceDay/1.0";
 const GSI_GEOCODER = "https://msearch.gsi.go.jp/address-search/AddressSearch";
 const OVERPASS_APIS = process.env.OVERPASS_API_URL
   ? [process.env.OVERPASS_API_URL]
-  : ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"];
+  : [
+      "https://overpass.openstreetmap.fr/api/interpreter",
+      "https://z.overpass-api.de/api/interpreter",
+      "https://lz4.overpass-api.de/api/interpreter",
+      "https://overpass-api.de/api/interpreter",
+      "https://overpass.kumi.systems/api/interpreter",
+    ];
 const FOOT_ROUTER = process.env.FOOT_ROUTER_URL || "https://routing.openstreetmap.de/routed-foot/route/v1/driving";
 const MLIT_API = "https://www.reinfolib.mlit.go.jp/ex-api/external";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -235,34 +241,45 @@ function normalizeStation(value: string) {
   return toJapaneseStationName(value).replace(/駅$/, "").replace(/[\s・･（）()]/g, "").toLowerCase();
 }
 
-async function queryOsm(point: GeoPoint, includeAmenities: boolean) {
+async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<OsmElement[]> {
   const rounded = `${point.lat.toFixed(5)},${point.lon.toFixed(5)}`;
   const key = `osm:${includeAmenities ? "all" : "stations"}:${rounded}`;
   const hit = cached<OsmElement[]>(key);
   if (hit) return hit;
+  // 使用 nw (node + way) 取代 nwr，排除極耗資源且容易超時的 relations；適度收斂半徑大幅提升速度與可靠度
   const amenityQuery = includeAmenities ? `
-    nwr(around:1200,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist|department_store)$"];
-    nwr(around:1200,${point.lat},${point.lon})[amenity=pharmacy];
-    nwr(around:1200,${point.lat},${point.lon})[amenity=police];
-    nwr(around:1200,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];` : "";
-  const query = `[out:json][timeout:15];(${amenityQuery}
-    nwr(around:2500,${point.lat},${point.lon})[railway~"^(station|halt)$"];
-    nwr(around:2500,${point.lat},${point.lon})[public_transport=station];
+    nw(around:900,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist|department_store)$"];
+    nw(around:900,${point.lat},${point.lon})[amenity~"^(pharmacy|police|post_office|hospital|clinic|school)$"];
+    nw(around:900,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];` : "";
+  const query = `[out:json][timeout:8];(${amenityQuery}
+    nw(around:1800,${point.lat},${point.lon})[railway~"^(station|halt)$"];
+    nw(around:1800,${point.lat},${point.lon})[public_transport=station];
   );out center tags;`;
-  let lastError: unknown = null;
-  for (const endpoint of OVERPASS_APIS) {
-    try {
-      const data = await fetchJson(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ data: query }),
-      }, 12_000);
-      return remember(key, Array.isArray(data?.elements) ? data.elements : []);
-    } catch (error) {
-      lastError = error;
-    }
+
+  try {
+    const elements = await Promise.any(
+      OVERPASS_APIS.map(async (endpoint) => {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json",
+            "User-Agent": APP_USER_AGENT,
+          },
+          body: new URLSearchParams({ data: query }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!response.ok) throw new Error(`Overpass status ${response.status} from ${endpoint}`);
+        const data = await response.json();
+        if (!Array.isArray(data?.elements)) throw new Error(`Invalid elements from ${endpoint}`);
+        return data.elements as OsmElement[];
+      })
+    );
+    return remember(key, elements);
+  } catch (error) {
+    console.warn("All Overpass endpoints failed or timed out:", error);
+    return [];
   }
-  throw lastError || new Error("OpenStreetMap data unavailable");
 }
 
 function nearestStation(elements: OsmElement[], origin: GeoPoint, requestedName?: string) {
@@ -272,9 +289,19 @@ function nearestStation(elements: OsmElement[], origin: GeoPoint, requestedName?
     const name = String(element.tags?.["name:ja"] || element.tags?.name || "").trim();
     if (!point || !name || (!element.tags?.railway && element.tags?.public_transport !== "station")) return [];
     const normalized = normalizeStation(name);
-    const nameMatches = !wanted || normalized === wanted || normalized.includes(wanted) || wanted.includes(normalized);
-    return nameMatches ? [{ name: toJapaneseStationName(name), point, distance: distanceMeters(origin, point) }] : [];
-  }).sort((a, b) => a.distance - b.distance);
+    const isExact = Boolean(wanted && normalized === wanted);
+    const isMatch = !wanted || isExact || normalized.includes(wanted) || wanted.includes(normalized);
+    if (!isMatch) return [];
+    return [{
+      name: toJapaneseStationName(name),
+      point,
+      distance: distanceMeters(origin, point),
+      isExact,
+    }];
+  }).sort((a, b) => {
+    if (a.isExact !== b.isExact) return a.isExact ? -1 : 1;
+    return a.distance - b.distance;
+  });
   return candidates[0] || null;
 }
 
@@ -314,10 +341,16 @@ async function mlitStations(point: GeoPoint): Promise<StationPoint[]> {
 
 function nearestOfficialStation(stations: StationPoint[], requestedName?: string) {
   const wanted = normalizeStation(requestedName || "");
-  return stations.find(station => {
+  const candidates = stations.map(station => {
     const normalized = normalizeStation(station.name);
-    return !wanted || normalized === wanted || normalized.includes(wanted) || wanted.includes(normalized);
-  }) || null;
+    const isExact = Boolean(wanted && normalized === wanted);
+    const isMatch = !wanted || isExact || normalized.includes(wanted) || wanted.includes(normalized);
+    return { station, isExact, isMatch };
+  }).filter(c => c.isMatch).sort((a, b) => {
+    if (a.isExact !== b.isExact) return a.isExact ? -1 : 1;
+    return a.station.distance - b.station.distance;
+  });
+  return candidates[0]?.station || null;
 }
 
 async function routeFootDistance(from: GeoPoint, to: GeoPoint) {
@@ -331,7 +364,7 @@ async function routeFootDistance(from: GeoPoint, to: GeoPoint) {
   const waitMs = Math.max(0, nextFootRequestAt - Date.now());
   if (waitMs) await new Promise(resolve => setTimeout(resolve, waitMs));
   nextFootRequestAt = Date.now() + 1_050;
-  const data = await fetchJson(url.toString());
+  const data = await fetchJson(url.toString(), {}, 3_500);
   const distance = Math.round(Number(data?.routes?.[0]?.distance));
   if (!Number.isFinite(distance) || distance < 1 || distance > 10_000) throw new Error("Walking route unavailable");
   return remember(key, distance);
@@ -403,10 +436,13 @@ function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[]
     if (tags.shop === "convenience") [category, label] = ["convenience", "超商"];
     else if (tags.shop === "supermarket") [category, label] = ["supermarket", "超市"];
     else if (tags.shop === "chemist" || tags.amenity === "pharmacy") [category, label] = ["pharmacy", "藥妝／藥局"];
+    else if (tags.amenity === "hospital" || tags.amenity === "clinic") [category, label] = ["medical", "醫療機構"];
+    else if (tags.amenity === "school" || tags.amenity === "kindergarten") [category, label] = ["school", "學校"];
     else if (tags.shop === "department_store") [category, label] = ["department_store", "百貨公司"];
     else if (tags.leisure === "sports_centre") [category, label] = ["sports_centre", "運動中心"];
     else if (tags.leisure === "fitness_centre") [category, label] = ["fitness_centre", "健身房"];
     else if (tags.amenity === "police") [category, label] = ["police", "警察局"];
+    else if (tags.amenity === "post_office") [category, label] = ["post_office", "郵局"];
     else if (tags.leisure === "park") [category, label] = ["park", "公園"];
     if (!category) return [];
     const dedupe = `${category}:${name}`;
@@ -433,13 +469,13 @@ export async function getListingLocationContext(address: string, stations: strin
   if (geocoded.confidence === "medium") {
     notices.push("輸入內容缺少完整門牌或經過建物名稱搜尋，定位可能是附近街區中心；請先用「在地圖確認」核對位置。");
   }
-  let elements: OsmElement[] = [];
-  try {
-    elements = await queryOsm(geocoded.point, true);
-  } catch {
-    // 地址定位成功時，單一公開資料源逾時不應讓整個第二階段變成 503。
-    notices.push("公開道路與商店資料暫時忙碌，已先顯示目前可取得的地址與官方設施；稍後重新分析可補齊步行及商店資料。");
-  }
+
+  // 並行查詢 OSM 圖資與 MLIT 設施
+  const [elements, mlit] = await Promise.all([
+    queryOsm(geocoded.point, true).catch(() => [] as OsmElement[]),
+    mlitFacilities(geocoded.point).catch(() => [] as ListingAmenity[]),
+  ]);
+
   let officialStations: StationPoint[] = [];
   if (!elements.length) {
     try {
@@ -448,35 +484,38 @@ export async function getListingLocationContext(address: string, stations: strin
       // The address result remains useful even when both station providers fail.
     }
   }
-  const stationWalks: ListingStationWalk[] = [];
-  for (let index = 0; index < stations.slice(0, 5).length; index++) {
-    const station = stations[index];
-    const match = nearestStation(elements, geocoded.point, station) || nearestOfficialStation(officialStations, station);
-    if (!match) continue;
-    let distance = match.distance;
-    try {
-      distance = await routeFootDistance(geocoded.point, match.point);
-    } catch {
-      distance = Math.round(match.distance * 1.25);
-    }
-    const times = walkingTimes(distance);
-    const advertised = advertisedMinutes[index] ?? null;
-    const difference = advertised === null ? null : times.normalMinutes - advertised;
-    stationWalks.push({
-      station: toJapaneseStationName(station),
-      distanceMeters: distance,
-      advertisedMinutes: advertised,
-      ...times,
-      differenceMinutes: difference,
-      needsAttention: difference !== null && difference >= 3,
-      lat: match.point.lat,
-      lon: match.point.lon,
-    });
-  }
-  const mlit = await mlitFacilities(geocoded.point);
+
+  const topStations = stations.slice(0, 5);
+  const stationWalks = (await Promise.all(
+    topStations.map(async (station, index) => {
+      const match = nearestStation(elements, geocoded.point, station) || nearestOfficialStation(officialStations, station);
+      if (!match) return null;
+      let distance = match.distance;
+      try {
+        distance = await routeFootDistance(geocoded.point, match.point);
+      } catch {
+        distance = Math.round(match.distance * 1.25);
+      }
+      const times = walkingTimes(distance);
+      const advertised = advertisedMinutes[index] ?? null;
+      const difference = advertised === null ? null : times.normalMinutes - advertised;
+      return {
+        station: toJapaneseStationName(station),
+        distanceMeters: distance,
+        advertisedMinutes: advertised,
+        ...times,
+        differenceMinutes: difference,
+        needsAttention: difference !== null && difference >= 3,
+        lat: match.point.lat,
+        lon: match.point.lon,
+      } as ListingStationWalk;
+    })
+  )).filter((item): item is ListingStationWalk => item !== null);
+
   const amenities = [...osmAmenities(elements, geocoded.point), ...mlit]
     .sort((a, b) => a.distanceMeters - b.distanceMeters)
     .filter((item, index, all) => all.filter(other => other.category === item.category).indexOf(item) < 3);
+
   return {
     address,
     matchedAddress: geocoded.matchedAddress,

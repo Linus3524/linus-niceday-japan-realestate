@@ -154,19 +154,19 @@ export function formatShikibiki(raw: unknown): string {
   if (typeof raw !== "string") return "";
   const cleaned = toHalfWidth(raw).trim();
   if (!cleaned || isFreeOrZero(cleaned)) return "";
-  if (cleaned === "1") return "敷引 1 個月（退租直接扣除、不予退還）";
+  if (cleaned === "1") return "1 個月（退租固定扣抵）";
 
   const shokyakuMatch = cleaned.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)?/);
   if (shokyakuMatch) {
-    return `敷引／償却 ${shokyakuMatch[1]} 個月（退租直接扣除、不予退還）`;
+    return `${shokyakuMatch[1]} 個月（退租固定扣抵）`;
   }
 
   if (/^(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)?$/i.test(cleaned)) {
     const m = cleaned.match(/^(\d+(?:\.\d+)?)/)?.[1];
-    return `敷引 ${m} 個月（退租直接扣除、不予退還）`;
+    return `${m} 個月（退租固定扣抵）`;
   }
   if (/[%％]/.test(cleaned)) {
-    return `敷金償却 ${cleaned}（退租扣除約定）`;
+    return `${cleaned}（退租固定扣抵）`;
   }
   return cleaned;
 }

@@ -2,11 +2,14 @@ import { getListingLocationContext, nearestStationForAddress } from "../src/lib/
 import { resolveListingCommuteRoute } from "../src/lib/transitRouteApi.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 
-const RATE_LIMIT = 8;
+const RATE_LIMIT = 15;
 const RATE_WINDOW_MS = 300_000;
 const buckets = new Map<string, { count: number; resetAt: number }>();
 
 function rateLimit(ip: string) {
+  if (!ip || ip === "unknown" || ip === "127.0.0.1" || ip === "::1" || process.env.NODE_ENV !== "production") {
+    return { limited: false, retryAfter: 0 };
+  }
   const now = Date.now();
   const current = buckets.get(ip);
   if (!current || current.resetAt <= now) {

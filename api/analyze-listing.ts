@@ -82,6 +82,9 @@ function getAiClient() {
 }
 
 async function getRateLimit(ip: string) {
+  if (process.env.NODE_ENV !== "production" && (ip === "unknown" || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("127.0.0."))) {
+    return { limited: false, remaining: 999, retryAfter: 0 };
+  }
   if (upstashListingCheckLimiter) {
     try {
       const { success, remaining, reset } = await upstashListingCheckLimiter.limit(ip);
@@ -152,6 +155,7 @@ function validateFiles(files: unknown): UploadedFile[] {
 export interface ExtractedListingFields {
   dealType: string; // "sale" 或 "rent"
   buildingName: string;
+  roomNumber?: string;
   station: string;
   walkTime: string;
   transitAccess: string;
@@ -193,6 +197,7 @@ export interface ExtractedListingFields {
   managementStyle: string;
   specialNotes: string;
   otherConditions?: string;
+  facilities?: string;
 }
 
 function leaseTermValue(row: string, labels: string[]) {
@@ -258,9 +263,10 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
   const prompt = `
     分析這份日本不動產物件概要書／図面圖片或 PDF，精準抓出各欄位內容，原文照抄不要翻譯或換算單位。
 
-    物件種類判斷（dealType，極重要）：
+    物件種類與建物名稱・房號（dealType，極重要）：
     - 判斷這份圖紙是「買賣物件（sale）」還是「租賃物件（rent）」。
     - buildingName：逐字提取物件名／建物名／マンション名（不含房號）；找不到時留空，不可拿地址或仲介公司名代替。
+    - roomNumber：逐字提取房號／部屋番号／号室（例如 "602号室"、"1103号室"、"201"、"B102" 等；若圖紙有標註號室請務必抓出，無則留空）。
     - 若圖紙出現「売買」「売マンション」「中古マンション」「オーナーチェンジ」「販売価格」「価格(税込)」「専有面積」「修繕積立金」等買賣特徵，dealType 填 "sale"。
     - 若為一般租屋（「賃貸」「賃料」「家賃」「敷金」「礼金」「更新料」），dealType 填 "rent"。
 
@@ -324,6 +330,19 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - floor（所在階／總階數，例如 "4階部分 / 8階建"、"6階部分"）。
     - address（所在地／住所，例如 "東京都世田谷区太子堂4-30-31"、"千葉県船橋市本町2-6-14"）。
 
+    設備與公設規格（極重要，務必巨細靡遺全盤檢索）：
+    - facilities（建物與室內設備清單）：
+      * 請完整掃描整份圖紙中所有出現設備與建物特徵的區塊（包含「設備」、「設備・仕様」、「■EQUIPMENT」、間取り圖內部與周圍標註、建物特徵說明、大樓公設等）。
+      * 必須全盤提取確認有的設施，常見包含：
+        - 衛浴水洗：バストイレ別（乾濕分離）、独立洗面台（洗面化粧台）、温水洗浄便座（ウォシュレット）、浴室乾燥機、追い焚き、室内洗濯機置場、洗面所独立。
+        - 廚房烹飪：システムキッチン、2口/3口コンロ、ガスコンロ、IH、グリル付、都市ガス、ディスポーザー。
+        - 門禁安全：オートロック、モニタ付オートロック、TVモニター付インターホン、防犯カメラ、ディンプルキー、ダブルロック、24時間緊急通報システム。
+        - 大樓公設：エレベーター、敷地内ゴミ置場／ゴミ置き場／24時間ゴミ出し可、宅配ボックス／宅配BOX、駐輪場、バイク置場、駐車場、風除室、外壁タイル張り、耐震構造／耐火構造、駅まで平坦。
+        - 室內舒適：エアコン（若有標基數如2基請保留）、床暖房、フローリング、バルコニー、ウォークインクローゼット（WIC）、シューズボックス、分譲タイプ、インターネット無料／Wi-Fi無料、BS/CS、CATV。
+      * 特別注意日本圖紙常見的「表格打圈／勾選矩陣」（如 ■EQUIPMENT 表格）：務必仔細比對各項目旁是否有圈印（○、◯、●、レ、✔、有）；只有打了圈或明確標為有的項目才算具備，留空（空白）、槓號（-、／）或打叉（×、無）的項目代表無該設備，絕對不可填入！
+      * 設備文字清單（如「設備：エレベーター,２４時間ゴミ出し可,風除室,敷地内ゴミ置き場,宅配ＢＯＸ...」）中列出的所有具備項目，請逐一完整收錄，不可隨意遺漏！
+      * 請將確認具備的所有設備名稱整理為逗號分隔字串。
+
     特約條款與注意事項（租賃與買賣共通）：
     - shikibiki（敷引／償却／敷金償却）：表格或特約中是否有敷引或償却？照原文填入，例如 "1ヶ月"、"0円"；只有圖紙完全沒寫此欄時才填 "なし"。
     - cancellationPenalty（短期解約違約金）：違約金規定，無則寫 "なし"。
@@ -342,7 +361,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     : "";
 
   const response = await getAiClient().models.generateContent({
-    model: "gemini-3.1-flash-lite",
+    model: "gemini-3.8-flash",
     contents: {
       parts: [
         ...files.map(file => ({ inlineData: file })),
@@ -357,6 +376,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
         properties: {
           dealType: { type: Type.STRING, description: "sale 或 rent" },
           buildingName: { type: Type.STRING, description: "物件名／建物名／マンション名；不含房號，找不到留空" },
+          roomNumber: { type: Type.STRING, description: "部屋番号／号室，例如 602号室 或 1103，找不到或未標示則留空" },
           station: { type: Type.STRING, description: "所有車站名稱，逗號分隔" },
           walkTime: { type: Type.STRING, description: "對應車站的徒步分鐘數，逗號分隔，順序需與 station 一致" },
           transitAccess: { type: Type.STRING, description: "交通欄全部列的原文，每列保留路線、車站及徒歩分鐘" },
@@ -380,6 +400,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           shikibiki: { type: Type.STRING, description: "敷引／償却約定，例如 敷引1ヶ月 或 なし" },
           cancellationPenalty: { type: Type.STRING, description: "短期解約違約金，例如 1年未満解約時1ヶ月 或 なし" },
           renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
+          facilities: { type: Type.STRING, description: "室內與建物設備清單（逗號分隔）。注意表格打圈式只有打圈標記的才算具備，未打圈者切勿填入" },
           salePrice: { type: Type.STRING, description: "販売価格，例如 7,299万円" },
           totalUnits: { type: Type.STRING, description: "総戸数，例如 39戸" },
           buildingFloors: { type: Type.STRING, description: "建物地上總樓層數字，例如 21" },
@@ -398,11 +419,11 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           specialNotes: { type: Type.STRING, description: "備考與特約注意事項" },
         },
         required: [
-          "dealType", "buildingName", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
+          "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
           "keyMoney", "deposit", "leaseTerms", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
-          "renewalFee", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
+          "renewalFee", "facilities", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
           "otherMonthlyFees", "occupancyStatus", "currentRent", "annualIncome",
           "grossYield", "landRights", "zoning", "renovationDetails",
           "managementCompany", "managementStyle", "specialNotes"
@@ -584,14 +605,14 @@ function calculateInitialCostBreakdown(params: {
   const monthsMultipleMax = totalMonthlyCost > 0 ? Number((totalMax / totalMonthlyCost).toFixed(1)) : 0;
 
   let level: "low" | "standard" | "high" = "standard";
-  let levelText = "市場標準常態（約 3.5 ～ 4.8 倍）";
+  let levelText = "符合市場常態（約 4 ～ 5 倍）";
 
-  if (monthsMultipleMax <= 3.5) {
+  if (monthsMultipleMax <= 3.8) {
     level = "low";
-    levelText = "極度優惠（3.5 倍以下）";
-  } else if (monthsMultipleMax >= 5.0) {
+    levelText = "低於市場常態（約 3 ～ 4 倍）";
+  } else if (monthsMultipleMax >= 5.5) {
     level = "high";
-    levelText = "初期負擔偏高（5.0 倍以上）";
+    levelText = "高於市場常態（5.5 倍以上）";
   }
 
   const tips: string[] = [];
@@ -607,19 +628,19 @@ function calculateInitialCostBreakdown(params: {
     tips.push(`【免租期】圖紙載明「${params.extractedFreeRent}」，首月可減免租金，約省 ¥${rent.toLocaleString()}。`);
   }
 
-  // 3. 初期費用極度親民（3.5 倍以下）
-  if (monthsMultipleMax <= 3.5) {
-    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.0～4.8 倍。`);
+  // 3. 初期費用優惠（3.8 倍以下）
+  if (monthsMultipleMax <= 3.8) {
+    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.5～5.0 倍標準。`);
   }
 
   // 4. 禮金與押金動態解析
-  if (hasShikibiki) {
-    tips.push(`【敷引特約】圖紙載明「${formattedShikibiki}」。這筆押金退租時直接扣除、不退還，性質等同禮金，請計入預算。`);
+  if (formattedShikibiki) {
+    tips.push(`【敷引／償却】圖紙載明「${formattedShikibiki}」，退租時不予退還，初期預算建議直接列為固定支出。`);
   }
   if (keyMoneyAmount === 0 && depositAmount === 0) {
     tips.push("【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。");
   } else if (keyMoneyAmount === 0) {
-    tips.push("【免禮金】省約 1 個月租金。押金扣除退租清潔特約後仍可能返還。");
+    tips.push("【免禮金】省約 1 個月租金。");
   } else if (keyMoneyAmount >= rent * 1.5) {
     const kmMonths = (keyMoneyAmount / rent).toFixed(1).replace(/\.0$/, "");
     tips.push(`【禮金偏高】禮金 ${kmMonths} 個月，常見於熱門地段，初期成本較高。`);
@@ -980,7 +1001,7 @@ function buildSaleAnalysis(params: {
   if (areaSqm) {
     if (areaSqm >= 50) {
       mortgageTaxEligible = true;
-      mortgageTaxNote = `專有面積約 ${areaSqm}㎡（壁芯達標 50㎡），符合日本「住宅貸款減稅（住宅ローン減税）」所得稅扣除之主要面積門檻！`;
+      mortgageTaxNote = `專有面積約 ${areaSqm}㎡（壁芯達標 50㎡），符合日本「住宅貸款減稅（住宅ローン減税）」所得稅扣除之主要面積門檻。`;
     } else if (areaSqm >= 40) {
       mortgageTaxEligible = null;
       mortgageTaxNote = `專有面積約 ${areaSqm}㎡（壁芯）。日本住宅貸款減稅以「登記簿謄本內法面積 ≥ 40㎡」為特例判定標準，需確認謄本內法面積是否達標。`;
@@ -1199,6 +1220,7 @@ export default async function handler(req: any, res: any) {
         specialNotes: extracted.specialNotes,
         otherConditions: extracted.otherConditions,
         freeRent: extracted.freeRent,
+        facilities: extracted.facilities,
       });
 
       const keyMoney = parseMonthsOrYen(extracted.keyMoney, rent);
@@ -1261,7 +1283,7 @@ export default async function handler(req: any, res: any) {
       initialCostMonths,
       initialCostEstimate,
       saleAnalysis,
-      model: "gemini-3.1-flash-lite",
+      model: "gemini-3.8-flash",
     });
   } catch (error: any) {
     if (error instanceof ListingUploadError) {

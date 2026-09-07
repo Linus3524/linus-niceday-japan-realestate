@@ -24,9 +24,10 @@ const CATEGORY_CONFIG: Record<
   // 原本與超商同屬淺薄荷綠、色相太接近，改為黃綠色系拉開差異。
   park: { label: "公園", icon: "🌳", bg: "#F1F8DE", text: "#5B7F00", border: "#D3E89A" },
   department_store: { label: "百貨", icon: "🏬", bg: "#FDE7F3", text: "#BE185D", border: "#F9C6DE" },
-  sports_centre: { label: "運動中心", icon: "🏟️", bg: "#E0F7FA", text: "#00838F", border: "#80DEEA" },
-  fitness_centre: { label: "健身房", icon: "💪", bg: "#F5E6DC", text: "#8B4513", border: "#E8C4A8" },
-  police: { label: "警察局", icon: "🚓", bg: "#E8EAF6", text: "#303F9F", border: "#C5CAE9" },
+  sports_centre: { label: "運動中心", icon: "🏸", bg: "#E0F7FA", text: "#00838F", border: "#80DEEA" },
+  fitness_centre: { label: "健身房", icon: "🏋️", bg: "#F5E6DC", text: "#8B4513", border: "#E8C4A8" },
+  police: { label: "警察局", icon: "👮", bg: "#E8EAF6", text: "#303F9F", border: "#C5CAE9" },
+  post_office: { label: "郵局", icon: "🏣", bg: "#FFF2F0", text: "#D4380D", border: "#FFCCC7" },
 };
 
 function getAmenityPoint(
@@ -181,7 +182,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         className: "custom-pin-container",
         html: `
           <div class="custom-capsule-badge station-capsule">
-            <span class="pin-icon">🚆</span>
+            <span class="pin-icon">🚉</span>
             <span class="pin-text">${walk.station}駅 (${walk.normalMinutes}分)</span>
           </div>
         `,
@@ -194,7 +195,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         .addTo(layerGroup)
         .bindPopup(
           `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
-            <strong style="font-size: 13px; color: #1A2A22;">🚆 ${walk.station}駅</strong><br/>
+            <strong style="font-size: 13px; color: #1A2A22;">🚉 ${walk.station}駅</strong><br/>
             <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
             <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
               常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
@@ -316,6 +317,8 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
   const resetView = () => {
     if (!mapInstanceRef.current) return;
+    mapInstanceRef.current.closePopup();
+    setHoveredId(null);
     const points: L.LatLngExpression[] = [[coordinate.lat, coordinate.lon]];
     stationWalks.forEach((w, idx) => {
       points.push(getStationPoint(w, coordinate, idx));
@@ -325,7 +328,11 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
         points.push(getAmenityPoint(a, coordinate, idx));
       }
     });
-    mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16 });
+    if (points.length > 1) {
+      mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16, animate: true, duration: 0.6 });
+    } else {
+      mapInstanceRef.current.setView([coordinate.lat, coordinate.lon], 16, { animate: true, duration: 0.6 });
+    }
   };
 
   // 類別清單直接由 CATEGORY_CONFIG 推導，新增分類時只需要改那一處。

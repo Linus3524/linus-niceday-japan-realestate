@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 import type { RentSearchCriteria } from "../lib/rentAnalysis";
 import { ROOM_TYPE_LABEL } from "../lib/rentAnalysis";
 import { criteriaTagStyle } from "../lib/criteriaTagStyles";
+import { toJapaneseStationName } from "../lib/transit";
 
 type SummaryItem = {
   label: string;
@@ -11,6 +12,21 @@ type SummaryItem = {
 
 const unique = (values: Array<string | null | undefined>) =>
   Array.from(new Set(values.filter((value): value is string => Boolean(value?.trim()))));
+
+const uniqueStations = (values: Array<string | null | undefined>) => {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const value of values) {
+    if (!value?.trim()) continue;
+    const clean = value.replace(/[駅站]$/, "").trim();
+    const key = toJapaneseStationName(clean);
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(clean);
+    }
+  }
+  return result;
+};
 
 const formatMan = (value: number) =>
   (value / 10000).toLocaleString("zh-TW", { maximumFractionDigits: 1 });
@@ -24,7 +40,7 @@ export function RentCriteriaSummary({ criteria }: { criteria: RentSearchCriteria
 
   const districts = unique([...(criteria.districts || []), criteria.district]);
   const lines = unique([...(criteria.lines || []), criteria.line]);
-  const stations = unique([...(criteria.stations || []), criteria.station]);
+  const stations = uniqueStations([...(criteria.stations || []), criteria.station]);
   const commuteName = criteria.commuteStation?.replace(/[駅站]$/, "");
 
   // 所有條件依色系連續排列，不再分核心／其他或加入第二層分類。

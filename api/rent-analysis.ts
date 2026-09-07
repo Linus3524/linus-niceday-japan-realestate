@@ -37,6 +37,10 @@ function getAiClient() {
 }
 
 async function getRateLimit(ip: string) {
+  // 本機開發環境（127.0.0.1、::1、unknown、localhost）不應被 Upstash 共享限流擋住，避免開發測試時頻繁被鎖
+  if (process.env.NODE_ENV !== "production" || ip === "127.0.0.1" || ip === "::1" || ip === "unknown" || ip === "localhost") {
+    return { limited: false, remaining: ANALYSIS_RATE_LIMIT, retryAfter: 0 };
+  }
   if (upstashAnalysisLimiter) {
     try {
       const { success, remaining, reset } = await upstashAnalysisLimiter.limit(ip);
@@ -83,19 +87,35 @@ async function generateAdvisorAdvice(criteria: RentSearchCriteria, recommendatio
     transfers: item.commuteRoute?.transfers ?? null,
     cautions: item.cautions
   }));
-  const response = await getAiClient().models.generateContent({
-    model: "gemini-3.1-flash-lite",
-    contents: [{
-      role: "user",
-      parts: [{ text: `這是租屋條件分析器已完成的結構化結果。請依照 AI 不動產顧問的既有專業規則，提供真正針對本次條件的實務意見。\n\n租屋條件：${JSON.stringify(criteria)}\n前三個搜尋方向：${JSON.stringify(recommendationSummary)}` }]
-    }],
-    config: {
-      temperature: 0.2,
-      maxOutputTokens: 500,
-      systemInstruction: `${SYSTEM_INSTRUCTION}\n\n【計算器內嵌租屋意見】\n這不是一般聊天回覆，而是顯示在試算結果下方的短評。只寫 100～180 字，不要開場、自我介紹、結尾祝福、表情符號、LINE 或聯絡邀請。不得重複月租總額、基準租金、加價明細或推薦車站清單，因為畫面上方已經顯示。請只整理三個有差異化的重點：「整體判斷」、「優先保留」、「可先放寬」。每項一行，以「- 」開頭；如果資料不足，直接指出最影響判斷的缺漏，不要推測。不得聲稱有即時空房。`
+
+  const callModel = async (model: string) => {
+    return await getAiClient().models.generateContent({
+      model,
+      contents: [{
+        role: "user",
+        parts: [{ text: `這是租屋條件分析器已完成的結構化結果。請依照 AI 不動產顧問的既有專業規則，提供真正針對本次條件的實務意見。\n\n租屋條件：${JSON.stringify(criteria)}\n前三個搜尋方向：${JSON.stringify(recommendationSummary)}` }]
+      }],
+      config: {
+        temperature: 0.2,
+        maxOutputTokens: 500,
+        systemInstruction: `${SYSTEM_INSTRUCTION}\n\n【計算器內嵌租屋意見】\n這不是一般聊天回覆，而是顯示在試算結果下方的短評。只寫 100～180 字，不要開場、自我介紹、結尾祝福、表情符號、LINE 或聯絡邀請。不得重複月租總額、基準租金、加價明細或推薦車站清單，因為畫面上方已經顯示。請只整理三個有差異化的重點：「整體判斷」、「優先保留」、「可先放寬」。每項一行，以「- 」開頭；如果資料不足，直接指出最影響判斷的缺漏，不要推測。不得聲稱有即時空房。`
+      }
+    });
+  };
+
+  try {
+    const response = await callModel("gemini-3.1-flash-lite");
+    return response.text?.trim() || null;
+  } catch (err) {
+    console.warn("generateAdvisorAdvice with gemini-3.1-flash-lite failed, trying gemini-3.8-flash:", err);
+    try {
+      const response = await callModel("gemini-3.8-flash");
+      return response.text?.trim() || null;
+    } catch (fallbackErr) {
+      console.error("generateAdvisorAdvice fallback failed:", fallbackErr);
+      return null;
     }
-  });
-  return response.text?.trim() || null;
+  }
 }
 
 /**
@@ -161,9 +181,9 @@ export default async function handler(req: any, res: any) {
         commuteMinutes: submittedCriteria.commuteMinutes ? Number(submittedCriteria.commuteMinutes) : null
       };
     } else {
-      const generateCriteria = async () => {
+      const generateCriteria = async (modelName = "gemini-3.1-flash-lite") => {
       const response = await getAiClient().models.generateContent({
-        model: "gemini-3.1-flash-lite",
+        model: modelName,
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         config: {
         temperature: 0,
@@ -286,12 +306,17 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
     };
       let parsedCriteria: RentSearchCriteria;
       try {
-        parsedCriteria = await generateCriteria();
+        parsedCriteria = await generateCriteria("gemini-3.1-flash-lite");
       } catch (firstError) {
-        if (!shouldRetryRentAnalysis(firstError)) throw firstError;
-        console.warn("Gemini rent analysis first attempt failed; retrying once:", firstError);
-        await new Promise(resolve => setTimeout(resolve, 300));
-        parsedCriteria = await generateCriteria();
+        console.warn("Gemini rent analysis first attempt failed; trying gemini-3.8-flash:", firstError);
+        try {
+          parsedCriteria = await generateCriteria("gemini-3.8-flash");
+        } catch (secondError) {
+          if (!shouldRetryRentAnalysis(secondError)) throw secondError;
+          console.warn("Gemini rent analysis second attempt failed; retrying gemini-3.8-flash once more:", secondError);
+          await new Promise(resolve => setTimeout(resolve, 300));
+          parsedCriteria = await generateCriteria("gemini-3.8-flash");
+        }
       }
 
       criteria = enrichRentCriteriaFromPrompt(parsedCriteria, prompt);

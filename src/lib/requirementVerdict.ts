@@ -75,7 +75,12 @@ export function axisImpactLevel(axis: AxisVerdict): AxisImpactLevel {
 }
 
 const yen = (value: number) => `¥${(Math.round(value / 1000) * 1000).toLocaleString("en-US")}`;
-const man = (value: number) => `${Math.round(value / 10000).toLocaleString()} 萬円`;
+const man = (value: number) => {
+  const num = Math.round(value / 1000) / 10;
+  return Number.isInteger(num)
+    ? `${num.toLocaleString("en-US")} 萬円`
+    : `${num.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} 萬円`;
+};
 
 /**
  * 預算專用：無條件捨去到 0.1 萬，不四捨五入。
@@ -519,6 +524,7 @@ export interface ListingPriceVerdictContext {
   specialNotes?: string;
   otherConditions?: string;
   freeRent?: string;
+  facilities?: string;
 }
 
 export interface ListingPriceVerdict {
@@ -915,14 +921,18 @@ export function buildListingPriceVerdict(
     };
   }
 
-  const allNotes = `${context?.specialNotes || ""} ${context?.otherConditions || ""} ${context?.freeRent || ""}`.toLowerCase();
+  const allNotes = `${context?.specialNotes || ""} ${context?.otherConditions || ""} ${context?.freeRent || ""} ${context?.facilities || ""}`.toLowerCase();
   const hasFreeInternet = /インターネット無料|ネット無料|wifi無料|シーファイブ|高速ネット無料|光ネット無料/.test(allNotes);
   const hasAutoLock = /オートロック|自動ロック/.test(allNotes);
   const hasSeparateBathToilet = /バス・トイレ別|バストイレ別|ｂｔ別|風呂トイレ別/.test(allNotes);
   const hasIndependentWashbasin = /独立洗面|洗面化粧台|洗面所独立/.test(allNotes);
   const hasBathroomDryer = /浴室乾燥|浴室暖房/.test(allNotes);
-  const hasDeliveryBox = /宅配box|宅配ボックス|宅配ロッカー/.test(allNotes);
-  const isRC = /rc|src|鉄筋コンクリート|鉄骨鉄筋/.test(`${context?.structure || ""}`.toLowerCase());
+  const hasDeliveryBox = /宅配box|宅配ボックス|宅配ロッカー|宅配ｂｏｘ/.test(allNotes);
+  const rawStructure = `${context?.structure || ""}`
+    .replace(/[Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+    .toLowerCase();
+  const isSRC = /src|鉄骨鉄筋|鋼骨鋼筋/.test(rawStructure);
+  const isRC = !isSRC && /rc|鉄筋コンクリート|鋼筋/.test(rawStructure);
 
   // 1. 網路實質價值折抵（日本申辦個人光纖網路每月通常約 ¥4,000 ~ ¥5,000 円）
   const internetMonthlyValue = hasFreeInternet ? 4500 : 0;
@@ -935,22 +945,22 @@ export function buildListingPriceVerdict(
   if (ageYears !== null && ageYears !== undefined) {
     if (ageYears <= 3) {
       agePremiumRate = 0.18;
-      ageText = `屋齡僅 ${ageYears} 年（新築／準新築）具高品質新屋優勢`;
+      ageText = `屋齡 ${ageYears} 年（新築）`;
     } else if (ageYears <= 5) {
       agePremiumRate = 0.12;
-      ageText = `屋齡僅 ${ageYears} 年（淺築新古屋，具約 +10%～+15% 屋齡優勢）`;
+      ageText = `屋齡 ${ageYears} 年（淺築新古屋）`;
     } else if (ageYears <= 10) {
       agePremiumRate = 0.06;
-      ageText = `屋齡 ${ageYears} 年（10 年內淺築規格）`;
+      ageText = `屋齡 ${ageYears} 年（淺築）`;
     } else if (ageYears <= 20) {
       agePremiumRate = 0;
-      ageText = `屋齡 ${ageYears} 年（標準中古屋齡水準）`;
+      ageText = `屋齡 ${ageYears} 年（標準中古水準）`;
     } else if (ageYears <= 30) {
       agePremiumRate = -0.06;
-      ageText = `屋齡 ${ageYears} 年稍顯陳舊`;
+      ageText = `屋齡 ${ageYears} 年（略為陳舊）`;
     } else {
       agePremiumRate = -0.15;
-      ageText = `屋齡達 ${ageYears} 年（築古老屋，硬體規格應有折價）`;
+      ageText = `屋齡 ${ageYears} 年（築古）`;
     }
   }
 
@@ -961,19 +971,19 @@ export function buildListingPriceVerdict(
   if (walkMinutes !== null && walkMinutes !== undefined) {
     if (walkMinutes <= 3) {
       walkPremiumRate = 0.10;
-      walkText = `車站徒步僅 ${walkMinutes} 分（超近站生活圈）`;
+      walkText = `車站徒步 ${walkMinutes} 分（超近站）`;
     } else if (walkMinutes <= 7) {
       walkPremiumRate = 0.05;
-      walkText = `車站徒步 ${walkMinutes} 分（7 分內近站便利生活圈）`;
+      walkText = `車站徒步 ${walkMinutes} 分`;
     } else if (walkMinutes <= 10) {
       walkPremiumRate = 0;
-      walkText = `車站徒步 ${walkMinutes} 分（標準通勤距離）`;
+      walkText = `車站徒步 ${walkMinutes} 分`;
     } else if (walkMinutes <= 15) {
       walkPremiumRate = -0.05;
-      walkText = `車站徒步 ${walkMinutes} 分（距離略遠）`;
+      walkText = `車站徒步 ${walkMinutes} 分`;
     } else {
       walkPremiumRate = -0.12;
-      walkText = `車站徒步達 ${walkMinutes} 分（缺乏軌道交通優勢）`;
+      walkText = `車站徒步 ${walkMinutes} 分`;
     }
   }
 
@@ -987,13 +997,13 @@ export function buildListingPriceVerdict(
     if (isSingle) {
       if (areaSqm >= 25) {
         areaPremiumRate = 0.08;
-        areaText = `專有面積 ${areaSqm}㎡（單身大套房，遠高於標準 17㎡）`;
+        areaText = `專有面積 ${areaSqm}㎡（寬敞大套房）`;
       } else if (areaSqm >= 20) {
         areaPremiumRate = 0.04;
-        areaText = `專有面積 ${areaSqm}㎡（高於標準單身套房平均約 17㎡，空間充裕）`;
+        areaText = `專有面積 ${areaSqm}㎡（空間充裕）`;
       } else if (areaSqm < 16) {
         areaPremiumRate = -0.06;
-        areaText = `專有面積僅 ${areaSqm}㎡（空間較緊湊）`;
+        areaText = `專有面積 ${areaSqm}㎡（空間緊湊）`;
       }
     }
   }
@@ -1003,7 +1013,7 @@ export function buildListingPriceVerdict(
   const amenitiesList: string[] = [];
   if (hasSeparateBathToilet) {
     amenitiesRate += 0.03;
-    amenitiesList.push("衛浴分離");
+    amenitiesList.push("乾濕分離");
   }
   if (hasIndependentWashbasin) {
     amenitiesRate += 0.03;
@@ -1011,20 +1021,22 @@ export function buildListingPriceVerdict(
   }
   if (hasAutoLock) {
     amenitiesRate += 0.02;
-    amenitiesList.push("自動鎖防犯");
+    amenitiesList.push("防盜自動門鎖");
   }
   if (hasDeliveryBox) {
-    amenitiesList.push("宅配BOX");
+    amenitiesList.push("宅配箱");
   }
   if (hasBathroomDryer) {
-    amenitiesList.push("浴室乾燥機");
+    amenitiesList.push("浴室暖風乾燥機");
   }
-  if (isRC) {
+  if (isSRC) {
     amenitiesRate += 0.02;
-    amenitiesList.push("RC鋼筋混凝土造");
+    amenitiesList.push("SRC造（鋼骨鋼筋混凝土）");
+  } else if (isRC) {
+    amenitiesRate += 0.02;
+    amenitiesList.push("RC造（鋼筋混凝土）");
   }
-  const amenitiesText = amenitiesList.length > 0 ? `配備${amenitiesList.join("、")}` : null;
-  const internetText = hasFreeInternet ? "附免費高速網路（實質每月省下約 ¥4,000～¥5,000）" : null;
+  const internetText = hasFreeInternet ? "附免費光纖網路" : null;
 
   // 綜合調整後的合理上限
   const totalJustifiedPremiumRate = agePremiumRate + walkPremiumRate + areaPremiumRate + amenitiesRate;
@@ -1035,7 +1047,7 @@ export function buildListingPriceVerdict(
     const gapPercent = Math.round(((range.low - effectiveMonthlyCost) / range.low) * 100);
     return {
       status: "超值",
-      headline: `租金＋管理費 ${man(totalMonthlyCost)} 低於行情約 ${gapPercent}%，極具價格競爭力。`,
+      headline: `每月總負擔 ${man(totalMonthlyCost)} 低於同區行情約 ${gapPercent}%，價格優勢顯著。`,
       detail: `同區同房型行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。價格明顯親民實惠，建議留意確認是否有特殊解約約定、朝向日照限制或周邊環境等取捨。`,
     };
   }
@@ -1047,8 +1059,8 @@ export function buildListingPriceVerdict(
     return {
       status: "合理",
       headline: nearMedian
-        ? `租金＋管理費 ${man(totalMonthlyCost)} 落在行情中位附近，屬合理健康水準。`
-        : `租金＋管理費 ${man(totalMonthlyCost)} 落在行情偏${belowMedian ? "低" : "高"}端，符合周邊市場水準。`,
+        ? `每月總負擔 ${man(totalMonthlyCost)} 貼近同區行情中位數，定價合宜健康。`
+        : `每月總負擔 ${man(totalMonthlyCost)} 落在周邊市場正常行情區間（偏${belowMedian ? "實惠" : "高端"}），符合行情。`,
       detail: `同區同房型行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。當前月額負擔與區域行情相符。`,
     };
   }
@@ -1056,16 +1068,17 @@ export function buildListingPriceVerdict(
   // 名目租金高於基準高端，但綜合條件（屋齡、距離、面積、設備）足以支撐
   if (effectiveMonthlyCost <= adjustedHigh) {
     const positiveReasons: string[] = [];
-    if (ageText && agePremiumRate > 0) positiveReasons.push(ageText);
     if (walkText && walkPremiumRate > 0) positiveReasons.push(walkText);
     if (areaText && areaPremiumRate > 0) positiveReasons.push(areaText);
+    if (ageText && agePremiumRate > 0) positiveReasons.push(ageText);
     if (internetText) positiveReasons.push(internetText);
-    if (amenitiesText) positiveReasons.push(amenitiesText);
+    amenitiesList.forEach(a => positiveReasons.push(a));
 
+    const areaNote = areaSqm && areaSqm >= 20 ? `（專有面積 ${areaSqm}㎡ 高於單身平均 17㎡）` : "";
     return {
       status: "條件反映",
-      headline: `租金＋管理費 ${man(totalMonthlyCost)} 雖名目高於區域均價，但綜合屋齡、距離與設備後屬「合理品質溢價」。`,
-      detail: `同區同房型基礎行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。考量硬體與生活便利性後，此價格反映的是較高的居住品質，並非不合理偏高！`,
+      headline: `每月總負擔 ${man(totalMonthlyCost)} 雖略高於同區行情均值，但綜合屋齡、站距與規格，屬於符合品質的「合理溢價」。`,
+      detail: `同區同房型基礎行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。考量硬體規格與生活便利性${areaNote}，當前價格反映的是更好的居住品質，定價具合理性。`,
     };
   }
 
@@ -1074,15 +1087,15 @@ export function buildListingPriceVerdict(
   if (gapPercent <= 10) {
     return {
       status: "偏高",
-      headline: `租金＋管理費 ${man(totalMonthlyCost)} 略高於同條件市場行情約 ${gapPercent}%。`,
-      detail: `考量屋齡、車站距離與空間大小後，推估合理行情上限約為 ${man(adjustedHigh)}。目前月額負擔稍顯偏高，建議向仲介確認加價原因，或嘗試爭取免租期（Free Rent）與禮金減免以平衡負擔。`,
+      headline: `每月總負擔 ${man(totalMonthlyCost)} 略高於同條件市場行情約 ${gapPercent}%，建議評估個人每月承擔能力。`,
+      detail: `考量屋齡、車站距離與空間大小後，推估同條件行情上限約為 ${man(adjustedHigh)}。目前月額負擔稍顯偏高，由於日本租屋月租多為固定定價、幾無議價談判空間，建議承租前務必衡量個人每月預算與承擔能力，亦可同步比較周邊其他同級房源。`,
     };
   }
 
   return {
     status: "明顯偏高",
-    headline: `租金＋管理費 ${man(totalMonthlyCost)} 明顯高於同條件行情約 ${gapPercent}%。`,
-    detail: `此物件月額負擔超出周邊同等屋齡與距離之行情上限甚多。除非有特殊景觀或超規格裝潢，否則性價比偏低，強烈建議積極議價或多比較周邊同級房源。`,
+    headline: `每月總負擔 ${man(totalMonthlyCost)} 明顯高於周邊同條件行情約 ${gapPercent}%，建議審慎評估自身承擔能力。`,
+    detail: `此物件月額負擔超出周邊同等屋齡與距離之行情上限甚多。除非有特定不可替代之偏好（如特殊景觀或高品質裝潢），否則性價比偏低；考量日本租屋習慣無談判議價空間，建議謹慎衡量個人每月承受力，並優先多比較周邊同級房源。`,
   };
 }
 

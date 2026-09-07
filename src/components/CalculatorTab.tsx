@@ -858,12 +858,20 @@ export function CalculatorTab(props: CalculatorTabProps) {
   const syncCriteriaToForm = (criteria: RentSearchCriteria) => {
     const requestedDistricts = Array.from(new Set([...(criteria.districts || []), criteria.district].filter(Boolean) as string[]))
       .filter(district => rentRates.some(rate => rate.district === district));
-    const requestedStations = Array.from(new Set([...(criteria.stations || []), criteria.station].filter(Boolean) as string[]));
-    const stationDistricts = requestedStations.flatMap(stationName =>
-      Object.entries(districtStations)
-        .filter(([, stations]) => stations.some(station => station.name === stationName))
-        .map(([district]) => district)
-    );
+    const rawRequestedStations = Array.from(new Set([...(criteria.stations || []), criteria.station].filter(Boolean) as string[]));
+    const seenReqNorms = new Set<string>();
+    const requestedStations = rawRequestedStations.filter(st => {
+      const norm = toJapaneseStationName(st.replace(/[\(（].*?[\)）]/g, "").replace(/[駅站]$/, "").trim());
+      if (seenReqNorms.has(norm)) return false;
+      seenReqNorms.add(norm);
+      return true;
+    });
+    const stationDistricts = requestedStations.flatMap(stationName => {
+      const targetNorm = toJapaneseStationName(stationName.replace(/[\(（].*?[\)）]/g, "").replace(/[駅站]$/, "").trim());
+      return Object.entries(districtStations)
+        .filter(([, stations]) => stations.some(station => toJapaneseStationName(station.name) === targetNorm))
+        .map(([district]) => district);
+    });
     const allCandidateDistricts = Array.from(new Set([...requestedDistricts, ...stationDistricts]));
     const parsedCommuteStation = criteria.commuteStation || criteria.commuteStations?.[0] || "";
     const parsedCommuteGroups = stationAreaGroups(parsedCommuteStation);
@@ -874,10 +882,20 @@ export function CalculatorTab(props: CalculatorTabProps) {
       .slice(0, 4);
     const nextDistrictSelections = compatibleDistricts.length ? compatibleDistricts : [calcDistrict];
     const nextDistrict = nextDistrictSelections[0];
-    const allowedStationNames = new Set(nextDistrictSelections.flatMap(district =>
-      (districtStations[district] || []).map(station => station.name)
-    ));
-    const nextStationSelections = requestedStations.filter(station => allowedStationNames.has(station)).slice(0, 6);
+    const allowedStationNormMap = new Map<string, string>();
+    nextDistrictSelections.forEach(district => {
+      (districtStations[district] || []).forEach(station => {
+        allowedStationNormMap.set(toJapaneseStationName(station.name), station.name);
+      });
+    });
+    const nextStationSelections = requestedStations
+      .map(station => {
+        const norm = toJapaneseStationName(station.replace(/[\(（].*?[\)）]/g, "").replace(/[駅站]$/, "").trim());
+        return allowedStationNormMap.get(norm);
+      })
+      .filter((st): st is string => Boolean(st))
+      .filter((st, idx, arr) => arr.indexOf(st) === idx)
+      .slice(0, 6);
     const nextStation = nextStationSelections.find(station =>
       (districtStations[nextDistrict] || []).some(item => item.name === station)
     ) || "none";
@@ -919,7 +937,10 @@ export function CalculatorTab(props: CalculatorTabProps) {
       allCandidateDistricts.length > compatibleDistricts.length
         ? `AI 解析到跨生活圈或超出上限的地點，已保留 ${preferredGroup || "同一"}生活圈內最優先的 4 個地區。`
         : null,
-      requestedStations.filter(station => allowedStationNames.has(station)).length > nextStationSelections.length
+      requestedStations.filter(station => {
+        const norm = toJapaneseStationName(station.replace(/[\(（].*?[\)）]/g, "").replace(/[駅站]$/, "").trim());
+        return allowedStationNormMap.has(norm);
+      }).length > nextStationSelections.length
         ? "AI 解析到超過 6 個車站，已先保留前 6 個；其餘條件仍保留在原始描述中。"
         : null,
       requestedLines.length > nextLineSelections.length && nextLineSelections.length >= 4
