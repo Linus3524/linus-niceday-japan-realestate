@@ -1093,16 +1093,17 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 )}
               </PageIntroCard>
 
-              {calcMode === "listing" ? (
+              <div hidden={calcMode !== "listing"}>
                 <ListingHealthCheck />
-              ) : (
-                <>
+              </div>
+
+              <div hidden={calcMode === "listing"}>
 
               {/* Quick budget health check */}
               <section className="border border-[#1A2A22] bg-white" aria-label={calcMode === "rent" ? "租屋需求與市場分析" : "購屋預算快速試算"}>
                 {calcMode === "buy" && (
                   <div className="border-b border-[#9ee2cf] bg-[#e6f6f1] px-5 py-4 text-[#1A2A22] md:px-6">
-                    <div className="flex items-center gap-2 text-[10px] font-bold tracking-[0.18em] text-[#00a174] uppercase">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00a174] font-sans">
                       <Calculator className="h-4 w-4" /> Quick Budget Check
                     </div>
                     <h3 className="mt-1 text-lg font-bold md:text-xl">先確認自備現金與每月還款</h3>
@@ -1737,7 +1738,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
 
                     <div className="p-5 lg:col-span-7 md:p-6">
                       <div className="border-b border-[#DDE3DF] pb-4">
-                        <p className="text-[10px] font-bold tracking-[0.14em] text-[#66736C] uppercase">Affordable range</p>
+                        <p className="text-[10px] font-bold tracking-[0.14em] text-[#66736C] uppercase font-sans">Affordable range</p>
                         <h4 className="mt-1 text-lg font-bold text-[#1A2A22]">建議購屋總價控制在</h4>
                         <p className="mt-2 font-mono text-2xl font-black text-[#00a174]">
                           {formatManYenNumber(affordableBuyLow, 0)}～{formatManYen(affordableBuyPrice, 0)}
@@ -2704,8 +2705,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   </div>}
                 </div>
               </div>}
-            </>
-          )}
+              </div>
         </motion.div>
   );
 }

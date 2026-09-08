@@ -58,6 +58,7 @@ const selfUseAtCurrentMinimum = assessRealEstateAcquisitionTax({
 });
 assert.equal(selfUseAtCurrentMinimum.reliefApplied, true);
 assert.equal(selfUseAtCurrentMinimum.amount, 0);
+assert.match(selfUseAtCurrentMinimum.note, /低於 1,200 萬円扣除額上限，全額折抵後稅額為 0 円/);
 
 const undersized = assessRealEstateAcquisitionTax({
   buildingAssessedValueYen: 10_000_000,

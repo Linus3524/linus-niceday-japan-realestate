@@ -153,8 +153,22 @@ export function isFreeOrZero(text: unknown): boolean {
   if (typeof text !== "string") return false;
   const cleaned = toHalfWidth(text).trim();
   if (!cleaned) return false;
-  if (/^(?:0|0円|-|ー|―)$/.test(cleaned)) return true;
+  if (/^(?:0(?:\.0+)?\s*(?:円|ヶ月|ヵ月|カ月|個月)?|-|ー|―)$/.test(cleaned)) return true;
   return /(?:無償|無料|不要|なし|無し|免除)/i.test(cleaned);
+}
+
+/**
+ * 圖紙有時會漏填獨立的敷金／禮金欄位，卻在契約條件中寫「敷金0・礼金0」。
+ * 這種明確的零額記載應優先於缺漏的結構化欄位，避免誤顯示為待確認。
+ */
+export function hasExplicitZeroLeaseCharge(
+  text: unknown,
+  kind: "deposit" | "keyMoney",
+): boolean {
+  if (typeof text !== "string") return false;
+  const cleaned = toHalfWidth(text).normalize("NFKC");
+  const label = kind === "deposit" ? "(?:敷金|押金|保証金|保證金)" : "(?:礼金|禮金)";
+  return new RegExp(`${label}\\s*(?:[:：]?\\s*)?(?:0(?:\\.0+)?|なし|無し|不要|ゼロ)\\s*(?:円|ヶ月|ヵ月|カ月|個月)?`, "i").test(cleaned);
 }
 
 /**
@@ -218,18 +232,19 @@ export function parseMonthsOrYen(text: unknown, monthlyRent: number | null): num
  * 常常直接印營運商全名，這是圖紙辨識這條新路徑才會遇到的輸入形狀，實測「JR新宿駅」
  * 沒剝過前綴會讓 estimateRequestedRent 查不到任何行情（誤判成「查無資料」）。
  *
- * 這裡先剝一輪常見營運商，再剝尾端「駅」。Prompt 已經要求 Gemini 只回傳站名本身，
- * 這裡是防止它沒完全照做時的安全網，兩邊都做才夠穩。
+ * 只剝除明確的路線或獨立營運商標籤；東武練馬、京成高砂等站名中的公司名必須保留。
  */
 export function stripStationOperatorPrefix(text: unknown): string | null {
   if (typeof text !== "string") return null;
   const cleaned = text
+    .normalize("NFKC")
     .trim()
     // 図面常把站名寫成「ＪＲ総武線 『大久保』駅」，引號留著會讓站名比對失敗，
     // 進而讓不同車站被回退到同一個座標（實測大久保與新大久保都被算成 366m）。
     .replace(/[『』「」《》〈〉【】]/g, "")
     .replace(/^(?:JR|ＪＲ)/i, "")
-    .replace(/^(?:東京メトロ|東京地下鉄|都営地下鉄|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくばエクスプレス)/, "")
+    .replace(/^(?:東京メトロ|東京地下鉄|都営地下鉄|都営)/, "")
+    .replace(/^(?:東急|京王|小田急|西武|東武|京急|京成|相鉄|つくばエクスプレス)[\s・･]+/, "")
     // "○○線 ○○駅" 這種前面還帶路線名的寫法，取最後一段當站名。
     .replace(/^.*線[\s・･]*/, "")
     .replace(/\s*(?:車站|站|駅)\s*$/, "")
@@ -274,32 +289,34 @@ export function parseFloorInfo(floorText: unknown, structureText?: unknown): {
 export function normalizeRoomType(text: unknown): RoomType | null {
   if (typeof text !== "string") return null;
 
-  // 收納空間標記不影響房間數分桶，先拿掉再比對核心格局：
-  // +S／+N（納戸）、+WIC（步入式衣帽間）、+SIC（玄關收納），
-  // 以及夾在中間的 S（"1SLDK" 就是 1LDK 附納戸，實測真實販売図面很常這樣寫）。
   const cleaned = toHalfWidth(text)
     .toUpperCase()
     .replace(/\s/g, "")
-    .replace(/[（(].*?[）)]/g, "")
-    .replace(/\+(?:WIC|SIC|N|S)$/i, "")
-    .replace(/\+?S$/i, "")
-    .replace(/^S/i, "")
-    .replace(/S(?=(?:LDK|DK|K)$)/i, "");
+    .replace(/[（(].*?[）)]/g, "");
 
-  const rMatch = cleaned.match(/^(\d+)R$/);
-  if (rMatch) return rMatch[1] === "1" ? "r1" : null;
+  // 核心格局是「房間數＋(L)DK／K／R」，後面接的都是收納或附屬空間標記
+  // （+W、+WIC、+SIC、+S、+2S、+N、+DEN、+F…）。這些在日本不計入居室，
+  // 不改變房間數分桶，所以只錨定開頭的核心樣式，後面一律忽略。
+  //
+  // 先前用白名單列舉後綴（WIC|SIC|N|S），實測真實販売図面出現 "2LDK+W"、
+  // "3LDK+2S"、"1LDK+DEN"、"3LDK+F" 就整個回傳 null，行情比對直接消失
+  // （ビューネ吉祥寺203 的 "2LDK+W" 就是這樣掉的）。後綴花樣列不完，不要再用白名單。
+  //
+  // 夾在中間的 S 一併吸收："1SLDK" 就是 1LDK 附納戸，同樣不改變分桶。
+  const ldkMatch = cleaned.match(/^(\d+)S?LDK/);
+  if (ldkMatch) {
+    const table: Record<string, RoomType> = { "1": "ldk1", "2": "ldk2", "3": "ldk3" };
+    return table[ldkMatch[1]] ?? null;
+  }
 
-  const kMatch = cleaned.match(/^(\d+)(?:K|DK)$/);
+  const kMatch = cleaned.match(/^(\d+)S?(?:DK|K)/);
   if (kMatch) {
     const table: Record<string, RoomType> = { "1": "k1", "2": "ldk1", "3": "ldk2", "4": "ldk3" };
     return table[kMatch[1]] ?? null;
   }
 
-  const ldkMatch = cleaned.match(/^(\d+)LDK$/);
-  if (ldkMatch) {
-    const table: Record<string, RoomType> = { "1": "ldk1", "2": "ldk2", "3": "ldk3" };
-    return table[ldkMatch[1]] ?? null;
-  }
+  const rMatch = cleaned.match(/^(\d+)R/);
+  if (rMatch) return rMatch[1] === "1" ? "r1" : null;
 
   return null;
 }
@@ -310,11 +327,13 @@ export function normalizeRoomType(text: unknown): RoomType | null {
 export function parseArea(text: unknown): number | null {
   if (typeof text !== "string") return null;
   const cleaned = toHalfWidth(text).trim();
-  const match = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:㎡|m2|m²|平米|米|坪|帖|畳)/i);
+  const match = cleaned.match(/(?:合計(?:面積)?|延床(?:面積)?|延べ床(?:面積)?|総床面積|總面積)[^\d]{0,20}(\d+(?:\.\d+)?)\s*(㎡|m2|m²|平米|米|坪)/i)
+    || cleaned.match(/(\d+(?:\.\d+)?)\s*(㎡|m2|m²|平米|米)/i)
+    || cleaned.match(/(\d+(?:\.\d+)?)\s*(坪|帖|畳)/i);
   if (match) {
     let val = Number(match[1]);
-    if (cleaned.includes("坪")) val = Math.round(val * 3.30578 * 10) / 10;
-    else if (/帖|畳/.test(cleaned)) val = Math.round(val * 1.62 * 10) / 10;
+    if (match[2] === "坪") val = Math.round(val * 3.30578 * 10) / 10;
+    else if (/帖|畳/.test(match[2])) val = Math.round(val * 1.62 * 10) / 10;
     return Number.isFinite(val) && val > 0 ? val : null;
   }
   const plainNum = cleaned.match(/^(\d+(?:\.\d+)?)$/);
@@ -348,7 +367,17 @@ export function normalizeStructure(raw: unknown): string | null {
  */
 export function parseSalePrice(text: unknown): number | null {
   if (typeof text !== "string") return null;
-  return parseYenAmount(text);
+  const normalized = text.normalize("NFKC").replace(/[,，\s]/g, "").replace(/億/g, "亿");
+  const revised = normalized.match(/(?:新価格|新價格|改定価格|改定價格)[:：]?((?:\d+(?:\.\d+)?亿)?\d+(?:\.\d+)?[万萬](?:円)?)/);
+  if (revised) return parseSalePrice(revised[1]);
+  const compound = normalized.match(/(\d+(?:\.\d+)?)亿(?:(\d+(?:\.\d+)?)[万萬])?/);
+  if (compound) return Math.round(Number(compound[1]) * 100_000_000 + Number(compound[2] || 0) * 10_000);
+  const symbol = normalized.match(/(?:[¥￥](\d{1,12})|(\d{1,12})[¥￥])/);
+  if (symbol) {
+    const value = Number(symbol[1] || symbol[2]);
+    return value > 0 ? value : null;
+  }
+  return parseYenAmount(normalized.replace(/萬/g, "万"));
 }
 
 /**
@@ -468,6 +497,7 @@ export function assessRepairReserve(params: {
 }
 
 export interface SaleInitialCostOptions {
+  combinedAnnualPropertyTaxYen?: number | null;
   handoverDate?: string;
   prepaidMonths?: number;
   monthlyManagementFeeYen?: number;
@@ -481,6 +511,7 @@ export interface SaleInitialCostOptions {
 }
 
 export interface AcquisitionTaxAssessmentInput {
+  propertyCategory?: string;
   buildingAssessedValueYen: number | null;
   landTaxAfterReliefYen?: number | null;
   fallbackTaxYen?: number | null;
@@ -495,6 +526,18 @@ export interface AcquisitionTaxAssessmentInput {
  */
 export function assessRealEstateAcquisitionTax(input: AcquisitionTaxAssessmentInput) {
   const status = input.occupancyStatus || "";
+  if (["land", "whole_building", "detached"].includes(input.propertyCategory || "")) {
+    return {
+      amount: null, reliefApplied: false, isTenanted: false, meetsArea: false, meetsSeismic: false,
+      note: "土地／整棟／透天須個別核對課稅用途、新築或中古、土地與建物評價額；取得稅暫未計入，未套用區分公寓試算。",
+    };
+  }
+  if (/民泊|旅館|宿泊|住宿/.test(status)) {
+    return {
+      amount: null, reliefApplied: false, isTenanted: false, meetsArea: false, meetsSeismic: false,
+      note: "住宿營業物件須先確認登記用途與住宅／非住宅課稅分類，取得稅暫未計入；未套用買方自住扣除。",
+    };
+  }
   const isTenanted = /賃貸中|オーナーチェンジ|投資/i.test(status);
   const meetsArea = input.areaSqm !== null && input.areaSqm >= 40 && input.areaSqm <= 240;
   const meetsSeismic = input.ageYears !== null && input.ageYears <= 44;
@@ -512,12 +555,14 @@ export function assessRealEstateAcquisitionTax(input: AcquisitionTaxAssessmentIn
   }
 
   const note = isTenanted
-    ? "租賃中／オーナーチェンジ物件不符合買方自住要件，未套用 1,200 萬円建物評價額扣除"
+    ? "租賃中／帶租約物件不符合買方自住要件，未套用 1,200 萬円建物評價額扣除"
     : !meetsArea
-      ? `專有面積未落在 2026 年 4 月起的 40～240㎡門檻內，未套用自住中古住宅扣除`
+      ? "專有面積未落在 40～240㎡ 門檻內，未套用自住中古住宅扣除"
       : !meetsSeismic
         ? "未確認為 1982 年後興建或具新耐震證明，未套用自住中古住宅扣除"
-        : "以買方取得後自住為前提，並符合 40～240㎡及新耐震條件，建物評價額扣除 1,200 萬円後按 3% 試算";
+        : amount === 0
+          ? "符合自住、40～240㎡ 及新耐震條件，因建物評價額低於 1,200 萬円扣除額上限，全額折抵後稅額為 0 円"
+          : "符合自住、40～240㎡ 及新耐震條件，建物評價額扣除 1,200 萬円扣除額後按 3% 試算";
 
   return { amount, reliefApplied, isTenanted, meetsArea, meetsSeismic, note };
 }
@@ -569,7 +614,7 @@ export function calculateSaleInitialCosts(salePriceYen: number, options: SaleIni
 
   const fixedAssetTaxYen = Math.max(0, Math.round(options.fixedAssetTaxYen ?? 0));
   const cityPlanningTaxYen = Math.max(0, Math.round(options.cityPlanningTaxYen ?? 0));
-  const annualPropertyTaxes = fixedAssetTaxYen + cityPlanningTaxYen;
+  const annualPropertyTaxes = options.combinedAnnualPropertyTaxYen == null ? fixedAssetTaxYen + cityPlanningTaxYen : Math.max(0, Math.round(options.combinedAnnualPropertyTaxYen));
   const dateInfo = saleCostDateInfo(options.handoverDate);
   const taxesProrated = Math.floor(annualPropertyTaxes * dateInfo.remainingDays / dateInfo.daysInYear);
 
@@ -624,8 +669,8 @@ export function calculateSaleInitialCosts(salePriceYen: number, options: SaleIni
         name: "固定資產稅・都市計畫稅日割清算",
         amount: taxesProrated,
         note: annualPropertyTaxes > 0
-          ? `AI 辨識／推算年額 ${annualPropertyTaxes.toLocaleString("ja-JP")} 円 × 交屋後 ${dateInfo.remainingDays}/${dateInfo.daysInYear} 日`
-          : "圖紙與 AI 均未取得固都稅年額，目前未計入；請以賣方納稅通知書清算",
+          ? `預估全年固都稅 ${annualPropertyTaxes.toLocaleString("ja-JP")} 円 × 暫以分析日至年底約 ${dateInfo.remainingDays}/${dateInfo.daysInYear} 日估算（實際依簽約交屋日結算）`
+          : "圖紙與 AI 均未取得固都稅年額，目前未計入；正式交屋時依賣方納稅通知書日割清算",
       },
       {
         id: "acquisitionTax",
@@ -635,7 +680,7 @@ export function calculateSaleInitialCosts(salePriceYen: number, options: SaleIni
           ? "尚無圖紙評價資料或 AI 推算值，目前未計入；取得後以都道府縣核定通知為準"
           : acquisitionTax > 0
           ? "AI 依建物評價額、專有面積與新耐震／自用住宅減免條件推算"
-          : "以買方自住假設套用中古住宅扣除後為 0 円；仍以都道府縣核定通知為準"),
+          : "符合自住條件且建物評價額低於 1,200 萬円扣除額上限，全額折抵後為 0 円（以都道府縣稅務署核定為準）"),
       },
       {
         id: "managementPrepayment",
@@ -657,11 +702,8 @@ export function parseAgeYears(ageStr?: string | null): number | null {
   if (!ageStr) return null;
   const currentYear = new Date().getFullYear();
 
-  // 1. Explicit 築X年, e.g. "築4年", "築15年"
-  const mChiku = ageStr.match(/築\s*(\d+)\s*年/);
-  if (mChiku) return Number(mChiku[1]);
-
-  // 2. 4-digit year, e.g. "2022年", "2018/05", "1998年"
+  ageStr = ageStr.normalize("NFKC");
+  // 建造年優先於廣告刊登當時的「築X年」，避免舊圖紙屋齡停留在過去。
   const mYear = ageStr.match(/(?:19|20)\d{2}/);
   if (mYear) {
     const y = Number(mYear[0]);
@@ -684,6 +726,9 @@ export function parseAgeYears(ageStr?: string | null): number | null {
     const y = mShowa[1] === "元" ? 1 : Number(mShowa[1]);
     return Math.max(0, currentYear - (1925 + y));
   }
+
+  const mChiku = ageStr.match(/築\s*(\d+)\s*年/);
+  if (mChiku) return Number(mChiku[1]);
 
   // 4. Fallback plain number
   const mAny = ageStr.match(/(\d+)\s*年/);

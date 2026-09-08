@@ -130,6 +130,26 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-serif);
 }
 
+/* 圖紙分析的綠色區塊標題統一使用內文黑體，避免租賃、一般買賣與特殊買賣各自繼承不同字級。 */
+.listing-section-title {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #007d5a;
+}
+
+.listing-analysis-report .uppercase.tracking-wider {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .font-jost {
   font-family: var(--font-jost);
 }

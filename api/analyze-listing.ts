@@ -1,4 +1,8 @@
+import { additionalRentalFees, type RentalConditionFields } from "../src/lib/rentalConditions.js";
+import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
+import { auditKeys, buildListingAudit, type AuditFields } from "../src/lib/listingAudit.js";
 import { GoogleGenAI, Type } from "@google/genai";
+import { buildSpecialSaleDetails, reconcileSpecialSaleFields, saleOccupancy, statedCombinedAnnualPropertyTax, statedAnnualPropertyTax, type SpecialSaleFields } from "../src/lib/specialSaleAnalysis.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict, buildSalePriceVerdict, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
@@ -13,6 +17,7 @@ import {
   parseGuaranteeFee,
   formatShikibiki,
   isFreeOrZero,
+  hasExplicitZeroLeaseCharge,
   parseSalePrice,
   parseUnitsCount,
   parseYieldRate,
@@ -154,7 +159,7 @@ function validateFiles(files: unknown): UploadedFile[] {
   return validated;
 }
 
-export interface ExtractedListingFields {
+export interface ExtractedListingFields extends SpecialSaleFields, RentalConditionFields, AuditFields {
   dealType: string; // "sale" 或 "rent"
   buildingName: string;
   roomNumber?: string;
@@ -252,6 +257,7 @@ function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedLis
 }
 
 export interface InitialCostBreakdownItem {
+  isUnknown?: boolean;
   id: string;
   name: string;
   amount: number;
@@ -274,6 +280,11 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
   const prompt = `
     分析這份日本不動產物件概要書／図面圖片或 PDF，精準抓出各欄位內容，原文照抄不要翻譯或換算單位。
 
+    最重要的規則：本說明中出現的所有範例都只是在示範「格式」，不是候選答案。
+    任何數字都必須逐位讀自這份圖紙本身。當圖紙上的數字與說明裡的範例相近時，
+    一律以圖紙為準——實測曾發生把圖紙上的 7,298万円 輸出成範例值 7,299万円 的情況，
+    這種一位數的差異會直接毀掉後續的行情判斷。輸出前請再核對一次每個金額的每一位數字。
+
     物件種類與建物名稱・房號（dealType，極重要）：
     - 判斷這份圖紙是「買賣物件（sale）」還是「租賃物件（rent）」。
     - buildingName：逐字提取物件名／建物名／マンション名（不含房號）；找不到時留空，不可拿地址或仲介公司名代替。
@@ -292,44 +303,66 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - 多個車站時，station 與 walkTime 用逗號分隔，且順序要對應
       （例如 station="新宿,代々木上原" walkTime="8,12"）。
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
-    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。
+    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。
     - 輸出前逐列點算交通欄：transitAccess 的車站數、station 的車站數、walkTime 的數字數量必須一致。
 
     租金與各項租約費用（若為租賃圖紙）：
-    - rent（賃料／家賃）：照原文抓取，例如 "10.5万円" 或 "98,000円"。
-    - managementFee（管理費／共益費）：照原文抓取，例如 "8,000円"，若寫込み或無則寫 "0円"。
+    - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。
+    - managementFee（管理費／共益費）：照原文抓取，格式如 "○,○○○円"，若寫込み或無則寫 "0円"。
     - keyMoney（礼金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
     - deposit（敷金／保証金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
+    - rentalConditions：逐字保留租賃完整特殊條件：契約種類與期間、更新費次數及金額是否未載、調租百分比與第幾次、入居日、敷禮優惠期限、養寵物額外押金、年次保證費及適用公司、生活支援費週期、抗菌處理費、事務費、另計保險與退去清掃費。不得把更新型一年租約套為兩年，不得把AD業者獎勵當租客費用；地平面以下是部分住居警語，未指明本室時不得推定本室地下。
     - leaseTerms：把包含敷金、礼金、保証金、償却金或敷引的整列文字連同每個標籤逐字抄下，例如 "敷金 1ヶ月　礼金 1ヶ月　償却金 0円"。不可只抄數值。
     - 「敷金／保証金」與「償却金／敷引」是不同欄位：deposit 只能讀取緊接敷金或保証金標籤的值，絕對不可把償却金或敷引的 0円 填入 deposit。
     - guaranteeFee（保証会社費用／初回保証料）：照原文，例如 "50%"、"総賃料50%"、"4.5万円"、"外国人プラン80%"、"GTN100%"。若圖紙載有「外国人プラン」或外國籍專用保證料，請優先提取外國人方案之比例。
-    - lockReplacementFee（鍵交換代／シリンダー交換代）：照原文，例如 "22,000円"、"33,000円"、"無償"、"なし"。
-    - cleaningFee（退去時清掃費／室内クリーニング代／エアコン清掃代）：照原文，例如 "49,500円"、"55,000円"、"44,000円"。
-    - insuranceFee（火災保険／家財保険料）：照原文，例如 "20,000円"、"17,800円"。
+    - lockReplacementFee（鍵交換代／シリンダー交換代）：照原文，格式如 "○○,○○○円"，或 "無償"、"なし"。
+    - cleaningFee（退去時清掃費／室内クリーニング代／エアコン清掃代）：照原文，格式如 "○○,○○○円"。
+    - insuranceFee（火災保険／家財保険料）：照原文，格式如 "○○,○○○円"。
     - supportFee（入居者サポート／安心サポート／クラブ費／駆けつけ）：照原文，例如 "22,000円"、"16,500円"、"リブクラブ2,200円/月"。
     - freeRent（フリーレント／免租期）：照原文，例如 "フリーレント30日"、"フリーレント1ヶ月"，無則寫 "なし"。
 
     買賣物件專屬欄位（若為買賣圖紙，請格外仔細精準提取）：
-    - salePrice（販売価格／価格）：照原文，例如 "7,299万円"、"3,450万円"、"6,300万円"、"5,488万円"、"5,980万円"。
-    - totalUnits（総戸数／戸数）：照原文，例如 "50戸"、"39戸"、"26戸"、"17戸"、"42戸"。
-    - balconyArea（バルコニー面積／バルコニー）：照原文抓陽台面積，例如 "5.42㎡"、"5.42㎡(約1.63坪)"、"8.10m2"。無標示則留空。
-    - buildingFloors（建物總樓層）：只填地上總樓層的數字，例如 "7"、"21"、"9"。
+    - propertyType：逐字抄下「戸建」「一棟」「区分マンション」「土地」等類型；標題「1棟」優先於角落的「売マンション」，不得把整棟當單一公寓。未載明留空。
+    - 名稱「マンション」不等於區分公寓：整棟出售且載有店鋪、客房／寮的組成與整棟面積時，propertyType 填「一棟（店舗・共同住宅）」或「一棟ホテル」。建物名稱只保留原名。單一房號「405号室」才填 roomNumber；「1号地」是基地編號，放 specialNotes，不能當房號。未載土地權利不得預設所有權。
+    - handoverDetails：逐字保留交屋、拆屋、建築條件、現況渡し、契約不適合責任免責等條件。若同時寫「更地渡し」與「古屋付・現況渡し（解体については要相談）」必須兩段都保留，不得自行調和。建築条件なし不得擴寫成不受建築限制。
+    - unitBreakdown：原文保留店舗、客室、寮、管理室、備品室等各自數量及総戸数，數字矛盾也照錄，不得當成單一住宅的格局。optionalFacilities：原文保留停車／駐輪等選配的空位與費用，空き無し不能翻成有空位，費用不得加入每戶固定管修费。
+    - buildingCondition：只保留原文新築、中古、完成／予定日期；不要由照片或零年屋齡猜新築。age 優先完整建造年月，廣告括號的築年數可能過期。
+    - landArea：只提取土地面積，保留公簿／實測、私道負擔、セットバック與正味面積各標籤和數字。
+    - buildingArea：提取整棟延床／建物合計面積及各層面積；單一公寓則提取専有面積。合計在最前面，不得混入土地面積；area 填此建物合計數字。
+    - roadDetails：逐字抄錄接道方位、道路種類／位置指定道路、道路寬度、接道長度、私道負擔、セットバック、建ぺい率及容積率，未載明留空。
+    - hospitalityDetails：民泊／旅館許可、申請狀態、營運狀態、最大宿泊人數與許可範圍逐字照抄。申請中、申請済不等於許可取得済；不把民泊自營稱為「帶租約」。沒有住宿用途則留空。
+    - revenueDetails：逐字抄下全部營業收入算式與前提，包含日價×天數、月租×月數、稼動率、年間營收，保留「実績／想定」。營收不是淨利，不得憑空補上未刊載投報率。
+    - annualIncome 只能填圖紙明列的年收入，不得用售價×利回り反推。只有「想定利回り8.4%」時 annualIncome、currentRent 均留空。全空室保留「全空室」，不能因預估收益變成出租中；翻新中不能改為翻新完成。刊載月收入保留在 revenueDetails，非現有租約不能放 currentRent。
+    - revenueScope：明列收益適用整棟或部分房號／樓層，例如「101号室／1Fのみ」。只列101號室收益時不得當全棟租金。未載明填「範囲未記載」。
+    - taxDetails：逐字抄下已刊載年度與土地／家屋各項稅額；必須保留稅名與年度，例如「令和6年度固定資産税 土地37,169円 家屋60,424円」。未載明留空，禁止推算填入此欄。
+    - 若是民泊／旅館：currentRent 留空（除非明確是現有長租合約），annualIncome 可填刊載年營收。禁止僅因有利回り或營收就填「出租中（帶租約）」。
+    - 同一棟的建物面積與土地面積要分開。不得因存在任意面積而猜测缺漏的專有面積。不得把圖紙「売主」「手数料1%」等業者間報酬直接當成買方應付仲介費；保留原文待確認。
+    - 固定資産税欄若分列土地與家屋，fixedAssetTax 必須是兩者合計，年度照taxDetails保留；不得漏掉其中一筆。未記載土地權利、建造年份、構造、車站或房號時不得依照片猜測補齊。
+    - 改裝／引渡日期照抄原文，已過期的「予定」仍是圖紙記載的予定，不能因今天的日期而宣稱已完工。
+    - priceDetails：逐字保留新價格、劃除舊價格、現況／翻新前價格、另估翻新預算及價款包含範圍。salePrice 只填有效新價格，不可填舊價格，也不可把另估翻新費加到售價。
+    - 「旅館業取得サポート可」只是取得支援，「民泊可能」只是用途宣傳，均非許可已取得。室內照片若標「リフォーム後イメージ」要保留示意圖聲明，不視為已完工。不因照片看起來無人居住而填現況空室；未明載居住現況時留空。
+    - 固都税為固定資產稅與都市計畫稅合計，保留約數及年度在 taxDetails，不能自行拆分兩個稅目。
+    - salePrice（販売価格／価格）：照原文連同單位逐字抄下，格式如 "○,○○○万円" 或 "1億○,○○○万円"。
+      這是整份分析最關鍵的數字，請逐位核對圖紙上的每一個數字後再輸出。
+    - totalUnits（総戸数／戸数）：照原文，格式如 "○○戸"。
+    - balconyArea（バルコニー面積／バルコニー）：照原文抓陽台面積，格式如 "○.○○㎡"、"○.○○㎡(約○.○○坪)"、"○.○○m2"。無標示則留空。
+    - buildingFloors（建物總樓層）：只填地上總樓層的數字（純數字，不含「階建」）。
       常見於構造欄位（"鉄筋コンクリート造21階建"、"RC造・地上9階建"）或物件概要。
       這個欄位很重要：同樣是 7 樓，在 7 層建物是頂樓、在 21 層建物只是中低樓層，
       沒有總樓層就無法判斷樓層價值。找不到才留空字串。
-    - repairReserve（修繕積立金）：若備註載有「月額○円に改定」，優先填改定後的新金額；否則照主欄原文，例如 "6,100円"、"4,120円"、"14,230円"、"12,100円"。
+    - repairReserve（修繕積立金）：若備註載有「月額○円に改定」，優先填改定後的新金額；否則照主欄原文，格式如 "○,○○○円"。
     - managementFee（管理費）：買賣圖紙同樣一定要抓。它幾乎都緊鄰「修繕積立金」出現，
       常見寫法是「管理費 9,300円/月」或表格中「管理費・修繕積立金」並排。
       只有在圖紙上真的找不到時才留空字串，不要因為這是買賣圖紙就略過這個欄位。
-    - repairFund（修繕積立基金／積立基金）：照原文，例如 "2,180円"（有些物件每月另有積立基金）。若無則填空字串。
+    - repairFund（修繕積立基金／積立基金）：照原文，格式如 "○,○○○円"（有些物件每月另有積立基金）。若無則填空字串。
     - otherMonthlyFees（町会費／協力金／自治会費／其他每戶固定月費）：照原文，例如 "町会費 300円"、"協力金 2,000円"。停車場、駐輪場、バイク置場等只有使用者才付的選配費用不得填入。
-    - occupancyStatus（現況）：照原文，例如 "空室"、"賃貸中"、"居住中"、"オーナーチェンジ"。
-    - currentRent（現行家賃／月額収入，若為投資型／賃貸中）：照原文，例如 "115,000円"。
-    - annualIncome（年間収入／年額収入，若為投資型／賃貸中）：照原文，例如 "1,380,000円"。
-    - grossYield（利回り／表面利回り）：照原文，例如 "4.0%"、"4%"。
+    - occupancyStatus（現況）：請翻譯為繁體中文，例如 "現況空室"、"出租中（帶租約）"、"現有屋主居住中（交屋期需協商）"、"可立即交屋"。
+    - currentRent（現行家賃／月額収入，若為投資型／賃貸中）：照原文，格式如 "○○○,○○○円"。
+    - annualIncome（年間収入／年額収入，若為投資型／賃貸中）：照原文，格式如 "○,○○○,○○○円"。
+    - grossYield（利回り／表面利回り）：照原文，格式如 "○.○%" 或 "○%"。
     - landRights（土地権利）：例如 "所有権"、"借地権"、"定期借地権"。
     - zoning（用途地域）：例如 "商業地域"、"準工業地域"、"第一種住居地域"。
-    - renovationDetails（リノベーション内容／工事履歴）：例如 "2026年6月完成、R1住宅適合、給排水管交換、2022年立駐解体"。
+    - renovationDetails（裝修與翻新內容／工事履歷）：請翻譯為繁體中文，例如 "2022年1月全室翻新完成：更換木質地板、壁紙與天花板壁紙更新、整體衛浴設備更新、系統廚房更新、瓦斯熱水器更新、天花板嵌燈裝設、冷暖空調安裝。2013年大樓大規模修繕工程實施。"。
     - managementCompany（管理会社）：例如 "東急コミュニティー"、"伏見管理サービス"、"南海ビルサービス"。
     - managementStyle（管理形態／管理方式）：例如 "全部委託 (日勤)"、"全部委託 (巡回)"。
 
@@ -403,6 +436,19 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
       responseSchema: {
         type: Type.OBJECT,
         properties: {
+          propertyType: { type: Type.STRING },
+          priceDetails: { type: Type.STRING },
+          handoverDetails: { type: Type.STRING },
+          unitBreakdown: { type: Type.STRING },
+          optionalFacilities: { type: Type.STRING },
+          buildingCondition: { type: Type.STRING },
+          landArea: { type: Type.STRING },
+          buildingArea: { type: Type.STRING },
+          roadDetails: { type: Type.STRING },
+          hospitalityDetails: { type: Type.STRING },
+          revenueDetails: { type: Type.STRING },
+          revenueScope: { type: Type.STRING },
+          taxDetails: { type: Type.STRING },
           dealType: { type: Type.STRING, description: "sale 或 rent" },
           buildingName: { type: Type.STRING, description: "物件名／建物名／マンション名；不含房號，找不到留空" },
           roomNumber: { type: Type.STRING, description: "部屋番号／号室，例如 602号室 或 1103，找不到或未標示則留空" },
@@ -414,6 +460,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           managementFee: { type: Type.STRING, description: "管理費／共益費，原文格式" },
           keyMoney: { type: Type.STRING, description: "礼金，原文格式" },
           deposit: { type: Type.STRING, description: "敷金／保証金，原文格式" },
+          rentalConditions: { type: Type.STRING },
           leaseTerms: { type: Type.STRING, description: "敷金、礼金、保証金、償却金、敷引所在整列的原文，必須保留各標籤" },
           age: { type: Type.STRING, description: "築年數／建築年月" },
           floor: { type: Type.STRING, description: "所在階" },
@@ -457,8 +504,9 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           specialNotes: { type: Type.STRING, description: "備考與特約注意事項" },
         },
         required: [
+          "propertyType", "priceDetails", "handoverDetails", "unitBreakdown", "optionalFacilities", "buildingCondition", "landArea", "buildingArea", "roadDetails", "hospitalityDetails", "revenueDetails", "revenueScope", "taxDetails",
           "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
-          "keyMoney", "deposit", "leaseTerms", "age", "floor", "address",
+          "keyMoney", "deposit", "leaseTerms", "rentalConditions", "age", "floor", "address",
           "area", "structure", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
           "renewalFee", "facilities", "balconyArea", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
@@ -474,10 +522,21 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
 
   const text = response.text;
   if (!text) throw new Error("empty analyze-listing response");
-  return reconcileTransitAccess(reconcileLeaseTerms(JSON.parse(text) as ExtractedListingFields));
+  const original = JSON.parse(text) as ExtractedListingFields;
+  const sourceValues = Object.fromEntries(auditKeys.flatMap(key => original[key] == null ? [] : [[key, String(original[key])]]));
+  const extracted = reconcileSpecialSaleFields(reconcileTransitAccess(reconcileLeaseTerms(reconcileRentalListingText(original, layoutText))));
+  extracted.sourceValues = sourceValues;
+  const statedTax = statedAnnualPropertyTax(extracted.taxDetails);
+  if (statedTax !== null) extracted.fixedAssetTax = statedTax;
+  if (statedCombinedAnnualPropertyTax(extracted.taxDetails) !== null) {
+    delete extracted.fixedAssetTax;
+    delete extracted.cityPlanningTax;
+    extracted.taxEstimationBasis = `固都稅採圖紙合計原值，未拆分稅目：${extracted.taxDetails}。其他費用依各列說明核對。`;
+  }
+  return extracted;
 }
 
-function calculateInitialCostBreakdown(params: {
+export function calculateInitialCostBreakdown(params: {
   rent: number;
   managementFee: number | null;
   keyMoney: number | null;
@@ -492,15 +551,26 @@ function calculateInitialCostBreakdown(params: {
   extractedFreeRent?: string;
   extractedShikibiki?: string;
   specialNotes?: string;
+  rentalConditions?: string;
   marketVerdict?: { status: string; headline: string; detail: string } | null;
 }): InitialCostEstimate {
   const { rent, managementFee, keyMoney, deposit } = params;
   const totalMonthlyCost = rent + (managementFee ?? 0);
+  const leaseChargeSource = [
+    params.extractedDeposit,
+    params.extractedKeyMoney,
+    params.rentalConditions,
+    params.specialNotes,
+  ].filter(Boolean).join(" ");
+  const depositExplicitZero = isFreeOrZero(params.extractedDeposit) || hasExplicitZeroLeaseCharge(leaseChargeSource, "deposit");
+  const keyMoneyExplicitZero = isFreeOrZero(params.extractedKeyMoney) || hasExplicitZeroLeaseCharge(leaseChargeSource, "keyMoney");
+  const depositUnknown = deposit === null && !depositExplicitZero;
+  const keyMoneyUnknown = keyMoney === null && !keyMoneyExplicitZero;
 
   const items: InitialCostBreakdownItem[] = [];
 
   // 1. 敷金（押金）與敷引／償却判定
-  const depositAmount = deposit ?? 0;
+  const depositAmount = depositExplicitZero ? 0 : deposit ?? 0;
   let rawShikibiki = params.extractedShikibiki || "";
   if (!rawShikibiki || isFreeOrZero(rawShikibiki)) {
     const fromDeposit = params.extractedDeposit?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0];
@@ -515,8 +585,9 @@ function calculateInitialCostBreakdown(params: {
     id: "deposit",
     name: "敷金（押金）",
     amount: depositAmount,
-    isFromFlyer: Boolean(params.extractedDeposit),
-    note: depositAmount === 0
+    isUnknown: depositUnknown,
+    isFromFlyer: Boolean(params.extractedDeposit) || depositExplicitZero,
+    note: depositUnknown ? "押金未載明，尚未計入小計；不代表免押金" : depositAmount === 0
       ? "免押金（需留意退租時是否有預收清掃費或特約條款）"
       : hasShikibiki
       ? `擔保性質費用（含「${formattedShikibiki}」扣除約定，退租時不退還）`
@@ -524,13 +595,14 @@ function calculateInitialCostBreakdown(params: {
   });
 
   // 2. 禮金（礼金）
-  const keyMoneyAmount = keyMoney ?? 0;
+  const keyMoneyAmount = keyMoneyExplicitZero ? 0 : keyMoney ?? 0;
   items.push({
     id: "keyMoney",
     name: "禮金（礼金）",
     amount: keyMoneyAmount,
-    isFromFlyer: Boolean(params.extractedKeyMoney),
-    note: keyMoneyAmount === 0 ? "免禮金（無須贈與房東謝禮，初期負擔大幅減輕）" : "贈與房東之謝禮，退租時不予退還",
+    isUnknown: keyMoneyUnknown,
+    isFromFlyer: Boolean(params.extractedKeyMoney) || keyMoneyExplicitZero,
+    note: keyMoneyUnknown ? "禮金未載明，尚未計入小計；不代表免禮金" : keyMoneyAmount === 0 ? "免禮金（無須贈與房東謝禮，初期負擔大幅減輕）" : "贈與房東之謝禮，退租時不予退還",
   });
 
   // 3. 次月預付前家賃（1 個月完整租金與管理費）
@@ -574,19 +646,22 @@ function calculateInitialCostBreakdown(params: {
     name: "仲介手續費（仲介手数料）",
     amount: brokerageFee,
     isFromFlyer: false,
-    note: "日本國土交通省法定上限為 1 個月租金 + 10% 消費稅",
+    note: "依日本租賃仲介費法定上限，以 1 個月租金加消費稅計。本試算先按此上限預留，實際是否收取及金額以申請管道、媒介契約與簽約前說明為準。",
   });
 
   // 7. 火災保險費
-  const customInsurance = parseYenAmount(params.extractedInsuranceFee);
+  const insuranceIncluded = /(?:含む|込み|含まれ|包含|已含)/u.test(params.extractedInsuranceFee || "");
+  const customInsurance = insuranceIncluded ? 0 : parseYenAmount(params.extractedInsuranceFee);
   const insuranceAmount = customInsurance ?? 20000;
   items.push({
     id: "insuranceFee",
-    name: "火災保險／家財保險（2年）",
+    name: "火災保險／家財保險（期間待核對）",
     amount: insuranceAmount,
-    isFromFlyer: Boolean(customInsurance),
-    note: params.extractedInsuranceFee
-      ? `圖紙標示：${params.extractedInsuranceFee}`
+    isFromFlyer: insuranceIncluded || Boolean(customInsurance),
+    note: insuranceIncluded
+      ? `已包含於圖紙指定的會員／支援費中：${params.extractedInsuranceFee}`
+      : params.extractedInsuranceFee
+      ? `圖紙標示：${params.extractedInsuranceFee}${customInsurance === null ? "；金額未載，暫估20,000円，期間待核對" : ""}`
       : "保障租客財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
   });
 
@@ -617,21 +692,24 @@ function calculateInitialCostBreakdown(params: {
       isFromFlyer: Boolean(customCleaning),
       note: params.extractedCleaningFee
         ? `圖紙標示：${params.extractedCleaningFee}`
-        : "免押金物件通常於簽約時預收退租清掃費",
+        : "金額與收費時點未載，暫列44,000円預備金；不是已確認的簽約請款",
     });
   }
 
   // 10. 入居者生活支援／安心サポート
   const customSupport = parseYenAmount(params.extractedSupportFee);
   if (customSupport && customSupport > 0) {
+    const isMembershipFee = /友の会|會員/u.test(params.extractedSupportFee || "");
     items.push({
       id: "supportFee",
-      name: "入居者サポート／24小時生活支援",
+      name: isMembershipFee ? "指定會員月費（含租客保障與緊急支援）" : "入居者サポート／24小時生活支援",
       amount: customSupport,
       isFromFlyer: true,
-      note: `圖紙標示：${params.extractedSupportFee}（24 小時生活急修與支援服務）`,
+      note: isMembershipFee ? `圖紙標示：${params.extractedSupportFee}；此為每月費用` : `圖紙標示：${params.extractedSupportFee}（24 小時生活急修與支援服務）`,
     });
   }
+
+  items.push(...additionalRentalFees([params.rentalConditions, params.specialNotes].filter(Boolean).join("\n")));
 
   // totalMin: 假設月底起租（不計入日割租金）
   const totalMin = items
@@ -656,6 +734,16 @@ function calculateInitialCostBreakdown(params: {
   }
 
   const tips: string[] = [];
+  const missingCosts = [
+    depositUnknown ? "押金" : null,
+    keyMoneyUnknown ? "禮金" : null,
+    managementFee === null ? "共益費" : null,
+  ].filter((item): item is string => Boolean(item));
+  if (missingCosts.length > 0) {
+    level = "standard";
+    levelText = "必要費用未齊，暫不分級";
+    tips.push(`【費用待確認】${missingCosts.join("、")}未載明，目前只列已知及暫估小計；未載明項目不代表免收。`);
+  }
 
   // 1. 租金高性價比／超值物件
   if (params.marketVerdict?.status === "超值") {
@@ -669,7 +757,7 @@ function calculateInitialCostBreakdown(params: {
   }
 
   // 3. 初期費用優惠（3.8 倍以下）
-  if (monthsMultipleMax <= 3.8) {
+  if (monthsMultipleMax <= 3.8 && missingCosts.length === 0) {
     tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.5～5.0 倍標準。`);
   }
 
@@ -677,9 +765,9 @@ function calculateInitialCostBreakdown(params: {
   if (formattedShikibiki) {
     tips.push(`【敷引／償却】圖紙載明「${formattedShikibiki}」，退租時不予退還，初期預算建議直接列為固定支出。`);
   }
-  if (keyMoneyAmount === 0 && depositAmount === 0) {
+  if (!keyMoneyUnknown && !depositUnknown && keyMoneyAmount === 0 && depositAmount === 0) {
     tips.push("【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。");
-  } else if (keyMoneyAmount === 0) {
+  } else if (!keyMoneyUnknown && keyMoneyAmount === 0) {
     tips.push("【免禮金】省約 1 個月租金。");
   } else if (keyMoneyAmount >= rent * 1.5) {
     const kmMonths = (keyMoneyAmount / rent).toFixed(1).replace(/\.0$/, "");
@@ -831,7 +919,7 @@ export function resolveDistrictAndRegion(address: string, station: string): { di
   return null;
 }
 
-function buildSaleAnalysis(params: {
+export function buildSaleAnalysis(params: {
   extracted: ExtractedListingFields;
   salePriceYen: number;
   areaSqm: number | null;
@@ -839,7 +927,10 @@ function buildSaleAnalysis(params: {
   walkTimes: string[];
   layout: string;
 }) {
-  const { extracted, salePriceYen, areaSqm, stations, walkTimes, layout } = params;
+  const { extracted, salePriceYen, stations, walkTimes, layout } = params;
+  const propertyDetails = buildSpecialSaleDetails(extracted);
+  const audit = buildListingAudit(extracted, "sale");
+  const areaSqm = propertyDetails.kind === "land" ? propertyDetails.landAreaSqm : propertyDetails.buildingAreaSqm ?? params.areaSqm;
 
   // 1. Tsubo and Sqm
   const tsuboAndSqm = computeTsuboAndSqmPrice(salePriceYen, areaSqm);
@@ -925,7 +1016,7 @@ function buildSaleAnalysis(params: {
   // 其實是低於行情約 15%。結論剛好相反，寧可不給結論也不能給反的。
   const layoutCode = normalizeRoomType(layout) as LayoutCode | null;
 
-  if (locationInfo && layoutCode) {
+  if (locationInfo && layoutCode && !propertyDetails.excludeCondoComparison) {
     const officialEstimate = getOfficialBuyEstimate(locationInfo.region, locationInfo.district, layoutCode, ageYears);
     const medianPriceYen = officialEstimate?.medianTradePriceYen ?? null;
     if (medianPriceYen && medianPriceYen > 0) {
@@ -1017,9 +1108,16 @@ function buildSaleAnalysis(params: {
         listingBenchmarkScopeLabel: priceVerdict.listingBenchmarkScopeLabel,
         areaAdjusted: priceVerdict.areaAdjusted,
         areaBasisNote: priceVerdict.areaBasisNote,
+        baselineNote: priceVerdict.baselineNote,
+        ageHandledInBaseline: priceVerdict.ageHandledInBaseline,
         priceFactors: priceVerdict.factors,
         priceCautions: priceVerdict.cautions,
-        sampleCount: officialEstimate?.sampleCount,
+        // 顯示「實際比對用的那一層」的樣本數。用了築 0～10 年的分層卻標粗分桶的
+        // 89 筆，會讓證據看起來比實際強——這一區塊的價值就在於可被檢驗，不能灌水。
+        sampleCount: officialEstimate?.ageBand
+          ? (officialEstimate?.ageBandSampleCount ?? officialEstimate?.sampleCount)
+          : officialEstimate?.sampleCount,
+        bucketSampleCount: officialEstimate?.sampleCount,
         periodStart: officialEstimate?.periodStart,
         periodEnd: officialEstimate?.periodEnd,
         latestPeriod: mlitBuySnapshotMeta.latestPeriod,
@@ -1031,9 +1129,10 @@ function buildSaleAnalysis(params: {
 
   // 5. Occupancy assessment
   const statusRaw = (extracted.occupancyStatus || "").trim();
-  const isTenanted = /賃貸中|オーナーチェンジ/i.test(statusRaw) || Boolean(extracted.currentRent || extracted.grossYield);
+  const isTenanted = !propertyDetails.hospitality && /賃貸中|オーナーチェンジ|出租中|帶租約/i.test(statusRaw);
   const isOwnerOccupied = /居住中|所有者居住/i.test(statusRaw);
-  const isVacant = /空室|即引渡|空き/i.test(statusRaw) || (!isTenanted && !isOwnerOccupied);
+  const occupancy = saleOccupancy(extracted);
+  const isVacant = occupancy.vacant;
 
   const currentRentYen = parseYenAmount(extracted.currentRent);
   const annualIncomeYen = parseYenAmount(extracted.annualIncome) ?? (currentRentYen ? currentRentYen * 12 : null);
@@ -1056,29 +1155,37 @@ function buildSaleAnalysis(params: {
       mortgageTaxNote = `專有面積約 ${areaSqm}㎡，未達 40㎡ 減稅最低標準，無法申請住宅ローン減稅。`;
     }
   }
+  if (propertyDetails.hospitality || propertyDetails.excludeCondoComparison) {
+    mortgageTaxEligible = null;
+    mortgageTaxNote = "須核對買方自住用途、登記面積與其他適用條件；民泊／旅館營運收益不能作為自住減稅資格依據。";
+  }
 
   // 6. Initial Costs
   const acquisitionTaxAssessment = assessRealEstateAcquisitionTax({
+    propertyCategory: propertyDetails.kind,
     buildingAssessedValueYen: parseNonNegativeYenAmount(extracted.buildingAssessedValue),
     landTaxAfterReliefYen: parseNonNegativeYenAmount(extracted.landAcquisitionTaxAfterRelief),
     fallbackTaxYen: parseNonNegativeYenAmount(extracted.realEstateAcquisitionTax),
     areaSqm,
     ageYears,
-    occupancyStatus: `${extracted.occupancyStatus || ""} ${isTenanted ? "賃貸中" : ""}`,
+    occupancyStatus: `${extracted.occupancyStatus || ""} ${propertyDetails.hospitality ? "民泊" : isTenanted ? "投資" : ""}`,
   });
 
   const initialCosts = calculateSaleInitialCosts(salePriceYen, {
     monthlyManagementFeeYen: managementFee,
     monthlyRepairReserveYen: repairReserve + repairFund,
+    combinedAnnualPropertyTaxYen: statedCombinedAnnualPropertyTax(extracted.taxDetails),
     fixedAssetTaxYen: parseNonNegativeYenAmount(extracted.fixedAssetTax),
     cityPlanningTaxYen: parseNonNegativeYenAmount(extracted.cityPlanningTax),
     acquisitionTaxYen: acquisitionTaxAssessment.amount,
     acquisitionTaxNote: acquisitionTaxAssessment.note,
     registrationFeeYen: parseNonNegativeYenAmount(extracted.registrationFee),
-    prepaidMonths: 3,
+    prepaidMonths: propertyDetails.excludeCondoComparison ? 0 : 3,
+    insuranceFeeYen: propertyDetails.kind === "land" ? 0 : undefined,
   });
 
   return {
+    propertyDetails,
     salePriceYen,
     salePriceMan: Math.round(salePriceYen / 10000),
     areaSqm,
@@ -1096,11 +1203,19 @@ function buildSaleAnalysis(params: {
       ageYears,
       ...reserveAssessment,
       specialStrengths,
+      applicable: !propertyDetails.excludeCondoComparison,
+      ...(propertyDetails.excludeCondoComparison ? {
+        reservePerSqm: null,
+        reserveHealthText: "不適用公寓修繕積立金標準",
+        reserveHealthNote: "透天及整棟須自行編列建物維護預算；未刊載月額不代表維護費為零。",
+        scaleRiskText: "不適用公寓社區戶數判定",
+        scaleRiskNote: "以整棟建物與營運範圍個別評估。",
+      } : {}),
     },
-    mlitComparison,
+    mlitComparison: audit.blocksComparison ? null : mlitComparison,
     occupancyAssessment: {
-      status: isTenanted ? "tenanted_investment" : isOwnerOccupied ? "occupied_owner" : "vacant",
-      statusText: isTenanted ? "賃貸中（オーナーチェンジ／投資型）" : isOwnerOccupied ? "屋主自住中（居住中）" : "現況空室（可即刻裝修或入住）",
+      status: propertyDetails.hospitality ? "hospitality" : isTenanted ? "tenanted_investment" : isOwnerOccupied ? "occupied_owner" : isVacant ? "vacant" : "unknown",
+      statusText: propertyDetails.hospitality ? (extracted.occupancyStatus || "住宿營業物件，現況待核對") : isTenanted ? "出租中（帶租約買賣／投資型）" : isOwnerOccupied ? "現有屋主居住中（交屋期需協商）" : isVacant ? (occupancy.renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對") : (statusRaw || "現況未載明，待確認"),
       investmentYield: isTenanted && grossYield ? {
         monthlyRentYen: currentRentYen ?? Math.round((annualIncomeYen ?? 0) / 12),
         annualIncomeYen: annualIncomeYen ?? 0,
@@ -1183,6 +1298,7 @@ export default async function handler(req: any, res: any) {
       : (extracted.dealType === "sale" || Boolean(salePrice && salePrice >= 10000000));
 
     const dealType = isSale ? "sale" : "rent";
+    const audit = buildListingAudit(extracted, dealType);
 
     // 租賃分析
     let verdict = null;
@@ -1308,7 +1424,8 @@ export default async function handler(req: any, res: any) {
         extractedFreeRent: extracted.freeRent,
         extractedShikibiki: extracted.shikibiki,
         specialNotes: extracted.specialNotes,
-        marketVerdict: verdict,
+        rentalConditions: extracted.rentalConditions,
+        marketVerdict: audit.blocksComparison ? null : verdict,
       });
     }
 
@@ -1327,11 +1444,19 @@ export default async function handler(req: any, res: any) {
 
     await recordUsage("listing-check", requestCountry(req));
 
+    if (audit.blocksComparison) {
+      range = null;
+      verdict = { status: "待核對", headline: "關鍵資料待核對，暫停行情判定", detail: "請先查看資料核對清單中的價格、面積或必要欄位；暫估費用不代表已確認報價。" };
+    }
+
     return res.status(200).json({
       dealType,
       extracted,
+      audit,
       parsed: {
         rent,
+        deposit: rent === null ? null : parseMonthsOrYen(extracted.deposit, rent),
+        keyMoney: rent === null ? null : parseMonthsOrYen(extracted.keyMoney, rent),
         managementFee,
         salePrice,
         roomType,

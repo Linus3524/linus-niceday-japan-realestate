@@ -30,14 +30,14 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     id: "mlit-reinfolib",
     label: "國土交通省 不動產資訊資料庫 API",
     kinds: ["transaction"],
-    statistic: "不動產交易價格與成約價格",
+    statistic: "中古公寓、戶建與土地的不動產交易價格／成約價格",
     publicationCadence: "按季發布；實際資料更新日以官方公告為準",
     reviewCadenceDays: 100,
     ingestionStatus: "enabled",
     automatedIngestionAllowed: true,
     sourceUrl: "https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/",
     termsUrl: "https://www.reinfolib.mlit.go.jp/help/termsOfUse/",
-    note: "每季建立交易價格靜態快照；金鑰只放伺服器端，使用成交快照時顯示規約指定 credit。"
+    note: "每季分別建立中古公寓、戶建與土地交易價格靜態快照；金鑰只放伺服器端，使用成交快照時顯示規約指定 credit。"
   },
   {
     id: "reins-market-watch",
@@ -56,14 +56,14 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     id: "athome-public",
     label: "At Home 公開相場頁",
     kinds: ["rent_listing", "sale_listing"],
-    statistic: "最近 3 個月刊登物件平均",
+    statistic: "租金、中古公寓、中古戶建與土地的公開刊登相場",
     publicationCadence: "最近 3 個月滾動平均；本站每季更新一次",
     reviewCadenceDays: 100,
     ingestionStatus: "enabled",
     automatedIngestionAllowed: true,
     sourceUrl: "https://www.athome.co.jp/souba/",
     termsUrl: "https://www.athome.co.jp/",
-    note: "租金與中古公寓公開刊登行情各自建立靜態快照；正式站不會在使用者請求期間即時抓取 At Home。"
+    note: "租金、中古公寓、中古戶建與土地公開刊登行情各自建立靜態快照；正式站不會在使用者請求期間即時抓取 At Home。"
   },
   {
     id: "suumo-public",

@@ -343,14 +343,17 @@ async function mlitStations(point: GeoPoint): Promise<StationPoint[]> {
   if (!apiKey) return [];
   const { z, x, y } = tile(point, 11);
   const key = `mlit-stations:${z}:${x}:${y}`;
-  const hit = cached<StationPoint[]>(key);
-  if (hit) return hit;
+  // 同一圖磚可供不同地址使用，但距離與最近的線段座標必須按本次地址重算。
+  const hit = cached<any[]>(key);
   const url = new URL(`${MLIT_API}/XKT015`);
   Object.entries({ response_format: "geojson", z: String(z), x: String(x), y: String(y) })
     .forEach(([name, value]) => url.searchParams.set(name, value));
-  const data = await fetchJson(url.toString(), { headers: { "Ocp-Apim-Subscription-Key": apiKey } });
+  const features = hit ?? await (async () => {
+    const data = await fetchJson(url.toString(), { headers: { "Ocp-Apim-Subscription-Key": apiKey } });
+    return remember(key, Array.isArray(data?.features) ? data.features : []);
+  })();
   const byName = new Map<string, StationPoint>();
-  for (const feature of Array.isArray(data?.features) ? data.features : []) {
+  for (const feature of features) {
     const name = toJapaneseStationName(String(feature?.properties?.S12_001_ja || "").trim());
     const points = coordinatePoints(feature?.geometry?.coordinates);
     const nearestPoint = points.map(candidate => ({ point: candidate, distance: distanceMeters(point, candidate) }))
@@ -361,7 +364,7 @@ async function mlitStations(point: GeoPoint): Promise<StationPoint[]> {
       byName.set(name, { name, point: nearestPoint.point, distance: nearestPoint.distance });
     }
   }
-  return remember(key, [...byName.values()].sort((left, right) => left.distance - right.distance));
+  return [...byName.values()].sort((left, right) => left.distance - right.distance);
 }
 
 function nearestOfficialStation(stations: StationPoint[], requestedName?: string) {
@@ -369,7 +372,7 @@ function nearestOfficialStation(stations: StationPoint[], requestedName?: string
   const candidates = stations.map(station => {
     const normalized = normalizeStation(station.name);
     const isExact = Boolean(wanted && normalized === wanted);
-    const isMatch = !wanted || isExact || normalized.includes(wanted) || wanted.includes(normalized);
+    const isMatch = !wanted || isExact;
     return { station, isExact, isMatch };
   }).filter(c => c.isMatch).sort((a, b) => {
     if (a.isExact !== b.isExact) return a.isExact ? -1 : 1;

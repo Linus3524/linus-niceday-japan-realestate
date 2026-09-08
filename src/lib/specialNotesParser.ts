@@ -141,6 +141,13 @@ const RULES: SpecialNoteRule[] = [
     badgeTone: "blue",
   },
   {
+    pattern: /61歳以上.*見守りサービス|指定見守りサービス加入必須/i,
+    category: "入住條件",
+    title: "61 歲以上入住者須加入守護服務",
+    explanation: "實際入住者年滿 61 歲時，須加入管理公司指定的守護服務；圖紙文字未完整顯示費用，簽約前須確認月費與服務內容。",
+    badgeTone: "blue",
+  },
+  {
     pattern: /外国籍(?:可|相談|入居可能|歓迎)|外国人(?:可|相談)/i,
     category: "入住條件",
     title: "歡迎外籍人士申請",
@@ -245,6 +252,13 @@ const RULES: SpecialNoteRule[] = [
     title: "免費提供高速網路／Wi-Fi",
     explanation: "租金內已包含高速光纖或無線網路，入住後可立即上網，每月可節省約 4,000～5,000 円網路費用。",
     badgeTone: "emerald",
+  },
+  {
+    pattern: /CATV|BS(?:・CS)?|CS(?:110)?|インターネット.*別途/i,
+    category: "設施設備",
+    title: "影音與網路服務須另約確認",
+    explanation: "CATV、BS／CS 與網路服務須先確認本戶是否已導入；使用時可能需要另行簽約並支付費用。",
+    badgeTone: "neutral",
   },
   {
     pattern: /24時間ゴミ出し可|敷地内ゴミ置場/i,
@@ -407,7 +421,7 @@ export function parseAndExplainSpecialNotes(rawNotes?: string | null): ParsedSpe
   const seenTitles = new Set<string>();
 
   for (const token of tokens) {
-    if (!token || token.length < 2 || isBrokerInternalClause(token)) continue;
+    if (!token || token.length < 2 || /^(?:[・\s]*費用|別途契約)$/u.test(token) || isBrokerInternalClause(token)) continue;
 
     // 比對預設規則字典
     let matched = false;

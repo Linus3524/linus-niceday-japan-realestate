@@ -173,50 +173,52 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       );
     markerMapRef.current.set("property", propertyMarker);
 
-    // 2. 車站 Marker（自適應膠囊長度，字體不溢出）
-    stationWalks.forEach((walk, idx) => {
-      const [lat, lon] = getStationPoint(walk, coordinate, idx);
-      const stationKey = `station-${idx}-${walk.station}`;
+    // 2. 車站 Marker（僅在「全部」或「車站」分頁顯示，避免在其他生活機能分頁重疊遮蔽其他設施）
+    if (activeCategory === "all" || activeCategory === "station") {
+      stationWalks.forEach((walk, idx) => {
+        const [lat, lon] = getStationPoint(walk, coordinate, idx);
+        const stationKey = `station-${idx}-${walk.station}`;
 
-      const stationIcon = L.divIcon({
-        className: "custom-pin-container",
-        html: `
-          <div class="custom-capsule-badge station-capsule">
-            <span class="pin-icon">🚉</span>
-            <span class="pin-text">${walk.station}駅</span>
-          </div>
-        `,
-        iconSize: [0, 0],
-        iconAnchor: [0, 0],
-        popupAnchor: [0, -16],
-      });
-
-      const marker = L.marker([lat, lon], { icon: stationIcon })
-        .addTo(layerGroup)
-        .bindPopup(
-          `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
-            <strong style="font-size: 13px; color: #1A2A22;">🚉 ${walk.station}駅</strong><br/>
-            <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : "圖紙刊載車站"}</span><br/>
-            <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
-            <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
-              常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
+        const stationIcon = L.divIcon({
+          className: "custom-pin-container",
+          html: `
+            <div class="custom-capsule-badge station-capsule">
+              <span class="pin-icon">🚉</span>
+              <span class="pin-text">${walk.station}駅</span>
             </div>
-            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(walk.station + "駅 " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
-              在 Google 地圖查看 ↗
-            </a>
-          </div>`
-        );
+          `,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+          popupAnchor: [0, -16],
+        });
 
-      marker.on("mouseover", () => {
-        setHoveredId(stationKey);
-        marker.openPopup();
-      });
-      marker.on("mouseout", () => {
-        setHoveredId(null);
-      });
+        const marker = L.marker([lat, lon], { icon: stationIcon })
+          .addTo(layerGroup)
+          .bindPopup(
+            `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
+              <strong style="font-size: 13px; color: #1A2A22;">🚉 ${walk.station}駅</strong><br/>
+              <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : "圖紙刊載車站"}</span><br/>
+              <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
+              <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
+                常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
+              </div>
+              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(walk.station + "駅 " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
+                在 Google 地圖查看 ↗
+              </a>
+            </div>`
+          );
 
-      markerMapRef.current.set(stationKey, marker);
-    });
+        marker.on("mouseover", () => {
+          setHoveredId(stationKey);
+          marker.openPopup();
+        });
+        marker.on("mouseout", () => {
+          setHoveredId(null);
+        });
+
+        markerMapRef.current.set(stationKey, marker);
+      });
+    }
 
     // 3. 周邊生活機能 Marker（膠囊自適應寬度，無文字溢出問題）
     amenities.forEach((amenity, idx) => {
@@ -277,11 +279,13 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       markerMapRef.current.set(amenityKey, marker);
     });
 
-    // 視野自動適應所有標記
+    // 視野自動適應當前分頁的所有標記
     const points: L.LatLngExpression[] = [[coordinate.lat, coordinate.lon]];
-    stationWalks.forEach((w, idx) => {
-      points.push(getStationPoint(w, coordinate, idx));
-    });
+    if (activeCategory === "all" || activeCategory === "station") {
+      stationWalks.forEach((w, idx) => {
+        points.push(getStationPoint(w, coordinate, idx));
+      });
+    }
     amenities.forEach((a, idx) => {
       if (activeCategory === "all" || a.category === activeCategory) {
         points.push(getAmenityPoint(a, coordinate, idx));
@@ -324,9 +328,11 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     mapInstanceRef.current.closePopup();
     setHoveredId(null);
     const points: L.LatLngExpression[] = [[coordinate.lat, coordinate.lon]];
-    stationWalks.forEach((w, idx) => {
-      points.push(getStationPoint(w, coordinate, idx));
-    });
+    if (activeCategory === "all" || activeCategory === "station") {
+      stationWalks.forEach((w, idx) => {
+        points.push(getStationPoint(w, coordinate, idx));
+      });
+    }
     amenities.forEach((a, idx) => {
       if (activeCategory === "all" || a.category === activeCategory) {
         points.push(getAmenityPoint(a, coordinate, idx));

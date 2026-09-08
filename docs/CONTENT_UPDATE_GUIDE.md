@@ -33,6 +33,8 @@ npm run data:review
 
 買房試算使用國土交通省不動產資訊資料庫 XIT001 API 靜態快照。金鑰存於伺服器端 `.env.local`，每季執行 `npm run data:update:mlit-buy`；金鑰不得使用 `VITE_` 前綴或傳到瀏覽器。沒有合格官方樣本時，買房地圖與試算器會共用同一套租金收益率模型並明確標示，不會把 At Home／SUUMO／HOME'S 的刊登價冒充成交價。
 
+戶建與土地另執行 `npm run data:update:mlit-special-sale` 與 `npm run data:update:athome-special-sale`，再跑 `npm run test:special-market`。兩類都須保留成交與刊登兩套基準、資料期間、樣本數及來源連結。整棟公寓／收益大樓不做市場比較，也不接 ATBB。
+
 ## 非公開資料、截圖與社群貼文
 
 銀行專員通知、仲介內網資料、管理公司信件、小紅書／微博／社群貼文、照片或聊天紀錄，都可以直接提供給 Codex。最理想的形式是原始連結、完整截圖、PDF、電子郵件全文，或標示取得日期與發布者的照片。

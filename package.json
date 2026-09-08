@@ -16,6 +16,10 @@
     "test:buy-market": "tsx scripts/test-buy-market.ts",
     "test:market-sources": "tsx scripts/test-market-data-sources.ts",
     "test:equipment": "tsx scripts/test-equipment-parser.ts",
+    "test:transit": "tsx scripts/test-transit-parser.ts",
+    "test:listing-commute": "tsx scripts/test-listing-commute.ts",
+    "test:special-sale": "tsx scripts/test-special-sale.ts",
+    "test:special-market": "tsx scripts/test-special-sale-market.ts",
     "test:sale-costs": "tsx scripts/test-sale-initial-costs.ts",
     "test:admin-metrics": "tsx scripts/test-admin-metrics.ts",
     "test:threads-search": "tsx scripts/test-threads-search.ts",
@@ -27,9 +31,14 @@
     "data:update:athome": "tsx scripts/update-athome-rent-data.ts",
     "data:update:athome-rent-national": "tsx scripts/update-athome-rent-nationwide.ts",
     "data:update:athome-sale": "tsx scripts/update-athome-sale-data.ts",
+    "data:update:athome-special-sale": "tsx scripts/update-athome-special-sale-data.ts",
     "data:update:mlit-buy": "tsx scripts/update-mlit-buy-data.ts",
+    "data:update:mlit-special-sale": "tsx scripts/update-mlit-special-sale-data.ts",
     "pdfjs:assets": "node scripts/copy-pdfjs-assets.mjs",
-    "predev": "npm run pdfjs:assets"
+    "predev": "npm run pdfjs:assets",
+    "test:rental-conditions": "tsx scripts/test-rental-conditions.ts",
+    "test:listing-audit": "tsx scripts/test-listing-audit.ts",
+    "test:consumer-listing": "tsx scripts/test-consumer-listing.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

@@ -550,6 +550,18 @@ export interface SalePriceFactor {
   label: string;
   ratePercent: number;
   note: string;
+  /**
+   * 這一項有沒有真的乘進預期價。
+   *
+   * 只有「修正比較口徑」的項目才會套用（例如帶租約物件與實價登錄的自住成交
+   * 根本不是同一種買賣）。徒步、樓層、翻新這類「品質溢價」一律不套用——
+   * 它們的百分比是業界經驗值不是回歸結果，而且比較基準（同區同房型同屋齡帶的
+   * 成交中位數）本身就已經混合了各種徒步距離與樓層，再乘一次等於重複計算。
+   * 這些項目改成純參考資訊呈現。
+   */
+  applied: boolean;
+  /** data＝來自實際成交資料；estimate＝業界經驗值，無法用現有資料驗證 */
+  basis: "data" | "estimate";
 }
 
 export interface SalePriceInsightPoint {
@@ -586,6 +598,9 @@ export interface SalePriceVerdict {
   listingBenchmarkScopeLabel: string | null;
   areaAdjusted: boolean;
   areaBasisNote: string;
+  /** 比較基準是怎麼挑的（屋齡是否已由基準控制） */
+  baselineNote: string;
+  ageHandledInBaseline: boolean;
   factors: SalePriceFactor[];
   cautions: string[];
 }
@@ -655,18 +670,22 @@ export function buildSalePriceVerdict(input: {
 
   // ── 2. 屋齡（日本中古住宅價格對屋齡最敏感；基準為市場庫存主力 20～25 年）──
   let ageRate = 0;
+  let ageHandledInBaseline = false;
   if (ageYears !== null) {
     if (input.ageControlledByMarket) {
-      factors.push({ label: "屋齡", ratePercent: 0, note: `築 ${ageYears} 年（已使用同屋齡帶成交㎡單價，不重複加權）` });
+      // 屋齡由基準本身控制，不是一個「調整」。列成 +0% 的因子會讓使用者
+      // 以為系統沒考慮屋齡，但實際上它處理得比其他項都嚴謹（直接用同屋齡帶的
+      // 實際成交單價）。改由 baselineNote 說明，不放進因子清單。
+      ageHandledInBaseline = true;
     }
-    else if (ageYears <= 3) { ageRate = 0.25; factors.push({ label: "屋齡", ratePercent: 25, note: `築 ${ageYears} 年（新築／準新築）` }); }
-    else if (ageYears <= 5) { ageRate = 0.20; factors.push({ label: "屋齡", ratePercent: 20, note: `築 ${ageYears} 年（淺築新古屋）` }); }
-    else if (ageYears <= 10) { ageRate = 0.12; factors.push({ label: "屋齡", ratePercent: 12, note: `築 ${ageYears} 年（10 年內）` }); }
-    else if (ageYears <= 15) { ageRate = 0.06; factors.push({ label: "屋齡", ratePercent: 6, note: `築 ${ageYears} 年` }); }
-    else if (ageYears <= 25) { ageRate = 0; factors.push({ label: "屋齡", ratePercent: 0, note: `築 ${ageYears} 年（中古主力屋齡，等同基準）` }); }
-    else if (ageYears <= 30) { ageRate = -0.08; factors.push({ label: "屋齡", ratePercent: -8, note: `築 ${ageYears} 年` }); }
-    else if (ageYears <= 40) { ageRate = -0.18; factors.push({ label: "屋齡", ratePercent: -18, note: `築 ${ageYears} 年（築古）` }); }
-    else { ageRate = -0.28; factors.push({ label: "屋齡", ratePercent: -28, note: `築 ${ageYears} 年（高齡物件）` }); }
+    else if (ageYears <= 3) { ageRate = 0.25; factors.push({ label: "屋齡", ratePercent: 25, note: `築 ${ageYears} 年（新築／準新築）`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 5) { ageRate = 0.20; factors.push({ label: "屋齡", ratePercent: 20, note: `築 ${ageYears} 年（淺築新古屋）`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 10) { ageRate = 0.12; factors.push({ label: "屋齡", ratePercent: 12, note: `築 ${ageYears} 年（10 年內）`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 15) { ageRate = 0.06; factors.push({ label: "屋齡", ratePercent: 6, note: `築 ${ageYears} 年`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 25) { ageRate = 0; factors.push({ label: "屋齡", ratePercent: 0, note: `築 ${ageYears} 年（中古主力屋齡，等同基準）`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 30) { ageRate = -0.08; factors.push({ label: "屋齡", ratePercent: -8, note: `築 ${ageYears} 年`, applied: false, basis: "estimate" }); }
+    else if (ageYears <= 40) { ageRate = -0.18; factors.push({ label: "屋齡", ratePercent: -18, note: `築 ${ageYears} 年（築古）`, applied: false, basis: "estimate" }); }
+    else { ageRate = -0.28; factors.push({ label: "屋齡", ratePercent: -28, note: `築 ${ageYears} 年（高齡物件）`, applied: false, basis: "estimate" }); }
 
     // 1981 年 6 月前確認申請的舊耐震，除了折價還牽涉貸款與減稅資格。
     const oldQuakeStandardAge = new Date().getFullYear() - 1981;
@@ -678,50 +697,58 @@ export function buildSalePriceVerdict(input: {
   // ── 3. 車站徒步（基準為徒步 8～10 分）──
   let walkRate = 0;
   if (walkMinutes !== null) {
-    if (walkMinutes <= 3) { walkRate = 0.12; factors.push({ label: "車站距離", ratePercent: 12, note: `最近站徒步 ${walkMinutes} 分（極近站）` }); }
-    else if (walkMinutes <= 5) { walkRate = 0.08; factors.push({ label: "車站距離", ratePercent: 8, note: `最近站徒步 ${walkMinutes} 分` }); }
-    else if (walkMinutes <= 7) { walkRate = 0.04; factors.push({ label: "車站距離", ratePercent: 4, note: `最近站徒步 ${walkMinutes} 分` }); }
-    else if (walkMinutes <= 10) { walkRate = 0; factors.push({ label: "車站距離", ratePercent: 0, note: `最近站徒步 ${walkMinutes} 分（等同基準）` }); }
-    else if (walkMinutes <= 15) { walkRate = -0.06; factors.push({ label: "車站距離", ratePercent: -6, note: `最近站徒步 ${walkMinutes} 分（略遠）` }); }
-    else { walkRate = -0.12; factors.push({ label: "車站距離", ratePercent: -12, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）` }); }
+    if (walkMinutes <= 3) { walkRate = 0.12; factors.push({ label: "車站距離", ratePercent: 12, note: `最近站徒步 ${walkMinutes} 分（極近站）`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 5) { walkRate = 0.08; factors.push({ label: "車站距離", ratePercent: 8, note: `最近站徒步 ${walkMinutes} 分`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 7) { walkRate = 0.04; factors.push({ label: "車站距離", ratePercent: 4, note: `最近站徒步 ${walkMinutes} 分`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 10) { walkRate = 0; factors.push({ label: "車站距離", ratePercent: 0, note: `最近站徒步 ${walkMinutes} 分（等同基準）`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 15) { walkRate = -0.06; factors.push({ label: "車站距離", ratePercent: -6, note: `最近站徒步 ${walkMinutes} 分（略遠）`, applied: false, basis: "estimate" }); }
+    else { walkRate = -0.12; factors.push({ label: "車站距離", ratePercent: -12, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）`, applied: false, basis: "estimate" }); }
   }
 
   // ── 4. 樓層 ──
   let floorRate = 0;
   if (floor !== null) {
     const ratio = totalFloors && totalFloors > 0 ? floor / totalFloors : null;
-    if (floor <= 0) { floorRate = -0.08; factors.push({ label: "樓層", ratePercent: -8, note: "地下樓層（採光與濕氣條件受限）" }); }
-    else if (floor === 1) { floorRate = -0.05; factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）" }); }
+    if (floor <= 0) { floorRate = -0.08; factors.push({ label: "樓層", ratePercent: -8, note: "地下樓層（採光與濕氣條件受限）", applied: false, basis: "estimate" }); }
+    else if (floor === 1) { floorRate = -0.05; factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）", applied: false, basis: "estimate" }); }
     else if (ratio !== null && totalFloors !== null && totalFloors >= 15 && ratio >= 0.8) {
-      floorRate = 0.10; factors.push({ label: "樓層", ratePercent: 10, note: `${floor} 樓／共 ${totalFloors} 樓（高層塔樓上段，眺望與稀少性溢價）` });
+      floorRate = 0.10; factors.push({ label: "樓層", ratePercent: 10, note: `${floor} 樓／共 ${totalFloors} 樓（高層塔樓上段，眺望與稀少性溢價）`, applied: false, basis: "estimate" });
     } else if (ratio === 1 && totalFloors !== null) {
-      floorRate = 0.06; factors.push({ label: "樓層", ratePercent: 6, note: `${floor} 樓／共 ${totalFloors} 樓（最上階，無樓上噪音與稀少性溢價）` });
+      floorRate = 0.06; factors.push({ label: "樓層", ratePercent: 6, note: `${floor} 樓／共 ${totalFloors} 樓（最上階，無樓上噪音與稀少性溢價）`, applied: false, basis: "estimate" });
     } else if (ratio !== null && ratio >= 0.5) {
-      floorRate = 0.04; factors.push({ label: "樓層", ratePercent: 4, note: `${floor} 樓／共 ${totalFloors} 樓（中高樓層）` });
+      floorRate = 0.04; factors.push({ label: "樓層", ratePercent: 4, note: `${floor} 樓／共 ${totalFloors} 樓（中高樓層）`, applied: false, basis: "estimate" });
     } else if (floor >= 3) {
-      floorRate = 0.02; factors.push({ label: "樓層", ratePercent: 2, note: `${floor} 樓（避開低樓層折價）` });
+      floorRate = 0.02; factors.push({ label: "樓層", ratePercent: 2, note: `${floor} 樓（避開低樓層折價）`, applied: false, basis: "estimate" });
     } else {
-      factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓` });
+      factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓`, applied: false, basis: "estimate" });
     }
   }
 
   // ── 5. 翻新 ──
   let renoRate = 0;
   const reno = `${input.renovationNotes || ""}`.toLowerCase();
+  // 這些樣式必須同時涵蓋日文與繁體中文：prompt 要求 renovationDetails
+  // 「請翻譯為繁體中文」，所以這裡拿到的通常已經不是日文原文了。
+  // 先前只寫日文關鍵字，實測ビューネ吉祥寺（整頁 RENOVATION PLAN、廚房浴室廁所
+  // 洗面地板壁紙全換）只命中「浴室」「洗面」兩個中日共通詞，2 < 4 沒達門檻，
+  // 翻新加成完全沒生效——而且畫面上不會顯示任何異常，是沉默失效。
   const renovationComponentCount = [
-    /キッチン/,
+    /キッチン|廚房|厨房/,
     /浴室|ユニットバス/,
-    /トイレ/,
+    /トイレ|廁所|洗手間/,
     /洗面/,
-    /フローリング|フロアタイル|床.*貼替/,
-    /クロス.*貼替|壁.*天井.*クロス/,
+    /フローリング|フロアタイル|床.*貼替|木質地板|地板.*(?:重鋪|鋪設|更換|翻新)/,
+    /クロス.*貼替|壁.*天井.*クロス|壁紙.*(?:重貼|更新|張替|重新)/,
+    /給湯器|熱水器/,
+    /建具|室內門|室内門/,
   ].filter(pattern => pattern.test(reno)).length;
   if (
     /リノベーション|リフォーム済|full renovation|フルリノベ|全面改装|内装(?:工事)?完成済/.test(reno)
+    || /全面翻新|整體翻新|全室翻新|翻新完成|[內内]裝工事完成|裝修完成/.test(reno)
     || renovationComponentCount >= 4
   ) {
     renoRate = 0.05;
-    factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝" });
+    factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝", applied: false, basis: "estimate" });
   }
 
   // ── 5.5 現況（帶租約 vs 空室）──
@@ -739,15 +766,24 @@ export function buildSalePriceVerdict(input: {
       label: "現況",
       ratePercent: -12,
       note: "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除",
+      applied: true,
+      basis: "data",
     });
     cautions.push("帶租約物件的價格主要由現行租金與收益率決定，與空屋自住行情不同口徑。除了本頁的成交比對，請一併確認現行租約的租金水準、剩餘期間與退租後的預估租金。");
   } else if (isVacant) {
-    factors.push({ label: "現況", ratePercent: 0, note: "空室即引渡（與實價登錄的自住成交同口徑，等同基準）" });
+    factors.push({ label: "現況", ratePercent: 0, note: "空室即引渡（與實價登錄的自住成交同口徑，等同基準）", applied: true, basis: "data" });
   }
 
-  // 單一因子已各自設限，總和再夾一次，避免多個正因子疊加成不合理的高預期價。
-  const totalRate = Math.max(-0.4, Math.min(0.5, ageRate + walkRate + floorRate + renoRate + occupancyRate));
-  const expectedPriceYen = areaBaseline * (1 + totalRate);
+  // 預期價只用「資料算得出來的部分」：同區同房型同屋齡帶的成交㎡單價 × 本案面積，
+  // 再乘上會改變比較口徑的修正（目前只有帶租約）。
+  //
+  // 徒步、樓層、翻新這些不乘進去：它們的百分比是業界經驗值不是回歸結果，
+  // 而且比較基準本身就混合了各種徒步距離與樓層，再乘一次是重複計算。
+  // 實測日本橋横山町一案，加了係數後預期價 10,196 萬（開價低 21.5%），
+  // 只用資料是 8,790 萬（開價低 9%），而 At Home 同區同房型的公開開價平均
+  // 8,320 萬（開價低 3.8%）——兩條獨立的資料路徑彼此接近，加了係數的版本明顯偏離。
+  const appliedRate = Math.max(-0.4, Math.min(0.5, occupancyRate));
+  const expectedPriceYen = areaBaseline * (1 + appliedRate);
 
   // 面積校準過的預期價較可信，容許區間可以收窄；沒校準時放寬，
   // 否則等於用一個本來就不精準的基準去做精準的指控。
@@ -926,6 +962,12 @@ export function buildSalePriceVerdict(input: {
     listingBenchmarkScopeLabel: listingBenchmark?.scopeLabel ?? null,
     areaAdjusted,
     areaBasisNote,
+    baselineNote: ageHandledInBaseline && ageYears !== null
+      ? `比較基準已鎖定同屋齡帶：本案築 ${ageYears} 年，採用同區、同房型、同屋齡帶的實際成交㎡單價，屋齡不再另外加權。`
+      : ageYears !== null
+        ? `該區該房型缺少同屋齡帶的足量成交樣本，屋齡改以業界經驗值估算，僅供參考。`
+        : "圖紙未讀到築年，無法就屋齡調整比較基準。",
+    ageHandledInBaseline,
     factors,
     cautions,
   };

@@ -27,10 +27,20 @@ jobs:
       - name: Run requirement regressions
         run: npm run test:requirement-verdict
 
+      - name: Verify listing commute and station parsing
+        run: |
+          npm run test:transit
+          npm run test:listing-commute
+          npm run test:special-sale
+          npm run test:rental-conditions
+          npm run test:listing-audit
+          npm run test:consumer-listing
+
       - name: Verify nationwide sale-market snapshots
         run: |
           npm run test:athome-rent
           npm run test:buy-market
+          npm run test:special-market
           npm run test:market-sources
 
       - name: Build production bundle

@@ -1,3 +1,7 @@
+import { additionalRentalFees, rentalConditionText, type RentalConditionFields } from "../lib/rentalConditions";
+import { buildListingAudit, type AuditFields, type ListingAudit } from "../lib/listingAudit";
+import { ListingAuditPanel } from "./ListingAuditPanel";
+import { consumerListingFields } from "../lib/consumerListingText";
 import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import {
   AlertCircle,
@@ -44,6 +48,7 @@ import {
   parseGuaranteeFee,
   formatShikibiki,
   isFreeOrZero,
+  hasExplicitZeroLeaseCharge,
   parseSalePrice,
   parseUnitsCount,
   parseYenAmount,
@@ -55,10 +60,18 @@ import {
   parseAgeYears,
 } from "../lib/listingExtraction";
 import { ListingLocationMap } from "./ListingLocationMap";
-import { parseAndExplainSpecialNotes } from "../lib/specialNotesParser";
-import { parseEquipmentList } from "../lib/equipmentParser";
+import { CommuteRouteCard } from "./CommuteRouteCard";
+import type { CommuteRouteDetails } from "../lib/rentAnalysis";
+import {
+  parseEquipmentList,
+  translateRenovationDetails,
+  translateOccupancyStatus,
+} from "../lib/equipmentParser";
 import { parseTransitStations } from "../lib/transitParser";
-import { criteriaTagStyle } from "../lib/criteriaTagStyles";
+import { originWalkIssue } from "../lib/commuteValidation";
+import { buildSpecialSaleDetails, saleOccupancy, statedCombinedAnnualPropertyTax, type SpecialSaleFields } from "../lib/specialSaleAnalysis";
+import { SpecialSaleReport } from "./SpecialSaleReport";
+import { RentalConditionSummary } from "./RentalConditionSummary";
 
 /**
  * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -106,6 +119,13 @@ export interface VerdictStatusTheme {
   dataBg: string;
   medianBadge: string;
   tagStyle: string;
+}
+
+/** 快照的屋齡帶鍵（age_0_10 等）轉成畫面用的中文標籤 */
+function ageBandLabel(band: string): string {
+  const m = band.match(/^age_(\d+)_(\d+|plus)$/);
+  if (!m) return band;
+  return m[2] === "plus" ? `築 ${m[1]} 年以上` : `築 ${m[1]}～${m[2]} 年`;
 }
 
 const STATUS_STYLE: Record<string, VerdictStatusTheme> = {
@@ -188,30 +208,6 @@ const getStatusStyle = (status?: string | null): VerdictStatusTheme => {
   return STATUS_STYLE[status] || STATUS_STYLE["待確認"];
 };
 
-/** 依據條件評估工具色票（criteriaTagStyle）為特約條款標籤進行語意分類跳色 */
-function getSpecialNoteTagStyle(category: string, badgeTone?: string): string {
-  if (badgeTone === "emerald") {
-    return criteriaTagStyle.equipment; // 綠色：利多優惠（免租期、免禮押、可商量寵物/樂器等）
-  }
-  switch (category) {
-    case "費用約定":
-      return criteriaTagStyle.budget; // 櫻紅：金錢費用項目（手續費、更新料、加收押金等）
-    case "合約特約":
-    case "買賣特約":
-      return criteriaTagStyle.special; // 暖橘：合約約束項目（短期違約金、解約條款）
-    case "生活規範":
-      return criteriaTagStyle.special; // 暖橘：生活規約限制（禁寵、禁煙、禁樂器等）
-    case "使用限制":
-      return criteriaTagStyle.layout; // 柔黃：使用用途限定（純住宅、事務所不可、民泊禁止）
-    case "入住條件":
-      return criteriaTagStyle.transport; // 晴藍：居住資格與人口限制（單身限定、人數規範、高齡者特別約定）
-    case "設施設備":
-      return criteriaTagStyle.equipment; // 嫩綠：公設與服務項目（24H安心生活管家、網路、駐輪設備）
-    default:
-      return "border-[#DDE3DF] bg-[#F5F8F6] text-[#55635B]";
-  }
-}
-
 export interface SaleAnalysisVerdict {
   salePriceYen: number;
   salePriceMan: number;
@@ -255,6 +251,7 @@ export interface SaleAnalysisVerdict {
     medianSqmPriceYen?: number | null;
     marketAgeBand?: string | null;
     marketAgeBandSampleCount?: number | null;
+    bucketSampleCount?: number | null;
     marketAgeBandScope?: "layout" | "district" | null;
     /** 相對「條件校準後預期價」的價差 */
     diffPercent: number | null;
@@ -276,7 +273,9 @@ export interface SaleAnalysisVerdict {
     listingBenchmarkScopeLabel?: string | null;
     areaAdjusted?: boolean;
     areaBasisNote?: string;
-    priceFactors?: Array<{ label: string; ratePercent: number; note: string }>;
+    priceFactors?: Array<{ label: string; ratePercent: number; note: string; applied?: boolean; basis?: "data" | "estimate" }>;
+    baselineNote?: string;
+    ageHandledInBaseline?: boolean;
     priceCautions?: string[];
     verdict: "bargain" | "fair" | "premium";
     verdictText: string;
@@ -301,7 +300,7 @@ export interface SaleAnalysisVerdict {
     };
   } | null;
   occupancyAssessment: {
-    status: "vacant" | "tenanted_investment" | "occupied_owner" | "unknown";
+    status: "vacant" | "tenanted_investment" | "occupied_owner" | "unknown" | "hospitality";
     statusText: string;
     investmentYield?: {
       monthlyRentYen: number;
@@ -316,7 +315,7 @@ export interface SaleAnalysisVerdict {
   initialCosts: ReturnType<typeof calculateSaleInitialCosts>;
 }
 
-interface ExtractedFields {
+interface ExtractedFields extends SpecialSaleFields, RentalConditionFields, AuditFields {
   dealType?: string;
   buildingName?: string;
   roomNumber?: string;
@@ -370,6 +369,7 @@ interface ExtractedFields {
 }
 
 export interface InitialCostBreakdownItem {
+  isUnknown?: boolean;
   id: string;
   name: string;
   amount: number;
@@ -389,6 +389,7 @@ export interface InitialCostEstimate {
 }
 
 interface AnalyzeListingResult {
+  audit?: ListingAudit;
   dealType?: "sale" | "rent";
   extracted: ExtractedFields;
   parsed: {
@@ -420,6 +421,7 @@ interface AnalyzeListingResult {
 }
 
 interface ListingCommuteResult {
+  route?: CommuteRouteDetails | null;
   destinationInput: string;
   destinationAddress: string;
   destinationResolutionNote?: string | null;
@@ -734,8 +736,17 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   if (!rent) return null;
   const managementFee = result.parsed.managementFee ?? 0;
   const totalMonthlyCost = rent + managementFee;
-  const deposit = result.parsed.deposit ?? 0;
-  const keyMoney = result.parsed.keyMoney ?? 0;
+  const leaseChargeSource = [
+    result.extracted.deposit,
+    result.extracted.keyMoney,
+    rentalConditionText(result.extracted),
+  ].filter(Boolean).join(" ");
+  const depositExplicitZero = isFreeOrZero(result.extracted.deposit) || hasExplicitZeroLeaseCharge(leaseChargeSource, "deposit");
+  const keyMoneyExplicitZero = isFreeOrZero(result.extracted.keyMoney) || hasExplicitZeroLeaseCharge(leaseChargeSource, "keyMoney");
+  const depositUnknown = result.parsed.deposit == null && !depositExplicitZero;
+  const keyMoneyUnknown = result.parsed.keyMoney == null && !keyMoneyExplicitZero;
+  const deposit = depositExplicitZero ? 0 : result.parsed.deposit ?? 0;
+  const keyMoney = keyMoneyExplicitZero ? 0 : result.parsed.keyMoney ?? 0;
 
   const formattedShikibiki = formatShikibiki(result.extracted.shikibiki);
   const hasShikibiki = Boolean(formattedShikibiki);
@@ -748,8 +759,9 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
       id: "deposit",
       name: "敷金（押金）",
       amount: deposit,
-      isFromFlyer: Boolean(result.extracted.deposit),
-      note: deposit === 0
+      isUnknown: depositUnknown,
+      isFromFlyer: Boolean(result.extracted.deposit) || depositExplicitZero,
+      note: depositUnknown ? "押金未確認，未計入小計" : deposit === 0
         ? "免押金（需留意退租時之原狀恢復或預收清掃費條款）": hasShikibiki
         ? `擔保性質費用（ 含「${formattedShikibiki}」扣除約定，退租時不退還）`: "擔保性質費用，退租扣除自然折舊外之修繕後退還餘額",
     },
@@ -757,8 +769,9 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
       id: "keyMoney",
       name: "禮金（礼金）",
       amount: keyMoney,
-      isFromFlyer: Boolean(result.extracted.keyMoney),
-      note: keyMoney === 0 ? "免禮金（無須額外贈與房東謝禮，初期負擔大幅減輕）" : "日本傳統贈與房東之謝禮，退租時不予退還",
+      isUnknown: keyMoneyUnknown,
+      isFromFlyer: Boolean(result.extracted.keyMoney) || keyMoneyExplicitZero,
+      note: keyMoneyUnknown ? "禮金未確認，未計入小計" : keyMoney === 0 ? "免禮金（無須額外贈與房東謝禮，初期負擔大幅減輕）" : "日本傳統贈與房東之謝禮，退租時不予退還",
     },
     {
       id: "advanceRent",
@@ -788,15 +801,19 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
       name: "仲介手續費（仲介手数料）",
       amount: Math.round(rent * 1.1),
       isFromFlyer: false,
-      note: "日本國土交通省法定上限為 1 個月租金 + 10% 消費稅",
+      note: "依日本租賃仲介費法定上限，以 1 個月租金加消費稅計。本試算先按此上限預留，實際是否收取及金額以申請管道、媒介契約與簽約前說明為準。",
     },
-    {
+    (() => {
+      const insuranceIncluded = /(?:含む|込み|含まれ|包含|已含)/u.test(result.extracted.insuranceFee || "");
+      const insuranceAmount = insuranceIncluded ? 0 : (parseYenAmount(result.extracted.insuranceFee) ?? 20000);
+      return {
       id: "insuranceFee",
-      name: "火災保險／家財保險（2年）",
-      amount: parseYenAmount(result.extracted.insuranceFee) ?? 20000,
-      isFromFlyer: Boolean(parseYenAmount(result.extracted.insuranceFee)),
-      note: result.extracted.insuranceFee ? `圖紙標示：${result.extracted.insuranceFee}`: "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
-    },
+      name: "火災保險／家財保險（期間待核對）",
+      amount: insuranceAmount,
+      isFromFlyer: insuranceIncluded || Boolean(parseYenAmount(result.extracted.insuranceFee)),
+      note: insuranceIncluded ? `已包含於圖紙指定的會員／支援費中：${result.extracted.insuranceFee}` : result.extracted.insuranceFee ? `圖紙標示：${result.extracted.insuranceFee}`: "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
+      };
+    })(),
     {
       id: "lockReplacementFee",
       name: "鑰匙更換費（鍵交換代）",
@@ -815,21 +832,23 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
       name: "退去清掃費／室內清潔費",
       amount: customCleaning ?? 44000,
       isFromFlyer: Boolean(customCleaning),
-      note: result.extracted.cleaningFee ? `圖紙標示：${result.extracted.cleaningFee}`: "免押金物件通常於簽約初期預收退租清掃費",
+      note: result.extracted.cleaningFee ? `圖紙標示：${result.extracted.cleaningFee}`: "金額與收費時點未載，暫列44,000円預備金；不是已確認的簽約請款",
     });
   }
 
   const customSupport = parseYenAmount(result.extracted.supportFee);
   if (customSupport && customSupport > 0) {
+    const isMembershipFee = /友の会|會員/u.test(result.extracted.supportFee || "");
     items.push({
       id: "supportFee",
-      name: "入居者サポート／24小時生活支援",
+      name: isMembershipFee ? "指定會員月費（含租客保障與緊急支援）" : "入居者サポート／24小時生活支援",
       amount: customSupport,
       isFromFlyer: true,
-      note: `圖紙標示：${result.extracted.supportFee}（24 小時生活急修與支援服務）`,
+      note: isMembershipFee ? `圖紙標示：${result.extracted.supportFee}；此為每月費用` : `圖紙標示：${result.extracted.supportFee}（24 小時生活急修與支援服務）`,
     });
   }
 
+  items.push(...additionalRentalFees(rentalConditionText(result.extracted)));
   const totalMin = items.filter(i => i.id !== "proratedRent").reduce((sum, i) => sum + i.amount, 0);
   const totalMax = items.reduce((sum, i) => sum + i.amount, 0);
   const monthsMultipleMin = Number((totalMin / totalMonthlyCost).toFixed(1));
@@ -846,6 +865,17 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   }
 
   const tips: string[] = [];
+  const managementFeeUnknown = result.parsed.managementFee == null && !result.extracted.managementFee;
+  const missingCosts = [
+    depositUnknown ? "押金" : null,
+    keyMoneyUnknown ? "禮金" : null,
+    managementFeeUnknown ? "共益費" : null,
+  ].filter((item): item is string => Boolean(item));
+  if (missingCosts.length > 0) {
+    level = "standard";
+    levelText = "必要費用未齊，暫不分級";
+    tips.push(`【費用待確認】${missingCosts.join("、")}未載明，目前只列已知及暫估小計；未載明項目不代表免收。`);
+  }
 
   // 1. 租金高性價比／超值物件
   if (result.verdict?.status === "超值") {
@@ -858,7 +888,7 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
   }
 
   // 3. 初期費用優惠（3.8 倍以下）
-  if (monthsMultipleMax <= 3.8) {
+  if (monthsMultipleMax <= 3.8 && missingCosts.length === 0) {
     tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.5～5.0 倍標準。`);
   }
 
@@ -902,7 +932,8 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
 function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerdict | null {
   const salePriceYen = result.parsed.salePrice ?? parseSalePrice(result.extracted.salePrice);
   if (!salePriceYen) return null;
-  const areaSqm = result.parsed.area ?? parseArea(result.extracted.area);
+  const propertyDetails = buildSpecialSaleDetails(result.extracted);
+  const areaSqm = propertyDetails.kind === "land" ? propertyDetails.landAreaSqm : propertyDetails.buildingAreaSqm ?? result.parsed.area ?? parseArea(result.extracted.area);
   const tsuboAndSqm = computeTsuboAndSqmPrice(salePriceYen, areaSqm);
   const managementFee = result.parsed.managementFee ?? parseYenAmount(result.extracted.managementFee) ?? 0;
   const repairReserve = result.parsed.repairReserve ?? parseYenAmount(result.extracted.repairReserve) ?? 0;
@@ -920,6 +951,7 @@ function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerd
   });
 
   const acquisitionTaxAssessment = assessRealEstateAcquisitionTax({
+    propertyCategory: propertyDetails.kind,
     buildingAssessedValueYen: parseNonNegativeYenAmount(result.extracted.buildingAssessedValue),
     landTaxAfterReliefYen: parseNonNegativeYenAmount(result.extracted.landAcquisitionTaxAfterRelief),
     fallbackTaxYen: parseNonNegativeYenAmount(result.extracted.realEstateAcquisitionTax),
@@ -933,12 +965,14 @@ function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerd
   const initialCosts = calculateSaleInitialCosts(salePriceYen, {
     monthlyManagementFeeYen: managementFee,
     monthlyRepairReserveYen: repairReserve + repairFund,
+    combinedAnnualPropertyTaxYen: statedCombinedAnnualPropertyTax(result.extracted.taxDetails),
     fixedAssetTaxYen: parseNonNegativeYenAmount(result.extracted.fixedAssetTax),
     cityPlanningTaxYen: parseNonNegativeYenAmount(result.extracted.cityPlanningTax),
     acquisitionTaxYen: acquisitionTaxAssessment.amount,
     acquisitionTaxNote: acquisitionTaxAssessment.note,
     registrationFeeYen: parseNonNegativeYenAmount(result.extracted.registrationFee),
-    prepaidMonths: 3,
+    prepaidMonths: propertyDetails.excludeCondoComparison ? 0 : 3,
+    insuranceFeeYen: propertyDetails.kind === "land" ? 0 : undefined,
   });
 
   return {
@@ -998,7 +1032,6 @@ export function ListingHealthCheck() {
   const [commute, setCommute] = useState<ListingCommuteResult | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
-  const [showSpecialNotes, setShowSpecialNotes] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 全螢幕檢視時支援 Esc 關閉
@@ -1187,6 +1220,12 @@ export function ListingHealthCheck() {
     const fallbackStation = result?.extracted.station.split(/[,，]/).map(v => v.trim()).find(Boolean);
     const originStation = firstWalk?.station || fallbackStation;
     if (!destination || !originStation || commuteLoading) return;
+    const walkIssue = originWalkIssue(firstWalk?.normalMinutes, firstWalk?.advertisedMinutes);
+    if (walkIssue) {
+      setCommute(null);
+      setCommuteError(walkIssue);
+      return;
+    }
 
     setCommuteLoading(true);
     setCommuteError(null);
@@ -1199,7 +1238,8 @@ export function ListingHealthCheck() {
         body: JSON.stringify({
           mode: "commute",
           originStation,
-          originWalkMinutes: firstWalk?.normalMinutes || 0,
+          originWalkMinutes: firstWalk?.normalMinutes,
+          originAdvertisedMinutes: firstWalk?.advertisedMinutes,
           addressContext: result?.extracted.address || "",
           destination,
         }),
@@ -1215,18 +1255,32 @@ export function ListingHealthCheck() {
     }
   };
 
-  const extracted = result?.extracted;
+  const extracted = result ? consumerListingFields(result.extracted) : undefined;
   const parsed = result?.parsed;
   const rent = parsed?.rent ?? null;
   const managementFee = parsed?.managementFee ?? 0;
   const totalMonthlyCost = rent !== null ? rent + managementFee : null;
   const initialCost = result?.initialCostEstimate || (result ? buildClientInitialCost(result) : null);
+  const initialCostTips = (() => {
+    if (!initialCost) return [];
+    const missingLabels = initialCost.items.flatMap((item) => {
+      if (!item.isUnknown) return [];
+      if (item.id === "deposit") return ["押金"];
+      if (item.id === "keyMoney") return ["禮金"];
+      if (item.id === "managementFee") return ["共益費"];
+      return [];
+    });
+    const currentTips = initialCost.tips.filter((tip) => !tip.startsWith("【費用待確認】"));
+    return missingLabels.length > 0
+      ? [`【費用待確認】${missingLabels.join("、")}未載明，目前只列已知及暫估小計；未載明項目不代表免收。`, ...currentTips]
+      : currentTips;
+  })();
 
   const stationSummary = extracted?.station
     ? extracted.station.split(/[,，]/).map(s => s.trim()).filter(Boolean).join("、")
     : null;
 
-  const parsedArea = parsed?.area ?? parseArea(extracted?.area);
+  const parsedArea = buildSpecialSaleDetails(extracted || {}).kind === "land" ? parseArea(extracted?.landArea) : parsed?.area ?? parseArea(extracted?.area);
   const displayArea = parsedArea
     ? `${parsedArea} ㎡（約 ${(parsedArea / 3.30578).toFixed(1)} 坪）`: extracted?.area || null;
 
@@ -1242,14 +1296,9 @@ export function ListingHealthCheck() {
     extracted?.specialNotes?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
     "";
   const formattedShikibiki = formatShikibiki(rawShikibiki);
-  const hasShikibiki = Boolean(formattedShikibiki);
   const hasPenalty = Boolean(
     extracted?.cancellationPenalty &&
       !/^(?:なし|無|0|-|ー|―)$/i.test(extracted.cancellationPenalty.trim())
-  );
-  const hasRenewal = Boolean(
-    extracted?.renewalFee &&
-      !/^(?:なし|無|0|-|ー|―)$/i.test(extracted.renewalFee.trim())
   );
 
   const isSRCBuilding = /src|鉄骨[・･\s]*鉄筋|鋼骨[・･\s]*鋼筋/i.test(
@@ -1285,23 +1334,30 @@ export function ListingHealthCheck() {
     result?.dealType === "sale" ||
     Boolean(result?.saleAnalysis) ||
     Boolean(result?.parsed?.salePrice && result.parsed.salePrice >= 10000000);
-  const saleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
+  const listingAudit = result ? result.audit || buildListingAudit(result.extracted, isSaleListing ? "sale" : "rent") : null;
+  const rawSaleAnalysis = result?.saleAnalysis || (result ? buildClientSaleAnalysis(result) : null);
+  const saleAnalysis = listingAudit?.blocksComparison && rawSaleAnalysis ? { ...rawSaleAnalysis, mlitComparison: null } : rawSaleAnalysis;
+  const specialSale = buildSpecialSaleDetails(extracted || {});
+  const isSpecialSale = specialSale.excludeCondoComparison;
   const taxEstimationSummary = summarizeTaxEstimationBasis(extracted?.taxEstimationBasis);
   const acquisitionTaxAssessment = saleAnalysis ? assessRealEstateAcquisitionTax({
+    propertyCategory: specialSale.kind,
     buildingAssessedValueYen: parseNonNegativeYenAmount(extracted?.buildingAssessedValue),
     landTaxAfterReliefYen: parseNonNegativeYenAmount(extracted?.landAcquisitionTaxAfterRelief),
     fallbackTaxYen: parseNonNegativeYenAmount(extracted?.realEstateAcquisitionTax),
     areaSqm: saleAnalysis.areaSqm,
     ageYears: saleAnalysis.buildingHealth.ageYears,
-    occupancyStatus: `${extracted?.occupancyStatus || ""} ${
+    occupancyStatus: `${specialSale.hospitality ? "民泊" : ""} ${extracted?.occupancyStatus || ""} ${
       extracted?.currentRent || extracted?.annualIncome || extracted?.grossYield ? "賃貸中" : ""
     }`,
   }) : null;
   const saleInitialCosts = saleAnalysis ? calculateSaleInitialCosts(saleAnalysis.salePriceYen, {
-    prepaidMonths: 3,
+    prepaidMonths: isSpecialSale ? 0 : 3,
+    insuranceFeeYen: specialSale.kind === "land" ? 0 : undefined,
     monthlyManagementFeeYen: saleAnalysis.monthlyHoldingCosts.managementFee,
     monthlyRepairReserveYen:
       saleAnalysis.monthlyHoldingCosts.repairReserve + saleAnalysis.monthlyHoldingCosts.repairFund,
+    combinedAnnualPropertyTaxYen: statedCombinedAnnualPropertyTax(extracted?.taxDetails),
     fixedAssetTaxYen: parseNonNegativeYenAmount(extracted?.fixedAssetTax),
     cityPlanningTaxYen: parseNonNegativeYenAmount(extracted?.cityPlanningTax),
     acquisitionTaxYen: acquisitionTaxAssessment?.amount,
@@ -1376,7 +1432,6 @@ export function ListingHealthCheck() {
         ? "日本買賣公寓"
         : "日本租賃物件");
   const isPdfPreview = file?.type === "application/pdf";
-  const specialNotesParsed = parseAndExplainSpecialNotes(extracted?.specialNotes);
   const equipmentList = parseEquipmentList(extracted?.facilities || extracted?.specialNotes);
   const stationItems = parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
   // Google 智慧容錯直達（以 site:mansion-review.jp 搜尋，徹底解決平假名／片假名／漢字登錄差異與 Brave 檔腳本問題）
@@ -1385,13 +1440,13 @@ export function ListingHealthCheck() {
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
       {/* 區塊頂部標題 */}
       <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00A174]">
-        <Sparkles className="h-4 w-4" /> Listing Sheet Analysis
+        <Sparkles className="h-4 w-4" /> Property Listing Diagnostics
       </div>
       <h3 className="mb-2 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
-        物件圖紙分析・全面健檢與數值行情預測
+        物件圖紙分析・全面健檢與市場行情比較
       </h3>
       <p className="mb-4 text-sm leading-relaxed text-[#3F5147]">
-        上傳仲介提供的物件概要書或図面（單張圖紙或 PDF 均可）。<strong>系統由 AI 自動辨識「租屋圖紙」或「買賣圖紙」</strong>，深度分析市場實價行情、每坪單價、持有成本與修繕基金合理性、初期費用試算及生活機能地圖。
+        上傳仲介提供的物件廣告圖或圖紙（單張圖片或 PDF 均可）。<strong>系統由 AI 自動辨識「租屋圖紙」或「買賣圖紙」</strong>，提供完整的租賃與買賣深度分析：涵蓋市場實價行情比較、租賃特約條款與退租注意事項檢視、買賣每坪單價與修繕積立金體質診斷、初期費用法定精算及周邊生活機能地圖。
       </p>
 
       {/* 隱藏的檔案上傳 input */}
@@ -1610,7 +1665,7 @@ export function ListingHealthCheck() {
 
       {/* 分析結果呈現區塊 */}
       {result && (
-        <div className="mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
+        <div className="listing-analysis-report mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
           {/* 物件標題 */}
           <div className="border-b border-[#DDE3DF] pb-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
@@ -1625,6 +1680,7 @@ export function ListingHealthCheck() {
           </div>
 
           {/* 原始圖紙對照：讓使用者能自行核對下方分析數值是否與圖紙相符 */}
+          {listingAudit && <ListingAuditPanel audit={listingAudit} />}
           {(previewImageUrl || previewUrl) && (
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1703,7 +1759,7 @@ export function ListingHealthCheck() {
           {isSaleListing && saleAnalysis ? (
             <>
               {/* 模組 S1：價格定位（實價登錄平均 vs 市場在售平均 vs 本案開價） */}
-              {saleAnalysis.mlitComparison && (() => {
+              {!isSpecialSale && saleAnalysis.mlitComparison && (() => {
                 const c = saleAnalysis.mlitComparison;
                 const priceMan = saleAnalysis.salePriceMan;
                 const man = (v: number | null | undefined) =>
@@ -1712,6 +1768,38 @@ export function ListingHealthCheck() {
                   totalMan == null || !saleAnalysis.tsuboAndSqm.tsubo
                     ? null
                     : (totalMan / saleAnalysis.tsuboAndSqm.tsubo).toFixed(1);
+
+                // 車站熱門度／路線多寡屬於「同區內這一戶比區域平均好在哪」，
+                // 區域層級的條件已內含在成交基準裡，不該再乘一次係數；
+                // 但用具體事實（可利用幾站、各幾分）解釋價差，比一個估出來的百分比有說服力。
+                // 周邊機能同樣屬於「同區內這一戶比區域平均好在哪」：
+                // 區域層級已含在成交基準裡，但門口有沒有超商、醫院多遠，
+                // 同一個行政區內差異很大，是解釋價差時的具體材料。
+                // 這份資料由 /api/listing-location 非同步取得，可能還沒回來，要容許缺席。
+                const amenityHighlights = (() => {
+                  const list = locationContext?.amenities ?? [];
+                  if (!list.length) return [];
+                  const order = ["convenience", "supermarket", "pharmacy", "medical", "school", "park"];
+                  const nearest = new Map<string, { label: string; distanceMeters: number }>();
+                  for (const a of list) {
+                    const cur = nearest.get(a.category);
+                    if (!cur || a.distanceMeters < cur.distanceMeters) {
+                      nearest.set(a.category, { label: a.label, distanceMeters: a.distanceMeters });
+                    }
+                  }
+                  return order
+                    .filter(k => nearest.has(k))
+                    .map(k => ({ category: k, ...nearest.get(k)! }));
+                })();
+
+                const stationFacts = (extracted?.station || "")
+                  .split(/[,，]/)
+                  .map(v => v.trim())
+                  .filter(Boolean);
+                const walkFacts = (extracted?.walkTime || "")
+                  .split(/[,，]/)
+                  .map(v => v.trim())
+                  .filter(Boolean);
 
                 const officialMan = typeof c.medianPriceMan === "number" && c.medianPriceMan > 0 ? c.medianPriceMan : null;
                 const listingMan = typeof c.typicalListingPriceMan === "number" && c.typicalListingPriceMan > 0
@@ -1803,7 +1891,7 @@ export function ListingHealthCheck() {
                               <span className="text-xl font-bold text-[#3F5147]">萬円</span>
                             </p>
                             <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#66736C]">
-                              {saleAnalysis.areaSqm && (
+                              {saleAnalysis.parsedArea && (
                                 <span className="tabular-nums">{saleAnalysis.areaSqm} ㎡</span>
                               )}
                               {saleAnalysis.tsuboAndSqm.tsuboPriceMan != null && (
@@ -1871,7 +1959,7 @@ export function ListingHealthCheck() {
                                 />
                                 {/* 上下限刻度、數字標籤與本案指標全部共用同一個 X 座標。 */}
                                 {[fairLow as number, fairHigh as number].map(v => (
-                                  <div key={v} className="absolute -top-1.5 h-6 w-[3px] -translate-x-1/2 bg-[#718078]" style={{ left: `${pos(v)}%` }} />
+                                  <div key={v} className="absolute -top-2 h-7 w-[3px] -translate-x-1/2 bg-[#9AA69F]" style={{ left: `${pos(v)}%` }} />
                                 ))}
                                 {benchmarks.map(b => (
                                   <div
@@ -1996,7 +2084,7 @@ export function ListingHealthCheck() {
                             <>，{c.listingDiffPercent >= 0 ? "也高於" : "也低於"}市場在售平均 <strong className="font-bold">{Math.abs(Math.round(c.listingDiffPercent))}%</strong></>
                           )}
                           。
-                          {hasFairRange && <>納入面積、車站距離、樓層與現況條件校準後，{fairState.short}。</>}
+                          {hasFairRange && <>以同區、同房型、同屋齡帶的實際成交㎡單價換算本案面積後，{fairState.short}。</>}
                         </div>
                       </div>
                       </div>
@@ -2008,52 +2096,136 @@ export function ListingHealthCheck() {
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
                             <Sparkles className="h-4 w-4 text-[#007D5A]" />
-                            <span>影響價格的主要因素</span>
+                            <span>這個判斷是根據什麼</span>
                           </div>
-                          <span className="text-[10px] text-[#66736C]">
-                            相對 {c.district} 同房型實價登錄平均 {c.medianPriceMan?.toLocaleString()} 萬円的加減幅度
-                          </span>
                         </div>
 
+                        {/* 證據鏈：比較對象 → 算式 → 交叉驗證。
+                            說服力來自「可以自己驗算、而且有第二個來源佐證」，
+                            不是來自一串沒有出處的百分比。 */}
+                        <div className="border border-[#DDE3DF] bg-white">
+                          {/* ① 比較對象 */}
+                          <div className="border-b border-[#DDE3DF] p-4 sm:p-5">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A9590]">① 比較對象</p>
+                            <p className="mt-1.5 text-sm font-bold leading-snug text-[#1A2A22]">
+                              {c.region}{c.district}・{c.layout}
+                              {c.marketAgeBand ? `・${ageBandLabel(c.marketAgeBand)}` : ""}
+                            </p>
+                            <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">
+                              國土交通省實際成交紀錄
+                              {typeof c.sampleCount === "number" ? ` ${c.sampleCount.toLocaleString()} 筆` : ""}
+                              {c.periodStart && c.periodEnd ? `・${c.periodStart}～${c.periodEnd}` : ""}
+                              {c.marketAgeBandScope === "district"
+                                ? "。該房型同屋齡帶樣本不足，改用同區跨房型的同屋齡帶單價。"
+                                : ""}
+                            </p>
+                            {typeof c.medianSqmPriceYen === "number" && c.medianSqmPriceYen > 0 && (
+                              <p className="mt-2 text-xs text-[#1A2A22]">
+                                成交㎡單價中位數{" "}
+                                <strong className="text-sm">{(c.medianSqmPriceYen / 10000).toFixed(1)} 萬円/㎡</strong>
+                              </p>
+                            )}
+                          </div>
+
+                          {/* ② 算式：讓人可以自己驗算 */}
+                          {typeof c.medianSqmPriceYen === "number" && c.medianSqmPriceYen > 0 && parsedArea && (
+                            <div className="border-b border-[#DDE3DF] bg-[#F9FBFA] p-4 sm:p-5">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A9590]">② 換算本案</p>
+                              <p className="mt-1.5 font-mono text-xs leading-relaxed text-[#1A2A22] sm:text-sm">
+                                {(c.medianSqmPriceYen / 10000).toFixed(1)} 萬/㎡ × {parsedArea}㎡ ={" "}
+                                <strong>{man(c.expectedPriceMan)} 萬円</strong>
+                              </p>
+                              <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
+                                本案開價 {man(priceMan)} 萬円 →{" "}
+                                <strong className="text-[#1A2A22]">
+                                  {typeof c.diffPercent === "number"
+                                    ? c.diffPercent >= 0
+                                      ? `高於成交基準 ${c.diffPercent.toFixed(1)}%`
+                                      : `低於成交基準 ${Math.abs(c.diffPercent).toFixed(1)}%`
+                                    : "—"}
+                                </strong>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ③ 交叉驗證：第二個獨立來源 */}
+                          {listingMan !== null && (
+                            <div className="p-4 sm:p-5">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A9590]">③ 另一個來源交叉驗證</p>
+                              <p className="mt-1.5 text-xs leading-relaxed text-[#1A2A22]">
+                                {c.listingBenchmarkSourceLabel || "公開刊登平均"}
+                                {c.listingBenchmarkScopeLabel ? `（${c.listingBenchmarkScopeLabel}）` : ""}
+                                　<strong className="text-sm">{man(listingMan)} 萬円</strong>
+                              </p>
+                              <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">
+                                本案開價 →{" "}
+                                {typeof c.listingDiffPercent === "number"
+                                  ? c.listingDiffPercent >= 0
+                                    ? `高於在售平均 ${c.listingDiffPercent.toFixed(1)}%`
+                                    : `低於在售平均 ${Math.abs(c.listingDiffPercent).toFixed(1)}%`
+                                  : "—"}
+                                。這是「開價對開價」的同口徑比較，與上方的成交價比較彼此獨立；
+                                兩者結論一致時，判斷的可信度較高。
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {c.baselineNote && (
+                          <p className="border border-[#9ee2cf] bg-[#f2faf7] px-4 py-2.5 text-[11px] leading-relaxed text-[#00654a] sm:px-5">
+                            {c.baselineNote}
+                          </p>
+                        )}
+
+                        {/* ④ 未量化的條件：不再假裝成百分比，改成具體事實 ＋ 該問仲介什麼。
+                            國交省成交資料不含徒步、樓層、路線數與周邊機能欄位，
+                            硬套係數只會重蹈徒步 +12% 的覆轍（基準本身已混合各種條件，會重複計算）。 */}
                         <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                        <dl className="divide-y divide-[#DDE3DF]">
-                          {[...c.priceFactors]
-                            .sort((a, b) => Math.abs(b.ratePercent) - Math.abs(a.ratePercent))
-                            .map((f, i) => {
-                              const Icon = factorIcon(f.label);
-                              const up = f.ratePercent > 0;
-                              const down = f.ratePercent < 0;
-                              // 與上方價格定位共用色票：市場在售橘、本案價格綠。
-                              const tone = up ? "#FB923C" : down ? "#007D5A" : "#8A9590";
-                              const width = Math.min(100, (Math.abs(f.ratePercent) / FACTOR_SCALE) * 100);
-                              return (
-                                <div key={i} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
-                                  <dt className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
-                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]">
-                                      <Icon className="h-3.5 w-3.5" />
-                                    </span>
-                                    <span className="text-xs font-bold text-[#1A2A22]">{f.label}</span>
-                                  </dt>
-                                  <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
-                                    <span className="min-w-0 flex-1 text-right text-[11px] leading-relaxed text-[#66736C]">
-                                      {f.note}
-                                    </span>
-                                    <span className="h-1.5 w-20 shrink-0 bg-[#EDF1EF] sm:w-28">
-                                      <span className="block h-full" style={{ width: `${width}%`, backgroundColor: tone }} />
-                                    </span>
-                                    <span className="w-12 shrink-0 text-right text-sm font-bold tabular-nums" style={{ color: tone }}>
-                                      {up ? "+" : down ? "−" : ""}{Math.abs(f.ratePercent)}%
-                                    </span>
-                                  </dd>
-                                </div>
-                              );
-                            })}
-                        </dl>
-
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#8A9590]">
+                            ④ 可以解釋價差的條件（未計入試算）
+                          </p>
+                          <ul className="mt-2 space-y-1.5">
+                            {stationFacts.length > 0 && (
+                              <li className="flex gap-2 text-[11px] leading-relaxed text-[#3F5147]">
+                                <span className="font-bold text-[#1A2A22]">交通</span>
+                                <span>
+                                  可利用 {stationFacts.length} 站
+                                  {stationFacts.length > 1 ? "（路線選擇多，通勤彈性較高）" : ""}：
+                                  {stationFacts
+                                    .map((st, i) => `${st}${walkFacts[i] ? ` 徒步${walkFacts[i]}分` : ""}`)
+                                    .join("、")}
+                                </span>
+                              </li>
+                            )}
+                            {amenityHighlights.length > 0 && (
+                              <li className="flex gap-2 text-[11px] leading-relaxed text-[#3F5147]">
+                                <span className="shrink-0 font-bold text-[#1A2A22]">生活機能</span>
+                                <span>
+                                  最近的{" "}
+                                  {amenityHighlights
+                                    .map(a => `${a.label} ${Math.round(a.distanceMeters)}m`)
+                                    .join("、")}
+                                  {locationContext?.amenities?.length
+                                    ? `（1.2 公里內共檢索到 ${locationContext.amenities.length} 處）`
+                                    : ""}
+                                </span>
+                              </li>
+                            )}
+                            {[...c.priceFactors]
+                              .filter(f => f.applied === false && f.label !== "屋齡")
+                              .map((f, i) => (
+                                <li key={i} className="flex gap-2 text-[11px] leading-relaxed text-[#3F5147]">
+                                  <span className="shrink-0 font-bold text-[#1A2A22]">{f.label}</span>
+                                  <span>{f.note}</span>
+                                </li>
+                              ))}
+                          </ul>
+                          <p className="mt-2.5 border-t border-[#DDE3DF] pt-2 text-[10px] leading-relaxed text-[#8A9590]">
+                            國交省成交資料不含徒步分鐘、樓層、路線數與周邊機能等欄位，無法量化，因此不列入上方試算。
+                            這些條件同區內差異很大，正是本案與區域基準出現價差時，最該向仲介確認的地方。
+                          </p>
                         </div>
-                        <p className="text-[10px] leading-relaxed text-[#8A9590]">
-                          長度條以 ±{FACTOR_SCALE}% 為滿格，% 僅代表相對區域平均的影響
-                        </p>
+
                       </div>
                     )}
 
@@ -2081,7 +2253,7 @@ export function ListingHealthCheck() {
                   {
                     key: "price",
                     icon: Coins,
-                    label: "販売價格（總價）",
+                    label: "物件總價（販売価格）",
                     value: saleAnalysis.salePriceMan.toLocaleString(),
                     unit: "萬円",
                     sub: formatYen(saleAnalysis.salePriceYen),
@@ -2095,7 +2267,7 @@ export function ListingHealthCheck() {
                       ? saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1) : "—",
                     unit: "萬円/坪",
                     sub: saleAnalysis.tsuboAndSqm.tsubo !== null
-                      ? `專有約 ${saleAnalysis.tsuboAndSqm.tsubo.toFixed(2)} 坪` : "依專有面積折算",
+                      ? `${specialSale.kind === "land" ? "土地約" : isSpecialSale ? "建物合計約" : "專有約"} ${saleAnalysis.tsuboAndSqm.tsubo.toFixed(2)} 坪` : "依面積折算",
                     primary: false,
                   },
                   {
@@ -2105,7 +2277,7 @@ export function ListingHealthCheck() {
                     value: saleAnalysis.tsuboAndSqm.sqmPriceMan !== null
                       ? saleAnalysis.tsuboAndSqm.sqmPriceMan.toFixed(1) : "—",
                     unit: "萬円/㎡",
-                    sub: saleAnalysis.areaSqm ? `專有面積 ${saleAnalysis.areaSqm} ㎡` : "專有面積換算",
+                    sub: saleAnalysis.areaSqm ? `${specialSale.kind === "land" ? "土地面積" : isSpecialSale ? "建物總面積" : "專有面積"} ${saleAnalysis.areaSqm} ㎡` : "面積未載明",
                     primary: false,
                   },
                   {
@@ -2136,8 +2308,8 @@ export function ListingHealthCheck() {
                       <span>買賣核心指標與坪單價速覽</span>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                    {heroCards.map(card => {
+                    <div className={`grid gap-3 sm:grid-cols-2 ${isSpecialSale ? "lg:grid-cols-3" : "lg:grid-cols-5"}`}>
+                    {heroCards.filter(card => !isSpecialSale || !["holding", "building"].includes(card.key)).map(card => {
                       const Icon = card.icon;
                       return (
                         <div
@@ -2196,7 +2368,7 @@ export function ListingHealthCheck() {
                       <dd className="font-bold text-[#1A2A22]">{extracted?.layout || "—"}</dd>
                     </div>
                     <div>
-                      <dt className="text-[#66736C]">專有面積</dt>
+                      <dt className="text-[#66736C]">{specialSale.kind === "land" ? "土地面積" : isSpecialSale ? "建物總面積" : "專有面積"}</dt>
                       <dd className="font-bold text-[#1A2A22]">{displayArea || "未於圖面載明"}</dd>
                     </div>
                     <div>
@@ -2229,7 +2401,7 @@ export function ListingHealthCheck() {
                     <div>
                       <dt className="text-[#66736C]">現況（引渡條件）</dt>
                       <dd className="font-bold text-[#1A2A22]">
-                        {extracted?.occupancyStatus || saleAnalysis.occupancyAssessment.statusText || "—"}
+                        {translateOccupancyStatus(extracted?.occupancyStatus) || translateOccupancyStatus(saleAnalysis.occupancyAssessment.statusText) || "—"}
                       </dd>
                     </div>
                     <div>
@@ -2243,6 +2415,11 @@ export function ListingHealthCheck() {
                   </dl>
 
                   {/* 交通資訊・最寄り駅路線與徒步 */}
+                  {!isSpecialSale && extracted?.optionalFacilities && <div className="mt-3 border-t border-[#DDE3DF] pt-3 text-xs leading-relaxed">
+                    <p className="font-bold text-[#1A2A22]">停車／選配設施（非固定管修費）</p>
+                    <p className="mt-1 whitespace-pre-line break-words text-[#3F5147]">{extracted.optionalFacilities}</p>
+                    <p className="mt-1 text-[11px] text-[#66736C]">空位與月費依管理單位確認，未加計至每戶固定管修費。</p>
+                  </div>}
                   {stationItems.length > 0 && (
                     <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
                       <div className="mb-2 flex items-center justify-between">
@@ -2316,10 +2493,12 @@ export function ListingHealthCheck() {
                 </div>
               </div>
               {/* 模組 S3：每月固定持有成本逐筆拆解與大樓健康度對比 */}
+              {isSpecialSale && <SpecialSaleReport fields={extracted || {}} />}
+              {!isSpecialSale && <>
               <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
                 <Wallet className="h-4 w-4 text-[#007D5A]" />
-                <span>持有成本與大樓體質審查</span>
+                <span>持有成本與建物狀態</span>
               </div>
               <div className="grid gap-4 lg:grid-cols-2">
                 {/* 左側：每月固定持有負擔逐筆拆解 */}
@@ -2329,8 +2508,8 @@ export function ListingHealthCheck() {
                       <Coins className="h-3.5 w-3.5 text-[#1A2A22]" />
                       每月持有成本明細
                     </p>
-                    <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-1 text-[11px] font-bold text-[#007D5A]">
-                      月合計 {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyHoldingCost)}
+                    <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-1 text-[11px] font-bold text-[#1A2A22]">
+                      月支出合計 {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyHoldingCost)}
                     </span>
                   </div>
 
@@ -2354,16 +2533,22 @@ export function ListingHealthCheck() {
                       ))}
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between gap-3 border border-[#9EE2CF] bg-[#E6F6F1] p-3">
+                    <div className="mt-3 flex items-center justify-between gap-3 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#007D5A] text-white">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#1A2A22] text-white">
                           <Calculator className="h-3.5 w-3.5" />
                         </span>
-                        <span className="text-xs font-bold text-[#1A2A22]">全年持有現金流成本（12 個月）</span>
+                        <div>
+                          <p className="text-xs font-bold text-[#1A2A22]">全年支出成本（12 個月）</p>
+                          <p className="mt-0.5 text-[10px] text-[#66736C]">管理費與修繕積立金等固定支出</p>
+                        </div>
                       </div>
-                      <span className="shrink-0 text-base font-black tabular-nums text-[#007D5A]">
-                        {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyHoldingCost * 12)} / 年
-                      </span>
+                      <div className="text-right">
+                        <span className="shrink-0 text-base font-black tabular-nums text-[#1A2A22]">
+                          {formatYen(saleAnalysis.monthlyHoldingCosts.totalMonthlyHoldingCost * 12)}
+                        </span>
+                        <span className="text-xs font-bold text-[#66736C]"> / 年</span>
+                      </div>
                     </div>
                     <p className="mt-2 text-[10px] leading-relaxed text-[#8A9590]">
                       ※ 不含每年 5〜6 月由地方政府課徵之固定資產稅・都市計畫稅（固都稅）。
@@ -2458,7 +2643,7 @@ export function ListingHealthCheck() {
                     <span>物件現況・投資回報率與自住法務要點</span>
                   </div>
                   <span className="text-[10px] text-[#66736C]">
-                    現況判定：{saleAnalysis.occupancyAssessment.statusText}
+                    現況判定：{translateOccupancyStatus(saleAnalysis.occupancyAssessment.statusText)}
                   </span>
                 </div>
                 {/* 兩張子卡直接當網格項目，不再多包一層外框（避免框中框） */}
@@ -2502,24 +2687,30 @@ export function ListingHealthCheck() {
                           </div>
                         </div>
 
-                        <p className="border-l-[3px] border-[#D95D39] bg-[#FBDFD2] px-4 py-3 text-[11px] leading-relaxed text-[#B13818]"><strong>帶租約物件注意事項：</strong>本物件為「オーナーチェンジ」，現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
+                        <p className="border-l-[3px] border-[#D95D39] bg-[#FBDFD2] px-4 py-3 text-[11px] leading-relaxed text-[#B13818]"><strong>帶租約物件注意事項：</strong>本物件為帶租約買賣（出租中），現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
                         </p>
                       </div>
                     ) : (
                       <div className="mt-3 space-y-2 text-xs">
                         <div className=" border border-[#9EE2CF] bg-[#F5F8F6] p-3">
                           <p className="font-bold text-[#007D5A]">
-                            {saleAnalysis.occupancyAssessment.status === "vacant"? "空室／全室翻新完成物件": "現有屋主居住中（相談引渡）"}
+                            {saleAnalysis.occupancyAssessment.status === "vacant"
+                              ? (saleOccupancy(extracted || {}).renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對")
+                              : saleAnalysis.occupancyAssessment.status === "occupied_owner" ? "現有屋主居住中（交屋期需協商）" : "現況未確認"}
                           </p>
                           <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">
-                            {saleAnalysis.occupancyAssessment.status === "vacant"? "交屋後可隨時自住入住，或依目前市場行情重新招租，靈活性最高。": "交屋時點需配合現屋主搬遷協商，請於簽約前確認引渡猶予期日。"}
+                            {saleAnalysis.occupancyAssessment.status === "vacant"
+                              ? saleOccupancy(extracted || {}).note
+                              : saleAnalysis.occupancyAssessment.status === "occupied_owner" ? "交屋時點需配合現屋主搬遷協商，請於簽約前確認賣方交屋寬限期（引渡猶予期日）。" : "圖紙未明確載明入住現況，請先確認是否有人居住與交屋條件。"}
                           </p>
                         </div>
 
                         {extracted?.renovationDetails && (
                           <div className=" border border-[#DDE3DF] bg-[#F5F8F6] p-2.5">
-                            <span className="font-bold text-[#1A2A22]">裝修與翻新內容（リノベーション）：</span>
-                            <p className="mt-1 text-[11px] text-[#66736C]">{extracted.renovationDetails}</p>
+                            <span className="font-bold text-[#1A2A22]">裝修與翻新內容（室內翻新履歷）：</span>
+                            <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">
+                              {translateRenovationDetails(extracted.renovationDetails)}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -2580,6 +2771,7 @@ export function ListingHealthCheck() {
               </div>
 
               {/* 模組 S5：買方交屋初期諸費用深度試算 */}
+              </>}
               {saleInitialCosts && (
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -2588,45 +2780,47 @@ export function ListingHealthCheck() {
                       <span>買方交屋諸費用深度試算</span>
                     </div>
                     <span className="text-[10px] text-[#66736C]">
-                      諸費用比率：約 {saleInitialCosts.percentageOfPrice.toFixed(1)}%
+                      {isSpecialSale ? "土地建物與營業用途需逐項核對" : "日本中古大樓諸費用常態約佔房價 5%～7%"}
                     </span>
                   </div>
 
                   {/* 總額預估 Banner */}
-                  <div className="flex flex-col justify-between gap-4 border border-[#DDE3DF] bg-[#F5F8F6] p-4 sm:flex-row sm:items-center">
-                    <div>
-                      <p className="text-xs font-bold text-[#007D5A]">買方交屋諸費用預估總額</p>
-                      <p className="mt-1 text-2xl font-black text-[#1A2A22] md:text-3xl">
-                        約 {formatYen(saleInitialCosts.total)}
-                      </p>
-                      <p className="mt-1 text-xs text-[#3F5147]">
-                        法定公式精算仲介費、印紙稅、固都稅日割與管修預繳；評價額相關稅費由 AI 辨識／推算
+                  <div className="flex flex-col justify-between gap-5 border border-[#DDE3DF] bg-[#F5F8F6] p-4 sm:flex-row sm:items-center sm:gap-8">
+                    <div className="min-w-0 sm:w-[78%]">
+                      <p className="text-xs font-bold text-[#007D5A]">{isSpecialSale ? "已列交屋費用小計（不含待核對項目）" : "買方交屋諸費用預估總額"}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2.5">
+                        <p className="flex items-center gap-1.5 text-2xl font-black text-[#1A2A22] md:text-3xl">
+                          <span className="text-sm font-semibold leading-none text-[#66736C]">約</span>
+                          <span className="leading-none tabular-nums">{formatYen(saleInitialCosts.total)}</span>
+                        </p>
+                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-xs font-bold text-[#007D5A]">
+                          約佔物件總價 {saleInitialCosts.percentageOfPrice.toFixed(1)}%
+                        </span>
+                      </div>
+                      <p className="mt-2.5 text-[11px] leading-relaxed text-[#8A9590]">
+                        {isSpecialSale ? "已列項目概算，取得稅待確認登記用途後另計；仲介費按一般上限參考，非已確認報價。" : "法定公式精算仲介費、印紙稅、固都稅日割與管修預繳；"}
+                        {taxEstimationSummary
+                          ? `評價額相關稅費依圖面推算（${taxEstimationSummary}），實際金額以交屋正式文件為準。`
+                          : "評價額相關稅費由 AI 依圖面推算，實際金額以交屋正式文件為準。"}
                       </p>
                     </div>
 
                     <button
-                      type="button" onClick={() => setShowSaleCostsDetails(!showSaleCostsDetails)}
-                      className="flex shrink-0 items-center justify-center gap-1.5 border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1] cursor-pointer">
+                      type="button" aria-expanded={showSaleCostsDetails} onClick={() => setShowSaleCostsDetails(!showSaleCostsDetails)}
+                      className="flex w-28 shrink-0 self-start items-center justify-center gap-1.5 whitespace-nowrap border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1] cursor-pointer sm:self-center">
                       {showSaleCostsDetails ? (
                         <>
-                          <span>收合費用明細</span>
+                          <span>收合明細</span>
                           <ChevronUp className="h-4 w-4" />
                         </>
                       ) : (
                         <>
-                          <span>查看諸費用逐項拆解</span>
+                          <span>展開明細</span>
                           <ChevronDown className="h-4 w-4" />
                         </>
                       )}
                     </button>
                   </div>
-
-                  {taxEstimationSummary && (
-                    <p className="border-l-2 border-[#8A9590] bg-[#F5F8F6] px-3 py-2 text-[10px] leading-relaxed text-[#66736C]">
-                      <strong className="mr-1 text-[#3F5147]">AI 稅費推算依據</strong>
-                      {taxEstimationSummary}
-                    </p>
-                  )}
 
                   {/* 項目逐筆拆解表格 */}
                   {showSaleCostsDetails && (
@@ -2640,11 +2834,11 @@ export function ListingHealthCheck() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#DDE3DF]">
-                          {saleInitialCosts.items.map(item => (
+                          {saleInitialCosts.items.filter(item => (!isSpecialSale || item.id !== "managementPrepayment") && (specialSale.kind !== "land" || item.id !== "insurance")).map(item => (
                             <tr key={item.id} className="hover:bg-[#F5F8F6]">
                               <td className="p-2.5 font-bold text-[#1A2A22]">{item.name}</td>
                               <td className="p-2.5 text-right font-bold text-[#007D5A]">
-                                {formatYen(item.amount)}
+                                {item.id === "acquisitionTax" && acquisitionTaxAssessment?.amount == null ? "待核對，未計入" : formatYen(item.amount)}
                               </td>
                               <td className="p-2.5 text-[11px] text-[#66736C]">{item.note}</td>
                             </tr>
@@ -2655,13 +2849,33 @@ export function ListingHealthCheck() {
                   )}
 
                   <div className="mt-4 border border-[#EAB879] bg-[#FEF3C7] p-4 text-xs leading-relaxed">
-                    <div className="mb-1 flex items-center gap-1.5 font-bold text-[#D97706]">
+                    <div className="mb-2 flex items-center gap-1.5 font-bold text-[#D97706]">
                       <Info className="h-4 w-4 text-[#D97706]" />
-                      <span>買方資金準備提醒：</span>
+                      <span>買方交屋初期費用試算說明與資金準備：</span>
                     </div>
-                    <p className="text-[#1A2A22]">
-                      固都稅以分析當日至年底的剩餘天數估算，管理費與修繕積立金預繳固定採 3 個月。AI 推算項目仍須以納稅通知書、都道府縣核定及司法書士正式報價為準。
-                    </p>
+                    <ul className="space-y-1.5 text-[11px] leading-relaxed text-[#3F5147]">
+                      <li className="flex items-start gap-1.5">
+                        <span className="font-bold text-[#D97706]">•</span>
+                        <span>
+                          <strong className="text-[#1A2A22]">固都稅日割計算標準：</strong>
+                          因現行圖紙分析階段尚未簽約約定交屋日，系統預設以「<strong>本日分析日起至年底之剩餘日數</strong>」進行日割概算；正式成交時將由司法書士以合約約定的<strong>實際交屋日（引渡日）</strong>為準按日精算。
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="font-bold text-[#D97706]">•</span>
+                        <span>
+                          <strong className="text-[#1A2A22]">{isSpecialSale ? "建物維護與營業預備金：" : "管修費用預繳慣例："}</strong>
+                          {specialSale.kind === "land" ? "土地需另外確認拆除、整地及建築預算，未套用公寓管修費預繳。" : isSpecialSale ? "整棟或透天需自行編列屋頂、外牆、設備更新及營運周轉金，未套用公寓管修費預繳。" : "日本大樓集合住宅交屋時，管理費與修繕積立金暫按預繳 3 個月估算，實際依管理組合請款確認。"}
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="font-bold text-[#D97706]">•</span>
+                        <span>
+                          <strong className="text-[#1A2A22]">法定稅費依據：</strong>
+                          登記免許稅、不動產取得稅與固都稅屬於地方稅務局核定稅額，AI 係依圖紙條件與法定稅率推估；實際金額以賣方提供的固定資產評價證明書及都道府縣稅務通知為準。
+                        </span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               )}
@@ -2872,7 +3086,7 @@ export function ListingHealthCheck() {
               </div>
 
               {/* 模組 2：租金行情診斷（同層級，無多餘外層大框框） */}
-              {result.verdict && (() => {
+              {!listingAudit?.blocksComparison && result.verdict && (() => {
                 const style = getStatusStyle(result.verdict.status);
                 const detailStr = cleanVerdictDetail || "";
                 const advantageMatch = detailStr.match(/^(.*?)(?:但此物件具備明顯優勢：)(.*?)(?:。)(.*)$/);
@@ -3017,8 +3231,8 @@ export function ListingHealthCheck() {
                   </div>
 
                   {/* 總額預估 Banner */}
-                  <div className="flex flex-col justify-between gap-4 border border-[#DDE3DF] bg-[#F5F8F6] p-4 sm:flex-row sm:items-center">
-                    <div>
+                  <div className="flex flex-col justify-between gap-5 border border-[#DDE3DF] bg-[#F5F8F6] p-4 sm:flex-row sm:items-center sm:gap-8">
+                    <div className="min-w-0 sm:w-[78%]">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-xs font-bold text-[#007D5A]">簽約入住預估總費用</p>
                         <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] font-bold ${
@@ -3026,25 +3240,25 @@ export function ListingHealthCheck() {
                           行情對照：{initialCost.levelText}
                         </span>
                       </div>
-                      <p className="mt-1 text-2xl font-black text-[#1A2A22] md:text-3xl">
+                      <p className="mt-2 text-2xl font-black text-[#1A2A22] md:text-3xl">
                         {formatYen(initialCost.totalMin)} ～ {formatYen(initialCost.totalMax)}
                       </p>
-                      <p className="mt-1 text-xs text-[#3F5147]">
+                      <p className="mt-2.5 text-xs leading-relaxed text-[#3F5147]">
                         約相當於月總租金的 <strong className="font-bold text-[#007D5A]">{initialCost.monthsMultipleMin} ～ {initialCost.monthsMultipleMax} 倍</strong>（取決於實際起租日與保證會社方案）
                       </p>
                     </div>
 
                     <button
-                      type="button" onClick={() => setShowInitialCostDetails(!showInitialCostDetails)}
-                      className="flex shrink-0 items-center justify-center gap-1.5 border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1] cursor-pointer">
+                      type="button" aria-expanded={showInitialCostDetails} onClick={() => setShowInitialCostDetails(!showInitialCostDetails)}
+                      className="flex w-28 shrink-0 self-start items-center justify-center gap-1.5 whitespace-nowrap border border-[#007D5A] bg-white px-4 py-2 text-xs font-bold text-[#007D5A] transition-colors hover:bg-[#E6F6F1] cursor-pointer sm:self-center">
                       {showInitialCostDetails ? (
                         <>
-                          <span>收合費用明細</span>
+                          <span>收合明細</span>
                           <ChevronUp className="h-4 w-4" />
                         </>
                       ) : (
                         <>
-                          <span>查看各項明細拆解</span>
+                          <span>展開明細</span>
                           <ChevronDown className="h-4 w-4" />
                         </>
                       )}
@@ -3080,7 +3294,7 @@ export function ListingHealthCheck() {
                                   )}
                                 </td>
                                 <td className="p-2.5 text-right font-bold text-[#1A2A22]">
-                                  {formatYen(item.amount)}
+                                  {item.isUnknown ? "待確認，未計入" : formatYen(item.amount)}
                                 </td>
                                 <td className="hidden p-2.5 text-[11px] text-[#66736C] md:table-cell">
                                   {item.note}
@@ -3101,14 +3315,14 @@ export function ListingHealthCheck() {
                   )}
 
                   {/* 簽約與初期費用提醒 */}
-                  {initialCost.tips.length > 0 && (
+                  {initialCostTips.length > 0 && (
                     <div className="border border-[#EAB879] bg-[#FEF3C7] p-4 text-xs leading-relaxed">
                       <div className="mb-1.5 flex items-center gap-1.5 font-bold text-[#D97706]">
                         <Info className="h-4 w-4 text-[#D97706]" />
                         <span>簽約與初期費用提醒：</span>
                       </div>
                       <ul className="space-y-1.5 pl-5 list-disc text-[#1A2A22]">
-                        {initialCost.tips.map((tip, idx) => (
+                        {initialCostTips.map((tip, idx) => (
                           <li key={idx}>{tip}</li>
                         ))}
                       </ul>
@@ -3119,171 +3333,24 @@ export function ListingHealthCheck() {
 
               {/* 模組 4：圖紙契約重要特約與法務注意事項（同層級，無多餘外層大框框） */}
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-                  <ShieldAlert className="h-4 w-4 text-[#007D5A]" />
-                  <span>圖紙契約重要特約與法務注意事項</span>
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
+                    <ShieldAlert className="h-4 w-4 text-[#007D5A]" />
+                    <span>圖紙契約重要特約與法務注意事項</span>
+                  </div>
+                  <p className="mt-1 pl-6 text-[11px] leading-relaxed text-[#66736C]">
+                    以下為本物件租賃契約的重點條款與相關費用，請於簽約前核對正式中文契約譯本。
+                  </p>
                 </div>
 
-                {/* 1. 敷引／償却（契約重要特約提醒） */}
-                {hasShikibiki ? (
-                  <div className="border border-[#FFA39E] bg-[#FFF1F0] p-4">
-                    <div className="space-y-1.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="border border-[#FFA39E] bg-white px-2 py-0.5 text-[10px] font-bold text-[#CF1322]">
-                          特約押金不退
-                        </span>
-                        <strong className="text-xs font-bold text-[#CF1322] sm:text-sm">
-                          「敷引／償却」約定：{formattedShikibiki}
-                        </strong>
-                      </div>
-                      <p className="text-xs leading-relaxed text-[#1A2A22]">
-                        此項約定代表退租時該筆押金將作為固定扣抵（通常用於屋況折舊與清潔修繕），不予退還。在規劃初期費用時，建議直接將其視為不可收回的固定支出；簽約前亦建議向仲介確認該款項是否已包含退租清潔費，以保障承租權益。
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2.5 border border-[#9EE2CF] bg-[#E6F6F1] p-3 text-xs text-[#007D5A]">
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-[#007D5A]" />
-                    <p className="leading-relaxed">
-                      <strong className="text-[#1A2A22]">敷引約定：</strong>圖紙未載明退租扣抵條款。退租時押金在扣除承租人修繕責任後，餘額將正常返還。
-                    </p>
-                  </div>
-                )}
+                <RentalConditionSummary
+                  rentalConditions={extracted?.rentalConditions}
+                  optionalFacilities={extracted?.optionalFacilities}
+                  specialNotes={extracted?.specialNotes}
+                  shikibiki={formattedShikibiki}
+                  hasCancellationPenalty={hasPenalty}
+                />
 
-                {/* 2. 違約金、更新料、保證會社與火災保險條款網格 */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {/* 短期解約違約金 */}
-                  <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-                    <p className="text-[11px] font-bold text-[#66736C]">短期解約違約金</p>
-                    <p className="mt-1 text-xs font-black text-[#1A2A22]">
-                      {hasPenalty ? extracted?.cancellationPenalty : "未特別標註（依常態條款）"}
-                    </p>
-                    <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
-                      {hasPenalty
-                        ? "若於約定期限內提早解約，需依約支付短期解約違約金。"
-                        : "日本常態租約多為 2 年期，常見約定未滿 1 年解約需支付 1 個月租金，請於簽約前確認重要事項說明書。"}
-                    </p>
-                  </div>
-
-                  {/* 契約更新料 */}
-                  <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-                    <p className="text-[11px] font-bold text-[#66736C]">契約更新料</p>
-                    <p className="mt-1 text-xs font-black text-[#1A2A22]">
-                      {hasRenewal ? extracted?.renewalFee : "每 2 年新租金 1 個月（常態）"}
-                    </p>
-                    <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
-                      每 2 年續約時支付之固定更新費用；亦請留意管理公司是否另收約 0.25～0.5 個月之更新事務手續費。
-                    </p>
-                  </div>
-
-                  {/* 保證會社方案 */}
-                  <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-                    <p className="text-[11px] font-bold text-[#66736C]">保證會社費用</p>
-                    <p className="mt-1 text-xs font-black text-[#1A2A22]">
-                      {extracted?.guaranteeFee ? (
-                        extracted.guaranteeFee.startsWith("保")
-                          ? extracted.guaranteeFee
-                          : `保證料：${extracted.guaranteeFee}`
-                      ) : "外國籍利用必須"}
-                    </p>
-                    <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
-                      {(() => {
-                        const fee = (extracted?.guaranteeFee || "").trim();
-                        const hasMonthly = /月次|月額|毎月|月\s*1%|月\s*2%/i.test(fee);
-                        const hasAnnual = /年|1万|10,?000|更新料/i.test(fee) && !/2年/i.test(fee);
-
-                        if (hasMonthly) {
-                          return "外國籍租客原則上必須加入保證會社。圖紙已約定月次保證料（隨每月租金支付），此方案次年通常無需再繳交每年約 1 萬円之年次更新料。";
-                        }
-                        if (hasAnnual) {
-                          return "外國籍租客原則上必須加入保證會社；除簽約時之初回保證料外，次年起需依約每年支付更新保證料。";
-                        }
-                        if (fee) {
-                          return "外國籍租客原則上必須加入保證會社；除初回保證料外，次年起依會社方案多為「每年約 1 萬円更新料」或「月次約 1%～2% 保證料」。";
-                        }
-                        return "外國籍租客原則上必須加入日本家賃債務保證會社；次年起依會社方案多有每年約 1 萬円之更新保證料或月次保證料。";
-                      })()}
-                    </p>
-                  </div>
-
-                  {/* 火災／家財保險 */}
-                  <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-                    <p className="text-[11px] font-bold text-[#66736C]">火災／家財保險</p>
-                    <p className="mt-1 text-xs font-black text-[#1A2A22]">
-                      {extracted?.insuranceFee ? (
-                        extracted.insuranceFee.includes("保")
-                          ? extracted.insuranceFee
-                          : `保費：${extracted.insuranceFee}`
-                      ) : "常態約 1.8 萬 ～ 2.2 萬円（2 年期）"}
-                    </p>
-                    <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
-                      {extracted?.insuranceFee
-                        ? "圖紙指定之 2 年期火災與租客家財賠償責任險；簽約時加入，每 2 年隨租約更新續保。"
-                        : "日本租屋必備之火災與借家人賠償責任保險，保障個人財物與突發事故賠償責任；每 2 年隨租約更新。"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* 3. 特約事項與生活限制備註：全部條列、統一字體與卡片設計 */}
-                {specialNotesParsed.length > 0 && (
-                  <div className="border border-[#DDE3DF] bg-white p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <FileText className="h-4 w-4 text-[#007D5A]" />
-                        <span className="text-xs font-bold text-[#1A2A22]">
-                          圖紙其他特約・生活規範與備考事項
-                        </span>
-                        <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-bold text-[#66736C]">
-                          共 {specialNotesParsed.length} 項條款
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setShowSpecialNotes(!showSpecialNotes)}
-                        className="flex items-center gap-1 text-xs font-bold text-[#007D5A] hover:text-[#00A174] cursor-pointer"
-                        aria-expanded={showSpecialNotes}
-                      >
-                        <span>{showSpecialNotes ? "收合條款解析" : "展開查看條款解析"}</span>
-                        {showSpecialNotes ? (
-                          <ChevronUp className="h-3.5 w-3.5" />
-                        ) : (
-                          <ChevronDown className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-                    </div>
-
-                    {showSpecialNotes && (
-                      <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
-                        {specialNotesParsed.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="border border-[#DDE3DF] bg-[#F5F8F6] p-3 transition-colors"
-                          >
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <span
-                                className={`border px-1.5 py-0.5 text-[10px] font-bold ${getSpecialNoteTagStyle(item.category, item.badgeTone)}`}
-                              >
-                                {item.category}
-                              </span>
-                              <span className="text-xs font-bold text-[#1A2A22]">{item.title}</span>
-                            </div>
-
-                            <p className="mt-1.5 text-xs leading-relaxed text-[#3F5147]">
-                              {item.explanation}
-                            </p>
-
-                            {item.rawJapanese && (
-                              <p className="mt-1.5 text-[10px] text-[#66736C]">
-                                圖紙原文：{item.rawJapanese}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </>
       )}
@@ -3475,19 +3542,30 @@ export function ListingHealthCheck() {
             {commuteError && <p className="mt-2 bg-[#FEF3C7] p-3 text-xs text-[#D97706]">{commuteError}</p>}
             {commute && (
               <div className="mt-3 border border-[#DDE3DF] bg-[#F5F8F6] p-4">
-                <div className="flex items-end justify-between gap-3">
+                <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
                     <p className="text-[11px] font-bold text-[#007D5A]">全程門到門通勤時間</p>
-                    <p className="mt-1 text-base font-bold text-[#1A2A22]">{commute.destinationStation}駅方向・轉乘 {commute.transfers} 次</p>
+                    <p className="mt-1 text-base font-bold text-[#1A2A22]">
+                      {commute.route ? `${commute.route.originStation} → ${commute.route.destinationStation}` : commute.destinationStation}
+                      ・轉乘 {commute.transfers} 次
+                    </p>
                   </div>
                   <p className="shrink-0 text-3xl font-black text-[#007D5A]">約 {commute.totalMinutes} 分</p>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">
-                  出門步行 {commute.originWalkMinutes} 分 ＋ 電車 {commute.transitMinutes} 分 ＋ 出站抵達 {commute.destinationWalkMinutes} 分
+                  出門步行 {commute.originWalkMinutes} 分 ＋ 站間交通 {commute.transitMinutes} 分 ＋ 出站抵達 {commute.destinationWalkMinutes} 分
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">目的地定位：{commute.destinationAddress}</p>
                 {commute.destinationResolutionNote && (
                   <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#D97706]">{commute.destinationResolutionNote}</p>
+                )}
+                {commute.route ? (
+                  <div className="mt-4 min-w-0">
+                    <p className="mb-2 text-[11px] text-[#66736C]">站間交通路線（下方時間不含出門與抵達目的地的步行）</p>
+                    <CommuteRouteCard route={commute.route} />
+                  </div>
+                ) : (
+                  <p className="mt-3 text-xs text-[#66736C]">目前未取得詳細線路與上下車站資料，請重新計算通勤。</p>
                 )}
               </div>
             )}

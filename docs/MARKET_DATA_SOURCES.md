@@ -9,13 +9,15 @@
 - 交叉檢查：SUUMO 與 LIFULL HOME'S 提供全國公開相場入口，但統計維度不同，目前不把三站數字硬平均。
 - 買房成交基準：以國土交通省 XIT001 為第一順位，涵蓋全 47 都道府縣；只對至少 5 筆的市區町村／格局出結論。
 - 買房公開開價：優先使用 At Home 同市區町村／格局公開刊登平均；缺值時才使用東日本、中部、近畿 REINS 的區域「新規登錄㎡單價 ÷ 成約㎡單價」備援。西日本公開 REINS 摘要無新規登錄價，不補造數值。
+- 戶建與土地：同樣並列國交省同市區町村、同面積帶成交基準與 At Home 公開刊登基準。戶建有至少 5 筆同屋齡帶成交時再做屋齡校準；土地以每㎡成交價換算本案面積。
+- 整棟公寓／收益大樓：資料口徑不足，不顯示價格或收益率比較；本站不接 ATBB，也不以未授權資料補值。
 - At Home、SUUMO、HOME'S 的二手屋相場都是刊登／募集價格，不是實際成交價，不能取代國交省交易資料。
 
 ## 更新矩陣
 
 | 來源 | 涵蓋資料 | 來源期間／更新節奏 | 本站節奏 | 自動匯入狀態 |
 | --- | --- | --- | --- | --- |
-| At Home 公開相場 | 租金、二手公寓、二手住宅等刊登平均 | 最近 3 個月；未承諾固定更新日 | 每季（1、4、7、10 月） | 自動建立靜態快照 |
+| At Home 公開相場 | 租金、中古公寓、中古戶建、土地的公開刊登相場 | 各公開頁目前可讀值；未承諾固定更新日 | 每季（1、4、7、10 月） | 自動建立靜態快照 |
 | SUUMO 公開相場 | 租金、二手公寓等 SUUMO 刊登／登錄集計 | 頁面標示資料時點 | 每季同日人工抽樣 | 目前不自動匯入 |
 | LIFULL HOME'S 公開相場 | 租金與二手公寓刊登平均 | 租金頁通常每週五；二手公寓頁每月 | 每季同日人工抽樣 | 目前不自動匯入 |
 | 國交省不動產資訊資料庫 API | 實際交易價格、成約價格 | 季度資料；實際更新日看官方公告 | 每季更新 | 已啟用靜態快照 |
@@ -75,6 +77,19 @@ npm run lint
 
 畫面同時提供 [At Home](https://www.athome.co.jp/mansion/chuko/souba/)、[SUUMO](https://suumo.jp/ms/chuko/soba/) 與 [LIFULL HOME'S](https://www.homes.co.jp/mansion/chuko/price/) 全國中古公寓相場入口。只有 At Home 的市區町村／格局平均進入第二基準；SUUMO 偏向車站 × 面積帶中位數，HOME'S 亦有自己的面積維度，不能在未正規化前直接平均。
 
+戶建與土地每季依序執行：
+
+```bash
+npm run data:update:mlit-special-sale
+npm run data:update:athome-special-sale
+npm run test:special-market
+npm run test:market-sources
+```
+
+國交省快照分開保存「宅地（土地と建物）且用途為住宅」的戶建，以及「宅地（土地）」的土地交易。兩者皆按市區町村與面積帶彙整，近四季至少 5 筆、不足時擴至近八季。At Home 快照涵蓋 [中古戶建價格相場](https://www.athome.co.jp/kodate/chuko/souba/) 與 [土地價格相場](https://www.athome.co.jp/tochi/souba/)；戶建使用建物面積帶的刊登總價，土地使用土地面積帶的每㎡刊登價。
+
+2026-09-08 快照含國交省戶建 4,980 個、土地 4,721 個合格市區町村／面積帶；At Home 含戶建 1,434 個、土地 1,489 個行政區市場。畫面顯示資料期間、樣本數、來源連結與國交省 credit；同區同面積帶不足時維持無法判定，不借用公寓或鄰區數值。
+
 只要買房試算實際用到國交省快照，畫面就會顯示規約要求的 credit：
 
 > このサービスは、国土交通省の不動産情報ライブラリのAPI機能を使用していますが、提供情報の最新性、正確性、完全性等が保証されたものではありません
@@ -95,5 +110,7 @@ npm run lint
 - [國交省 XIT001 API 說明](https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/)
 - [國交省 API 利用規約](https://www.reinfolib.mlit.go.jp/help/termsOfUse/)
 - [At Home 中古公寓價格相場](https://www.athome.co.jp/mansion/chuko/souba/)
+- [At Home 中古戶建價格相場](https://www.athome.co.jp/kodate/chuko/souba/)
+- [At Home 土地價格相場](https://www.athome.co.jp/tochi/souba/)
 - [SUUMO 中古公寓價格相場](https://suumo.jp/ms/chuko/soba/)
 - [LIFULL HOME'S 中古公寓價格相場](https://www.homes.co.jp/mansion/chuko/price/)
