@@ -2209,10 +2209,10 @@ export function ListingHealthCheck() {
                             <span className="text-xs font-bold text-[#1A2A22]">本案條件個別影響幅度</span>
                             <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-[#8A9590]">
                               <span className="inline-flex items-center gap-1">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#0284C7]" />成交資料實測
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#0284C7]" />成交資料統計
                               </span>
                               <span className="inline-flex items-center gap-1">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#8A9590]" />業界經驗值
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#8A9590]" />市場推估
                               </span>
                               <span>·　長度條以 ±{FACTOR_SCALE}% 為刻度</span>
                             </span>
@@ -2242,7 +2242,7 @@ export function ListingHealthCheck() {
                                         <Icon className="h-3.5 w-3.5" />
                                       </span>
                                       <span className="text-xs font-bold text-[#1A2A22]">{f.label}</span>
-                                      {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是經驗值 */}
+                                      {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是推估 */}
                                       <span
                                         className={`shrink-0 border px-1.5 py-0.5 text-[9px] font-bold ${
                                           f.basis === "data"
@@ -2251,9 +2251,9 @@ export function ListingHealthCheck() {
                                         }`}
                                         title={f.basis === "data"
                                           ? "此幅度由國土交通省實際成交資料統計得出"
-                                          : "成交資料沒有這個欄位，此幅度為市場調查／業界經驗值，僅供參考"}
+                                          : "成交資料沒有這個欄位，此幅度依市場行情推估，僅供參考"}
                                       >
-                                        {f.basis === "data" ? "實測" : "經驗值"}
+                                        {f.basis === "data" ? "成交資料" : "市場推估"}
                                       </span>
                                     </dt>
                                     <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
@@ -2283,7 +2283,7 @@ export function ListingHealthCheck() {
                               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[#DDE3DF] pb-2.5">
                                 <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
                                   屋齡帶價格對照
-                                  <span className="border border-[#7DD3FC] bg-[#E0F2FE] px-1.5 py-0.5 text-[9px] font-bold text-[#0284C7]">實測</span>
+                                  <span className="border border-[#7DD3FC] bg-[#E0F2FE] px-1.5 py-0.5 text-[9px] font-bold text-[#0284C7]">成交資料</span>
                                 </span>
                                 <span className="text-[10px] text-[#8A9590]">
                                   {c.district}・{c.layout}　同區同房型的實際成交㎡單價
@@ -2330,9 +2330,7 @@ export function ListingHealthCheck() {
                                 ))}
                               </dl>
                               <p className="mt-2.5 text-[10px] leading-relaxed text-[#8A9590]">
-                                ※ 這是同一時點、不同建物之間的橫向比較，看的是「本區屋齡對成交單價的影響幅度」，
-                                不等於本案未來的價格走勢（那還要看整體行情漲跌與該棟自身條件）。各屋齡帶的建物條件與地段組成不同，
-                                愈舊不一定愈便宜。
+                                ※ 同一時點、不同建物的橫向比較，反映本區屋齡造成的價差，不是本案未來的價格預測。
                               </p>
                             </div>
                           );
