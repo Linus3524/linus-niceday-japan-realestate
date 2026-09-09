@@ -898,17 +898,36 @@ export function buildSalePriceVerdict(input: {
   // 本來就該比同一戶的空屋價低：買方無法自己入居、必須沿用現行租約與租金，
   // 融資多半只能走利率較高的投資用貸款，也不適用住宅ローン控除。
   // 反過來說，空室即入居可與翻新後販售的空屋，賣的正是自住買方的溢價。
-  // 折價幅度取業界慣例值：オーナーチェンジ 物件相對実需物件約折 10%。
+  //
+  // 折價幅度依房型分級，不用單一的 10%：
+  // 業界慣例值是「約折 10%」（chiyodaku-mansion.net、musashi-corporation.com），
+  // 但多個實務來源同時指出實際落差可到 20〜30%，且明講「ファミリータイプ比
+  // ワンルーム 更難賣、折得更兇」（landnet.co.jp／fgh.co.jp）。
+  // 理由在買方結構：1R・1K 的成交母體本來就以投資客為主，帶不帶租約的買方是同一群人，
+  // 我們的比較基準（同區同房型的實價登錄中位數）本身就已經是投資盤的價格，
+  // 再折 10% 等於重複扣一次；反之 2LDK 以上的母體以自住買方為主，
+  // 帶租約會把買方限縮成投資客，折價才會拉到兩成上下。
+  const occupancyDiscountByLayout: Record<LayoutCode, number> = {
+    r1: -0.03, k1: -0.03, ldk1: -0.10, ldk2: -0.18, ldk3: -0.20,
+  };
   let occupancyRate = 0;
   const occupancy = `${input.occupancyStatus || ""}`;
   const isTenanted = /賃貸中|オーナーチェンジ|賃借人|入居中|集金代行|サブリース/.test(occupancy);
   const isVacant = /空室|空家|空き|即入居|即引渡/.test(occupancy);
   if (isTenanted) {
-    occupancyRate = -0.10;
+    occupancyRate = occupancyDiscountByLayout[layout] ?? -0.10;
+    const familyType = layout === "ldk2" || layout === "ldk3";
+    const investorType = layout === "r1" || layout === "k1";
     factors.push({
       label: "現況",
-      ratePercent: -10,
-      note: "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除",
+      ratePercent: Math.round(occupancyRate * 1000) / 10,
+      note: `帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除${
+        familyType
+          ? "。此房型的成交母體以自住買方為主，帶租約會把買方限縮成投資客，折價幅度明顯較大"
+          : investorType
+            ? "。此房型的成交母體本來就以投資買方為主，與比較基準的買方結構接近，折價幅度較小"
+            : ""
+      }`,
       applied: true,
       basis: "estimate",
     });
