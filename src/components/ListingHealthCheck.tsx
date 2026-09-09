@@ -2161,7 +2161,7 @@ export function ListingHealthCheck() {
                                       className="text-2xl font-black leading-none tabular-nums"
                                       style={{ color: isBelow ? "#007D5A" : "#D97706" }}
                                     >
-                                      {d >= 0 ? "+" : "−"}{Math.abs(Math.round(d))}%
+                                      {d >= 0 ? "+" : "−"}{Math.abs(d).toFixed(1)}%
                                     </span>
                                     <span className="text-[10px] leading-tight text-[#3F5147]">
                                       {isBelow ? "低於" : "高於"}
@@ -2179,10 +2179,10 @@ export function ListingHealthCheck() {
                           {/* 這裡的基準必須跟上方那張卡的數字同源，否則會出現
                               上面寫 −9%、下面寫 5% 的矛盾（兩者曾各自用面積校準前後的基準）。 */}
                           {officialDiffPercent != null && (
-                            <>{officialDiffPercent >= 0 ? "高於" : "低於"}{isSpecialSale ? "國交省基準" : "實價登錄平均"} <strong className="font-bold">{Math.abs(Math.round(officialDiffPercent))}%</strong></>
+                            <>{officialDiffPercent >= 0 ? "高於" : "低於"}{isSpecialSale ? "國交省基準" : "實價登錄平均"} <strong className="font-bold">{Math.abs(officialDiffPercent).toFixed(1)}%</strong></>
                           )}
                           {c.listingDiffPercent != null && (
-                            <>，{c.listingDiffPercent >= 0 ? "也高於" : "也低於"}市場在售平均 <strong className="font-bold">{Math.abs(Math.round(c.listingDiffPercent))}%</strong></>
+                            <>，{c.listingDiffPercent >= 0 ? "也高於" : "也低於"}市場在售平均 <strong className="font-bold">{Math.abs(c.listingDiffPercent).toFixed(1)}%</strong></>
                           )}
                           。
                           {hasFairRange && <>以同區、同規模同條件換算本案面積後，{fairState.short}。</>}
@@ -2299,7 +2299,7 @@ export function ListingHealthCheck() {
                                       className="col-start-3 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-5 sm:row-start-1 sm:text-right"
                                       style={{ color: tone }}
                                     >
-                                      {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent)}%`}
+                                      {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent).toFixed(1)}%`}
                                     </span>
                                   </div>
                                 );
@@ -2371,7 +2371,7 @@ export function ListingHealthCheck() {
                                         className="col-start-2 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-4 sm:row-start-1 sm:text-right"
                                         style={{ color: tone }}
                                       >
-                                        {r.isCurrent ? "基準" : `${r.diffPercent > 0 ? "+" : "−"}${Math.abs(r.diffPercent)}%`}
+                                        {r.isCurrent ? "基準" : `${r.diffPercent > 0 ? "+" : "−"}${Math.abs(r.diffPercent).toFixed(1)}%`}
                                       </dd>
                                       <dd
                                         className="col-start-1 row-start-3 flex items-center gap-1 sm:col-start-5 sm:row-start-1 sm:justify-self-center"

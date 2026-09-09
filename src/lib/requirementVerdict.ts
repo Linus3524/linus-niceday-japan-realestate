@@ -810,7 +810,7 @@ export function buildSalePriceVerdict(input: {
   // 這個百分比在建快照時已控制屋齡與房型，代表的是地段本身而不是屋齡組成。
   if (input.townPremium && Math.abs(input.townPremium.premiumPercent) >= 3) {
     const t = input.townPremium;
-    const pct = Math.round(t.premiumPercent);
+    const pct = Math.round(t.premiumPercent * 10) / 10;
     factors.push({
       label: "地段（町名）",
       ratePercent: pct,
@@ -827,7 +827,7 @@ export function buildSalePriceVerdict(input: {
   let structureRate = 0;
   const measuredStructure = input.conditionPremium?.structurePremiumPercent ?? null;
   if (measuredStructure !== null && /ＳＲＣ|SRC|鉄骨鉄筋|鉄骨[・･\s]*鉄筋|鋼骨鋼筋/i.test(input.structureText || "")) {
-    const pct = Math.round(measuredStructure);
+    const pct = Math.round(measuredStructure * 10) / 10;
     structureRate = pct / 100;
     factors.push({
       label: "建物構造",
