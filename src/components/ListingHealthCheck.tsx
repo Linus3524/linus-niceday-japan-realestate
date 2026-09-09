@@ -1399,13 +1399,13 @@ export function ListingHealthCheck() {
     baselineNote: specialSale.kind === "land" ? "土地以每㎡成交單價校準本案面積。" : "戶建以土地建物合計成交價按建物面積正規化；仍須另核對土地形狀、接道及建物狀況。",
     priceFactors: [
       ...(specialSale.kind === "detached" ? [
-        { label: "物件型態", ratePercent: 0, note: "透天住宅（獨棟戶建／非集合公寓）", applied: true },
+        { label: "物件型態", ratePercent: 0, note: "透天住宅（獨棟戶建／非集合公寓）", applied: true, basis: "data" as const },
       ] : []),
       ...(extracted?.age ? [
-        { label: "屋齡", ratePercent: 0, note: `${extracted.age}（${specialComparison.ageControlled ? "已比對同屋齡帶基準" : "同區行情平均"}）`, applied: true },
+        { label: "屋齡", ratePercent: 0, note: `${extracted.age}（${specialComparison.ageControlled ? "已比對同屋齡帶基準" : "同區行情平均"}）`, applied: true, basis: "data" as const },
       ] : []),
       ...(extracted?.station ? [
-        { label: "交通", ratePercent: 0, note: `${extracted.station}${extracted.walkTime ? ` 徒步${extracted.walkTime}分` : ""}`, applied: false },
+        { label: "交通", ratePercent: 0, note: `${extracted.station}${extracted.walkTime ? ` 徒步${extracted.walkTime}分` : ""}`, applied: false, basis: "estimate" as const },
       ] : []),
     ],
   } : null);
@@ -2202,7 +2202,15 @@ export function ListingHealthCheck() {
                         <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
                           <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[#DDE3DF] pb-2.5">
                             <span className="text-xs font-bold text-[#1A2A22]">本案條件個別影響幅度</span>
-                            <span className="text-[10px] text-[#8A9590]">長度條以 ±{FACTOR_SCALE}% 為基準刻度</span>
+                            <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-[#8A9590]">
+                              <span className="inline-flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#0284C7]" />成交資料實測
+                              </span>
+                              <span className="inline-flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#8A9590]" />業界經驗值
+                              </span>
+                              <span>·　長度條以 ±{FACTOR_SCALE}% 為刻度</span>
+                            </span>
                           </div>
                           {/* 土地・戸建是以「同面積帶的成交㎡單價」直接換算本案面積，
                               條件本身已含在基準價裡，所以每一項都會是 0%。
@@ -2229,6 +2237,19 @@ export function ListingHealthCheck() {
                                         <Icon className="h-3.5 w-3.5" />
                                       </span>
                                       <span className="text-xs font-bold text-[#1A2A22]">{f.label}</span>
+                                      {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是經驗值 */}
+                                      <span
+                                        className={`shrink-0 border px-1.5 py-0.5 text-[9px] font-bold ${
+                                          f.basis === "data"
+                                            ? "border-[#7DD3FC] bg-[#E0F2FE] text-[#0284C7]"
+                                            : "border-[#DDE3DF] bg-[#F5F8F6] text-[#8A9590]"
+                                        }`}
+                                        title={f.basis === "data"
+                                          ? "此幅度由國土交通省實際成交資料統計得出"
+                                          : "成交資料沒有這個欄位，此幅度為市場調查／業界經驗值，僅供參考"}
+                                      >
+                                        {f.basis === "data" ? "實測" : "經驗值"}
+                                      </span>
                                     </dt>
                                     <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
                                       <span className="min-w-0 flex-1 text-right text-[11px] leading-relaxed text-[#66736C]">

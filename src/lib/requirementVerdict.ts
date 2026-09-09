@@ -647,6 +647,16 @@ export function buildSalePriceVerdict(input: {
   renovationNotes?: string;
   /** 圖紙上的現況欄（賃貸中／オーナーチェンジ／空室／居住中等），用來判斷是否為帶租約物件 */
   occupancyStatus?: string;
+  /** 圖紙上的構造欄（RC／SRC），用來套用成交資料的構造溢價 */
+  structureText?: string;
+  /**
+   * 來自國交省成交資料、已控制屋齡的條件溢價（%）。
+   * 有值時優先於寫死的經驗值，並把 basis 標成 "data"。
+   */
+  conditionPremium?: {
+    renovationPremiumPercent: number | null;
+    structurePremiumPercent: number | null;
+  } | null;
   /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
   sampleCount?: number | null;
   /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
@@ -784,6 +794,24 @@ export function buildSalePriceVerdict(input: {
     });
   }
 
+  // ── 4.6 構造（SRC vs RC）──
+  // 成交資料沒有階數，但有構造欄位。SRC 造與高層／塔式建物高度相關，
+  // 是目前唯一能用實際成交資料反映「建物等級」的維度。
+  // 這裡的百分比同樣已控制屋齡（未控制會得到 SRC 比較便宜的反向結果）。
+  let structureRate = 0;
+  const measuredStructure = input.conditionPremium?.structurePremiumPercent ?? null;
+  if (measuredStructure !== null && /ＳＲＣ|SRC|鉄骨鉄筋|鉄骨[・･\s]*鉄筋|鋼骨鋼筋/i.test(input.structureText || "")) {
+    const pct = Math.round(measuredStructure);
+    structureRate = pct / 100;
+    factors.push({
+      label: "建物構造",
+      ratePercent: pct,
+      note: `SRC造（鋼骨鋼筋混凝土）：同區同屋齡帶的 SRC 成交單價相對 RC ${pct >= 0 ? "高" : "低"} ${Math.abs(pct)}%`,
+      applied: false,
+      basis: "data",
+    });
+  }
+
   // ── 5. 翻新 ──
   let renoRate = 0;
   const reno = `${input.renovationNotes || ""}`.toLowerCase();
@@ -814,19 +842,24 @@ export function buildSalePriceVerdict(input: {
     //   築 21-30 年：+15.6% ～ +23.6%
     //   築 31-40 年：+37.5% ～ +41.3%
     // 取各屋齡帶的保守中間值。
-    const renoPct = ageYears === null ? 8
-      : ageYears <= 20 ? 4
-      : ageYears <= 30 ? 18
-      : 30;
+    const measuredReno = input.conditionPremium?.renovationPremiumPercent ?? null;
+    const renoPct = measuredReno !== null
+      ? Math.round(measuredReno)
+      : ageYears === null ? 8
+        : ageYears <= 20 ? 4
+        : ageYears <= 30 ? 18
+        : 30;
     renoRate = renoPct / 100;
     factors.push({
       label: "翻新",
       ratePercent: renoPct,
-      note: ageYears === null
-        ? "圖紙標示已整體翻新／改裝"
-        : `圖紙標示已整體翻新／改裝（築 ${ageYears} 年，屋齡越高翻新溢價越大）`,
+      note: measuredReno !== null
+        ? `圖紙標示已整體翻新／改裝（同區同屋齡帶的改裝済成交單價高出 ${renoPct}%）`
+        : ageYears === null
+          ? "圖紙標示已整體翻新／改裝"
+          : `圖紙標示已整體翻新／改裝（築 ${ageYears} 年，屋齡越高翻新溢價越大）`,
       applied: false,
-      basis: "estimate",
+      basis: measuredReno !== null ? "data" : "estimate",
     });
   }
 

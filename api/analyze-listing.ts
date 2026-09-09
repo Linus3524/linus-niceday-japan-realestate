@@ -30,7 +30,7 @@ import {
   parseMandatoryMonthlyFees,
   parseEffectiveRepairReserve,
 } from "../src/lib/listingExtraction.js";
-import { getOfficialBuyEstimate } from "../src/data/buyMarket.js";
+import { getConditionPremium, getOfficialBuyEstimate } from "../src/data/buyMarket.js";
 import { mlitBuySnapshotMeta, mlitBuySnapshots } from "../src/data/mlitBuySnapshot.js";
 import { atHomeNationwideRentSnapshots } from "../src/data/atHomeNationwideRentSnapshot.js";
 import { getNationwideRentBenchmark } from "../src/data/nationwideRentMarket.js";
@@ -1132,6 +1132,8 @@ export function buildSaleAnalysis(params: {
         // 現況欄常只寫「集金代行」「賃貸中」；有現行租金／年收入／表面利回的圖紙
         // 本質上就是帶租約出售，一併視為オーナーチェンジ。備註欄不納入，
         // 避免「賃貸管理契約は引継ぎ」這類字樣造成誤判。
+        structureText: extracted.structure,
+        conditionPremium: getConditionPremium(locationInfo.region, ageYears),
         occupancyStatus: `${extracted.occupancyStatus || ""} ${
           extracted.currentRent || extracted.annualIncome || extracted.grossYield ? "賃貸中" : ""
         }`,

@@ -1,5 +1,5 @@
 import type { LayoutCode } from "./housingMarket.js";
-import { mlitBuySnapshots } from "./mlitBuySnapshot.js";
+import { mlitConditionPremiums, mlitBuySnapshots } from "./mlitBuySnapshot.js";
 
 export interface OfficialBuyEstimate {
   medianTradePriceYen: number;
@@ -208,4 +208,18 @@ export function getBuyMarketEstimate(input: {
     periodEnd: "",
     sourceUrl: ""
   };
+}
+
+
+/**
+ * 取得「已控制屋齡」的條件溢價（翻新、構造）。
+ *
+ * 為什麼一定要帶 ageBand：在分桶內直接比「改装済み vs 未改装」會得到
+ * 「翻新反而更便宜」的反向結果，因為會翻新的多半是老屋、老屋單價本來就低。
+ * 這裡的數字是在「同區域 × 同房型 × 同屋齡帶」內比較後彙總，沒有這個混淆。
+ */
+export function getConditionPremium(region: string, ageYears: number | null | undefined) {
+  const ageBand = mlitAgeBandForAge(ageYears);
+  if (!ageBand) return null;
+  return mlitConditionPremiums.find(row => row.region === region && row.ageBand === ageBand) ?? null;
 }

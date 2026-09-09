@@ -6,6 +6,22 @@ export interface MlitBuyAgeBandSnapshot {
   sampleCount: number;
 }
 
+/** 同分桶內「改装済み」與「未改装」的實際成交㎡單價對照。 */
+export interface MlitRenovationPremium {
+  renovatedSqmPriceYen: number;
+  unrenovatedSqmPriceYen: number;
+  renovatedSampleCount: number;
+  unrenovatedSampleCount: number;
+}
+
+/** 同分桶內 SRC 與 RC 的實際成交㎡單價對照（SRC 為塔樓的近似代理）。 */
+export interface MlitStructurePremium {
+  srcSqmPriceYen: number;
+  rcSqmPriceYen: number;
+  srcSampleCount: number;
+  rcSampleCount: number;
+}
+
 export interface MlitBuySnapshotRow {
   region: string;
   district: string;
@@ -24,14 +40,14 @@ export interface MlitBuySnapshotRow {
 }
 
 export const mlitBuySnapshotMeta = {
-  generatedAt: "2026-09-05" as string | null,
+  generatedAt: "2026-09-09" as string | null,
   latestPeriod: "2026-Q1",
   sourceId: "mlit-reinfolib" as const,
   status: "ready" as "pending_api_approval" | "ready",
   methodology: "全47都道府県の中古マンション等を市区町村・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",
   prefectureCount: 47,
   municipalityCount: 506,
-  sourceFieldCoverage: { buildingYear: true, structure: true, timeToNearestStation: false, unitPriceDerivedWhenMissing: true },
+  sourceFieldCoverage: { buildingYear: true, structure: true, renovation: true, timeToNearestStation: false, unitPriceDerivedWhenMissing: true },
   sourceUrl: "https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/"
 };
 
@@ -23609,8 +23625,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 28,
     "structureCounts": {
-      "ＳＲＣ": 11,
-      "ＲＣ": 17
+      "ＲＣ": 17,
+      "ＳＲＣ": 11
     },
     "sampleCount": 29,
     "windowQuarters": 4,
@@ -23943,8 +23959,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 14,
     "structureCounts": {
-      "ＳＲＣ": 7,
-      "ＲＣ": 7
+      "ＲＣ": 7,
+      "ＳＲＣ": 7
     },
     "sampleCount": 15,
     "windowQuarters": 4,
@@ -24023,8 +24039,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 172,
     "structureCounts": {
-      "ＲＣ": 105,
       "ＳＲＣ": 63,
+      "ＲＣ": 105,
       "ＲＣ、鉄骨造": 1,
       "ＳＲＣ、ＲＣ": 3
     },
@@ -24491,8 +24507,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＲＣ": 11,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 11
     },
     "sampleCount": 13,
     "windowQuarters": 4,
@@ -24553,8 +24569,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 11,
     "structureCounts": {
-      "ＳＲＣ": 4,
       "ＲＣ": 5,
+      "ＳＲＣ": 4,
       "鉄骨造": 3
     },
     "sampleCount": 12,
@@ -24582,8 +24598,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 17,
     "structureCounts": {
-      "ＳＲＣ": 6,
-      "ＲＣ": 8
+      "ＲＣ": 8,
+      "ＳＲＣ": 6
     },
     "sampleCount": 18,
     "windowQuarters": 4,
@@ -24681,8 +24697,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 27,
     "structureCounts": {
-      "ＲＣ": 21,
-      "ＳＲＣ": 5
+      "ＳＲＣ": 5,
+      "ＲＣ": 21
     },
     "sampleCount": 29,
     "windowQuarters": 4,
@@ -24748,8 +24764,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 11,
     "structureCounts": {
-      "ＳＲＣ": 4,
-      "ＲＣ": 7
+      "ＲＣ": 7,
+      "ＳＲＣ": 4
     },
     "sampleCount": 11,
     "windowQuarters": 4,
@@ -24795,8 +24811,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 10,
     "structureCounts": {
-      "ＲＣ": 8,
-      "鉄骨造": 1
+      "鉄骨造": 1,
+      "ＲＣ": 8
     },
     "sampleCount": 10,
     "windowQuarters": 4,
@@ -25493,8 +25509,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 7,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 5
+      "ＲＣ": 5,
+      "ＳＲＣ": 2
     },
     "sampleCount": 7,
     "windowQuarters": 4,
@@ -25574,8 +25590,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 51,
     "structureCounts": {
       "ＲＣ": 41,
-      "ＳＲＣ": 8,
-      "ＳＲＣ、ＲＣ": 3
+      "ＳＲＣ、ＲＣ": 3,
+      "ＳＲＣ": 8
     },
     "sampleCount": 55,
     "windowQuarters": 4,
@@ -25841,8 +25857,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 127,
     "structureCounts": {
       "ＲＣ": 121,
-      "鉄骨造": 1,
-      "ＳＲＣ": 4
+      "ＳＲＣ": 4,
+      "鉄骨造": 1
     },
     "sampleCount": 127,
     "windowQuarters": 4,
@@ -25873,8 +25889,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 45,
     "structureCounts": {
-      "ＲＣ": 32,
       "ＳＲＣ": 12,
+      "ＲＣ": 32,
       "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 45,
@@ -25914,10 +25930,10 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 102,
     "structureCounts": {
-      "ＳＲＣ": 28,
       "ＲＣ": 72,
-      "鉄骨造": 1,
-      "ＳＲＣ、ＲＣ": 1
+      "ＳＲＣ": 28,
+      "ＳＲＣ、ＲＣ": 1,
+      "鉄骨造": 1
     },
     "sampleCount": 102,
     "windowQuarters": 4,
@@ -25958,8 +25974,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "structureCounts": {
       "ＲＣ": 106,
       "ＳＲＣ": 37,
-      "ＲＣ、鉄骨造": 1,
-      "ＳＲＣ、ＲＣ": 2
+      "ＳＲＣ、ＲＣ": 2,
+      "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 148,
     "windowQuarters": 4,
@@ -26073,8 +26089,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 30,
     "structureCounts": {
       "ＲＣ": 26,
-      "ＳＲＣ": 2,
-      "ＳＲＣ、ＲＣ": 1
+      "ＳＲＣ、ＲＣ": 1,
+      "ＳＲＣ": 2
     },
     "sampleCount": 31,
     "windowQuarters": 4,
@@ -26923,8 +26939,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＳＲＣ": 3,
       "ＲＣ": 5,
+      "ＳＲＣ": 3,
       "鉄骨造": 1
     },
     "sampleCount": 10,
@@ -27002,8 +27018,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 56,
     "structureCounts": {
       "ＲＣ": 47,
-      "ＲＣ、鉄骨造": 1,
-      "ＳＲＣ": 8
+      "ＳＲＣ": 8,
+      "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 57,
     "windowQuarters": 4,
@@ -27027,8 +27043,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 17,
     "structureCounts": {
       "ＲＣ": 14,
-      "ＳＲＣ": 1,
-      "ＳＲＣ、ＲＣ": 1
+      "ＳＲＣ、ＲＣ": 1,
+      "ＳＲＣ": 1
     },
     "sampleCount": 17,
     "windowQuarters": 4,
@@ -27051,8 +27067,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＲＣ": 11,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 11
     },
     "sampleCount": 14,
     "windowQuarters": 4,
@@ -27152,8 +27168,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 30,
     "structureCounts": {
-      "ＲＣ": 25,
-      "ＳＲＣ": 5
+      "ＳＲＣ": 5,
+      "ＲＣ": 25
     },
     "sampleCount": 31,
     "windowQuarters": 4,
@@ -27176,8 +27192,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＲＣ": 11,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 11
     },
     "sampleCount": 13,
     "windowQuarters": 4,
@@ -27200,9 +27216,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "鉄骨造": 2,
       "ＲＣ": 6,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "鉄骨造": 2
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -27225,8 +27241,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 15,
     "structureCounts": {
-      "ＲＣ": 13,
       "鉄骨造": 2,
+      "ＲＣ": 13,
       "ＳＲＣ": 2
     },
     "sampleCount": 17,
@@ -27258,8 +27274,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 30,
     "structureCounts": {
-      "ＲＣ": 29,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 29
     },
     "sampleCount": 30,
     "windowQuarters": 4,
@@ -27286,8 +27302,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 32,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 31
+      "ＲＣ": 31,
+      "ＳＲＣ": 2
     },
     "sampleCount": 33,
     "windowQuarters": 4,
@@ -27341,10 +27357,10 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 45,
     "structureCounts": {
-      "ＲＣ": 30,
       "ＳＲＣ": 15,
-      "鉄骨造": 1,
-      "ＲＣ、鉄骨造": 1
+      "ＲＣ": 30,
+      "ＲＣ、鉄骨造": 1,
+      "鉄骨造": 1
     },
     "sampleCount": 50,
     "windowQuarters": 4,
@@ -27383,8 +27399,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 136,
     "structureCounts": {
-      "ＲＣ": 101,
-      "ＳＲＣ": 33
+      "ＳＲＣ": 33,
+      "ＲＣ": 101
     },
     "sampleCount": 145,
     "windowQuarters": 4,
@@ -27477,8 +27493,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 51,
     "structureCounts": {
-      "ＳＲＣ": 22,
       "ＲＣ": 27,
+      "ＳＲＣ": 22,
       "鉄骨造": 1
     },
     "sampleCount": 53,
@@ -27518,8 +27534,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 111,
     "structureCounts": {
-      "ＲＣ": 81,
-      "ＳＲＣ": 31
+      "ＳＲＣ": 31,
+      "ＲＣ": 81
     },
     "sampleCount": 112,
     "windowQuarters": 4,
@@ -27558,8 +27574,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 127,
     "structureCounts": {
-      "ＲＣ": 90,
-      "ＳＲＣ": 39
+      "ＳＲＣ": 39,
+      "ＲＣ": 90
     },
     "sampleCount": 131,
     "windowQuarters": 4,
@@ -28317,8 +28333,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 43,
     "structureCounts": {
-      "ＳＲＣ": 17,
-      "ＲＣ": 26
+      "ＲＣ": 26,
+      "ＳＲＣ": 17
     },
     "sampleCount": 43,
     "windowQuarters": 4,
@@ -28357,8 +28373,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 75,
     "structureCounts": {
-      "ＳＲＣ": 34,
-      "ＲＣ": 41
+      "ＲＣ": 41,
+      "ＳＲＣ": 34
     },
     "sampleCount": 76,
     "windowQuarters": 4,
@@ -28393,8 +28409,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 57,
     "structureCounts": {
-      "ＲＣ": 33,
-      "ＳＲＣ": 24
+      "ＳＲＣ": 24,
+      "ＲＣ": 33
     },
     "sampleCount": 57,
     "windowQuarters": 4,
@@ -28914,8 +28930,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 247,
     "structureCounts": {
       "ＲＣ": 234,
-      "ＳＲＣ、ＲＣ": 3,
-      "ＳＲＣ": 10
+      "ＳＲＣ": 10,
+      "ＳＲＣ、ＲＣ": 3
     },
     "sampleCount": 247,
     "windowQuarters": 4,
@@ -28995,8 +29011,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 82,
     "structureCounts": {
       "ＲＣ": 59,
-      "ＳＲＣ": 24,
-      "ＲＣ、鉄骨造": 1
+      "ＲＣ、鉄骨造": 1,
+      "ＳＲＣ": 24
     },
     "sampleCount": 84,
     "windowQuarters": 4,
@@ -29035,9 +29051,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 119,
     "structureCounts": {
+      "ＲＣ": 100,
       "ＳＲＣ": 18,
-      "ＳＲＣ、ＲＣ": 1,
-      "ＲＣ": 100
+      "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 119,
     "windowQuarters": 4,
@@ -29095,8 +29111,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 105,
     "structureCounts": {
-      "ＲＣ": 66,
-      "ＳＲＣ": 41
+      "ＳＲＣ": 41,
+      "ＲＣ": 66
     },
     "sampleCount": 112,
     "windowQuarters": 4,
@@ -37263,5 +37279,1120 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "periodStart": "2025-Q2",
     "periodEnd": "2026-Q1",
     "sourceUrl": "https://www.reinfolib.mlit.go.jp/help/apiManual/xit001/"
+  }
+];
+
+/**
+ * 條件溢價（已控制屋齡）。
+ * 在「同區域 × 同房型 × 同屋齡帶」內比較後，彙總到區域層級。
+ * 直接在分桶內混齡比較會得到反向結果（會翻新的多是老屋），故不可省略分層。
+ */
+export interface MlitConditionPremiumRow {
+  region: string;
+  ageBand: MlitBuyAgeBand;
+  /** 改装済み 相對 未改装 的成交㎡單價差（%）。 */
+  renovationPremiumPercent: number | null;
+  renovationCellCount: number;
+  /** SRC 相對 RC 的成交㎡單價差（%）。SRC 為塔樓的近似代理。 */
+  structurePremiumPercent: number | null;
+  structureCellCount: number;
+}
+
+export const mlitConditionPremiums: MlitConditionPremiumRow[] = [
+  {
+    "region": "愛知",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -5.4,
+    "renovationCellCount": 8,
+    "structurePremiumPercent": -5.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "愛知",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 2.7,
+    "renovationCellCount": 12,
+    "structurePremiumPercent": -13.5,
+    "structureCellCount": 4
+  },
+  {
+    "region": "愛知",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 21.9,
+    "renovationCellCount": 29,
+    "structurePremiumPercent": 5.9,
+    "structureCellCount": 27
+  },
+  {
+    "region": "愛知",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 52.1,
+    "renovationCellCount": 22,
+    "structurePremiumPercent": 25.4,
+    "structureCellCount": 18
+  },
+  {
+    "region": "愛知",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 83,
+    "renovationCellCount": 9,
+    "structurePremiumPercent": 106.5,
+    "structureCellCount": 4
+  },
+  {
+    "region": "愛媛",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 1.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "愛媛",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 36.2,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 23.9,
+    "structureCellCount": 1
+  },
+  {
+    "region": "愛媛",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 72.2,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -2.9,
+    "structureCellCount": 2
+  },
+  {
+    "region": "茨城",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 11.6,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": -1.6,
+    "structureCellCount": 1
+  },
+  {
+    "region": "茨城",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 33.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "岡山",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 21.7,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "岡山",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 37.2,
+    "renovationCellCount": 4,
+    "structurePremiumPercent": 20.1,
+    "structureCellCount": 2
+  },
+  {
+    "region": "岡山",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 50,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": -3.7,
+    "structureCellCount": 5
+  },
+  {
+    "region": "沖繩",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": 9.8,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "沖繩",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 10.5,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 6.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "沖繩",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 18.5,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "沖繩",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": -9.9,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 4.8,
+    "structureCellCount": 1
+  },
+  {
+    "region": "岩手",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 8.9,
+    "structureCellCount": 1
+  },
+  {
+    "region": "岩手",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 78.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "岐阜",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 8.4,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "岐阜",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 45.5,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 11.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "宮崎",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 4,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "宮崎",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 23,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -0.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "宮崎",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 29.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -12.6,
+    "structureCellCount": 1
+  },
+  {
+    "region": "宮城",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -5,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "宮城",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": -4.1,
+    "renovationCellCount": 4,
+    "structurePremiumPercent": 0.8,
+    "structureCellCount": 1
+  },
+  {
+    "region": "宮城",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 30.8,
+    "renovationCellCount": 10,
+    "structurePremiumPercent": 10.1,
+    "structureCellCount": 10
+  },
+  {
+    "region": "宮城",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 68.1,
+    "renovationCellCount": 13,
+    "structurePremiumPercent": 40.1,
+    "structureCellCount": 9
+  },
+  {
+    "region": "宮城",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 79,
+    "renovationCellCount": 6,
+    "structurePremiumPercent": 28,
+    "structureCellCount": 1
+  },
+  {
+    "region": "京都",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": 5.6,
+    "renovationCellCount": 5,
+    "structurePremiumPercent": -2.5,
+    "structureCellCount": 1
+  },
+  {
+    "region": "京都",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 6.2,
+    "renovationCellCount": 6,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "京都",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 16.5,
+    "renovationCellCount": 14,
+    "structurePremiumPercent": 5.4,
+    "structureCellCount": 11
+  },
+  {
+    "region": "京都",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 44.4,
+    "renovationCellCount": 8,
+    "structurePremiumPercent": -6.7,
+    "structureCellCount": 9
+  },
+  {
+    "region": "京都",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 68.5,
+    "renovationCellCount": 6,
+    "structurePremiumPercent": -8.2,
+    "structureCellCount": 6
+  },
+  {
+    "region": "熊本",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 38.4,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 20.7,
+    "structureCellCount": 1
+  },
+  {
+    "region": "熊本",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 67.4,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": 11.8,
+    "structureCellCount": 5
+  },
+  {
+    "region": "群馬",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 2.1,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "群馬",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 150.5,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 186.4,
+    "structureCellCount": 1
+  },
+  {
+    "region": "香川",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 10.1,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "香川",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 51,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 65.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "香川",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 111.9,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 32.6,
+    "structureCellCount": 2
+  },
+  {
+    "region": "佐賀",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": -17.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "佐賀",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 34.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 25,
+    "structureCellCount": 1
+  },
+  {
+    "region": "埼玉",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -5,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "埼玉",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 4.8,
+    "renovationCellCount": 15,
+    "structurePremiumPercent": 7.6,
+    "structureCellCount": 2
+  },
+  {
+    "region": "埼玉",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 26.4,
+    "renovationCellCount": 27,
+    "structurePremiumPercent": 23.1,
+    "structureCellCount": 19
+  },
+  {
+    "region": "埼玉",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 48.5,
+    "renovationCellCount": 22,
+    "structurePremiumPercent": 31.1,
+    "structureCellCount": 13
+  },
+  {
+    "region": "埼玉",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 72.4,
+    "renovationCellCount": 15,
+    "structurePremiumPercent": 47.8,
+    "structureCellCount": 13
+  },
+  {
+    "region": "三重",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 19.7,
+    "structureCellCount": 1
+  },
+  {
+    "region": "三重",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": -9.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 31.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "三重",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 73.1,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 76.9,
+    "structureCellCount": 1
+  },
+  {
+    "region": "山形",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 14.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "山口",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 119.4,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 18.8,
+    "structureCellCount": 1
+  },
+  {
+    "region": "山口",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 69.7,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "滋賀",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 3.6,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 5.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "滋賀",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 51,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": -9.8,
+    "structureCellCount": 3
+  },
+  {
+    "region": "滋賀",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 53.8,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -12,
+    "structureCellCount": 1
+  },
+  {
+    "region": "鹿兒島",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": 5.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "鹿兒島",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 14.8,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 19,
+    "structureCellCount": 1
+  },
+  {
+    "region": "鹿兒島",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 17.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 19.3,
+    "structureCellCount": 1
+  },
+  {
+    "region": "鹿兒島",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 13.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 0.8,
+    "structureCellCount": 2
+  },
+  {
+    "region": "鹿兒島",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 29.1,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "秋田",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 29,
+    "structureCellCount": 1
+  },
+  {
+    "region": "秋田",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": -9.8,
+    "structureCellCount": 1
+  },
+  {
+    "region": "新潟",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 9.7,
+    "structureCellCount": 2
+  },
+  {
+    "region": "新潟",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 23.6,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": -1.7,
+    "structureCellCount": 4
+  },
+  {
+    "region": "新潟",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 55.2,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 17.6,
+    "structureCellCount": 4
+  },
+  {
+    "region": "新潟",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 551.5,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 397.2,
+    "structureCellCount": 2
+  },
+  {
+    "region": "神奈川",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -4.3,
+    "renovationCellCount": 9,
+    "structurePremiumPercent": 124,
+    "structureCellCount": 1
+  },
+  {
+    "region": "神奈川",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 9.1,
+    "renovationCellCount": 36,
+    "structurePremiumPercent": 0,
+    "structureCellCount": 5
+  },
+  {
+    "region": "神奈川",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 19,
+    "renovationCellCount": 60,
+    "structurePremiumPercent": 21.2,
+    "structureCellCount": 39
+  },
+  {
+    "region": "神奈川",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 47.8,
+    "renovationCellCount": 57,
+    "structurePremiumPercent": 33.3,
+    "structureCellCount": 41
+  },
+  {
+    "region": "神奈川",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 87.3,
+    "renovationCellCount": 56,
+    "structurePremiumPercent": 33.5,
+    "structureCellCount": 29
+  },
+  {
+    "region": "石川",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 21.4,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 0,
+    "structureCellCount": 1
+  },
+  {
+    "region": "石川",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 57.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 40.3,
+    "structureCellCount": 2
+  },
+  {
+    "region": "千葉",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 41.2,
+    "structureCellCount": 1
+  },
+  {
+    "region": "千葉",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 11.4,
+    "renovationCellCount": 9,
+    "structurePremiumPercent": 3.4,
+    "structureCellCount": 3
+  },
+  {
+    "region": "千葉",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 29.9,
+    "renovationCellCount": 20,
+    "structurePremiumPercent": 12.1,
+    "structureCellCount": 18
+  },
+  {
+    "region": "千葉",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 59.7,
+    "renovationCellCount": 13,
+    "structurePremiumPercent": 27.3,
+    "structureCellCount": 9
+  },
+  {
+    "region": "千葉",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 87.7,
+    "renovationCellCount": 23,
+    "structurePremiumPercent": 52.6,
+    "structureCellCount": 16
+  },
+  {
+    "region": "大阪",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -4.1,
+    "renovationCellCount": 14,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "大阪",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 2.5,
+    "renovationCellCount": 32,
+    "structurePremiumPercent": -6.6,
+    "structureCellCount": 10
+  },
+  {
+    "region": "大阪",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 18.5,
+    "renovationCellCount": 37,
+    "structurePremiumPercent": 3.1,
+    "structureCellCount": 47
+  },
+  {
+    "region": "大阪",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 50,
+    "renovationCellCount": 23,
+    "structurePremiumPercent": -2.7,
+    "structureCellCount": 25
+  },
+  {
+    "region": "大阪",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 47,
+    "renovationCellCount": 46,
+    "structurePremiumPercent": 21.2,
+    "structureCellCount": 22
+  },
+  {
+    "region": "大分",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": -1.9,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 17.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "大分",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 19.4,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 32.2,
+    "structureCellCount": 1
+  },
+  {
+    "region": "大分",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 53.5,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 62.5,
+    "structureCellCount": 3
+  },
+  {
+    "region": "長崎",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 7.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "長崎",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 48.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -4.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "長崎",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 6.7,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": -9,
+    "structureCellCount": 1
+  },
+  {
+    "region": "長野",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": -5.7,
+    "structureCellCount": 1
+  },
+  {
+    "region": "長野",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": -9.1,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 7.8,
+    "structureCellCount": 2
+  },
+  {
+    "region": "島根",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 23,
+    "structureCellCount": 1
+  },
+  {
+    "region": "東京都",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": 5,
+    "renovationCellCount": 30,
+    "structurePremiumPercent": 9.1,
+    "structureCellCount": 5
+  },
+  {
+    "region": "東京都",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 7.7,
+    "renovationCellCount": 86,
+    "structurePremiumPercent": -2.8,
+    "structureCellCount": 35
+  },
+  {
+    "region": "東京都",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 19.8,
+    "renovationCellCount": 93,
+    "structurePremiumPercent": 4.3,
+    "structureCellCount": 90
+  },
+  {
+    "region": "東京都",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 26.4,
+    "renovationCellCount": 55,
+    "structurePremiumPercent": 17.2,
+    "structureCellCount": 49
+  },
+  {
+    "region": "東京都",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 43.2,
+    "renovationCellCount": 78,
+    "structurePremiumPercent": 12.3,
+    "structureCellCount": 64
+  },
+  {
+    "region": "栃木",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 0,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "栃木",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 19.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 4.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "栃木",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 18.2,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 2.9,
+    "structureCellCount": 1
+  },
+  {
+    "region": "奈良",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 10,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "奈良",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 24.4,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "奈良",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 43.4,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "奈良",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 193.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 106.6,
+    "structureCellCount": 1
+  },
+  {
+    "region": "富山",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 13.5,
+    "structureCellCount": 1
+  },
+  {
+    "region": "福岡",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -2.4,
+    "renovationCellCount": 5,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "福岡",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": -0.8,
+    "renovationCellCount": 9,
+    "structurePremiumPercent": -1,
+    "structureCellCount": 9
+  },
+  {
+    "region": "福岡",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 20.7,
+    "renovationCellCount": 21,
+    "structurePremiumPercent": 17.3,
+    "structureCellCount": 21
+  },
+  {
+    "region": "福岡",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 51.7,
+    "renovationCellCount": 30,
+    "structurePremiumPercent": 8.2,
+    "structureCellCount": 30
+  },
+  {
+    "region": "福岡",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 120.1,
+    "renovationCellCount": 16,
+    "structurePremiumPercent": 80.3,
+    "structureCellCount": 10
+  },
+  {
+    "region": "福島",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 4.7,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 7.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "福島",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": -0.7,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 3.2,
+    "structureCellCount": 1
+  },
+  {
+    "region": "福島",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 63.1,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": -17.7,
+    "structureCellCount": 1
+  },
+  {
+    "region": "兵庫",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -4.7,
+    "renovationCellCount": 7,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "兵庫",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 2.9,
+    "renovationCellCount": 17,
+    "structurePremiumPercent": -5.4,
+    "structureCellCount": 4
+  },
+  {
+    "region": "兵庫",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 24.3,
+    "renovationCellCount": 27,
+    "structurePremiumPercent": 4.2,
+    "structureCellCount": 31
+  },
+  {
+    "region": "兵庫",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 51.3,
+    "renovationCellCount": 25,
+    "structurePremiumPercent": 15.4,
+    "structureCellCount": 28
+  },
+  {
+    "region": "兵庫",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 92.8,
+    "renovationCellCount": 17,
+    "structurePremiumPercent": 15.1,
+    "structureCellCount": 17
+  },
+  {
+    "region": "北海道",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": -7.4,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "北海道",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 14.1,
+    "renovationCellCount": 6,
+    "structurePremiumPercent": 3.7,
+    "structureCellCount": 1
+  },
+  {
+    "region": "北海道",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 19,
+    "renovationCellCount": 15,
+    "structurePremiumPercent": 20.1,
+    "structureCellCount": 12
+  },
+  {
+    "region": "北海道",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 43.8,
+    "renovationCellCount": 24,
+    "structurePremiumPercent": 19.3,
+    "structureCellCount": 22
+  },
+  {
+    "region": "北海道",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 69.8,
+    "renovationCellCount": 16,
+    "structurePremiumPercent": 17.9,
+    "structureCellCount": 16
+  },
+  {
+    "region": "和歌山",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": null,
+    "renovationCellCount": 0,
+    "structurePremiumPercent": 1.1,
+    "structureCellCount": 1
+  },
+  {
+    "region": "廣島",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 22.2,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "廣島",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 15.3,
+    "renovationCellCount": 8,
+    "structurePremiumPercent": 12.6,
+    "structureCellCount": 7
+  },
+  {
+    "region": "廣島",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 55.6,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": 13.3,
+    "structureCellCount": 3
+  },
+  {
+    "region": "廣島",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 45.8,
+    "renovationCellCount": 3,
+    "structurePremiumPercent": 3.9,
+    "structureCellCount": 2
+  },
+  {
+    "region": "靜岡",
+    "ageBand": "age_0_10",
+    "renovationPremiumPercent": 1.4,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "靜岡",
+    "ageBand": "age_11_20",
+    "renovationPremiumPercent": 5.2,
+    "renovationCellCount": 2,
+    "structurePremiumPercent": null,
+    "structureCellCount": 0
+  },
+  {
+    "region": "靜岡",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 26.4,
+    "renovationCellCount": 9,
+    "structurePremiumPercent": 0.9,
+    "structureCellCount": 6
+  },
+  {
+    "region": "靜岡",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 70,
+    "renovationCellCount": 7,
+    "structurePremiumPercent": 22.2,
+    "structureCellCount": 7
+  },
+  {
+    "region": "靜岡",
+    "ageBand": "age_41_plus",
+    "renovationPremiumPercent": 35.8,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -45.8,
+    "structureCellCount": 3
+  },
+  {
+    "region": "德島",
+    "ageBand": "age_21_30",
+    "renovationPremiumPercent": 11.3,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": -10.5,
+    "structureCellCount": 1
+  },
+  {
+    "region": "德島",
+    "ageBand": "age_31_40",
+    "renovationPremiumPercent": 4.6,
+    "renovationCellCount": 1,
+    "structurePremiumPercent": 41.3,
+    "structureCellCount": 1
   }
 ];
