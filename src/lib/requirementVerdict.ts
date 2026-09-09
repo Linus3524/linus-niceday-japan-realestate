@@ -890,6 +890,10 @@ export function buildSalePriceVerdict(input: {
   }
 
   // ── 5.5 現況（帶租約 vs 空室）──
+  // 國交省成交資料沒有「是否帶租約」這個欄位（實測 2024–2025 年東京 3 萬餘筆，
+  // 只有 Use／Purpose 兩個用途欄位；以 Purpose≠住宅 當投資型買方的代理變數，
+  // 控制行政區×面積帶×屋齡帶後價差中位數是 0.0%，證實它不是可用的代理）。
+  // 所以這一項無法用成交資料回歸，幅度取業界慣例值。
   // 實價登錄的成交母體以「空室交屋、自住買方」為主，帶租約（オーナーチェンジ）物件
   // 本來就該比同一戶的空屋價低：買方無法自己入居、必須沿用現行租約與租金，
   // 融資多半只能走利率較高的投資用貸款，也不適用住宅ローン控除。
@@ -906,11 +910,11 @@ export function buildSalePriceVerdict(input: {
       ratePercent: -10,
       note: "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除",
       applied: true,
-      basis: "data",
+      basis: "estimate",
     });
     cautions.push("帶租約物件的價格主要由現行租金與收益率決定，與空屋自住行情不同口徑。除了本頁的成交比對，請一併確認現行租約的租金水準、剩餘期間與退租後的預估租金。");
   } else if (isVacant) {
-    factors.push({ label: "現況", ratePercent: 0, note: "空室即引渡（與實價登錄的自住成交同口徑，等同基準）", applied: true, basis: "data" });
+    factors.push({ label: "現況", ratePercent: 0, note: "空室即引渡（與實價登錄成交母體的主流口徑相同，不另外加減）", applied: true, basis: "estimate" });
   }
 
   // 預期價只用「資料算得出來的部分」：同區同房型同屋齡帶的成交㎡單價 × 本案面積，

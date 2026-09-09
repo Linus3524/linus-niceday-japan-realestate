@@ -2176,8 +2176,10 @@ export function ListingHealthCheck() {
 
                         <div className="mt-3 border-l-2 border-[#007D5A] bg-[#F5F8F6] p-3 text-[11px] leading-relaxed text-[#1A2A22]">
                           本案開價
-                          {c.rawDiffPercent != null && (
-                            <>{c.rawDiffPercent >= 0 ? "高於" : "低於"}{isSpecialSale ? "國交省基準" : "實價登錄平均"} <strong className="font-bold">{Math.abs(Math.round(c.rawDiffPercent))}%</strong></>
+                          {/* 這裡的基準必須跟上方那張卡的數字同源，否則會出現
+                              上面寫 −9%、下面寫 5% 的矛盾（兩者曾各自用面積校準前後的基準）。 */}
+                          {officialDiffPercent != null && (
+                            <>{officialDiffPercent >= 0 ? "高於" : "低於"}{isSpecialSale ? "國交省基準" : "實價登錄平均"} <strong className="font-bold">{Math.abs(Math.round(officialDiffPercent))}%</strong></>
                           )}
                           {c.listingDiffPercent != null && (
                             <>，{c.listingDiffPercent >= 0 ? "也高於" : "也低於"}市場在售平均 <strong className="font-bold">{Math.abs(Math.round(c.listingDiffPercent))}%</strong></>
@@ -2303,6 +2305,10 @@ export function ListingHealthCheck() {
                                 );
                               })}
                           </dl>
+                          <p className="mt-2.5 text-[10px] leading-relaxed text-[#8A9590]">
+                            ※ 各項是個別條件的參考幅度，不會相加，也不等於上方的價差：預期價只套用「現況」
+                            （帶租約與空屋的成交口徑不同），其餘條件多半已含在同區、同屋齡帶的成交基準裡，再乘一次會重複計算。
+                          </p>
                         </div>
 
                         {/* ①-b 屋齡帶對照：換一個屋齡帶，同區同房型的成交單價差多少。
