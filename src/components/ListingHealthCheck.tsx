@@ -1954,9 +1954,9 @@ export function ListingHealthCheck() {
                   diff: number | null | undefined; note: string;
                 }>;
 
-                // 影響因素的長度條用「固定 ±20% 刻度」而不是組內最大值正規化。
+                // 影響強度用「固定 ±15% 刻度」而不是組內最大值正規化。
                 // 用最大值正規化時，+12% 只要是組內最大就會畫成滿格，看起來像 100%，反而誤導。
-                const FACTOR_SCALE = 20;
+                const FACTOR_SCALE = 15;
                 const factorIcon = (label: string) =>
                   /站|交通|徒歩|徒步/.test(label) ? TrainFront
                     : /樓層|階/.test(label) ? Layers
@@ -2203,30 +2203,40 @@ export function ListingHealthCheck() {
                           </span>
                         </div>
 
-                        {/* ① 上層：條件加減幅度清單（直觀條狀圖） */}
+                        {/* ① 上層：條件加減幅度一覽表（表頭＋方塊強度刻度） */}
                         <div className="border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[#DDE3DF] pb-2.5">
+                          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pb-2.5">
                             <span className="text-xs font-bold text-[#1A2A22]">本案條件個別影響幅度</span>
                             <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-[#8A9590]">
                               <span className="inline-flex items-center gap-1">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#0284C7]" />成交資料統計
+                                <span className="h-1.5 w-1.5 bg-[#0284C7]" />成交資料統計
                               </span>
                               <span className="inline-flex items-center gap-1">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#8A9590]" />市場推估
+                                <span className="h-1.5 w-1.5 bg-[#8A9590]" />市場推估
                               </span>
-                              <span>·　長度條以 ±{FACTOR_SCALE}% 為刻度</span>
+                              <span>·　影響強度以 ±{FACTOR_SCALE}% 為五格滿格</span>
                             </span>
                           </div>
                           {/* 土地・戸建是以「同面積帶的成交㎡單價」直接換算本案面積，
                               條件本身已含在基準價裡，所以每一項都會是 0%。
                               整排灰色又沒有說明，看起來像壞掉，這裡明講原因。 */}
                           {c.priceFactors.every(f => f.ratePercent === 0) && (
-                            <p className="border-b border-[#DDE3DF] py-2.5 text-[11px] leading-relaxed text-[#66736C]">
+                            <p className="border-t border-[#DDE3DF] py-2.5 text-[11px] leading-relaxed text-[#66736C]">
                               以下條件<strong className="font-bold text-[#3F5147]">均標示為「等同基準」</strong>：本案已直接採用同區、同面積帶的成交單價換算，
                               這些條件本身就包含在基準價裡，再另外加減會重複計算，因此不做個別加權。
                             </p>
                           )}
-                          <dl className="divide-y divide-[#DDE3DF]">
+                          {/* 表頭只在寬螢幕出現；窄螢幕改成一列多行的堆疊排法，
+                              欄位靠 col-start／row-start 明確指定，不依賴自動流向。 */}
+                          <div className="hidden border-y border-[#DDE3DF] bg-[#F5F8F6] px-2 py-2 text-[10px] font-bold text-[#8A9590] sm:grid sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5.5rem_5rem] sm:items-center sm:gap-x-3">
+                            <span>#</span>
+                            <span>因素</span>
+                            <span>依據來源</span>
+                            <span>說明</span>
+                            <span className="text-center">影響強度</span>
+                            <span className="text-right">價格影響幅度</span>
+                          </div>
+                          <dl className="divide-y divide-[#DDE3DF] border-b border-[#DDE3DF]">
                             {[...c.priceFactors]
                               .sort((a, b) => Math.abs(b.ratePercent) - Math.abs(a.ratePercent))
                               .map((f, i) => {
@@ -2234,39 +2244,61 @@ export function ListingHealthCheck() {
                                 const up = f.ratePercent > 0;
                                 const down = f.ratePercent < 0;
                                 const tone = up ? "#B13818" : down ? "#007D5A" : "#8A9590";
-                                const width = Math.min(100, (Math.abs(f.ratePercent) / FACTOR_SCALE) * 100);
+                                // 每格 = FACTOR_SCALE / 5；有幅度就至少點亮一格，滿格封頂。
+                                const level = f.ratePercent === 0
+                                  ? 0
+                                  : Math.min(5, Math.max(1, Math.ceil(Math.abs(f.ratePercent) / (FACTOR_SCALE / 5))));
                                 return (
-                                  <div key={i} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-2.5">
-                                    <dt className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
+                                  <div
+                                    key={i}
+                                    className="grid grid-cols-[1.5rem_1fr_auto] items-center gap-x-3 gap-y-1.5 px-2 py-3 sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5.5rem_5rem] sm:gap-y-0"
+                                  >
+                                    <span className="col-start-1 row-start-1 font-mono text-[11px] tabular-nums text-[#8A9590]">
+                                      {i + 1}
+                                    </span>
+                                    <dt className="col-start-2 row-start-1 flex min-w-0 items-center gap-2">
                                       <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]">
                                         <Icon className="h-3.5 w-3.5" />
                                       </span>
-                                      <span className="text-xs font-bold text-[#1A2A22]">{f.label}</span>
-                                      {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是推估 */}
-                                      <span
-                                        className={`shrink-0 border px-1.5 py-0.5 text-[9px] font-bold ${
-                                          f.basis === "data"
-                                            ? "border-[#7DD3FC] bg-[#E0F2FE] text-[#0284C7]"
-                                            : "border-[#DDE3DF] bg-[#F5F8F6] text-[#8A9590]"
-                                        }`}
-                                        title={f.basis === "data"
-                                          ? "此幅度由國土交通省實際成交資料統計得出"
-                                          : "成交資料沒有這個欄位，此幅度依市場行情推估，僅供參考"}
-                                      >
-                                        {f.basis === "data" ? "成交資料" : "市場推估"}
-                                      </span>
+                                      <span className="min-w-0 text-xs font-bold text-[#1A2A22]">{f.label}</span>
                                     </dt>
-                                    <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
-                                      <span className="min-w-0 flex-1 text-right text-[11px] leading-relaxed text-[#66736C]">
-                                        {f.note}
-                                      </span>
-                                      <span className="h-1.5 w-20 shrink-0 bg-[#EDF1EF] sm:w-28">
-                                        <span className="block h-full" style={{ width: `${width}%`, backgroundColor: tone }} />
-                                      </span>
-                                      <span className="w-14 shrink-0 text-right text-xs font-bold tabular-nums font-mono" style={{ color: tone }}>
-                                        {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent)}%`}
-                                      </span>
+                                    {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是推估 */}
+                                    <span
+                                      className={`col-start-2 row-start-3 justify-self-start border px-1.5 py-0.5 text-[9px] font-bold sm:col-start-3 sm:row-start-1 ${
+                                        f.basis === "data"
+                                          ? "border-[#7DD3FC] bg-[#E0F2FE] text-[#0284C7]"
+                                          : "border-[#DDE3DF] bg-[#F5F8F6] text-[#8A9590]"
+                                      }`}
+                                      title={f.basis === "data"
+                                        ? "此幅度由國土交通省實際成交資料統計得出"
+                                        : "成交資料沒有這個欄位，此幅度依市場行情推估，僅供參考"}
+                                    >
+                                      {f.basis === "data" ? "成交資料" : "市場推估"}
+                                    </span>
+                                    <dd className="col-start-2 col-span-2 row-start-2 min-w-0 text-[11px] leading-relaxed text-[#66736C] sm:col-start-4 sm:col-span-1 sm:row-start-1">
+                                      {f.note}
                                     </dd>
+                                    <span
+                                      className="col-start-3 row-start-3 flex items-center gap-1 justify-self-end sm:col-start-5 sm:row-start-1 sm:justify-self-center"
+                                      title={`影響強度 ${level} / 5（滿格為 ±${FACTOR_SCALE}%）`}
+                                    >
+                                      {[0, 1, 2, 3, 4].map(n => (
+                                        <span
+                                          key={n}
+                                          className="h-2.5 w-2.5 border"
+                                          style={{
+                                            borderColor: n < level ? tone : "#DDE3DF",
+                                            backgroundColor: n < level ? tone : "transparent",
+                                          }}
+                                        />
+                                      ))}
+                                    </span>
+                                    <span
+                                      className="col-start-3 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-6 sm:row-start-1 sm:text-right"
+                                      style={{ color: tone }}
+                                    >
+                                      {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent)}%`}
+                                    </span>
                                   </div>
                                 );
                               })}
@@ -2277,10 +2309,16 @@ export function ListingHealthCheck() {
                              這是同一個分桶內的實際成交資料，不含任何估算係數。 */}
                         {c.ageBandComparison && c.ageBandComparison.length >= 2 && (() => {
                           const rows = c.ageBandComparison!;
-                          const peak = Math.max(...rows.map(r => r.medianSqmPriceYen));
+                          const prices = rows.map(r => r.medianSqmPriceYen);
+                          const peak = Math.max(...prices);
+                          const floorPrice = Math.min(...prices);
+                          // 價位等級：最便宜的一帶固定 1 格、最貴的一帶 5 格，中間線性分配。
+                          const priceLevel = (value: number) => peak === floorPrice
+                            ? 5
+                            : 1 + Math.round(((value - floorPrice) / (peak - floorPrice)) * 4);
                           return (
                             <div className="mt-4 border border-[#DDE3DF] bg-white p-4 sm:p-5">
-                              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[#DDE3DF] pb-2.5">
+                              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pb-2.5">
                                 <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
                                   屋齡帶價格對照
                                   <span className="border border-[#7DD3FC] bg-[#E0F2FE] px-1.5 py-0.5 text-[9px] font-bold text-[#0284C7]">成交資料</span>
@@ -2289,45 +2327,64 @@ export function ListingHealthCheck() {
                                   {c.district}・{c.layout}　同區同房型的實際成交㎡單價
                                 </span>
                               </div>
-                              <dl className="divide-y divide-[#DDE3DF]">
-                                {rows.map(r => (
-                                  <div
-                                    key={r.ageBand}
-                                    className={`flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5 ${r.isCurrent ? "bg-[#F5F8F6]" : ""}`}
-                                  >
-                                    <dt className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
-                                      <span className={`text-xs ${r.isCurrent ? "font-black text-[#1A2A22]" : "font-bold text-[#3F5147]"}`}>
-                                        {ageBandLabel(r.ageBand)}
-                                      </span>
-                                      {r.isCurrent && (
-                                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
-                                          本案
+                              <div className="hidden border-y border-[#DDE3DF] bg-[#F5F8F6] px-2 py-2 text-[10px] font-bold text-[#8A9590] sm:grid sm:grid-cols-[1fr_4.5rem_7rem_5rem_5.5rem] sm:items-center sm:gap-x-3">
+                                <span>屋齡帶</span>
+                                <span className="text-right">樣本數</span>
+                                <span className="text-right">成交單價</span>
+                                <span className="text-right">相對本案</span>
+                                <span className="text-center">價位等級</span>
+                              </div>
+                              <dl className="divide-y divide-[#DDE3DF] border-b border-[#DDE3DF]">
+                                {rows.map(r => {
+                                  const tone = r.isCurrent ? "#007D5A" : r.diffPercent > 0 ? "#B13818" : "#007D5A";
+                                  const level = priceLevel(r.medianSqmPriceYen);
+                                  return (
+                                    <div
+                                      key={r.ageBand}
+                                      className={`grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5 px-2 py-3 sm:grid-cols-[1fr_4.5rem_7rem_5rem_5.5rem] sm:gap-y-0 ${
+                                        r.isCurrent ? "bg-[#F5F8F6]" : ""
+                                      }`}
+                                    >
+                                      <dt className="col-start-1 row-start-1 flex min-w-0 items-center gap-2">
+                                        <span className={`text-xs ${r.isCurrent ? "font-black text-[#1A2A22]" : "font-bold text-[#3F5147]"}`}>
+                                          {ageBandLabel(r.ageBand)}
                                         </span>
-                                      )}
-                                    </dt>
-                                    <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1">
-                                      <span className="text-[10px] text-[#8A9590]">{r.sampleCount} 筆</span>
-                                      <span className="h-1.5 w-24 shrink-0 bg-[#EDF1EF] sm:w-32">
-                                        <span
-                                          className="block h-full"
-                                          style={{
-                                            width: `${(r.medianSqmPriceYen / peak) * 100}%`,
-                                            backgroundColor: r.isCurrent ? "#007D5A" : "#B7C4BC",
-                                          }}
-                                        />
-                                      </span>
-                                      <span className="w-24 shrink-0 text-right font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
+                                        {r.isCurrent && (
+                                          <span className="shrink-0 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                                            本案
+                                          </span>
+                                        )}
+                                      </dt>
+                                      <dd className="col-start-2 row-start-2 justify-self-end font-mono text-[10px] tabular-nums text-[#8A9590] sm:col-start-2 sm:row-start-1 sm:text-right">
+                                        {r.sampleCount} 筆
+                                      </dd>
+                                      <dd className="col-start-1 row-start-2 font-mono text-xs font-bold tabular-nums text-[#1A2A22] sm:col-start-3 sm:row-start-1 sm:text-right">
                                         {(r.medianSqmPriceYen / 10000).toFixed(1)} 萬/㎡
-                                      </span>
-                                      <span
-                                        className="w-14 shrink-0 text-right font-mono text-xs font-bold tabular-nums"
-                                        style={{ color: r.isCurrent ? "#8A9590" : r.diffPercent > 0 ? "#D97706" : "#007D5A" }}
+                                      </dd>
+                                      <dd
+                                        className="col-start-2 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-4 sm:row-start-1 sm:text-right"
+                                        style={{ color: tone }}
                                       >
                                         {r.isCurrent ? "基準" : `${r.diffPercent > 0 ? "+" : "−"}${Math.abs(r.diffPercent)}%`}
-                                      </span>
-                                    </dd>
-                                  </div>
-                                ))}
+                                      </dd>
+                                      <dd
+                                        className="col-start-1 row-start-3 flex items-center gap-1 sm:col-start-5 sm:row-start-1 sm:justify-self-center"
+                                        title={`價位等級 ${level} / 5`}
+                                      >
+                                        {[0, 1, 2, 3, 4].map(n => (
+                                          <span
+                                            key={n}
+                                            className="h-2.5 w-2.5 border"
+                                            style={{
+                                              borderColor: n < level ? tone : "#DDE3DF",
+                                              backgroundColor: n < level ? tone : "transparent",
+                                            }}
+                                          />
+                                        ))}
+                                      </dd>
+                                    </div>
+                                  );
+                                })}
                               </dl>
                               <p className="mt-2.5 text-[10px] leading-relaxed text-[#8A9590]">
                                 ※ 同一時點、不同建物的橫向比較，反映本區屋齡造成的價差，不是本案未來的價格預測。
