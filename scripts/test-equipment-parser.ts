@@ -15,7 +15,7 @@ const samples = [
   "オートロック,TVモニター付インターホン,対面式キッチン,システムキッチン,オートバス,宅配ボックス,都市ガス,給湯器,エレベーター,フローリング,ウォークインクローゼット,エアコン,ダウンライト,二重天井",
 ];
 
-const parsed = samples.map(parseEquipmentList);
+const parsed = samples.map(sample => parseEquipmentList(sample));
 const names = parsed.flatMap(items => items.map(item => item.nameZh));
 
 for (const expected of [

@@ -214,6 +214,8 @@ export interface ExtractedListingFields extends SpecialSaleFields, RentalConditi
   specialNotes: string;
   otherConditions?: string;
   facilities?: string;
+  /** 設備原文 → 繁體中文的對照，供字典未收錄的寫法使用。 */
+  facilityTranslations?: Array<{ ja: string; zh: string }>;
 }
 
 function leaseTermValue(row: string, labels: string[]) {
@@ -393,6 +395,14 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - address（所在地／住所，例如 "東京都世田谷区太子堂4-30-31"、"千葉県船橋市本町2-6-14"）。
 
     設備與公設規格（極重要，務必巨細靡遺全盤檢索）：
+    - facilityTranslations：把 facilities 裡的**每一個項目**都翻成台灣用語的繁體中文，
+      輸出 [{ "ja": 原文, "zh": 繁體中文 }, ...]。
+      * ja 必須與 facilities 裡的寫法逐字相同（含括號與單位），否則無法對應。
+      * zh 用簡短名詞，10 個字以內，例如 "オートロック"→"防盜自動門鎖"、
+        "追焚機能"→"自動追焚保溫浴缸"、"ペアガラス"→"雙層隔音氣密窗"、
+        "宅配ボックス"→"宅配箱"、"床暖房"→"地暖設備"。
+      * 不要翻成解釋句，也不要加「有」「附」等贅字；純設備名稱即可。
+      * 「有」「完備」「電動」這種單獨出現、本身不是設備的詞，直接略過不要列。
     - facilities（建物與室內設備清單）：
       * 請完整掃描整份圖紙中所有出現設備與建物特徵的區塊（包含「設備」、「設備・仕様」、「■EQUIPMENT」、間取り圖內部與周圍標註、建物特徵說明、大樓公設等）。
       * 必須全盤提取確認有的設施，常見包含：
@@ -477,6 +487,18 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           cancellationPenalty: { type: Type.STRING, description: "短期解約違約金，例如 1年未満解約時1ヶ月 或 なし" },
           renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
           facilities: { type: Type.STRING, description: "室內與建物設備清單（逗號分隔）。注意表格打圈式只有打圈標記的才算具備，未打圈者切勿填入" },
+          facilityTranslations: {
+            type: Type.ARRAY,
+            description: "facilities 每一項的繁體中文對照，ja 需與原文逐字相同",
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                ja: { type: Type.STRING, description: "設備原文，與 facilities 內寫法完全一致" },
+                zh: { type: Type.STRING, description: "繁體中文設備名稱，10 字以內" },
+              },
+              required: ["ja", "zh"],
+            },
+          },
           salePrice: { type: Type.STRING, description: "販売価格，例如 7,299万円" },
           balconyArea: { type: Type.STRING, description: "バルコニー面積，例如 5.42㎡，未標示則留空" },
           totalUnits: { type: Type.STRING, description: "総戸数，例如 39戸" },
@@ -1289,13 +1311,35 @@ export default async function handler(req: any, res: any) {
     const walkTimes = extracted.walkTime.split(/[,，]/).map(w => w.trim());
     const area = parseArea(extracted.area);
 
-    // 判斷是買賣圖紙還是租屋圖紙
+    // 判斷是買賣圖紙還是租屋圖紙。
+    //
+    // 販売図面偶爾整格「価格」是空白（漏印、或寫「応相談」），這種圖上又常印著
+    // 現行租金（オーナーチェンジ／集金代行），Gemini 看到賃料就容易回 dealType="rent"，
+    // 整份報告會跑成租賃版型。實測ミュージックジョイ神楽坂同一張圖前後兩次判定不同。
+    //
+    // 這裡用「只會出現在買賣図面」的欄位當硬證據來覆蓋：
+    // 修繕積立金與土地権利是屋主才需要負擔／持有的項目，租賃図面不會列；
+    // 表面利回り與年間収入則是收益物件專有。兩項以上同時成立才覆蓋，
+    // 避免單一欄位誤抓就把正常租屋圖判成買賣。
+    const hasValue = (v: unknown) =>
+      typeof v === "string" && v.trim() !== "" && !/^(?:なし|無|0|-|ー|―)$/i.test(v.trim());
+    const saleOnlySignals = [
+      hasValue(extracted.repairReserve),
+      hasValue(extracted.repairFund),
+      hasValue(extracted.landRights),
+      hasValue(extracted.grossYield),
+      hasValue(extracted.annualIncome),
+      /オーナーチェンジ|集金代行|サブリース/i.test(`${extracted.occupancyStatus || ""}`),
+    ].filter(Boolean).length;
+
     const requestedMode = req.body?.mode;
     const isSale = requestedMode === "sale"
       ? true
       : requestedMode === "rent"
       ? false
-      : (extracted.dealType === "sale" || Boolean(salePrice && salePrice >= 10000000));
+      : (extracted.dealType === "sale"
+        || Boolean(salePrice && salePrice >= 10000000)
+        || saleOnlySignals >= 2);
 
     const dealType = isSale ? "sale" : "rent";
     const audit = buildListingAudit(extracted, dealType);

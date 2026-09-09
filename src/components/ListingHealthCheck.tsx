@@ -202,8 +202,19 @@ const STATUS_STYLE: Record<string, VerdictStatusTheme> = {
     dataBg: "bg-[#FFF8F6]",
     medianBadge: "border-[#E94E2B] bg-white text-[#B13818]",
     tagStyle: "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]",
-  }
-};;
+  },
+  // getStatusStyle 的 fallback 指向這一鍵，但它原本並不存在，
+  // 於是任何沒收錄的 verdict.status 都會讓 style 變成 undefined，
+  // 後面讀 style.badge 直接丟 TypeError、整個圖紙分析被 ErrorBoundary 接走。
+  "待確認": {
+    borderLeft: "border-l-[#8A9590]",
+    badge: "border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]",
+    dot: "bg-[#8A9590]",
+    dataBg: "bg-[#F5F8F6]",
+    medianBadge: "border-[#DDE3DF] bg-white text-[#3F5147]",
+    tagStyle: "border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]",
+  },
+};
 
 const getStatusStyle = (status?: string | null): VerdictStatusTheme => {
   if (!status) return STATUS_STYLE["待確認"];
@@ -370,6 +381,7 @@ interface ExtractedFields extends SpecialSaleFields, RentalConditionFields, Audi
   taxEstimationBasis?: string;
   specialNotes?: string;
   facilities?: string;
+  facilityTranslations?: Array<{ ja: string; zh: string }>;
   balconyArea?: string;
 }
 
@@ -1428,7 +1440,6 @@ export function ListingHealthCheck() {
     extracted?.buildingName,
     extracted?.otherConditions,
     extracted?.specialNotes,
-    extracted?.address,
   ];
   // 販売図面實測多半只寫到「○階」而不印房號（レグノ・セレーノ803 的圖面內文即無 803），
   // 但仲介寄檔時幾乎都會把房號接在物件名後面。因此圖面本身找不到時，最後才退回檔名，
@@ -1447,7 +1458,7 @@ export function ListingHealthCheck() {
   const rawRoomNumber = (
     extracted?.roomNumber ||
     roomNumberFallbackSources
-      .map(src => src?.match(/(?:^|[^\d])([A-Za-z]?\d{2,4}\s*(?:号室|號室|号|室))(?!\d)/)?.[1])
+      .map(src => src?.match(/(?:^|[^\d番地丁])([A-Za-z]?\d{2,4}\s*(?:号室|號室|室))(?!\d)/)?.[1])
       .find(Boolean) ||
     roomNumberFromFileName ||
     ""
@@ -1476,7 +1487,7 @@ export function ListingHealthCheck() {
   })();
   const displayBuildingWithRoom = [
     buildingName,
-    !roomAlreadyInName ? (formattedRoom || floorLabel) : null,
+    !roomAlreadyInName ? (formattedRoom || (buildingName ? floorLabel : "")) : null,
   ].filter(Boolean).join(" ");
   const reportHeading =
     displayBuildingWithRoom ||
@@ -1485,10 +1496,16 @@ export function ListingHealthCheck() {
         ? `${stationSummary}駅周邊 ${formattedRoom}`
         : `${stationSummary}駅周邊`
       : isSaleListing
-        ? "日本買賣公寓"
+        ? (specialSale.kind === "land" ? "日本土地"
+          : specialSale.kind === "detached" ? "日本透天住宅"
+          : specialSale.kind ? `日本${specialSale.kindLabel}`
+          : "日本買賣公寓")
         : "日本租賃物件");
   const isPdfPreview = file?.type === "application/pdf";
-  const equipmentList = parseEquipmentList(extracted?.facilities || extracted?.specialNotes);
+  const equipmentList = parseEquipmentList(
+    extracted?.facilities || extracted?.specialNotes,
+    extracted?.facilityTranslations,
+  );
   const stationItems = parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
   // Google 智慧容錯直達（以 site:mansion-review.jp 搜尋，徹底解決平假名／片假名／漢字登錄差異與 Brave 檔腳本問題）
 

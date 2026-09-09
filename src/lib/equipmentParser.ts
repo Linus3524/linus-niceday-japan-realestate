@@ -192,7 +192,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     note: "瓦斯費用較 LP 瓦斯低廉",
   },
   {
-    pattern: /プロパンガス|LPガス/i,
+    pattern: /プロパン|LPガス|LPG/i,
     category: "廚房烹飪",
     nameZh: "LP 桶裝瓦斯",
   },
@@ -593,7 +593,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
 
   // 7. 其他綜合
   {
-    pattern: /ペット(?:可|相談|飼育可)/i,
+    pattern: /ペット\s*[（(]?\s*(?:犬|猫|小型犬)?[^)）]*[)）]?\s*(?:可|相談|飼育可)|ペット\s*[（(][^)）]*可[)）]/i,
     category: "其他設備",
     nameZh: "可飼養寵物",
     highlight: true,
@@ -696,6 +696,119 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     category: "室內舒適",
     nameZh: "閣樓／地板下收納",
   },
+  // 民泊／附家具物件的室內備品清單，圖面常整排列出片假名
+  {
+    pattern: /^テレビ$|液晶テレビ|TV設置/i,
+    category: "室內舒適",
+    nameZh: "電視",
+  },
+  {
+    pattern: /ドライヤー/i,
+    category: "室內舒適",
+    nameZh: "吹風機",
+  },
+  {
+    pattern: /ハンガー/i,
+    category: "室內舒適",
+    nameZh: "衣架",
+  },
+  {
+    pattern: /電気ポット|電気ケトル/i,
+    category: "廚房烹飪",
+    nameZh: "電熱水壺",
+  },
+  {
+    pattern: /電子レンジ/i,
+    category: "廚房烹飪",
+    nameZh: "微波爐",
+  },
+  {
+    pattern: /冷蔵庫/i,
+    category: "廚房烹飪",
+    nameZh: "冰箱",
+  },
+  {
+    pattern: /炊飯器/i,
+    category: "廚房烹飪",
+    nameZh: "電子鍋",
+  },
+  {
+    pattern: /調理器具|フライパン|鍋など/i,
+    category: "廚房烹飪",
+    nameZh: "鍋具與烹飪器具",
+  },
+  {
+    pattern: /食器(?:類)?(?:・|、)?(?:お皿|コップ)|お皿|コップ/i,
+    category: "廚房烹飪",
+    nameZh: "碗盤餐具",
+  },
+  {
+    pattern: /バスタオル|フェイスタオル|タオル/i,
+    category: "衛浴水洗",
+    nameZh: "浴巾毛巾備品",
+  },
+  {
+    pattern: /洗面(?:・|、)?バス用品|アメニティ/i,
+    category: "衛浴水洗",
+    nameZh: "盥洗沐浴備品",
+  },
+  {
+    pattern: /掃除機/i,
+    category: "室內舒適",
+    nameZh: "吸塵器",
+  },
+  {
+    pattern: /物干し|室内物干/i,
+    category: "室內舒適",
+    nameZh: "曬衣設備",
+  },
+  {
+    pattern: /室内スリッパ|スリッパ/i,
+    category: "室內舒適",
+    nameZh: "室內拖鞋",
+  },
+  {
+    pattern: /無料\s*Wi-?Fi|Wi-?Fi/i,
+    category: "通訊網路",
+    nameZh: "免費 Wi-Fi",
+    highlight: true,
+  },
+  {
+    pattern: /ウォークインスペース|ウォークインストレージ|WIS/i,
+    category: "室內舒適",
+    nameZh: "步入式收納空間",
+    highlight: true,
+  },
+  {
+    pattern: /^インターネット$|インターネット対応|ネット対応/i,
+    category: "通訊網路",
+    nameZh: "網路設備",
+  },
+  {
+    pattern: /ロッカールーム|トランクルーム付|宅配ロッカー/i,
+    category: "大樓公設",
+    nameZh: "住戶置物櫃間",
+  },
+  {
+    pattern: /コインランドリー/i,
+    category: "大樓公設",
+    nameZh: "自助洗衣房",
+  },
+  {
+    pattern: /メールボックス|集合郵便受け?/i,
+    category: "大樓公設",
+    nameZh: "集合信箱",
+  },
+  {
+    pattern: /^キッチン$|キッチン設備/i,
+    category: "廚房烹飪",
+    nameZh: "廚房設備",
+  },
+  {
+    pattern: /^コンロ|コンロ\s*[（(]?\d?\s*口?[)）]?$/i,
+    category: "廚房烹飪",
+    nameZh: "爐具",
+  },
 ];
 
 /**
@@ -743,7 +856,7 @@ function translateJapaneseEquipmentFallback(raw: string): {
     [/駐車場/gi, "汽車停車場"],
     [/バイク置場/gi, "機車停放處"],
     [/都市ガス/gi, "天然都市瓦斯"],
-    [/プロパンガス|LPガス/gi, "LP 桶裝瓦斯"],
+    [/プロパン|LPガス|LPG/gi, "LP 桶裝瓦斯"],
     [/床暖房/gi, "地暖設備"],
     [/大規模修繕(?:工事)?(?:実施|済)?/gi, "已完成大樓大規模修繕"],
     [/免震(?:構造)?/gi, "頂級免震結構"],
@@ -801,8 +914,31 @@ function translateJapaneseEquipmentFallback(raw: string): {
 /**
  * 將圖紙提取出的設備字串或陣列，解析為結構化的中文分類設備清單
  */
-export function parseEquipmentList(rawFacilities?: string | string[] | null): ParsedEquipmentItem[] {
+/**
+ * 設備清單解析。
+ *
+ * 規則字典（EQUIPMENT_RULES）優先：它有整理過的中文名、分類與「核心加分」標記，
+ * 同一個設備在租賃與買賣才會長得一樣。字典沒收錄的寫法再退回 AI 於擷取階段
+ * 產生的中日對照（facilityTranslations）——日本圖紙的設備寫法無窮無盡，
+ * 不可能靠字典窮舉，但也不能讓沒收錄的直接以日文原文顯示給使用者。
+ */
+export function parseEquipmentList(
+  rawFacilities?: string | string[] | null,
+  aiTranslations?: Array<{ ja: string; zh: string }> | null,
+): ParsedEquipmentItem[] {
   if (!rawFacilities) return [];
+
+  // 對照鍵統一正規化（全半形、空白、括號），避免因寫法差一個字元就對不上。
+  const normalizeKey = (v: string) =>
+    v.normalize("NFKC").replace(/[\s　]/g, "").replace(/[（）]/g, m => (m === "（" ? "(" : ")")).toLowerCase();
+  const aiMap = new Map<string, string>();
+  for (const pair of aiTranslations || []) {
+    if (!pair?.ja || !pair?.zh) continue;
+    const zh = pair.zh.trim();
+    // 只接受真的翻成中文的結果；仍是日文假名就當作沒翻到。
+    if (!zh || /[ぁ-んァ-ヶ]/.test(zh)) continue;
+    aiMap.set(normalizeKey(pair.ja), zh);
+  }
 
   const rawString = Array.isArray(rawFacilities)
     ? rawFacilities.join(", ")
@@ -863,7 +999,10 @@ export function parseEquipmentList(rawFacilities?: string | string[] | null): Pa
       if (/^(?:電動|自動|新規|交換|更新|設置|新設|無料|専用|付き|あり|済|込|式|型|中|各|全)$/i.test(token)) {
         continue;
       }
-      const fallback = translateJapaneseEquipmentFallback(token);
+      const aiZh = aiMap.get(normalizeKey(token));
+      const fallback = aiZh
+        ? { nameZh: aiZh, category: "其他設備" as ParsedEquipmentItem["category"], highlight: undefined }
+        : translateJapaneseEquipmentFallback(token);
       if (!seenKeys.has(fallback.nameZh)) {
         seenKeys.add(fallback.nameZh);
         results.push({
