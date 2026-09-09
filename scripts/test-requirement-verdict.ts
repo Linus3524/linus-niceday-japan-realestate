@@ -343,10 +343,10 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         listingBenchmark: benchmark,
       });
 
-      assert.equal(verdict.expectedPriceMan, 4826);
-      assert.equal(verdict.typicalListingPriceMan, 6757);
-      assert.equal(verdict.listingDiffPercent, -11.5);
-      assert.equal(verdict.listingVerdict, "below");
+      assert.equal(verdict.expectedPriceMan, 4640);
+      assert.equal(verdict.typicalListingPriceMan, 6497);
+      assert.equal(verdict.listingDiffPercent, -8);
+      assert.equal(verdict.listingVerdict, "typical");
       assert.match(verdict.explanation, /不代表本案可議相同幅度/);
     }
   },
@@ -446,7 +446,9 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         totalFloors: null,
       });
       assert.equal(verdict.expectedPriceMan, 4000);
-      assert.equal(verdict.factors.find(factor => factor.label === "屋齡")?.ratePercent, 0);
+      assert.equal(verdict.factors.find(factor => factor.label === "屋齡"), undefined);
+      assert.equal(verdict.ageHandledInBaseline, true);
+      assert.match(verdict.baselineNote, /同屋齡帶/);
       assert.match(verdict.areaBasisNote, /成交㎡單價中位數/);
     }
   },

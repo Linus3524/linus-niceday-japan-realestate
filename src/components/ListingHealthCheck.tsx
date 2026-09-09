@@ -265,12 +265,13 @@ export interface SaleAnalysisVerdict {
     marketAgeBand?: string | null;
     marketAgeBandSampleCount?: number | null;
     bucketSampleCount?: number | null;
-    marketAgeBandScope?: "layout" | "district" | null;
+    marketAgeBandScope?: "layout" | "area" | "adjacent_age" | "district" | null;
     /** 相對「條件校準後預期價」的價差 */
     diffPercent: number | null;
     /** 相對「未校準分桶中位數」的價差，供對照 */
     rawDiffPercent?: number | null;
     expectedPriceMan?: number | null;
+    areaBaselineMan?: number | null;
     fairLowMan?: number | null;
     fairHighMan?: number | null;
     typicalListingPriceMan?: number | null;
@@ -1381,6 +1382,7 @@ export function ListingHealthCheck() {
     diffPercent: specialComparison.saleVsOfficialPercent,
     rawDiffPercent: specialComparison.saleVsOfficialPercent,
     expectedPriceMan: Math.round(specialComparison.officialPriceYen / 10000),
+    areaBaselineMan: Math.round(specialComparison.officialPriceYen / 10000),
     fairLowMan: Math.round(specialComparison.fairLowYen / 10000),
     fairHighMan: Math.round(specialComparison.fairHighYen / 10000),
     typicalListingPriceMan: specialComparison.listingPriceYen ? Math.round(specialComparison.listingPriceYen / 10000) : null,
@@ -1841,10 +1843,12 @@ export function ListingHealthCheck() {
                 const priceMan = typeof saleAnalysis?.salePriceMan === "number" ? saleAnalysis.salePriceMan : 0;
                 const man = (v: number | null | undefined) =>
                   v == null || isNaN(v) ? null : Math.round(v).toLocaleString();
-                const tsuboOf = (totalMan: number | null) =>
-                  totalMan == null || !saleAnalysis?.tsuboAndSqm?.tsubo
+                // 單位一律用日本慣用的 ㎡：這張卡的成交換算公式本來就是「萬/㎡ × ㎡」，
+                // 上方三欄卻寫每坪，同一張卡出現兩種單位，讀者無法直接對照。
+                const sqmOf = (totalMan: number | null) =>
+                  totalMan == null || !saleAnalysis?.areaSqm
                     ? null
-                    : (totalMan / saleAnalysis.tsuboAndSqm.tsubo).toFixed(1);
+                    : (totalMan / saleAnalysis.areaSqm).toFixed(1);
 
                 // 車站熱門度／路線多寡屬於「同區內這一戶比區域平均好在哪」，
                 // 區域層級的條件已內含在成交基準裡，不該再乘一次係數；
@@ -1878,7 +1882,13 @@ export function ListingHealthCheck() {
                   .map(v => v.trim())
                   .filter(Boolean);
 
-                const officialMan = typeof c.medianPriceMan === "number" && c.medianPriceMan > 0 ? c.medianPriceMan : null;
+                const officialMan = typeof c.areaBaselineMan === "number" && c.areaBaselineMan > 0
+                  ? c.areaBaselineMan
+                  : typeof c.medianPriceMan === "number" && c.medianPriceMan > 0 ? c.medianPriceMan : null;
+                // 差距一律相對同一個基準計算，避免上方寫 +89%、下方寫 +61.2%。
+                const officialDiffPercent = officialMan
+                  ? Math.round(((priceMan - officialMan) / officialMan) * 1000) / 10
+                  : null;
                 const listingMan = typeof c.typicalListingPriceMan === "number" && c.typicalListingPriceMan > 0
                   ? c.typicalListingPriceMan : null;
                 const fairLow = typeof c.fairLowMan === "number" && c.fairLowMan > 0 ? c.fairLowMan : null;
@@ -1918,7 +1928,7 @@ export function ListingHealthCheck() {
                     shortLabel: isSpecialSale ? "國交省成交" : "實價登錄",
                     value: officialMan,
                     tone: "#0284C7",
-                    diff: c.rawDiffPercent,
+                    diff: officialDiffPercent,
                     note: isSpecialSale
                       ? `${specialComparison?.market || c.district}・${c.layout}・${c.sampleCount ?? 0}筆成交`
                       : `國土交通省實價登錄 ${c.sampleCount ?? 0} 筆成交均價`,
@@ -1986,8 +1996,8 @@ export function ListingHealthCheck() {
                               <span className="text-base font-bold text-[#3F5147]">萬円</span>
                             </p>
                             <div className="mt-2 space-y-0.5 text-xs text-[#66736C]">
-                              {saleAnalysis?.tsuboAndSqm?.tsuboPriceMan != null && !isNaN(saleAnalysis.tsuboAndSqm.tsuboPriceMan) && (
-                                <p className="tabular-nums">每坪 {saleAnalysis.tsuboAndSqm.tsuboPriceMan.toFixed(1)} 萬円</p>
+                              {saleAnalysis?.tsuboAndSqm?.sqmPriceMan != null && !isNaN(saleAnalysis.tsuboAndSqm.sqmPriceMan) && (
+                                <p className="tabular-nums">每㎡ {(saleAnalysis.tsuboAndSqm.sqmPriceMan ?? 0).toFixed(1)} 萬円</p>
                               )}
                               {saleAnalysis.areaSqm && (
                                 <p className="tabular-nums">
@@ -2012,9 +2022,9 @@ export function ListingHealthCheck() {
                                 </span>
                                 <span className="text-xs font-bold text-[#3F5147]">萬円</span>
                               </p>
-                              {tsuboOf(item.value) && (
+                              {sqmOf(item.value) && (
                                 <p className="mt-2 text-xs tabular-nums text-[#66736C]">
-                                  每坪 {tsuboOf(item.value)} 萬円
+                                  每㎡ {sqmOf(item.value)} 萬円
                                 </p>
                               )}
                             </div>
@@ -2252,7 +2262,7 @@ export function ListingHealthCheck() {
                                 <div className="mt-3">
                                   <p className="text-[11px] text-[#66736C]">成交換算公式：</p>
                                   <p className="mt-0.5 font-mono text-xs font-bold text-[#1A2A22]">
-                                    {(c.medianSqmPriceYen / 10000).toFixed(1)} 萬/㎡ × {parsedArea}㎡ = {man(c.expectedPriceMan)} 萬円
+                                    {(c.medianSqmPriceYen / 10000).toFixed(1)} 萬/㎡ × {parsedArea}㎡ = {man(officialMan)} 萬円
                                   </p>
                                 </div>
                               ) : null}
@@ -2265,16 +2275,16 @@ export function ListingHealthCheck() {
                             <div className="mt-3.5 border-t border-[#DDE3DF] pt-2 flex items-center justify-between">
                               <span className="text-[11px] text-[#8A9590]">本案開價 vs 成交基準</span>
                               <span className={`border px-2 py-0.5 text-xs font-bold tabular-nums ${
-                                typeof c.diffPercent !== "number" || isNaN(c.diffPercent)
+                                typeof officialDiffPercent !== "number" || isNaN(officialDiffPercent)
                                   ? "border-[#DDE3DF] bg-white text-[#1A2A22]"
-                                  : c.diffPercent <= 0
+                                  : officialDiffPercent <= 0
                                     ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
                                     : "border-[#EAB879] bg-[#FEF3C7] text-[#D97706]"
                               }`}>
-                                {typeof c.diffPercent === "number" && !isNaN(c.diffPercent)
-                                  ? c.diffPercent >= 0
-                                    ? `高於基準 ${c.diffPercent.toFixed(1)}%`
-                                    : `低於基準 ${Math.abs(c.diffPercent).toFixed(1)}%`
+                                {typeof officialDiffPercent === "number" && !isNaN(officialDiffPercent)
+                                  ? officialDiffPercent >= 0
+                                    ? `高於基準 ${officialDiffPercent.toFixed(1)}%`
+                                    : `低於基準 ${Math.abs(officialDiffPercent).toFixed(1)}%`
                                   : "—"}
                               </span>
                             </div>

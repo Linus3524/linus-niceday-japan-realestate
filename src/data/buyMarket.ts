@@ -8,8 +8,14 @@ export interface OfficialBuyEstimate {
   medianAreaSqm: number | null;
   ageBand: MlitBuyAgeBand | null;
   ageBandSampleCount: number | null;
-  /** 屋齡單價來自同房型，或同行政區跨房型的備援樣本。 */
-  ageBandScope: "layout" | "district" | null;
+  /**
+   * 屋齡單價的取得範圍，可信度由高到低：
+   * "layout"       同區＋同房型＋同屋齡帶（最嚴謹）
+   * "area"         同區＋同屋齡帶，改用「面積相近」的房型（房型不同但面積帶接近）
+   * "adjacent_age" 同區＋同房型，改用相鄰屋齡帶（房型固定，屋齡放寬一階）
+   * "district"     同區＋同屋齡帶，跨全部房型合併（最後手段）
+   */
+  ageBandScope: "layout" | "area" | "adjacent_age" | "district" | null;
   sampleCount: number;
   windowQuarters: 4 | 8 | 0;
   periodStart: string;
@@ -83,28 +89,79 @@ export function getOfficialBuyEstimate(
   if (!row) return null;
   const requestedAgeBand = mlitAgeBandForAge(ageYears);
   const ageEntry = requestedAgeBand ? row.ageBands?.[requestedAgeBand] : null;
-  const districtAgeCandidates = requestedAgeBand && !ageEntry
-    ? mlitBuySnapshots
-      .filter(item => item.region === region && item.district === district)
+
+  // 同房型同屋齡帶的樣本不足時，舊版直接跳到「同區跨全部房型合併」。
+  // 但 ㎡ 單價同時受面積與屋齡影響，把 1R 和 3LDK 混在一起算，
+  // 面積差異帶來的誤差比屋齡本身還大。改成先找「面積相近」的房型，
+  // 面積帶中點距離越近越優先；仍不足才放寬屋齡，最後才是全房型合併。
+  const districtRows = mlitBuySnapshots.filter(
+    item => item.region === region && item.district === district
+  );
+  const midOf = (code: LayoutCode) => {
+    const [min, max] = LAYOUT_AREA_BANDS[code];
+    return (min + max) / 2;
+  };
+  const selfMid = midOf(layout);
+
+  const weightedMedian = (entries: Array<{ medianSqmPriceYen: number; sampleCount: number }>) => {
+    if (!entries.length) return null;
+    const sorted = [...entries].sort((a, b) => a.medianSqmPriceYen - b.medianSqmPriceYen);
+    const total = sorted.reduce((sum, e) => sum + e.sampleCount, 0);
+    if (total <= 0) return null;
+    let cumulative = 0;
+    for (const entry of sorted) {
+      cumulative += entry.sampleCount;
+      if (cumulative >= total / 2) return { medianSqmPriceYen: entry.medianSqmPriceYen, sampleCount: total };
+    }
+    return null;
+  };
+
+  // (a) 同屋齡帶 × 面積相近的房型（面積帶中點差距 ≤ 40%）
+  let areaFallback: { medianSqmPriceYen: number; sampleCount: number } | null = null;
+  if (requestedAgeBand && !ageEntry) {
+    const near = districtRows
+      .filter(item => item.layout !== layout)
+      .filter(item => Math.abs(midOf(item.layout) - selfMid) / selfMid <= 0.4)
       .flatMap(item => {
         const entry = item.ageBands?.[requestedAgeBand];
-        return entry ? [{ ...entry, layout: item.layout }] : [];
-      })
-      .sort((a, b) => a.medianSqmPriceYen - b.medianSqmPriceYen)
-    : [];
-  const districtAgeSampleCount = districtAgeCandidates.reduce((sum, entry) => sum + entry.sampleCount, 0);
-  let districtAgeMedianSqmPriceYen: number | null = null;
-  if (districtAgeSampleCount > 0) {
-    const midpoint = districtAgeSampleCount / 2;
-    let cumulative = 0;
-    for (const entry of districtAgeCandidates) {
-      cumulative += entry.sampleCount;
-      if (cumulative >= midpoint) {
-        districtAgeMedianSqmPriceYen = entry.medianSqmPriceYen;
-        break;
-      }
-    }
+        return entry ? [{ medianSqmPriceYen: entry.medianSqmPriceYen, sampleCount: entry.sampleCount }] : [];
+      });
+    areaFallback = weightedMedian(near);
   }
+
+  // (b) 同房型 × 相鄰屋齡帶（屋齡只放寬一階，房型維持不變）
+  let adjacentFallback: { medianSqmPriceYen: number; sampleCount: number } | null = null;
+  if (requestedAgeBand && !ageEntry && !areaFallback) {
+    const order: MlitBuyAgeBand[] = ["age_0_10", "age_11_20", "age_21_30", "age_31_40", "age_41_plus"];
+    const index = order.indexOf(requestedAgeBand);
+    const neighbours = [order[index - 1], order[index + 1]].filter(Boolean) as MlitBuyAgeBand[];
+    const entries = neighbours.flatMap(band => {
+      const entry = row.ageBands?.[band];
+      return entry ? [{ medianSqmPriceYen: entry.medianSqmPriceYen, sampleCount: entry.sampleCount }] : [];
+    });
+    adjacentFallback = weightedMedian(entries);
+  }
+
+  // (c) 最後手段：同屋齡帶但跨全部房型
+  let districtFallback: { medianSqmPriceYen: number; sampleCount: number } | null = null;
+  if (requestedAgeBand && !ageEntry && !areaFallback && !adjacentFallback) {
+    const all = districtRows.flatMap(item => {
+      const entry = item.ageBands?.[requestedAgeBand];
+      return entry ? [{ medianSqmPriceYen: entry.medianSqmPriceYen, sampleCount: entry.sampleCount }] : [];
+    });
+    districtFallback = weightedMedian(all);
+  }
+
+  const chosenFallback = areaFallback || adjacentFallback || districtFallback;
+  const chosenScope: OfficialBuyEstimate["ageBandScope"] = ageEntry
+    ? "layout"
+    : areaFallback ? "area"
+    : adjacentFallback ? "adjacent_age"
+    : districtFallback ? "district"
+    : null;
+  const districtAgeMedianSqmPriceYen = chosenFallback?.medianSqmPriceYen ?? null;
+  const districtAgeSampleCount = chosenFallback?.sampleCount ?? 0;
+
   const hasDistrictAgeFallback = !ageEntry && districtAgeMedianSqmPriceYen !== null;
   return {
     medianTradePriceYen: row.medianTradePriceYen,
@@ -112,7 +169,7 @@ export function getOfficialBuyEstimate(
     medianAreaSqm: row.medianAreaSqm ?? null,
     ageBand: ageEntry || hasDistrictAgeFallback ? requestedAgeBand : null,
     ageBandSampleCount: ageEntry?.sampleCount ?? (hasDistrictAgeFallback ? districtAgeSampleCount : null),
-    ageBandScope: ageEntry ? "layout" : hasDistrictAgeFallback ? "district" : null,
+    ageBandScope: chosenScope,
     sampleCount: row.sampleCount,
     windowQuarters: row.windowQuarters,
     periodStart: row.periodStart,

@@ -582,6 +582,8 @@ export interface SalePriceVerdict {
   /** 相對「未校準的分桶中位總價」的價差，保留舊口徑供對照 */
   rawDiffPercent: number;
   expectedPriceMan: number;
+  /** 面積校準後、尚未套入本案條件係數的市場基準（＝成交㎡單價 × 本案面積）。 */
+  areaBaselineMan: number;
   fairLowMan: number;
   fairHighMan: number;
   /** 公開刊登平均，或 REINS 新規登録口徑換算的市場典型開價。 */
@@ -629,6 +631,13 @@ export function buildSalePriceVerdict(input: {
   medianSqmPriceYen?: number | null;
   /** true 代表 medianSqmPriceYen 已控制本案屋齡，不再疊加手估屋齡係數。 */
   ageControlledByMarket?: boolean;
+  /**
+   * 同屋齡帶單價的取得範圍：
+   * "layout" = 同區＋同房型＋同屋齡帶（最嚴謹）
+   * "district" = 該房型的同屋齡帶樣本不足，改用同區同屋齡帶但「跨房型」合併
+   * 兩者都會讓 ageControlledByMarket 為 true，但可信度不同，文案必須分開講。
+   */
+  ageBandScope?: "layout" | "area" | "adjacent_age" | "district" | null;
   layout: LayoutCode;
   areaSqm: number | null;
   ageYears: number | null;
@@ -722,6 +731,33 @@ export function buildSalePriceVerdict(input: {
     } else {
       factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓`, applied: false, basis: "estimate" });
     }
+  }
+
+  // ── 4.5 建物規模（塔樓）──
+  // 樓層因素只反映「這一戶在樓內的位置」，但タワーマンション本身就是一個建物層級的
+  // 溢價來源：結構規格、共用設施（門廳／健身房／管家）、地標性與稀少性。
+  // 國交省分桶的中位單價把塔樓與一般低層公寓混在一起，不另外校準的話，
+  // 塔樓一律會被判成「高於行情」。實測ファーストリアルタワー新宿（32 階建）
+  // 只因 11F／32F 的位置比不高，就只拿到樓層 +2%，完全沒反映塔樓本身的價值。
+  let towerRate = 0;
+  if (totalFloors !== null && totalFloors >= 20) {
+    towerRate = 0.08;
+    factors.push({
+      label: "建物規模",
+      ratePercent: 8,
+      note: `共 ${totalFloors} 層的塔式住宅（タワーマンション，設備規格與稀少性溢價）`,
+      applied: false,
+      basis: "estimate",
+    });
+  } else if (totalFloors !== null && totalFloors >= 15) {
+    towerRate = 0.04;
+    factors.push({
+      label: "建物規模",
+      ratePercent: 4,
+      note: `共 ${totalFloors} 層的高層住宅`,
+      applied: false,
+      basis: "estimate",
+    });
   }
 
   // ── 5. 翻新 ──
@@ -945,6 +981,7 @@ export function buildSalePriceVerdict(input: {
     diffPercent,
     rawDiffPercent,
     expectedPriceMan: toMan(expectedPriceYen),
+    areaBaselineMan: toMan(areaBaseline),
     fairLowMan: toMan(fairLow),
     fairHighMan: toMan(fairHigh),
     typicalListingPriceMan: typicalListingPriceYen === null ? null : toMan(typicalListingPriceYen),
@@ -963,7 +1000,13 @@ export function buildSalePriceVerdict(input: {
     areaAdjusted,
     areaBasisNote,
     baselineNote: ageHandledInBaseline && ageYears !== null
-      ? `比較基準已鎖定同屋齡帶：本案築 ${ageYears} 年，採用同區、同房型、同屋齡帶的實際成交㎡單價，屋齡不再另外加權。`
+      ? input.ageBandScope === "area"
+        ? `比較基準已鎖定同屋齡帶：本案築 ${ageYears} 年。該房型的同屋齡帶成交樣本不足，改採同區、同屋齡帶中「面積相近」房型的成交㎡單價，屋齡不再另外加權。`
+        : input.ageBandScope === "adjacent_age"
+          ? `本案築 ${ageYears} 年，該屋齡帶成交樣本不足，改採同區、同房型的相鄰屋齡帶成交㎡單價，屋齡不再另外加權。`
+          : input.ageBandScope === "district"
+            ? `比較基準已鎖定同屋齡帶：本案築 ${ageYears} 年。該房型的同屋齡帶成交樣本不足，改採同區、同屋齡帶但合併各房型的成交㎡單價，屋齡不再另外加權；房型差異未另外校準。`
+            : `比較基準已鎖定同屋齡帶：本案築 ${ageYears} 年，採用同區、同房型、同屋齡帶的實際成交㎡單價，屋齡不再另外加權。`
       : ageYears !== null
         ? `該區該房型缺少同屋齡帶的足量成交樣本，屋齡改以業界經驗值估算，僅供參考。`
         : "圖紙未讀到築年，無法就屋齡調整比較基準。",

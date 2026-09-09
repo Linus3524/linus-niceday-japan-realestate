@@ -64,15 +64,20 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
 ]);
 
-const LISTING_CHECK_RATE_LIMIT = 3;
-const LISTING_CHECK_RATE_WINDOW_MS = 300_000;
+// 頻率限制的唯一來源：改這兩個常數即可，視窗字串與錯誤訊息都由此推導，
+// 避免像先前那樣改了視窗卻忘了改文案（訊息仍寫「每 5 分鐘」）。
+const LISTING_CHECK_RATE_LIMIT = 5;
+const LISTING_CHECK_RATE_WINDOW_MINUTES = 10;
+const LISTING_CHECK_RATE_WINDOW_MS = LISTING_CHECK_RATE_WINDOW_MINUTES * 60_000;
+const LISTING_CHECK_RATE_MESSAGE =
+  `物件健檢每 ${LISTING_CHECK_RATE_WINDOW_MINUTES} 分鐘最多使用 ${LISTING_CHECK_RATE_LIMIT} 次，請稍候再試。`;
 const listingCheckRateBuckets = new Map<string, { count: number; resetAt: number }>();
 
 const upstashListingCheckLimiter =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Ratelimit({
         redis: Redis.fromEnv(),
-        limiter: Ratelimit.slidingWindow(LISTING_CHECK_RATE_LIMIT, "300 s"),
+        limiter: Ratelimit.slidingWindow(LISTING_CHECK_RATE_LIMIT, `${LISTING_CHECK_RATE_WINDOW_MINUTES * 60} s`),
         prefix: "linus-listing-check",
       })
     : null;
@@ -88,8 +93,64 @@ function getAiClient() {
   return aiClient;
 }
 
+/**
+ * 取得可信任的來源 IP。
+ *
+ * x-forwarded-for 的最左邊是「客戶端自己宣稱的」位址，任何人都能偽造；
+ * 直接拿它當限流鍵，等於只要每次換一個假 IP 就能無限呼叫（實測可行）。
+ * 代理層（Vercel）會把真實位址「附加在最後」，所以：
+ *   1. 優先用 Vercel 自己算好的 x-vercel-forwarded-for / x-real-ip（客戶端蓋不掉）
+ *   2. 退回 x-forwarded-for 時取最後一段，而不是第一段
+ *   3. 都沒有才用 socket 位址
+ */
+function resolveClientIp(req: any): string {
+  const pick = (value: unknown) => {
+    const text = String(value ?? "").trim();
+    return text ? text : null;
+  };
+  const trusted = pick(req?.headers?.["x-vercel-forwarded-for"]) || pick(req?.headers?.["x-real-ip"]);
+  if (trusted) return trusted.split(",").pop()!.trim();
+
+  const forwarded = pick(req?.headers?.["x-forwarded-for"]);
+  if (forwarded) return forwarded.split(",").pop()!.trim();
+
+  return pick(req?.socket?.remoteAddress) || "unknown";
+}
+
+/**
+ * 全域用量上限。
+ *
+ * 逐 IP 限流擋得住單一使用者連打，但擋不住換 IP 的分散式呼叫；
+ * 這個端點每次都會呼叫 Gemini，最壞情況是帳單被灌爆。
+ * 這裡再加一道「所有人加總」的每小時上限當作費用保險絲。
+ */
+const GLOBAL_HOURLY_CAP = Number(process.env.LISTING_CHECK_GLOBAL_HOURLY_CAP || 300);
+let globalWindow = { startedAt: 0, count: 0 };
+
+function consumeGlobalQuota(): boolean {
+  const now = Date.now();
+  if (now - globalWindow.startedAt > 3_600_000) {
+    globalWindow = { startedAt: now, count: 0 };
+  }
+  if (globalWindow.count >= GLOBAL_HOURLY_CAP) return false;
+  globalWindow.count++;
+  return true;
+}
+
+/** 本機／區網開發環境不套用頻率限制，方便連續測試多張圖紙。 */
+function isLocalRequest(ip: string) {
+  if (process.env.NODE_ENV === "production") return false;
+  const addr = ip.replace(/^::ffff:/i, "");
+  return addr === "unknown"
+    || addr === "localhost"
+    || addr === "::1"
+    || addr.startsWith("127.")
+    || addr.startsWith("192.168.")
+    || addr.startsWith("10.");
+}
+
 async function getRateLimit(ip: string) {
-  if (process.env.NODE_ENV !== "production" && (ip === "unknown" || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("127.0.0."))) {
+  if (isLocalRequest(ip)) {
     return { limited: false, remaining: 999, retryAfter: 0 };
   }
   if (upstashListingCheckLimiter) {
@@ -1060,6 +1121,7 @@ export function buildSaleAnalysis(params: {
         medianPriceYen,
         medianSqmPriceYen: officialEstimate?.medianSqmPriceYen ?? null,
         ageControlledByMarket: officialEstimate?.ageBand !== null,
+        ageBandScope: officialEstimate?.ageBandScope ?? null,
         layout: layoutCode,
         areaSqm,
         ageYears,
@@ -1115,6 +1177,7 @@ export function buildSaleAnalysis(params: {
         explanation: priceVerdict.explanation,
         insightPoints: priceVerdict.insightPoints,
         expectedPriceMan: priceVerdict.expectedPriceMan,
+        areaBaselineMan: priceVerdict.areaBaselineMan,
         fairLowMan: priceVerdict.fairLowMan,
         fairHighMan: priceVerdict.fairHighMan,
         typicalListingPriceMan: priceVerdict.typicalListingPriceMan,
@@ -1252,24 +1315,68 @@ export function buildSaleAnalysis(params: {
   };
 }
 
+/**
+ * 只允許自家網域從瀏覽器呼叫。
+ *
+ * 原本回 Access-Control-Allow-Origin: *，等於任何網站都能掛我們的圖紙分析當後端，
+ * 費用算在我們頭上。預覽部署網域會變動，所以放行 *.vercel.app 與本機。
+ * 額外網域可用 ALLOWED_ORIGINS（逗號分隔）設定。
+ */
+function resolveAllowedOrigin(origin: string | undefined): string | null {
+  if (!origin) return null;
+  const extra = String(process.env.ALLOWED_ORIGINS || "")
+    .split(",").map(v => v.trim()).filter(Boolean);
+  if (extra.includes(origin)) return origin;
+  try {
+    const { hostname, protocol } = new URL(origin);
+    if (protocol !== "https:" && protocol !== "http:") return null;
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]") return origin;
+    if (hostname.endsWith(".vercel.app")) return origin;
+    if (hostname === "linus-niceday-japan-realestate.vercel.app") return origin;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 export default async function handler(req: any, res: any) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  const origin = req.headers?.origin as string | undefined;
+  const allowedOrigin = resolveAllowedOrigin(origin);
+  if (allowedOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Vary", "Origin");
+  }
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  // 帶著 Origin 卻不在白名單 = 別的網站的瀏覽器前端，直接拒絕。
+  // 同源請求與伺服器端呼叫不會帶 Origin，因此不受影響。
+  if (origin && !allowedOrigin) {
+    return res.status(403).json({ error: "此來源未獲授權使用圖紙分析。" });
+  }
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed. Use POST." });
 
   try {
     const files = validateFiles(req.body?.files);
 
-    const ip = String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim();
+    const ip = resolveClientIp(req);
     const limit = await getRateLimit(ip);
     res.setHeader("X-RateLimit-Limit", String(LISTING_CHECK_RATE_LIMIT));
     res.setHeader("X-RateLimit-Remaining", String(limit.remaining));
     if (limit.limited) {
       res.setHeader("Retry-After", String(limit.retryAfter));
-      return res.status(429).json({ error: "物件健檢每 5 分鐘最多使用 3 次，請稍候再試。", retryAfter: limit.retryAfter });
+      return res.status(429).json({ error: LISTING_CHECK_RATE_MESSAGE, retryAfter: limit.retryAfter });
+    }
+
+    // 分散式濫用（大量不同 IP）逐 IP 限流擋不住，這裡用全站每小時總量當費用保險絲。
+    if (!isLocalRequest(ip) && !consumeGlobalQuota()) {
+      res.setHeader("Retry-After", "600");
+      return res.status(503).json({
+        error: "圖紙分析目前使用量偏高，請稍後再試。",
+        retryAfter: 600,
+      });
     }
 
     const hasCoreFields = (fields: ExtractedListingFields) =>
