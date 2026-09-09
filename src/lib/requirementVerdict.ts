@@ -668,6 +668,21 @@ export function buildSalePriceVerdict(input: {
     rank: number;
     townCount: number;
   } | null;
+  /**
+   * 帶租約物件的收益資訊：圖紙上的現行租金，以及同區同房型的市場租金行情。
+   * 帶租約的成交價實質上由收益還原（年租金 ÷ 期待利回り）決定，
+   * 所以租金比行情低多少，價格就該同幅往下調整。
+   */
+  tenantedIncome?: {
+    /** 圖紙上的現行月租（或由年收入／表面利回換算） */
+    monthlyRentYen: number;
+    /**
+     * 同區同房型的市場表面利回り。必須由「同一來源的租金 ÷ 同一來源的在售價」求得，
+     * 跨來源相除（例如刊登租金 ÷ 實價登錄成交價）母體對不起來，會系統性高估。
+     */
+    marketGrossYieldRate: number | null;
+    rentSourceLabel?: string | null;
+  } | null;
   /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
   sampleCount?: number | null;
   /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
@@ -911,24 +926,73 @@ export function buildSalePriceVerdict(input: {
     r1: -0.03, k1: -0.03, ldk1: -0.10, ldk2: -0.18, ldk3: -0.20,
   };
   let occupancyRate = 0;
+  let incomeRate = 0;
   const occupancy = `${input.occupancyStatus || ""}`;
   const isTenanted = /賃貸中|オーナーチェンジ|賃借人|入居中|集金代行|サブリース/.test(occupancy);
   const isVacant = /空室|空家|空き|即入居|即引渡/.test(occupancy);
   if (isTenanted) {
-    occupancyRate = occupancyDiscountByLayout[layout] ?? -0.10;
+    // 收益還原優先：帶租約的買方是投資客，出價來自「年租金 ÷ 市場表面利回り」。
+    // 圖紙有現行租金時直接算得出來，比任何固定折價成數都貼近實情——
+    // 租金比行情低一成，收益還原價就低一成，而固定成數看不出這件事。
+    //
+    // 市場表面利回り 一律用「At Home 同區同房型租金 ÷ At Home 同區同房型在售價」。
+    // 兩邊同一個來源、同一套房型定義、都是刊登側資料，母體才對得起來。
+    // （試過用「At Home 租金 ÷ 實價登錄成交價」，新宿區 1K 會算出 5.35%：
+    //  租金中位描述的是較新較大的物件、成交中位卻是 20㎡ 的老投資盤，兩者不是同一批東西。
+    //  同樣地也不能拿租金中位除以成交面積中位去比每㎡租金，會高估三成以上。）
+    const income = input.tenantedIncome;
+    const marketYield = income?.marketGrossYieldRate ?? null;
+    const yieldUsable = marketYield !== null && marketYield >= 0.025 && marketYield <= 0.12;
+    let incomeApplied = false;
+    if (income && yieldUsable && income.monthlyRentYen > 0 && areaBaseline > 0) {
+      const capitalizedYen = (income.monthlyRentYen * 12) / marketYield!;
+      const raw = capitalizedYen / areaBaseline - 1;
+      // 圖紙的租金欄偶爾會把年額寫進月租欄；夾在 ±25% 讓單一筆誤讀不會毀掉結論。
+      incomeRate = Math.max(-0.25, Math.min(0.25, raw));
+      incomeApplied = true;
+      const subjectYield = (income.monthlyRentYen * 12) / salePriceYen;
+      factors.push({
+        label: "租約收益",
+        ratePercent: Math.round(incomeRate * 1000) / 10,
+        note: `現行租金 ${Math.round(income.monthlyRentYen).toLocaleString("ja-JP")} 円／月（本案開價的表面利回 ${
+          (subjectYield * 100).toFixed(2)
+        }%）。以同區同房型市場表面利回 ${(marketYield! * 100).toFixed(2)}% 收益還原，價值約 ${
+          Math.round(capitalizedYen / 10000).toLocaleString()
+        } 萬円`,
+        applied: true,
+        basis: "data",
+      });
+      if (Math.abs(raw) > 0.25) {
+        cautions.push(
+          `以現行租金收益還原的價值與成交基準相差 ${Math.round(Math.abs(raw) * 100)}%，已在估價中以 25% 為上限計入。` +
+          `租金明顯${raw > 0 ? "高於" : "低於"}行情時，退租後的收益會${raw > 0 ? "下降" : "回升"}，請確認租約剩餘期間與退租後的預估租金。`
+        );
+      }
+    }
+
+    // 沒有租金可算時才退回依房型分級的固定折價：
+    // 業界慣例值是「約折 10%」（chiyodaku-mansion.net、musashi-corporation.com），
+    // 但多個實務來源同時指出實際落差可到 20〜30%，且明講「ファミリータイプ比
+    // ワンルーム 更難賣、折得更兇」（landnet.co.jp／fgh.co.jp）。
+    // 理由在買方結構：1R・1K 的成交母體本來就以投資客為主，帶不帶租約的買方是同一群人，
+    // 比較基準（同區同房型的實價登錄中位數）本身就已經是投資盤的價格，再折 10% 是重複扣；
+    // 2LDK 以上的母體以自住買方為主，帶租約把買方限縮成投資客，折價才會拉到兩成上下。
+    occupancyRate = incomeApplied ? 0 : (occupancyDiscountByLayout[layout] ?? -0.10);
     const familyType = layout === "ldk2" || layout === "ldk3";
     const investorType = layout === "r1" || layout === "k1";
     factors.push({
       label: "現況",
-      ratePercent: Math.round(occupancyRate * 1000) / 10,
-      note: `帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除${
-        familyType
-          ? "。此房型的成交母體以自住買方為主，帶租約會把買方限縮成投資客，折價幅度明顯較大"
-          : investorType
-            ? "。此房型的成交母體本來就以投資買方為主，與比較基準的買方結構接近，折價幅度較小"
-            : ""
-      }`,
-      applied: true,
+      ratePercent: incomeApplied ? 0 : Math.round(occupancyRate * 1000) / 10,
+      note: incomeApplied
+        ? "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除。本案有現行租金，已改用上方的收益還原直接估算，不再另外套用固定折價成數"
+        : `帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除${
+            familyType
+              ? "。此房型的成交母體以自住買方為主，帶租約會把買方限縮成投資客，折價幅度明顯較大"
+              : investorType
+                ? "。此房型的成交母體本來就以投資買方為主，與比較基準的買方結構接近，折價幅度較小"
+                : ""
+          }`,
+      applied: !incomeApplied,
       basis: "estimate",
     });
     cautions.push("帶租約物件的價格主要由現行租金與收益率決定，與空屋自住行情不同口徑。除了本頁的成交比對，請一併確認現行租約的租金水準、剩餘期間與退租後的預估租金。");
@@ -944,7 +1008,8 @@ export function buildSalePriceVerdict(input: {
   // 實測日本橋横山町一案，加了係數後預期價 10,196 萬（開價低 21.5%），
   // 只用資料是 8,790 萬（開價低 9%），而 At Home 同區同房型的公開開價平均
   // 8,320 萬（開價低 3.8%）——兩條獨立的資料路徑彼此接近，加了係數的版本明顯偏離。
-  const appliedRate = Math.max(-0.4, Math.min(0.5, occupancyRate));
+  // 兩項相乘而不是相加：買方結構的折價與租金水準的折價作用在不同的基準上。
+  const appliedRate = Math.max(-0.4, Math.min(0.5, (1 + occupancyRate) * (1 + incomeRate) - 1));
   const expectedPriceYen = areaBaseline * (1 + appliedRate);
 
   // 面積校準過的預期價較可信，容許區間可以收窄；沒校準時放寬，

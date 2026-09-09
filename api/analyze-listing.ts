@@ -1116,6 +1116,23 @@ export function buildSaleAnalysis(params: {
         extracted.floor,
         `${extracted.buildingFloors ? `${extracted.buildingFloors}階建` : ""} ${extracted.structure || ""} ${extracted.specialNotes || ""}`
       );
+      // 帶租約物件要拿現行租金跟同區同房型的市場租金比，才能做收益還原。
+      // 租金優先取圖紙明列的現行月租，其次由年收入換算，最後才用表面利回×開價回推。
+      const flyerAnnualIncomeYen = parseYenAmount(extracted.annualIncome);
+      const flyerYieldRate = parseYieldRate(extracted.grossYield);
+      const flyerMonthlyRentYen = parseYenAmount(extracted.currentRent)
+        ?? (flyerAnnualIncomeYen ? Math.round(flyerAnnualIncomeYen / 12) : null)
+        ?? (flyerYieldRate ? Math.round((flyerYieldRate * salePriceYen) / 12) : null);
+      const rentBenchmark = getNationwideRentBenchmark(locationInfo.region, locationInfo.district, layoutCode);
+      // 市場表面利回り＝同區同房型的 At Home 租金 ÷ 同區同房型的 At Home 在售價。
+      // 兩個數字必須同來源同口徑；跨來源相除（刊登租金 ÷ 實價登錄成交價）
+      // 會把「較新較大的出租物件」除以「較舊較小的成交物件」，系統性高估利回。
+      const saleListingBenchmark = getSaleListingBenchmark(locationInfo.region, locationInfo.district, layoutCode);
+      const marketGrossYieldRate = rentBenchmark && saleListingBenchmark?.kind === "public_listing_average"
+        && saleListingBenchmark.averageListingPriceYen > 0
+        ? (rentBenchmark.medianRentYen * 12) / saleListingBenchmark.averageListingPriceYen
+        : null;
+
       const priceVerdict = buildSalePriceVerdict({
         salePriceYen,
         medianPriceYen,
@@ -1135,11 +1152,16 @@ export function buildSaleAnalysis(params: {
         structureText: extracted.structure,
         conditionPremium: getConditionPremium(locationInfo.region, ageYears),
         townPremium: getTownPremium(locationInfo.region, locationInfo.district, extracted.address),
+        tenantedIncome: flyerMonthlyRentYen && flyerMonthlyRentYen > 0 ? {
+          monthlyRentYen: flyerMonthlyRentYen,
+          marketGrossYieldRate: marketGrossYieldRate,
+          rentSourceLabel: rentBenchmark?.sourceLabel ?? null,
+        } : null,
         occupancyStatus: `${extracted.occupancyStatus || ""} ${
           extracted.currentRent || extracted.annualIncome || extracted.grossYield ? "賃貸中" : ""
         }`,
         sampleCount: officialEstimate?.ageBandSampleCount ?? officialEstimate?.sampleCount ?? null,
-        listingBenchmark: getSaleListingBenchmark(locationInfo.region, locationInfo.district, layoutCode),
+        listingBenchmark: saleListingBenchmark,
       });
 
       // 冷門地區的分桶會因為近 4 季樣本不足而把統計視窗往前滑，
