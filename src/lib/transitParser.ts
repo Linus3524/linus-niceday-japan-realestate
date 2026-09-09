@@ -34,33 +34,35 @@ function simplifyLineName(line: string): string {
 /**
  * 日本車站名稱標準化：去除括號後綴（如 (東京)、（東京都））、引號與「駅」結尾
  */
-function cleanStationName(raw: string): string {
+function cleanStationName(raw?: string | null): string {
+  if (!raw || typeof raw !== "string") return "";
   let cleaned = raw
-    .replace(/[／/「」『』《》〈〉【】]/g, " ")
-    .replace(/[\(（].*?[\)）]/g, "") // 移除 (東京)、（東京都）等括號後綴
-    .replace(/駅$/, "")
+    .replace(/^[◎●◆■※・\s]+/u, "")
+    .replace(/[／/「」『』《》〈〉【】\[\]［］〔〕〖〗〘〙]/gu, " ")
+    .replace(/[\(（].*?[\)）]/gu, "") // 移除 (東京)、（東京都）等括號後綴
+    .replace(/駅$/u, "")
     .trim();
 
   // 若站名開頭黏著路線名稱（如 "西武池袋線桜台"、"東急東横線中目黒"、"都電荒川線向原"），精準剝離路線前綴
-  const linePrefixMatch = cleaned.match(/^(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい)?.+?(?:線|トラム|ライン)\s*/);
+  const linePrefixMatch = cleaned.match(/^(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい)?.+?(?:線|トラム|ライン)\s*/u);
   if (linePrefixMatch && linePrefixMatch[0].length < cleaned.length) {
     cleaned = cleaned.slice(linePrefixMatch[0].length).trim();
   }
 
-  return cleaned.replace(/駅$/, "").trim();
+  return cleaned.replace(/[／/「」『』《》〈〉【】\[\]［］〔〕〖〗〘〙]/gu, "").replace(/駅$/u, "").trim();
 }
 
 /**
  * 依車站名稱自動查詢所屬日本鐵道線路
  * 整合精選大站清單與涵蓋全首都圈 2,100+ 站的完整鐵道路網圖資，確保全站所有車站都能查出路線
  */
-export function lookupStationLines(stationName: string): string {
+export function lookupStationLines(stationName?: string | null): string {
   const clean = cleanStationName(stationName);
   if (!clean) return "";
   const targetJp = toJapaneseStationName(clean);
 
   // 1. 優先比對精選車站資料（具備經過編輯的核心主流路線）
-  const found = allCuratedStations.find(s => toJapaneseStationName(cleanStationName(s.name)) === targetJp);
+  const found = allCuratedStations.find(s => toJapaneseStationName(cleanStationName(s?.name)) === targetJp);
   if (found && found.lines?.length) {
     return found.lines.join("・");
   }
@@ -91,101 +93,105 @@ export function parseTransitStations(
   walkTimeStr?: string | null
 ): ParsedStationItem[] {
   const items: ParsedStationItem[] = [];
-  const seenMap = new Map<string, ParsedStationItem>();
+  try {
+    const seenMap = new Map<string, ParsedStationItem>();
 
-  const registerStation = (
-    rawStation: string,
-    linePart?: string | null,
-    walk?: number | null,
-    rawClause?: string
-  ) => {
-    const station = cleanStationName(rawStation);
-    if (!station) return;
+    const registerStation = (
+      rawStation?: string | null,
+      linePart?: string | null,
+      walk?: number | null,
+      rawClause?: string
+    ) => {
+      const station = cleanStationName(rawStation);
+      if (!station) return;
 
-    // 統一以日文正規站名作為去重鍵（防止「桜台(東京)」與「桜台」、或中日漢字差異導致重複）
-    const normKey = toJapaneseStationName(station);
-    const officialLines = lookupStationLines(station);
+      // 統一以日文正規站名作為去重鍵（防止「桜台(東京)」與「桜台」、或中日漢字差異導致重複）
+      const normKey = toJapaneseStationName(station);
+      const officialLines = lookupStationLines(station);
 
-    // 整合路線名稱：優先使用圖紙抓到的路線名，若圖紙未寫或簡略，以官方/資料庫路線補足
-    const cleanLinePart = linePart ? linePart.replace(/[／/「」『』《》〈〉【】]/g, "").trim() : "";
-    const mergedLine = cleanLinePart || officialLines;
+      // 整合路線名稱：優先使用圖紙抓到的路線名，若圖紙未寫或簡略，以官方/資料庫路線補足
+      const cleanLinePart = linePart ? linePart.replace(/^[◎●◆■※・\s]+|[／/「」『』《》〈〉【】\[\]［］〔〕〖〗〘〙]/gu, "").trim() : "";
+      const mergedLine = cleanLinePart || officialLines;
 
-    const existing = seenMap.get(normKey);
-    if (existing) {
-      // 既有車站：進行智慧合併，不重複生成卡片
-      if (walk !== null && !isNaN(walk as number) && (existing.walkMin === null || (walk as number) < existing.walkMin)) {
-        existing.walkMin = walk as number;
+      const existing = seenMap.get(normKey);
+      if (existing) {
+        // 既有車站：進行智慧合併，不重複生成卡片
+        if (walk !== null && walk !== undefined && !isNaN(walk) && (existing.walkMin === null || walk < existing.walkMin)) {
+          existing.walkMin = walk;
+        }
+        if (!existing.lineName && (cleanLinePart || officialLines)) {
+          existing.lineName = cleanLinePart || officialLines;
+        } else if (cleanLinePart && !existing.lineName.includes(cleanLinePart)) {
+          existing.lineName = existing.lineName ? `${existing.lineName}・${cleanLinePart}` : cleanLinePart;
+        }
+        return;
       }
-      if (!existing.lineName && (cleanLinePart || officialLines)) {
-        existing.lineName = cleanLinePart || officialLines;
-      } else if (cleanLinePart && !existing.lineName.includes(cleanLinePart)) {
-        existing.lineName = existing.lineName ? `${existing.lineName}・${cleanLinePart}` : cleanLinePart;
-      }
-      return;
-    }
 
-    const newItem: ParsedStationItem = {
-      stationName: station,
-      lineName: mergedLine || officialLines,
-      walkMin: walk !== null && !isNaN(walk as number) ? walk : null,
-      rawText: rawClause,
+      const newItem: ParsedStationItem = {
+        stationName: station,
+        lineName: mergedLine || officialLines,
+        walkMin: walk !== null && walk !== undefined && !isNaN(walk) ? walk : null,
+        rawText: rawClause,
+      };
+      seenMap.set(normKey, newItem);
+      items.push(newItem);
     };
-    seenMap.set(normKey, newItem);
-    items.push(newItem);
-  };
 
-  // 1. 若圖紙有抓出完整交通欄文字（transitAccess），優先精準切分行與子句
-  if (transitAccess && transitAccess.trim()) {
-    const normalized = transitAccess.normalize("NFKC");
-    // 切分各車站條目：支援換行、分號、逗號，以及條目間的斜線（如 '徒歩6分 / 東京メトロ...'）或以空格隔開的後續路線
-    const splitRegex = /(?:[\r\n；;]+|(?:、|(?<!\d)[,，](?!\d))|(?<=[分秒歩])\s*[／/]\s*|\s+[／/]\s*|(?<=[分秒])\s+(?=(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい|[^\s／/「」駅]+(?:線|駅)))|[／/](?=\s*(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい)))/g;
-    const clauses = normalized
-      .split(splitRegex)
-      .map(s => s.trim())
-      .filter(Boolean);
+    // 1. 若圖紙有抓出完整交通欄文字（transitAccess），優先精準切分行與子句
+    if (transitAccess && transitAccess.trim()) {
+      const normalized = transitAccess.normalize("NFKC");
+      // 切分各車站條目：支援換行、分號、逗號，以及條目間的斜線（如 '徒歩6分 / 東京メトロ...'）或以空格隔開的後續路線，支援項目符號
+      const splitRegex = /(?:[\r\n；;]+|(?:、|(?<!\d)[,，](?!\d))|(?<=[分秒歩])\s*[／/]\s*|\s+[／/]\s*|(?<=[分秒])\s+(?=(?:[◎●◆■※・\s]*(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい|[^\s／/「」駅]+(?:線|駅))))|[／/](?=\s*(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい))|(?<=[分秒])\s*(?=[◎●◆■※]))/gu;
+      const clauses = normalized
+        .split(splitRegex)
+        .map(s => s.trim())
+        .filter(Boolean);
 
-    for (const clause of clauses) {
-      // 句型 A：[路線名] [車站名] 徒歩[分鐘]分
-      // 例："西武池袋線 桜台(東京)駅 徒歩3分"、"西武池袋線／桜台駅 徒歩3分"、"西武池袋線「桜台」駅徒歩3分"
-      const matchWithLine = clause.match(
-        /^(.+?(?:線|ライン|トラム|電車|地下鉄|メトロ|JR|[A-Za-z0-9]+))(?:[／/「\s]+)([^\s／/「」駅徒歩]+)(?:」)?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/
-      );
-      if (matchWithLine) {
-        const linePart = matchWithLine[1];
-        const station = matchWithLine[2];
-        const walk = Number(matchWithLine[3]);
-        registerStation(station, linePart, isNaN(walk) ? null : walk, clause);
-        continue;
-      }
+      for (const clause of clauses) {
+        // 句型 A：[路線名] [車站名] 徒歩[分鐘]分
+        // 例："西武池袋線 桜台(東京)駅 徒歩3分"、"西武池袋線／桜台駅 徒歩3分"、"◎東京メトロ有楽町線[要町] 徒歩9分"
+        const matchWithLine = clause.match(
+          /^([◎●◆■※・\s]*.+?(?:線|ライン|トラム|電車|地下鉄|メトロ|JR|[A-Za-z0-9]+))[\s／/「『【\[［]+([^\s／/「」『』【】\[\]［］駅徒歩]+)[」』】\]］]?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/u
+        );
+        if (matchWithLine) {
+          const linePart = matchWithLine[1];
+          const station = matchWithLine[2];
+          const walk = Number(matchWithLine[3]);
+          registerStation(station, linePart, isNaN(walk) ? null : walk, clause);
+          continue;
+        }
 
-      // 句型 B：[車站名] 徒歩[分鐘]分（無前置路線名）
-      // 例："大塚駅 徒歩6分"、"練馬 徒歩7分"
-      const matchStationOnly = clause.match(
-        /^([^\s／/「」駅徒歩]+)(?:」)?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/
-      );
-      if (matchStationOnly) {
-        const station = matchStationOnly[1];
-        const walk = Number(matchStationOnly[2]);
-        registerStation(station, null, isNaN(walk) ? null : walk, clause);
-        continue;
+        // 句型 B：[車站名] 徒歩[分鐘]分（無前置路線名）
+        // 例："大塚駅 徒歩6分"、"練馬 徒歩7分"、"[大山] 徒歩17分"
+        const matchStationOnly = clause.match(
+          /^[◎●◆■※・\s]*[「『【\[［]?([^\s／/「」『』【】\[\]［］駅徒歩]+)[」』】\]］]?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/u
+        );
+        if (matchStationOnly) {
+          const station = matchStationOnly[1];
+          const walk = Number(matchStationOnly[2]);
+          registerStation(station, null, isNaN(walk) ? null : walk, clause);
+          continue;
+        }
       }
     }
-  }
 
-  // 2. 若缺少 transitAccess 或未完整，補足 station 與 walkTime
-  if (stationStr) {
-    const stations = stationStr.split(/[,，、]/).map(s => cleanStationName(s)).filter(Boolean);
-    const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim()).filter(Boolean);
+    // 2. 若缺少 transitAccess 或未完整，補足 station 與 walkTime
+    if (stationStr) {
+      const stations = stationStr.split(/[,，、]/).map(s => cleanStationName(s)).filter(Boolean);
+      const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim()).filter(Boolean);
 
-    for (let i = 0; i < stations.length; i++) {
-      const station = stations[i];
-      if (!station) continue;
+      for (let i = 0; i < stations.length; i++) {
+        const station = stations[i];
+        if (!station) continue;
 
-      const rawWalk = walkTimes[i] || (walkTimes.length === 1 ? walkTimes[0] : null);
-      const walkNum = rawWalk ? Number(rawWalk.replace(/\D/g, "")) : null;
+        const rawWalk = walkTimes[i] || (walkTimes.length === 1 ? walkTimes[0] : null);
+        const walkNum = rawWalk ? Number(rawWalk.replace(/\D/g, "")) : null;
 
-      registerStation(station, null, isNaN(walkNum as number) ? null : walkNum);
+        registerStation(station, null, walkNum !== null && !isNaN(walkNum) ? walkNum : null);
+      }
     }
+  } catch (error) {
+    console.warn("parseTransitStations safe fallback:", error);
   }
 
   return items;

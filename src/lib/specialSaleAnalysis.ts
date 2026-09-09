@@ -43,27 +43,39 @@ function numberFrom(value?: string) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function parseYenRate(value?: string | null) {
+  if (!value) return null;
+  const normalized = value.replace(/,/g, "").trim();
+  const manMatch = normalized.match(/^([\d.]+)\s*(?:万円|万)$/);
+  if (manMatch) return Math.round(Number(manMatch[1]) * 10000);
+  const yenMatch = normalized.match(/^(\d+)(?:\s*円)?$/);
+  if (yenMatch) return Number(yenMatch[1]);
+  return numberFrom(normalized);
+}
+
 /** 將圖紙的日租、月租、年營收與投報率算式拆成使用者可讀的中文步驟。 */
 export function parseRevenueCalculationBasis(raw?: string | null): RevenueCalculationItem[] {
   if (!raw?.trim()) return [{ label: "計算前提", value: "圖紙未載明收益計算前提" }];
   const text = raw.normalize("NFKC").replace(/\s+/gu, " ").trim();
-  const lodging = text.match(/(?:(\d+)\s*日\s*[×*xX]\s*([\d,]+)\s*円|([\d,]+)\s*円\s*[×*xX]\s*(\d+)\s*日)/u);
-  const monthly = text.match(/(?:(\d+)\s*(?:ヶ|か|ケ|個)?月\s*[×*xX]\s*([\d,]+)\s*円|([\d,]+)\s*円\s*[×*xX]\s*(\d+)\s*(?:ヶ|か|ケ|個)?月)/u);
+  const lodging = text.match(/(?:(\d+)\s*日\s*[×*xX]\s*([\d,.]+\s*(?:万円|万|円)?)|([\d,.]+\s*(?:万円|万|円)?)\s*[×*xX]\s*(\d+)\s*日)/u);
+  const monthly = text.match(/(?:(?:マンスリー)?\s*(\d+)\s*(?:ヶ|か|ケ|個)?月[^\d]*?([\d,.]+\s*(?:万円|万|円))\s*[×*xX]\s*(\d+)|(\d+)\s*(?:ヶ|か|ケ|個)?月\s*[×*xX]\s*([\d,.]+\s*(?:万円|万|円))|([\d,.]+\s*(?:万円|万|円)?)\s*[×*xX]\s*(\d+)\s*(?:ヶ|か|ケ|個)?月)/u);
   const lodgingDays = numberFrom(lodging?.[1] || lodging?.[4]);
-  const lodgingRate = numberFrom(lodging?.[2] || lodging?.[3]);
-  const monthlyMonths = numberFrom(monthly?.[1] || monthly?.[4]);
-  const monthlyRate = numberFrom(monthly?.[2] || monthly?.[3]);
+  const lodgingRate = parseYenRate(lodging?.[2] || lodging?.[3]);
+  const monthlyMonths = numberFrom(monthly?.[1] || monthly?.[4] || monthly?.[7]);
+  const monthlyRate = parseYenRate(monthly?.[2] || monthly?.[5] || monthly?.[6]);
   const statedAnnual = numberFrom(text.match(/(?:年間)?(?:売上高?|營收|收入)\s*[:：]?\s*([\d,]+)\s*円/u)?.[1]);
   const statedYield = numberFrom(text.match(/(?:利回り|投報率)\s*[:：]?\s*([\d.]+)\s*%/u)?.[1]);
   const items: RevenueCalculationItem[] = [];
 
   const lodgingTotal = lodgingDays !== null && lodgingRate !== null ? lodgingDays * lodgingRate : null;
   if (lodgingTotal !== null) {
-    items.push({ label: "民泊收入", formula: `${yen(lodgingRate)} × ${lodgingDays} 日`, value: yen(lodgingTotal) });
+    const label = /売上高/u.test(text) ? "民泊營收" : "民泊收入";
+    items.push({ label, formula: `${yen(lodgingRate)} × ${lodgingDays} 日`, value: yen(lodgingTotal) });
   }
   const monthlyTotal = monthlyMonths !== null && monthlyRate !== null ? monthlyMonths * monthlyRate : null;
   if (monthlyTotal !== null) {
-    items.push({ label: "月租收入", formula: `${yen(monthlyRate)} × ${monthlyMonths} 個月`, value: yen(monthlyTotal) });
+    const label = /売上高/u.test(text) ? (monthlyMonths ? `月租 ${monthlyMonths} 個月營收` : "月租營收") : "月租收入";
+    items.push({ label, formula: `${yen(monthlyRate)} × ${monthlyMonths} 個月`, value: yen(monthlyTotal) });
   }
   if (statedAnnual !== null || lodgingTotal !== null || monthlyTotal !== null) {
     const calculated = (lodgingTotal || 0) + (monthlyTotal || 0);

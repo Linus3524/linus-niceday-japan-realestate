@@ -22,6 +22,7 @@ import { RentCriteriaSummary } from "./RentCriteriaSummary";
 import { ListingHealthCheck } from "./ListingHealthCheck";
 import { OfficialMarketInsight } from "./OfficialMarketInsight";
 import { PageIntroCard } from "./PageIntroCard";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 interface CalculatorTabProps {
   calcMode: "rent" | "buy" | "listing";
@@ -1094,7 +1095,12 @@ export function CalculatorTab(props: CalculatorTabProps) {
               </PageIntroCard>
 
               <div hidden={calcMode !== "listing"}>
-                <ListingHealthCheck />
+                <ErrorBoundary
+                  fallbackTitle="圖紙健檢功能暫時無法載入"
+                  fallbackMessage="圖紙分析功能在載入時遇到暫時性問題，請點擊重試。"
+                >
+                  <ListingHealthCheck />
+                </ErrorBoundary>
               </div>
 
               <div hidden={calcMode === "listing"}>
@@ -1968,7 +1974,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                     onSelectDistrict={setCalcDistrict} 
                     roomType={calcRoomType} 
                     onSelectRoomType={setCalcRoomType} 
-                    mode={calcMode}
+                    mode={calcMode === "buy" ? "buy" : "rent"}
                   />
 
                   {/* Step 2: Modifiers checklist */}

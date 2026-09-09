@@ -82,47 +82,62 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const { coordinate, matchedAddress, stationWalks, amenities } = context;
+  const { coordinate, matchedAddress, stationWalks = [], amenities = [] } = context || {};
+
+  const hasValidCoordinate = Boolean(
+    coordinate &&
+    typeof coordinate.lat === "number" &&
+    typeof coordinate.lon === "number" &&
+    Number.isFinite(coordinate.lat) &&
+    Number.isFinite(coordinate.lon) &&
+    coordinate.lat !== 0 &&
+    coordinate.lon !== 0
+  );
 
   // 動態切換 marker 的高亮 CSS 樣式，不改變座標或造成跳動
   useEffect(() => {
-    markerMapRef.current.forEach((marker, id) => {
-      const el = marker.getElement();
-      if (!el) return;
-      if (id === hoveredId) {
-        el.classList.add("is-active-marker");
-        marker.setZIndexOffset(9999);
-      } else {
-        el.classList.remove("is-active-marker");
-        marker.setZIndexOffset(0);
-      }
-    });
+    try {
+      markerMapRef.current.forEach((marker, id) => {
+        const el = marker.getElement();
+        if (!el) return;
+        if (id === hoveredId) {
+          el.classList.add("is-active-marker");
+          marker.setZIndexOffset(9999);
+        } else {
+          el.classList.remove("is-active-marker");
+          marker.setZIndexOffset(0);
+        }
+      });
+    } catch {
+      // ignore
+    }
   }, [hoveredId]);
 
   useEffect(() => {
-    if (mapMode !== "interactive" || !mapContainerRef.current) return;
+    if (mapMode !== "interactive" || !mapContainerRef.current || !hasValidCoordinate) return;
 
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
-    }
-    markerMapRef.current.clear();
+    try {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+      markerMapRef.current.clear();
 
-    const map = L.map(mapContainerRef.current, {
-      center: [coordinate.lat, coordinate.lon],
-      zoom: 16,
-      scrollWheelZoom: false,
-    });
-    mapInstanceRef.current = map;
+      const map = L.map(mapContainerRef.current, {
+        center: [coordinate.lat, coordinate.lon],
+        zoom: 16,
+        scrollWheelZoom: false,
+      });
+      mapInstanceRef.current = map;
 
-    // OpenStreetMap 底圖
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
+      // OpenStreetMap 底圖
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
 
-    const layerGroup = L.layerGroup().addTo(map);
+      const layerGroup = L.layerGroup().addTo(map);
 
     // 1. 本物件 Marker（醒目綠色房屋圖標）
     const propertyIcon = L.divIcon({
@@ -295,14 +310,22 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     if (points.length > 1) {
       map.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16 });
     }
+    } catch (err) {
+      console.warn("ListingLocationMap Leaflet setup error:", err);
+    }
 
     return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
+      try {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        }
+        markerMapRef.current.clear();
+      } catch {
+        // ignore unmount errors
       }
     };
-  }, [coordinate.lat, coordinate.lon, matchedAddress, stationWalks, amenities, mapMode, activeCategory]);
+  }, [coordinate?.lat, coordinate?.lon, matchedAddress, stationWalks, amenities, mapMode, activeCategory, hasValidCoordinate]);
 
   // 滑鼠懸停下方卡片：僅開啟氣球與高亮，不平移地圖以杜絕抖動跳動
   const handleCardHover = (key: string | null) => {
@@ -324,24 +347,28 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   };
 
   const resetView = () => {
-    if (!mapInstanceRef.current) return;
-    mapInstanceRef.current.closePopup();
-    setHoveredId(null);
-    const points: L.LatLngExpression[] = [[coordinate.lat, coordinate.lon]];
-    if (activeCategory === "all" || activeCategory === "station") {
-      stationWalks.forEach((w, idx) => {
-        points.push(getStationPoint(w, coordinate, idx));
-      });
-    }
-    amenities.forEach((a, idx) => {
-      if (activeCategory === "all" || a.category === activeCategory) {
-        points.push(getAmenityPoint(a, coordinate, idx));
+    if (!mapInstanceRef.current || !hasValidCoordinate) return;
+    try {
+      mapInstanceRef.current.closePopup();
+      setHoveredId(null);
+      const points: L.LatLngExpression[] = [[coordinate.lat, coordinate.lon]];
+      if (activeCategory === "all" || activeCategory === "station") {
+        stationWalks.forEach((w, idx) => {
+          points.push(getStationPoint(w, coordinate, idx));
+        });
       }
-    });
-    if (points.length > 1) {
-      mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16, animate: true, duration: 0.6 });
-    } else {
-      mapInstanceRef.current.setView([coordinate.lat, coordinate.lon], 16, { animate: true, duration: 0.6 });
+      amenities.forEach((a, idx) => {
+        if (activeCategory === "all" || a.category === activeCategory) {
+          points.push(getAmenityPoint(a, coordinate, idx));
+        }
+      });
+      if (points.length > 1) {
+        mapInstanceRef.current.fitBounds(L.latLngBounds(points), { padding: [35, 35], maxZoom: 16, animate: true, duration: 0.6 });
+      } else {
+        mapInstanceRef.current.setView([coordinate.lat, coordinate.lon], 16, { animate: true, duration: 0.6 });
+      }
+    } catch {
+      // ignore
     }
   };
 
@@ -382,15 +409,22 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     })),
   ].filter(c => c.id === "all" || c.count > 0);
 
-  // 清單一律照離物件的實際距離排序。把車站硬插在最前面會破壞這個規則，
-  // 讓「48m 的公園」排在「366m 的車站」後面，看起來像沒排序。
+  // 清單一律照離物件的實際距離排序。
   const filteredAmenities = (
     activeCategory === "all"
       ? [...stationItems, ...amenityItems]
       : activeCategory === "station"
         ? stationItems
         : amenityItems.filter(a => a.category === activeCategory)
-  ).sort((a, b) => a.distanceMeters - b.distanceMeters);
+  ).sort((a, b) => (a.distanceMeters ?? 999999) - (b.distanceMeters ?? 999999));
+
+  if (!hasValidCoordinate) {
+    return (
+      <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-4 text-xs text-[#66736C]">
+        目前無法取得此物件的精確地圖座標，暫無法載入周邊生活機能地圖。
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3 font-sans">

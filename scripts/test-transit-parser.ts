@@ -62,4 +62,15 @@ for (const s of testLookupStations) {
   assert.ok(line && line.trim().length > 0, `站名 ${s} 必須能查詢到路線`);
 }
 
+// 測試 5：包含中括號 [要町]、[大山] 與項目符號 ◎ 之圖紙解析與去重
+const bracketText = "◎東京メトロ有楽町線[要町] 徒歩9分 ◎東武東上線[大山] 徒歩17分";
+const bracketParsed = parseTransitStations(bracketText, "要町, 大山", "9, 17");
+assert.equal(bracketParsed.length, 2, "中括號站名與 station 欄位去重後應恰好為 2 個車站");
+assert.equal(bracketParsed[0].stationName, "要町");
+assert.equal(bracketParsed[0].lineName, "東京メトロ有楽町線");
+assert.equal(bracketParsed[0].walkMin, 9);
+assert.equal(bracketParsed[1].stationName, "大山");
+assert.equal(bracketParsed[1].lineName, "東武東上線");
+assert.equal(bracketParsed[1].walkMin, 17);
+
 console.log("All transit parser tests passed successfully! ✓");

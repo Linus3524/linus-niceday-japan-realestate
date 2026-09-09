@@ -605,6 +605,97 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     nameZh: "已整體翻新",
     highlight: true,
   },
+  // 図面／間取圖常見的英文與未收錄日文標記
+  {
+    pattern: /parking\s*space|car\s*space|駐車スペース|カースペース/i,
+    category: "大樓公設",
+    nameZh: "停車空間",
+  },
+  {
+    pattern: /サービスルーム|納戸|S\s*ルーム/i,
+    category: "室內舒適",
+    nameZh: "多功能室（納戸）",
+    note: "建築法規上採光未達居室標準，圖面以「S」或「納戸」標示",
+  },
+  {
+    pattern: /ロフト|loft/i,
+    category: "室內舒適",
+    nameZh: "夾層閣樓",
+  },
+  {
+    pattern: /太陽光発電|ソーラーパネル|solar/i,
+    category: "大樓公設",
+    nameZh: "太陽能發電",
+    highlight: true,
+    note: "自家發電可降低電費，並常搭配蓄電系統",
+  },
+  {
+    pattern: /エネファーム|家庭用燃料電池/i,
+    category: "大樓公設",
+    nameZh: "家用燃料電池",
+    highlight: true,
+    note: "エネファーム：以瓦斯發電並回收廢熱供應熱水",
+  },
+  {
+    pattern: /エコワン|ECO\s*ONE|ハイブリッド給湯/i,
+    category: "衛浴水洗",
+    nameZh: "瓦斯電力混合熱水系統",
+    highlight: true,
+  },
+  {
+    pattern: /蓄電池|storage\s*battery/i,
+    category: "大樓公設",
+    nameZh: "家用蓄電池",
+    highlight: true,
+  },
+  {
+    pattern: /24\s*時間換気|24時間換気システム/i,
+    category: "室內舒適",
+    nameZh: "24 小時換氣系統",
+  },
+  {
+    pattern: /ビルトインガレージ|インナーガレージ/i,
+    category: "大樓公設",
+    nameZh: "內建車庫",
+    highlight: true,
+  },
+  {
+    pattern: /(?:月額)?基本使用料無料|インターネット無料|ネット無料/i,
+    category: "通訊網路",
+    nameZh: "網路月費免費",
+    highlight: true,
+  },
+  {
+    pattern: /電動シャッター|電動シヤッター|electric\s*shutter|シャッターゲート/i,
+    category: "大樓公設",
+    nameZh: "電動鐵捲門",
+  },
+  {
+    pattern: /電動自転車|電動アシスト/i,
+    category: "大樓公設",
+    nameZh: "電動自行車充電位",
+  },
+  {
+    pattern: /アクセントクロス|アクセントウォール|accent\s*(?:cloth|wall)/i,
+    category: "室內舒適",
+    nameZh: "特色壁紙牆面",
+  },
+  {
+    pattern: /シューズインクローク|シューズクローク|SIC/i,
+    category: "室內舒適",
+    nameZh: "玄關收納間",
+    highlight: true,
+  },
+  {
+    pattern: /パントリー|pantry/i,
+    category: "廚房烹飪",
+    nameZh: "廚房儲藏室",
+  },
+  {
+    pattern: /床下点検口|小屋裏収納/i,
+    category: "室內舒適",
+    nameZh: "閣樓／地板下收納",
+  },
 ];
 
 /**
@@ -681,7 +772,7 @@ function translateJapaneseEquipmentFallback(raw: string): {
     [/設置|新設/gi, "裝設"],
     [/済|済み/gi, "已完成"],
     [/完備|付き|付/gi, "配備"],
-  ];
+];
 
   for (const [pattern, replacement] of dictionary) {
     translated = translated.replace(pattern, replacement);
@@ -765,7 +856,11 @@ export function parseEquipmentList(rawFacilities?: string | string[] | null): Pa
 
     if (!matched && token.length >= 2 && !/^(?:有|○|◯|●|✔|レ|可)$/.test(token)) {
       // 濾除無意義的日文殘留字詞或常見標記
+      // 這些詞單獨出現時只是修飾語，不是設備本身（實測圖面切出過孤立的「電動」）。
       if (/^(?:バス有|風呂有|トイレ有|エアコン有|有|完備|付)$/i.test(token)) {
+        continue;
+      }
+      if (/^(?:電動|自動|新規|交換|更新|設置|新設|無料|専用|付き|あり|済|込|式|型|中|各|全)$/i.test(token)) {
         continue;
       }
       const fallback = translateJapaneseEquipmentFallback(token);

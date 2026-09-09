@@ -85,7 +85,7 @@ export function buildListingAudit(fields: AuditFields, mode: "sale" | "rent"): L
     add("rent-assumptions", "notice", "初期費用含起租日、保證方案及部分暫估假設；養寵、停車與更新年費須另核對。");
   } else {
     if (d.kind === "unknown") add("missing-kind", "missing", "買賣物件類型未確認，暫停套用公寓行情。", true);
-    require("landRights", "土地權利"); entry("taxDetails", "年度稅額原文");
+    require("landRights", "土地權利"); entry("taxDetails", "年度稅額");
     entry("fixedAssetTax", "固定資產稅推算欄", true); entry("cityPlanningTax", "都市計畫稅推算欄", true);
     if (!present(fields.taxDetails) || /調査中|調查中|未載/.test(fields.taxDetails || "")) add("missing-tax", "missing", "未取得刊載年度稅額，不能把模型概算視為納稅通知書金額。");
     if (["land", "detached", "whole_building"].includes(d.kind)) {
