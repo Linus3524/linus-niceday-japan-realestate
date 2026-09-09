@@ -272,6 +272,10 @@ export interface SaleAnalysisVerdict {
     rawDiffPercent?: number | null;
     expectedPriceMan?: number | null;
     areaBaselineMan?: number | null;
+    ageBandComparison?: Array<{
+      ageBand: string; medianSqmPriceYen: number; sampleCount: number;
+      diffPercent: number; isCurrent: boolean;
+    }>;
     fairLowMan?: number | null;
     fairHighMan?: number | null;
     typicalListingPriceMan?: number | null;
@@ -1375,6 +1379,7 @@ export function ListingHealthCheck() {
     // UI 讀 marketAgeBand／priceCautions 會取不到值（土地・一棟報告的注意事項整段不會顯示）。
     marketAgeBand: undefined as string | undefined,
     priceCautions: [] as string[],
+    ageBandComparison: undefined as SaleAnalysisVerdict["mlitComparison"]["ageBandComparison"],
     medianPriceYen: specialComparison.officialPriceYen,
     medianPriceMan: Math.round(specialComparison.officialPriceYen / 10000),
     medianSqmPriceYen: specialComparison.officialSqmPriceYen,
@@ -2267,6 +2272,69 @@ export function ListingHealthCheck() {
                               })}
                           </dl>
                         </div>
+
+                        {/* ①-b 屋齡帶對照：換一個屋齡帶，同區同房型的成交單價差多少。
+                             這是同一個分桶內的實際成交資料，不含任何估算係數。 */}
+                        {c.ageBandComparison && c.ageBandComparison.length >= 2 && (() => {
+                          const rows = c.ageBandComparison!;
+                          const peak = Math.max(...rows.map(r => r.medianSqmPriceYen));
+                          return (
+                            <div className="mt-4 border border-[#DDE3DF] bg-white p-4 sm:p-5">
+                              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[#DDE3DF] pb-2.5">
+                                <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+                                  屋齡帶價格對照
+                                  <span className="border border-[#7DD3FC] bg-[#E0F2FE] px-1.5 py-0.5 text-[9px] font-bold text-[#0284C7]">實測</span>
+                                </span>
+                                <span className="text-[10px] text-[#8A9590]">
+                                  {c.district}・{c.layout}　同區同房型的實際成交㎡單價
+                                </span>
+                              </div>
+                              <dl className="divide-y divide-[#DDE3DF]">
+                                {rows.map(r => (
+                                  <div
+                                    key={r.ageBand}
+                                    className={`flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5 ${r.isCurrent ? "bg-[#F5F8F6]" : ""}`}
+                                  >
+                                    <dt className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
+                                      <span className={`text-xs ${r.isCurrent ? "font-black text-[#1A2A22]" : "font-bold text-[#3F5147]"}`}>
+                                        {ageBandLabel(r.ageBand)}
+                                      </span>
+                                      {r.isCurrent && (
+                                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                                          本案
+                                        </span>
+                                      )}
+                                    </dt>
+                                    <dd className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-3 gap-y-1">
+                                      <span className="text-[10px] text-[#8A9590]">{r.sampleCount} 筆</span>
+                                      <span className="h-1.5 w-24 shrink-0 bg-[#EDF1EF] sm:w-32">
+                                        <span
+                                          className="block h-full"
+                                          style={{
+                                            width: `${(r.medianSqmPriceYen / peak) * 100}%`,
+                                            backgroundColor: r.isCurrent ? "#007D5A" : "#B7C4BC",
+                                          }}
+                                        />
+                                      </span>
+                                      <span className="w-24 shrink-0 text-right font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
+                                        {(r.medianSqmPriceYen / 10000).toFixed(1)} 萬/㎡
+                                      </span>
+                                      <span
+                                        className="w-14 shrink-0 text-right font-mono text-xs font-bold tabular-nums"
+                                        style={{ color: r.isCurrent ? "#8A9590" : r.diffPercent > 0 ? "#D97706" : "#007D5A" }}
+                                      >
+                                        {r.isCurrent ? "基準" : `${r.diffPercent > 0 ? "+" : "−"}${Math.abs(r.diffPercent)}%`}
+                                      </span>
+                                    </dd>
+                                  </div>
+                                ))}
+                              </dl>
+                              <p className="mt-2.5 text-[10px] leading-relaxed text-[#8A9590]">
+                                ※ 同一棟建物每年屋齡都會往下一帶移動，這張表可用來估算未來的持有價值變化。
+                              </p>
+                            </div>
+                          );
+                        })()}
 
                         {/* ② 中層：雙來源官方數據與算式（簡潔雙欄方格卡片） */}
                         <div className="grid gap-3 sm:grid-cols-2">

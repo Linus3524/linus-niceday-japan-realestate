@@ -23931,8 +23931,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 14,
     "structureCounts": {
-      "ＳＲＣ": 8,
-      "ＲＣ": 7
+      "ＲＣ": 7,
+      "ＳＲＣ": 8
     },
     "sampleCount": 15,
     "windowQuarters": 4,
@@ -23959,8 +23959,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 14,
     "structureCounts": {
-      "ＲＣ": 7,
-      "ＳＲＣ": 7
+      "ＳＲＣ": 7,
+      "ＲＣ": 7
     },
     "sampleCount": 15,
     "windowQuarters": 4,
@@ -23999,8 +23999,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 66,
     "structureCounts": {
-      "ＳＲＣ": 31,
-      "ＲＣ": 35
+      "ＲＣ": 35,
+      "ＳＲＣ": 31
     },
     "sampleCount": 66,
     "windowQuarters": 4,
@@ -24307,8 +24307,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 68,
     "structureCounts": {
-      "ＲＣ": 47,
-      "ＳＲＣ": 21
+      "ＳＲＣ": 21,
+      "ＲＣ": 47
     },
     "sampleCount": 69,
     "windowQuarters": 4,
@@ -24343,8 +24343,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 61,
     "structureCounts": {
-      "ＲＣ": 33,
       "ＳＲＣ": 27,
+      "ＲＣ": 33,
       "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 62,
@@ -24866,8 +24866,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＲＣ": 8,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 8
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -25196,9 +25196,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 71,
     "structureCounts": {
-      "軽量鉄骨造": 2,
       "ＲＣ": 59,
       "ＳＲＣ": 9,
+      "軽量鉄骨造": 2,
       "鉄骨造": 1
     },
     "sampleCount": 71,
@@ -25590,8 +25590,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 51,
     "structureCounts": {
       "ＲＣ": 41,
-      "ＳＲＣ、ＲＣ": 3,
-      "ＳＲＣ": 8
+      "ＳＲＣ": 8,
+      "ＳＲＣ、ＲＣ": 3
     },
     "sampleCount": 55,
     "windowQuarters": 4,
@@ -25857,8 +25857,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 127,
     "structureCounts": {
       "ＲＣ": 121,
-      "ＳＲＣ": 4,
-      "鉄骨造": 1
+      "鉄骨造": 1,
+      "ＳＲＣ": 4
     },
     "sampleCount": 127,
     "windowQuarters": 4,
@@ -25972,9 +25972,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 148,
     "structureCounts": {
-      "ＲＣ": 106,
       "ＳＲＣ": 37,
       "ＳＲＣ、ＲＣ": 2,
+      "ＲＣ": 106,
       "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 148,
@@ -26648,8 +26648,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 154,
     "structureCounts": {
-      "ＲＣ": 135,
-      "ＳＲＣ": 17
+      "ＳＲＣ": 17,
+      "ＲＣ": 135
     },
     "sampleCount": 154,
     "windowQuarters": 4,
@@ -26688,8 +26688,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 60,
     "structureCounts": {
-      "ＲＣ": 47,
-      "ＳＲＣ": 13
+      "ＳＲＣ": 13,
+      "ＲＣ": 47
     },
     "sampleCount": 63,
     "windowQuarters": 4,
@@ -26728,8 +26728,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 64,
     "structureCounts": {
-      "ＲＣ": 51,
       "ＳＲＣ": 12,
+      "ＲＣ": 51,
       "鉄骨造": 1
     },
     "sampleCount": 65,
@@ -26976,9 +26976,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 34,
     "structureCounts": {
+      "ＳＲＣ": 3,
       "ＲＣ": 27,
-      "鉄骨造": 3,
-      "ＳＲＣ": 3
+      "鉄骨造": 3
     },
     "sampleCount": 37,
     "windowQuarters": 4,
@@ -27241,8 +27241,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 15,
     "structureCounts": {
-      "鉄骨造": 2,
       "ＲＣ": 13,
+      "鉄骨造": 2,
       "ＳＲＣ": 2
     },
     "sampleCount": 17,
@@ -27274,8 +27274,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 30,
     "structureCounts": {
-      "ＳＲＣ": 1,
-      "ＲＣ": 29
+      "ＲＣ": 29,
+      "ＳＲＣ": 1
     },
     "sampleCount": 30,
     "windowQuarters": 4,
@@ -27302,8 +27302,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 32,
     "structureCounts": {
-      "ＲＣ": 31,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 31
     },
     "sampleCount": 33,
     "windowQuarters": 4,
@@ -27357,8 +27357,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 45,
     "structureCounts": {
-      "ＳＲＣ": 15,
       "ＲＣ": 30,
+      "ＳＲＣ": 15,
       "ＲＣ、鉄骨造": 1,
       "鉄骨造": 1
     },
@@ -27399,8 +27399,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 136,
     "structureCounts": {
-      "ＳＲＣ": 33,
-      "ＲＣ": 101
+      "ＲＣ": 101,
+      "ＳＲＣ": 33
     },
     "sampleCount": 145,
     "windowQuarters": 4,
@@ -27821,8 +27821,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＲＣ": 4,
       "ＳＲＣ": 1,
+      "ＲＣ": 4,
       "鉄骨造": 1
     },
     "sampleCount": 6,
@@ -27858,8 +27858,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 35,
     "structureCounts": {
-      "ＳＲＣ": 10,
-      "ＲＣ": 23
+      "ＲＣ": 23,
+      "ＳＲＣ": 10
     },
     "sampleCount": 35,
     "windowQuarters": 4,
@@ -27940,8 +27940,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 12,
     "structureCounts": {
-      "ＳＲＣ": 5,
-      "ＲＣ": 7
+      "ＲＣ": 7,
+      "ＳＲＣ": 5
     },
     "sampleCount": 12,
     "windowQuarters": 4,
@@ -27964,8 +27964,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 7
+      "ＲＣ": 7,
+      "ＳＲＣ": 2
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -27983,8 +27983,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 16,
     "structureCounts": {
-      "ＳＲＣ": 7,
-      "ＲＣ": 10
+      "ＲＣ": 10,
+      "ＳＲＣ": 7
     },
     "sampleCount": 17,
     "windowQuarters": 4,
@@ -28333,8 +28333,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 43,
     "structureCounts": {
-      "ＲＣ": 26,
-      "ＳＲＣ": 17
+      "ＳＲＣ": 17,
+      "ＲＣ": 26
     },
     "sampleCount": 43,
     "windowQuarters": 4,
@@ -28373,8 +28373,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 75,
     "structureCounts": {
-      "ＲＣ": 41,
-      "ＳＲＣ": 34
+      "ＳＲＣ": 34,
+      "ＲＣ": 41
     },
     "sampleCount": 76,
     "windowQuarters": 4,
@@ -28409,8 +28409,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 57,
     "structureCounts": {
-      "ＳＲＣ": 24,
-      "ＲＣ": 33
+      "ＲＣ": 33,
+      "ＳＲＣ": 24
     },
     "sampleCount": 57,
     "windowQuarters": 4,
@@ -28428,8 +28428,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＲＣ": 4,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 4
     },
     "sampleCount": 6,
     "windowQuarters": 4,
@@ -28970,8 +28970,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 52,
     "structureCounts": {
-      "ＲＣ": 32,
-      "ＳＲＣ": 20
+      "ＳＲＣ": 20,
+      "ＲＣ": 32
     },
     "sampleCount": 52,
     "windowQuarters": 4,
@@ -29011,8 +29011,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 82,
     "structureCounts": {
       "ＲＣ": 59,
-      "ＲＣ、鉄骨造": 1,
-      "ＳＲＣ": 24
+      "ＳＲＣ": 24,
+      "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 84,
     "windowQuarters": 4,
@@ -29111,8 +29111,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 105,
     "structureCounts": {
-      "ＳＲＣ": 41,
-      "ＲＣ": 66
+      "ＲＣ": 66,
+      "ＳＲＣ": 41
     },
     "sampleCount": 112,
     "windowQuarters": 4,
@@ -29187,8 +29187,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 74,
     "structureCounts": {
-      "ＲＣ": 51,
-      "ＳＲＣ": 24
+      "ＳＲＣ": 24,
+      "ＲＣ": 51
     },
     "sampleCount": 78,
     "windowQuarters": 4,
@@ -29227,8 +29227,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 47,
     "structureCounts": {
-      "ＳＲＣ": 14,
-      "ＲＣ": 35
+      "ＲＣ": 35,
+      "ＳＲＣ": 14
     },
     "sampleCount": 50,
     "windowQuarters": 4,
@@ -29287,8 +29287,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 182,
     "structureCounts": {
-      "ＳＲＣ": 26,
       "ＲＣ": 156,
+      "ＳＲＣ": 26,
       "鉄骨造": 1
     },
     "sampleCount": 183,
@@ -29364,8 +29364,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 65,
     "structureCounts": {
-      "ＳＲＣ": 20,
       "ＲＣ": 45,
+      "ＳＲＣ": 20,
       "鉄骨造": 1
     },
     "sampleCount": 67,
@@ -29417,8 +29417,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＳＲＣ": 1,
-      "ＲＣ": 5
+      "ＲＣ": 5,
+      "ＳＲＣ": 1
     },
     "sampleCount": 6,
     "windowQuarters": 4,
@@ -38394,5 +38394,32262 @@ export const mlitConditionPremiums: MlitConditionPremiumRow[] = [
     "renovationCellCount": 1,
     "structurePremiumPercent": 41.3,
     "structureCellCount": 1
+  }
+];
+
+/**
+ * 町名地段溢價（已控制屋齡、盡量控制房型）。
+ * premiumPercent 為「該町成交㎡單價 ÷ 同區同條件中位數 − 1」。
+ * grain 為 "layout_age" 表示在同房型同屋齡帶內比較，"age" 表示跨房型只控屋齡。
+ */
+export interface MlitTownPremiumRow {
+  region: string;
+  district: string;
+  /** 町名，例如「西新宿」。 */
+  town: string;
+  premiumPercent: number;
+  cellCount: number;
+  sampleCount: number;
+  grain: "layout_age" | "age";
+}
+
+export const mlitTownPremiums: MlitTownPremiumRow[] = [
+  {
+    "region": "愛知",
+    "district": "安城市",
+    "town": "今池町",
+    "premiumPercent": 4.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "安城市",
+    "town": "大東町",
+    "premiumPercent": 2.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "一宮市",
+    "town": "奥町",
+    "premiumPercent": -12.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "一宮市",
+    "town": "本町",
+    "premiumPercent": 13.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "岡崎市",
+    "town": "井田町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "岡崎市",
+    "town": "上六名",
+    "premiumPercent": -6.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "岩倉市",
+    "town": "新柳町",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "江南市",
+    "town": "古知野町",
+    "premiumPercent": 10.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "春日井市",
+    "town": "小野町",
+    "premiumPercent": 0.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "春日井市",
+    "town": "藤山台",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "小牧市",
+    "town": "城山",
+    "premiumPercent": -9.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "瀬戸市",
+    "town": "北山町",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "知多郡南知多町",
+    "town": "大字内海",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "知多郡南知多町",
+    "town": "大字片名",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "長久手市",
+    "town": "蟹原",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "長久手市",
+    "town": "西原山",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "長久手市",
+    "town": "東原山",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "日進市",
+    "town": "栄",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "日進市",
+    "town": "赤池",
+    "premiumPercent": 23,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "半田市",
+    "town": "亀崎北浦町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "豊橋市",
+    "town": "広小路",
+    "premiumPercent": 45.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "豊橋市",
+    "town": "弥生町",
+    "premiumPercent": 3.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "北名古屋市",
+    "town": "鹿田",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "阿由知通",
+    "premiumPercent": -0.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "葵",
+    "premiumPercent": 4.5,
+    "cellCount": 3,
+    "sampleCount": 54,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "伊勢山",
+    "premiumPercent": -8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "井深町",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "一社",
+    "premiumPercent": 7.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "栄",
+    "premiumPercent": 26.7,
+    "cellCount": 7,
+    "sampleCount": 82,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "押切",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "花の木",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "丸の内",
+    "premiumPercent": 3.1,
+    "cellCount": 5,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "亀の井",
+    "premiumPercent": 18.3,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "亀島",
+    "premiumPercent": 6.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "菊井",
+    "premiumPercent": 24.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "橘",
+    "premiumPercent": 18.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "宮東町",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "錦",
+    "premiumPercent": 34.9,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "金山",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "金城",
+    "premiumPercent": -29,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "駈上",
+    "premiumPercent": -26,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "元宮町",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "原",
+    "premiumPercent": -27.2,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "高見",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "今池",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "砂田橋",
+    "premiumPercent": -3.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "笹塚町",
+    "premiumPercent": 6.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "山手通",
+    "premiumPercent": 22.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "志賀本通",
+    "premiumPercent": 98.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "児玉",
+    "premiumPercent": -15.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "鹿子殿",
+    "premiumPercent": -1.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "社台",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "若宮町",
+    "premiumPercent": 6.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "松原",
+    "premiumPercent": -18,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "上前津",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "上飯田北町",
+    "premiumPercent": 4,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "城西",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "振甫町",
+    "premiumPercent": -28.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "新栄",
+    "premiumPercent": -8,
+    "cellCount": 4,
+    "sampleCount": 93,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "新池町",
+    "premiumPercent": 0.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "瑞穂通",
+    "premiumPercent": -7.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "正木",
+    "premiumPercent": 16.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "折戸町",
+    "premiumPercent": -28.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "千種",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "千代田",
+    "premiumPercent": 2.8,
+    "cellCount": 4,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "川名町",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "扇町",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "泉",
+    "premiumPercent": 32.9,
+    "cellCount": 8,
+    "sampleCount": 54,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "則武",
+    "premiumPercent": -6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "則武新町",
+    "premiumPercent": 26.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "太閤",
+    "premiumPercent": 26.2,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "太閤通",
+    "premiumPercent": 2.7,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "代官町",
+    "premiumPercent": 7.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "大須",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "大曽根",
+    "premiumPercent": -15,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "大宝",
+    "premiumPercent": 14.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "滝川町",
+    "premiumPercent": 18.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "竹橋町",
+    "premiumPercent": 6.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "中小田井",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "中川本町",
+    "premiumPercent": -57.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "鳥見町",
+    "premiumPercent": 25.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "辻本通",
+    "premiumPercent": -15,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "東桜",
+    "premiumPercent": 54.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "東大曽根町",
+    "premiumPercent": 44.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "桃山",
+    "premiumPercent": -40.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "藤成通",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "藤里町",
+    "premiumPercent": -55.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "那古野",
+    "premiumPercent": 19.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "内山",
+    "premiumPercent": 0.7,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "白壁",
+    "premiumPercent": 18.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "八熊",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "八事富士見",
+    "premiumPercent": -1.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "尾上町",
+    "premiumPercent": -29.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "尾頭橋",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "表山",
+    "premiumPercent": -13.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "富士見町",
+    "premiumPercent": 26.2,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "平針",
+    "premiumPercent": -22.3,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "平和",
+    "premiumPercent": 15,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "平和が丘",
+    "premiumPercent": 6.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "豊",
+    "premiumPercent": -38.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "豊田",
+    "premiumPercent": -22.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "本郷",
+    "premiumPercent": 20.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "末盛通",
+    "premiumPercent": 32.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "名駅",
+    "premiumPercent": 15.9,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "名駅南",
+    "premiumPercent": 4.5,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "名西",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "名東本通",
+    "premiumPercent": -53.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "鳴海町",
+    "premiumPercent": -11.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "木場町",
+    "premiumPercent": -29.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市（市平均）",
+    "town": "有松南",
+    "premiumPercent": -35.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市港區",
+    "town": "中川本町",
+    "premiumPercent": -24.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市港區",
+    "town": "木場町",
+    "premiumPercent": 6.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "阿由知通",
+    "premiumPercent": 2.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "宮東町",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "元宮町",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "山手通",
+    "premiumPercent": 0.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "折戸町",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "川名町",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "滝川町",
+    "premiumPercent": 83.8,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "藤成通",
+    "premiumPercent": -5.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市昭和區",
+    "town": "八事富士見",
+    "premiumPercent": -11.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市瑞穗區",
+    "town": "瑞穂通",
+    "premiumPercent": 10.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "押切",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "花の木",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "菊井",
+    "premiumPercent": 11.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "笹塚町",
+    "premiumPercent": -0.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "児玉",
+    "premiumPercent": -16.2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "城西",
+    "premiumPercent": -8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "則武新町",
+    "premiumPercent": 15.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "中小田井",
+    "premiumPercent": -2.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "鳥見町",
+    "premiumPercent": 17.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "那古野",
+    "premiumPercent": 14.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "名駅",
+    "premiumPercent": 15.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市西區",
+    "town": "名西",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "高見",
+    "premiumPercent": -41.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "今池",
+    "premiumPercent": 8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "鹿子殿",
+    "premiumPercent": -18.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "振甫町",
+    "premiumPercent": -38.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "新池町",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "千種",
+    "premiumPercent": 4.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "内山",
+    "premiumPercent": 0.9,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市千種區",
+    "town": "末盛通",
+    "premiumPercent": 23.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中川區",
+    "town": "八熊",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中川區",
+    "town": "尾頭橋",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "井深町",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "亀島",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "若宮町",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "則武",
+    "premiumPercent": -4.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "太閤",
+    "premiumPercent": 15.6,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "太閤通",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "竹橋町",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "名駅",
+    "premiumPercent": 32.8,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中村區",
+    "town": "名駅南",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "葵",
+    "premiumPercent": -1.5,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "伊勢山",
+    "premiumPercent": -8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "栄",
+    "premiumPercent": 1.5,
+    "cellCount": 7,
+    "sampleCount": 82,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "丸の内",
+    "premiumPercent": 1.1,
+    "cellCount": 5,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "橘",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "錦",
+    "premiumPercent": -1.1,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "金山",
+    "premiumPercent": 8.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "松原",
+    "premiumPercent": -32.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "上前津",
+    "premiumPercent": -13.9,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "新栄",
+    "premiumPercent": -12.5,
+    "cellCount": 4,
+    "sampleCount": 92,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "正木",
+    "premiumPercent": -7.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "千代田",
+    "premiumPercent": -3.6,
+    "cellCount": 4,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "大須",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "富士見町",
+    "premiumPercent": -1.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市中區",
+    "town": "平和",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市天白區",
+    "town": "原",
+    "premiumPercent": -5.6,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市天白區",
+    "town": "表山",
+    "premiumPercent": 12.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市天白區",
+    "town": "平針",
+    "premiumPercent": 0.9,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "葵",
+    "premiumPercent": 1.1,
+    "cellCount": 3,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "砂田橋",
+    "premiumPercent": -17.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "泉",
+    "premiumPercent": 3.8,
+    "cellCount": 8,
+    "sampleCount": 54,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "代官町",
+    "premiumPercent": 1.3,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "東桜",
+    "premiumPercent": 18.8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "東大曽根町",
+    "premiumPercent": 19,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市東區",
+    "town": "白壁",
+    "premiumPercent": 18.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市南區",
+    "town": "駈上",
+    "premiumPercent": 14.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市南區",
+    "town": "豊",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市南區",
+    "town": "豊田",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市熱田區",
+    "town": "大宝",
+    "premiumPercent": 10.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "金城",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "志賀本通",
+    "premiumPercent": 56,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "上飯田北町",
+    "premiumPercent": -3.4,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "大曽根",
+    "premiumPercent": -10.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "辻本通",
+    "premiumPercent": -2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市北區",
+    "town": "尾上町",
+    "premiumPercent": -0.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "一社",
+    "premiumPercent": 22.8,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "亀の井",
+    "premiumPercent": 17,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "社台",
+    "premiumPercent": -17.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "扇町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "藤里町",
+    "premiumPercent": -48.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "平和が丘",
+    "premiumPercent": 23.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "本郷",
+    "premiumPercent": 10.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市名東區",
+    "town": "名東本通",
+    "premiumPercent": -38.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市綠區",
+    "town": "桃山",
+    "premiumPercent": 31.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市綠區",
+    "town": "鳴海町",
+    "premiumPercent": 13.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛知",
+    "district": "名古屋市綠區",
+    "town": "有松南",
+    "premiumPercent": -17.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛媛",
+    "district": "松山市",
+    "town": "三番町",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "愛媛",
+    "district": "松山市",
+    "town": "住吉",
+    "premiumPercent": -18.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛媛",
+    "district": "松山市",
+    "town": "辰巳町",
+    "premiumPercent": 36.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛媛",
+    "district": "松山市",
+    "town": "土居田町",
+    "premiumPercent": -32.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "愛媛",
+    "district": "松山市",
+    "town": "本町",
+    "premiumPercent": 15.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "つくばみらい市",
+    "town": "陽光台",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "牛久市",
+    "town": "ひたち野西",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "牛久市",
+    "town": "ひたち野東",
+    "premiumPercent": 0.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "取手市",
+    "town": "戸頭",
+    "premiumPercent": -13.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "取手市",
+    "town": "西",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "守谷市",
+    "town": "ひがし野",
+    "premiumPercent": 0.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "筑波市",
+    "town": "研究学園",
+    "premiumPercent": 28.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "筑波市",
+    "town": "吾妻",
+    "premiumPercent": 12,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "筑波市",
+    "town": "竹園",
+    "premiumPercent": 4.9,
+    "cellCount": 2,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "茨城",
+    "district": "筑波市",
+    "town": "並木",
+    "premiumPercent": -29.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "茨城",
+    "district": "竜ケ崎市",
+    "town": "久保台",
+    "premiumPercent": 9.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "岡山",
+    "district": "岡山市",
+    "town": "西古松",
+    "premiumPercent": -10.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "岡山",
+    "district": "岡山市",
+    "town": "東古松",
+    "premiumPercent": -6.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "岡山",
+    "district": "岡山市北区",
+    "town": "西古松",
+    "premiumPercent": -15.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "岡山",
+    "district": "岡山市北区",
+    "town": "東古松",
+    "premiumPercent": -11.9,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "岡山",
+    "district": "倉敷市",
+    "town": "老松町",
+    "premiumPercent": -8.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "浦添市",
+    "town": "牧港",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "那霸市",
+    "town": "おもろまち",
+    "premiumPercent": 23.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "那霸市",
+    "town": "曙",
+    "premiumPercent": 47.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "那霸市",
+    "town": "上之屋",
+    "premiumPercent": 2.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "那霸市",
+    "town": "西",
+    "premiumPercent": -16.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "沖繩",
+    "district": "那霸市",
+    "town": "牧志",
+    "premiumPercent": 5.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "岩手",
+    "district": "盛岡市",
+    "town": "加賀野",
+    "premiumPercent": -30.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "岩手",
+    "district": "盛岡市",
+    "town": "紺屋町",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "岩手",
+    "district": "盛岡市",
+    "town": "材木町",
+    "premiumPercent": -4.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "岩手",
+    "district": "盛岡市",
+    "town": "本町通",
+    "premiumPercent": 13.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "岐阜",
+    "district": "岐阜市",
+    "town": "吉野町",
+    "premiumPercent": 41.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "岐阜",
+    "district": "岐阜市",
+    "town": "住ノ江町",
+    "premiumPercent": 51.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "岐阜",
+    "district": "岐阜市",
+    "town": "福住町",
+    "premiumPercent": 57.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮崎",
+    "district": "宮崎市",
+    "town": "下北方町",
+    "premiumPercent": -5.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮崎",
+    "district": "宮崎市",
+    "town": "大字芳士",
+    "premiumPercent": 7.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "あすと長町",
+    "premiumPercent": -2.6,
+    "cellCount": 1,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "旭ケ丘",
+    "premiumPercent": 12.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "一番町",
+    "premiumPercent": 63.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "花京院",
+    "premiumPercent": 48.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "郷六",
+    "premiumPercent": -42.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "郡山",
+    "premiumPercent": 35.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "桂",
+    "premiumPercent": -32.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "原町",
+    "premiumPercent": 14.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "五橋",
+    "premiumPercent": 53.8,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "五輪",
+    "premiumPercent": 23.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "広瀬町",
+    "premiumPercent": 70.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "荒井",
+    "premiumPercent": -25,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "高森",
+    "premiumPercent": -33.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "国見",
+    "premiumPercent": -37.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "国分町",
+    "premiumPercent": 37.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "鹿野",
+    "premiumPercent": -1.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "小田原",
+    "premiumPercent": -6.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "昭和町",
+    "premiumPercent": 36.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "上杉",
+    "premiumPercent": 27.5,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "新寺",
+    "premiumPercent": 11.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "新田東",
+    "premiumPercent": -15.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "西中田",
+    "premiumPercent": -9.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "泉中央",
+    "premiumPercent": 3.4,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "大梶",
+    "premiumPercent": 13.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "大和町",
+    "premiumPercent": 4.9,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "中山",
+    "premiumPercent": -47.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "長町",
+    "premiumPercent": 20.8,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "土樋",
+    "premiumPercent": -22.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "南光台南",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "二日町",
+    "premiumPercent": 14.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "萩野町",
+    "premiumPercent": -17.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "柏木",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "八乙女",
+    "premiumPercent": -7.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "八乙女中央",
+    "premiumPercent": 0.2,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "八幡",
+    "premiumPercent": -40.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "福室",
+    "premiumPercent": -15.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "片平",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "北根",
+    "premiumPercent": -20.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "本町",
+    "premiumPercent": 12.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "茂庭台",
+    "premiumPercent": -62.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市（市平均）",
+    "town": "木町通",
+    "premiumPercent": 22.4,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "原町",
+    "premiumPercent": 22.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "五輪",
+    "premiumPercent": 12.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "小田原",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "新田東",
+    "premiumPercent": -13.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "大梶",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "萩野町",
+    "premiumPercent": 1.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市宮城野區",
+    "town": "福室",
+    "premiumPercent": -23.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市若林區",
+    "town": "荒井",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市若林區",
+    "town": "新寺",
+    "premiumPercent": 12,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市若林區",
+    "town": "大和町",
+    "premiumPercent": 1.9,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市若林區",
+    "town": "土樋",
+    "premiumPercent": -33,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "旭ケ丘",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "一番町",
+    "premiumPercent": 41.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "花京院",
+    "premiumPercent": 44.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "郷六",
+    "premiumPercent": -43.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "五橋",
+    "premiumPercent": 22.8,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "広瀬町",
+    "premiumPercent": 66,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "国見",
+    "premiumPercent": -39.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "国分町",
+    "premiumPercent": 17.6,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "小田原",
+    "premiumPercent": -15.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "昭和町",
+    "premiumPercent": 34.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "上杉",
+    "premiumPercent": 23.9,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "中山",
+    "premiumPercent": -48.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "土樋",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "二日町",
+    "premiumPercent": 5.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "柏木",
+    "premiumPercent": -0.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "八幡",
+    "premiumPercent": -41.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "片平",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "北根",
+    "premiumPercent": -22.9,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "本町",
+    "premiumPercent": -1.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市青葉區",
+    "town": "木町通",
+    "premiumPercent": 5.3,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "桂",
+    "premiumPercent": -26.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "高森",
+    "premiumPercent": -15.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "泉中央",
+    "premiumPercent": 32.1,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "南光台南",
+    "premiumPercent": -20.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "八乙女",
+    "premiumPercent": -2.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市泉區",
+    "town": "八乙女中央",
+    "premiumPercent": 6.3,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "あすと長町",
+    "premiumPercent": 5.2,
+    "cellCount": 1,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "郡山",
+    "premiumPercent": 57.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "鹿野",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "西中田",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "長町",
+    "premiumPercent": 34,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "宮城",
+    "district": "仙台市太白區",
+    "town": "茂庭台",
+    "premiumPercent": -58.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "宇治市",
+    "town": "宇治",
+    "premiumPercent": 9.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "宇治市",
+    "town": "大久保町",
+    "premiumPercent": -2.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "宇治市",
+    "town": "木幡",
+    "premiumPercent": 12,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "宇治市",
+    "town": "六地蔵",
+    "premiumPercent": 40.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京田辺市",
+    "town": "草内鐘鉦割",
+    "premiumPercent": -13.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "永松学区",
+    "premiumPercent": 10,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "嘉楽学区",
+    "premiumPercent": 14.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "開智学区",
+    "premiumPercent": 59.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "格致学区",
+    "premiumPercent": 18.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "乾学区",
+    "premiumPercent": 38.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "吉祥院九条町",
+    "premiumPercent": -8.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "吉祥院西ノ庄向田町",
+    "premiumPercent": -47.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "吉祥院石原長田町",
+    "premiumPercent": -42.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "吉祥院池ノ内町",
+    "premiumPercent": -1.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "吉祥院里ノ内町",
+    "premiumPercent": -37.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "向島二ノ丸町",
+    "premiumPercent": -43.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "高野東開町",
+    "premiumPercent": 32.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "四ツ塚町",
+    "premiumPercent": 17,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "紫野西蓮台野町",
+    "premiumPercent": -14.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "七条御所ノ内中町",
+    "premiumPercent": -11.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "七条御所ノ内北町",
+    "premiumPercent": 4.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "室町学区",
+    "premiumPercent": 30.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "修徳学区",
+    "premiumPercent": 26.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "出水学区",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "初音学区",
+    "premiumPercent": 23.8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "尚徳学区",
+    "premiumPercent": 26.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "上高野仲町",
+    "premiumPercent": 30.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "城巽学区",
+    "premiumPercent": 35,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "深草西浦町",
+    "premiumPercent": 11.1,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "仁和学区",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "壬生下溝町",
+    "premiumPercent": 1.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "成徳学区",
+    "premiumPercent": 35.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "生祥学区",
+    "premiumPercent": 53.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西ノ京南円町",
+    "premiumPercent": 27.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西院西溝崎町",
+    "premiumPercent": -25.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西院日照町",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西院六反田町",
+    "premiumPercent": -12.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西京極橋詰町",
+    "premiumPercent": 17,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西京極大門町",
+    "premiumPercent": -9.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西京極中沢町",
+    "premiumPercent": -29.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西京極東側町",
+    "premiumPercent": 9.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西七条南衣田町",
+    "premiumPercent": -15.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西陣学区",
+    "premiumPercent": -36,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "西野阿芸沢町",
+    "premiumPercent": -54.4,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "醒泉学区",
+    "premiumPercent": 11.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "川田清水焼団地町",
+    "premiumPercent": -80.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "大枝北沓掛町",
+    "premiumPercent": -32.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "稚松学区",
+    "premiumPercent": 12.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "竹間学区",
+    "premiumPercent": 30.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "竹鼻木ノ本町",
+    "premiumPercent": -22.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "中島河原田町",
+    "premiumPercent": -46.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "中堂寺壬生川町",
+    "premiumPercent": 48.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "中立学区",
+    "premiumPercent": 56.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "唐橋経田町",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "東九条河西町",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "東九条西河辺町",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "東九条南山王町",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "東九条北河原町",
+    "premiumPercent": 19.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "東野門口町",
+    "premiumPercent": 7.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "桃薗学区",
+    "premiumPercent": 5.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "桃山町松平筑前",
+    "premiumPercent": -14.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "銅駝学区",
+    "premiumPercent": 41,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "南浜学区",
+    "premiumPercent": -10.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "日彰学区",
+    "premiumPercent": 129.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "梅屋学区",
+    "premiumPercent": 93,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "梅津大縄場町",
+    "premiumPercent": -11.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "梅津南広町",
+    "premiumPercent": 29.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "八条源町",
+    "premiumPercent": 17,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "豊園学区",
+    "premiumPercent": 23.1,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "本能学区",
+    "premiumPercent": 38.5,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "明倫学区",
+    "premiumPercent": 37.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "柳池学区",
+    "premiumPercent": 36.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "有隣学区",
+    "premiumPercent": 14.1,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "淀木津町",
+    "premiumPercent": -67.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "龍池学区",
+    "premiumPercent": 54.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "六原学区",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "椥辻西浦町",
+    "premiumPercent": -45.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市（市平均）",
+    "town": "椥辻草海道町",
+    "premiumPercent": -32.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西院西溝崎町",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西院日照町",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西院六反田町",
+    "premiumPercent": -2.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西京極橋詰町",
+    "premiumPercent": 30.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西京極大門町",
+    "premiumPercent": -6.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西京極中沢町",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "西京極東側町",
+    "premiumPercent": 21.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "梅津大縄場町",
+    "premiumPercent": -8.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市右京區",
+    "town": "梅津南広町",
+    "premiumPercent": 34.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "永松学区",
+    "premiumPercent": 10.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "開智学区",
+    "premiumPercent": 5.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "格致学区",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "七条御所ノ内中町",
+    "premiumPercent": -19.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "七条御所ノ内北町",
+    "premiumPercent": -6.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "修徳学区",
+    "premiumPercent": 7.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "尚徳学区",
+    "premiumPercent": 11,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "成徳学区",
+    "premiumPercent": 22.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "西七条南衣田町",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "醒泉学区",
+    "premiumPercent": 0.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "稚松学区",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "中堂寺壬生川町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "豊園学区",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市下京區",
+    "town": "有隣学区",
+    "premiumPercent": 0.5,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市左京區",
+    "town": "高野東開町",
+    "premiumPercent": -6.6,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市左京區",
+    "town": "上高野仲町",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "西野阿芸沢町",
+    "premiumPercent": -30.9,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "川田清水焼団地町",
+    "premiumPercent": -68.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "竹鼻木ノ本町",
+    "premiumPercent": 9.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "東野門口町",
+    "premiumPercent": 62.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "椥辻西浦町",
+    "premiumPercent": -7.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市山科區",
+    "town": "椥辻草海道町",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "嘉楽学区",
+    "premiumPercent": 0.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "室町学区",
+    "premiumPercent": 29.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "出水学区",
+    "premiumPercent": -11.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "仁和学区",
+    "premiumPercent": -15.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "西陣学区",
+    "premiumPercent": -37.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "中立学区",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市上京區",
+    "town": "桃薗学区",
+    "premiumPercent": 4.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "乾学区",
+    "premiumPercent": -2.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "初音学区",
+    "premiumPercent": -2.9,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "城巽学区",
+    "premiumPercent": 20.8,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "壬生下溝町",
+    "premiumPercent": -8.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "生祥学区",
+    "premiumPercent": 12.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "西ノ京南円町",
+    "premiumPercent": -22.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "竹間学区",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "銅駝学区",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "日彰学区",
+    "premiumPercent": 50.2,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "梅屋学区",
+    "premiumPercent": 36.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "本能学区",
+    "premiumPercent": 7.1,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "明倫学区",
+    "premiumPercent": 0.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "柳池学区",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市中京區",
+    "town": "龍池学区",
+    "premiumPercent": 21.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市東山區",
+    "town": "六原学区",
+    "premiumPercent": -10.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "吉祥院九条町",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "吉祥院西ノ庄向田町",
+    "premiumPercent": -19.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "吉祥院石原長田町",
+    "premiumPercent": -10.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "吉祥院池ノ内町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "吉祥院里ノ内町",
+    "premiumPercent": -36.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "四ツ塚町",
+    "premiumPercent": 19,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "唐橋経田町",
+    "premiumPercent": 5.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "東九条河西町",
+    "premiumPercent": -4.8,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "東九条西河辺町",
+    "premiumPercent": 1.9,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "東九条南山王町",
+    "premiumPercent": 10.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "東九条北河原町",
+    "premiumPercent": 21.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市南區",
+    "town": "八条源町",
+    "premiumPercent": 19,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "向島二ノ丸町",
+    "premiumPercent": -29,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "深草西浦町",
+    "premiumPercent": 18.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "中島河原田町",
+    "premiumPercent": -27,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "桃山町松平筑前",
+    "premiumPercent": 36.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "南浜学区",
+    "premiumPercent": 10.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市伏見區",
+    "town": "淀木津町",
+    "premiumPercent": -43.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "京都市北區",
+    "town": "紫野西蓮台野町",
+    "premiumPercent": 3.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "向日市",
+    "town": "寺戸町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "八幡市",
+    "town": "男山",
+    "premiumPercent": 1.9,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "木津川市",
+    "town": "州見台",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "京都",
+    "district": "木津川市",
+    "town": "木津川台",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "九品寺",
+    "premiumPercent": -26.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "春日",
+    "premiumPercent": 48.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "新屋敷",
+    "premiumPercent": 14.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "新町",
+    "premiumPercent": 11.6,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "水前寺",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "大江",
+    "premiumPercent": -7.3,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "長嶺西",
+    "premiumPercent": 27.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市",
+    "town": "米屋町",
+    "premiumPercent": -3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "九品寺",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "新屋敷",
+    "premiumPercent": 19.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "新町",
+    "premiumPercent": 7.2,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "水前寺",
+    "premiumPercent": 8.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "大江",
+    "premiumPercent": -4.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市中央区",
+    "town": "米屋町",
+    "premiumPercent": 1.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "熊本",
+    "district": "熊本市東区",
+    "town": "長嶺西",
+    "premiumPercent": 22.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "群馬",
+    "district": "高崎市",
+    "town": "高砂町",
+    "premiumPercent": -32.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "群馬",
+    "district": "高崎市",
+    "town": "東町",
+    "premiumPercent": 84.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "群馬",
+    "district": "高崎市",
+    "town": "連雀町",
+    "premiumPercent": 3.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "群馬",
+    "district": "前橋市",
+    "town": "古市町",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "群馬",
+    "district": "前橋市",
+    "town": "文京町",
+    "premiumPercent": 1.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "屋島西町",
+    "premiumPercent": -37.6,
+    "cellCount": 1,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "桜町",
+    "premiumPercent": 15.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "築地町",
+    "premiumPercent": 4.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "中央町",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "浜ノ町",
+    "premiumPercent": 13.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "香川",
+    "district": "高松市",
+    "town": "木太町",
+    "premiumPercent": -3.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "佐賀",
+    "district": "佐賀市",
+    "town": "鍋島",
+    "premiumPercent": -15.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市岩槻区",
+    "town": "東岩槻",
+    "premiumPercent": -35,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市見沼区",
+    "town": "春野",
+    "premiumPercent": -37.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市見沼区",
+    "town": "大字蓮沼",
+    "premiumPercent": 15.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市見沼区",
+    "town": "島町",
+    "premiumPercent": 47.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市見沼区",
+    "town": "東大宮",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市桜区",
+    "town": "西堀",
+    "premiumPercent": 10.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市桜区",
+    "town": "田島",
+    "premiumPercent": 44.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市桜区",
+    "town": "道場",
+    "premiumPercent": -7.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市桜区",
+    "town": "南元宿",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市西区",
+    "town": "西大宮",
+    "premiumPercent": 3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市西区",
+    "town": "大字植田谷本",
+    "premiumPercent": 5.7,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "鹿手袋",
+    "premiumPercent": -4.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "松本",
+    "premiumPercent": -16.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "沼影",
+    "premiumPercent": 5.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "辻",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "内谷",
+    "premiumPercent": 1.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "南浦和",
+    "premiumPercent": 26,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "南本町",
+    "premiumPercent": 11.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "白幡",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "文蔵",
+    "premiumPercent": 3.8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市南区",
+    "town": "別所",
+    "premiumPercent": 29.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市北区",
+    "town": "宮原町",
+    "premiumPercent": 8.6,
+    "cellCount": 4,
+    "sampleCount": 43,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市北区",
+    "town": "今羽町",
+    "premiumPercent": -27.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市北区",
+    "town": "大成町",
+    "premiumPercent": 11.1,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市北区",
+    "town": "日進町",
+    "premiumPercent": -14,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市緑区",
+    "town": "大字大間木",
+    "premiumPercent": -13.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "さいたま市緑区",
+    "town": "東浦和",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "ふじみ野市",
+    "town": "ふじみ野",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "ふじみ野市",
+    "town": "霞ケ丘",
+    "premiumPercent": 11.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "ふじみ野市",
+    "town": "大井",
+    "premiumPercent": -19.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "レイクタウン",
+    "premiumPercent": 15.7,
+    "cellCount": 2,
+    "sampleCount": 52,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "蒲生寿町",
+    "premiumPercent": 52.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "瓦曽根",
+    "premiumPercent": -8.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "赤山町",
+    "premiumPercent": 1,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "千間台西",
+    "premiumPercent": -21.7,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "川柳町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "大字下間久里",
+    "premiumPercent": -12.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "大字西方",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "大字大里",
+    "premiumPercent": -26.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "大沢",
+    "premiumPercent": -0.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "越谷市",
+    "town": "南越谷",
+    "premiumPercent": 16.7,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "吉川市",
+    "town": "美南",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "久喜市",
+    "town": "久喜東",
+    "premiumPercent": 11.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "久喜市",
+    "town": "桜田",
+    "premiumPercent": -16.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "狭山市",
+    "town": "狭山台",
+    "premiumPercent": 12.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "狭山市",
+    "town": "大字青柳",
+    "premiumPercent": -46.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "狭山市",
+    "town": "中央",
+    "premiumPercent": 22.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "熊谷市",
+    "town": "久下",
+    "premiumPercent": -3.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "鴻巣市",
+    "town": "赤見台",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "坂戸市",
+    "town": "東坂戸",
+    "premiumPercent": -39.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "岸町",
+    "premiumPercent": 15.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "高砂",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "上木崎",
+    "premiumPercent": -15.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "常盤",
+    "premiumPercent": -4.2,
+    "cellCount": 5,
+    "sampleCount": 59,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "針ヶ谷",
+    "premiumPercent": -27.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "瀬ヶ崎",
+    "premiumPercent": -20.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "前地",
+    "premiumPercent": -0.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "仲町",
+    "premiumPercent": 37.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "北浦和",
+    "premiumPercent": -7.1,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市浦和區",
+    "town": "本太",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "下町",
+    "premiumPercent": 20.9,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "吉敷町",
+    "premiumPercent": 2.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "宮町",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "櫛引町",
+    "premiumPercent": -38.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "高鼻町",
+    "premiumPercent": 31.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "桜木町",
+    "premiumPercent": 17.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "三橋",
+    "premiumPercent": -39.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "大成町",
+    "premiumPercent": -4.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "土手町",
+    "premiumPercent": 17.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "東町",
+    "premiumPercent": 29.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "北袋町",
+    "premiumPercent": 50.3,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市大宮區",
+    "town": "堀の内町",
+    "premiumPercent": -32.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市中央區",
+    "town": "円阿弥",
+    "premiumPercent": -53.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市中央區",
+    "town": "上落合",
+    "premiumPercent": 12.6,
+    "cellCount": 4,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市中央區",
+    "town": "新中里",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市中央區",
+    "town": "本町東",
+    "premiumPercent": 12.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "埼玉市中央區",
+    "town": "鈴谷",
+    "premiumPercent": -20.9,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "さつき平",
+    "premiumPercent": 17.5,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "高州",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "新三郷ららシティ",
+    "premiumPercent": 3.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "早稲田",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "中央",
+    "premiumPercent": 7.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "三鄉市",
+    "town": "彦成",
+    "premiumPercent": -12.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "志木市",
+    "town": "館",
+    "premiumPercent": -5.4,
+    "cellCount": 2,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "志木市",
+    "town": "幸町",
+    "premiumPercent": 29.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "志木市",
+    "town": "柏町",
+    "premiumPercent": -3.3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "志木市",
+    "town": "本町",
+    "premiumPercent": 76.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "春日部市",
+    "town": "増富",
+    "premiumPercent": 35.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "春日部市",
+    "town": "大枝",
+    "premiumPercent": -15.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "春日部市",
+    "town": "中央",
+    "premiumPercent": 12.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "春日部市",
+    "town": "粕壁東",
+    "premiumPercent": 36.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "寿町",
+    "premiumPercent": 16.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "小手指町",
+    "premiumPercent": 17.5,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "西所沢",
+    "premiumPercent": -18.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "中新井",
+    "premiumPercent": -59.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "東所沢",
+    "premiumPercent": -14.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "東町",
+    "premiumPercent": 14.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "美原町",
+    "premiumPercent": -13.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "所澤市",
+    "town": "緑町",
+    "premiumPercent": -3.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "上尾市",
+    "town": "宮本町",
+    "premiumPercent": 90.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "上尾市",
+    "town": "柏座",
+    "premiumPercent": 11.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "新座市",
+    "town": "新座",
+    "premiumPercent": -8.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "新座市",
+    "town": "新堀",
+    "premiumPercent": -8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "新座市",
+    "town": "東北",
+    "premiumPercent": 32.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "新座市",
+    "town": "畑中",
+    "premiumPercent": -43.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "新座市",
+    "town": "野火止",
+    "premiumPercent": 3.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "岸町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "新宿町",
+    "premiumPercent": 14.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "菅原町",
+    "premiumPercent": -7.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "仙波町",
+    "premiumPercent": 3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "大字笠幡",
+    "premiumPercent": -47.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "大字古谷上",
+    "premiumPercent": -40.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "中原町",
+    "premiumPercent": 318.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川越市",
+    "town": "中台",
+    "premiumPercent": 7.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "栄町",
+    "premiumPercent": 8.7,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "金山町",
+    "premiumPercent": 23.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "元郷",
+    "premiumPercent": 19.3,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "戸塚",
+    "premiumPercent": -18,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "幸町",
+    "premiumPercent": 28.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "芝園町",
+    "premiumPercent": 17.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "上青木",
+    "premiumPercent": -34.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "上青木西",
+    "premiumPercent": -34,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "西青木",
+    "premiumPercent": -2.9,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "西川口",
+    "premiumPercent": 12.6,
+    "cellCount": 5,
+    "sampleCount": 67,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "青木",
+    "premiumPercent": -30.4,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "川口",
+    "premiumPercent": 21.8,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "大字安行領根岸",
+    "premiumPercent": -30.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "大字新井宿",
+    "premiumPercent": -29,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "大字新堀",
+    "premiumPercent": -50.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "中青木",
+    "premiumPercent": 2.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "朝日",
+    "premiumPercent": -26.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "東川口",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "南町",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "南鳩ヶ谷",
+    "premiumPercent": -5.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "飯塚",
+    "premiumPercent": 52,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "並木",
+    "premiumPercent": -7.9,
+    "cellCount": 2,
+    "sampleCount": 65,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "並木元町",
+    "premiumPercent": 16.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "本町",
+    "premiumPercent": 51,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "川口市",
+    "town": "末広",
+    "premiumPercent": -15.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "旭町",
+    "premiumPercent": -15.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "栄町",
+    "premiumPercent": 101.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "花栗",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "高砂",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "松原",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "新栄",
+    "premiumPercent": -43.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "瀬崎",
+    "premiumPercent": 21.6,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "草加市",
+    "town": "氷川町",
+    "premiumPercent": 55.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "栄町",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "溝沼",
+    "premiumPercent": -40.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "根岸台",
+    "premiumPercent": 11.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "三原",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "泉水",
+    "premiumPercent": -21.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "朝志ケ丘",
+    "premiumPercent": 31.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "浜崎",
+    "premiumPercent": 13.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "朝霞市",
+    "town": "本町",
+    "premiumPercent": 21,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "鶴ケ島市",
+    "town": "大字藤金",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "東松山市",
+    "town": "五領町",
+    "premiumPercent": -48,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間郡三芳町",
+    "town": "みよし台",
+    "premiumPercent": 234.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間郡三芳町",
+    "town": "大字北永井",
+    "premiumPercent": -22.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "高倉",
+    "premiumPercent": -8.2,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "春日町",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "大字下藤沢",
+    "premiumPercent": 19.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "大字上藤沢",
+    "premiumPercent": 56.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "大字仏子",
+    "premiumPercent": -10.3,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "入間市",
+    "town": "豊岡",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "白岡市",
+    "town": "小久喜",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "八潮市",
+    "town": "大字小作田",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "八潮市",
+    "town": "大字大瀬",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "八潮市",
+    "town": "大瀬",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "富士見市",
+    "town": "ふじみ野西",
+    "premiumPercent": 11.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "富士見市",
+    "town": "榎町",
+    "premiumPercent": -28.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "富士見市",
+    "town": "西みずほ台",
+    "premiumPercent": 11,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "和光市",
+    "town": "新倉",
+    "premiumPercent": -26.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "和光市",
+    "town": "南",
+    "premiumPercent": -42.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "和光市",
+    "town": "白子",
+    "premiumPercent": -1,
+    "cellCount": 3,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "和光市",
+    "town": "本町",
+    "premiumPercent": 43.7,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "蕨市",
+    "town": "中央",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "蕨市",
+    "town": "塚越",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "蕨市",
+    "town": "南町",
+    "premiumPercent": 19.2,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "蕨市",
+    "town": "北町",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "下前",
+    "premiumPercent": 3.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "喜沢南",
+    "premiumPercent": -36.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "笹目北町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "上戸田",
+    "premiumPercent": 45.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "新曽南",
+    "premiumPercent": -3.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "川岸",
+    "premiumPercent": 28.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "大字上戸田",
+    "premiumPercent": -1.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "埼玉",
+    "district": "戶田市",
+    "town": "本町",
+    "premiumPercent": 13.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "伊勢市",
+    "town": "宮後",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "四日市市",
+    "town": "諏訪町",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "四日市市",
+    "town": "富田",
+    "premiumPercent": 2.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "四日市市",
+    "town": "平町",
+    "premiumPercent": -37.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "四日市市",
+    "town": "北浜田町",
+    "premiumPercent": 28.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "津市",
+    "town": "南が丘",
+    "premiumPercent": 12.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "三重",
+    "district": "津市",
+    "town": "南丸之内",
+    "premiumPercent": 21.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "山口",
+    "district": "下関市",
+    "town": "みもすそ川町",
+    "premiumPercent": -40.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "山口",
+    "district": "岩国市",
+    "town": "今津町",
+    "premiumPercent": 14.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "山口",
+    "district": "岩国市",
+    "town": "麻里布町",
+    "premiumPercent": -25,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "山口",
+    "district": "山口市",
+    "town": "三和町",
+    "premiumPercent": 41.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "山梨",
+    "district": "甲府市",
+    "town": "丸の内",
+    "premiumPercent": 54.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "山梨",
+    "district": "甲府市",
+    "town": "中央",
+    "premiumPercent": -17,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "草津市",
+    "town": "笠山",
+    "premiumPercent": -69.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "草津市",
+    "town": "西大路町",
+    "premiumPercent": 7.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "草津市",
+    "town": "大路",
+    "premiumPercent": 17.9,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "滋賀",
+    "district": "草津市",
+    "town": "南草津",
+    "premiumPercent": 0.9,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "草津市",
+    "town": "野路",
+    "premiumPercent": 5.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "におの浜",
+    "premiumPercent": 38.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "粟津町",
+    "premiumPercent": 2.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "鏡が浜",
+    "premiumPercent": -5.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "皇子が丘",
+    "premiumPercent": 30.2,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "今堅田",
+    "premiumPercent": -37.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "秋葉台",
+    "premiumPercent": 27.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "真野",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "大萱",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "大江",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "茶が崎",
+    "premiumPercent": 19,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "唐橋町",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "浜大津",
+    "premiumPercent": -12.9,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "本堅田",
+    "premiumPercent": -12,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "滋賀",
+    "district": "大津市",
+    "town": "柳が崎",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "鴨池新町",
+    "premiumPercent": 17.3,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "高麗町",
+    "premiumPercent": 15.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "小松原",
+    "premiumPercent": -8.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "上荒田町",
+    "premiumPercent": 6.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "新照院町",
+    "premiumPercent": -56.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "谷山中央",
+    "premiumPercent": -19.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "鹿兒島",
+    "district": "鹿兒島市",
+    "town": "南林寺町",
+    "premiumPercent": 9.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "秋田",
+    "district": "秋田市",
+    "town": "山王",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "秋田",
+    "district": "秋田市",
+    "town": "千秋矢留町",
+    "premiumPercent": 2.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "秋田",
+    "district": "秋田市",
+    "town": "中通",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "下大川前通",
+    "premiumPercent": -8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "関新",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "古町通",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "幸西",
+    "premiumPercent": 12.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "上大川前通",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "西堀通",
+    "premiumPercent": 20.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "川岸町",
+    "premiumPercent": -11.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "川端町",
+    "premiumPercent": 29.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "弁天",
+    "premiumPercent": -4.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市",
+    "town": "万代",
+    "premiumPercent": 14.9,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "下大川前通",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "関新",
+    "premiumPercent": -4.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "古町通",
+    "premiumPercent": -10.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "幸西",
+    "premiumPercent": 10.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "上大川前通",
+    "premiumPercent": 1.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "西堀通",
+    "premiumPercent": 17.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "川岸町",
+    "premiumPercent": -14,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "川端町",
+    "premiumPercent": 30.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "弁天",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "新潟市中央区",
+    "town": "万代",
+    "premiumPercent": 13.4,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "新潟",
+    "district": "長岡市",
+    "town": "大手通",
+    "premiumPercent": 12.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "伊勢原市",
+    "town": "高森",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "伊勢原市",
+    "town": "東成瀬",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "グリーンハイツ",
+    "premiumPercent": -45.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "安針台",
+    "premiumPercent": 1.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "浦賀",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "吉井",
+    "premiumPercent": -40.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "久里浜",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "金谷",
+    "premiumPercent": -20.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "根岸町",
+    "premiumPercent": 16,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "若松町",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "秋谷",
+    "premiumPercent": 78.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "小川町",
+    "premiumPercent": 50.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "湘南鷹取",
+    "premiumPercent": -38.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "船越町",
+    "premiumPercent": -10.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "大津町",
+    "premiumPercent": 34.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "長沢",
+    "premiumPercent": 40.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "追浜東町",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "二葉",
+    "premiumPercent": -27,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "日の出町",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "馬堀海岸",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "武",
+    "premiumPercent": -14.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "平成町",
+    "premiumPercent": 35.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "米が浜通",
+    "premiumPercent": 35.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横須賀市",
+    "town": "野比",
+    "premiumPercent": -17.6,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "左近山",
+    "premiumPercent": -17.2,
+    "cellCount": 2,
+    "sampleCount": 60,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "市沢町",
+    "premiumPercent": -44.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "若葉台",
+    "premiumPercent": -16.6,
+    "cellCount": 2,
+    "sampleCount": 61,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "中希望が丘",
+    "premiumPercent": 35.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "中白根",
+    "premiumPercent": -8.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "東希望が丘",
+    "premiumPercent": 66.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "白根",
+    "premiumPercent": 3.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市旭区",
+    "town": "本村町",
+    "premiumPercent": 27,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "磯子",
+    "premiumPercent": 1.3,
+    "cellCount": 4,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "磯子台",
+    "premiumPercent": 48.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "岡村",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "丸山",
+    "premiumPercent": -1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "汐見台",
+    "premiumPercent": -26.9,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "上中里町",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "森",
+    "premiumPercent": 8.1,
+    "cellCount": 4,
+    "sampleCount": 53,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "杉田",
+    "premiumPercent": 8.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "中原",
+    "premiumPercent": 12.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "東町",
+    "premiumPercent": 46.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "氷取沢町",
+    "premiumPercent": -35.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市磯子区",
+    "town": "洋光台",
+    "premiumPercent": -16.7,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "笠間",
+    "premiumPercent": 19.1,
+    "cellCount": 2,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "桂台東",
+    "premiumPercent": -31.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "桂町",
+    "premiumPercent": 57.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "小菅ケ谷",
+    "premiumPercent": -14.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "上郷町",
+    "premiumPercent": 21,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市栄区",
+    "town": "飯島町",
+    "premiumPercent": -25.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "釜利谷東",
+    "premiumPercent": -20.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "釜利谷南",
+    "premiumPercent": -13.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "柴町",
+    "premiumPercent": -8.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "大川",
+    "premiumPercent": -3.6,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "泥亀",
+    "premiumPercent": 37.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "能見台",
+    "premiumPercent": 3.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "能見台東",
+    "premiumPercent": 70.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "富岡西",
+    "premiumPercent": -22,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "富岡東",
+    "premiumPercent": 9.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "並木",
+    "premiumPercent": 1,
+    "cellCount": 1,
+    "sampleCount": 35,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "六浦",
+    "premiumPercent": -5.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "六浦東",
+    "premiumPercent": -30.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市金沢区",
+    "town": "六浦南",
+    "premiumPercent": -46.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市瀬谷区",
+    "town": "五貫目町",
+    "premiumPercent": -15.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市瀬谷区",
+    "town": "三ツ境",
+    "premiumPercent": 26.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市泉区",
+    "town": "岡津町",
+    "premiumPercent": -18.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市泉区",
+    "town": "和泉町",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "下野谷町",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "岸谷",
+    "premiumPercent": -18.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "駒岡",
+    "premiumPercent": -26.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "江ケ崎町",
+    "premiumPercent": -19.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "市場下町",
+    "premiumPercent": -12.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "小野町",
+    "premiumPercent": -28.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "尻手",
+    "premiumPercent": 17.2,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "生麦",
+    "premiumPercent": 0.2,
+    "cellCount": 4,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "大東町",
+    "premiumPercent": 5.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "朝日町",
+    "premiumPercent": -26.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "佃野町",
+    "premiumPercent": 11.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "鶴見",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "鶴見中央",
+    "premiumPercent": 16,
+    "cellCount": 10,
+    "sampleCount": 94,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "東寺尾",
+    "premiumPercent": -33.1,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "馬場",
+    "premiumPercent": -31.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "平安町",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "北寺尾",
+    "premiumPercent": -54.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "本町通",
+    "premiumPercent": -1.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市鶴見区",
+    "town": "矢向",
+    "premiumPercent": 4.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "荏田東",
+    "premiumPercent": -1.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "荏田南",
+    "premiumPercent": -40.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "加賀原",
+    "premiumPercent": -41.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "茅ケ崎中央",
+    "premiumPercent": 18.2,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "茅ケ崎東",
+    "premiumPercent": 0.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "茅ケ崎南",
+    "premiumPercent": 14.4,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "大丸",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "池辺町",
+    "premiumPercent": -20.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "中川",
+    "premiumPercent": 16.3,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "中川中央",
+    "premiumPercent": 28.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "仲町台",
+    "premiumPercent": -2.1,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "南山田",
+    "premiumPercent": -5.5,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市都筑区",
+    "town": "北山田",
+    "premiumPercent": -1.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "井土ケ谷下町",
+    "premiumPercent": -14.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "井土ケ谷中町",
+    "premiumPercent": -11.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "浦舟町",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "永楽町",
+    "premiumPercent": 8.9,
+    "cellCount": 2,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "永田北",
+    "premiumPercent": -64.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "吉野町",
+    "premiumPercent": 16.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "宮元町",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "高根町",
+    "premiumPercent": -2.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "高砂町",
+    "premiumPercent": -2.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "山王町",
+    "premiumPercent": 4.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "蒔田町",
+    "premiumPercent": -34.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "宿町",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "新川町",
+    "premiumPercent": 4.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "真金町",
+    "premiumPercent": 5.1,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "中村町",
+    "premiumPercent": -12.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "通町",
+    "premiumPercent": -10.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "南太田",
+    "premiumPercent": 2.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "二葉町",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "日枝町",
+    "premiumPercent": 11.6,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "別所",
+    "premiumPercent": -33.7,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "万世町",
+    "premiumPercent": 13.7,
+    "cellCount": 2,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市南区",
+    "town": "六ツ川",
+    "premiumPercent": -13.3,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "岡沢町",
+    "premiumPercent": 0.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "釜台町",
+    "premiumPercent": 29.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "岩井町",
+    "premiumPercent": -5.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "岩崎町",
+    "premiumPercent": -12.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "権太坂",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "今井町",
+    "premiumPercent": -19.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "狩場町",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "新桜ケ丘",
+    "premiumPercent": -39.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "星川",
+    "premiumPercent": 42.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "西谷",
+    "premiumPercent": -14.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "川辺町",
+    "premiumPercent": 87.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "天王町",
+    "premiumPercent": 33.6,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "仏向西",
+    "premiumPercent": -0.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "峰沢町",
+    "premiumPercent": -49.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "和田",
+    "premiumPercent": 15.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市保土ケ谷区",
+    "town": "帷子町",
+    "premiumPercent": 49,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "十日市場町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "森の台",
+    "premiumPercent": -6.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "竹山",
+    "premiumPercent": -20.5,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "中山",
+    "premiumPercent": 11.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "長津田",
+    "premiumPercent": 14.4,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "東本郷",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "白山",
+    "premiumPercent": -7.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "横浜市緑区",
+    "town": "霧が丘",
+    "premiumPercent": 84.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "さつき町",
+    "premiumPercent": -11,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "めぐみ町",
+    "premiumPercent": 13.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "下今泉",
+    "premiumPercent": 99,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "河原口",
+    "premiumPercent": -20.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "国分南",
+    "premiumPercent": -17.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "扇町",
+    "premiumPercent": 6.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "泉",
+    "premiumPercent": -3.9,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "中央",
+    "premiumPercent": 38.5,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "東柏ケ谷",
+    "premiumPercent": 2.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "海老名市",
+    "town": "柏ケ谷",
+    "premiumPercent": -12.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "岡本",
+    "premiumPercent": 16.8,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "梶原",
+    "premiumPercent": -19.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "岩瀬",
+    "premiumPercent": -1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "玉縄",
+    "premiumPercent": -8.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "常盤",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "植木",
+    "premiumPercent": -34.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "台",
+    "premiumPercent": 13.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "鎌倉市",
+    "town": "由比ガ浜",
+    "premiumPercent": 63.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "甘沼",
+    "premiumPercent": -28.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "今宿",
+    "premiumPercent": -18.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "赤松町",
+    "premiumPercent": 7.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "中島",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "東海岸南",
+    "premiumPercent": 24.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "本村",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "矢畑",
+    "premiumPercent": -1.2,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "茅ヶ崎市",
+    "town": "緑が浜",
+    "premiumPercent": -15.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "愛甲",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "栄町",
+    "premiumPercent": 15.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "岡田",
+    "premiumPercent": -38.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "恩名",
+    "premiumPercent": -8.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "森の里",
+    "premiumPercent": -50.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "中依知",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "厚木市",
+    "town": "中町",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "座間市",
+    "town": "ひばりが丘",
+    "premiumPercent": -24.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "座間市",
+    "town": "小松原",
+    "premiumPercent": -12.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "座間市",
+    "town": "相武台",
+    "premiumPercent": -7.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "座間市",
+    "town": "相模が丘",
+    "premiumPercent": -2.9,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "座間市",
+    "town": "入谷東",
+    "premiumPercent": 3.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "三浦郡葉山町",
+    "town": "堀内",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "小田原市",
+    "town": "栄町",
+    "premiumPercent": 32.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "小田原市",
+    "town": "前川",
+    "premiumPercent": -21.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "秦野市",
+    "town": "鶴巻南",
+    "premiumPercent": -29.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "秦野市",
+    "town": "鶴巻北",
+    "premiumPercent": 81.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "秦野市",
+    "town": "南が丘",
+    "premiumPercent": -10.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "秦野市",
+    "town": "南矢名",
+    "premiumPercent": 152.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "逗子市",
+    "town": "小坪",
+    "premiumPercent": 53.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "逗子市",
+    "town": "沼間",
+    "premiumPercent": -46.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "逗子市",
+    "town": "新宿",
+    "premiumPercent": -5.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "逗子市",
+    "town": "逗子",
+    "premiumPercent": 4.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "逗子市",
+    "town": "池子",
+    "premiumPercent": -52.7,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "けやき平",
+    "premiumPercent": -30.1,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "宮崎",
+    "premiumPercent": 36.4,
+    "cellCount": 6,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "宮前平",
+    "premiumPercent": 24,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "犬蔵",
+    "premiumPercent": -10.7,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "鷺沼",
+    "premiumPercent": 2.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "小台",
+    "premiumPercent": 15,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "土橋",
+    "premiumPercent": 14.8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "馬絹",
+    "premiumPercent": -3.5,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "白幡台",
+    "premiumPercent": -58.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "平",
+    "premiumPercent": -37.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市宮前区",
+    "town": "有馬",
+    "premiumPercent": 14.5,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "下平間",
+    "premiumPercent": 20.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "戸手",
+    "premiumPercent": -15.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "幸町",
+    "premiumPercent": 21.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "鹿島田",
+    "premiumPercent": 3.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "小倉",
+    "premiumPercent": 3.5,
+    "cellCount": 2,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "新小倉",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "新塚越",
+    "premiumPercent": 22.2,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "神明町",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "大宮町",
+    "premiumPercent": 25.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "中幸町",
+    "premiumPercent": 7.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "塚越",
+    "premiumPercent": -5.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "都町",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "南幸町",
+    "premiumPercent": 4.3,
+    "cellCount": 3,
+    "sampleCount": 62,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "堀川町",
+    "premiumPercent": 27.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市幸区",
+    "town": "柳町",
+    "premiumPercent": 14.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "下作延",
+    "premiumPercent": 7,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "蟹ケ谷",
+    "premiumPercent": -43.6,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "梶ケ谷",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "久地",
+    "premiumPercent": -26.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "久本",
+    "premiumPercent": 28.1,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "溝口",
+    "premiumPercent": 3.6,
+    "cellCount": 3,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "新作",
+    "premiumPercent": -13.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "千年",
+    "premiumPercent": -6.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "二子",
+    "premiumPercent": 17.2,
+    "cellCount": 4,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "北見方",
+    "premiumPercent": 0.1,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "末長",
+    "premiumPercent": -2.4,
+    "cellCount": 3,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市高津區",
+    "town": "明津",
+    "premiumPercent": -22.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "伊勢町",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "榎町",
+    "premiumPercent": 20.7,
+    "cellCount": 1,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "下並木",
+    "premiumPercent": -3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "貝塚",
+    "premiumPercent": -13.8,
+    "cellCount": 1,
+    "sampleCount": 35,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "宮前町",
+    "premiumPercent": -11.6,
+    "cellCount": 1,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "京町",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "元木",
+    "premiumPercent": 24.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "港町",
+    "premiumPercent": 14.3,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "砂子",
+    "premiumPercent": 40.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "小川町",
+    "premiumPercent": 36.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "小田",
+    "premiumPercent": -13.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "小田栄",
+    "premiumPercent": -28.8,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "新川通",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "大師駅前",
+    "premiumPercent": -20.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "大師河原",
+    "premiumPercent": -42.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "池田",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "中瀬",
+    "premiumPercent": -2,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "中島",
+    "premiumPercent": 29.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "追分町",
+    "premiumPercent": -25.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "田町",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "渡田",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "渡田新町",
+    "premiumPercent": -9.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "東田町",
+    "premiumPercent": 4.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "藤崎",
+    "premiumPercent": 5.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "南町",
+    "premiumPercent": -2.4,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "日進町",
+    "premiumPercent": 16.7,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "堀之内町",
+    "premiumPercent": 12.1,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市川崎區",
+    "town": "本町",
+    "premiumPercent": 16.8,
+    "cellCount": 2,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "三田",
+    "premiumPercent": -21.2,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "宿河原",
+    "premiumPercent": 18.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "菅",
+    "premiumPercent": -16.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "生田",
+    "premiumPercent": -37.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "中野島",
+    "premiumPercent": -3.4,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "登戸",
+    "premiumPercent": 92.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "南生田",
+    "premiumPercent": -30,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市多摩区",
+    "town": "枡形",
+    "premiumPercent": -0.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "井田三舞町",
+    "premiumPercent": -9.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "井田中ノ町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "下小田中",
+    "premiumPercent": -16.9,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "下沼部",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "苅宿",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "丸子通",
+    "premiumPercent": 12.7,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "宮内",
+    "premiumPercent": -30.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "今井西町",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "市ノ坪",
+    "premiumPercent": -10.4,
+    "cellCount": 2,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "小杉御殿町",
+    "premiumPercent": -5.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "小杉陣屋町",
+    "premiumPercent": 31.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "小杉町",
+    "premiumPercent": 20.8,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "上丸子山王町",
+    "premiumPercent": 11.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "上小田中",
+    "premiumPercent": -11.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "上平間",
+    "premiumPercent": -36.4,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "新丸子町",
+    "premiumPercent": 9.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "新丸子東",
+    "premiumPercent": 20.8,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "新城",
+    "premiumPercent": -15.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "西加瀬",
+    "premiumPercent": -9.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "中丸子",
+    "premiumPercent": -1.1,
+    "cellCount": 5,
+    "sampleCount": 72,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "木月",
+    "premiumPercent": 13.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市中原區",
+    "town": "木月住吉町",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "はるひ野",
+    "premiumPercent": -21.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "下麻生",
+    "premiumPercent": -68,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "栗平",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "高石",
+    "premiumPercent": -4.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "上麻生",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "白山",
+    "premiumPercent": 5.9,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "百合丘",
+    "premiumPercent": -11.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "川崎市麻生区",
+    "town": "万福寺",
+    "premiumPercent": 21.9,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "旭町",
+    "premiumPercent": 50.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "鵜野森",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "下九沢",
+    "premiumPercent": -37.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "橋本",
+    "premiumPercent": 42.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "橋本台",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "古淵",
+    "premiumPercent": 46.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "鹿沼台",
+    "premiumPercent": 13.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "小山",
+    "premiumPercent": 7.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "上溝",
+    "premiumPercent": -47.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "上鶴間",
+    "premiumPercent": 38.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "上鶴間本町",
+    "premiumPercent": 35.7,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "新磯野",
+    "premiumPercent": -37.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "星が丘",
+    "premiumPercent": 13.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "清新",
+    "premiumPercent": -5.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "西橋本",
+    "premiumPercent": 44.2,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "千代田",
+    "premiumPercent": -45.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "相南",
+    "premiumPercent": 9.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "相武台団地",
+    "premiumPercent": -48.3,
+    "cellCount": 1,
+    "sampleCount": 41,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "相模原",
+    "premiumPercent": -2.5,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "相模台団地",
+    "premiumPercent": -62.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "相模大野",
+    "premiumPercent": 48.9,
+    "cellCount": 4,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "大野台",
+    "premiumPercent": 54.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "東淵野辺",
+    "premiumPercent": 12.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "東林間",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "南橋本",
+    "premiumPercent": -15.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "南台",
+    "premiumPercent": 29.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "淵野辺",
+    "premiumPercent": -2.9,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市",
+    "town": "陽光台",
+    "premiumPercent": 1.3,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "鹿沼台",
+    "premiumPercent": 26.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "小山",
+    "premiumPercent": 23.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "上溝",
+    "premiumPercent": -40.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "星が丘",
+    "premiumPercent": 29.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "清新",
+    "premiumPercent": 7.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "千代田",
+    "premiumPercent": -37.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "相模原",
+    "premiumPercent": 15.4,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "東淵野辺",
+    "premiumPercent": 28.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "南橋本",
+    "premiumPercent": -3.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "淵野辺",
+    "premiumPercent": 7,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市中央区",
+    "town": "陽光台",
+    "premiumPercent": 7.6,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "旭町",
+    "premiumPercent": 54.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "鵜野森",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "古淵",
+    "premiumPercent": 20.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "上鶴間",
+    "premiumPercent": 34.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "上鶴間本町",
+    "premiumPercent": 13.8,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "新磯野",
+    "premiumPercent": -36.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "相南",
+    "premiumPercent": -9.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "相武台団地",
+    "premiumPercent": -47.1,
+    "cellCount": 1,
+    "sampleCount": 41,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "相模台団地",
+    "premiumPercent": -61.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "相模大野",
+    "premiumPercent": 22,
+    "cellCount": 3,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "大野台",
+    "premiumPercent": 58.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "東林間",
+    "premiumPercent": -17.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市南区",
+    "town": "南台",
+    "premiumPercent": 17.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市緑区",
+    "town": "下九沢",
+    "premiumPercent": 64,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市緑区",
+    "town": "橋本",
+    "premiumPercent": 37.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市緑区",
+    "town": "橋本台",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "相模原市緑区",
+    "town": "西橋本",
+    "premiumPercent": 26.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "つきみ野",
+    "premiumPercent": -3.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "下鶴間",
+    "premiumPercent": -30.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "上和田",
+    "premiumPercent": -18.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "深見西",
+    "premiumPercent": -32.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "大和南",
+    "premiumPercent": 87.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "中央",
+    "premiumPercent": 18.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "中央林間",
+    "premiumPercent": 33.3,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "南林間",
+    "premiumPercent": -1.2,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "福田",
+    "premiumPercent": -34.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "大和市",
+    "town": "柳橋",
+    "premiumPercent": -32.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "稲荷",
+    "premiumPercent": -20.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "羽鳥",
+    "premiumPercent": -3.7,
+    "cellCount": 1,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼海岸",
+    "premiumPercent": 47.1,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼橘",
+    "premiumPercent": 10.5,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼神明",
+    "premiumPercent": -18.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼石上",
+    "premiumPercent": 13,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼東",
+    "premiumPercent": 81.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "鵠沼藤が谷",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "湘南台",
+    "premiumPercent": 11.6,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "城南",
+    "premiumPercent": -19.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "石川",
+    "premiumPercent": -55.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "川名",
+    "premiumPercent": -11.2,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "大庭",
+    "premiumPercent": -27.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "辻堂神台",
+    "premiumPercent": 48.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "辻堂西海岸",
+    "premiumPercent": -16.3,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "藤が岡",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "藤沢",
+    "premiumPercent": 32.3,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "南藤沢",
+    "premiumPercent": 29.2,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "片瀬",
+    "premiumPercent": 7.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "片瀬海岸",
+    "premiumPercent": 79,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "town": "本藤沢",
+    "premiumPercent": -45,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "花水台",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "宮の前",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "見附町",
+    "premiumPercent": 14.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "高村",
+    "premiumPercent": -72.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "田村",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "明石町",
+    "premiumPercent": 8.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "平塚市",
+    "town": "老松町",
+    "premiumPercent": 0.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "丸山台",
+    "premiumPercent": 42.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "港南台",
+    "premiumPercent": 9.9,
+    "cellCount": 3,
+    "sampleCount": 57,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "上永谷",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "上大岡西",
+    "premiumPercent": 57.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "大久保",
+    "premiumPercent": -0.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "東芹が谷",
+    "premiumPercent": -30.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "日野",
+    "premiumPercent": 10.9,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港南區",
+    "town": "野庭町",
+    "premiumPercent": -12.3,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "下田町",
+    "premiumPercent": -25.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "綱島上町",
+    "premiumPercent": -11.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "綱島西",
+    "premiumPercent": 2.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "綱島東",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "師岡町",
+    "premiumPercent": -8.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "篠原町",
+    "premiumPercent": -23.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "小机町",
+    "premiumPercent": -42.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "新羽町",
+    "premiumPercent": -12.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "新横浜",
+    "premiumPercent": 0.6,
+    "cellCount": 8,
+    "sampleCount": 135,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "新吉田東",
+    "premiumPercent": -14.2,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "大曽根",
+    "premiumPercent": -2.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "大倉山",
+    "premiumPercent": 31.2,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "大豆戸町",
+    "premiumPercent": 24.4,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "樽町",
+    "premiumPercent": -9.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "鳥山町",
+    "premiumPercent": -26.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "日吉",
+    "premiumPercent": -14.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "日吉本町",
+    "premiumPercent": 13.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市港北區",
+    "town": "箕輪町",
+    "premiumPercent": 7.8,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "羽沢町",
+    "premiumPercent": -58.1,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "栄町",
+    "premiumPercent": 13.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "橋本町",
+    "premiumPercent": -2.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "金港町",
+    "premiumPercent": 99,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "広台太田町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "斎藤分町",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "三ツ沢下町",
+    "premiumPercent": -8.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "三ツ沢上町",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "子安通",
+    "premiumPercent": -6.3,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "七島町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "松見町",
+    "premiumPercent": -12.7,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "松本町",
+    "premiumPercent": -13.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "新子安",
+    "premiumPercent": -2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "新町",
+    "premiumPercent": 1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "神奈川",
+    "premiumPercent": -1.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "菅田町",
+    "premiumPercent": -24.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "西神奈川",
+    "premiumPercent": 18.7,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "青木町",
+    "premiumPercent": -6.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "台町",
+    "premiumPercent": 69.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "大野町",
+    "premiumPercent": 106.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "鶴屋町",
+    "premiumPercent": 89.7,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "東神奈川",
+    "premiumPercent": 13.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "入江",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "反町",
+    "premiumPercent": 14,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "片倉",
+    "premiumPercent": -28.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市神奈川區",
+    "town": "六角橋",
+    "premiumPercent": -1.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "みなとみらい",
+    "premiumPercent": 48,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "伊勢町",
+    "premiumPercent": -12.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "岡野",
+    "premiumPercent": -24.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "花咲町",
+    "premiumPercent": 8.2,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "久保町",
+    "premiumPercent": -13.5,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "戸部町",
+    "premiumPercent": -15.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "戸部本町",
+    "premiumPercent": 6,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "高島",
+    "premiumPercent": 20.2,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "桜木町",
+    "premiumPercent": 5.6,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "西平沼町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "浅間町",
+    "premiumPercent": 3,
+    "cellCount": 2,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "中央",
+    "premiumPercent": -3.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "藤棚町",
+    "premiumPercent": -19.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "南浅間町",
+    "premiumPercent": -18,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "楠町",
+    "premiumPercent": 18.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "浜松町",
+    "premiumPercent": 1.2,
+    "cellCount": 2,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市西區",
+    "town": "平沼",
+    "premiumPercent": 0,
+    "cellCount": 6,
+    "sampleCount": 63,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "あざみ野",
+    "premiumPercent": -1.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "すすき野",
+    "premiumPercent": -22.9,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "荏田西",
+    "premiumPercent": -5.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "市ケ尾町",
+    "premiumPercent": -3.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "新石川",
+    "premiumPercent": 10.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "青葉台",
+    "premiumPercent": 27.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "藤が丘",
+    "premiumPercent": -0.6,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "奈良",
+    "premiumPercent": -35.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市青葉區",
+    "town": "美しが丘",
+    "premiumPercent": 27.2,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "伊勢佐木町",
+    "premiumPercent": 26.5,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "花咲町",
+    "premiumPercent": 2.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "吉田町",
+    "premiumPercent": 2.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "吉浜町",
+    "premiumPercent": 13.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "根岸町",
+    "premiumPercent": -16.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "山下町",
+    "premiumPercent": 14.7,
+    "cellCount": 6,
+    "sampleCount": 68,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "若葉町",
+    "premiumPercent": -4.2,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "松影町",
+    "premiumPercent": -16.8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "新山下",
+    "premiumPercent": -5.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "石川町",
+    "premiumPercent": 10.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "赤門町",
+    "premiumPercent": -10.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "相生町",
+    "premiumPercent": -3.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "滝之上",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "池袋",
+    "premiumPercent": -42.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "仲尾台",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "長者町",
+    "premiumPercent": 2.1,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "不老町",
+    "premiumPercent": 4.9,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "富士見町",
+    "premiumPercent": 20,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "弁天通",
+    "premiumPercent": 26.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "本牧原",
+    "premiumPercent": 30.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "末吉町",
+    "premiumPercent": -10,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "野毛町",
+    "premiumPercent": 20,
+    "cellCount": 1,
+    "sampleCount": 34,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市中區",
+    "town": "弥生町",
+    "premiumPercent": 2.1,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "吉田町",
+    "premiumPercent": 18.2,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "汲沢町",
+    "premiumPercent": -17.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "原宿",
+    "premiumPercent": -52,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "戸塚町",
+    "premiumPercent": -1.7,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "秋葉町",
+    "premiumPercent": -24,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "上倉田町",
+    "premiumPercent": -5.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "上品濃",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "上矢部町",
+    "premiumPercent": -26.9,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "深谷町",
+    "premiumPercent": 3.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "川上町",
+    "premiumPercent": 61.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "前田町",
+    "premiumPercent": 8.3,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "品濃町",
+    "premiumPercent": 69.6,
+    "cellCount": 3,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "平戸町",
+    "premiumPercent": 17.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "俣野町",
+    "premiumPercent": -40.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "神奈川",
+    "district": "橫濱市戶塚區",
+    "town": "名瀬町",
+    "premiumPercent": -20.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "青森",
+    "district": "弘前市",
+    "town": "大字城東中央",
+    "premiumPercent": 3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "青森",
+    "district": "弘前市",
+    "town": "大字鉄砲町",
+    "premiumPercent": -18.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "香林坊",
+    "premiumPercent": 115.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "高柳町",
+    "premiumPercent": -1.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "寺町",
+    "premiumPercent": -30.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "春日町",
+    "premiumPercent": 44.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "昌永町",
+    "premiumPercent": 45.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "泉本町",
+    "premiumPercent": 44.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "泉野町",
+    "premiumPercent": -0.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "石川",
+    "district": "金澤市",
+    "town": "富樫",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "印西市",
+    "town": "原",
+    "premiumPercent": -6.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "印西市",
+    "town": "戸神台",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "印西市",
+    "town": "西の原",
+    "premiumPercent": -30.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "印西市",
+    "town": "内野",
+    "premiumPercent": -27,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "印西市",
+    "town": "舞姫",
+    "premiumPercent": 2.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "高洲",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "東野",
+    "premiumPercent": -16.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "当代島",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "日の出",
+    "premiumPercent": -0.5,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "入船",
+    "premiumPercent": 64.9,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "美浜",
+    "premiumPercent": 10.2,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "富岡",
+    "premiumPercent": -10.9,
+    "cellCount": 1,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "北栄",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "浦安市",
+    "town": "明海",
+    "premiumPercent": 11.1,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "我孫子市",
+    "town": "つくし野",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "我孫子市",
+    "town": "我孫子",
+    "premiumPercent": 9.2,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "我孫子市",
+    "town": "天王台",
+    "premiumPercent": -4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "我孫子市",
+    "town": "白山",
+    "premiumPercent": 19.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "鎌ケ谷市",
+    "town": "鎌ケ谷",
+    "premiumPercent": 117.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "鎌ケ谷市",
+    "town": "西道野辺",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "佐倉市",
+    "town": "ユーカリが丘",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "佐倉市",
+    "town": "井野",
+    "premiumPercent": -17.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "佐倉市",
+    "town": "王子台",
+    "premiumPercent": 10.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "佐倉市",
+    "town": "宮ノ台",
+    "premiumPercent": 2.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "佐倉市",
+    "town": "南ユーカリが丘",
+    "premiumPercent": 63,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市原市",
+    "town": "ちはら台西",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市原市",
+    "town": "ちはら台南",
+    "premiumPercent": -28.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市原市",
+    "town": "五井",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "塩焼",
+    "premiumPercent": 8.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "塩浜",
+    "premiumPercent": 0.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "鬼高",
+    "premiumPercent": -3.4,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "原木",
+    "premiumPercent": -43.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "幸",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "行徳駅前",
+    "premiumPercent": 0.8,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "市川",
+    "premiumPercent": 6.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "市川南",
+    "premiumPercent": 59.5,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "新田",
+    "premiumPercent": 25.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "田尻",
+    "premiumPercent": 1.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "島尻",
+    "premiumPercent": -11.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "南行徳",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "南大野",
+    "premiumPercent": -33.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "南八幡",
+    "premiumPercent": 27.1,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "八幡",
+    "premiumPercent": 39.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "福栄",
+    "premiumPercent": -12.7,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "北方町",
+    "premiumPercent": -51.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "湊新田",
+    "premiumPercent": -23.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "市川市",
+    "town": "妙典",
+    "premiumPercent": 40.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "香澄",
+    "premiumPercent": 9.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "秋津",
+    "premiumPercent": -40.4,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "奏の杜",
+    "premiumPercent": 75.5,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "袖ケ浦",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "大久保",
+    "premiumPercent": -11.1,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "谷津",
+    "premiumPercent": 7,
+    "cellCount": 5,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "津田沼",
+    "premiumPercent": 32.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "東習志野",
+    "premiumPercent": -31,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "習志野市",
+    "town": "藤崎",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "高塚新田",
+    "premiumPercent": -54.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "根本",
+    "premiumPercent": 85,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "根木内",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "小金きよしケ丘",
+    "premiumPercent": 7.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "小金原",
+    "premiumPercent": -67.9,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "小山",
+    "premiumPercent": -17.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "松戸",
+    "premiumPercent": 86.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "松戸新田",
+    "premiumPercent": -19.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "上本郷",
+    "premiumPercent": 15.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "常盤平",
+    "premiumPercent": -0.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "新松戸",
+    "premiumPercent": 42.6,
+    "cellCount": 1,
+    "sampleCount": 43,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "大谷口",
+    "premiumPercent": -0.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "東松戸",
+    "premiumPercent": 24,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "馬橋",
+    "premiumPercent": 29.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "樋野口",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "牧の原",
+    "premiumPercent": -46.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "稔台",
+    "premiumPercent": -29.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "松戶市",
+    "town": "六高台",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "成田市",
+    "town": "加良部",
+    "premiumPercent": -8.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "成田市",
+    "town": "吾妻",
+    "premiumPercent": -25.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "あやめ台",
+    "premiumPercent": -69.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "稲毛東",
+    "premiumPercent": 5.9,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "園生町",
+    "premiumPercent": -31.3,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "小中台町",
+    "premiumPercent": 11.4,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "小仲台",
+    "premiumPercent": 41.7,
+    "cellCount": 3,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "長沼原町",
+    "premiumPercent": -3.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "長沼町",
+    "premiumPercent": -41.9,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市稲毛区",
+    "town": "柏台",
+    "premiumPercent": -15,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "さつきが丘",
+    "premiumPercent": -40,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "花見川",
+    "premiumPercent": -6.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "検見川町",
+    "premiumPercent": 1.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "瑞穂",
+    "premiumPercent": -38,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "西小中台",
+    "premiumPercent": -25.9,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "朝日ケ丘",
+    "premiumPercent": 7.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "柏井",
+    "premiumPercent": 66.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "幕張町",
+    "premiumPercent": 30.8,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市花見川區",
+    "town": "幕張本郷",
+    "premiumPercent": 6.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市若葉区",
+    "town": "みつわ台",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "宮崎町",
+    "premiumPercent": -23.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "新宿",
+    "premiumPercent": 8.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "千葉港",
+    "premiumPercent": -5.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "千葉寺町",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "中央港",
+    "premiumPercent": 13,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "登戸",
+    "premiumPercent": 37.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "南町",
+    "premiumPercent": -7.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市中央區",
+    "town": "問屋町",
+    "premiumPercent": -22.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "磯辺",
+    "premiumPercent": -9.3,
+    "cellCount": 3,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "稲毛海岸",
+    "premiumPercent": -27.5,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "幸町",
+    "premiumPercent": -24.9,
+    "cellCount": 4,
+    "sampleCount": 47,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "高洲",
+    "premiumPercent": 10.1,
+    "cellCount": 3,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "高浜",
+    "premiumPercent": -32.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "若葉",
+    "premiumPercent": 28.8,
+    "cellCount": 1,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "新港",
+    "premiumPercent": 5.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "真砂",
+    "premiumPercent": -0.1,
+    "cellCount": 4,
+    "sampleCount": 76,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "打瀬",
+    "premiumPercent": 34.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "浜田",
+    "premiumPercent": 4.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市美濱區",
+    "town": "幕張西",
+    "premiumPercent": -18.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市緑区",
+    "town": "おゆみ野",
+    "premiumPercent": 68.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市緑区",
+    "town": "おゆみ野中央",
+    "premiumPercent": 10.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "千葉市緑区",
+    "town": "おゆみ野南",
+    "premiumPercent": 22.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "夏見",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "夏見台",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "海神町",
+    "premiumPercent": 47.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "海神町南",
+    "premiumPercent": 31.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "宮本",
+    "premiumPercent": 54.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "金杉台",
+    "premiumPercent": -70,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "行田",
+    "premiumPercent": -10.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "高根台",
+    "premiumPercent": -11.7,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "山手",
+    "premiumPercent": 15.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "習志野台",
+    "premiumPercent": -20.7,
+    "cellCount": 4,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "西船",
+    "premiumPercent": 16.9,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "前原西",
+    "premiumPercent": 1.1,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "中野木",
+    "premiumPercent": -24.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "藤原",
+    "premiumPercent": -11.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "二子町",
+    "premiumPercent": 40.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "飯山満町",
+    "premiumPercent": -24.2,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "浜町",
+    "premiumPercent": 30.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "北本町",
+    "premiumPercent": 7.7,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "本郷町",
+    "premiumPercent": 64.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "本中山",
+    "premiumPercent": 81.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "本町",
+    "premiumPercent": 91.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "薬円台",
+    "premiumPercent": -25.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "船橋市",
+    "town": "緑台",
+    "premiumPercent": -58.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "あけぼの",
+    "premiumPercent": 15.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "旭町",
+    "premiumPercent": 77.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "光ケ丘団地",
+    "premiumPercent": -43.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "根戸",
+    "premiumPercent": 14.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "若柴",
+    "premiumPercent": 29,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "十余二",
+    "premiumPercent": -46.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "小青田",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "松葉町",
+    "premiumPercent": -5.3,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "新柏",
+    "premiumPercent": 24.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "大津ケ丘",
+    "premiumPercent": -41,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "東中新宿",
+    "premiumPercent": -8.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "柏",
+    "premiumPercent": 23.4,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "豊四季",
+    "premiumPercent": -15.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "柏市",
+    "town": "豊町",
+    "premiumPercent": 21.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "白井市",
+    "town": "桜台",
+    "premiumPercent": -13.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "白井市",
+    "town": "南山",
+    "premiumPercent": -0.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "白井市",
+    "town": "堀込",
+    "premiumPercent": 27.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "高津",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "勝田台",
+    "premiumPercent": 97.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "村上",
+    "premiumPercent": -10.3,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "大和田新田",
+    "premiumPercent": -8.8,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "緑が丘",
+    "premiumPercent": 32.9,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "八千代市",
+    "town": "緑が丘西",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "野田市",
+    "town": "山崎",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "おおたかの森北",
+    "premiumPercent": 24.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "加",
+    "premiumPercent": -9.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "向小金",
+    "premiumPercent": -23.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "西初石",
+    "premiumPercent": 30.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "鰭ケ崎",
+    "premiumPercent": 85.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "千葉",
+    "district": "流山市",
+    "town": "富士見台",
+    "premiumPercent": -46.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "下穂積",
+    "premiumPercent": -11.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "彩都やまぶき",
+    "premiumPercent": -44.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "三島町",
+    "premiumPercent": 50,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "舟木町",
+    "premiumPercent": 26.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "小川町",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "庄",
+    "premiumPercent": -0.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "水尾",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "西駅前町",
+    "premiumPercent": 24.1,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "総持寺駅前町",
+    "premiumPercent": 27.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "沢良宜西",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "中穂積",
+    "premiumPercent": 17.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "東太田",
+    "premiumPercent": -28.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "東中条町",
+    "premiumPercent": 23.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "東奈良",
+    "premiumPercent": -10.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "白川",
+    "premiumPercent": -35.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "美沢町",
+    "premiumPercent": 21.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "茨木市",
+    "town": "平田",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "河内長野市",
+    "town": "美加の台",
+    "premiumPercent": -61.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "貝塚市",
+    "town": "二色",
+    "premiumPercent": -7.6,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "岸和田市",
+    "town": "土生町",
+    "premiumPercent": 26.2,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "岸和田市",
+    "town": "八幡町",
+    "premiumPercent": -21.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高石市",
+    "town": "綾園",
+    "premiumPercent": 30.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高石市",
+    "town": "羽衣",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高石市",
+    "town": "千代田",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "古曽部町",
+    "premiumPercent": 20.5,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "上田辺町",
+    "premiumPercent": 39,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "上土室",
+    "premiumPercent": -21.9,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "千代田町",
+    "premiumPercent": 66.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "大畑町",
+    "premiumPercent": 11.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "白梅町",
+    "premiumPercent": 88.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "富田丘町",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "高槻市",
+    "town": "牧田町",
+    "premiumPercent": -42.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "海山町",
+    "premiumPercent": 1.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "向陵西町",
+    "premiumPercent": 60.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "向陵東町",
+    "premiumPercent": -3.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "甲斐町東",
+    "premiumPercent": 27,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "戎島町",
+    "premiumPercent": -13.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "神南辺町",
+    "premiumPercent": 17.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "大浜中町",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "北安井町",
+    "premiumPercent": -16.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市堺區",
+    "town": "北三国ヶ丘町",
+    "premiumPercent": 33,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市西区",
+    "town": "上野芝町",
+    "premiumPercent": 17.5,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市西区",
+    "town": "鳳東町",
+    "premiumPercent": 5.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市西区",
+    "town": "鳳南町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市東区",
+    "town": "高松",
+    "premiumPercent": 9.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市東区",
+    "town": "南野田",
+    "premiumPercent": -8.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市南区",
+    "town": "鴨谷台",
+    "premiumPercent": 10.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市南区",
+    "town": "三原台",
+    "premiumPercent": -0.2,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市南区",
+    "town": "新檜尾台",
+    "premiumPercent": 11.3,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "金岡町",
+    "premiumPercent": -3.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "新金岡町",
+    "premiumPercent": -1.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "新堀町",
+    "premiumPercent": -24.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "中百舌鳥町",
+    "premiumPercent": 24.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "長曽根町",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "東上野芝町",
+    "premiumPercent": -28.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "東浅香山町",
+    "premiumPercent": -4.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "百舌鳥梅北町",
+    "premiumPercent": 15.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "堺市北区",
+    "town": "百舌鳥本町",
+    "premiumPercent": -31.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "三島郡島本町",
+    "town": "高浜",
+    "premiumPercent": -1.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "三島郡島本町",
+    "town": "若山台",
+    "premiumPercent": -47.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "三島郡島本町",
+    "town": "水無瀬",
+    "premiumPercent": 54.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "三島郡島本町",
+    "town": "青葉",
+    "premiumPercent": -44.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "外島町",
+    "premiumPercent": 17.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "京阪本通",
+    "premiumPercent": 21.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "佐太中町",
+    "premiumPercent": -12,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "大日東町",
+    "premiumPercent": 9.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "八雲中町",
+    "premiumPercent": 16.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "八雲東町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "守口市",
+    "town": "八雲北町",
+    "premiumPercent": -31.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "松原市",
+    "town": "三宅西",
+    "premiumPercent": 8.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "松原市",
+    "town": "天美東",
+    "premiumPercent": -6.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "松原市",
+    "town": "田井城",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "寝屋川市",
+    "town": "香里南之町",
+    "premiumPercent": 33.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "寝屋川市",
+    "town": "三井南町",
+    "premiumPercent": -21.1,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "寝屋川市",
+    "town": "松屋町",
+    "premiumPercent": 30.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "寝屋川市",
+    "town": "打上元町",
+    "premiumPercent": -23.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "寝屋川市",
+    "town": "梅が丘",
+    "premiumPercent": -28.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "岸部中",
+    "premiumPercent": -8.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "古江台",
+    "premiumPercent": 3.6,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "五月が丘東",
+    "premiumPercent": -20.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "広芝町",
+    "premiumPercent": 13.7,
+    "cellCount": 4,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "江の木町",
+    "premiumPercent": 26.3,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "江坂町",
+    "premiumPercent": 3.7,
+    "cellCount": 4,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "高野台",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "佐竹台",
+    "premiumPercent": 5.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "山手町",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "山田市場",
+    "premiumPercent": -1.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "山田西",
+    "premiumPercent": -4.3,
+    "cellCount": 4,
+    "sampleCount": 61,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "山田東",
+    "premiumPercent": -28.2,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "山田南",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "春日",
+    "premiumPercent": 10.2,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "上山田",
+    "premiumPercent": -16,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "新芦屋上",
+    "premiumPercent": -23.9,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "垂水町",
+    "premiumPercent": 1.9,
+    "cellCount": 4,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "青葉丘北",
+    "premiumPercent": -17.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "千里丘中",
+    "premiumPercent": -36.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "千里丘北",
+    "premiumPercent": -33,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "千里山月が丘",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "千里山西",
+    "premiumPercent": -18.9,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "千里山虹が丘",
+    "premiumPercent": 9.3,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "竹見台",
+    "premiumPercent": 18.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "長野西",
+    "premiumPercent": -11.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "長野東",
+    "premiumPercent": -15.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "津雲台",
+    "premiumPercent": 9,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "桃山台",
+    "premiumPercent": 21.8,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "藤白台",
+    "premiumPercent": -5.9,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "南金田",
+    "premiumPercent": -4.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "吹田市",
+    "town": "芳野町",
+    "premiumPercent": 24,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "摂津市",
+    "town": "千里丘",
+    "premiumPercent": -31.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "摂津市",
+    "town": "南千里丘",
+    "premiumPercent": 40.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "泉佐野市",
+    "town": "羽倉崎",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "泉佐野市",
+    "town": "市場西",
+    "premiumPercent": 39.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪狭山市",
+    "town": "狭山",
+    "premiumPercent": 32.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪狭山市",
+    "town": "西山台",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪狭山市",
+    "town": "東池尻",
+    "premiumPercent": 105.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪狭山市",
+    "town": "半田",
+    "premiumPercent": 7.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪狭山市",
+    "town": "茱萸木",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "阿倍野筋",
+    "premiumPercent": 19.8,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "旭町",
+    "premiumPercent": 4.5,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "王子町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "三明町",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "昭和町",
+    "premiumPercent": -8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "松崎町",
+    "premiumPercent": 32,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "西田辺町",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "天王寺町南",
+    "premiumPercent": -16,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市阿倍野区",
+    "town": "天王寺町北",
+    "premiumPercent": -9.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市旭区",
+    "town": "高殿",
+    "premiumPercent": -25.5,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市旭区",
+    "town": "新森",
+    "premiumPercent": 12.7,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市旭区",
+    "town": "赤川",
+    "premiumPercent": 8.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市旭区",
+    "town": "太子橋",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市旭区",
+    "town": "大宮",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "磯路",
+    "premiumPercent": 15.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "市岡",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "市岡元町",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "池島",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "築港",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "田中",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "南市岡",
+    "premiumPercent": -2.2,
+    "cellCount": 3,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "波除",
+    "premiumPercent": -5.6,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "弁天",
+    "premiumPercent": 0.3,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市港区",
+    "town": "夕凪",
+    "premiumPercent": 21.2,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "春日出南",
+    "premiumPercent": -2.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "西九条",
+    "premiumPercent": 11.4,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "伝法",
+    "premiumPercent": -20.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "島屋",
+    "premiumPercent": -5.3,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "酉島",
+    "premiumPercent": -4.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市此花区",
+    "town": "梅香",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住吉区",
+    "town": "我孫子東",
+    "premiumPercent": 13.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住吉区",
+    "town": "苅田",
+    "premiumPercent": 28.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住吉区",
+    "town": "長居東",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住吉区",
+    "town": "墨江",
+    "premiumPercent": -21.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "御崎",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "新北島",
+    "premiumPercent": 31,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "西加賀屋",
+    "premiumPercent": 13.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "東加賀屋",
+    "premiumPercent": 4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "南港中",
+    "premiumPercent": -13.7,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "南港北",
+    "premiumPercent": -3.1,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "浜口東",
+    "premiumPercent": 2.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "粉浜西",
+    "premiumPercent": -29.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "平林南",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市住之江区",
+    "town": "北島",
+    "premiumPercent": -25.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "永田",
+    "premiumPercent": -11.9,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "関目",
+    "premiumPercent": -3.4,
+    "cellCount": 4,
+    "sampleCount": 52,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "古市",
+    "premiumPercent": -34,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "今福西",
+    "premiumPercent": -12.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "今福東",
+    "premiumPercent": -5.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "鴫野西",
+    "premiumPercent": 23,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "新喜多",
+    "premiumPercent": 5.7,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "新喜多東",
+    "premiumPercent": -5.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "森之宮",
+    "premiumPercent": 29.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "成育",
+    "premiumPercent": 10.3,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "中央",
+    "premiumPercent": 11.4,
+    "cellCount": 5,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "東中浜",
+    "premiumPercent": 5.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "放出西",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市城東区",
+    "town": "野江",
+    "premiumPercent": -12.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市生野区",
+    "town": "中川西",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市生野区",
+    "town": "鶴橋",
+    "premiumPercent": -11.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西成区",
+    "town": "岸里東",
+    "premiumPercent": 4.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "歌島",
+    "premiumPercent": -6.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "御幣島",
+    "premiumPercent": 18.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "千舟",
+    "premiumPercent": 43.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "佃",
+    "premiumPercent": -7.9,
+    "cellCount": 4,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "柏里",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "姫島",
+    "premiumPercent": 6.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "姫里",
+    "premiumPercent": -2.9,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西淀川区",
+    "town": "野里",
+    "premiumPercent": -1.8,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "京町堀",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "九条",
+    "premiumPercent": -5.3,
+    "cellCount": 1,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "九条南",
+    "premiumPercent": -5.3,
+    "cellCount": 1,
+    "sampleCount": 35,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "江戸堀",
+    "premiumPercent": 8.7,
+    "cellCount": 5,
+    "sampleCount": 73,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "江之子島",
+    "premiumPercent": -11.1,
+    "cellCount": 5,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "新町",
+    "premiumPercent": 8.1,
+    "cellCount": 6,
+    "sampleCount": 52,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "西本町",
+    "premiumPercent": 0.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "千代崎",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "川口",
+    "premiumPercent": -8.6,
+    "cellCount": 2,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "南堀江",
+    "premiumPercent": 0,
+    "cellCount": 13,
+    "sampleCount": 125,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "北堀江",
+    "premiumPercent": 7.8,
+    "cellCount": 6,
+    "sampleCount": 49,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "本田",
+    "premiumPercent": -11.3,
+    "cellCount": 2,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "立売堀",
+    "premiumPercent": -1.8,
+    "cellCount": 9,
+    "sampleCount": 111,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市西區",
+    "town": "靱本町",
+    "premiumPercent": 28.1,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市大正区",
+    "town": "三軒家西",
+    "premiumPercent": -4.6,
+    "cellCount": 1,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市大正区",
+    "town": "三軒家東",
+    "premiumPercent": 27.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "安土町",
+    "premiumPercent": 31.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "安堂寺町",
+    "premiumPercent": -10.4,
+    "cellCount": 3,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "瓦屋町",
+    "premiumPercent": -6.3,
+    "cellCount": 3,
+    "sampleCount": 48,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "瓦町",
+    "premiumPercent": 38.3,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "久太郎町",
+    "premiumPercent": 23.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "玉造",
+    "premiumPercent": 4.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "高津",
+    "premiumPercent": -12.7,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "高麗橋",
+    "premiumPercent": 41.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "材木町",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "糸屋町",
+    "premiumPercent": 9.3,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "松屋町",
+    "premiumPercent": -8.1,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "松屋町住吉",
+    "premiumPercent": -8.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "上汐",
+    "premiumPercent": 5.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "上町",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "上本町西",
+    "premiumPercent": -9.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "常盤町",
+    "premiumPercent": -2.6,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "森ノ宮中央",
+    "premiumPercent": 7.9,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "石町",
+    "premiumPercent": 7.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "船越町",
+    "premiumPercent": -4.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "大手通",
+    "premiumPercent": 5,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "谷町",
+    "premiumPercent": 5,
+    "cellCount": 4,
+    "sampleCount": 49,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "淡路町",
+    "premiumPercent": -3.5,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "釣鐘町",
+    "premiumPercent": -0.6,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "島之内",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "東高麗橋",
+    "premiumPercent": 3.3,
+    "cellCount": 3,
+    "sampleCount": 36,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "東心斎橋",
+    "premiumPercent": 21.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "東平",
+    "premiumPercent": -7.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "徳井町",
+    "premiumPercent": -11.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "内久宝寺町",
+    "premiumPercent": 14.6,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "内淡路町",
+    "premiumPercent": 7.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "内平野町",
+    "premiumPercent": 4.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "内本町",
+    "premiumPercent": 4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "南久宝寺町",
+    "premiumPercent": -1.9,
+    "cellCount": 4,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "南新町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "南船場",
+    "premiumPercent": -1,
+    "cellCount": 6,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "南本町",
+    "premiumPercent": 41.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "農人橋",
+    "premiumPercent": -4.3,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "博労町",
+    "premiumPercent": -3,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "伏見町",
+    "premiumPercent": 44.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "北久宝寺町",
+    "premiumPercent": 6.1,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "北浜東",
+    "premiumPercent": 56.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "本町橋",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "龍造寺町",
+    "premiumPercent": -2.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市中央區",
+    "town": "和泉町",
+    "premiumPercent": -11.4,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "横堤",
+    "premiumPercent": -10.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "今津中",
+    "premiumPercent": -38.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "今津北",
+    "premiumPercent": -25.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "諸口",
+    "premiumPercent": 4.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "鶴見",
+    "premiumPercent": -3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市鶴見区",
+    "town": "放出東",
+    "premiumPercent": 5.9,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "逢阪",
+    "premiumPercent": -9.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "玉造元町",
+    "premiumPercent": 12.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "空堀町",
+    "premiumPercent": 1.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "国分町",
+    "premiumPercent": -1.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "細工谷",
+    "premiumPercent": 1.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "四天王寺",
+    "premiumPercent": -2.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "寺田町",
+    "premiumPercent": 1.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "小宮町",
+    "premiumPercent": 8.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "小橋町",
+    "premiumPercent": -19.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "上汐",
+    "premiumPercent": -4.7,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "上本町",
+    "premiumPercent": 8,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "清水谷町",
+    "premiumPercent": -5.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "生玉寺町",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "生玉町",
+    "premiumPercent": -13.9,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "大道",
+    "premiumPercent": -5.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "南河堀町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "筆ケ崎町",
+    "premiumPercent": 15.5,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市天王寺區",
+    "town": "北河堀町",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "高倉町",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "善源寺町",
+    "premiumPercent": -5.2,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "中野町",
+    "premiumPercent": -5.3,
+    "cellCount": 3,
+    "sampleCount": 57,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "都島南通",
+    "premiumPercent": 10.9,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "都島北通",
+    "premiumPercent": 2.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "都島本通",
+    "premiumPercent": -8.1,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "東野田町",
+    "premiumPercent": 4.4,
+    "cellCount": 2,
+    "sampleCount": 65,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "片町",
+    "premiumPercent": 6.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "毛馬町",
+    "premiumPercent": -20.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "網島町",
+    "premiumPercent": 2.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市都島區",
+    "town": "友渕町",
+    "premiumPercent": -1.7,
+    "cellCount": 5,
+    "sampleCount": 76,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東住吉区",
+    "town": "桑津",
+    "premiumPercent": 8.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東住吉区",
+    "town": "湯里",
+    "premiumPercent": -19.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東住吉区",
+    "town": "北田辺",
+    "premiumPercent": 14.1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "玉津",
+    "premiumPercent": -0.6,
+    "cellCount": 2,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "深江南",
+    "premiumPercent": 0.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "深江北",
+    "premiumPercent": -2.2,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "大今里西",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "大今里南",
+    "premiumPercent": -8.1,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "中道",
+    "premiumPercent": 7.5,
+    "cellCount": 2,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "中本",
+    "premiumPercent": -4.3,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "東小橋",
+    "premiumPercent": 8.9,
+    "cellCount": 2,
+    "sampleCount": 41,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東成区",
+    "town": "東中本",
+    "premiumPercent": -2.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "小松",
+    "premiumPercent": 15.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "瑞光",
+    "premiumPercent": -23.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "菅原",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "西淡路",
+    "premiumPercent": 7.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "大桐",
+    "premiumPercent": -46.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "東淡路",
+    "premiumPercent": -14.5,
+    "cellCount": 4,
+    "sampleCount": 43,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市東淀川区",
+    "town": "東中島",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 116,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "海老江",
+    "premiumPercent": -1.4,
+    "cellCount": 3,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "吉野",
+    "premiumPercent": 5.3,
+    "cellCount": 3,
+    "sampleCount": 62,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "玉川",
+    "premiumPercent": -4.4,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "鷺洲",
+    "premiumPercent": -5,
+    "cellCount": 7,
+    "sampleCount": 67,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "大開",
+    "premiumPercent": -12.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "福島",
+    "premiumPercent": 11.1,
+    "cellCount": 9,
+    "sampleCount": 83,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市福島區",
+    "town": "野田",
+    "premiumPercent": -13.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市平野区",
+    "town": "瓜破",
+    "premiumPercent": 7.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市平野区",
+    "town": "加美西",
+    "premiumPercent": -5.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市平野区",
+    "town": "長吉長原西",
+    "premiumPercent": -19.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市平野区",
+    "town": "平野宮町",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "紅梅町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "山崎町",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "神山町",
+    "premiumPercent": -4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "菅原町",
+    "premiumPercent": -18.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "西天満",
+    "premiumPercent": -6.4,
+    "cellCount": 6,
+    "sampleCount": 64,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "大淀中",
+    "premiumPercent": -24.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "大淀南",
+    "premiumPercent": 23.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "大淀北",
+    "premiumPercent": -6.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "池田町",
+    "premiumPercent": 3.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "中崎",
+    "premiumPercent": 1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "中崎西",
+    "premiumPercent": -17.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "中津",
+    "premiumPercent": 0.9,
+    "cellCount": 4,
+    "sampleCount": 61,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "中之島",
+    "premiumPercent": 11.6,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "長柄西",
+    "premiumPercent": -5.9,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "長柄中",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "長柄東",
+    "premiumPercent": -29.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "鶴野町",
+    "premiumPercent": 9.4,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "天神橋",
+    "premiumPercent": 4.4,
+    "cellCount": 5,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "天満",
+    "premiumPercent": 1.3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "天満橋",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "東天満",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "同心",
+    "premiumPercent": 0.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "堂島",
+    "premiumPercent": 72.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "南森町",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "南扇町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "梅田",
+    "premiumPercent": 96.1,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "樋之口町",
+    "premiumPercent": 3,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "浮田",
+    "premiumPercent": 3.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "豊崎",
+    "premiumPercent": 8,
+    "cellCount": 6,
+    "sampleCount": 46,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "本庄西",
+    "premiumPercent": -7.2,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "本庄東",
+    "premiumPercent": -5.9,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "野崎町",
+    "premiumPercent": 42.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市北區",
+    "town": "与力町",
+    "premiumPercent": 33.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "加島",
+    "premiumPercent": -11.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "宮原",
+    "premiumPercent": 2.3,
+    "cellCount": 5,
+    "sampleCount": 61,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "三国本町",
+    "premiumPercent": 11.3,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "三津屋北",
+    "premiumPercent": -0.3,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "十三東",
+    "premiumPercent": -11.1,
+    "cellCount": 3,
+    "sampleCount": 47,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "十三本町",
+    "premiumPercent": 4,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "十八条",
+    "premiumPercent": -28.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "新高",
+    "premiumPercent": -0.4,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "新北野",
+    "premiumPercent": -2.2,
+    "cellCount": 5,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "西宮原",
+    "premiumPercent": -3.5,
+    "cellCount": 6,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "西三国",
+    "premiumPercent": 12.6,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "西中島",
+    "premiumPercent": -4.7,
+    "cellCount": 3,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "塚本",
+    "premiumPercent": -0.6,
+    "cellCount": 4,
+    "sampleCount": 42,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "東三国",
+    "premiumPercent": 10.4,
+    "cellCount": 6,
+    "sampleCount": 88,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "木川西",
+    "premiumPercent": -9.1,
+    "cellCount": 1,
+    "sampleCount": 37,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "木川東",
+    "premiumPercent": 13.2,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "野中南",
+    "premiumPercent": -17.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市淀川區",
+    "town": "野中北",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "稲荷",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "塩草",
+    "premiumPercent": 2.6,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "下寺",
+    "premiumPercent": -7.9,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "元町",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "幸町",
+    "premiumPercent": 3.1,
+    "cellCount": 2,
+    "sampleCount": 49,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "桜川",
+    "premiumPercent": 1.5,
+    "cellCount": 3,
+    "sampleCount": 64,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "戎本町",
+    "premiumPercent": -10.8,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "大国",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 102,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "難波中",
+    "premiumPercent": -7.5,
+    "cellCount": 2,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "日本橋",
+    "premiumPercent": 0.5,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "日本橋西",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "日本橋東",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "敷津西",
+    "premiumPercent": 6.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "敷津東",
+    "premiumPercent": 4.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "湊町",
+    "premiumPercent": 12.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "立葉",
+    "premiumPercent": -10.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大阪市浪速區",
+    "town": "浪速東",
+    "premiumPercent": 10.5,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大東市",
+    "town": "川中新町",
+    "premiumPercent": 1.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "大東市",
+    "town": "氷野",
+    "premiumPercent": -19.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "池田市",
+    "town": "五月丘",
+    "premiumPercent": -5.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "池田市",
+    "town": "城南",
+    "premiumPercent": 16.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "池田市",
+    "town": "伏尾台",
+    "premiumPercent": -32.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "池田市",
+    "town": "伏尾町",
+    "premiumPercent": -46.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "横枕西",
+    "premiumPercent": 4.5,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "加納",
+    "premiumPercent": 69.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "鴻池町",
+    "premiumPercent": -7.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "西石切町",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "足代北",
+    "premiumPercent": -41.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "長田中",
+    "premiumPercent": 13.6,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "長堂",
+    "premiumPercent": 20,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "島之内",
+    "premiumPercent": -9.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "東石切町",
+    "premiumPercent": -16,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "日下町",
+    "premiumPercent": -21.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "菱屋西",
+    "premiumPercent": 4.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "東大阪市",
+    "town": "友井",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "八尾市",
+    "town": "安中町",
+    "premiumPercent": 5.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "八尾市",
+    "town": "永畑町",
+    "premiumPercent": 6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "八尾市",
+    "town": "桜ヶ丘",
+    "premiumPercent": 18.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "八尾市",
+    "town": "龍華町",
+    "premiumPercent": 8.4,
+    "cellCount": 1,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "富田林市",
+    "town": "向陽台",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "富田林市",
+    "town": "桜ケ丘町",
+    "premiumPercent": -34.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "富田林市",
+    "town": "津々山台",
+    "premiumPercent": 40.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "富田林市",
+    "town": "美山台",
+    "premiumPercent": -21.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "伊加賀西町",
+    "premiumPercent": -17.3,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "香里ケ丘",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "香里園町",
+    "premiumPercent": 12.5,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "高塚町",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "出口",
+    "premiumPercent": -13.5,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "翠香園町",
+    "premiumPercent": -42,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "津田駅前",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "田口山",
+    "premiumPercent": -42.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "東中振",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "藤阪西町",
+    "premiumPercent": -41.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "楠葉花園町",
+    "premiumPercent": 96.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "楠葉並木",
+    "premiumPercent": 95.8,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "北中振",
+    "premiumPercent": 11.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "牧野下島町",
+    "premiumPercent": -15.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "枚方市",
+    "town": "牧野北町",
+    "premiumPercent": 5.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "粟生間谷西",
+    "premiumPercent": -22.7,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "彩都粟生南",
+    "premiumPercent": -25.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "船場西",
+    "premiumPercent": 24.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "船場東",
+    "premiumPercent": 48.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "如意谷",
+    "premiumPercent": 4.2,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "箕面市",
+    "town": "半町",
+    "premiumPercent": 94,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "門真市",
+    "town": "江端町",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "いぶき野",
+    "premiumPercent": 22.4,
+    "cellCount": 1,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "のぞみ野",
+    "premiumPercent": 20.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "室堂町",
+    "premiumPercent": -58.5,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "小田町",
+    "premiumPercent": -41.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "上代町",
+    "premiumPercent": -31.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "鶴山台",
+    "premiumPercent": -12.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "府中町",
+    "premiumPercent": 14.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "伏屋町",
+    "premiumPercent": 24,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "和泉市",
+    "town": "和気町",
+    "premiumPercent": 6.4,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "岡上の町",
+    "premiumPercent": 4.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "三和町",
+    "premiumPercent": -4.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "寺内",
+    "premiumPercent": 22.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "柴原町",
+    "premiumPercent": -15.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "小曽根",
+    "premiumPercent": 28.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "少路",
+    "premiumPercent": -34.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "上新田",
+    "premiumPercent": 20,
+    "cellCount": 3,
+    "sampleCount": 52,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "上野東",
+    "premiumPercent": -17.9,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "新千里西町",
+    "premiumPercent": 26.4,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "新千里東町",
+    "premiumPercent": 54.5,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "新千里南町",
+    "premiumPercent": -2.7,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "新千里北町",
+    "premiumPercent": 5.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "西緑丘",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "中桜塚",
+    "premiumPercent": -55.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "東泉丘",
+    "premiumPercent": -12,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "東豊中町",
+    "premiumPercent": -30.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "北緑丘",
+    "premiumPercent": -38.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "本町",
+    "premiumPercent": 1.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "利倉東",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "緑丘",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "大阪",
+    "district": "豐中市",
+    "town": "螢池南町",
+    "premiumPercent": -13.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "大分市",
+    "town": "大手町",
+    "premiumPercent": 2.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "大分市",
+    "town": "大道町",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "大分市",
+    "town": "明野東",
+    "premiumPercent": -25.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "大分市",
+    "town": "要町",
+    "premiumPercent": 40.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "別府市",
+    "town": "青山町",
+    "premiumPercent": 11.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "大分",
+    "district": "別府市",
+    "town": "石垣東",
+    "premiumPercent": 25.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "長崎",
+    "district": "長崎市",
+    "town": "赤迫",
+    "premiumPercent": 8.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "長崎",
+    "district": "長崎市",
+    "town": "大浜町",
+    "premiumPercent": -8.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "長崎",
+    "district": "長崎市",
+    "town": "田中町",
+    "premiumPercent": -28.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "長崎",
+    "district": "長崎市",
+    "town": "万屋町",
+    "premiumPercent": 26.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "長野",
+    "district": "松本市",
+    "town": "渚",
+    "premiumPercent": -8.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "長野",
+    "district": "松本市",
+    "town": "野溝木工",
+    "premiumPercent": -17.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "長野",
+    "district": "長野市",
+    "town": "大字鶴賀",
+    "premiumPercent": 1.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "鳥取",
+    "district": "鳥取市",
+    "town": "元町",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "鳥取",
+    "district": "米子市",
+    "town": "錦町",
+    "premiumPercent": -3.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "島根",
+    "district": "松江市",
+    "town": "上乃木",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "稲城市",
+    "town": "若葉台",
+    "premiumPercent": 14.2,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "稲城市",
+    "town": "長峰",
+    "premiumPercent": -47.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "稲城市",
+    "town": "百村",
+    "premiumPercent": -2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "稲城市",
+    "town": "平尾",
+    "premiumPercent": -4.1,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "稲城市",
+    "town": "矢野口",
+    "premiumPercent": -0.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "奥戸",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "亀有",
+    "premiumPercent": 16.2,
+    "cellCount": 3,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "金町",
+    "premiumPercent": 6.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "高砂",
+    "premiumPercent": -2.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "四つ木",
+    "premiumPercent": -44.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "柴又",
+    "premiumPercent": -1.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "小菅",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "新宿",
+    "premiumPercent": -7.6,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "新小岩",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "水元",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "青戸",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "東金町",
+    "premiumPercent": 19.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "東新小岩",
+    "premiumPercent": 9.3,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "東立石",
+    "premiumPercent": -42.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "白鳥",
+    "premiumPercent": -9.3,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "宝町",
+    "premiumPercent": -3.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "堀切",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 39,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "葛飾區",
+    "town": "立石",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "永代",
+    "premiumPercent": 9.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "越中島",
+    "premiumPercent": 30,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "猿江",
+    "premiumPercent": 24.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "塩浜",
+    "premiumPercent": 3.3,
+    "cellCount": 4,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "牡丹",
+    "premiumPercent": 19.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "亀戸",
+    "premiumPercent": -7.1,
+    "cellCount": 12,
+    "sampleCount": 258,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "古石場",
+    "premiumPercent": 13.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "高橋",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "佐賀",
+    "premiumPercent": 7.1,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "三好",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "枝川",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "新砂",
+    "premiumPercent": -21.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "新大橋",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 42,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "森下",
+    "premiumPercent": 8.7,
+    "cellCount": 3,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "深川",
+    "premiumPercent": 24,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "石島",
+    "premiumPercent": -8.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "千石",
+    "premiumPercent": -3.2,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "扇橋",
+    "premiumPercent": -6.5,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "大島",
+    "premiumPercent": -8.6,
+    "cellCount": 14,
+    "sampleCount": 177,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "辰巳",
+    "premiumPercent": -13.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "潮見",
+    "premiumPercent": -4.3,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "冬木",
+    "premiumPercent": 12.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "東雲",
+    "premiumPercent": 0.4,
+    "cellCount": 7,
+    "sampleCount": 89,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "東砂",
+    "premiumPercent": -31.8,
+    "cellCount": 7,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "東陽",
+    "premiumPercent": 6.9,
+    "cellCount": 8,
+    "sampleCount": 111,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "南砂",
+    "premiumPercent": -7.3,
+    "cellCount": 7,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "白河",
+    "premiumPercent": 12.1,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "富岡",
+    "premiumPercent": 22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "平野",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "豊洲",
+    "premiumPercent": 25.5,
+    "cellCount": 6,
+    "sampleCount": 142,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "北砂",
+    "premiumPercent": -12.9,
+    "cellCount": 6,
+    "sampleCount": 55,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "毛利",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "木場",
+    "premiumPercent": 8.7,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "門前仲町",
+    "premiumPercent": 38.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江東區",
+    "town": "有明",
+    "premiumPercent": 12.6,
+    "cellCount": 7,
+    "sampleCount": 87,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "篠崎町",
+    "premiumPercent": -4.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "小松川",
+    "premiumPercent": 9.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "松江",
+    "premiumPercent": -10.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "松島",
+    "premiumPercent": 5.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "西葛西",
+    "premiumPercent": 9.3,
+    "cellCount": 5,
+    "sampleCount": 58,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "西小岩",
+    "premiumPercent": 6.8,
+    "cellCount": 4,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "西小松川町",
+    "premiumPercent": -19.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "船堀",
+    "premiumPercent": 28.8,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "中央",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "中葛西",
+    "premiumPercent": 1.2,
+    "cellCount": 4,
+    "sampleCount": 38,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "東葛西",
+    "premiumPercent": -2.3,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "南葛西",
+    "premiumPercent": 1.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "南篠崎町",
+    "premiumPercent": -5.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "南小岩",
+    "premiumPercent": 16.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "平井",
+    "premiumPercent": 33.5,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "北葛西",
+    "premiumPercent": -0.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "北小岩",
+    "premiumPercent": -20.9,
+    "cellCount": 4,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "江戶川區",
+    "town": "本一色",
+    "premiumPercent": -19,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "海岸",
+    "premiumPercent": -1.5,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "虎ノ門",
+    "premiumPercent": 65.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "港南",
+    "premiumPercent": -22,
+    "cellCount": 5,
+    "sampleCount": 59,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "高輪",
+    "premiumPercent": -3.4,
+    "cellCount": 6,
+    "sampleCount": 56,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "三田",
+    "premiumPercent": 22.9,
+    "cellCount": 6,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "芝",
+    "premiumPercent": -4.9,
+    "cellCount": 7,
+    "sampleCount": 81,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "芝浦",
+    "premiumPercent": -10.2,
+    "cellCount": 10,
+    "sampleCount": 93,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "芝大門",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "新橋",
+    "premiumPercent": 3.4,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "西麻布",
+    "premiumPercent": 1.4,
+    "cellCount": 5,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "赤坂",
+    "premiumPercent": 7.2,
+    "cellCount": 7,
+    "sampleCount": 63,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "東新橋",
+    "premiumPercent": 107.7,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "東麻布",
+    "premiumPercent": -19.2,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "南青山",
+    "premiumPercent": 9.1,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "南麻布",
+    "premiumPercent": -1.5,
+    "cellCount": 4,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "白金",
+    "premiumPercent": -2.5,
+    "cellCount": 7,
+    "sampleCount": 56,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "白金台",
+    "premiumPercent": 21.1,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "浜松町",
+    "premiumPercent": 0.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "麻布十番",
+    "premiumPercent": -1.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "港區",
+    "town": "六本木",
+    "premiumPercent": 39,
+    "cellCount": 6,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "荒川",
+    "premiumPercent": -2.4,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "西日暮里",
+    "premiumPercent": 13.9,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "西尾久",
+    "premiumPercent": 3,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "町屋",
+    "premiumPercent": -10.8,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "東日暮里",
+    "premiumPercent": 5.3,
+    "cellCount": 6,
+    "sampleCount": 69,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "東尾久",
+    "premiumPercent": -8.8,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "荒川區",
+    "town": "南千住",
+    "premiumPercent": 2.1,
+    "cellCount": 8,
+    "sampleCount": 82,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "西元町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "西町",
+    "premiumPercent": -23.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "西恋ケ窪",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "東恋ケ窪",
+    "premiumPercent": -14.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "南町",
+    "premiumPercent": 23.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国分寺市",
+    "town": "本町",
+    "premiumPercent": 58.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "国立市",
+    "town": "中",
+    "premiumPercent": 1.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国立市",
+    "town": "東",
+    "premiumPercent": 19.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国立市",
+    "town": "富士見台",
+    "premiumPercent": -20.9,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "国立市",
+    "town": "北",
+    "premiumPercent": 31.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "狛江市",
+    "town": "岩戸南",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "狛江市",
+    "town": "岩戸北",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "狛江市",
+    "town": "東野川",
+    "premiumPercent": -6.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "狛江市",
+    "town": "東和泉",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "狛江市",
+    "town": "和泉本町",
+    "premiumPercent": 6.3,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "三鷹市",
+    "town": "下連雀",
+    "premiumPercent": 6.4,
+    "cellCount": 5,
+    "sampleCount": 50,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "三鷹市",
+    "town": "上連雀",
+    "premiumPercent": 19.2,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "三鷹市",
+    "town": "新川",
+    "premiumPercent": -24.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "三鷹市",
+    "town": "牟礼",
+    "premiumPercent": -14.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小金井市",
+    "town": "貫井南町",
+    "premiumPercent": -24,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小金井市",
+    "town": "中町",
+    "premiumPercent": 18.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小金井市",
+    "town": "本町",
+    "premiumPercent": 10.3,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "小金井市",
+    "town": "緑町",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "小平市",
+    "town": "花小金井",
+    "premiumPercent": 4.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小平市",
+    "town": "花小金井南町",
+    "premiumPercent": 0.6,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小平市",
+    "town": "小川町",
+    "premiumPercent": -29.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "小平市",
+    "town": "鈴木町",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "昭島市",
+    "town": "つつじが丘",
+    "premiumPercent": 2.4,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "昭島市",
+    "town": "宮沢町",
+    "premiumPercent": 2.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "昭島市",
+    "town": "松原町",
+    "premiumPercent": 6,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "昭島市",
+    "town": "美堀町",
+    "premiumPercent": -21,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "昭島市",
+    "town": "武蔵野",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "下落合",
+    "premiumPercent": -10,
+    "cellCount": 5,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "歌舞伎町",
+    "premiumPercent": -7.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "改代町",
+    "premiumPercent": -11.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "原町",
+    "premiumPercent": 3.7,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "高田馬場",
+    "premiumPercent": -10.4,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "山吹町",
+    "premiumPercent": -0.6,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "四谷",
+    "premiumPercent": 3.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "市谷仲之町",
+    "premiumPercent": 38.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "市谷本村町",
+    "premiumPercent": 34.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "市谷薬王寺町",
+    "premiumPercent": -7.1,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "市谷柳町",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "若松町",
+    "premiumPercent": -1.6,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "若葉",
+    "premiumPercent": 24.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "住吉町",
+    "premiumPercent": 5.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "上落合",
+    "premiumPercent": -11,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "新宿",
+    "premiumPercent": 4.2,
+    "cellCount": 9,
+    "sampleCount": 103,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "新小川町",
+    "premiumPercent": 3.6,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "水道町",
+    "premiumPercent": -3.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "西新宿",
+    "premiumPercent": 2.8,
+    "cellCount": 10,
+    "sampleCount": 114,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "西早稲田",
+    "premiumPercent": -8.9,
+    "cellCount": 6,
+    "sampleCount": 46,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "西落合",
+    "premiumPercent": -21,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "早稲田鶴巻町",
+    "premiumPercent": -3.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "大久保",
+    "premiumPercent": -1.3,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "大京町",
+    "premiumPercent": 61.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "中落合",
+    "premiumPercent": -11,
+    "cellCount": 5,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "内藤町",
+    "premiumPercent": 42.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "南元町",
+    "premiumPercent": 29.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "二十騎町",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "百人町",
+    "premiumPercent": -3.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "富久町",
+    "premiumPercent": 3.7,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "弁天町",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "北新宿",
+    "premiumPercent": -5.1,
+    "cellCount": 8,
+    "sampleCount": 92,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "矢来町",
+    "premiumPercent": 8.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "新宿區",
+    "town": "余丁町",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "阿佐谷南",
+    "premiumPercent": 14.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "阿佐谷北",
+    "premiumPercent": -2.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "井草",
+    "premiumPercent": -19.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "永福",
+    "premiumPercent": 20.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "荻窪",
+    "premiumPercent": 9.4,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "下井草",
+    "premiumPercent": -17.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "下高井戸",
+    "premiumPercent": 3.7,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "久我山",
+    "premiumPercent": -18.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "宮前",
+    "premiumPercent": -12.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "高井戸西",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "高井戸東",
+    "premiumPercent": 3.4,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "高円寺南",
+    "premiumPercent": 1.3,
+    "cellCount": 6,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "高円寺北",
+    "premiumPercent": 10.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "上井草",
+    "premiumPercent": -17.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "上荻",
+    "premiumPercent": 6.3,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "上高井戸",
+    "premiumPercent": -3.3,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "成田東",
+    "premiumPercent": 19.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "清水",
+    "premiumPercent": -15.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "西荻南",
+    "premiumPercent": 13,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "西荻北",
+    "premiumPercent": 18.3,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "天沼",
+    "premiumPercent": 10.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "桃井",
+    "premiumPercent": -46,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "南荻窪",
+    "premiumPercent": -15.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "梅里",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "浜田山",
+    "premiumPercent": 11.5,
+    "cellCount": 4,
+    "sampleCount": 37,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "方南",
+    "premiumPercent": -0.4,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "堀ノ内",
+    "premiumPercent": -12,
+    "cellCount": 4,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "和泉",
+    "premiumPercent": -0.1,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "杉並區",
+    "town": "和田",
+    "premiumPercent": -0.6,
+    "cellCount": 6,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "奥沢",
+    "premiumPercent": 6.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "下馬",
+    "premiumPercent": 3,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "鎌田",
+    "premiumPercent": -28.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "砧",
+    "premiumPercent": -14.6,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "給田",
+    "premiumPercent": -27.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "玉川",
+    "premiumPercent": 86.4,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "玉川台",
+    "premiumPercent": -3.3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "駒沢",
+    "premiumPercent": 21.3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "経堂",
+    "premiumPercent": -4.8,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "弦巻",
+    "premiumPercent": 11.1,
+    "cellCount": 4,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "桜丘",
+    "premiumPercent": -4.4,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "桜上水",
+    "premiumPercent": 4.4,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "桜新町",
+    "premiumPercent": 26.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "三軒茶屋",
+    "premiumPercent": 18.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "三宿",
+    "premiumPercent": 13.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "若林",
+    "premiumPercent": 5,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "松原",
+    "premiumPercent": 7.4,
+    "cellCount": 5,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "上祖師谷",
+    "premiumPercent": -30.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "上馬",
+    "premiumPercent": 6.9,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "上北沢",
+    "premiumPercent": -17.8,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "上野毛",
+    "premiumPercent": 5.1,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "上用賀",
+    "premiumPercent": -9.7,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "深沢",
+    "premiumPercent": 2.1,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "世田谷",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "瀬田",
+    "premiumPercent": 15,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "成城",
+    "premiumPercent": -9.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "赤堤",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "千歳台",
+    "premiumPercent": -21.4,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "船橋",
+    "premiumPercent": -10.3,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "太子堂",
+    "premiumPercent": 27.5,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "代沢",
+    "premiumPercent": 25.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "代田",
+    "premiumPercent": -0.9,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "池尻",
+    "premiumPercent": 28.5,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "中町",
+    "premiumPercent": 11.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "等々力",
+    "premiumPercent": 0.2,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "南烏山",
+    "premiumPercent": -10.5,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "粕谷",
+    "premiumPercent": -16.9,
+    "cellCount": 4,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "北烏山",
+    "premiumPercent": -24.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "野沢",
+    "premiumPercent": 0.9,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "野毛",
+    "premiumPercent": -20.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "世田谷區",
+    "town": "用賀",
+    "premiumPercent": 12.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "清瀬市",
+    "town": "元町",
+    "premiumPercent": 17.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "ひばりが丘",
+    "premiumPercent": -10.9,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "芝久保町",
+    "premiumPercent": -31.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "西原町",
+    "premiumPercent": -16.2,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "谷戸町",
+    "premiumPercent": 16.3,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "田無町",
+    "premiumPercent": 4.5,
+    "cellCount": 4,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "東町",
+    "premiumPercent": 15.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "西東京市",
+    "town": "柳沢",
+    "premiumPercent": -15.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "青梅市",
+    "town": "河辺町",
+    "premiumPercent": 15.9,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "青梅市",
+    "town": "東青梅",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "一番町",
+    "premiumPercent": 93.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "外神田",
+    "premiumPercent": -2.2,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "岩本町",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "九段南",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "麹町",
+    "premiumPercent": 17.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "三番町",
+    "premiumPercent": 4.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田猿楽町",
+    "premiumPercent": -6.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田錦町",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田駿河台",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田小川町",
+    "premiumPercent": -19.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田神保町",
+    "premiumPercent": 17.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田須田町",
+    "premiumPercent": -26.2,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "神田多町",
+    "premiumPercent": -14.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "東神田",
+    "premiumPercent": -4.9,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "内神田",
+    "premiumPercent": -7.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "千代田區",
+    "town": "飯田橋",
+    "premiumPercent": 22.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "綾瀬",
+    "premiumPercent": 6,
+    "cellCount": 3,
+    "sampleCount": 30,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "伊興",
+    "premiumPercent": -4.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "加平",
+    "premiumPercent": -23.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "栗原",
+    "premiumPercent": 19.6,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "江北",
+    "premiumPercent": -36,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "舎人",
+    "premiumPercent": -23,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "小台",
+    "premiumPercent": 1.2,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "新田",
+    "premiumPercent": -16.1,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "西綾瀬",
+    "premiumPercent": 16.6,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "西新井",
+    "premiumPercent": -20,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "西新井栄町",
+    "premiumPercent": 26,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "西新井本町",
+    "premiumPercent": -13.7,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "西保木間",
+    "premiumPercent": -19.6,
+    "cellCount": 4,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "青井",
+    "premiumPercent": 2.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住",
+    "premiumPercent": 50.2,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住河原町",
+    "premiumPercent": 6.5,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住関屋町",
+    "premiumPercent": 3.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住宮元町",
+    "premiumPercent": 6.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住橋戸町",
+    "premiumPercent": 27.2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住桜木",
+    "premiumPercent": 13.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住寿町",
+    "premiumPercent": 39.8,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住中居町",
+    "premiumPercent": 7.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住仲町",
+    "premiumPercent": 24.6,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "千住東",
+    "premiumPercent": 6.7,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "扇",
+    "premiumPercent": 32.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "足立",
+    "premiumPercent": 2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "大谷田",
+    "premiumPercent": -13.4,
+    "cellCount": 3,
+    "sampleCount": 30,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "谷在家",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "谷中",
+    "premiumPercent": -7.4,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "竹の塚",
+    "premiumPercent": -61.4,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "中央本町",
+    "premiumPercent": 10.4,
+    "cellCount": 4,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "中川",
+    "premiumPercent": -5.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "島根",
+    "premiumPercent": -12.4,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "東綾瀬",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "東和",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "南花畑",
+    "premiumPercent": -33.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "梅田",
+    "premiumPercent": 8.5,
+    "cellCount": 4,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "保木間",
+    "premiumPercent": -33.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "足立區",
+    "town": "柳原",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "永山",
+    "premiumPercent": 11,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "貝取",
+    "premiumPercent": -20.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "関戸",
+    "premiumPercent": 49.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "桜ケ丘",
+    "premiumPercent": 30.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "諏訪",
+    "premiumPercent": 9.7,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "鶴牧",
+    "premiumPercent": 6.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "豊ケ丘",
+    "premiumPercent": -24.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "多摩市",
+    "town": "落合",
+    "premiumPercent": -4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "下谷",
+    "premiumPercent": -8.5,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "花川戸",
+    "premiumPercent": -0.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "駒形",
+    "premiumPercent": -10.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "元浅草",
+    "premiumPercent": -1.8,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "根岸",
+    "premiumPercent": -1.1,
+    "cellCount": 4,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "三ノ輪",
+    "premiumPercent": -10.7,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "三筋",
+    "premiumPercent": 5.6,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "寿",
+    "premiumPercent": 16.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "小島",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "松が谷",
+    "premiumPercent": -2.5,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "上野",
+    "premiumPercent": 8.4,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "清川",
+    "premiumPercent": -24.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "西浅草",
+    "premiumPercent": 18.6,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "千束",
+    "premiumPercent": -1.6,
+    "cellCount": 4,
+    "sampleCount": 47,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "浅草",
+    "premiumPercent": -0.8,
+    "cellCount": 5,
+    "sampleCount": 47,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "浅草橋",
+    "premiumPercent": 3.6,
+    "cellCount": 5,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "蔵前",
+    "premiumPercent": 0.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "台東",
+    "premiumPercent": 10,
+    "cellCount": 4,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "池之端",
+    "premiumPercent": 39.9,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "鳥越",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "東上野",
+    "premiumPercent": 15.1,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "東浅草",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "日本堤",
+    "premiumPercent": -3.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "入谷",
+    "premiumPercent": -0.9,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "北上野",
+    "premiumPercent": 6.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "柳橋",
+    "premiumPercent": 0.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "雷門",
+    "premiumPercent": 5.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "台東區",
+    "town": "竜泉",
+    "premiumPercent": -9,
+    "cellCount": 4,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "羽田",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "鵜の木",
+    "premiumPercent": -4.5,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "下丸子",
+    "premiumPercent": -2.7,
+    "cellCount": 4,
+    "sampleCount": 72,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "蒲田",
+    "premiumPercent": 9.3,
+    "cellCount": 6,
+    "sampleCount": 93,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "蒲田本町",
+    "premiumPercent": -2.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "久が原",
+    "premiumPercent": -3.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "山王",
+    "premiumPercent": 28.2,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "上池台",
+    "premiumPercent": 6.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "新蒲田",
+    "premiumPercent": 13.8,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "西蒲田",
+    "premiumPercent": 11.7,
+    "cellCount": 6,
+    "sampleCount": 85,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "西馬込",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "西六郷",
+    "premiumPercent": -6.9,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "西糀谷",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "千鳥",
+    "premiumPercent": 2.6,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "多摩川",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森西",
+    "premiumPercent": 1.1,
+    "cellCount": 6,
+    "sampleCount": 74,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森中",
+    "premiumPercent": -2.7,
+    "cellCount": 2,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森東",
+    "premiumPercent": -6.9,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森南",
+    "premiumPercent": -35.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森北",
+    "premiumPercent": 14,
+    "cellCount": 8,
+    "sampleCount": 102,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "大森本町",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "池上",
+    "premiumPercent": 3.6,
+    "cellCount": 3,
+    "sampleCount": 38,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "中央",
+    "premiumPercent": -3.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "中馬込",
+    "premiumPercent": 9.1,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "仲池上",
+    "premiumPercent": -4.1,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "仲六郷",
+    "premiumPercent": -2.7,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "田園調布",
+    "premiumPercent": 5.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "田園調布本町",
+    "premiumPercent": 11.9,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東蒲田",
+    "premiumPercent": 5.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東雪谷",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東馬込",
+    "premiumPercent": 6.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東矢口",
+    "premiumPercent": -0.9,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東六郷",
+    "premiumPercent": -33,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "東糀谷",
+    "premiumPercent": -6.7,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "南蒲田",
+    "premiumPercent": 0.5,
+    "cellCount": 2,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "南雪谷",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "南馬込",
+    "premiumPercent": -5.9,
+    "cellCount": 4,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "南六郷",
+    "premiumPercent": -13.8,
+    "cellCount": 3,
+    "sampleCount": 32,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "萩中",
+    "premiumPercent": -5.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "北千束",
+    "premiumPercent": 13.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "北馬込",
+    "premiumPercent": 8.2,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "北嶺町",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "北糀谷",
+    "premiumPercent": -3.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "本羽田",
+    "premiumPercent": -17.4,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "大田區",
+    "town": "矢口",
+    "premiumPercent": -7.1,
+    "cellCount": 3,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "銀座",
+    "premiumPercent": 25.4,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "月島",
+    "premiumPercent": 5,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "勝どき",
+    "premiumPercent": 3.8,
+    "cellCount": 10,
+    "sampleCount": 149,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "新川",
+    "premiumPercent": -6.2,
+    "cellCount": 3,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "新富",
+    "premiumPercent": 42.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "晴海",
+    "premiumPercent": 0,
+    "cellCount": 7,
+    "sampleCount": 125,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "築地",
+    "premiumPercent": 8.6,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "佃",
+    "premiumPercent": 3.8,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "東日本橋",
+    "premiumPercent": -3.6,
+    "cellCount": 4,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋横山町",
+    "premiumPercent": -27.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋蛎殻町",
+    "premiumPercent": -6.1,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋茅場町",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋人形町",
+    "premiumPercent": -3.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋大伝馬町",
+    "premiumPercent": -8.2,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋中洲",
+    "premiumPercent": 4.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋馬喰町",
+    "premiumPercent": -14.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋箱崎町",
+    "premiumPercent": 5.1,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋浜町",
+    "premiumPercent": -3.8,
+    "cellCount": 7,
+    "sampleCount": 63,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋富沢町",
+    "premiumPercent": -17.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋堀留町",
+    "premiumPercent": -14.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "日本橋本町",
+    "premiumPercent": 16.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "入船",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "八丁堀",
+    "premiumPercent": 2.9,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "湊",
+    "premiumPercent": 1.9,
+    "cellCount": 4,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中央區",
+    "town": "明石町",
+    "premiumPercent": 3.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "丸山",
+    "premiumPercent": -22.6,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "江古田",
+    "premiumPercent": -14.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "鷺宮",
+    "premiumPercent": -10.9,
+    "cellCount": 3,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "松が丘",
+    "premiumPercent": -6.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "沼袋",
+    "premiumPercent": -24.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "上高田",
+    "premiumPercent": -10.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "上鷺宮",
+    "premiumPercent": -8.7,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "新井",
+    "premiumPercent": 2.2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "大和町",
+    "premiumPercent": -3.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "中央",
+    "premiumPercent": 4.3,
+    "cellCount": 9,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "中野",
+    "premiumPercent": 26.3,
+    "cellCount": 5,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "東中野",
+    "premiumPercent": 15.8,
+    "cellCount": 5,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "南台",
+    "premiumPercent": -6.1,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "白鷺",
+    "premiumPercent": -20.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "本町",
+    "premiumPercent": 5.9,
+    "cellCount": 8,
+    "sampleCount": 71,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "野方",
+    "premiumPercent": -3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "中野區",
+    "town": "弥生町",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "原町田",
+    "premiumPercent": 51.7,
+    "cellCount": 4,
+    "sampleCount": 45,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "山崎町",
+    "premiumPercent": -17.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "小山ヶ丘",
+    "premiumPercent": -18.4,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "小山田桜台",
+    "premiumPercent": -45.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "小川",
+    "premiumPercent": -11.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "森野",
+    "premiumPercent": 35.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "鶴間",
+    "premiumPercent": 11.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "鶴川",
+    "premiumPercent": -16.2,
+    "cellCount": 1,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "藤の台",
+    "premiumPercent": -29.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "南大谷",
+    "premiumPercent": -1.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "町田市",
+    "town": "南町田",
+    "premiumPercent": 6.2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "国領町",
+    "premiumPercent": 6.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "小島町",
+    "premiumPercent": 8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "上石原",
+    "premiumPercent": -18.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "染地",
+    "premiumPercent": -23.5,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "多摩川",
+    "premiumPercent": -14.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "調布ケ丘",
+    "premiumPercent": 0.8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "調布市",
+    "town": "布田",
+    "premiumPercent": 19,
+    "cellCount": 4,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "東久留米市",
+    "town": "滝山",
+    "premiumPercent": -3,
+    "cellCount": 2,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "東久留米市",
+    "town": "南沢",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "東久留米市",
+    "town": "本町",
+    "premiumPercent": 1.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "東村山市",
+    "town": "栄町",
+    "premiumPercent": 10.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "東村山市",
+    "town": "萩山町",
+    "premiumPercent": 1.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "東村山市",
+    "town": "富士見町",
+    "premiumPercent": -4.8,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "東村山市",
+    "town": "本町",
+    "premiumPercent": 13.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "東大和市",
+    "town": "桜が丘",
+    "premiumPercent": 2.2,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "旭が丘",
+    "premiumPercent": -11.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "三沢",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "新町",
+    "premiumPercent": 7.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "多摩平",
+    "premiumPercent": 22.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "大字日野",
+    "premiumPercent": -3.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "東豊田",
+    "premiumPercent": 52,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "日野市",
+    "town": "百草",
+    "premiumPercent": -31.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "みなみ野",
+    "premiumPercent": 3.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "めじろ台",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "横山町",
+    "premiumPercent": 23.6,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "下柚木",
+    "premiumPercent": 9.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "狭間町",
+    "premiumPercent": -1.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "三崎町",
+    "premiumPercent": -1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "鹿島",
+    "premiumPercent": -44.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "初沢町",
+    "premiumPercent": 29.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "松木",
+    "premiumPercent": -13.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "西片倉",
+    "premiumPercent": 26.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "千人町",
+    "premiumPercent": 33.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "大和田町",
+    "premiumPercent": 6.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "東浅川町",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "東中野",
+    "premiumPercent": -7.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "南大沢",
+    "premiumPercent": -0.4,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "八日町",
+    "premiumPercent": 5.1,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "別所",
+    "premiumPercent": 2.9,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "明神町",
+    "premiumPercent": 30,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "鑓水",
+    "premiumPercent": -11,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "八王子市",
+    "town": "椚田町",
+    "premiumPercent": -13.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "加賀",
+    "premiumPercent": 37.7,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "宮本町",
+    "premiumPercent": 6.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "熊野町",
+    "premiumPercent": 5,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "高島平",
+    "premiumPercent": -12.7,
+    "cellCount": 4,
+    "sampleCount": 70,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "坂下",
+    "premiumPercent": -7.7,
+    "cellCount": 3,
+    "sampleCount": 53,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "桜川",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "三園",
+    "premiumPercent": 2.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "志村",
+    "premiumPercent": -2,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "若木",
+    "premiumPercent": -20.1,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "舟渡",
+    "premiumPercent": -7.7,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "小豆沢",
+    "premiumPercent": -9.9,
+    "cellCount": 2,
+    "sampleCount": 30,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "小茂根",
+    "premiumPercent": 15.6,
+    "cellCount": 4,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "上板橋",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "常盤台",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "成増",
+    "premiumPercent": 7.7,
+    "cellCount": 5,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "清水町",
+    "premiumPercent": 7.4,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "赤塚",
+    "premiumPercent": -14.1,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "赤塚新町",
+    "premiumPercent": 9.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "泉町",
+    "premiumPercent": -9.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "前野町",
+    "premiumPercent": -9.9,
+    "cellCount": 4,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "双葉町",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "相生町",
+    "premiumPercent": -27,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大原町",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大山金井町",
+    "premiumPercent": 3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大山町",
+    "premiumPercent": 8.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大山東町",
+    "premiumPercent": 10.5,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大谷口上町",
+    "premiumPercent": 18.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大谷口北町",
+    "premiumPercent": -16.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "大和町",
+    "premiumPercent": 1.6,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "中台",
+    "premiumPercent": -4.3,
+    "cellCount": 2,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "中板橋",
+    "premiumPercent": 11.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "仲宿",
+    "premiumPercent": 5.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "東新町",
+    "premiumPercent": -5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "徳丸",
+    "premiumPercent": -3.8,
+    "cellCount": 5,
+    "sampleCount": 46,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "南常盤台",
+    "premiumPercent": -2.9,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "南町",
+    "premiumPercent": 39.6,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "板橋",
+    "premiumPercent": 13.3,
+    "cellCount": 6,
+    "sampleCount": 73,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "氷川町",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "富士見町",
+    "premiumPercent": 13.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "本町",
+    "premiumPercent": 11.5,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "蓮根",
+    "premiumPercent": -1.9,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "板橋區",
+    "town": "蓮沼町",
+    "premiumPercent": 5.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "荏原",
+    "premiumPercent": -2,
+    "cellCount": 4,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "旗の台",
+    "premiumPercent": -11.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "戸越",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "勝島",
+    "premiumPercent": -35.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "小山",
+    "premiumPercent": 24.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "上大崎",
+    "premiumPercent": 39,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "西五反田",
+    "premiumPercent": 16.7,
+    "cellCount": 10,
+    "sampleCount": 130,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "西大井",
+    "premiumPercent": -10.7,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "西中延",
+    "premiumPercent": -3.5,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "西品川",
+    "premiumPercent": -0.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "大井",
+    "premiumPercent": 5.8,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "大崎",
+    "premiumPercent": 21.3,
+    "cellCount": 3,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "中延",
+    "premiumPercent": -4.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "東五反田",
+    "premiumPercent": 15.4,
+    "cellCount": 7,
+    "sampleCount": 61,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "東大井",
+    "premiumPercent": -5.6,
+    "cellCount": 7,
+    "sampleCount": 55,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "東品川",
+    "premiumPercent": -7.7,
+    "cellCount": 7,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "南大井",
+    "premiumPercent": -14.3,
+    "cellCount": 10,
+    "sampleCount": 193,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "南品川",
+    "premiumPercent": -1.9,
+    "cellCount": 3,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "二葉",
+    "premiumPercent": 6,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "八潮",
+    "premiumPercent": -34.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "平塚",
+    "premiumPercent": 4.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "豊町",
+    "premiumPercent": -8.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "品川區",
+    "town": "北品川",
+    "premiumPercent": 7.1,
+    "cellCount": 10,
+    "sampleCount": 75,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "押立町",
+    "premiumPercent": -5.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "宮西町",
+    "premiumPercent": 35.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "宮町",
+    "premiumPercent": 32.6,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "四谷",
+    "premiumPercent": -41.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "若松町",
+    "premiumPercent": 17.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "寿町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "住吉町",
+    "premiumPercent": -20.9,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "是政",
+    "premiumPercent": -35.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "浅間町",
+    "premiumPercent": -32.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "東芝町",
+    "premiumPercent": -7.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "白糸台",
+    "premiumPercent": -4.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "八幡町",
+    "premiumPercent": 23.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "府中町",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "片町",
+    "premiumPercent": 45.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "本町",
+    "premiumPercent": 15,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "府中市",
+    "town": "緑町",
+    "premiumPercent": 2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "吉祥寺南町",
+    "premiumPercent": 42,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "吉祥寺本町",
+    "premiumPercent": 40.5,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "境南町",
+    "premiumPercent": -18.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "御殿山",
+    "premiumPercent": 24.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "桜堤",
+    "premiumPercent": -29.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "西久保",
+    "premiumPercent": -17.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "武藏野市",
+    "town": "中町",
+    "premiumPercent": 27.3,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "福生市",
+    "town": "武蔵野台",
+    "premiumPercent": 7.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "音羽",
+    "premiumPercent": 5.4,
+    "cellCount": 5,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "関口",
+    "premiumPercent": -0.9,
+    "cellCount": 4,
+    "sampleCount": 34,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "向丘",
+    "premiumPercent": -3.4,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "根津",
+    "premiumPercent": 23.8,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "春日",
+    "premiumPercent": -15,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "小石川",
+    "premiumPercent": 2,
+    "cellCount": 7,
+    "sampleCount": 65,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "水道",
+    "premiumPercent": -1.3,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "千石",
+    "premiumPercent": -8.8,
+    "cellCount": 6,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "千駄木",
+    "premiumPercent": -5.5,
+    "cellCount": 4,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "大塚",
+    "premiumPercent": -4.3,
+    "cellCount": 4,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "湯島",
+    "premiumPercent": 20.4,
+    "cellCount": 4,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "白山",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "本郷",
+    "premiumPercent": 19.5,
+    "cellCount": 8,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "本駒込",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "文京區",
+    "town": "目白台",
+    "premiumPercent": 3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "王子",
+    "premiumPercent": 3.6,
+    "cellCount": 5,
+    "sampleCount": 57,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "王子本町",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "岩淵町",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "志茂",
+    "premiumPercent": -7.6,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "十条仲原",
+    "premiumPercent": 8.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "昭和町",
+    "premiumPercent": -15.4,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "上十条",
+    "premiumPercent": 17.6,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "神谷",
+    "premiumPercent": -1.9,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "西ケ原",
+    "premiumPercent": 8.6,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "赤羽",
+    "premiumPercent": 5.8,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "赤羽西",
+    "premiumPercent": 1.9,
+    "cellCount": 3,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "赤羽台",
+    "premiumPercent": -20.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "赤羽南",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "赤羽北",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "滝野川",
+    "premiumPercent": 8.6,
+    "cellCount": 8,
+    "sampleCount": 77,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "中十条",
+    "premiumPercent": 10.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "中里",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "田端",
+    "premiumPercent": 24.5,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "田端新町",
+    "premiumPercent": 1,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "東十条",
+    "premiumPercent": 2.9,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "浮間",
+    "premiumPercent": -15.2,
+    "cellCount": 6,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "豊島",
+    "premiumPercent": -10.9,
+    "cellCount": 5,
+    "sampleCount": 42,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "北區",
+    "town": "堀船",
+    "premiumPercent": 1.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "押上",
+    "premiumPercent": 1.7,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "横川",
+    "premiumPercent": -0.5,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "亀沢",
+    "premiumPercent": 3.6,
+    "cellCount": 4,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "菊川",
+    "premiumPercent": 7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "京島",
+    "premiumPercent": -5.2,
+    "cellCount": 3,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "業平",
+    "premiumPercent": 3.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "錦糸",
+    "premiumPercent": 20.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "吾妻橋",
+    "premiumPercent": 11,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "向島",
+    "premiumPercent": -1.8,
+    "cellCount": 4,
+    "sampleCount": 81,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "江東橋",
+    "premiumPercent": 1.8,
+    "cellCount": 3,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "石原",
+    "premiumPercent": 1.1,
+    "cellCount": 3,
+    "sampleCount": 42,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "千歳",
+    "premiumPercent": 21,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "太平",
+    "premiumPercent": 12.4,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "堤通",
+    "premiumPercent": -7.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "東駒形",
+    "premiumPercent": 9.7,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "東向島",
+    "premiumPercent": -6.9,
+    "cellCount": 7,
+    "sampleCount": 101,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "八広",
+    "premiumPercent": -17.9,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "文花",
+    "premiumPercent": 1.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "墨田",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "本所",
+    "premiumPercent": 6,
+    "cellCount": 2,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "立花",
+    "premiumPercent": -20.9,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "立川",
+    "premiumPercent": -1.8,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "両国",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 55,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "墨田區",
+    "town": "緑",
+    "premiumPercent": -1.3,
+    "cellCount": 6,
+    "sampleCount": 116,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "下目黒",
+    "premiumPercent": 8.3,
+    "cellCount": 6,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "柿の木坂",
+    "premiumPercent": -20.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "原町",
+    "premiumPercent": 14.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "三田",
+    "premiumPercent": 43.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "上目黒",
+    "premiumPercent": 9.7,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "青葉台",
+    "premiumPercent": 13.4,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "洗足",
+    "premiumPercent": -20.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "大岡山",
+    "premiumPercent": -4.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "大橋",
+    "premiumPercent": 3.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "鷹番",
+    "premiumPercent": 32.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "中央町",
+    "premiumPercent": 30.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "中根",
+    "premiumPercent": -12.9,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "中町",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "中目黒",
+    "premiumPercent": 12,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "東が丘",
+    "premiumPercent": -6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "東山",
+    "premiumPercent": 12.9,
+    "cellCount": 5,
+    "sampleCount": 31,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "南",
+    "premiumPercent": -14.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "八雲",
+    "premiumPercent": 0.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "碑文谷",
+    "premiumPercent": -5.2,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "目黒",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "目黑區",
+    "town": "目黒本町",
+    "premiumPercent": -8.1,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "一番町",
+    "premiumPercent": -44.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "錦町",
+    "premiumPercent": -0.9,
+    "cellCount": 3,
+    "sampleCount": 44,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "高松町",
+    "premiumPercent": -5.2,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "曙町",
+    "premiumPercent": 8.6,
+    "cellCount": 2,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "上砂町",
+    "premiumPercent": -4.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "柏町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "立川市",
+    "town": "富士見町",
+    "premiumPercent": -25.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "旭丘",
+    "premiumPercent": 9.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "旭町",
+    "premiumPercent": -3.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "羽沢",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "貫井",
+    "premiumPercent": 5.5,
+    "cellCount": 4,
+    "sampleCount": 34,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "関町東",
+    "premiumPercent": -8.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "関町南",
+    "premiumPercent": -10,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "関町北",
+    "premiumPercent": -8.5,
+    "cellCount": 4,
+    "sampleCount": 60,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "錦",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "光が丘",
+    "premiumPercent": 1.9,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "向山",
+    "premiumPercent": -3.7,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "高松",
+    "premiumPercent": -9.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "高野台",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "桜台",
+    "premiumPercent": 7.1,
+    "cellCount": 2,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "春日町",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "上石神井",
+    "premiumPercent": 2.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "石神井台",
+    "premiumPercent": -9.5,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "石神井町",
+    "premiumPercent": 31.4,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "早宮",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "大泉学園町",
+    "premiumPercent": -37.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "谷原",
+    "premiumPercent": -12,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "中村",
+    "premiumPercent": 7.5,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "中村南",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "中村北",
+    "premiumPercent": 2.7,
+    "cellCount": 6,
+    "sampleCount": 53,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "田柄",
+    "premiumPercent": 1.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "土支田",
+    "premiumPercent": -25.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "東大泉",
+    "premiumPercent": 7,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "南大泉",
+    "premiumPercent": -9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "南田中",
+    "premiumPercent": -1.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "氷川台",
+    "premiumPercent": 4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "富士見台",
+    "premiumPercent": -6.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "平和台",
+    "premiumPercent": -2.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "豊玉上",
+    "premiumPercent": 8,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "豊玉中",
+    "premiumPercent": 13.6,
+    "cellCount": 2,
+    "sampleCount": 32,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "豊玉南",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "豊玉北",
+    "premiumPercent": 3.7,
+    "cellCount": 6,
+    "sampleCount": 98,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "北町",
+    "premiumPercent": -5,
+    "cellCount": 5,
+    "sampleCount": 42,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "立野町",
+    "premiumPercent": -5.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "練馬區",
+    "town": "練馬",
+    "premiumPercent": 12.4,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "円山町",
+    "premiumPercent": 14.8,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "恵比寿",
+    "premiumPercent": 5,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "恵比寿西",
+    "premiumPercent": 24.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "恵比寿南",
+    "premiumPercent": 79.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "広尾",
+    "premiumPercent": 60.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "笹塚",
+    "premiumPercent": -6.3,
+    "cellCount": 4,
+    "sampleCount": 55,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "渋谷",
+    "premiumPercent": 58,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "初台",
+    "premiumPercent": -8.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "神宮前",
+    "premiumPercent": 58.5,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "神山町",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "神泉町",
+    "premiumPercent": 10.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "西原",
+    "premiumPercent": 3.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "千駄ケ谷",
+    "premiumPercent": 44.5,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "代々木",
+    "premiumPercent": 2.9,
+    "cellCount": 9,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "代官山町",
+    "premiumPercent": 94.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "大山町",
+    "premiumPercent": -13.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "東",
+    "premiumPercent": 2.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "道玄坂",
+    "premiumPercent": 16.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "幡ケ谷",
+    "premiumPercent": -14.3,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "富ケ谷",
+    "premiumPercent": -5.4,
+    "cellCount": 3,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "澀谷區",
+    "town": "本町",
+    "premiumPercent": -10,
+    "cellCount": 5,
+    "sampleCount": 54,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "駒込",
+    "premiumPercent": 8,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "高松",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "高田",
+    "premiumPercent": -2.6,
+    "cellCount": 3,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "雑司が谷",
+    "premiumPercent": 1.4,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "上池袋",
+    "premiumPercent": -20.7,
+    "cellCount": 5,
+    "sampleCount": 41,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "西巣鴨",
+    "premiumPercent": -4,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "西池袋",
+    "premiumPercent": 16.4,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "巣鴨",
+    "premiumPercent": -5,
+    "cellCount": 4,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "池袋",
+    "premiumPercent": 5.6,
+    "cellCount": 4,
+    "sampleCount": 60,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "池袋本町",
+    "premiumPercent": -1.7,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "長崎",
+    "premiumPercent": -11.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "東池袋",
+    "premiumPercent": 4,
+    "cellCount": 9,
+    "sampleCount": 79,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "南大塚",
+    "premiumPercent": -0.2,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "南池袋",
+    "premiumPercent": 20.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "南長崎",
+    "premiumPercent": -11.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "北大塚",
+    "premiumPercent": 4,
+    "cellCount": 3,
+    "sampleCount": 40,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "目白",
+    "premiumPercent": 4.8,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "東京都",
+    "district": "豐島區",
+    "town": "要町",
+    "premiumPercent": -8.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "栃木",
+    "district": "宇都宮市",
+    "town": "元今泉",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "栃木",
+    "district": "宇都宮市",
+    "town": "今泉町",
+    "premiumPercent": -1.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "栃木",
+    "district": "宇都宮市",
+    "town": "東宿郷",
+    "premiumPercent": 5.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "栃木",
+    "district": "宇都宮市",
+    "town": "南大通り",
+    "premiumPercent": -29.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "栃木",
+    "district": "那須塩原市",
+    "town": "塩原",
+    "premiumPercent": -1.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "橿原市",
+    "town": "栄和町",
+    "premiumPercent": -34.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "橿原市",
+    "town": "上品寺町",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "香芝市",
+    "town": "穴虫",
+    "premiumPercent": -3.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "生駒市",
+    "town": "山崎新町",
+    "premiumPercent": -1.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "生駒市",
+    "town": "辻町",
+    "premiumPercent": -16,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "生駒市",
+    "town": "白庭台",
+    "premiumPercent": 10.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "生駒市",
+    "town": "俵口町",
+    "premiumPercent": -10,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "大和高田市",
+    "town": "幸町",
+    "premiumPercent": 29,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "あやめ池南",
+    "premiumPercent": 23.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "あやめ池北",
+    "premiumPercent": 36.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "学園大和町",
+    "premiumPercent": -0.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "学園中",
+    "premiumPercent": -21.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "三松",
+    "premiumPercent": -44.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "三条本町",
+    "premiumPercent": -14,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "四条大路",
+    "premiumPercent": -45.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "大宮町",
+    "premiumPercent": 68.3,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "中登美ヶ丘",
+    "premiumPercent": -2.2,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "鶴舞西町",
+    "premiumPercent": 60.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "富雄元町",
+    "premiumPercent": -1.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "奈良",
+    "district": "奈良市",
+    "town": "富雄北",
+    "premiumPercent": -22.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "富山",
+    "district": "富山市",
+    "town": "中央通り",
+    "premiumPercent": 11.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "富山",
+    "district": "富山市",
+    "town": "白銀町",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "富山",
+    "district": "富山市",
+    "town": "明輪町",
+    "premiumPercent": 21.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福井",
+    "district": "福井市",
+    "town": "大手",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "原古賀町",
+    "premiumPercent": 9.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "小頭町",
+    "premiumPercent": 1.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "諏訪野町",
+    "premiumPercent": 13.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "西町",
+    "premiumPercent": -11.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "中央町",
+    "premiumPercent": 31.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "東櫛原町",
+    "premiumPercent": 20.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "本町",
+    "premiumPercent": -24.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "野中町",
+    "premiumPercent": -12.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "久留米市",
+    "town": "六ツ門町",
+    "premiumPercent": 6.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "桜ヶ丘",
+    "premiumPercent": 28.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "春日原北町",
+    "premiumPercent": 28,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "昇町",
+    "premiumPercent": 10.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "上白水",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "須玖南",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "須玖北",
+    "premiumPercent": 1.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "大谷",
+    "premiumPercent": -13.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "大和町",
+    "premiumPercent": 30.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "春日市",
+    "town": "弥生",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "大牟田市",
+    "town": "柿園町",
+    "premiumPercent": 3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "愛宕",
+    "premiumPercent": -25.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "愛宕南",
+    "premiumPercent": 32.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "愛宕浜",
+    "premiumPercent": -15.8,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "井尻",
+    "premiumPercent": 8.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "塩原",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "塩浜",
+    "premiumPercent": -54.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "横手",
+    "premiumPercent": -20.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "下呉服町",
+    "premiumPercent": -2.3,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "祇園町",
+    "premiumPercent": 83.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "吉塚",
+    "premiumPercent": -9.4,
+    "cellCount": 4,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "警固",
+    "premiumPercent": 39.8,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "元町",
+    "premiumPercent": -12,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "原",
+    "premiumPercent": -5.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "原田",
+    "premiumPercent": -3.8,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "古門戸町",
+    "premiumPercent": 10.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "御供所町",
+    "premiumPercent": 30.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "向野",
+    "premiumPercent": 44.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "港",
+    "premiumPercent": -8.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "荒戸",
+    "premiumPercent": 40.9,
+    "cellCount": 6,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "荒江",
+    "premiumPercent": 14,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "香椎",
+    "premiumPercent": -20.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "香椎照葉",
+    "premiumPercent": -13.4,
+    "cellCount": 2,
+    "sampleCount": 43,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "香椎浜",
+    "premiumPercent": -11.1,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "高宮",
+    "premiumPercent": -2.3,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "高砂",
+    "premiumPercent": 9.2,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "黒門",
+    "premiumPercent": 6.9,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "今泉",
+    "premiumPercent": 19.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "桜坂",
+    "premiumPercent": 10.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "笹丘",
+    "premiumPercent": -10.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "三宅",
+    "premiumPercent": -25,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "山王",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "市崎",
+    "premiumPercent": -13.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "寺塚",
+    "premiumPercent": -47.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "室見",
+    "premiumPercent": 14.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "社領",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "周船寺",
+    "premiumPercent": -19,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "住吉",
+    "premiumPercent": 0.9,
+    "cellCount": 4,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "春吉",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "小笹",
+    "premiumPercent": -17.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "昭代",
+    "premiumPercent": -8.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "松田",
+    "premiumPercent": -27.2,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "松島",
+    "premiumPercent": -26.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "上山門",
+    "premiumPercent": -17.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "神屋町",
+    "premiumPercent": -11.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "須崎町",
+    "premiumPercent": 22.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "清川",
+    "premiumPercent": 2.2,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "西の丘",
+    "premiumPercent": -47,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "西月隈",
+    "premiumPercent": -6.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "西新",
+    "premiumPercent": 39.8,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "西都",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "石丸",
+    "premiumPercent": -10,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "石城町",
+    "premiumPercent": -16.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "赤坂",
+    "premiumPercent": 40.5,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "千早",
+    "premiumPercent": 6.7,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "千代",
+    "premiumPercent": -4.5,
+    "cellCount": 3,
+    "sampleCount": 42,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "草香江",
+    "premiumPercent": 54.1,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "対馬小路",
+    "premiumPercent": 3.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大宮",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大橋",
+    "premiumPercent": -11.5,
+    "cellCount": 2,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大濠",
+    "premiumPercent": 80,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大手門",
+    "premiumPercent": 22.7,
+    "cellCount": 5,
+    "sampleCount": 48,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大町団地",
+    "premiumPercent": -27.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大楠",
+    "premiumPercent": -26,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大博町",
+    "premiumPercent": 81,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "大名",
+    "premiumPercent": 75,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "地行",
+    "premiumPercent": 10.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "築港本町",
+    "premiumPercent": -2.3,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "筑紫丘",
+    "premiumPercent": 15.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "中呉服町",
+    "premiumPercent": 6.1,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "中洲中島町",
+    "premiumPercent": -8.8,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "長丘",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "長尾",
+    "premiumPercent": -23.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "長浜",
+    "premiumPercent": 26.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "鳥飼",
+    "premiumPercent": 35.9,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "天神",
+    "premiumPercent": 23,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "渡辺通",
+    "premiumPercent": 26.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "東光",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "東比恵",
+    "premiumPercent": 13.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "東油山",
+    "premiumPercent": -38.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "藤崎",
+    "premiumPercent": 65.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "奈多団地",
+    "premiumPercent": -63.9,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "奈良屋町",
+    "premiumPercent": 9.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "内浜",
+    "premiumPercent": 30.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "馬出",
+    "premiumPercent": 3.1,
+    "cellCount": 3,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "博多駅前",
+    "premiumPercent": 10.8,
+    "cellCount": 4,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "博多駅東",
+    "premiumPercent": 21.9,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "博多駅南",
+    "premiumPercent": -1,
+    "cellCount": 6,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "柏原",
+    "premiumPercent": -47.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "白金",
+    "premiumPercent": -9.5,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "麦野",
+    "premiumPercent": -44.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "箱崎",
+    "premiumPercent": 0.5,
+    "cellCount": 6,
+    "sampleCount": 58,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "八田",
+    "premiumPercent": -47.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "比恵町",
+    "premiumPercent": -16.9,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "美野島",
+    "premiumPercent": -2.1,
+    "cellCount": 5,
+    "sampleCount": 57,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "百道",
+    "premiumPercent": 16.4,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "百道浜",
+    "premiumPercent": 74,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "舞鶴",
+    "premiumPercent": 61.1,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "平尾",
+    "premiumPercent": 7.3,
+    "cellCount": 6,
+    "sampleCount": 63,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "平和",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "別府",
+    "premiumPercent": 9,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "片江",
+    "premiumPercent": -46.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "姪の浜",
+    "premiumPercent": 5.2,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "野間",
+    "premiumPercent": 7.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "野多目",
+    "premiumPercent": -20,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "薬院",
+    "premiumPercent": 37.5,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "冷泉町",
+    "premiumPercent": 16.5,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "六本松",
+    "premiumPercent": 19.4,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "和白",
+    "premiumPercent": -35.5,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "和白丘",
+    "premiumPercent": -10,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市（市平均）",
+    "town": "筥松",
+    "premiumPercent": -10.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市城南區",
+    "town": "長尾",
+    "premiumPercent": -22.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市城南區",
+    "town": "鳥飼",
+    "premiumPercent": 47.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市城南區",
+    "town": "東油山",
+    "premiumPercent": -12,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市城南區",
+    "town": "別府",
+    "premiumPercent": 0.7,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市城南區",
+    "town": "片江",
+    "premiumPercent": -35.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "愛宕",
+    "premiumPercent": -6.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "愛宕南",
+    "premiumPercent": 39.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "愛宕浜",
+    "premiumPercent": -9.9,
+    "cellCount": 2,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "周船寺",
+    "premiumPercent": -14.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "上山門",
+    "premiumPercent": -12.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "西の丘",
+    "premiumPercent": -34.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "西都",
+    "premiumPercent": 11.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "石丸",
+    "premiumPercent": -7.2,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "大町団地",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "内浜",
+    "premiumPercent": 60.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市西區",
+    "town": "姪の浜",
+    "premiumPercent": 10.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "原",
+    "premiumPercent": -22.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "荒江",
+    "premiumPercent": 2.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "室見",
+    "premiumPercent": -1.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "昭代",
+    "premiumPercent": -21.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "西新",
+    "premiumPercent": 13.1,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "藤崎",
+    "premiumPercent": 43.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "百道",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市早良區",
+    "town": "百道浜",
+    "premiumPercent": 36.7,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "警固",
+    "premiumPercent": 18.2,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "港",
+    "premiumPercent": -9.7,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "荒戸",
+    "premiumPercent": 2.2,
+    "cellCount": 6,
+    "sampleCount": 39,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "高砂",
+    "premiumPercent": 1.6,
+    "cellCount": 3,
+    "sampleCount": 28,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "黒門",
+    "premiumPercent": -14.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "今泉",
+    "premiumPercent": 0.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "桜坂",
+    "premiumPercent": -8.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "笹丘",
+    "premiumPercent": -24.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "春吉",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "小笹",
+    "premiumPercent": -34.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "清川",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 27,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "赤坂",
+    "premiumPercent": 16.7,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "草香江",
+    "premiumPercent": 15,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "大宮",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "大濠",
+    "premiumPercent": 52.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "大手門",
+    "premiumPercent": 0,
+    "cellCount": 5,
+    "sampleCount": 48,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "大名",
+    "premiumPercent": 24.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "地行",
+    "premiumPercent": -7.3,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "長浜",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "鳥飼",
+    "premiumPercent": -2.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "天神",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "渡辺通",
+    "premiumPercent": 11.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "白金",
+    "premiumPercent": -10.8,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "舞鶴",
+    "premiumPercent": 19.9,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "平尾",
+    "premiumPercent": 0,
+    "cellCount": 6,
+    "sampleCount": 63,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "薬院",
+    "premiumPercent": 5.9,
+    "cellCount": 4,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市中央區",
+    "town": "六本松",
+    "premiumPercent": 2,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "塩浜",
+    "premiumPercent": -45.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "原田",
+    "premiumPercent": 7.4,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "香椎",
+    "premiumPercent": 16.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "香椎照葉",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 43,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "香椎浜",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "社領",
+    "premiumPercent": 13.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "松田",
+    "premiumPercent": -5.1,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "松島",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "千早",
+    "premiumPercent": 21.5,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "奈多団地",
+    "premiumPercent": -41.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "馬出",
+    "premiumPercent": 23.8,
+    "cellCount": 3,
+    "sampleCount": 33,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "箱崎",
+    "premiumPercent": 8.5,
+    "cellCount": 6,
+    "sampleCount": 58,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "八田",
+    "premiumPercent": -23.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "和白",
+    "premiumPercent": -14.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "和白丘",
+    "premiumPercent": 17.8,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市東區",
+    "town": "筥松",
+    "premiumPercent": 6.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "井尻",
+    "premiumPercent": 25.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "塩原",
+    "premiumPercent": 22.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "横手",
+    "premiumPercent": 0.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "向野",
+    "premiumPercent": 66.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "高宮",
+    "premiumPercent": 14.4,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "三宅",
+    "premiumPercent": -13.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "市崎",
+    "premiumPercent": 15.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "寺塚",
+    "premiumPercent": -39.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "大橋",
+    "premiumPercent": 2.8,
+    "cellCount": 2,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "大楠",
+    "premiumPercent": 4.3,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "筑紫丘",
+    "premiumPercent": 33.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "長丘",
+    "premiumPercent": -3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "柏原",
+    "premiumPercent": -39.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "平和",
+    "premiumPercent": 23.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "野間",
+    "premiumPercent": 22.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市南區",
+    "town": "野多目",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "下呉服町",
+    "premiumPercent": -6.2,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "祇園町",
+    "premiumPercent": 67.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "吉塚",
+    "premiumPercent": -10.8,
+    "cellCount": 4,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "元町",
+    "premiumPercent": -9.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "古門戸町",
+    "premiumPercent": 11.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "御供所町",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "山王",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "住吉",
+    "premiumPercent": 2.9,
+    "cellCount": 4,
+    "sampleCount": 45,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "神屋町",
+    "premiumPercent": -10.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "須崎町",
+    "premiumPercent": 17.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "西月隈",
+    "premiumPercent": -7.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "石城町",
+    "premiumPercent": -14.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "千代",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 42,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "対馬小路",
+    "premiumPercent": -1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "大博町",
+    "premiumPercent": 78.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "築港本町",
+    "premiumPercent": -2.8,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "中呉服町",
+    "premiumPercent": -0.1,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "中洲中島町",
+    "premiumPercent": -12.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "東光",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "東比恵",
+    "premiumPercent": 16.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "奈良屋町",
+    "premiumPercent": 2.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "博多駅前",
+    "premiumPercent": 7.8,
+    "cellCount": 4,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "博多駅東",
+    "premiumPercent": 13.3,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "博多駅南",
+    "premiumPercent": -2.2,
+    "cellCount": 6,
+    "sampleCount": 66,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "麦野",
+    "premiumPercent": -45.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "比恵町",
+    "premiumPercent": -19.3,
+    "cellCount": 2,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "美野島",
+    "premiumPercent": -4.5,
+    "cellCount": 5,
+    "sampleCount": 57,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "福岡市博多區",
+    "town": "冷泉町",
+    "premiumPercent": 9.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "黄金",
+    "premiumPercent": -25.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "下曽根新町",
+    "premiumPercent": -3.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "企救丘",
+    "premiumPercent": -15.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "金田",
+    "premiumPercent": 120.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "銀座",
+    "premiumPercent": -8.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "熊本",
+    "premiumPercent": 28.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "江南町",
+    "premiumPercent": 10.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "紅梅",
+    "premiumPercent": 11.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "若葉",
+    "premiumPercent": -47.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "守恒",
+    "premiumPercent": 36,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "清水",
+    "premiumPercent": -24.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "西本町",
+    "premiumPercent": 47.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "大手町",
+    "premiumPercent": 61.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "大里本町",
+    "premiumPercent": 21.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "萩原",
+    "premiumPercent": -73.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市",
+    "town": "片野",
+    "premiumPercent": 59.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市戸畑区",
+    "town": "銀座",
+    "premiumPercent": -10,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉南区",
+    "town": "下曽根新町",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉南区",
+    "town": "企救丘",
+    "premiumPercent": -1.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉南区",
+    "town": "守恒",
+    "premiumPercent": 7.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "黄金",
+    "premiumPercent": -32.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "金田",
+    "premiumPercent": 88.9,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "熊本",
+    "premiumPercent": 17.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "江南町",
+    "premiumPercent": 0.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "清水",
+    "premiumPercent": -31,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "大手町",
+    "premiumPercent": 43.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市小倉北区",
+    "town": "片野",
+    "premiumPercent": 45.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市八幡西区",
+    "town": "紅梅",
+    "premiumPercent": 11.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市八幡西区",
+    "town": "若葉",
+    "premiumPercent": -40.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市八幡西区",
+    "town": "萩原",
+    "premiumPercent": -70.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市八幡東区",
+    "town": "西本町",
+    "premiumPercent": 19.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福岡",
+    "district": "北九州市門司区",
+    "town": "大里本町",
+    "premiumPercent": 13.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "福島",
+    "district": "郡山市",
+    "town": "開成",
+    "premiumPercent": 0.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福島",
+    "district": "郡山市",
+    "town": "清水台",
+    "premiumPercent": -18.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "福島",
+    "district": "福島市",
+    "town": "浜田町",
+    "premiumPercent": -9.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "伊勢町",
+    "premiumPercent": -35.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "海洋町",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "呉川町",
+    "premiumPercent": -32.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "高浜町",
+    "premiumPercent": -46.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "三条町",
+    "premiumPercent": 7.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "若葉町",
+    "premiumPercent": -39.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "春日町",
+    "premiumPercent": -8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "新浜町",
+    "premiumPercent": -24.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "翠ケ丘町",
+    "premiumPercent": 16,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "朝日ケ丘町",
+    "premiumPercent": -15.4,
+    "cellCount": 3,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "東山町",
+    "premiumPercent": 9.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "南宮町",
+    "premiumPercent": 11.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "芦屋市",
+    "town": "楠町",
+    "premiumPercent": 4.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "伊丹",
+    "premiumPercent": 42.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "宮ノ前",
+    "premiumPercent": 38.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "昆陽東",
+    "premiumPercent": -0.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "西台",
+    "premiumPercent": 24.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "大野",
+    "premiumPercent": -17.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "池尻",
+    "premiumPercent": -33.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "中野西",
+    "premiumPercent": 4.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "伊丹市",
+    "town": "東有岡",
+    "premiumPercent": 66,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "加古川市",
+    "town": "加古川町",
+    "premiumPercent": 14.9,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "加古川市",
+    "town": "平岡町",
+    "premiumPercent": -11.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "加古川市",
+    "town": "野口町",
+    "premiumPercent": -2.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "すずかけ台",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "ゆりのき台",
+    "premiumPercent": 21.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "学園",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "狭間が丘",
+    "premiumPercent": -2,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "武庫が丘",
+    "premiumPercent": 3.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "三田市",
+    "town": "弥生が丘",
+    "premiumPercent": 9.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "旭通",
+    "premiumPercent": 71.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "伊川谷町",
+    "premiumPercent": -53.5,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "井吹台西町",
+    "premiumPercent": -45.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "井吹台東町",
+    "premiumPercent": -23.7,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "井吹台北町",
+    "premiumPercent": -41.2,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "磯上通",
+    "premiumPercent": -2.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "磯辺通",
+    "premiumPercent": 19.7,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "羽坂通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "渦森台",
+    "premiumPercent": -38.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "雲井通",
+    "premiumPercent": 32.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "栄町通",
+    "premiumPercent": 18.4,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "駅南通",
+    "premiumPercent": 2.1,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "塩屋町",
+    "premiumPercent": -58.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "横尾",
+    "premiumPercent": -7.4,
+    "cellCount": 1,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "岡本",
+    "premiumPercent": 39.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "下山手通",
+    "premiumPercent": 11.8,
+    "cellCount": 5,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "下沢通",
+    "premiumPercent": 41.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "加納町",
+    "premiumPercent": 24.2,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "花隈町",
+    "premiumPercent": 24.3,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "海岸通",
+    "premiumPercent": 5.3,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "学園東町",
+    "premiumPercent": -10.7,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "樫野台",
+    "premiumPercent": -35.2,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "割塚通",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "鴨子ケ原",
+    "premiumPercent": -15.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "岩屋北町",
+    "premiumPercent": 82.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "橘通",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "久保町",
+    "premiumPercent": -35.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "宮本通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "魚崎西町",
+    "premiumPercent": -10.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "魚崎南町",
+    "premiumPercent": -9.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "魚崎北町",
+    "premiumPercent": 12,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "琴ノ緒町",
+    "premiumPercent": 25,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "熊内町",
+    "premiumPercent": -5.2,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "元町通",
+    "premiumPercent": -2.8,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "古湊通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "五色山",
+    "premiumPercent": -32.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "吾妻通",
+    "premiumPercent": 8.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "御影郡家",
+    "premiumPercent": 73.8,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "御影山手",
+    "premiumPercent": -10.4,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "御影中町",
+    "premiumPercent": 59.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "御幸通",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "御崎本町",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "向洋町中",
+    "premiumPercent": -16.5,
+    "cellCount": 5,
+    "sampleCount": 73,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "港島中町",
+    "premiumPercent": -5.6,
+    "cellCount": 3,
+    "sampleCount": 38,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "甲南町",
+    "premiumPercent": 17.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "行幸町",
+    "premiumPercent": 10.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "佐比江町",
+    "premiumPercent": 3.9,
+    "cellCount": 1,
+    "sampleCount": 36,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "桜口町",
+    "premiumPercent": 66,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "三川口町",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "山本通",
+    "premiumPercent": 12.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "七宮町",
+    "premiumPercent": -1.8,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "篠原伯母野山町",
+    "premiumPercent": 37.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "狩場台",
+    "premiumPercent": -43.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "住吉宮町",
+    "premiumPercent": 43.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "住吉山手",
+    "premiumPercent": 3.3,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "住吉東町",
+    "premiumPercent": 26,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "住吉本町",
+    "premiumPercent": 55,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "出在家町",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "小束山本町",
+    "premiumPercent": -38.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "新開地",
+    "premiumPercent": -10.5,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "新港町",
+    "premiumPercent": 74.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "森後町",
+    "premiumPercent": 109.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "深江南町",
+    "premiumPercent": -4.7,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "深江浜町",
+    "premiumPercent": -39.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "深江北町",
+    "premiumPercent": 27.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "神の谷",
+    "premiumPercent": -14,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "神陵台",
+    "premiumPercent": -65.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "水木通",
+    "premiumPercent": 17.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "菅の台",
+    "premiumPercent": -30,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "生田町",
+    "premiumPercent": 5.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "西出町",
+    "premiumPercent": 1.2,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "西多聞通",
+    "premiumPercent": 8.9,
+    "cellCount": 1,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "西舞子",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "西落合",
+    "premiumPercent": 58.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "青山台",
+    "premiumPercent": 1,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "泉台",
+    "premiumPercent": -33.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "相生町",
+    "premiumPercent": 0,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "多聞町",
+    "premiumPercent": -38.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "大開通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "大池町",
+    "premiumPercent": -31.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "竹の台",
+    "premiumPercent": -31.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "中山手通",
+    "premiumPercent": 41.8,
+    "cellCount": 4,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "中町通",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "中道通",
+    "premiumPercent": -11.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "中落合",
+    "premiumPercent": 8.1,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "鶴甲",
+    "premiumPercent": -24.3,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "天ノ下町",
+    "premiumPercent": 23.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "田中町",
+    "premiumPercent": 58.1,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "東雲通",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "東川崎町",
+    "premiumPercent": 15.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "筒井町",
+    "premiumPercent": -5.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "藤原台北町",
+    "premiumPercent": -35.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "道正台",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "楠町",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "二宮町",
+    "premiumPercent": 17.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "二番町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "日の峰",
+    "premiumPercent": -52.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "日暮通",
+    "premiumPercent": 5.9,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "白川台",
+    "premiumPercent": -50.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "八雲通",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "八幡通",
+    "premiumPercent": 36.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "備後町",
+    "premiumPercent": 47,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "美賀多台",
+    "premiumPercent": -4.1,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "浜崎通",
+    "premiumPercent": 22.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "浜辺通",
+    "premiumPercent": 5.5,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "布引町",
+    "premiumPercent": -5.3,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "北青木",
+    "premiumPercent": 9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "北長狭通",
+    "premiumPercent": -8.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "本山南町",
+    "premiumPercent": 45.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "本庄町",
+    "premiumPercent": 21.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "本多聞",
+    "premiumPercent": -70.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "摩耶海岸通",
+    "premiumPercent": 4.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "湊町",
+    "premiumPercent": -5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "名谷町",
+    "premiumPercent": -58.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "友が丘",
+    "premiumPercent": -65.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "友田町",
+    "premiumPercent": 11.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "有馬町",
+    "premiumPercent": -43.7,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "竜が台",
+    "premiumPercent": 98.4,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "緑町",
+    "premiumPercent": -55.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "鈴蘭台西町",
+    "premiumPercent": -32.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "脇浜海岸通",
+    "premiumPercent": 0.8,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "腕塚町",
+    "premiumPercent": -18.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市（市平均）",
+    "town": "糀台",
+    "premiumPercent": 6.2,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "横尾",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "行幸町",
+    "premiumPercent": 40.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "神の谷",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "菅の台",
+    "premiumPercent": -24.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "西落合",
+    "premiumPercent": 71.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "大池町",
+    "premiumPercent": 23.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "中落合",
+    "premiumPercent": 16.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "道正台",
+    "premiumPercent": 0.8,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "白川台",
+    "premiumPercent": -46.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "友が丘",
+    "premiumPercent": -62.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市須磨區",
+    "town": "竜が台",
+    "premiumPercent": 114.3,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "塩屋町",
+    "premiumPercent": -32.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "五色山",
+    "premiumPercent": 28.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "小束山本町",
+    "premiumPercent": 0.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "神陵台",
+    "premiumPercent": -31.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "西舞子",
+    "premiumPercent": 35.9,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "青山台",
+    "premiumPercent": 3.4,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "多聞町",
+    "premiumPercent": -32.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "天ノ下町",
+    "premiumPercent": 101.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "本多聞",
+    "premiumPercent": -40.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市垂水區",
+    "town": "名谷町",
+    "premiumPercent": -20.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "伊川谷町",
+    "premiumPercent": -34.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "井吹台西町",
+    "premiumPercent": -1.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "井吹台東町",
+    "premiumPercent": -7.1,
+    "cellCount": 2,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "井吹台北町",
+    "premiumPercent": -1.5,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "学園東町",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "樫野台",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "狩場台",
+    "premiumPercent": -36.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "竹の台",
+    "premiumPercent": 24.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "美賀多台",
+    "premiumPercent": 14.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市西區",
+    "town": "糀台",
+    "premiumPercent": 34.6,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "旭通",
+    "premiumPercent": 50.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "磯上通",
+    "premiumPercent": -9.9,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "磯辺通",
+    "premiumPercent": -1.6,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "雲井通",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "栄町通",
+    "premiumPercent": 3.4,
+    "cellCount": 3,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "下山手通",
+    "premiumPercent": 3.2,
+    "cellCount": 5,
+    "sampleCount": 36,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "加納町",
+    "premiumPercent": 10.3,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "花隈町",
+    "premiumPercent": 2.5,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "海岸通",
+    "premiumPercent": -0.7,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "割塚通",
+    "premiumPercent": 8.3,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "橘通",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "宮本通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "琴ノ緒町",
+    "premiumPercent": 9.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "熊内町",
+    "premiumPercent": -15.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "元町通",
+    "premiumPercent": -12.5,
+    "cellCount": 3,
+    "sampleCount": 22,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "古湊通",
+    "premiumPercent": 5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "吾妻通",
+    "premiumPercent": -4.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "御幸通",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "港島中町",
+    "premiumPercent": -26.8,
+    "cellCount": 3,
+    "sampleCount": 38,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "山本通",
+    "premiumPercent": -2.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "新港町",
+    "premiumPercent": 74.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "生田町",
+    "premiumPercent": -5.6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "相生町",
+    "premiumPercent": -2.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "中山手通",
+    "premiumPercent": 17.4,
+    "cellCount": 4,
+    "sampleCount": 29,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "中町通",
+    "premiumPercent": -6.7,
+    "cellCount": 1,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "東雲通",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "東川崎町",
+    "premiumPercent": 15.8,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "筒井町",
+    "premiumPercent": -11.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "楠町",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "二宮町",
+    "premiumPercent": 4.9,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "日暮通",
+    "premiumPercent": -7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "八雲通",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "八幡通",
+    "premiumPercent": 19.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "浜辺通",
+    "premiumPercent": -2.5,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "布引町",
+    "premiumPercent": -10.7,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "北長狭通",
+    "premiumPercent": -8.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市中央區",
+    "town": "脇浜海岸通",
+    "premiumPercent": -21.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市長田區",
+    "town": "久保町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市長田區",
+    "town": "二番町",
+    "premiumPercent": 3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市長田區",
+    "town": "腕塚町",
+    "premiumPercent": 5.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "渦森台",
+    "premiumPercent": -73.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "岡本",
+    "premiumPercent": 20.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "鴨子ケ原",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "魚崎西町",
+    "premiumPercent": -22.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "魚崎南町",
+    "premiumPercent": -21.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "魚崎北町",
+    "premiumPercent": -3.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "御影郡家",
+    "premiumPercent": 40.7,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "御影山手",
+    "premiumPercent": -22.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "御影中町",
+    "premiumPercent": 60.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "向洋町中",
+    "premiumPercent": -30.9,
+    "cellCount": 5,
+    "sampleCount": 73,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "甲南町",
+    "premiumPercent": 1.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "住吉宮町",
+    "premiumPercent": 24.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "住吉山手",
+    "premiumPercent": -10.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "住吉東町",
+    "premiumPercent": 9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "住吉本町",
+    "premiumPercent": 34.7,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "深江南町",
+    "premiumPercent": -22.8,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "深江浜町",
+    "premiumPercent": -54.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "深江北町",
+    "premiumPercent": 10.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "田中町",
+    "premiumPercent": 36.8,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "北青木",
+    "premiumPercent": -5.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "本山南町",
+    "premiumPercent": 13,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市東灘區",
+    "town": "本庄町",
+    "premiumPercent": 24.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "岩屋北町",
+    "premiumPercent": 14.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "桜口町",
+    "premiumPercent": 45.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "篠原伯母野山町",
+    "premiumPercent": -14.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "森後町",
+    "premiumPercent": 30.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "鶴甲",
+    "premiumPercent": -23.3,
+    "cellCount": 1,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "備後町",
+    "premiumPercent": 28.5,
+    "cellCount": 1,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "摩耶海岸通",
+    "premiumPercent": -8.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市灘區",
+    "town": "友田町",
+    "premiumPercent": -2.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "羽坂通",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "駅南通",
+    "premiumPercent": 0.8,
+    "cellCount": 2,
+    "sampleCount": 35,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "下沢通",
+    "premiumPercent": 34.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "御崎本町",
+    "premiumPercent": -0.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "佐比江町",
+    "premiumPercent": -1.6,
+    "cellCount": 1,
+    "sampleCount": 36,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "三川口町",
+    "premiumPercent": 10.5,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "七宮町",
+    "premiumPercent": -1.1,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "出在家町",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "新開地",
+    "premiumPercent": -1.3,
+    "cellCount": 3,
+    "sampleCount": 23,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "水木通",
+    "premiumPercent": 15.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "西出町",
+    "premiumPercent": -0.1,
+    "cellCount": 2,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "西多聞通",
+    "premiumPercent": 3.2,
+    "cellCount": 1,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "大開通",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "中道通",
+    "premiumPercent": -13,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "浜崎通",
+    "premiumPercent": 15.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市兵庫區",
+    "town": "湊町",
+    "premiumPercent": -4.4,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "泉台",
+    "premiumPercent": -15.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "藤原台北町",
+    "premiumPercent": 53.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "日の峰",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "有馬町",
+    "premiumPercent": 7.5,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "緑町",
+    "premiumPercent": -8.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "神戶市北區",
+    "town": "鈴蘭台西町",
+    "premiumPercent": 38.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "奥畑",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "甲子園九番町",
+    "premiumPercent": -24.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "甲子園口",
+    "premiumPercent": -0.8,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "甲陽園本庄町",
+    "premiumPercent": -5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "高座町",
+    "premiumPercent": -35.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "高須町",
+    "premiumPercent": -27.1,
+    "cellCount": 2,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "今津真砂町",
+    "premiumPercent": -35.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "今津巽町",
+    "premiumPercent": -25,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "上甲子園",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "上甲東園",
+    "premiumPercent": 22.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "神園町",
+    "premiumPercent": 8.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "神祇官町",
+    "premiumPercent": 41.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "生瀬武庫川町",
+    "premiumPercent": -45.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "西宮浜",
+    "premiumPercent": -37.1,
+    "cellCount": 1,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "大社町",
+    "premiumPercent": -23.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "大谷町",
+    "premiumPercent": 14,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "段上町",
+    "premiumPercent": 6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "池田町",
+    "premiumPercent": 90.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "津門大塚町",
+    "premiumPercent": 14.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "東山台",
+    "premiumPercent": -45.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "東町",
+    "premiumPercent": -20.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "馬場町",
+    "premiumPercent": 14.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "樋ノ口町",
+    "premiumPercent": -18.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "西宮市",
+    "town": "樋之池町",
+    "premiumPercent": -3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "川西市",
+    "town": "栄町",
+    "premiumPercent": 67,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "川西市",
+    "town": "丸山台",
+    "premiumPercent": -19,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "川西市",
+    "town": "久代",
+    "premiumPercent": -7.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "川西市",
+    "town": "寺畑",
+    "premiumPercent": 97,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "川西市",
+    "town": "小花",
+    "premiumPercent": 40.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "御園町",
+    "premiumPercent": 8.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "今福",
+    "premiumPercent": -42.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "七松町",
+    "premiumPercent": 14.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "昭和通",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "昭和南通",
+    "premiumPercent": 20.2,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "上坂部",
+    "premiumPercent": 0.6,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "西昆陽",
+    "premiumPercent": -39,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "西大物町",
+    "premiumPercent": 7.2,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "潮江",
+    "premiumPercent": 34.9,
+    "cellCount": 4,
+    "sampleCount": 21,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "塚口町",
+    "premiumPercent": 3.9,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "塚口本町",
+    "premiumPercent": 6.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "東園田町",
+    "premiumPercent": -48.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "東塚口町",
+    "premiumPercent": 22,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "東難波町",
+    "premiumPercent": 8.1,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "南塚口町",
+    "premiumPercent": 1.3,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "南武庫之荘",
+    "premiumPercent": 14.8,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "尾浜町",
+    "premiumPercent": 37.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "武庫之荘",
+    "premiumPercent": -10.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "尼崎市",
+    "town": "武庫豊町",
+    "premiumPercent": -27.6,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "すみれガ丘",
+    "premiumPercent": -37.7,
+    "cellCount": 3,
+    "sampleCount": 32,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "伊孑志",
+    "premiumPercent": 66.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "栄町",
+    "premiumPercent": 30,
+    "cellCount": 4,
+    "sampleCount": 27,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "逆瀬台",
+    "premiumPercent": 8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "光明町",
+    "premiumPercent": -15.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "小林",
+    "premiumPercent": -1.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "仁川北",
+    "premiumPercent": 3.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "中山五月台",
+    "premiumPercent": -53.4,
+    "cellCount": 1,
+    "sampleCount": 18,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "中山桜台",
+    "premiumPercent": -16.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "長尾町",
+    "premiumPercent": -8.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "湯本町",
+    "premiumPercent": 23.4,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "南口",
+    "premiumPercent": 41,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "梅野町",
+    "premiumPercent": 18.8,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "売布",
+    "premiumPercent": 11.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "武庫川町",
+    "premiumPercent": 50.1,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "米谷",
+    "premiumPercent": -8.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "宝梅",
+    "premiumPercent": -66.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "宝塚市",
+    "town": "弥生町",
+    "premiumPercent": -41.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "魚住町",
+    "premiumPercent": -33.7,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "小久保",
+    "premiumPercent": 47.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "西新町",
+    "premiumPercent": 1.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "川崎町",
+    "premiumPercent": 99.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "大久保町",
+    "premiumPercent": -16.2,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "大久保町ゆりのき通",
+    "premiumPercent": 28.9,
+    "cellCount": 1,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "大蔵八幡町",
+    "premiumPercent": -38.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "大明石町",
+    "premiumPercent": 37.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "鍛治屋町",
+    "premiumPercent": 20.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "中崎",
+    "premiumPercent": 28.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "二見町",
+    "premiumPercent": -37.5,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "layout_age"
+  },
+  {
+    "region": "兵庫",
+    "district": "明石市",
+    "town": "北朝霧丘",
+    "premiumPercent": -49.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "姬路市",
+    "town": "飾磨区",
+    "premiumPercent": 17.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "姬路市",
+    "town": "増位新町",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "姬路市",
+    "town": "東駅前町",
+    "premiumPercent": 32.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "姬路市",
+    "town": "東今宿",
+    "premiumPercent": 38,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "兵庫",
+    "district": "姬路市",
+    "town": "網干区",
+    "premiumPercent": -52.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "釧路市",
+    "town": "共栄大通",
+    "premiumPercent": 0.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "江別市",
+    "town": "上江別",
+    "premiumPercent": -16.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "江別市",
+    "town": "東野幌本町",
+    "premiumPercent": 8.3,
+    "cellCount": 2,
+    "sampleCount": 13,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "江別市",
+    "town": "野幌若葉町",
+    "premiumPercent": -8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "あいの里１条",
+    "premiumPercent": -20.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "あいの里２条",
+    "premiumPercent": -78.8,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "あいの里３条",
+    "premiumPercent": -41.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "旭町",
+    "premiumPercent": -56.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "稲穂１条",
+    "premiumPercent": 13,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "栄通",
+    "premiumPercent": 11.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "宮の森１条",
+    "premiumPercent": 24.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "宮の森２条",
+    "premiumPercent": -28.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "宮の森３条",
+    "premiumPercent": -9.2,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "宮の森４条",
+    "premiumPercent": -23.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "琴似１条",
+    "premiumPercent": 34.4,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "琴似２条",
+    "premiumPercent": 32.9,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "琴似３条",
+    "premiumPercent": 13.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "月寒西１条",
+    "premiumPercent": 2.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "月寒中央通",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "月寒東１条",
+    "premiumPercent": -16.5,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "月寒東２条",
+    "premiumPercent": 1.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "厚別中央２条",
+    "premiumPercent": 1.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "厚別中央３条",
+    "premiumPercent": 9.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "厚別北１条",
+    "premiumPercent": -19.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "厚別北２条",
+    "premiumPercent": -4.5,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "山の手４条",
+    "premiumPercent": 80.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "真駒内南町",
+    "premiumPercent": -54.3,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "真駒内本町",
+    "premiumPercent": -49.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "真駒内緑町",
+    "premiumPercent": -36.8,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "水車町",
+    "premiumPercent": -12.6,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "星置１条",
+    "premiumPercent": -4.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "西岡４条",
+    "premiumPercent": -21.7,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "青葉町",
+    "premiumPercent": -12.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "前田５条",
+    "premiumPercent": -11.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "大谷地東",
+    "premiumPercent": 47.5,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "大通西",
+    "premiumPercent": 39,
+    "cellCount": 5,
+    "sampleCount": 40,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "大通東",
+    "premiumPercent": 42.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "中の島１条",
+    "premiumPercent": -18,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "中の島２条",
+    "premiumPercent": 5.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "東札幌３条",
+    "premiumPercent": 22.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "東札幌５条",
+    "premiumPercent": -4.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１１条西",
+    "premiumPercent": 1.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１２条西",
+    "premiumPercent": 27.9,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１３条西",
+    "premiumPercent": 7.4,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１４条西",
+    "premiumPercent": 14.1,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１５条西",
+    "premiumPercent": 24.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１６条西",
+    "premiumPercent": 1.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１８条西",
+    "premiumPercent": -17,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１９条西",
+    "premiumPercent": 11.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１条西",
+    "premiumPercent": 69.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南１条東",
+    "premiumPercent": 47.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南２３条西",
+    "premiumPercent": -16.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南２４条西",
+    "premiumPercent": -52.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南２条西",
+    "premiumPercent": 60.7,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南２条東",
+    "premiumPercent": 93.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南３条西",
+    "premiumPercent": -18.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南６条西",
+    "premiumPercent": 16.4,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南８条西",
+    "premiumPercent": 6.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南９条西",
+    "premiumPercent": -19,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "南郷通",
+    "premiumPercent": 13.1,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "二十四軒１条",
+    "premiumPercent": -3.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "二十四軒２条",
+    "premiumPercent": -6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "二十四軒３条",
+    "premiumPercent": 1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "二十四軒４条",
+    "premiumPercent": 3.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "八軒１条西",
+    "premiumPercent": 72.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "発寒９条",
+    "premiumPercent": 46.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "美しが丘３条",
+    "premiumPercent": -37,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "美園７条",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "福住１条",
+    "premiumPercent": -1.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "福住２条",
+    "premiumPercent": -5.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岡６条",
+    "premiumPercent": -23.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岸１条",
+    "premiumPercent": -14.3,
+    "cellCount": 4,
+    "sampleCount": 38,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岸２条",
+    "premiumPercent": -25.9,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岸３条",
+    "premiumPercent": -4.9,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岸４条",
+    "premiumPercent": -20.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "平岸５条",
+    "premiumPercent": 2.4,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "豊平６条",
+    "premiumPercent": 5.5,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北１０条東",
+    "premiumPercent": 30.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北１１条西",
+    "premiumPercent": -3.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北１２条東",
+    "premiumPercent": 40.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北１６条東",
+    "premiumPercent": -32.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北１条西",
+    "premiumPercent": 51.7,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２２条東",
+    "premiumPercent": -24.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２３条西",
+    "premiumPercent": 2.2,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２４条西",
+    "premiumPercent": 24.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２５条西",
+    "premiumPercent": 33.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２９条西",
+    "premiumPercent": -8.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２条西",
+    "premiumPercent": 38.4,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北２条東",
+    "premiumPercent": 8.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北３１条西",
+    "premiumPercent": -3.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北３５条東",
+    "premiumPercent": -10.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北３条西",
+    "premiumPercent": 58.1,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北３条東",
+    "premiumPercent": 19.4,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北４条西",
+    "premiumPercent": 29.2,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北４条東",
+    "premiumPercent": 6,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北５条西",
+    "premiumPercent": 14.3,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北５条東",
+    "premiumPercent": 24,
+    "cellCount": 2,
+    "sampleCount": 14,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北６条西",
+    "premiumPercent": 34.3,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北６条東",
+    "premiumPercent": 3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北７条西",
+    "premiumPercent": 9.7,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "北８条西",
+    "premiumPercent": 36.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "本郷通",
+    "premiumPercent": 15.4,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市（市平均）",
+    "town": "本通",
+    "premiumPercent": -26.6,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "厚別中央２条",
+    "premiumPercent": -9.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "厚別中央３条",
+    "premiumPercent": -1.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "厚別北１条",
+    "premiumPercent": -28.3,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "厚別北２条",
+    "premiumPercent": -9.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "青葉町",
+    "premiumPercent": -9.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市厚別區",
+    "town": "大谷地東",
+    "premiumPercent": 16.7,
+    "cellCount": 3,
+    "sampleCount": 37,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市手稻區",
+    "town": "稲穂１条",
+    "premiumPercent": 18.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市手稻區",
+    "town": "星置１条",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市手稻區",
+    "town": "前田５条",
+    "premiumPercent": -7.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市清田區",
+    "town": "美しが丘３条",
+    "premiumPercent": -2.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市清田區",
+    "town": "平岡６条",
+    "premiumPercent": 17.8,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "琴似１条",
+    "premiumPercent": 19.3,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "琴似２条",
+    "premiumPercent": 30.7,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "琴似３条",
+    "premiumPercent": 11.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "山の手４条",
+    "premiumPercent": 58.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "二十四軒１条",
+    "premiumPercent": -5.1,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "二十四軒２条",
+    "premiumPercent": -17.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "二十四軒３条",
+    "premiumPercent": 0.4,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "二十四軒４条",
+    "premiumPercent": 1.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "八軒１条西",
+    "premiumPercent": 51.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市西區",
+    "town": "発寒９条",
+    "premiumPercent": 19.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "宮の森１条",
+    "premiumPercent": 8.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "宮の森２条",
+    "premiumPercent": -37.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "宮の森３条",
+    "premiumPercent": -21.1,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "宮の森４条",
+    "premiumPercent": -32.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "大通西",
+    "premiumPercent": 28.3,
+    "cellCount": 5,
+    "sampleCount": 40,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "大通東",
+    "premiumPercent": 21.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１１条西",
+    "premiumPercent": -11.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１２条西",
+    "premiumPercent": 10.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１３条西",
+    "premiumPercent": -8.2,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１４条西",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１５条西",
+    "premiumPercent": 9.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１６条西",
+    "premiumPercent": -13.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１８条西",
+    "premiumPercent": -27.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１９条西",
+    "premiumPercent": -2.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１条西",
+    "premiumPercent": 44,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南１条東",
+    "premiumPercent": 25.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南２３条西",
+    "premiumPercent": -27.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南２４条西",
+    "premiumPercent": -58.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南２条西",
+    "premiumPercent": 44.3,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南２条東",
+    "premiumPercent": 69.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南３条西",
+    "premiumPercent": -30.3,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南６条西",
+    "premiumPercent": 2,
+    "cellCount": 3,
+    "sampleCount": 21,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南８条西",
+    "premiumPercent": -6.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "南９条西",
+    "premiumPercent": -31.1,
+    "cellCount": 3,
+    "sampleCount": 29,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北１条西",
+    "premiumPercent": 30.3,
+    "cellCount": 4,
+    "sampleCount": 26,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北２条西",
+    "premiumPercent": 17.8,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北２条東",
+    "premiumPercent": 0.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北３条西",
+    "premiumPercent": 34.9,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北３条東",
+    "premiumPercent": 12.1,
+    "cellCount": 4,
+    "sampleCount": 25,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北４条西",
+    "premiumPercent": 11.2,
+    "cellCount": 3,
+    "sampleCount": 19,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北４条東",
+    "premiumPercent": 1.7,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北５条西",
+    "premiumPercent": -1.4,
+    "cellCount": 2,
+    "sampleCount": 20,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北５条東",
+    "premiumPercent": 21.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北６条西",
+    "premiumPercent": 49.7,
+    "cellCount": 2,
+    "sampleCount": 15,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北７条西",
+    "premiumPercent": 0.2,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市中央區",
+    "town": "北８条西",
+    "premiumPercent": 15.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北１０条東",
+    "premiumPercent": 28,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北１２条東",
+    "premiumPercent": 38.2,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北１６条東",
+    "premiumPercent": -37.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北２２条東",
+    "premiumPercent": -25.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北３５条東",
+    "premiumPercent": -4.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北５条東",
+    "premiumPercent": 3.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市東區",
+    "town": "北６条東",
+    "premiumPercent": 6.9,
+    "cellCount": 2,
+    "sampleCount": 11,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市南區",
+    "town": "真駒内南町",
+    "premiumPercent": -22.5,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市南區",
+    "town": "真駒内本町",
+    "premiumPercent": -13.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市南區",
+    "town": "真駒内緑町",
+    "premiumPercent": 13.4,
+    "cellCount": 3,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "栄通",
+    "premiumPercent": 3.7,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "東札幌３条",
+    "premiumPercent": 24.6,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "東札幌５条",
+    "premiumPercent": -11.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "南郷通",
+    "premiumPercent": 16.9,
+    "cellCount": 4,
+    "sampleCount": 33,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "本郷通",
+    "premiumPercent": 12.6,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市白石區",
+    "town": "本通",
+    "premiumPercent": -24.7,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "あいの里１条",
+    "premiumPercent": 6.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "あいの里２条",
+    "premiumPercent": -33.3,
+    "cellCount": 3,
+    "sampleCount": 26,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "あいの里３条",
+    "premiumPercent": -22.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北２３条西",
+    "premiumPercent": 8.8,
+    "cellCount": 2,
+    "sampleCount": 12,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北２４条西",
+    "premiumPercent": 67,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北２５条西",
+    "premiumPercent": 78.9,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北２９条西",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北３１条西",
+    "premiumPercent": -2.4,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市北區",
+    "town": "北７条西",
+    "premiumPercent": 17.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "旭町",
+    "premiumPercent": -43.6,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "月寒西１条",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "月寒中央通",
+    "premiumPercent": 1.1,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "月寒東１条",
+    "premiumPercent": -13.4,
+    "cellCount": 2,
+    "sampleCount": 17,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "月寒東２条",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "水車町",
+    "premiumPercent": -14.5,
+    "cellCount": 1,
+    "sampleCount": 9,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "西岡４条",
+    "premiumPercent": -17.6,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "中の島１条",
+    "premiumPercent": -3.1,
+    "cellCount": 2,
+    "sampleCount": 18,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "中の島２条",
+    "premiumPercent": 10.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "美園７条",
+    "premiumPercent": -24,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "福住１条",
+    "premiumPercent": -3.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "福住２条",
+    "premiumPercent": -7.7,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "平岸１条",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 31,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "平岸２条",
+    "premiumPercent": -3.9,
+    "cellCount": 3,
+    "sampleCount": 24,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "平岸３条",
+    "premiumPercent": 23.6,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "平岸４条",
+    "premiumPercent": -12.8,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "平岸５条",
+    "premiumPercent": 7.7,
+    "cellCount": 1,
+    "sampleCount": 8,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "札幌市豐平區",
+    "town": "豊平６条",
+    "premiumPercent": 3.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "小樽市",
+    "town": "花園",
+    "premiumPercent": 45.1,
+    "cellCount": 2,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "小樽市",
+    "town": "桜",
+    "premiumPercent": -61.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "苫小牧市",
+    "town": "日新町",
+    "premiumPercent": 2.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "函館市",
+    "town": "大森町",
+    "premiumPercent": -44.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "函館市",
+    "town": "大川町",
+    "premiumPercent": 6.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "函館市",
+    "town": "湯川町",
+    "premiumPercent": -6.3,
+    "cellCount": 2,
+    "sampleCount": 16,
+    "grain": "layout_age"
+  },
+  {
+    "region": "北海道",
+    "district": "函館市",
+    "town": "本町",
+    "premiumPercent": 39.4,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "北海道",
+    "district": "函館市",
+    "town": "末広町",
+    "premiumPercent": 41.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "和歌山",
+    "district": "和歌山市",
+    "town": "太田",
+    "premiumPercent": -4.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "和歌山",
+    "district": "和歌山市",
+    "town": "中之島",
+    "premiumPercent": -2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "和歌山",
+    "district": "和歌山市",
+    "town": "毛見",
+    "premiumPercent": 7.3,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "呉市",
+    "town": "広白石",
+    "premiumPercent": -22.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廿日市市",
+    "town": "阿品",
+    "premiumPercent": 7.1,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "福山市",
+    "town": "西町",
+    "premiumPercent": 28.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "宇品御幸",
+    "premiumPercent": 2.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "庚午中",
+    "premiumPercent": 3.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "舟入町",
+    "premiumPercent": 28.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "舟入南",
+    "premiumPercent": -56.8,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "翠",
+    "premiumPercent": 15.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "東白島町",
+    "premiumPercent": 47.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市（市平均）",
+    "town": "八丁堀",
+    "premiumPercent": -16.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市西區",
+    "town": "庚午中",
+    "premiumPercent": 18.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市中區",
+    "town": "舟入町",
+    "premiumPercent": 14.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市中區",
+    "town": "舟入南",
+    "premiumPercent": -49.5,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市中區",
+    "town": "東白島町",
+    "premiumPercent": 10.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市中區",
+    "town": "八丁堀",
+    "premiumPercent": -2.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市南區",
+    "town": "宇品御幸",
+    "premiumPercent": -10.9,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "廣島",
+    "district": "廣島市南區",
+    "town": "翠",
+    "premiumPercent": 3.2,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "沼津市",
+    "town": "大岡",
+    "premiumPercent": 2.1,
+    "cellCount": 1,
+    "sampleCount": 10,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "静岡市葵区",
+    "town": "長沼",
+    "premiumPercent": -22.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "静岡市葵区",
+    "town": "東静岡",
+    "premiumPercent": 3.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "静岡市駿河区",
+    "town": "稲川",
+    "premiumPercent": -2.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "静岡市駿河区",
+    "town": "曲金",
+    "premiumPercent": 0,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "恩地町",
+    "premiumPercent": -40.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "海老塚",
+    "premiumPercent": 1.3,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "鴨江",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "広沢",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "寺島町",
+    "premiumPercent": 5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "篠ケ瀬町",
+    "premiumPercent": -19.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "上島",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "中央",
+    "premiumPercent": 63.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "天王町",
+    "premiumPercent": -23.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "板屋町",
+    "premiumPercent": 91,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "舞阪町弁天島",
+    "premiumPercent": 12.2,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市中央区",
+    "town": "北寺島町",
+    "premiumPercent": 6.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市浜名区",
+    "town": "三ヶ日町大崎",
+    "premiumPercent": 3.9,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "浜松市浜名区",
+    "town": "三ヶ日町都筑",
+    "premiumPercent": -3.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "富士市",
+    "town": "水戸島",
+    "premiumPercent": 0,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "恩地町",
+    "premiumPercent": -36,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "海老塚",
+    "premiumPercent": 9.7,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "鴨江",
+    "premiumPercent": 4.8,
+    "cellCount": 1,
+    "sampleCount": 11,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "広沢",
+    "premiumPercent": 10,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "三ヶ日町大崎",
+    "premiumPercent": -45.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "三ヶ日町都筑",
+    "premiumPercent": -49.5,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "寺島町",
+    "premiumPercent": 18.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "篠ケ瀬町",
+    "premiumPercent": -19.8,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "上島",
+    "premiumPercent": 12.8,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "中央",
+    "premiumPercent": 63.7,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "天王町",
+    "premiumPercent": -14,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "板屋町",
+    "premiumPercent": 92.3,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "舞阪町弁天島",
+    "premiumPercent": 21.5,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "濱松市",
+    "town": "北寺島町",
+    "premiumPercent": 6.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "靜岡市",
+    "town": "稲川",
+    "premiumPercent": 13.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "靜岡市",
+    "town": "曲金",
+    "premiumPercent": -0.6,
+    "cellCount": 3,
+    "sampleCount": 17,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "靜岡市",
+    "town": "長沼",
+    "premiumPercent": -16.1,
+    "cellCount": 1,
+    "sampleCount": 6,
+    "grain": "age"
+  },
+  {
+    "region": "靜岡",
+    "district": "靜岡市",
+    "town": "東静岡",
+    "premiumPercent": 21.6,
+    "cellCount": 1,
+    "sampleCount": 7,
+    "grain": "age"
+  },
+  {
+    "region": "德島",
+    "district": "德島市",
+    "town": "佐古三番町",
+    "premiumPercent": 8.4,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
+  },
+  {
+    "region": "德島",
+    "district": "德島市",
+    "town": "川内町",
+    "premiumPercent": -28.9,
+    "cellCount": 1,
+    "sampleCount": 5,
+    "grain": "age"
   }
 ];

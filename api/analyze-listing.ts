@@ -30,7 +30,7 @@ import {
   parseMandatoryMonthlyFees,
   parseEffectiveRepairReserve,
 } from "../src/lib/listingExtraction.js";
-import { getConditionPremium, getOfficialBuyEstimate } from "../src/data/buyMarket.js";
+import { getAgeBandComparison, getConditionPremium, getOfficialBuyEstimate, getTownPremium } from "../src/data/buyMarket.js";
 import { mlitBuySnapshotMeta, mlitBuySnapshots } from "../src/data/mlitBuySnapshot.js";
 import { atHomeNationwideRentSnapshots } from "../src/data/atHomeNationwideRentSnapshot.js";
 import { getNationwideRentBenchmark } from "../src/data/nationwideRentMarket.js";
@@ -1134,6 +1134,7 @@ export function buildSaleAnalysis(params: {
         // 避免「賃貸管理契約は引継ぎ」這類字樣造成誤判。
         structureText: extracted.structure,
         conditionPremium: getConditionPremium(locationInfo.region, ageYears),
+        townPremium: getTownPremium(locationInfo.region, locationInfo.district, extracted.address),
         occupancyStatus: `${extracted.occupancyStatus || ""} ${
           extracted.currentRent || extracted.annualIncome || extracted.grossYield ? "賃貸中" : ""
         }`,
@@ -1180,6 +1181,7 @@ export function buildSaleAnalysis(params: {
         insightPoints: priceVerdict.insightPoints,
         expectedPriceMan: priceVerdict.expectedPriceMan,
         areaBaselineMan: priceVerdict.areaBaselineMan,
+        ageBandComparison: getAgeBandComparison(locationInfo.region, locationInfo.district, layoutCode, ageYears),
         fairLowMan: priceVerdict.fairLowMan,
         fairHighMan: priceVerdict.fairHighMan,
         typicalListingPriceMan: priceVerdict.typicalListingPriceMan,

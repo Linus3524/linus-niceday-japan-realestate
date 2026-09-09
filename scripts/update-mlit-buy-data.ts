@@ -197,6 +197,8 @@ interface BuyObservation {
   ageBand: MlitBuyAgeBand | null;
   structure: string | null;
   renovated: boolean | null;
+  /** 町名（DistrictName），例如「西新宿」。用來算同一個行政區內的地段差異。 */
+  town: string | null;
 }
 
 const buckets = new Map<string, { observations: BuyObservation[] }>();
@@ -235,6 +237,7 @@ for (const transaction of transactions) {
     renovated: /改装済/.test(transaction.Renovation || "") ? true
       : /未改装/.test(transaction.Renovation || "") ? false
       : null,
+    town: transaction.DistrictName?.trim() || null,
   };
   addObservation(`${market.region}|${market.district}|${layout}`, observation);
 
@@ -357,6 +360,73 @@ const conditionPremiumRows = [...premiumCells.entries()]
   })
   .sort((a, b) => `${a.region}|${a.ageBand}`.localeCompare(`${b.region}|${b.ageBand}`, "ja"));
 
+// ── 町名地段溢價：同一個行政區裡，某個町名比全區行情貴／便宜多少 ──
+//
+// 一樣不能直接拿町名中位數去比全區中位數：町與町之間的屋齡與房型組成差很多
+// （某町全是新塔樓、某町全是舊公寓），不控制就變成在量屋齡而不是量地段。
+// 因此先在「同區 × 同房型 × 同屋齡帶」這個細胞內算「該町中位數 ÷ 細胞中位數」，
+// 細胞樣本不足時才退到「同區 × 同屋齡帶」（跨房型；㎡ 單價本身已對面積正規化）。
+const AGE_BAND_KEYS: MlitBuyAgeBand[] = ["age_0_10", "age_11_20", "age_21_30", "age_31_40", "age_41_plus"];
+const recentWindow = (observations: BuyObservation[]) => observations.filter(observation =>
+  observation.ordinal >= latestAvailableOrdinal - 8 + 1 && observation.ordinal <= latestAvailableOrdinal
+);
+interface TownSlot { fine: number[]; coarse: number[]; fineSamples: number; coarseSamples: number }
+const townCells = new Map<string, TownSlot>();
+const collectTownRatios = (
+  observations: BuyObservation[], region: string, district: string, grain: "fine" | "coarse"
+) => {
+  for (const ageBand of AGE_BAND_KEYS) {
+    const cell = observations.filter(o => o.ageBand === ageBand && o.town);
+    if (cell.length < MIN_SAMPLE_COUNT * 2) continue;
+    const cellMedian = median(cell.map(o => o.sqmPrice));
+    if (!cellMedian) continue;
+    for (const town of new Set(cell.map(o => o.town!))) {
+      const values = cell.filter(o => o.town === town).map(o => o.sqmPrice);
+      if (values.length < MIN_SAMPLE_COUNT) continue;
+      const key = `${region}|${district}|${town}`;
+      const slot = townCells.get(key) || { fine: [], coarse: [], fineSamples: 0, coarseSamples: 0 };
+      slot[grain].push(median(values) / cellMedian - 1);
+      if (grain === "fine") slot.fineSamples += values.length;
+      else slot.coarseSamples += values.length;
+      townCells.set(key, slot);
+    }
+  }
+};
+
+const districtObservations = new Map<string, BuyObservation[]>();
+for (const [key, bucket] of buckets.entries()) {
+  const [region, district, layout] = key.split("|") as [string, string, LayoutCode];
+  const observations = recentWindow(bucket.observations);
+  collectTownRatios(observations, region, district, "fine");
+  const districtKey = `${region}|${district}`;
+  districtObservations.set(districtKey, (districtObservations.get(districtKey) || []).concat(observations));
+  void layout;
+}
+for (const [districtKey, observations] of districtObservations.entries()) {
+  const [region, district] = districtKey.split("|");
+  collectTownRatios(observations, region, district, "coarse");
+}
+
+const townPremiumRows = [...townCells.entries()]
+  .flatMap(([key, slot]) => {
+    const [region, district, town] = key.split("|");
+    // 細胞夠多時只採信細粒度結果；不夠才用跨房型的粗粒度，避免兩種口徑混在一起取中位數。
+    const useFine = slot.fine.length >= 2;
+    const ratios = useFine ? slot.fine : slot.coarse;
+    const premium = medianOf(ratios);
+    if (premium === null) return [];
+    return [{
+      region,
+      district,
+      town,
+      premiumPercent: Math.round(premium * 1000) / 10,
+      cellCount: ratios.length,
+      sampleCount: useFine ? slot.fineSamples : slot.coarseSamples,
+      grain: useFine ? "layout_age" as const : "age" as const,
+    }];
+  })
+  .sort((a, b) => `${a.region}|${a.district}|${a.town}`.localeCompare(`${b.region}|${b.district}|${b.town}`, "ja"));
+
 if (!snapshotRows.length) throw new Error("API 回傳資料中沒有足夠樣本，未覆寫既有快照。");
 
 // 只擋「完全沒資料」不夠。API 可能回 200 但內容殘缺（額度用盡、上游暫時性問題），
@@ -374,7 +444,7 @@ if (existingRowCount > 0 && snapshotRows.length < existingRowCount * RETENTION_F
 const generatedAt = new Date().toISOString().slice(0, 10);
 const prefectureCount = new Set(snapshotRows.map(row => row.region)).size;
 const municipalityCount = new Set(snapshotRows.map(row => `${row.region}|${row.district}`)).size;
-const body = `import type { LayoutCode } from "./housingMarket.js";\nimport type { MlitBuyAgeBand } from "./buyMarket.js";\n\nexport interface MlitBuyAgeBandSnapshot {\n  medianSqmPriceYen: number;\n  sampleCount: number;\n}\n\n/** 同分桶內「改装済み」與「未改装」的實際成交㎡單價對照。 */\nexport interface MlitRenovationPremium {\n  renovatedSqmPriceYen: number;\n  unrenovatedSqmPriceYen: number;\n  renovatedSampleCount: number;\n  unrenovatedSampleCount: number;\n}\n\n/** 同分桶內 SRC 與 RC 的實際成交㎡單價對照（SRC 為塔樓的近似代理）。 */\nexport interface MlitStructurePremium {\n  srcSqmPriceYen: number;\n  rcSqmPriceYen: number;\n  srcSampleCount: number;\n  rcSampleCount: number;\n}\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  medianSqmPriceYen: number;\n  medianAreaSqm: number;\n  ageBands: Partial<Record<MlitBuyAgeBand, MlitBuyAgeBandSnapshot>>;\n  buildingYearSampleCount: number;\n  structureCounts: Record<string, number>;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",\n  sourceFieldCoverage: { buildingYear: true, structure: true, renovation: true, timeToNearestStation: false, unitPriceDerivedWhenMissing: true },\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n\n/**\n * 條件溢價（已控制屋齡）。\n * 在「同區域 × 同房型 × 同屋齡帶」內比較後，彙總到區域層級。\n * 直接在分桶內混齡比較會得到反向結果（會翻新的多是老屋），故不可省略分層。\n */\nexport interface MlitConditionPremiumRow {\n  region: string;\n  ageBand: MlitBuyAgeBand;\n  /** 改装済み 相對 未改装 的成交㎡單價差（%）。 */\n  renovationPremiumPercent: number | null;\n  renovationCellCount: number;\n  /** SRC 相對 RC 的成交㎡單價差（%）。SRC 為塔樓的近似代理。 */\n  structurePremiumPercent: number | null;\n  structureCellCount: number;\n}\n\nexport const mlitConditionPremiums: MlitConditionPremiumRow[] = ${JSON.stringify(conditionPremiumRows, null, 2)};\n`;
+const body = `import type { LayoutCode } from "./housingMarket.js";\nimport type { MlitBuyAgeBand } from "./buyMarket.js";\n\nexport interface MlitBuyAgeBandSnapshot {\n  medianSqmPriceYen: number;\n  sampleCount: number;\n}\n\n/** 同分桶內「改装済み」與「未改装」的實際成交㎡單價對照。 */\nexport interface MlitRenovationPremium {\n  renovatedSqmPriceYen: number;\n  unrenovatedSqmPriceYen: number;\n  renovatedSampleCount: number;\n  unrenovatedSampleCount: number;\n}\n\n/** 同分桶內 SRC 與 RC 的實際成交㎡單價對照（SRC 為塔樓的近似代理）。 */\nexport interface MlitStructurePremium {\n  srcSqmPriceYen: number;\n  rcSqmPriceYen: number;\n  srcSampleCount: number;\n  rcSampleCount: number;\n}\n\nexport interface MlitBuySnapshotRow {\n  region: string;\n  district: string;\n  layout: LayoutCode;\n  medianTradePriceYen: number;\n  medianSqmPriceYen: number;\n  medianAreaSqm: number;\n  ageBands: Partial<Record<MlitBuyAgeBand, MlitBuyAgeBandSnapshot>>;\n  buildingYearSampleCount: number;\n  structureCounts: Record<string, number>;\n  sampleCount: number;\n  windowQuarters: 4 | 8;\n  periodStart: string;\n  periodEnd: string;\n  sourceUrl: string;\n}\n\nexport const mlitBuySnapshotMeta = {\n  generatedAt: "${generatedAt}" as string | null,\n  latestPeriod: "${formatPeriodOrdinal(latestAvailableOrdinal)}",\n  sourceId: "mlit-reinfolib" as const,\n  status: "ready" as "pending_api_approval" | "ready",\n  methodology: "中古マンション等の取引価格を行政区・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",\n  sourceFieldCoverage: { buildingYear: true, structure: true, renovation: true, timeToNearestStation: false, unitPriceDerivedWhenMissing: true },\n  sourceUrl: "${SOURCE_URL}"\n};\n\nexport const mlitBuySnapshots: MlitBuySnapshotRow[] = ${JSON.stringify(snapshotRows, null, 2)};\n\n/**\n * 條件溢價（已控制屋齡）。\n * 在「同區域 × 同房型 × 同屋齡帶」內比較後，彙總到區域層級。\n * 直接在分桶內混齡比較會得到反向結果（會翻新的多是老屋），故不可省略分層。\n */\nexport interface MlitConditionPremiumRow {\n  region: string;\n  ageBand: MlitBuyAgeBand;\n  /** 改装済み 相對 未改装 的成交㎡單價差（%）。 */\n  renovationPremiumPercent: number | null;\n  renovationCellCount: number;\n  /** SRC 相對 RC 的成交㎡單價差（%）。SRC 為塔樓的近似代理。 */\n  structurePremiumPercent: number | null;\n  structureCellCount: number;\n}\n\nexport const mlitConditionPremiums: MlitConditionPremiumRow[] = ${JSON.stringify(conditionPremiumRows, null, 2)};\n\n/**\n * 町名地段溢價（已控制屋齡、盡量控制房型）。\n * premiumPercent 為「該町成交㎡單價 ÷ 同區同條件中位數 − 1」。\n * grain 為 "layout_age" 表示在同房型同屋齡帶內比較，"age" 表示跨房型只控屋齡。\n */\nexport interface MlitTownPremiumRow {\n  region: string;\n  district: string;\n  /** 町名，例如「西新宿」。 */\n  town: string;\n  premiumPercent: number;\n  cellCount: number;\n  sampleCount: number;\n  grain: "layout_age" | "age";\n}\n\nexport const mlitTownPremiums: MlitTownPremiumRow[] = ${JSON.stringify(townPremiumRows, null, 2)};\n`;
 
 const finalBody = body.replace(
   '  methodology: "中古マンション等の取引価格を行政区・間取り別に集計。面積がある場合は㎡単価、築年が5件以上ある場合は同築年帯㎡単価を優先し、不足時は同区同間取りへ回退。近4四半期優先・不足時近8四半期",',

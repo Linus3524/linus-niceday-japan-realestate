@@ -1,5 +1,5 @@
 import type { LayoutCode } from "./housingMarket.js";
-import { mlitConditionPremiums, mlitBuySnapshots } from "./mlitBuySnapshot.js";
+import { mlitConditionPremiums, mlitBuySnapshots, mlitTownPremiums } from "./mlitBuySnapshot.js";
 
 export interface OfficialBuyEstimate {
   medianTradePriceYen: number;
@@ -222,4 +222,103 @@ export function getConditionPremium(region: string, ageYears: number | null | un
   const ageBand = mlitAgeBandForAge(ageYears);
   if (!ageBand) return null;
   return mlitConditionPremiums.find(row => row.region === region && row.ageBand === ageBand) ?? null;
+}
+
+
+/** 屋齡帶對照的單列：該屋齡帶的成交㎡單價，以及相對本案屋齡帶的價差。 */
+export interface AgeBandComparisonRow {
+  ageBand: MlitBuyAgeBand;
+  medianSqmPriceYen: number;
+  sampleCount: number;
+  /** 相對本案所屬屋齡帶的百分比差；本案該列為 0。 */
+  diffPercent: number;
+  isCurrent: boolean;
+}
+
+/**
+ * 取出同區同房型各屋齡帶的成交㎡單價，供「換一個屋齡帶差多少」的對照表使用。
+ * 這是同一個分桶內的實際成交資料，不含任何估算係數。
+ */
+export function getAgeBandComparison(
+  region: string,
+  district: string,
+  layout: LayoutCode,
+  ageYears: number | null | undefined
+): AgeBandComparisonRow[] {
+  const row = mlitBuySnapshots.find(
+    item => item.region === region && item.district === district && item.layout === layout
+  );
+  if (!row?.ageBands) return [];
+  const currentBand = mlitAgeBandForAge(ageYears);
+  const order: MlitBuyAgeBand[] = ["age_0_10", "age_11_20", "age_21_30", "age_31_40", "age_41_plus"];
+  const entries = order
+    .map(band => ({ band, entry: row.ageBands?.[band] }))
+    .filter((item): item is { band: MlitBuyAgeBand; entry: { medianSqmPriceYen: number; sampleCount: number } } =>
+      Boolean(item.entry)
+    );
+  if (entries.length < 2) return [];
+  // 沒讀到屋齡時以樣本數最多的屋齡帶當基準，至少讓對照表有一個參照點。
+  const baseBand = currentBand && entries.some(e => e.band === currentBand)
+    ? currentBand
+    : entries.reduce((a, b) => (b.entry.sampleCount > a.entry.sampleCount ? b : a)).band;
+  const base = entries.find(e => e.band === baseBand)!.entry.medianSqmPriceYen;
+  return entries.map(({ band, entry }) => ({
+    ageBand: band,
+    medianSqmPriceYen: entry.medianSqmPriceYen,
+    sampleCount: entry.sampleCount,
+    diffPercent: Math.round((entry.medianSqmPriceYen / base - 1) * 1000) / 10,
+    isCurrent: band === baseBand,
+  }));
+}
+
+
+/** 本案所在町名相對同區行情的地段溢價。 */
+export interface TownPremium {
+  town: string;
+  /** 該町成交㎡單價相對同區同條件中位數的百分比差。 */
+  premiumPercent: number;
+  sampleCount: number;
+  /** "layout_age" 同房型同屋齡帶內比較；"age" 跨房型只控屋齡。 */
+  grain: "layout_age" | "age";
+  /** 在同一個行政區的所有町名中由貴到便宜的名次。 */
+  rank: number;
+  townCount: number;
+}
+
+const normalizeAddressForTown = (value: string) =>
+  value.normalize("NFKC").replace(/[\s　]/g, "");
+
+/**
+ * 從地址比對出所在町名，回傳該町相對同區行情的地段溢價。
+ *
+ * 溢價本身在建快照時就已控制屋齡（見 scripts/update-mlit-buy-data.ts），
+ * 否則「某町全是新塔樓」會被誤讀成地段好。
+ */
+export function getTownPremium(
+  region: string,
+  district: string,
+  address: string | null | undefined
+): TownPremium | null {
+  if (!address) return null;
+  // 只有一個細胞、樣本又只有個位數的町名，百分比會跳到 ±30% 以上，那是噪音不是地段。
+  const rows = mlitTownPremiums.filter(row =>
+    row.region === region && row.district === district &&
+    (row.cellCount >= 2 || row.sampleCount >= 12)
+  );
+  if (rows.length < 2) return null;
+  const normalized = normalizeAddressForTown(address);
+  // 町名可能互為前綴（「新宿」與「西新宿」），取最長的相符者才不會比錯地段。
+  const matched = rows
+    .filter(row => normalized.includes(normalizeAddressForTown(row.town)))
+    .sort((a, b) => b.town.length - a.town.length)[0];
+  if (!matched) return null;
+  const ranked = [...rows].sort((a, b) => b.premiumPercent - a.premiumPercent);
+  return {
+    town: matched.town,
+    premiumPercent: Math.max(-25, Math.min(25, matched.premiumPercent)),
+    sampleCount: matched.sampleCount,
+    grain: matched.grain,
+    rank: ranked.findIndex(row => row.town === matched.town) + 1,
+    townCount: rows.length,
+  };
 }

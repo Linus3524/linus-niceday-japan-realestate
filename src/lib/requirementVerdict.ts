@@ -657,6 +657,17 @@ export function buildSalePriceVerdict(input: {
     renovationPremiumPercent: number | null;
     structurePremiumPercent: number | null;
   } | null;
+  /**
+   * 本案所在町名相對同區行情的地段溢價（已控制屋齡）。
+   * 行政區層級的比較會把一個區裡的好地段與差地段混在一起，這一項把差異挑出來。
+   */
+  townPremium?: {
+    town: string;
+    premiumPercent: number;
+    sampleCount: number;
+    rank: number;
+    townCount: number;
+  } | null;
   /** 該分桶的成交樣本數，用來決定結論該給多寬的容許區間 */
   sampleCount?: number | null;
   /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
@@ -791,6 +802,21 @@ export function buildSalePriceVerdict(input: {
       note: `共 ${totalFloors} 層的高層住宅`,
       applied: false,
       basis: "estimate",
+    });
+  }
+
+  // ── 4.55 地段（町名）──
+  // 同一個行政區裡，町與町的成交單價可以差到兩成以上（新宿区西新宿 vs 北新宿）。
+  // 這個百分比在建快照時已控制屋齡與房型，代表的是地段本身而不是屋齡組成。
+  if (input.townPremium && Math.abs(input.townPremium.premiumPercent) >= 3) {
+    const t = input.townPremium;
+    const pct = Math.round(t.premiumPercent);
+    factors.push({
+      label: "地段（町名）",
+      ratePercent: pct,
+      note: `${t.town}在同區 ${t.townCount} 個町名中排第 ${t.rank} 名，成交單價相對同區行情${pct >= 0 ? "高" : "低"} ${Math.abs(pct)}%（${t.sampleCount} 筆成交）`,
+      applied: false,
+      basis: "data",
     });
   }
 
