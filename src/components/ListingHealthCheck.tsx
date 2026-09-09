@@ -2228,13 +2228,13 @@ export function ListingHealthCheck() {
                           )}
                           {/* 表頭只在寬螢幕出現；窄螢幕改成一列多行的堆疊排法，
                               欄位靠 col-start／row-start 明確指定，不依賴自動流向。 */}
-                          <div className="hidden border-y border-[#DDE3DF] bg-[#F5F8F6] px-2 py-2 text-[10px] font-bold text-[#8A9590] sm:grid sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5.5rem_5rem] sm:items-center sm:gap-x-3">
+                          <div className="hidden border-y border-[#DDE3DF] bg-[#F5F8F6] px-2 py-2 text-[10px] font-bold text-[#8A9590] sm:grid sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5rem_5.5rem] sm:items-center sm:gap-x-3">
                             <span>#</span>
                             <span>因素</span>
                             <span>依據來源</span>
                             <span>說明</span>
-                            <span className="text-center">影響強度</span>
                             <span className="text-right">價格影響幅度</span>
+                            <span className="text-center">影響強度</span>
                           </div>
                           <dl className="divide-y divide-[#DDE3DF] border-b border-[#DDE3DF]">
                             {[...c.priceFactors]
@@ -2251,7 +2251,7 @@ export function ListingHealthCheck() {
                                 return (
                                   <div
                                     key={i}
-                                    className="grid grid-cols-[1.5rem_1fr_auto] items-center gap-x-3 gap-y-1.5 px-2 py-3 sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5.5rem_5rem] sm:gap-y-0"
+                                    className="grid grid-cols-[1.5rem_1fr_auto] items-center gap-x-3 gap-y-1.5 px-2 py-3 sm:grid-cols-[1.5rem_8.5rem_4.75rem_1fr_5rem_5.5rem] sm:gap-y-0"
                                   >
                                     <span className="col-start-1 row-start-1 font-mono text-[11px] tabular-nums text-[#8A9590]">
                                       {i + 1}
@@ -2279,7 +2279,7 @@ export function ListingHealthCheck() {
                                       {f.note}
                                     </dd>
                                     <span
-                                      className="col-start-3 row-start-3 flex items-center gap-1 justify-self-end sm:col-start-5 sm:row-start-1 sm:justify-self-center"
+                                      className="col-start-3 row-start-3 flex items-center gap-1 justify-self-end sm:col-start-6 sm:row-start-1 sm:justify-self-center"
                                       title={`影響強度 ${level} / 5（滿格為 ±${FACTOR_SCALE}%）`}
                                     >
                                       {[0, 1, 2, 3, 4].map(n => (
@@ -2294,7 +2294,7 @@ export function ListingHealthCheck() {
                                       ))}
                                     </span>
                                     <span
-                                      className="col-start-3 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-6 sm:row-start-1 sm:text-right"
+                                      className="col-start-3 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-5 sm:row-start-1 sm:text-right"
                                       style={{ color: tone }}
                                     >
                                       {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent)}%`}
