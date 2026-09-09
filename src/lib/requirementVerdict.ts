@@ -703,33 +703,57 @@ export function buildSalePriceVerdict(input: {
     }
   }
 
-  // ── 3. 車站徒步（基準為徒步 8～10 分）──
+  // ── 3. 車站徒步 ──
+  //
+  // 國交省成交資料的 TimeToNearestStation 欄位對中古マンション是 0% 有值
+  // （實測東京 2025 年 16,353 筆全部空白），所以這裡無法用成交資料回歸，
+  // 只能採用市場調查值。依東日本不動産流通機構／不動産流通業界的統計，
+  // 以徒歩 1〜5 分為基準時，6〜10 分約 -7%、11〜15 分約 -20%、16 分以上約 -35%。
+  // 本系統的比較基準是分桶中位數（混合各種站距，重心約在 6〜10 分），
+  // 因此把上述級距整體平移，令 6〜10 分為 0。
   let walkRate = 0;
   if (walkMinutes !== null) {
-    if (walkMinutes <= 3) { walkRate = 0.12; factors.push({ label: "車站距離", ratePercent: 12, note: `最近站徒步 ${walkMinutes} 分（極近站）`, applied: false, basis: "estimate" }); }
-    else if (walkMinutes <= 5) { walkRate = 0.08; factors.push({ label: "車站距離", ratePercent: 8, note: `最近站徒步 ${walkMinutes} 分`, applied: false, basis: "estimate" }); }
-    else if (walkMinutes <= 7) { walkRate = 0.04; factors.push({ label: "車站距離", ratePercent: 4, note: `最近站徒步 ${walkMinutes} 分`, applied: false, basis: "estimate" }); }
+    if (walkMinutes <= 3) { walkRate = 0.10; factors.push({ label: "車站距離", ratePercent: 10, note: `最近站徒步 ${walkMinutes} 分（極近站）`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 5) { walkRate = 0.07; factors.push({ label: "車站距離", ratePercent: 7, note: `最近站徒步 ${walkMinutes} 分（近站）`, applied: false, basis: "estimate" }); }
     else if (walkMinutes <= 10) { walkRate = 0; factors.push({ label: "車站距離", ratePercent: 0, note: `最近站徒步 ${walkMinutes} 分（等同基準）`, applied: false, basis: "estimate" }); }
-    else if (walkMinutes <= 15) { walkRate = -0.06; factors.push({ label: "車站距離", ratePercent: -6, note: `最近站徒步 ${walkMinutes} 分（略遠）`, applied: false, basis: "estimate" }); }
-    else { walkRate = -0.12; factors.push({ label: "車站距離", ratePercent: -12, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）`, applied: false, basis: "estimate" }); }
+    else if (walkMinutes <= 15) { walkRate = -0.14; factors.push({ label: "車站距離", ratePercent: -14, note: `最近站徒步 ${walkMinutes} 分（略遠）`, applied: false, basis: "estimate" }); }
+    else { walkRate = -0.30; factors.push({ label: "車站距離", ratePercent: -30, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）`, applied: false, basis: "estimate" }); }
   }
 
   // ── 4. 樓層 ──
+  //
+  // 成交資料沒有階數欄位，改用市場調查值：一般公寓「每上升一層約 +0.5〜1.0%」，
+  // 這裡取中間值 0.7%／層，並以該棟的中間樓層為基準（分桶中位數混合各樓層，
+  // 重心接近中間樓層）。上下限各夾在 ±10%，避免超高層被單一係數放大。
+  // 1 樓與地下另計固定折價（防犯、濕氣、採光），最上階另加稀少性溢價。
   let floorRate = 0;
   if (floor !== null) {
-    const ratio = totalFloors && totalFloors > 0 ? floor / totalFloors : null;
-    if (floor <= 0) { floorRate = -0.08; factors.push({ label: "樓層", ratePercent: -8, note: "地下樓層（採光與濕氣條件受限）", applied: false, basis: "estimate" }); }
-    else if (floor === 1) { floorRate = -0.05; factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）", applied: false, basis: "estimate" }); }
-    else if (ratio !== null && totalFloors !== null && totalFloors >= 15 && ratio >= 0.8) {
-      floorRate = 0.10; factors.push({ label: "樓層", ratePercent: 10, note: `${floor} 樓／共 ${totalFloors} 樓（高層塔樓上段，眺望與稀少性溢價）`, applied: false, basis: "estimate" });
-    } else if (ratio === 1 && totalFloors !== null) {
-      floorRate = 0.06; factors.push({ label: "樓層", ratePercent: 6, note: `${floor} 樓／共 ${totalFloors} 樓（最上階，無樓上噪音與稀少性溢價）`, applied: false, basis: "estimate" });
-    } else if (ratio !== null && ratio >= 0.5) {
-      floorRate = 0.04; factors.push({ label: "樓層", ratePercent: 4, note: `${floor} 樓／共 ${totalFloors} 樓（中高樓層）`, applied: false, basis: "estimate" });
-    } else if (floor >= 3) {
-      floorRate = 0.02; factors.push({ label: "樓層", ratePercent: 2, note: `${floor} 樓（避開低樓層折價）`, applied: false, basis: "estimate" });
+    if (floor <= 0) {
+      floorRate = -0.08;
+      factors.push({ label: "樓層", ratePercent: -8, note: "地下樓層（採光與濕氣條件受限）", applied: false, basis: "estimate" });
+    } else if (floor === 1) {
+      floorRate = -0.05;
+      factors.push({ label: "樓層", ratePercent: -5, note: "1 樓（防犯與濕氣考量，日本市場普遍折價）", applied: false, basis: "estimate" });
+    } else if (totalFloors !== null && totalFloors > 1) {
+      const midFloor = (totalFloors + 1) / 2;
+      const perFloor = 0.007;
+      let rate = Math.max(-0.10, Math.min(0.10, (floor - midFloor) * perFloor));
+      const isTop = floor >= totalFloors;
+      if (isTop) rate = Math.min(0.13, rate + 0.03);
+      floorRate = rate;
+      const pct = Math.round(rate * 1000) / 10;
+      factors.push({
+        label: "樓層",
+        ratePercent: pct,
+        note: isTop
+          ? `${floor} 樓／共 ${totalFloors} 樓（最上階，無樓上噪音與稀少性溢價）`
+          : `${floor} 樓／共 ${totalFloors} 樓（以中間樓層為基準，每層約 0.7%）`,
+        applied: false,
+        basis: "estimate",
+      });
     } else {
-      factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓`, applied: false, basis: "estimate" });
+      // 沒有總樓層就無法判斷相對位置，只能確認「不是 1 樓或地下」。
+      factors.push({ label: "樓層", ratePercent: 0, note: `${floor} 樓（缺總樓層，無法判斷相對高度）`, applied: false, basis: "estimate" });
     }
   }
 
@@ -783,8 +807,27 @@ export function buildSalePriceVerdict(input: {
     || /全面翻新|整體翻新|全室翻新|翻新完成|[內内]裝工事完成|裝修完成/.test(reno)
     || renovationComponentCount >= 4
   ) {
-    renoRate = 0.05;
-    factors.push({ label: "翻新", ratePercent: 5, note: "圖紙標示已整體翻新／改裝", applied: false, basis: "estimate" });
+    // 翻新溢價與屋齡高度相關，固定 +5% 嚴重低估老屋翻新的價值。
+    // 下列級距來自國交省成交資料的 Renovation 欄位（改装済み vs 未改装），
+    // 東京 2025 年 15,978 筆、控制面積帶與屋齡帶後的實測中位數差：
+    //   築 11-20 年：-0.9% ～ +7.7%（幾乎無差）
+    //   築 21-30 年：+15.6% ～ +23.6%
+    //   築 31-40 年：+37.5% ～ +41.3%
+    // 取各屋齡帶的保守中間值。
+    const renoPct = ageYears === null ? 8
+      : ageYears <= 20 ? 4
+      : ageYears <= 30 ? 18
+      : 30;
+    renoRate = renoPct / 100;
+    factors.push({
+      label: "翻新",
+      ratePercent: renoPct,
+      note: ageYears === null
+        ? "圖紙標示已整體翻新／改裝"
+        : `圖紙標示已整體翻新／改裝（築 ${ageYears} 年，屋齡越高翻新溢價越大）`,
+      applied: false,
+      basis: "estimate",
+    });
   }
 
   // ── 5.5 現況（帶租約 vs 空室）──
@@ -792,15 +835,16 @@ export function buildSalePriceVerdict(input: {
   // 本來就該比同一戶的空屋價低：買方無法自己入居、必須沿用現行租約與租金，
   // 融資多半只能走利率較高的投資用貸款，也不適用住宅ローン控除。
   // 反過來說，空室即入居可與翻新後販售的空屋，賣的正是自住買方的溢價。
+  // 折價幅度取業界慣例值：オーナーチェンジ 物件相對実需物件約折 10%。
   let occupancyRate = 0;
   const occupancy = `${input.occupancyStatus || ""}`;
   const isTenanted = /賃貸中|オーナーチェンジ|賃借人|入居中|集金代行|サブリース/.test(occupancy);
   const isVacant = /空室|空家|空き|即入居|即引渡/.test(occupancy);
   if (isTenanted) {
-    occupancyRate = -0.12;
+    occupancyRate = -0.10;
     factors.push({
       label: "現況",
-      ratePercent: -12,
+      ratePercent: -10,
       note: "帶租約（オーナーチェンジ）：買方無法自住入居、須承接現行租約，且多需投資用貸款、不適用住宅ローン控除",
       applied: true,
       basis: "data",

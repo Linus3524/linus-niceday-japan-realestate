@@ -426,7 +426,7 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         totalFloors: 7,
       });
       const floorFactor = verdict.factors.find(factor => factor.label === "樓層");
-      assert.equal(floorFactor?.ratePercent, 6);
+      assert.equal(floorFactor?.ratePercent, 5.1);
       assert.match(floorFactor?.note || "", /最上階/);
     }
   },
@@ -466,7 +466,7 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         totalFloors: null,
         renovationNotes: "キッチン・トイレ・洗面台・浴室・給排水管交換、床フローリング・壁・天井クロス貼替",
       });
-      assert.equal(verdict.factors.find(factor => factor.label === "翻新")?.ratePercent, 5);
+      assert.equal(verdict.factors.find(factor => factor.label === "翻新")?.ratePercent, 8);
     }
   },
   {
