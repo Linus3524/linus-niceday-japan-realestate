@@ -649,7 +649,10 @@ export function calculateNetYieldBreakdown(params: {
       note: `日本租賃管理公司常規費率約 ${pmFeeRatePercent}%（含招租、催繳與修繕窗口）`,
     },
     {
-      name: "固定資產稅・都市計畫稅（概算）",
+      // 全名 15 字在手機的窄欄位裡剛好差 5px 撐破容器，而且這串因為結尾是
+      // 全形括號，瀏覽器不肯在括號前斷行（break-all／overflow-wrap 都無效）。
+      // 通用簡稱「固都稅」在同頁的註腳已經定義過，直接用簡稱，全名留在備註。
+      name: "固都稅（概算）",
       amountYen: -monthlyEstimatedPropertyTaxYen,
       annualAmountYen: -annualEstimatedPropertyTaxYen,
       type: "deduction",
@@ -852,7 +855,7 @@ export function calculateSaleInitialCosts(salePriceYen: number, options: SaleIni
       },
       {
         id: "propertyTaxProration",
-        name: "固定資產稅・都市計畫稅日割清算",
+        name: "固都稅日割清算",
         amount: taxesProrated,
         note: annualPropertyTaxes > 0
           ? `預估全年固都稅 ${annualPropertyTaxes.toLocaleString("ja-JP")} 円 × 暫以分析日至年底約 ${dateInfo.remainingDays}/${dateInfo.daysInYear} 日估算（實際依簽約交屋日結算）`
