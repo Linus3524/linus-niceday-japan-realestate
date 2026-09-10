@@ -4019,10 +4019,9 @@ export function ListingHealthCheck() {
                         return (
                           <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
                             <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                                <Sparkles className="h-3.5 w-3.5 text-[#007D5A]" />
-                                <span>條件與規格折溢價</span>
-                              </div>
+                              <span className="text-xs font-bold text-[#1A2A22]">
+                                條件與規格折溢價
+                              </span>
                               <span className="text-[10px] text-[#66736C]">
                                 綜合地點、屋齡、樓層、結構與設備因子拆解
                               </span>
