@@ -12,7 +12,11 @@ assert.ok(buildListingAudit(rent, "rent").issues.some(i => i.code === "amount-in
 assert.equal(buildListingAudit(sale, "sale").blocksComparison, false);
 assert.ok(buildListingAudit({ ...sale, buildingArea: "192.78㎡(約59.31坪)" }, "sale").issues.some(i => i.code === "buildingArea-unit-conflict"));
 assert.equal(buildListingAudit({ ...sale, buildingArea: "66.30㎡(約20.06坪)" }, "sale").blocksComparison, false);
-assert.equal(buildListingAudit({ ...sale, propertyType: "", buildingName: "" }, "sale").blocksComparison, true);
+// 類型未確認要擋下行情比對；管理費與修繕積立金也得一併清掉，
+// 否則會被下面那條「集合住宅特徵」的推定規則判成區分公寓。
+assert.equal(buildListingAudit({ ...sale, propertyType: "", buildingName: "", managementFee: "", repairReserve: "" }, "sale").blocksComparison, true);
+// 反過來說，圖紙沒印「マンション」但有管理費與修繕積立金，實務上就是區分公寓，不該整個停掉比對。
+assert.equal(buildListingAudit({ ...sale, propertyType: "", buildingName: "" }, "sale").blocksComparison, false, "有管理費與修繕積立金應推定為區分公寓");
 assert.ok(buildListingAudit({ ...sale, buildingArea: "合計70㎡ 1階40㎡ 2階40㎡" }, "sale").issues.some(i => i.code === "floor-area-conflict"));
 assert.equal(buildListingAudit({ ...sale, buildingArea: "合計103.5㎡ 1階37.26㎡ 2階37.26㎡ 3階28.98㎡" }, "sale").blocksComparison, false);
 assert.equal(buildListingAudit({ ...sale, buildingArea: "合計200㎡ 1階40㎡ 2階40㎡" }, "sale").blocksComparison, false, "部分樓層不可誤判矛盾");
