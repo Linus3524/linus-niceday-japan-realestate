@@ -1601,6 +1601,10 @@ export default async function handler(req: any, res: any) {
       })();
 
       const ageYears = parseAgeYears(extracted.age);
+      const floorInfo = parseFloorInfo(
+        extracted.floor,
+        `${extracted.buildingFloors ? `${extracted.buildingFloors}階建` : ""} ${extracted.structure || ""} ${extracted.specialNotes || ""}`
+      );
 
       verdict = buildListingPriceVerdict(totalMonthlyCost, range, {
         ageYears,
@@ -1608,6 +1612,8 @@ export default async function handler(req: any, res: any) {
         areaSqm: area,
         roomType,
         structure: extracted.structure,
+        floor: floorInfo.floor,
+        totalFloors: floorInfo.totalFloors,
         specialNotes: extracted.specialNotes,
         otherConditions: extracted.otherConditions,
         freeRent: extracted.freeRent,

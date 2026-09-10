@@ -153,7 +153,8 @@ const modifierAvailabilityImpact: Partial<Record<BudgetModifierId, { supply: num
   // 而且是外國人與年輕租客都想要的條件，競爭也高。
   separate_bath: { supply: 1.6, competition: 1.2 },
   // 指定 2 樓以上：只排除 1 樓，壓縮幅度小；治安與採光考量讓它略微搶手。
-  floor_2f_plus: { supply: 0.6, competition: 0.4 }
+  floor_2f_plus: { supply: 0.6, competition: 0.4 },
+  renovated: { supply: 1.2, competition: 1.2 }
 };
 
 export function CalculatorTab(props: CalculatorTabProps) {
@@ -1920,7 +1921,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               </optgroup>
                             )}
                             {minorStations.length > 0 && (
-                              <optgroup label="🛤 各停小站 / 二線各停 / 偏遠小站 (行情調減約 -0.5 萬円/月)">
+                              <optgroup label="🛤 各停小站 / 二線各停 / 偏遠小站 (行情調減約 −0.5 萬円/月)">
                                 {minorStations.map(s => (
                                   <option key={s.name} value={s.name}>
                                     {toJapaneseStationName(s.name)}駅 ({s.lines.map(toJapaneseLineName).join(", ")}) — 行情相對親民
@@ -2025,7 +2026,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">+ {getModifierPrice(mod.price, mod.id).toLocaleString()} 円 / 月</div>
+                                    <div className="mt-0.5 font-mono text-[10px] font-bold text-[#00a174]">+ {getModifierPrice(mod.price, mod.id).toLocaleString()} 円 / 月</div>
                                   </div>
                                 </label>
                               );
@@ -2069,7 +2070,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="mt-0.5 font-mono text-[10px] text-[#B13818]">− {Math.abs(getModifierPrice(mod.price, mod.id)).toLocaleString()} 円 / 月</div>
+                                    <div className="mt-0.5 font-mono text-[10px] font-bold text-[#B13818]">− {Math.abs(getModifierPrice(mod.price, mod.id)).toLocaleString()} 円 / 月</div>
                                     {mod.id === "lp_gas" && (
                                       <div className="mt-1 text-[9px] leading-relaxed text-[#B13818]">租金折讓情境估算；LP 瓦斯使用費可能較高，總居住成本不一定下降。</div>
                                     )}
@@ -2152,8 +2153,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                       )}
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
-                                    <div className="text-[10px] text-[#00a174] font-bold mt-1 font-mono">
-                                      +{(dynamicMult * 100).toFixed(0)}% 估值溢價
+                                    <div className="mt-1 font-mono text-[10px] font-bold text-[#00a174]">
+                                      + {(dynamicMult * 100).toFixed(0)}% 估值溢價
                                     </div>
                                   </div>
                                 </label>
@@ -2196,7 +2197,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     </div>
                                     <div className="text-[10px] text-zinc-500 mt-1 leading-normal font-sans">{mod.description}</div>
                                     <div className="mt-1 font-mono text-[10px] font-bold text-[#B13818]">
-                                      {Math.abs(dynamicMult * 100).toFixed(0)}% 估值折價
+                                      − {Math.abs(dynamicMult * 100).toFixed(0)}% 估值折價
                                     </div>
                                   </div>
                                 </label>
@@ -2260,8 +2261,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 const adjustedPrice = getModifierPrice(price);
                                 return (
                                   <span className={`font-bold font-mono ${adjustedPrice >= 0 ? "text-[#00a174]" : "text-[#B13818]"}`}>
-                                    {adjustedPrice >= 0 ? "+" : ""}
-                                    {adjustedPrice.toLocaleString()} 円
+                                    {adjustedPrice >= 0 ? "+ " : "− "}
+                                    {Math.abs(adjustedPrice).toLocaleString()} 円
                                   </span>
                                 );
                               })()}
@@ -2282,8 +2283,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                     ? "text-[#00a174]" 
                                     : "text-[#B13818]"
                                 }`}>
-                                  {modifierSubtotal >= 0 ? "+" : ""}
-                                  {modifierSubtotal.toLocaleString()} 円
+                                  {modifierSubtotal >= 0 ? "+ " : "− "}
+                                  {Math.abs(modifierSubtotal).toLocaleString()} 円
                                 </span>
                               </div>
                               <div className="divide-y divide-[#E1E6E3] border-y border-[#E1E6E3] text-[11px] leading-relaxed">
@@ -2301,8 +2302,8 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         <span>{mod.text}</span>
                                       </span>
                                       <span className={`shrink-0 font-mono font-medium ${isPlus ? "text-[#008C68]" : "text-[#B13818]"}`}>
-                                        {isPlus ? "+" : ""}
-                                        {adjustedPrice.toLocaleString()} 円
+                                        {isPlus ? "+ " : "− "}
+                                        {Math.abs(adjustedPrice).toLocaleString()} 円
                                       </span>
                                     </div>
                                   );
@@ -2552,7 +2553,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                         <span>{mod.text}</span>
                                       </span>
                                       <span className={`shrink-0 font-mono font-medium ${isPlus ? "text-[#008C68]" : "text-[#B13818]"}`}>
-                                        {isPlus ? "+" : "-"}{Math.abs(dynamicMult * 100).toFixed(0)}%
+                                        {isPlus ? "+ " : "− "}{Math.abs(dynamicMult * 100).toFixed(0)}%
                                       </span>
                                     </div>
                                   );

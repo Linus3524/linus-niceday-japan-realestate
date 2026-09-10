@@ -62,7 +62,7 @@ export type BudgetModifierId =
   | "age_over_30y" | "age_over_40y"
   | "no_elevator_4f" | "first_floor" | "compact_15_18sqm"
   | "wooden" | "washitsu"
-  | "tower" | "lp_gas" | "separate_bath" | "floor_2f_plus";
+  | "tower" | "lp_gas" | "separate_bath" | "floor_2f_plus" | "renovated";
 
 /**
  * 行情資料的來源標註。每一批資料都要能回答「哪來的、什麼時候的、有多可信」，
@@ -687,7 +687,7 @@ export const budgetModifiers: BudgetModifier[] = [
   { id: "ldk2_50sqm", text: "2LDK房型 50平方米以上", price: 10000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
   { id: "ldk2_60sqm", text: "2LDK房型 60平方米以上", price: 20000, type: "plus", category: "equipment", applicableLayouts: ["ldk2"] },
   
-  { id: "autolock_elevator", text: "附自動門電梯大樓", price: 5000, type: "plus", category: "building" },
+  { id: "autolock_elevator", text: "附防盜自動門電梯大樓 (オートロック)", price: 5000, type: "plus", category: "building" },
   { id: "age_within_5y", text: "屋齡 5 年內新房", price: 10000, type: "plus", category: "building" },
   { id: "age_within_10y", text: "屋齡 5〜10 年內次新房", price: 5000, type: "plus", category: "building" },
   { id: "major_station", text: "熱門大站 (2條線路以上)", price: 10000, type: "plus", category: "location" },
@@ -718,11 +718,19 @@ export const budgetModifiers: BudgetModifier[] = [
   //
   // 乾濕分離：東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス
   // 實務行情高約 7,000〜10,000 円，取中間值。
-  { id: "separate_bath", text: "乾濕分離（衛浴分離）", price: 8000, type: "plus", category: "equipment", basis: "東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス 實務行情高約 7,000〜10,000 円，取中間值" },
+  { id: "separate_bath", text: "乾濕分離（衛浴分離・BT別）", price: 8000, type: "plus", category: "equipment", basis: "東京 1K／單間，バス・トイレ別 相對 3 點式ユニットバス 實務行情高約 7,000〜10,000 円，取中間值" },
   // 2 樓以上：同物件同格局，1 樓通常便宜約 3,000 円（多數物件落在 1,000〜5,000）。
   // 指定 2 樓以上等於把最便宜的那一層排除在外，但 1 樓只佔市場一部分，
   // 因此溢價取比 1 樓折讓小的 2,000 円，與既有的「房間位於一樓 −3000」互相呼應。
-  { id: "floor_2f_plus", text: "指定 2 樓以上", price: 2000, type: "plus", category: "building", basis: "1 樓通常便宜約 3,000 円；指定 2 樓以上只排除最便宜的一層，故取小於該折讓的 2,000 円" }
+  { id: "floor_2f_plus", text: "指定 2 樓以上", price: 2000, type: "plus", category: "building", basis: "1 樓通常便宜約 3,000 円；指定 2 樓以上只排除最便宜的一層，故取小於該折讓的 2,000 円" },
+  {
+    id: "renovated",
+    text: "全室現代化翻新 (リノベーション済み)",
+    price: 8000,
+    type: "plus",
+    category: "building",
+    basis: "室內水電管線與廚衛地板全面翻新，屋況與設備媲美新古屋，實務租金溢價約 5,000〜10,000 円"
+  }
 ];
 
 const budgetModifierById = new Map(budgetModifiers.map(modifier => [modifier.id, modifier]));

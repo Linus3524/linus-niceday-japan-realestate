@@ -22,6 +22,7 @@ import {
   Layers,
   LoaderCircle,
   MapPin,
+  MinusCircle,
   Navigation,
   RefreshCw,
   Ruler,
@@ -454,7 +455,16 @@ interface AnalyzeListingResult {
     sourceLabel?: string;
     sourceDate?: string;
   } | null;
-  verdict: { status: string; headline: string; detail: string } | null;
+  verdict: {
+    status: string;
+    headline: string;
+    detail: string;
+    factors?: Array<{ label: string; ratePercent: number; monthlyYen?: number; note: string; level: number; category: string }>;
+    positiveFactorsSumPercent?: number;
+    negativeFactorsSumPercent?: number;
+    netFactorsSumPercent?: number;
+    nominalDiffPercent?: number;
+  } | null;
   initialCostMonths: number | null;
   initialCostEstimate?: InitialCostEstimate | null;
   saleAnalysis?: SaleAnalysisVerdict | null;
@@ -3863,62 +3873,285 @@ export function ListingHealthCheck() {
                         </div>
                       )}
 
-                      {/* 下層：Linus 顧問觀點（條理化拆解與優勢 Tag） */}
-                      {cleanVerdictDetail && (
-                        <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
-                          <div className="mb-2 flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                            <Sparkles className="h-3.5 w-3.5 text-[#007D5A]" />
-                            <span>市場行情與條件綜合評估</span>
-                          </div>
+                      {/* 下層：Linus 顧問觀點（條件與規格折溢價對照清單與優勢解析，對齊買房體驗） */}
+                      {cleanVerdictDetail && (() => {
+                        const rentalFactors = (() => {
+                          if (result.verdict?.factors && result.verdict.factors.length > 0) {
+                            return result.verdict.factors;
+                          }
+                          const fList: Array<{ label: string; ratePercent: number; note: string; level: number; category: string }> = [];
+                          const fields = result.extracted;
+                          
+                          // 車站徒步
+                          const walkMinutes = (() => {
+                            const wt = fields?.walkTime;
+                            if (!wt) return null;
+                            const m = wt.match(/(\d+)/);
+                            return m ? Number(m[1]) : null;
+                          })();
 
-                          {advantageMatch ? (
-                            <div className="space-y-2 text-xs text-[#3F5147]">
-                              {prefixText && (
-                                <p className="leading-relaxed">{prefixText}</p>
-                              )}
-                              {tags.length > 0 && (
-                                <div className="flex flex-wrap items-center gap-1.5">
-                                  <span className="text-[11px] font-bold text-[#66736C]">具備核心優勢：</span>
-                                  {tags.map((rawTag, idx) => {
-                                    const tagClean = rawTag.replace(/^配備\s*/, "").trim();
-                                    const match = tagClean.match(/^([^(（]+)(?:[(（](.*?)[)）])?$/);
-                                    const mainTitle = match ? match[1].trim() : tagClean;
-                                    const rawNote = match && match[2] ? match[2].trim() : null;
-                                    const isLong = rawNote && rawNote.length > 8;
-                                    const displayNote = rawNote && !isLong ? rawNote : null;
-                                    const tooltip = rawNote || undefined;
+                          if (walkMinutes !== null) {
+                            if (walkMinutes <= 3) {
+                              fList.push({ label: "近站交通優勢", ratePercent: 10.0, note: `車站徒步 ${walkMinutes} 分，日常通勤時間與負擔大幅降低`, level: 5, category: "location" });
+                            } else if (walkMinutes <= 7) {
+                              fList.push({ label: "近站交通優勢", ratePercent: 5.0, note: `車站徒步 ${walkMinutes} 分，步行 7 分內黃金通勤圈`, level: 3, category: "location" });
+                            } else if (walkMinutes >= 11 && walkMinutes <= 15) {
+                              fList.push({ label: "車站徒步腳程稍長", ratePercent: -5.0, note: `車站徒步 ${walkMinutes} 分，腳程稍長，租金反映折讓換取生活空間`, level: 2, category: "location" });
+                            } else if (walkMinutes > 15) {
+                              fList.push({ label: "車站徒步腳程較遠", ratePercent: -12.0, note: `車站徒步 ${walkMinutes} 分，偏離核心生活站圈，租金有明顯讓利`, level: 4, category: "location" });
+                            }
+                          }
 
-                                    return (
-                                      <span
-                                        key={idx}
-                                        title={tooltip}
-                                        className="inline-flex items-center gap-1 border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#007D5A]"
-                                      >
-                                        <CheckCircle2 className="h-3 w-3 shrink-0 text-[#007D5A]" />
-                                        <span>{mainTitle}</span>
-                                        {displayNote && (
-                                          <span className="text-[10px] font-medium opacity-85">
-                                            （{displayNote}）
+                          // 屋齡
+                          const ageStr = fields?.age || "";
+                          const ageMatch = ageStr.match(/(\d+)/);
+                          const ageYears = ageMatch ? Number(ageMatch[1]) : null;
+                          if (ageYears !== null) {
+                            if (ageYears <= 3) {
+                              fList.push({ label: "新築完工成屋", ratePercent: 18.0, note: `屋齡僅 ${ageYears} 年，建築外觀與設備維持頂尖健康水準`, level: 5, category: "age" });
+                            } else if (ageYears <= 5) {
+                              fList.push({ label: "淺築新古屋", ratePercent: 12.0, note: `屋齡僅 ${ageYears} 年，建築設備現代新穎`, level: 4, category: "age" });
+                            } else if (ageYears <= 10) {
+                              fList.push({ label: "10年內次新房", ratePercent: 6.0, note: `屋齡 ${ageYears} 年，維持現代化規格水準`, level: 2, category: "age" });
+                            } else if (ageYears >= 21 && ageYears <= 30) {
+                              fList.push({ label: "屋齡中古折讓", ratePercent: -6.0, note: `屋齡 ${ageYears} 年，設備公設略有折舊，享有價格讓利`, level: 2, category: "age" });
+                            } else if (ageYears > 30) {
+                              fList.push({ label: "屋齡築古折讓", ratePercent: -15.0, note: `屋齡 ${ageYears} 年（築古建物），租金已反映折舊讓利優勢`, level: 4, category: "age" });
+                            }
+                          }
+
+                          // 樓層
+                          const floorStr = fields?.floor || "";
+                          const floorMatch = floorStr.match(/(\d+)/);
+                          const floorNum = floorMatch ? Number(floorMatch[1]) : null;
+                          if (floorNum === 1) {
+                            fList.push({ label: "房間位於一樓", ratePercent: -3.5, note: "一樓多有隱私與防盜考量，市場租金普遍折讓約 3,000 円/月", level: 2, category: "floor" });
+                          } else if (floorNum !== null && floorNum >= 2) {
+                            fList.push({ label: "位於 2 樓以上", ratePercent: 2.0, note: `房間位於 ${floorNum} 樓，排除一樓潮濕與防盜顧慮之主流樓層`, level: 1, category: "floor" });
+                          }
+
+                          // 專有面積
+                          const areaNum = result.parsed.area || (() => {
+                            const aStr = fields?.area || "";
+                            const m = aStr.match(/(\d+(?:\.\d+)?)/);
+                            return m ? Number(m[1]) : null;
+                          })();
+                          const roomType = result.parsed.roomType;
+                          let hasHandledArea = false;
+                          if (areaNum !== null && areaNum > 0) {
+                            hasHandledArea = true;
+                            if (roomType === "ldk1") {
+                              if (areaNum >= 40) {
+                                fList.push({ label: "專有空間加成", ratePercent: 6.0, note: `專有面積 ${areaNum}㎡（寬敞 1LDK，高於平均 32㎡）`, level: 3, category: "space" });
+                              } else if (areaNum >= 35) {
+                                fList.push({ label: "專有空間加成", ratePercent: 3.5, note: `專有面積 ${areaNum}㎡（空間充裕，起居動線舒暢）`, level: 2, category: "space" });
+                              } else if (areaNum < 28) {
+                                fList.push({ label: "室內空間緊湊", ratePercent: -5.0, note: `專有面積 ${areaNum}㎡（緊湊型 1LDK/1DK）`, level: 2, category: "space" });
+                              }
+                            } else if (roomType === "ldk2") {
+                              if (areaNum >= 60) {
+                                fList.push({ label: "專有空間加成", ratePercent: 10.0, note: `專有面積 ${areaNum}㎡（寬敞 2LDK，遠高於家庭平均 48㎡）`, level: 4, category: "space" });
+                              } else if (areaNum >= 50) {
+                                fList.push({ label: "專有空間加成", ratePercent: 5.0, note: `專有面積 ${areaNum}㎡（空間充裕，獨立雙房動線）`, level: 3, category: "space" });
+                              } else if (areaNum < 42) {
+                                fList.push({ label: "室內空間緊湊", ratePercent: -6.0, note: `專有面積 ${areaNum}㎡（緊湊型 2LDK/2DK）`, level: 2, category: "space" });
+                              }
+                            } else if (roomType === "ldk3") {
+                              if (areaNum >= 80) {
+                                fList.push({ label: "專有空間加成", ratePercent: 10.0, note: `專有面積 ${areaNum}㎡（大坪數三房家庭宅，高於平均 68㎡）`, level: 4, category: "space" });
+                              } else if (areaNum >= 70) {
+                                fList.push({ label: "專有空間加成", ratePercent: 4.0, note: `專有面積 ${areaNum}㎡（空間充裕，家庭動線舒適）`, level: 2, category: "space" });
+                              } else if (areaNum < 60) {
+                                fList.push({ label: "室內空間緊湊", ratePercent: -6.0, note: `專有面積 ${areaNum}㎡（緊湊型 3LDK）`, level: 2, category: "space" });
+                              }
+                            } else {
+                              if (areaNum >= 25) {
+                                fList.push({ label: "專有空間加成", ratePercent: 6.0, note: `專有面積 ${areaNum}㎡（寬敞大套房，高於單身平均 18㎡）`, level: 3, category: "space" });
+                              } else if (areaNum >= 20) {
+                                fList.push({ label: "專有空間加成", ratePercent: 3.0, note: `專有面積 ${areaNum}㎡（空間充裕，動線舒適）`, level: 2, category: "space" });
+                              } else if (areaNum < 16) {
+                                fList.push({ label: "室內空間緊湊", ratePercent: -6.0, note: `專有面積 ${areaNum}㎡（空間緊湊精簡型套房）`, level: 2, category: "space" });
+                              }
+                            }
+                          }
+
+                          tags.forEach(t => {
+                            if (/專有面積|面積/.test(t)) {
+                              if (!hasHandledArea) {
+                                fList.push({ label: "專有空間加成", ratePercent: 8.0, note: t.replace(/^專有面積\s*/, "專有面積 "), level: 4, category: "space" });
+                              }
+                            } else if (/乾濕分離|バス・トイレ別/.test(t)) {
+                              fList.push({ label: "乾濕分離（BT別）", ratePercent: 3.5, note: "浴室廁所獨立分開，日本租屋市場核心剛需配置", level: 2, category: "amenity" });
+                            } else if (/獨立洗面|洗面台/.test(t)) {
+                              fList.push({ label: "獨立洗面台", ratePercent: 3.0, note: "獨立梳洗動線與鏡櫃收納，女性與單身熱門加分設備", level: 2, category: "amenity" });
+                            } else if (/自動門鎖|オートロック/.test(t)) {
+                              fList.push({ label: "防盜自動門鎖", ratePercent: 2.5, note: "オートロック 門禁門卡管制，提升獨居防犯安全性", level: 2, category: "amenity" });
+                            } else if (/RC造|SRC造|鋼筋/.test(t)) {
+                              fList.push({ label: /SRC/.test(t) ? "SRC 鋼骨鋼筋造" : "RC 鋼筋混凝土造", ratePercent: 2.0, note: "耐火耐震與優良隔音結構，居住品質遠優於木造鐵骨", level: 1, category: "structure" });
+                            } else if (/木造|軽量鉄骨/.test(t)) {
+                              fList.push({ label: "木造／輕鋼構結構", ratePercent: -10.0, note: "隔音耐震保溫次於 RC 鋼筋混凝土，但總體租金極具親民優勢", level: 4, category: "structure" });
+                            } else if (/網路|wifi/i.test(t)) {
+                              fList.push({ label: "附免費光纖網路", ratePercent: 3.5, note: "入居即享高速 Wi-Fi，免自行簽約每月現省約 4,500 円", level: 2, category: "internet" });
+                            } else if (/宅配/.test(t)) {
+                              fList.push({ label: "宅配箱", ratePercent: 1.5, note: "不在家也能安全收取包裹，現代都會生活必備配備", level: 1, category: "amenity" });
+                            } else if (/乾燥機|暖風/.test(t)) {
+                              fList.push({ label: "浴室暖風乾燥機", ratePercent: 1.5, note: "雨天花粉季可室內乾衣，冬季預先暖房並防止浴室發霉", level: 1, category: "amenity" });
+                            } else if (/リノベ|翻新|全面改装/.test(t)) {
+                              fList.push({ label: "室內現代化翻新", ratePercent: 6.0, note: "リノベーション 重新翻修，室內水電廚衛設備媲美新屋", level: 3, category: "amenity" });
+                            }
+                          });
+                          return fList;
+                        })();
+
+                        const positiveFactorsSum = result.verdict?.positiveFactorsSumPercent ?? Number(
+                          rentalFactors.filter(f => f.ratePercent > 0).reduce((s, f) => s + f.ratePercent, 0).toFixed(1)
+                        );
+                        const negativeFactorsSum = result.verdict?.negativeFactorsSumPercent ?? Number(
+                          rentalFactors.filter(f => f.ratePercent < 0).reduce((s, f) => s + f.ratePercent, 0).toFixed(1)
+                        );
+                        const netFactorsSum = result.verdict?.netFactorsSumPercent ?? Number(
+                          rentalFactors.reduce((s, f) => s + f.ratePercent, 0).toFixed(1)
+                        );
+                        const nominalDiff = result.verdict?.nominalDiffPercent ?? (result.range
+                          ? Number((((totalMonthlyCost - result.range.median) / Math.max(1, result.range.median)) * 100).toFixed(1))
+                          : 0);
+
+                        return (
+                          <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
+                            <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+                                <Sparkles className="h-3.5 w-3.5 text-[#007D5A]" />
+                                <span>物件條件與規格折溢價分析</span>
+                              </div>
+                              <span className="text-[10px] text-[#66736C]">
+                                綜合地點、屋齡、樓層、結構與設備因子拆解
+                              </span>
+                            </div>
+
+                            <div className="space-y-3 text-xs text-[#3F5147]">
+                              {/* 頂部對照條：規格條件加減 vs 實際租金差距 */}
+                              {rentalFactors.length > 0 && (
+                                <div className="flex flex-col gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3 sm:flex-row sm:items-center sm:justify-between">
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="text-[#66736C]">優勢加成合計：</span>
+                                      <span className="font-mono font-black text-[#007D5A]">
+                                        +{positiveFactorsSum.toFixed(1)}%
+                                      </span>
+                                      {result.range && (
+                                        <span className="text-[10px] text-[#66736C]">
+                                          （約 +{formatYen(Math.round(result.range.median * (positiveFactorsSum / 100)))} / 月）
+                                        </span>
+                                      )}
+                                    </div>
+                                    {negativeFactorsSum < 0 && (
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-[#66736C]">折減讓利合計：</span>
+                                        <span className="font-mono font-black text-[#B13818]">
+                                          −{Math.abs(negativeFactorsSum).toFixed(1)}%
+                                        </span>
+                                        {result.range && (
+                                          <span className="text-[10px] text-[#66736C]">
+                                            （約 −{formatYen(Math.round(result.range.median * (Math.abs(negativeFactorsSum) / 100)))} / 月）
                                           </span>
                                         )}
+                                      </div>
+                                    )}
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="text-[#66736C]">條件調整淨值：</span>
+                                      <span className={`font-mono font-bold ${netFactorsSum >= 0 ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                                        {netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}
                                       </span>
-                                    );
-                                  })}
+                                    </div>
+                                    {result.range && (
+                                      <div className="flex items-center gap-1.5 border-l border-zinc-300 pl-3">
+                                        <span className="text-[#66736C]">相對區域中位數：</span>
+                                        <span className="font-mono font-bold text-[#1A2A22]">
+                                          {nominalDiff > 0 ? `+${nominalDiff.toFixed(1)}%` : nominalDiff < 0 ? `−${Math.abs(nominalDiff).toFixed(1)}%` : "0.0%"}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <span className={`inline-flex shrink-0 items-center gap-1 border px-2 py-0.5 text-[11px] font-bold ${
+                                    netFactorsSum >= nominalDiff
+                                      ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                      : "border-[#E8C4A8] bg-[#FFF9ED] text-[#7A5A1F]"
+                                  }`}>
+                                    <CheckCircle2 className="h-3 w-3" />
+                                    <span>{netFactorsSum >= nominalDiff ? "條件與規格充分支撐" : "部分條件加成支撐"}</span>
+                                  </span>
                                 </div>
                               )}
-                              {conclusionText && (
-                                <p className="border-l-2 border-[#007D5A] bg-[#F5F8F6] p-2.5 text-xs font-medium leading-relaxed text-[#1A2A22]">
-                                  {conclusionText}
-                                </p>
+
+                              {/* 規格影響程度明細清單（對齊買房體驗） */}
+                              {rentalFactors.length > 0 ? (
+                                <div className="border border-[#DDE3DF] bg-white">
+                                  <div className="hidden sm:grid grid-cols-[1.5rem_8.5rem_1fr_4.5rem_5rem] items-center gap-3 border-b border-[#DDE3DF] bg-[#FAFCFB] px-3 py-2 text-[10px] font-bold text-[#66736C]">
+                                    <span>#</span>
+                                    <span>評估條件項目</span>
+                                    <span>實務效益與說明</span>
+                                    <span className="text-center">影響強度</span>
+                                    <span className="text-right">預估影響幅度</span>
+                                  </div>
+                                  <div className="divide-y divide-[#E8ECE9]">
+                                    {rentalFactors.map((f, i) => {
+                                      const isPlus = f.ratePercent >= 0;
+                                      return (
+                                        <div
+                                          key={i}
+                                          className="grid grid-cols-1 sm:grid-cols-[1.5rem_8.5rem_1fr_4.5rem_5rem] items-center gap-x-3 gap-y-1 p-2.5 sm:px-3 sm:py-2 text-xs hover:bg-[#F9FBFA] transition-colors"
+                                        >
+                                          <span className="hidden sm:inline font-mono text-[11px] tabular-nums text-[#8A9590]">
+                                            {i + 1}
+                                          </span>
+                                          <div className="flex items-center gap-1.5 font-bold text-[#1A2A22]">
+                                            {isPlus ? (
+                                              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#007D5A]" />
+                                            ) : (
+                                              <MinusCircle className="h-3.5 w-3.5 shrink-0 text-[#B13818]" />
+                                            )}
+                                            <span>{f.label}</span>
+                                          </div>
+                                          <div className="text-[11px] text-[#66736C] leading-relaxed">
+                                            {f.note}
+                                          </div>
+                                          <div className="flex items-center justify-start sm:justify-center gap-1" title={`影響強度 ${f.level} / 5`}>
+                                            {[0, 1, 2, 3, 4].map(n => (
+                                              <span
+                                                key={n}
+                                                className="h-2 w-2 border"
+                                                style={{
+                                                  borderColor: n < f.level ? (isPlus ? "#007D5A" : "#B13818") : "#DDE3DF",
+                                                  backgroundColor: n < f.level ? (isPlus ? "#007D5A" : "#B13818") : "transparent"
+                                                }}
+                                              />
+                                            ))}
+                                          </div>
+                                          <div className={`font-mono text-xs font-bold tabular-nums text-left sm:text-right ${isPlus ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                                            {isPlus ? `+${f.ratePercent.toFixed(1)}%` : `−${Math.abs(f.ratePercent).toFixed(1)}%`}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ) : null}
+
+                              {/* 評定解析 */}
+                              {conclusionText ? (
+                                <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
+                                  <span className="font-bold text-[#007D5A]">評定解析：</span>
+                                  <span>{conclusionText}</span>
+                                </div>
+                              ) : (
+                                <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
+                                  {cleanVerdictDetail}
+                                </div>
                               )}
                             </div>
-                          ) : (
-                            <p className="text-xs leading-relaxed text-[#3F5147]">
-                              {cleanVerdictDetail}
-                            </p>
-                          )}
-                        </div>
-                      )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 );
