@@ -490,7 +490,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
                 : "bg-white text-[#66736C] hover:bg-[#F2F5F3]"
             }`}
           >
-            📍 設施互動標籤地圖
+            📍 周邊設施地圖
           </button>
           <button
             type="button"
@@ -501,7 +501,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
                 : "bg-white text-[#66736C] hover:bg-[#F2F5F3]"
             }`}
           >
-            🗺️ Google Maps 實景嵌入
+            🗺️ Google Maps 實景
           </button>
           {mapMode === "interactive" && (
             <button
@@ -521,7 +521,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           rel="noreferrer"
           className="flex items-center gap-1 text-xs font-bold text-[#007d5a] underline underline-offset-2 hover:text-[#005a41]"
         >
-          <span>在 Google 地圖全螢幕開啟</span>
+          <span>開啟 Google 地圖</span>
           <ExternalLink className="h-3.5 w-3.5" />
         </a>
       </div>

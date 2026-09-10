@@ -7,6 +7,7 @@ import {
 import type { SaleListingBenchmark } from "../data/saleListingMarket.js";
 import { stationsWithinHops } from "./localTransitRoute.js";
 import { toJapaneseStationName } from "./transit.js";
+import type { UnitFeatureEvaluation } from "./listingExtraction.js";
 import {
   computeStackedEstimate,
   getRentModifierIds,
@@ -588,6 +589,12 @@ export interface SalePriceVerdict {
   fairHighMan: number;
   /** 公開刊登平均，或 REINS 新規登録口徑換算的市場典型開價。 */
   typicalListingPriceMan: number | null;
+  /** 同規模在售行情區間下限 */
+  typicalListingPriceLowMan?: number | null;
+  /** 同規模在售行情區間上限 */
+  typicalListingPriceHighMan?: number | null;
+  /** 同規模在售行情區間文字標籤，例如 "5,300～5,645 萬円" */
+  listingRangeLabel?: string | null;
   listingDiffPercent: number | null;
   listingVerdict: "below" | "typical" | "above" | null;
   listingVerdictText: string | null;
@@ -604,6 +611,10 @@ export interface SalePriceVerdict {
   baselineNote: string;
   ageHandledInBaseline: boolean;
   factors: SalePriceFactor[];
+  /** 所有正向優勢條件（如翻新、近站、頂樓、角部屋、南向等）加總幅度（%） */
+  positiveFactorsSumPercent: number;
+  /** 所有條件（含折價與溢價）加總淨幅度（%） */
+  netFactorsSumPercent: number;
   cautions: string[];
 }
 
@@ -629,6 +640,8 @@ export function buildSalePriceVerdict(input: {
   medianPriceYen: number;
   /** MLIT 成交紀錄直接算出的㎡單價；有同屋齡帶樣本時應傳該分層中位數。 */
   medianSqmPriceYen?: number | null;
+  /** 該房型在該行政區的成交中位面積（㎡），用於將刊登在售開價校準至每㎡單價 */
+  medianAreaSqm?: number | null;
   /** true 代表 medianSqmPriceYen 已控制本案屋齡，不再疊加手估屋齡係數。 */
   ageControlledByMarket?: boolean;
   /**
@@ -669,6 +682,18 @@ export function buildSalePriceVerdict(input: {
     townCount: number;
   } | null;
   /**
+   * 交通樞紐度與多站利用（如可徒步至中野、新宿等核心大站，或 2 站 3 路線利用可能）。
+   */
+  transitHub?: {
+    hasMajorTerminal: boolean;
+    majorStation: string | null;
+    majorWalkMinutes: number | null;
+    totalStations: number;
+    totalLinesCount: number;
+    ratePercent: number;
+    note: string;
+  } | null;
+  /**
    * 帶租約物件的收益資訊：圖紙上的現行租金，以及同區同房型的市場租金行情。
    * 帶租約的成交價實質上由收益還原（年租金 ÷ 期待利回り）決定，
    * 所以租金比行情低多少，價格就該同幅往下調整。
@@ -687,6 +712,15 @@ export function buildSalePriceVerdict(input: {
   sampleCount?: number | null;
   /** 同區公開刊登平均優先；缺值時才使用同區域 REINS 成約／新規登録比。 */
   listingBenchmark?: SaleListingBenchmark | null;
+  /** 圖紙解析之單元格局與權利特徵（角部屋、朝向、露台、借地權等） */
+  unitFeatures?: UnitFeatureEvaluation | null;
+  /** 社區總戶數（用於評估規模效應：100戶以上大規模保值 vs 20戶以下小規模修繕風險） */
+  totalUnits?: number | null;
+  /** 大樓管理形態（全部委託／日勤／常駐 vs 自主管理） */
+  managementStyle?: string | null;
+  managementCompany?: string | null;
+  /** 大樓設備或特記文字（用於辨識無電梯、可飼育寵物等） */
+  buildingNotes?: string | null;
 }): SalePriceVerdict {
   const { salePriceYen, medianPriceYen, layout, areaSqm, ageYears, walkMinutes, floor, totalFloors } = input;
 
@@ -756,6 +790,19 @@ export function buildSalePriceVerdict(input: {
     else { walkRate = -0.30; factors.push({ label: "車站距離", ratePercent: -30, note: `最近站徒步 ${walkMinutes} 分（缺乏近站優勢）`, applied: false, basis: "estimate" }); }
   }
 
+  // ── 3.5 交通樞紐與多線共構 ──
+  // 除了最近站的步行時間，若本案在「熱門核心大站（如中野、新宿、澀谷等）」的步行圈內，
+  // 或享有 2 站 3 路線以上的跨站選擇，具備顯著的通勤彈性與資產抗跌溢價。
+  if (input.transitHub) {
+    factors.push({
+      label: "交通樞紐",
+      ratePercent: input.transitHub.ratePercent,
+      note: input.transitHub.note,
+      applied: false,
+      basis: "estimate",
+    });
+  }
+
   // ── 4. 樓層 ──
   //
   // 成交資料沒有階數欄位，改用市場調查值：一般公寓「每上升一層約 +0.5〜1.0%」，
@@ -823,13 +870,16 @@ export function buildSalePriceVerdict(input: {
   // ── 4.55 地段（町名）──
   // 同一個行政區裡，町與町的成交單價可以差到兩成以上（新宿区西新宿 vs 北新宿）。
   // 這個百分比在建快照時已控制屋齡與房型，代表的是地段本身而不是屋齡組成。
-  if (input.townPremium && Math.abs(input.townPremium.premiumPercent) >= 3) {
+  if (input.townPremium) {
     const t = input.townPremium;
     const pct = Math.round(t.premiumPercent * 10) / 10;
+    const isNeutral = Math.abs(pct) < 2;
     factors.push({
       label: "地段（町名）",
       ratePercent: pct,
-      note: `${t.town}在同區 ${t.townCount} 個町名中排第 ${t.rank} 名，成交單價相對同區行情${pct >= 0 ? "高" : "低"} ${Math.abs(pct)}%（${t.sampleCount} 筆成交）`,
+      note: isNeutral
+        ? `${t.town}在同區 ${t.townCount} 個町名中排第 ${t.rank} 名，成交單價等同全區平均水準（${pct >= 0 ? "+" : ""}${pct}%，${t.sampleCount} 筆成交）`
+        : `${t.town}在同區 ${t.townCount} 個町名中排第 ${t.rank} 名，成交單價相對同區行情${pct >= 0 ? "高" : "低"} ${Math.abs(pct)}%（${t.sampleCount} 筆成交）`,
       applied: false,
       basis: "data",
     });
@@ -901,6 +951,138 @@ export function buildSalePriceVerdict(input: {
           : `圖紙標示已整體翻新／改裝（築 ${ageYears} 年，屋齡越高翻新溢價越大）`,
       applied: false,
       basis: measuredReno !== null ? "data" : "estimate",
+    });
+  }
+
+  // ── 5.1 角部屋（邊間住戶）──
+  // 不動產流通推進中心（RETPC）《中古マンション価格査定マニュアル》手冊基準：角住戶 +3%～+5%；
+  // 東京カンテイ百萬筆大數據實證：同棟大樓角部屋成交單價平均高出 +4.2%。
+  if (input.unitFeatures?.isCornerUnit) {
+    factors.push({
+      label: "角部屋",
+      ratePercent: 4,
+      note: "角部屋（邊間住戶）：雙面採光通風佳、少一面鄰戶噪音干擾（不動產流通推進中心査定手冊基準 +3%～+5%，東京カンテイ實證溢價 +4.2%）",
+      applied: false,
+      basis: "estimate",
+    });
+  }
+
+  // ── 5.2 陽台朝向（開口部方位）──
+  // RETPC 査定手冊：南向/東南向 +3%～+5%，北向 -3%～-5%；
+  // 東京カンテイ大數據：首都圈南北向公寓平均成交單價差 7%～9%。
+  if (input.unitFeatures?.facingDirection) {
+    const dir = input.unitFeatures.facingDirection;
+    const zh = input.unitFeatures.facingDirectionZh || "南向";
+    if (dir === "south" || dir === "southeast" || dir === "southwest") {
+      factors.push({
+        label: "陽台朝向",
+        ratePercent: 3,
+        note: `採光面朝向（${zh}）：日照時間長、冬暖夏涼受市場青睞（不動產流通推進中心査定手冊基準 +3%～+5%，東京カンテイ實證南北向價差 7%～9%）`,
+        applied: false,
+        basis: "estimate",
+      });
+    } else if (dir === "north" || dir === "northeast" || dir === "northwest") {
+      factors.push({
+        label: "陽台朝向",
+        ratePercent: -3,
+        note: `採光面朝向（${zh}）：冬季日照較短、採光受限（不動產流通推進中心査定手冊基準 -3%～-5%）`,
+        applied: false,
+        basis: "estimate",
+      });
+    }
+  }
+
+  // ── 5.3 專用露台 / 私人庭院 ──
+  if (input.unitFeatures?.hasRoofBalcony) {
+    factors.push({
+      label: "專用露台",
+      ratePercent: 5,
+      note: "附設景觀露台（ルーフバルコニー）：具備私人戶外活動與開闊眺望空間，屬稀少性溢價配備（査定手冊基準 +3%～+5%）",
+      applied: false,
+      basis: "estimate",
+    });
+  } else if (input.unitFeatures?.hasPrivateGarden) {
+    factors.push({
+      label: "專用庭院",
+      ratePercent: 3,
+      note: "1 樓附設私人專用庭院（專用使用權加成，平衡低樓層之隱私考量）",
+      applied: false,
+      basis: "estimate",
+    });
+  }
+
+  // ── 5.4 土地權利（借地權 vs 所有權）──
+  // RETPC 査定手冊與市場慣例：借地權無土地所有權，折價約 -20%～-35%。
+  if (input.unitFeatures?.isLeasehold) {
+    const typeLabel = input.unitFeatures.leaseholdType || "借地權";
+    factors.push({
+      label: "土地權利",
+      ratePercent: -25,
+      note: `土地權利為${typeLabel}（非所有權）：每月需繳交地代、重建或讓渡需地主承諾名義書換料，市場折價約 -20%～-35%`,
+      applied: false,
+      basis: "estimate",
+    });
+    cautions.push(`本案土地權利為「${typeLabel}」，非完全所有權。買方須每月負擔地代，未來轉手承貸成數通常較所有權低 1～2 成，且借地期限屆滿或改建時需地主承諾，請務必詳閱重要事項說明書。`);
+  }
+
+  // ── 5.42 大樓管理體制（自主管理 vs 專業委託）──
+  // 不動產流通推進中心査定手冊：「管理の良否」項目，全部委託日勤為基準，自主管理減點 -5%～-8%。
+  const mgmtText = `${input.managementStyle || ""} ${input.managementCompany || ""} ${input.buildingNotes || ""}`;
+  if (/自主管理/.test(mgmtText)) {
+    factors.push({
+      label: "管理體制",
+      ratePercent: -5,
+      note: "大樓為「自主管理」（無委託專業物業公司，住戶自行運作，銀行承貸嚴格且長期維護風險高，査定手冊折價約 -5%～-8%）",
+      applied: false,
+      basis: "estimate",
+    });
+  }
+
+  // ── 5.44 電梯配置（3 樓以上無電梯）──
+  // 不動產流通推進中心査定手冊：3 階以上エレベーター無住戶需逐層扣減使用效用比率。
+  const isElevatorNone = /エレベーター無|EV無|無EV|エレベータ無/.test(input.buildingNotes || "");
+  if (isElevatorNone && floor !== null && floor >= 3) {
+    factors.push({
+      label: "電梯配置",
+      ratePercent: -6,
+      note: `${floor} 樓且大樓未配置電梯（日常進出需爬梯，對長輩、重物不便，査定手冊折價約 -5%～-8%）`,
+      applied: false,
+      basis: "estimate",
+    });
+  }
+
+  // ── 5.46 社區戶數規模（規模效應）──
+  // 東京カンテイ實證統計：100 戶以上大規模社區公設與基金規模佳，保值溢價約 +3%；
+  // 20 戶以下小規模社區每戶分攤修繕費沉重，市場折價約 -3%。
+  if (input.totalUnits !== null && input.totalUnits !== undefined && input.totalUnits > 0) {
+    if (input.totalUnits >= 100) {
+      factors.push({
+        label: "社區規模",
+        ratePercent: 3,
+        note: `總戶數 ${input.totalUnits} 戶之大規模社區（公設完備與長期修繕具規模經濟，東京カンテイ實證保值溢價約 +3%）`,
+        applied: false,
+        basis: "estimate",
+      });
+    } else if (input.totalUnits < 20) {
+      factors.push({
+        label: "社區規模",
+        ratePercent: -3,
+        note: `總戶數僅 ${input.totalUnits} 戶之小規模社區（每戶分攤外牆拉皮等重大修繕費用較沉重，市場折價約 -3%）`,
+        applied: false,
+        basis: "estimate",
+      });
+    }
+  }
+
+  // ── 5.48 寵物飼育（規約許可）──
+  // 日本都會區約僅 35% 社區可飼養寵物，具流通稀少性優勢。
+  if (/ペット飼育可|ペット可|ペット相談|小型犬/i.test(input.buildingNotes || "")) {
+    factors.push({
+      label: "寵物飼育",
+      ratePercent: 2,
+      note: "規約允許飼育寵物（都會區流通稀缺加分，轉手買盤與租客吸引力廣，市場溢價約 +2%）",
+      applied: false,
+      basis: "estimate",
     });
   }
 
@@ -1029,14 +1211,61 @@ export function buildSalePriceVerdict(input: {
   const diffPercent = Math.round(((salePriceYen - expectedPriceYen) / expectedPriceYen) * 1000) / 10;
   const rawDiffPercent = Math.round(((salePriceYen - medianPriceYen) / medianPriceYen) * 1000) / 10;
 
-  // ── 6. 公開販售市場第二基準 ──
+  // ── 6. 公開販售市場第二基準（同規模在售行情） ──
   const listingBenchmark = input.listingBenchmark ?? null;
   const listingPremiumRate = listingBenchmark?.kind === "reins_ratio"
     ? reinsNewListingPremiumRate(listingBenchmark)
     : null;
-  const typicalListingPriceYen = listingBenchmark?.kind === "public_listing_average"
-    ? listingBenchmark.averageListingPriceYen
-    : listingPremiumRate === null ? null : expectedPriceYen * (1 + listingPremiumRate);
+
+  let typicalListingPriceYen: number | null = null;
+  let typicalListingPriceLowYen: number | null = null;
+  let typicalListingPriceHighYen: number | null = null;
+  let listingRangeLabel: string | null = null;
+
+  if (listingBenchmark?.kind === "public_listing_average") {
+    const rawAvgYen = listingBenchmark.averageListingPriceYen;
+    if (areaAdjusted && areaSqm !== null && areaSqm > 0) {
+      // 依本案專有面積與屋齡校準在售開價行情：
+      // 1. 取得該房型在該區的代表面積（優先採用國交省成交中位面積，無則採用房型面積帶中點）
+      const refAreaSqm = (input.medianAreaSqm && input.medianAreaSqm > 0)
+        ? input.medianAreaSqm
+        : layoutBandMidArea(layout);
+
+      // 2. 換算 At Home 每㎡刊登開價，並依本案實際面積換算總價
+      const askingSqmPrice = rawAvgYen / refAreaSqm;
+      let calibratedAskYen = askingSqmPrice * areaSqm;
+
+      // 3. 若有同屋齡帶成交單價，按屋齡相對大盤的價格比率微調
+      if (input.ageControlledByMarket && input.medianSqmPriceYen && input.medianSqmPriceYen > 0) {
+        const overallSqmPrice = (input.medianPriceYen && refAreaSqm > 0)
+          ? (input.medianPriceYen / refAreaSqm)
+          : null;
+        if (overallSqmPrice && overallSqmPrice > 0) {
+          const ageRatio = Math.max(0.7, Math.min(1.4, input.medianSqmPriceYen / overallSqmPrice));
+          calibratedAskYen *= ageRatio;
+        }
+      }
+
+      // 4. 上限：都會區新規開價常態溢價率（賣方開價通常較成交基準高出約 18% 作為議價與利潤空間）
+      const askCeilingYen = expectedPriceYen * 1.18;
+
+      typicalListingPriceLowYen = Math.round(Math.min(calibratedAskYen, askCeilingYen));
+      typicalListingPriceHighYen = Math.round(Math.max(calibratedAskYen, askCeilingYen));
+      typicalListingPriceYen = Math.round((typicalListingPriceLowYen + typicalListingPriceHighYen) / 2);
+      listingRangeLabel = `${man(typicalListingPriceLowYen)}～${man(typicalListingPriceHighYen)}`;
+    } else {
+      typicalListingPriceYen = rawAvgYen;
+      typicalListingPriceLowYen = Math.round(rawAvgYen * 0.95);
+      typicalListingPriceHighYen = Math.round(rawAvgYen * 1.05);
+      listingRangeLabel = `${man(typicalListingPriceLowYen)}～${man(typicalListingPriceHighYen)}`;
+    }
+  } else if (listingBenchmark?.kind === "reins_ratio" && listingPremiumRate !== null) {
+    typicalListingPriceYen = expectedPriceYen * (1 + listingPremiumRate);
+    typicalListingPriceLowYen = Math.round(expectedPriceYen * (1 + listingPremiumRate * 0.85));
+    typicalListingPriceHighYen = Math.round(expectedPriceYen * (1 + listingPremiumRate * 1.15));
+    listingRangeLabel = `${man(typicalListingPriceLowYen)}～${man(typicalListingPriceHighYen)}`;
+  }
+
   const listingDiffPercent = typicalListingPriceYen === null
     ? null
     : Math.round(((salePriceYen - typicalListingPriceYen) / typicalListingPriceYen) * 1000) / 10;
@@ -1048,11 +1277,11 @@ export function buildSalePriceVerdict(input: {
         ? "above" as const
         : "typical" as const;
   const listingVerdictText = listingVerdict === "below"
-    ? "低於市場典型開價"
+    ? "低於市場在售行情"
     : listingVerdict === "above"
-      ? "高於市場典型開價"
+      ? "高於市場在售行情"
       : listingVerdict === "typical"
-        ? "與市場典型開價相當"
+        ? "落在市場在售區間"
         : null;
 
   const toMan = (v: number) => Math.round(v / 10000);
@@ -1129,11 +1358,17 @@ export function buildSalePriceVerdict(input: {
 
   // 3. 市面公開刊登對照
   if (listingBenchmark?.kind === "public_listing_average" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
-    const content = `${listingBenchmark.scopeLabel}在售平均 ${man(typicalListingPriceYen)}，本案${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%。刊登價非成交價，僅供參考。`;
+    const rangeText = (typicalListingPriceLowYen && typicalListingPriceHighYen && typicalListingPriceLowYen !== typicalListingPriceHighYen)
+      ? `（區間約 ${man(typicalListingPriceLowYen)}～${man(typicalListingPriceHighYen)}）`
+      : "";
+    const ceilingDiff = typicalListingPriceHighYen && salePriceYen > typicalListingPriceHighYen
+      ? `，高於區間上限約 ${Math.round(((salePriceYen - typicalListingPriceHighYen) / typicalListingPriceHighYen) * 1000) / 10}%`
+      : "";
+    const content = `${listingBenchmark.scopeLabel}在售同規模行情約 ${man(typicalListingPriceYen)}${rangeText}，本案相對中位${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%${ceilingDiff}。基準已按本案面積與條件校準，刊登價非成交價，僅供參考。`;
     insightPoints.push({
       id: "market",
-            tag: "在售對照",
-      title: `在售公開刊登平均：約 ${man(typicalListingPriceYen)}`,
+      tag: "在售對照",
+      title: `在售同規模行情：約 ${man(typicalListingPriceYen)}${rangeText}`,
       content,
       type: "market",
     });
@@ -1141,11 +1376,14 @@ export function buildSalePriceVerdict(input: {
   } else if (listingBenchmark?.kind === "reins_ratio" && typicalListingPriceYen !== null && listingDiffPercent !== null) {
     const premiumPercent = Math.round(listingPremiumRate! * 1000) / 10;
     const discountPercent = Math.round(reinsImpliedDiscountFromListingRate(listingBenchmark) * 1000) / 10;
-    const content = `${listingBenchmark.market}新規開價㎡單價高於成約 ${premiumPercent}%，換算典型開價約 ${man(typicalListingPriceYen)}，本案${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%。此為市場平均差距，不代表本案可議相同幅度。`;
+    const rangeText = (typicalListingPriceLowYen && typicalListingPriceHighYen)
+      ? `（區間約 ${man(typicalListingPriceLowYen)}～${man(typicalListingPriceHighYen)}）`
+      : "";
+    const content = `${listingBenchmark.market}新規開價㎡單價高於成約 ${premiumPercent}%，換算典型開價約 ${man(typicalListingPriceYen)}${rangeText}，本案${listingDiffPercent >= 0 ? "高" : "低"} ${Math.abs(listingDiffPercent)}%。此為市場平均差距，不代表本案可議相同幅度。`;
     insightPoints.push({
       id: "market",
-            tag: "在售對照",
-      title: `REINS 市場新規開價基準：約 ${man(typicalListingPriceYen)}`,
+      tag: "在售對照",
+      title: `REINS 市場新規開價基準：約 ${man(typicalListingPriceYen)}${rangeText}`,
       content,
       type: "market",
     });
@@ -1154,12 +1392,45 @@ export function buildSalePriceVerdict(input: {
     const content = "此地區沒有同口徑的在售統計，僅呈現官方成交行情。";
     insightPoints.push({
       id: "market",
-            tag: "在售對照",
+      tag: "在售對照",
       title: "在售對照",
       content,
       type: "market",
     });
     points.push(`• 【市面刊登對照】：${content}`);
+  }
+
+  const positiveFactorsSumPercent = Math.round(
+    factors.filter(f => f.ratePercent > 0).reduce((sum, f) => sum + f.ratePercent, 0) * 10
+  ) / 10;
+  const netFactorsSumPercent = Math.round(
+    factors.reduce((sum, f) => sum + f.ratePercent, 0) * 10
+  ) / 10;
+
+  if (factors.length > 0 && positiveFactorsSumPercent > 0) {
+    let factorsEvaluationText = "";
+    if (diffPercent > 0) {
+      if (Math.abs(diffPercent - positiveFactorsSumPercent) <= 10) {
+        factorsEvaluationText = `本案個別優勢條件（如翻新、站距、樓層、角部屋、朝向等）加總影響幅度達 +${positiveFactorsSumPercent}%，與賣方開價相對同區同屋齡基準的溢價幅度（高於基準 ${diffPercent}%）高度吻合。這代表賣方開價具備客觀條件支撐，非隨意開高。`;
+      } else if (diffPercent > positiveFactorsSumPercent + 15) {
+        factorsEvaluationText = `本案各項優勢條件加總幅度為 +${positiveFactorsSumPercent}%，但賣方開價高於同區同屋齡基準 ${diffPercent}%（超出客觀優勢支撐約 ${Math.round((diffPercent - positiveFactorsSumPercent) * 10) / 10}%）。開價有測試市場水溫傾向，建議保留議價空間。`;
+      } else {
+        factorsEvaluationText = `本案優勢條件加總幅度為 +${positiveFactorsSumPercent}%，賣方開價高於同區同屋齡基準 ${diffPercent}%，各項優勢可充分支撐開價落點。`;
+      }
+    } else {
+      factorsEvaluationText = `本案開價低於同區同屋齡基準 ${Math.abs(diffPercent)}%（本案條件加總淨值為 ${netFactorsSumPercent >= 0 ? "+" : ""}${netFactorsSumPercent}%），${
+        renoRate === 0 && ageYears && ageYears >= 30 ? "主要反映未整體翻新之屋況折讓，留出預算空間供買方自行裝修。" : "開價具備價格優勢。"
+      }`;
+    }
+
+    insightPoints.push({
+      id: "factors_sum",
+      tag: "條件累計分析",
+      title: `優勢條件累計 +${positiveFactorsSumPercent}% vs 開價落點（${diffPercent >= 0 ? `高於基準 ${diffPercent}%` : `低於基準 ${Math.abs(diffPercent)}%`}）`,
+      content: factorsEvaluationText,
+      type: "advice",
+    });
+    points.push(`• 【條件累計與開價分析】：${factorsEvaluationText}`);
   }
 
   explanation = points.join("\n\n");
@@ -1176,6 +1447,9 @@ export function buildSalePriceVerdict(input: {
     fairLowMan: toMan(fairLow),
     fairHighMan: toMan(fairHigh),
     typicalListingPriceMan: typicalListingPriceYen === null ? null : toMan(typicalListingPriceYen),
+    typicalListingPriceLowMan: typicalListingPriceLowYen === null ? null : toMan(typicalListingPriceLowYen),
+    typicalListingPriceHighMan: typicalListingPriceHighYen === null ? null : toMan(typicalListingPriceHighYen),
+    listingRangeLabel,
     listingDiffPercent,
     listingVerdict,
     listingVerdictText,
@@ -1203,6 +1477,8 @@ export function buildSalePriceVerdict(input: {
         : "圖紙未讀到築年，無法就屋齡調整比較基準。",
     ageHandledInBaseline,
     factors,
+    positiveFactorsSumPercent,
+    netFactorsSumPercent,
     cautions,
   };
 }

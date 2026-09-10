@@ -271,7 +271,7 @@ export function parseFloorInfo(floorText: unknown, structureText?: unknown): {
 
   // 地下樓層以負數表示，避免與地上同名樓層混淆。
   const basement = floorRaw.match(/(?:B|地下)\s*(\d+)\s*階?/i);
-  const aboveGround = floorRaw.match(/(\d+)\s*階/);
+  const aboveGround = floorRaw.match(/^(\d+)$/) || floorRaw.match(/(?:所在階[：:\s]*)?(\d+)\s*(?:階|F|樓)/i);
   const floor = basement
     ? -Number(basement[1])
     : aboveGround
@@ -444,45 +444,79 @@ export function assessRepairReserve(params: {
   areaSqm: number | null;
   totalUnits: number | null;
   ageYears?: number | null;
+  monthlyManagementFeeYen?: number | null;
+  totalFloors?: number | null;
 }) {
-  const { monthlyRepairCostYen, areaSqm, totalUnits, ageYears } = params;
+  const { monthlyRepairCostYen, areaSqm, totalUnits, ageYears, monthlyManagementFeeYen, totalFloors } = params;
 
-  // 1. 每平米月提撥金額（國交省指引標準通常建議 200 ~ 300 円/㎡/月）
+  // 1. 每平米月提撥金額與國交省長期修繕指針標準
+  const isTower = typeof totalFloors === "number" && totalFloors >= 20;
+  const guidelineRange = isTower ? "250 〜 450 円/㎡/月" : "200 〜 350 円/㎡/月";
+  const lowThreshold = isTower ? 200 : 160;
+  const highThreshold = isTower ? 450 : 350;
+
   const reservePerSqm = areaSqm && areaSqm > 0 ? Math.round(monthlyRepairCostYen / areaSqm) : null;
 
   let reserveHealthLevel: "inadequate" | "healthy" | "heavy" = "healthy";
   let reserveHealthText = "積立金水準適中";
-  let reserveHealthNote = "符合日本國土交通省修繕積立金指引標準（約 200～300 円/㎡/月）。";
+  let reserveHealthNote = `符合日本國土交通省修繕積立金指針建議標準（約 ${guidelineRange}），大樓儲備提撥平準。`;
 
   if (reservePerSqm !== null) {
-    if (reservePerSqm < 160) {
+    if (reservePerSqm < lowThreshold) {
       reserveHealthLevel = "inadequate";
-      reserveHealthText = "積立金水準偏低";
-      reserveHealthNote = (ageYears && ageYears > 15)
-        ? `每平米僅提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月。屋齡已超過 15 年，需留意大樓修繕儲備金是否不足，未來可能有調漲或徵收一次性修繕一時金的風險。`
-        : `每平米提撥約 ¥${reservePerSqm.toLocaleString()}/㎡/月，初期費率較低，依長期修繕計畫未來 10 年通常會逐步階梯式調升。`;
-    } else if (reservePerSqm > 320) {
+      reserveHealthText = "積立金提撥偏低";
+      reserveHealthNote = (typeof ageYears === "number" && ageYears > 15)
+        ? `每平米月提撥約 ¥${reservePerSqm.toLocaleString()}/㎡，低於國交省指針建議區間（${guidelineRange}）。大樓屋齡已屆成熟期，需留意修繕儲備金是否充足，建議向管委會調閱長期修繕計畫與總會報告，確認是否有儲備不足、後續調漲或徵收修繕一時金之規劃。`
+        : `每平米月提撥約 ¥${reservePerSqm.toLocaleString()}/㎡，初期費率偏低。日本集合住宅初期多採階段增額方式（段階増額積立方式），依長期修繕計畫未來通常會分階段調升。`;
+    } else if (reservePerSqm > highThreshold) {
       reserveHealthLevel = "heavy";
       reserveHealthText = "積立金水準偏高";
-      reserveHealthNote = `每平米提撥達 ¥${reservePerSqm.toLocaleString()}/㎡/月，管委會提撥積極充足、財務體質穩健，但每月固定持有成本較顯著。`;
+      reserveHealthNote = `每平米月提撥達 ¥${reservePerSqm.toLocaleString()}/㎡，高於指針基準。管委會提撥充裕、財務體質穩健，但每月固定持有支出較顯著，需納入長期現金流考量。`;
+    } else {
+      reserveHealthLevel = "healthy";
+      reserveHealthText = "積立金水準適中";
+      reserveHealthNote = `每平米月提撥約 ¥${reservePerSqm.toLocaleString()}/㎡，符合日本國土交通省長期修繕計畫指針建議水準（約 ${guidelineRange}），大樓儲備提撥平準。`;
     }
   }
 
-  // 2. 戶數規模風險判定
+  // 管理費與修繕金比例平衡觀察
+  let reserveRatio: number | null = null;
+  let feeRatioNote: string | null = null;
+  if (monthlyManagementFeeYen && monthlyManagementFeeYen > 0 && monthlyRepairCostYen > 0) {
+    const totalMaintenanceCost = monthlyManagementFeeYen + monthlyRepairCostYen;
+    reserveRatio = Math.round((monthlyRepairCostYen / totalMaintenanceCost) * 100);
+    if (reserveRatio <= 25 && monthlyRepairCostYen < 10000) {
+      feeRatioNote = `管理與修繕費用配置：修繕積立金僅佔月維護費約 ${reserveRatio}%，日常管理支出佔比較高，長期修繕資本累積速度相對有限。`;
+    } else if (reserveRatio > 65) {
+      feeRatioNote = `管理與修繕費用配置：修繕積立金佔月維護費約 ${reserveRatio}%，大樓著重長期資本儲備，公共維護提撥充足。`;
+    }
+  }
+
+  // 2. 戶數規模風險判定（四級客觀判定）
   let scaleRiskLevel: "high_risk" | "medium" | "safe" = "safe";
   let scaleRiskText = "中大型社區";
   let scaleRiskNote = "戶數具規模經濟，公共設施維護與大規模修繕每戶分攤平準。";
 
-  if (totalUnits !== null) {
-    if (totalUnits < 20) {
-      scaleRiskLevel = "high_risk";
-      scaleRiskText = "極小規模社區（<20戶）";
-      scaleRiskNote = "⚠️ 總戶數少於 20 戶，每戶分攤電梯保養、外牆清洗與屋頂防水等固定成本壓力較大，管委會運作與欠繳風險需特別留意。";
-    } else if (totalUnits < 50) {
-      scaleRiskLevel = "medium";
-      scaleRiskText = "中小規模社區（20-49戶）";
-      scaleRiskNote = "戶數適中，管委會溝通通常較有效率，建議確認是否有正式長期修繕計劃書。";
-    }
+  if (totalUnits === null) {
+    scaleRiskLevel = "safe";
+    scaleRiskText = "總戶數待確認";
+    scaleRiskNote = "圖紙未載明大樓總戶數，建議向仲介確認戶數規模，以客觀評估每戶分攤公共維修費之負擔。";
+  } else if (totalUnits < 20) {
+    scaleRiskLevel = "high_risk";
+    scaleRiskText = "極小規模社區（<20戶）";
+    scaleRiskNote = `總戶數僅 ${totalUnits} 戶，戶數較少，每戶分攤電梯保養、外牆清洗與屋頂防水等固定公共開銷相對顯著；管理形式多為巡回或自主管理，需留意管委會運作與修繕儲備。`;
+  } else if (totalUnits < 50) {
+    scaleRiskLevel = "medium";
+    scaleRiskText = "中小規模社區（20-49戶）";
+    scaleRiskNote = `總戶數約 ${totalUnits} 戶，規模適中，自住率高時共識較易凝聚；建議確認社區是否有正式長期修繕計劃書及電梯設備更新排程。`;
+  } else if (totalUnits < 100) {
+    scaleRiskLevel = "safe";
+    scaleRiskText = "中大規模社區（50-99戶）";
+    scaleRiskNote = `總戶數約 ${totalUnits} 戶，戶數與管理成本具備良好平衡，每戶分攤公共維護費用平準，管理體制通常較為健全。`;
+  } else {
+    scaleRiskLevel = "safe";
+    scaleRiskText = "大規模社區／超高層（100戶以上）";
+    scaleRiskNote = `總戶數達 ${totalUnits} 戶，具備顯著規模經濟優勢，管理基金儲備通常較充裕、公設維持度良好；大規模修繕時需留意所有權人大會決策共識凝聚。`;
   }
 
   return {
@@ -490,9 +524,162 @@ export function assessRepairReserve(params: {
     reserveHealthLevel,
     reserveHealthText,
     reserveHealthNote,
+    guidelineRange,
+    reserveRatio,
+    feeRatioNote,
     scaleRiskLevel,
     scaleRiskText,
     scaleRiskNote,
+  };
+}
+
+export interface NetYieldBreakdownItem {
+  name: string;
+  amountYen: number;
+  annualAmountYen: number;
+  type: "income" | "deduction" | "subtotal";
+  note?: string;
+}
+
+export interface NetYieldBreakdown {
+  monthlyRentYen: number;
+  annualIncomeYen: number;
+  grossYield: number; // 表面利回り（%）
+  monthlyHoldingCostsYen: number;
+  annualHoldingCostsYen: number;
+  pmFeeRatePercent: number; // 租賃代管費率（通常 5%）
+  annualPmFeeYen: number;
+  monthlyPmFeeYen: number;
+  annualEstimatedPropertyTaxYen: number;
+  monthlyEstimatedPropertyTaxYen: number;
+  propertyTaxNote: string;
+  annualNetOperatingIncomeYen: number; // NOI
+  monthlyNetOperatingIncomeYen: number;
+  netYieldPercent: number; // 實質淨利回（%）
+  items: NetYieldBreakdownItem[];
+}
+
+/**
+ * 投資客實質到手淨回報（NOI / Net Yield）速算
+ * 依據日本常規租賃營運成本扣除：
+ * 1. 大樓管理費與修繕積立金（HOA）
+ * 2. 租賃代管委託費（PM Fee，常態約 5%）
+ * 3. 概算固定資產稅與都市計畫稅（固都稅）
+ */
+export function calculateNetYieldBreakdown(params: {
+  salePriceYen: number;
+  monthlyRentYen: number;
+  monthlyManagementFeeYen: number;
+  monthlyRepairReserveYen: number;
+  otherMonthlyFeesYen?: number;
+  statedPropertyTaxYen?: number | null;
+  pmFeeRatePercent?: number;
+}): NetYieldBreakdown {
+  const {
+    salePriceYen,
+    monthlyRentYen,
+    monthlyManagementFeeYen,
+    monthlyRepairReserveYen,
+    otherMonthlyFeesYen = 0,
+    statedPropertyTaxYen,
+    pmFeeRatePercent = 5.0,
+  } = params;
+
+  const annualIncomeYen = monthlyRentYen * 12;
+  const grossYield = salePriceYen > 0
+    ? Math.round((annualIncomeYen / salePriceYen) * 1000) / 10
+    : 0;
+
+  const monthlyHoldingCostsYen = Math.max(0, monthlyManagementFeeYen + monthlyRepairReserveYen + otherMonthlyFeesYen);
+  const annualHoldingCostsYen = monthlyHoldingCostsYen * 12;
+
+  const annualPmFeeYen = Math.round(annualIncomeYen * (pmFeeRatePercent / 100));
+  const monthlyPmFeeYen = Math.round(annualPmFeeYen / 12);
+
+  // 固都稅概算：若圖紙有載明則採圖紙載明額；若無，住宅中古公寓常規約房價 0.25%（約等於 0.8～1.2 個月租金）
+  let annualEstimatedPropertyTaxYen: number;
+  let propertyTaxNote: string;
+
+  if (typeof statedPropertyTaxYen === "number" && statedPropertyTaxYen > 0) {
+    annualEstimatedPropertyTaxYen = Math.round(statedPropertyTaxYen);
+    propertyTaxNote = "依圖紙記載之固定資產稅與都市計畫稅合計";
+  } else if (salePriceYen > 0) {
+    // 房價 0.25% 為基準，並夾在合理住宅區間內
+    const priceBasedTax = Math.round(salePriceYen * 0.0025);
+    const rentBasedCap = Math.round(monthlyRentYen * 1.2);
+    const rentBasedFloor = Math.round(monthlyRentYen * 0.6);
+    annualEstimatedPropertyTaxYen = Math.max(rentBasedFloor, Math.min(rentBasedCap, priceBasedTax));
+    propertyTaxNote = "依中古公寓常態按售價 0.25% 概算（約合 1 個月租金水準）";
+  } else {
+    annualEstimatedPropertyTaxYen = monthlyRentYen;
+    propertyTaxNote = "以 1 個月租金概算年度稅賦";
+  }
+
+  const monthlyEstimatedPropertyTaxYen = Math.round(annualEstimatedPropertyTaxYen / 12);
+
+  const annualNetOperatingIncomeYen = Math.round(
+    annualIncomeYen - annualHoldingCostsYen - annualPmFeeYen - annualEstimatedPropertyTaxYen
+  );
+  const monthlyNetOperatingIncomeYen = Math.round(annualNetOperatingIncomeYen / 12);
+
+  const netYieldPercent = salePriceYen > 0
+    ? Math.round((annualNetOperatingIncomeYen / salePriceYen) * 1000) / 10
+    : 0;
+
+  const items: NetYieldBreakdownItem[] = [
+    {
+      name: "年間租金毛收入",
+      amountYen: monthlyRentYen,
+      annualAmountYen: annualIncomeYen,
+      type: "income",
+      note: "現況月租金 × 12 個月",
+    },
+    {
+      name: "大樓管理費與修繕積立金",
+      amountYen: -monthlyHoldingCostsYen,
+      annualAmountYen: -annualHoldingCostsYen,
+      type: "deduction",
+      note: "大樓管委會常態維持與儲備費用",
+    },
+    {
+      name: "租賃代管委託費（集金代行）",
+      amountYen: -monthlyPmFeeYen,
+      annualAmountYen: -annualPmFeeYen,
+      type: "deduction",
+      note: `日本租賃管理公司常規費率約 ${pmFeeRatePercent}%（含招租、催繳與修繕窗口）`,
+    },
+    {
+      name: "固定資產稅・都市計畫稅（概算）",
+      amountYen: -monthlyEstimatedPropertyTaxYen,
+      annualAmountYen: -annualEstimatedPropertyTaxYen,
+      type: "deduction",
+      note: propertyTaxNote,
+    },
+    {
+      name: "預估年實質淨到手收入（NOI）",
+      amountYen: monthlyNetOperatingIncomeYen,
+      annualAmountYen: annualNetOperatingIncomeYen,
+      type: "subtotal",
+      note: "扣除各項常態營運維持成本後之實質營業淨收益",
+    },
+  ];
+
+  return {
+    monthlyRentYen,
+    annualIncomeYen,
+    grossYield,
+    monthlyHoldingCostsYen,
+    annualHoldingCostsYen,
+    pmFeeRatePercent,
+    annualPmFeeYen,
+    monthlyPmFeeYen,
+    annualEstimatedPropertyTaxYen,
+    monthlyEstimatedPropertyTaxYen,
+    propertyTaxNote,
+    annualNetOperatingIncomeYen,
+    monthlyNetOperatingIncomeYen,
+    netYieldPercent,
+    items,
   };
 }
 
@@ -604,11 +791,10 @@ function saleCostDateInfo(dateText?: string) {
 export function calculateSaleInitialCosts(salePriceYen: number, options: SaleInitialCostOptions = {}) {
   const brokerageFee = Math.floor((salePriceYen * 0.03 + 60000) * 1.1);
 
-  const registrationWasEstimated = options.registrationFeeYen == null;
-  const registrationAndScrivenerFee = Math.max(
-    0,
-    Math.round(options.registrationFeeYen ?? salePriceYen * 0.01),
-  );
+  const registrationWasEstimated = options.registrationFeeYen == null || options.registrationFeeYen <= 0;
+  const registrationAndScrivenerFee = registrationWasEstimated
+    ? Math.max(0, Math.round(salePriceYen * 0.01))
+    : Math.max(0, Math.round(options.registrationFeeYen!));
   const stampDuty = getRealEstateStampDuty(salePriceYen);
   const insuranceFee = Math.max(0, Math.round(options.insuranceFeeYen ?? 200000));
 
@@ -740,3 +926,303 @@ export function parseAgeYears(ageStr?: string | null): number | null {
 
   return null;
 }
+
+export function formatYen(amount: number | null | undefined): string {
+  if (amount == null || !Number.isFinite(amount)) return "—";
+  return `¥${Math.round(amount).toLocaleString("en-US")}`;
+}
+
+export interface MortgageTaxAssessment {
+  eligible: boolean | null;
+  statusText: string;
+  note: string;
+}
+
+/**
+ * 日本住宅貸款減稅（住宅ローン減税）專有面積與壁芯／內法門檻評估。
+ * - 法定一般基準：登記簿謄本內法面積 ≥ 50㎡。
+ * - 政策緩和特例：登記簿謄本內法面積 ≥ 40㎡（合計所得限 1,000 萬円以下等要件）。
+ * - 關鍵防呆：圖紙標示皆為「壁芯面積」（以牆體中心線起算），通常比法務局登記簿之「內法面積」（以牆體內緣起算）大約 5%～8%。
+ *   若壁芯僅約 40～42㎡，換算登記簿內法實測極高機率跌破 40.00㎡，無法適用減稅。
+ */
+export function assessMortgageTaxDeduction(areaSqm: number | null): MortgageTaxAssessment {
+  if (!areaSqm || areaSqm <= 0) {
+    return {
+      eligible: null,
+      statusText: "面積待確認",
+      note: "未取得專有面積，需由專任司法書士查驗登記謄本內法面積。",
+    };
+  }
+  if (areaSqm >= 50) {
+    return {
+      eligible: true,
+      statusText: "符合住宅貸款減稅主要面積門檻（50㎡）",
+      note: `專有面積約 ${areaSqm}㎡（壁芯達標 50㎡）。若登記簿謄本內法面積亦維持在 50㎡ 以上，符合日本「住宅貸款減稅（住宅ローン減税）」所得稅扣除之一般主要門檻。`,
+    };
+  }
+  if (areaSqm >= 43) {
+    return {
+      eligible: null,
+      statusText: "自住住宅貸款減稅資格審查（待核對）",
+      note: `專有面積約 ${areaSqm}㎡（壁芯）。日本住宅貸款減稅特例要求「登記簿謄本內法面積 ≥ 40.00㎡」（合計所得限 1,000 萬円以下）。壁芯 43～50㎡ 扣除牆厚後內法有機會維持 40㎡ 以上，需調閱謄本確認實際內法面積。`,
+    };
+  }
+  if (areaSqm >= 40) {
+    return {
+      eligible: false,
+      statusText: "壁芯臨限 40㎡（謄本內法極高機率未滿 40㎡）",
+      note: `專有面積約 ${areaSqm}㎡（壁芯）。住宅貸款減稅嚴格要求「登記簿謄本內法面積 ≥ 40.00㎡」；因圖紙標示多為壁芯面積（比謄本內法約大 5%～8%），壁芯僅約 40～42㎡ 者，登記謄本內法實測極高機率縮減至約 37～38㎡，通常無法適用住宅貸款減稅。若有自住節稅規劃，請務必先調閱謄本確認。`,
+    };
+  }
+  return {
+    eligible: false,
+    statusText: "專有面積未達 40㎡（不符減稅門檻）",
+    note: `專有面積約 ${areaSqm}㎡，未達住宅貸款減稅特例最低 40㎡ 標準，無法申請住宅ローン減稅。`,
+  };
+}
+
+export interface BuildingNotesAssessment {
+  specialStrengths: string[];
+  specialCautions: string[];
+}
+
+/**
+ * 辨識大樓特殊優勢與體質注意事項（涵蓋結構、維修亮點、管理體制、戶數規模、電梯、角部屋、朝向、露台與借地權等完整優劣勢）。
+ */
+export function detectBuildingSpecialNotes(params: {
+  specialNotes?: string | null;
+  renovationDetails?: string | null;
+  structure?: string | null;
+  ageYears?: number | null;
+  totalUnits?: number | null;
+  managementStyle?: string | null;
+  managementCompany?: string | null;
+  facilities?: string | null;
+  floor?: number | null;
+  totalFloors?: number | null;
+  unitFeatures?: UnitFeatureEvaluation | null;
+}): BuildingNotesAssessment {
+  const {
+    specialNotes,
+    renovationDetails,
+    structure,
+    ageYears,
+    totalUnits,
+    managementStyle,
+    managementCompany,
+    facilities,
+    floor,
+    totalFloors,
+    unitFeatures,
+  } = params;
+
+  const allNotes = [
+    specialNotes || "",
+    renovationDetails || "",
+    structure || "",
+    managementStyle || "",
+    managementCompany || "",
+    facilities || "",
+  ].join(" ").normalize("NFKC");
+
+  const specialStrengths: string[] = [];
+  const specialCautions: string[] = [];
+
+  // ── 1. 大樓維護與結構優勢 ──
+  if (/立駐解体|機械式駐車場解体|ピット式立駐解体/.test(allNotes)) {
+    specialStrengths.push("已拆除高維護成本機械停車塔（大幅消除社區未來最大維修赤字隱患）");
+  }
+  if (/r1|リノベ協議会/i.test(allNotes)) {
+    specialStrengths.push("取得一般社團法人 R1 住宅認證（重要給排水管檢驗合格，附 2 年以上履歷保證）");
+  }
+  if (/給排水管交換|給排水管新規|給排水管.*(?:10年保証|保証)/.test(allNotes)) {
+    specialStrengths.push("室內給排水管已更新／附保證（老屋翻新最關鍵之隱蔽工程，安心度大幅提升）");
+  }
+  if (/長期修繕計画/.test(allNotes)) {
+    specialStrengths.push("大樓訂有長期修繕計畫，資金提撥與運用具前瞻性");
+  }
+  if (/新耐震/.test(allNotes) || (ageYears !== null && ageYears <= 44)) {
+    specialStrengths.push("符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）");
+  }
+  if (/大規模修繕.*(?:実施済|完了|工事済)/.test(allNotes)) {
+    specialStrengths.push("近期已完成大規模修繕工事（外牆與共用部已定期維護）");
+  }
+  if (/ＳＲＣ|SRC|鉄骨鉄筋/.test(structure || "") || /ＳＲＣ|SRC|鉄骨鉄筋/.test(allNotes)) {
+    specialStrengths.push("SRC 鋼骨鋼筋混凝土造（兼具耐震韌性與優異隔音之高規格建材）");
+  }
+  if (totalUnits && totalUnits >= 100) {
+    specialStrengths.push(`百戶以上大規模社區（共 ${totalUnits} 戶，公設維護具規模經濟，長期保值率佳）`);
+  }
+  if (/ペット飼育可|ペット可|ペット相談|小型犬/i.test(allNotes)) {
+    specialStrengths.push("規約允許飼育寵物（都會區流通稀缺，轉手流動性與租客吸引力高）");
+  }
+  if (/常駐|日勤/.test(allNotes) || (managementCompany && /管理/.test(managementCompany) && !/自主管理/.test(allNotes))) {
+    if (/常駐/.test(allNotes)) {
+      specialStrengths.push("物業人員常駐管理（日夜安全防犯與社區管理維護最安心）");
+    } else if (/日勤/.test(allNotes)) {
+      specialStrengths.push("專任管理員日勤維護（社區日常清潔與共用部巡檢健全）");
+    }
+  }
+
+  // ── 1.5 專有部分規格與格局優勢 ──
+  if (unitFeatures?.isCornerUnit) {
+    specialStrengths.push("角部屋（邊間雙面採光，通風採光佳且少一側鄰戶雜音干擾）");
+  }
+  if (unitFeatures?.facingDirection === "south" || unitFeatures?.facingDirection === "southeast" || unitFeatures?.facingDirection === "southwest") {
+    specialStrengths.push(`採光面朝向優異（${unitFeatures.facingDirectionZh || "南向"}，全日照充足、冬暖夏涼）`);
+  }
+  if (floor && totalFloors && floor >= totalFloors && totalFloors > 1) {
+    specialStrengths.push(`位於最上階頂樓（${floor}F／共${totalFloors}層，無樓上腳步聲雜音，視野眺望佳）`);
+  }
+  if (unitFeatures?.hasRoofBalcony) {
+    specialStrengths.push("附設景觀露台（ルーフバルコニー，擁有稀缺私人戶外休憩眺望空間）");
+  }
+  if (unitFeatures?.hasPrivateGarden) {
+    specialStrengths.push("1 樓附設私人專用花園庭院（專用使用權加值，享受獨立戶外綠意）");
+  }
+
+  // ── 2. 體質未爆彈與注意事項（劣勢） ──
+  if (/大規模修繕.*(?:検討|未定|予定|協議中)/.test(allNotes)) {
+    const unitWarning = totalUnits && totalUnits < 25 ? `（本社區僅 ${totalUnits} 戶，戶數少每戶分攤金額更重）` : "";
+    specialCautions.push(`大樓記載「大規模修繕工事實施檢討中（詳細未定）」${unitWarning}：管委會正在籌劃大修，建議向仲介調閱最新總會報告書與修繕積立金總額，確認公基金是否充裕，留意未來調漲月修繕費或向住戶徵收「修繕一時金」之可能。`);
+  }
+  if (/耐震基準不適合|旧耐震|舊耐震/.test(allNotes)) {
+    specialCautions.push("為舊耐震基準建物（1981年5月前），需確認耐震診斷結果與銀行融資條件。");
+  }
+  if (/自主管理/.test(allNotes)) {
+    specialCautions.push("大樓記載為「自主管理」（無委託專業物業管理公司）：住戶自行收繳費用與修繕，大樓長期維護品質不確定性高，多數日本主流銀行融資審查嚴格或拒貸，轉手流通性受限。");
+  }
+  if (/エレベーター無|EV無|無EV|エレベータ無/.test(allNotes)) {
+    specialCautions.push("大樓無配置電梯：進出需爬樓梯，對長輩、嬰兒車與搬運重物極為不便，可能明顯壓低未來轉手流動性與租金行情。");
+  }
+  if (totalUnits && totalUnits > 0 && totalUnits < 20) {
+    specialCautions.push(`社區總戶數僅 ${totalUnits} 戶（少於 20 戶之小規模社區）：每戶分攤的外牆拉皮與電梯維修等重大費用沉重，易面臨月修繕金大幅調漲或大修資金缺口。`);
+  }
+  if (/再建築不可|再建築不能/.test(allNotes)) {
+    specialCautions.push("法定再建築不可物件，無法拆除重建，轉手融資受限。");
+  }
+  if (unitFeatures?.isLeasehold || /借地権|借地|定期借地/.test(allNotes)) {
+    const leaseLabel = unitFeatures?.leaseholdType || "借地權";
+    specialCautions.push(`屬「${leaseLabel}」（非土地完全所有權）：需每月定期繳納地租、期滿更新或轉售改建需地主承諾書與更新料，銀行貸款成數通常較所有權低 1～2 成。`);
+  }
+  if (unitFeatures?.facingDirection === "north" || unitFeatures?.facingDirection === "northeast" || unitFeatures?.facingDirection === "northwest") {
+    specialCautions.push(`主要採光面朝向（${unitFeatures.facingDirectionZh || "北向"}）：冬季日照時間較短，室內採光受限且濕氣較重，內見時建議確認採光與通風乾燥狀態。`);
+  }
+  if (floor === 1 && !unitFeatures?.hasPrivateGarden) {
+    specialCautions.push("位於 1 樓低樓層：街道行人視線與潮濕防犯考量較多，內見時應確認窗外遮蔽圍籬、防盜設施及日常日照狀況。");
+  }
+
+  return { specialStrengths, specialCautions };
+}
+
+export type FacingDirection =
+  | "south"
+  | "southeast"
+  | "southwest"
+  | "east"
+  | "west"
+  | "north"
+  | "northeast"
+  | "northwest";
+
+export interface UnitFeatureEvaluation {
+  isCornerUnit: boolean;
+  facingDirection: FacingDirection | null;
+  facingDirectionZh: string | null;
+  hasRoofBalcony: boolean;
+  hasPrivateGarden: boolean;
+  isLeasehold: boolean;
+  leaseholdType?: string | null;
+}
+
+/**
+ * 從圖紙文字（備考、設備、陽台、土地權利等）辨識不動產査定手冊與東京カンテイ關鍵評價特徵：
+ * 1. 角部屋（邊間，三面/雙面採光）
+ * 2. 開口部朝向（南向、東南向、西南向 vs 北向）
+ * 3. 專用露台（ルーフバルコニー）／私人庭院（専用庭）
+ * 4. 土地權利（所有權 vs 借地權／舊法賃借權）
+ */
+export function detectUnitFeatures(
+  textSources: {
+    specialNotes?: unknown;
+    renovationDetails?: unknown;
+    otherConditions?: unknown;
+    facilities?: unknown;
+    balconyArea?: unknown;
+    landRights?: unknown;
+    propertyName?: unknown;
+    rawText?: unknown;
+  }
+): UnitFeatureEvaluation {
+  const combined = [
+    typeof textSources.specialNotes === "string" ? textSources.specialNotes : "",
+    typeof textSources.renovationDetails === "string" ? textSources.renovationDetails : "",
+    typeof textSources.otherConditions === "string" ? textSources.otherConditions : "",
+    typeof textSources.facilities === "string" ? textSources.facilities : "",
+    typeof textSources.balconyArea === "string" ? textSources.balconyArea : "",
+    typeof textSources.landRights === "string" ? textSources.landRights : "",
+    typeof textSources.propertyName === "string" ? textSources.propertyName : "",
+    typeof textSources.rawText === "string" ? textSources.rawText : "",
+  ].join(" ").normalize("NFKC");
+
+  // 1. 角部屋（邊間）
+  const isCornerUnit = /角部屋|角住戸|三面採光|2面採光|二面採光|二方向採光/i.test(combined);
+
+  // 2. 開口部朝向（陽台面向）
+  let facingDirection: FacingDirection | null = null;
+  let facingDirectionZh: string | null = null;
+
+  if (/南東向き|南東向|東南向き|東南向|南東側/i.test(combined)) {
+    facingDirection = "southeast";
+    facingDirectionZh = "東南向";
+  } else if (/南西向き|南西向|西南向き|西南向|南西側/i.test(combined)) {
+    facingDirection = "southwest";
+    facingDirectionZh = "西南向";
+  } else if (/南向き|南向|南面採光|南面バルコニー|南側バルコニー|バルコニー南/i.test(combined)) {
+    facingDirection = "south";
+    facingDirectionZh = "南向";
+  } else if (/東向き|東向|東面採光|東面バルコニー|東側バルコニー|バルコニー東/i.test(combined)) {
+    facingDirection = "east";
+    facingDirectionZh = "東向";
+  } else if (/西向き|西向|西面採光|西面バルコニー|西側バルコニー|バルコニー西/i.test(combined)) {
+    facingDirection = "west";
+    facingDirectionZh = "西向";
+  } else if (/北東向き|北東向|東北向き|東北向/i.test(combined)) {
+    facingDirection = "northeast";
+    facingDirectionZh = "東北向";
+  } else if (/北西向き|北西向|西北向き|西北向/i.test(combined)) {
+    facingDirection = "northwest";
+    facingDirectionZh = "西北向";
+  } else if (/北向き|北向|北面採光|北面バルコニー|北側バルコニー/i.test(combined)) {
+    facingDirection = "north";
+    facingDirectionZh = "北向";
+  }
+
+  // 3. 專用露台 / 私人庭院
+  const hasRoofBalcony = /ルーフバルコニー|ルーバル|roof balcony/i.test(combined);
+  const hasPrivateGarden = /専用庭|私人庭院|戶外花園|プライベートガーデン/i.test(combined);
+
+  // 4. 土地權利（借地權 vs 所有權）
+  const landRightsText = typeof textSources.landRights === "string" ? textSources.landRights.normalize("NFKC") : "";
+  const isExplicitOwnership = /所有権|所有權/.test(landRightsText);
+  let isLeasehold = false;
+  let leaseholdType: string | null = null;
+
+  if (!isExplicitOwnership && /借地権|旧法賃借権|賃借権|定期借地権|普通借地権|地上権/.test(`${landRightsText} ${combined}`)) {
+    isLeasehold = true;
+    const match = `${landRightsText} ${combined}`.match(/(旧法賃借権|定期借地権|普通借地権|地上権|賃借権|借地権)/);
+    leaseholdType = match ? match[1] : "借地權";
+  }
+
+  return {
+    isCornerUnit,
+    facingDirection,
+    facingDirectionZh,
+    hasRoofBalcony,
+    hasPrivateGarden,
+    isLeasehold,
+    leaseholdType,
+  };
+}
+
+

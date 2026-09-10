@@ -3,9 +3,11 @@ export type MarketDataSourceId =
   | "reins-market-watch"
   | "athome-public"
   | "suumo-public"
-  | "homes-public";
+  | "homes-public"
+  | "retpc-appraisal-manual"
+  | "tokyo-kantei-research";
 
-export type MarketDataKind = "rent_listing" | "sale_listing" | "transaction";
+export type MarketDataKind = "rent_listing" | "sale_listing" | "transaction" | "appraisal_standard";
 export type IngestionStatus = "enabled" | "manual_only";
 
 export interface MarketDataSourcePolicy {
@@ -90,8 +92,35 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     sourceUrl: "https://www.homes.co.jp/chintai/price/",
     termsUrl: "https://www.homes.co.jp/kiyaku/",
     note: "每季與 At Home 同日抽樣，用於發現短期供給與高低價偏差；不直接寫入正式模型。"
+  },
+  {
+    id: "retpc-appraisal-manual",
+    label: "公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》",
+    kinds: ["appraisal_standard"],
+    statistic: "日本仲介公會中古公寓官方價格査定基準點數（位置・開口部方位・階層・專有使用權・借地權）",
+    publicationCadence: "定期修訂；日本不動產經紀業官方標準",
+    reviewCadenceDays: 180,
+    ingestionStatus: "manual_only",
+    automatedIngestionAllowed: false,
+    sourceUrl: "https://www.retpc.jp/chousa/satei/",
+    termsUrl: "https://www.retpc.jp/",
+    note: "日本各大仲介（三井、住友、東急等）與銀行採用的二手公寓査定標準：角部屋（+3%～+5%）、開口部南向（+3%～+5%）、北向（-3%～-5%）、最上階（+3%～+5%）、1階（-5%）、借地權折價（-20%～-35%）。定期由 scripts/review-appraisal-standards.ts 複核更新。"
+  },
+  {
+    id: "tokyo-kantei-research",
+    label: "東京カンテイ（Tokyo Kantei）不動產大數據研究所",
+    kinds: ["appraisal_standard", "transaction"],
+    statistic: "首都圈與各大都市圈中古公寓百萬筆成約特徵價格回歸統計（角住戶溢價、南北向單價差、規模效應保值率）",
+    publicationCadence: "每月／每季發布研究報告",
+    reviewCadenceDays: 90,
+    ingestionStatus: "manual_only",
+    automatedIngestionAllowed: false,
+    sourceUrl: "https://www.kantei.ne.jp/report/",
+    termsUrl: "https://www.kantei.ne.jp/",
+    note: "日本最大公寓資料庫實證統計：同一大樓角部屋平均單價高出 +4.2%、南北向成交單價差 7%～9%、大規模社區（100戶以上）相對小社區（20戶以下）築20年保值率高出 5%～8%。定期由 scripts/review-appraisal-standards.ts 追蹤爬取最新市場研究報告。"
   }
 ];
 
 export const getMarketDataSource = (id: MarketDataSourceId) =>
   marketDataSources.find(source => source.id === id)!;
+

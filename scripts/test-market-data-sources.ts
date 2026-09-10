@@ -17,6 +17,11 @@ assert.equal(byId.get("reins-market-watch")?.automatedIngestionAllowed, false);
 assert.equal(byId.get("reins-market-watch")?.ingestionStatus, "manual_only");
 assert.deepEqual(byId.get("reins-market-watch")?.kinds, ["transaction", "sale_listing"]);
 
+assert.equal(byId.get("retpc-appraisal-manual")?.ingestionStatus, "manual_only");
+assert.ok(byId.get("retpc-appraisal-manual")?.kinds.includes("appraisal_standard"));
+assert.equal(byId.get("tokyo-kantei-research")?.ingestionStatus, "manual_only");
+assert.ok(byId.get("tokyo-kantei-research")?.kinds.includes("appraisal_standard"));
+
 assert.equal(byId.get("mlit-reinfolib")?.automatedIngestionAllowed, true);
 assert.equal(byId.get("mlit-reinfolib")?.ingestionStatus, "enabled");
 assert.match(MLIT_API_CREDIT, /最新性、正確性、完全性等が保証されたものではありません/);

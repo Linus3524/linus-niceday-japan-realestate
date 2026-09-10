@@ -112,7 +112,7 @@ function translateRentalClause(source: string) {
     .trim();
 
   return /[\u3040-\u30ff]/u.test(text)
-    ? "圖紙另有個別日文特約，簽約前請核對中文契約譯本。"
+    ? "圖紙另有個別日文特約，簽約前請向仲介或宅建士確認重要事項說明。"
     : text;
 }
 

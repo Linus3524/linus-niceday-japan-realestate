@@ -6,6 +6,7 @@ import { buildSpecialSaleDetails, reconcileSpecialSaleFields, saleOccupancy, sta
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { resolveSearchScope, estimateRequestedRent, buildListingPriceVerdict, buildSalePriceVerdict, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
+import { evaluateTransitHub } from "../src/lib/transitParser.js";
 import {
   parseYenAmount,
   parseNonNegativeYenAmount,
@@ -23,12 +24,16 @@ import {
   parseYieldRate,
   computeTsuboAndSqmPrice,
   assessRepairReserve,
+  calculateNetYieldBreakdown,
   calculateSaleInitialCosts,
   assessRealEstateAcquisitionTax,
   parseAgeYears,
   parseFloorInfo,
   parseMandatoryMonthlyFees,
   parseEffectiveRepairReserve,
+  assessMortgageTaxDeduction,
+  detectBuildingSpecialNotes,
+  detectUnitFeatures,
 } from "../src/lib/listingExtraction.js";
 import { getAgeBandComparison, getConditionPremium, getOfficialBuyEstimate, getTownPremium } from "../src/data/buyMarket.js";
 import { mlitBuySnapshotMeta, mlitBuySnapshots } from "../src/data/mlitBuySnapshot.js";
@@ -1058,6 +1063,10 @@ export function buildSaleAnalysis(params: {
   }
 
   // 3. Building health & repair reserve adequacy
+  const floorInfo = parseFloorInfo(
+    extracted.floor,
+    `${extracted.buildingFloors ? `${extracted.buildingFloors}階建` : ""} ${extracted.structure || ""} ${extracted.specialNotes || ""}`
+  );
   const totalUnits = parseUnitsCount(extracted.totalUnits);
   const ageYears = parseAgeYears(extracted.age);
 
@@ -1066,26 +1075,33 @@ export function buildSaleAnalysis(params: {
     areaSqm,
     totalUnits,
     ageYears,
+    monthlyManagementFeeYen: managementFee,
+    totalFloors: floorInfo.totalFloors,
   });
 
-  // Special building strengths
-  const specialStrengths: string[] = [];
-  const allNotes = `${extracted.renovationDetails} ${extracted.specialNotes} ${extracted.structure}`.toLowerCase();
-  if (/立駐解体|機械式駐車場解体|ピット式立駐解体/.test(allNotes)) {
-    specialStrengths.push("已拆除高維護成本機械停車塔（大幅消除社區未來最大維修赤字隱患）");
-  }
-  if (/r1|リノベ協議会/.test(allNotes)) {
-    specialStrengths.push("取得一般社團法人 R1 住宅認證（重要給排水管檢驗合格，附 2 年以上履歷保證）");
-  }
-  if (/給排水管交換|給排水管新規/.test(allNotes)) {
-    specialStrengths.push("室內給排水管已更新（老屋翻新最關鍵之隱蔽工程，安心度大幅提升）");
-  }
-  if (/長期修繕計画/.test(allNotes)) {
-    specialStrengths.push("大樓訂有長期修繕計畫，資金提撥與運用具前瞻性");
-  }
-  if (/新耐震/.test(allNotes) || (ageYears !== null && ageYears <= 44)) {
-    specialStrengths.push("符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）");
-  }
+  const unitFeatures = detectUnitFeatures({
+    specialNotes: extracted.specialNotes,
+    renovationDetails: extracted.renovationDetails,
+    otherConditions: extracted.otherConditions,
+    facilities: extracted.facilities,
+    balconyArea: extracted.balconyArea,
+    landRights: extracted.landRights,
+  });
+
+  // Special building strengths and cautions
+  const { specialStrengths, specialCautions } = detectBuildingSpecialNotes({
+    specialNotes: extracted.specialNotes,
+    renovationDetails: extracted.renovationDetails,
+    structure: extracted.structure,
+    ageYears,
+    totalUnits,
+    managementStyle: extracted.managementStyle,
+    managementCompany: extracted.managementCompany,
+    facilities: extracted.facilities,
+    floor: floorInfo.floor,
+    totalFloors: floorInfo.totalFloors,
+    unitFeatures,
+  });
 
   // 4. MLIT comparison
   const primaryStation = stations[0] ?? "";
@@ -1109,13 +1125,8 @@ export function buildSaleAnalysis(params: {
         .map(w => parseInt(String(w).match(/\d+/)?.[0] || "", 10))
         .filter(n => Number.isFinite(n) && n > 0);
       const minWalkMinutes = walkCandidates.length ? Math.min(...walkCandidates) : null;
+      const transitHub = evaluateTransitHub(stations, walkTimes);
 
-      // 總樓層（○階建）不一定出現在構造欄位，也可能落在物件備註裡，
-      // 兩邊一起掃才不會漏。少了它就分不出「7階建的7樓」和「21階建的16樓」。
-      const floorInfo = parseFloorInfo(
-        extracted.floor,
-        `${extracted.buildingFloors ? `${extracted.buildingFloors}階建` : ""} ${extracted.structure || ""} ${extracted.specialNotes || ""}`
-      );
       // 帶租約物件要拿現行租金跟同區同房型的市場租金比，才能做收益還原。
       // 租金優先取圖紙明列的現行月租，其次由年收入換算，最後才用表面利回×開價回推。
       const flyerAnnualIncomeYen = parseYenAmount(extracted.annualIncome);
@@ -1137,12 +1148,14 @@ export function buildSaleAnalysis(params: {
         salePriceYen,
         medianPriceYen,
         medianSqmPriceYen: officialEstimate?.medianSqmPriceYen ?? null,
+        medianAreaSqm: officialEstimate?.medianAreaSqm ?? null,
         ageControlledByMarket: officialEstimate?.ageBand !== null,
         ageBandScope: officialEstimate?.ageBandScope ?? null,
         layout: layoutCode,
         areaSqm,
         ageYears,
         walkMinutes: minWalkMinutes,
+        transitHub,
         floor: floorInfo.floor,
         totalFloors: floorInfo.totalFloors,
         renovationNotes: `${extracted.renovationDetails || ""} ${extracted.specialNotes || ""}`,
@@ -1162,6 +1175,11 @@ export function buildSaleAnalysis(params: {
         }`,
         sampleCount: officialEstimate?.ageBandSampleCount ?? officialEstimate?.sampleCount ?? null,
         listingBenchmark: saleListingBenchmark,
+        unitFeatures,
+        totalUnits,
+        managementStyle: extracted.managementStyle,
+        managementCompany: extracted.managementCompany,
+        buildingNotes: `${extracted.specialNotes || ""} ${extracted.facilities || ""} ${extracted.otherConditions || ""}`,
       });
 
       // 冷門地區的分桶會因為近 4 季樣本不足而把統計視窗往前滑，
@@ -1207,6 +1225,9 @@ export function buildSaleAnalysis(params: {
         fairLowMan: priceVerdict.fairLowMan,
         fairHighMan: priceVerdict.fairHighMan,
         typicalListingPriceMan: priceVerdict.typicalListingPriceMan,
+        typicalListingPriceLowMan: priceVerdict.typicalListingPriceLowMan ?? null,
+        typicalListingPriceHighMan: priceVerdict.typicalListingPriceHighMan ?? null,
+        listingRangeLabel: priceVerdict.listingRangeLabel ?? null,
         listingDiffPercent: priceVerdict.listingDiffPercent,
         listingVerdict: priceVerdict.listingVerdict,
         listingVerdictText: priceVerdict.listingVerdictText,
@@ -1222,7 +1243,9 @@ export function buildSaleAnalysis(params: {
         baselineNote: priceVerdict.baselineNote,
         ageHandledInBaseline: priceVerdict.ageHandledInBaseline,
         priceFactors: priceVerdict.factors,
-        priceCautions: priceVerdict.cautions,
+        positiveFactorsSumPercent: priceVerdict.positiveFactorsSumPercent,
+        netFactorsSumPercent: priceVerdict.netFactorsSumPercent,
+        priceCautions: [...priceVerdict.cautions, ...specialCautions.filter(c => !priceVerdict.cautions.includes(c))],
         // 顯示「實際比對用的那一層」的樣本數。用了築 0～10 年的分層卻標粗分桶的
         // 89 筆，會讓證據看起來比實際強——這一區塊的價值就在於可被檢驗，不能灌水。
         sampleCount: officialEstimate?.ageBand
@@ -1248,24 +1271,33 @@ export function buildSaleAnalysis(params: {
   const currentRentYen = parseYenAmount(extracted.currentRent);
   const annualIncomeYen = parseYenAmount(extracted.annualIncome) ?? (currentRentYen ? currentRentYen * 12 : null);
   const grossYield = parseYieldRate(extracted.grossYield) ?? (annualIncomeYen ? Math.round((annualIncomeYen / salePriceYen) * 1000) / 1000 : null);
-  const netYieldEstimated = annualIncomeYen && salePriceYen > 0
-    ? Math.round(((annualIncomeYen - totalMonthlyHoldingCost * 12) / salePriceYen) * 1000) / 1000
+  const effectiveMonthlyRentYen = currentRentYen
+    ?? (annualIncomeYen ? Math.round(annualIncomeYen / 12) : null)
+    ?? (grossYield && salePriceYen ? Math.round((grossYield * salePriceYen) / 12) : null);
+  const effectiveAnnualIncomeYen = annualIncomeYen ?? (effectiveMonthlyRentYen ? effectiveMonthlyRentYen * 12 : null);
+
+  const netYieldBreakdown = isTenanted && effectiveMonthlyRentYen && effectiveMonthlyRentYen > 0 && salePriceYen > 0
+    ? calculateNetYieldBreakdown({
+        salePriceYen,
+        monthlyRentYen: effectiveMonthlyRentYen,
+        monthlyManagementFeeYen: managementFee,
+        monthlyRepairReserveYen: repairReserve + repairFund,
+        otherMonthlyFeesYen: otherMonthlyFees,
+        statedPropertyTaxYen: statedCombinedAnnualPropertyTax(extracted.taxDetails) ?? (
+          (parseNonNegativeYenAmount(extracted.fixedAssetTax) ?? 0) + (parseNonNegativeYenAmount(extracted.cityPlanningTax) ?? 0) || null
+        ),
+      })
     : null;
 
-  let mortgageTaxEligible: boolean | null = null;
-  let mortgageTaxNote = "需由專任司法書士查驗登記謄本。";
-  if (areaSqm) {
-    if (areaSqm >= 50) {
-      mortgageTaxEligible = true;
-      mortgageTaxNote = `專有面積約 ${areaSqm}㎡（壁芯達標 50㎡），符合日本「住宅貸款減稅（住宅ローン減税）」所得稅扣除之主要面積門檻。`;
-    } else if (areaSqm >= 40) {
-      mortgageTaxEligible = null;
-      mortgageTaxNote = `專有面積約 ${areaSqm}㎡（壁芯）。日本住宅貸款減稅以「登記簿謄本內法面積 ≥ 40㎡」為特例判定標準，需確認謄本內法面積是否達標。`;
-    } else {
-      mortgageTaxEligible = false;
-      mortgageTaxNote = `專有面積約 ${areaSqm}㎡，未達 40㎡ 減稅最低標準，無法申請住宅ローン減稅。`;
-    }
-  }
+  const netYieldEstimated = netYieldBreakdown
+    ? netYieldBreakdown.netYieldPercent
+    : (effectiveAnnualIncomeYen && salePriceYen > 0
+      ? Math.round(((effectiveAnnualIncomeYen - totalMonthlyHoldingCost * 12) / salePriceYen) * 1000) / 10
+      : null);
+
+  const mortgageAssessment = assessMortgageTaxDeduction(areaSqm);
+  let mortgageTaxEligible = mortgageAssessment.eligible;
+  let mortgageTaxNote = mortgageAssessment.note;
   if (propertyDetails.hospitality || propertyDetails.excludeCondoComparison) {
     mortgageTaxEligible = null;
     mortgageTaxNote = "須核對買方自住用途、登記面積與其他適用條件；民泊／旅館營運收益不能作為自住減稅資格依據。";
@@ -1290,7 +1322,7 @@ export function buildSaleAnalysis(params: {
     cityPlanningTaxYen: parseNonNegativeYenAmount(extracted.cityPlanningTax),
     acquisitionTaxYen: acquisitionTaxAssessment.amount,
     acquisitionTaxNote: acquisitionTaxAssessment.note,
-    registrationFeeYen: parseNonNegativeYenAmount(extracted.registrationFee),
+    registrationFeeYen: parseNonNegativeYenAmount(extracted.registrationFee) || null,
     prepaidMonths: propertyDetails.excludeCondoComparison ? 0 : 3,
     insuranceFeeYen: propertyDetails.kind === "land" ? 0 : undefined,
   });
@@ -1314,6 +1346,7 @@ export function buildSaleAnalysis(params: {
       ageYears,
       ...reserveAssessment,
       specialStrengths,
+      specialCautions,
       applicable: !propertyDetails.excludeCondoComparison,
       ...(propertyDetails.excludeCondoComparison ? {
         reservePerSqm: null,
@@ -1328,10 +1361,11 @@ export function buildSaleAnalysis(params: {
       status: propertyDetails.hospitality ? "hospitality" : isTenanted ? "tenanted_investment" : isOwnerOccupied ? "occupied_owner" : isVacant ? "vacant" : "unknown",
       statusText: propertyDetails.hospitality ? (extracted.occupancyStatus || "住宿營業物件，現況待核對") : isTenanted ? "出租中（帶租約買賣／投資型）" : isOwnerOccupied ? "現有屋主居住中（交屋期需協商）" : isVacant ? (occupancy.renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對") : (statusRaw || "現況未載明，待確認"),
       investmentYield: isTenanted && grossYield ? {
-        monthlyRentYen: currentRentYen ?? Math.round((annualIncomeYen ?? 0) / 12),
-        annualIncomeYen: annualIncomeYen ?? 0,
+        monthlyRentYen: effectiveMonthlyRentYen ?? currentRentYen ?? Math.round((annualIncomeYen ?? 0) / 12),
+        annualIncomeYen: effectiveAnnualIncomeYen ?? annualIncomeYen ?? 0,
         grossYield: Math.round(grossYield * 1000) / 10,
-        netYieldEstimated: netYieldEstimated ? Math.round(netYieldEstimated * 1000) / 10 : null,
+        netYieldEstimated: typeof netYieldEstimated === "number" ? Math.round(netYieldEstimated * 10) / 10 : null,
+        breakdown: netYieldBreakdown ?? undefined,
       } : undefined,
       mortgageTaxEligible,
       mortgageTaxNote,

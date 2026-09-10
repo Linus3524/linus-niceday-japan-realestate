@@ -1,7 +1,7 @@
 import { districtStations as dsHousing } from "../data/housingMarket.js";
 import { districtStations as dsStation } from "../data/stationData.js";
 import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
-import { toJapaneseStationName } from "./transit.js";
+import { toJapaneseStationName, toJapanesePlaceName } from "./transit.js";
 
 export interface ParsedStationItem {
   stationName: string;
@@ -195,4 +195,81 @@ export function parseTransitStations(
   }
 
   return items;
+}
+
+export interface TransitHubEvaluation {
+  hasMajorTerminal: boolean;
+  majorStation: string | null;
+  majorWalkMinutes: number | null;
+  totalStations: number;
+  totalLinesCount: number;
+  ratePercent: number;
+  note: string;
+}
+
+/**
+ * 評估物件的交通樞紐度與多線利用優勢。
+ *
+ * 買賣實務上，即使地址屬於相鄰行政區，若在「熱門大站／主要轉運樞紐（如中野、新宿、澀谷、吉祥寺）」
+ * 的徒步圈內（15分內），或具備 2 站 3 路線以上可利用，通常享有顯著的抗跌與流動性溢價。
+ */
+export function evaluateTransitHub(
+  stations: string[],
+  walkTimes?: (string | number | null | undefined)[]
+): TransitHubEvaluation | null {
+  if (!stations || !stations.length) return null;
+
+  const parsed = stations.map((st, i) => {
+    const rawWalk = walkTimes?.[i];
+    const walkMin = rawWalk !== undefined && rawWalk !== null
+      ? parseInt(String(rawWalk).match(/\d+/)?.[0] || "", 10)
+      : null;
+    const clean = String(st).replace(/[駅站]/g, "").trim();
+    const jp = toJapaneseStationName(clean);
+    const curated = allCuratedStations.find(
+      s => s.name === clean || s.name === toJapanesePlaceName(clean) || toJapaneseStationName(s.name) === jp
+    );
+    const linesStr = lookupStationLines(jp);
+    const lines = linesStr ? linesStr.split(/[・、]/).map(l => l.trim()).filter(Boolean) : (curated?.lines || []);
+    const isMajor = curated?.type === "major";
+    return { name: clean, jp, walkMin, isMajor, lines, linesStr };
+  }).filter(p => p.name.length > 0);
+
+  const majorCandidates = parsed.filter(p => p.isMajor && p.walkMin !== null && p.walkMin <= 15);
+  majorCandidates.sort((a, b) => (a.walkMin ?? 99) - (b.walkMin ?? 99));
+  const primaryMajor = majorCandidates[0] || null;
+
+  const validWalkStations = parsed.filter(p => p.walkMin !== null && p.walkMin <= 20);
+  const totalStations = validWalkStations.length > 0 ? validWalkStations.length : parsed.length;
+  const allLines = Array.from(new Set(parsed.flatMap(p => p.lines)));
+
+  if (primaryMajor) {
+    const linesDesc = primaryMajor.lines.length > 0 ? primaryMajor.lines.join("・") : primaryMajor.linesStr || "多線共構";
+    const multiNote = totalStations >= 2 ? `，合計 ${totalStations} 站${allLines.length >= 2 ? ` ${allLines.length} 路線` : ""}利用可能` : "";
+    const walk = primaryMajor.walkMin ?? 10;
+    const ratePercent = walk <= 5 ? 8 : walk <= 10 ? 6 : 4;
+    return {
+      hasMajorTerminal: true,
+      majorStation: primaryMajor.name,
+      majorWalkMinutes: primaryMajor.walkMin,
+      totalStations,
+      totalLinesCount: allLines.length,
+      ratePercent,
+      note: `可徒步至「${primaryMajor.name}」駅（${linesDesc}・熱門核心大站，徒步 ${primaryMajor.walkMin} 分）${multiNote}`,
+    };
+  }
+
+  if (totalStations >= 2 && allLines.length >= 2) {
+    return {
+      hasMajorTerminal: false,
+      majorStation: null,
+      majorWalkMinutes: null,
+      totalStations,
+      totalLinesCount: allLines.length,
+      ratePercent: 3,
+      note: `可利用 ${totalStations} 座車站（${allLines.length} 條路線），具備多路線通勤彈性與替代動線優勢`,
+    };
+  }
+
+  return null;
 }

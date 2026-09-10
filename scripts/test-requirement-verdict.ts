@@ -480,6 +480,122 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         7300,
       );
     }
+  },
+  {
+    name: "地段溢價小於3%仍會揭露町名排名，交通樞紐大站會列入因子",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 77_990_000,
+        medianPriceYen: 50_000_000,
+        layout: "ldk2",
+        areaSqm: 46.92,
+        ageYears: 28,
+        walkMinutes: 5,
+        floor: 7,
+        totalFloors: 7,
+        transitHub: {
+          hasMajorTerminal: true,
+          majorStation: "中野",
+          majorWalkMinutes: 11,
+          totalStations: 2,
+          totalLinesCount: 3,
+          ratePercent: 4,
+          note: "可徒步至「中野」駅（JR中央線・東西線・熱門核心大站，徒步 11 分），合計 2 站 3 路線利用可能",
+        },
+        townPremium: {
+          town: "高円寺南",
+          premiumPercent: 1.3,
+          sampleCount: 40,
+          rank: 13,
+          townCount: 24,
+        },
+      });
+      const townFactor = verdict.factors.find(f => f.label === "地段（町名）");
+      assert.ok(townFactor, "地段（町名）應存在");
+      assert.equal(townFactor?.ratePercent, 1.3);
+      assert.match(townFactor?.note || "", /排第 13 名/);
+
+      const hubFactor = verdict.factors.find(f => f.label === "交通樞紐");
+      assert.ok(hubFactor, "交通樞紐應存在");
+      assert.equal(hubFactor?.ratePercent, 4);
+      assert.match(hubFactor?.note || "", /中野/);
+
+      const floorFactor = verdict.factors.find(f => f.label === "樓層");
+      assert.ok(floorFactor, "最上階樓層應存在");
+      assert.match(floorFactor?.note || "", /最上階/);
+    }
+  },
+  {
+    name: "角部屋、南向、露台及借地權正確列入因子且累計優勢合計正確",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 77_990_000,
+        medianPriceYen: 55_040_000,
+        layout: "ldk2",
+        areaSqm: 46.92,
+        ageYears: 28,
+        walkMinutes: 5,
+        floor: 7,
+        totalFloors: 7,
+        unitFeatures: {
+          isCornerUnit: true,
+          facingDirection: "southeast",
+          facingDirectionZh: "東南向",
+          hasRoofBalcony: true,
+          hasPrivateGarden: false,
+          isLeasehold: false,
+        },
+      });
+
+      const cornerFactor = verdict.factors.find(f => f.label === "角部屋");
+      assert.ok(cornerFactor, "角部屋應列入因子");
+      assert.equal(cornerFactor?.ratePercent, 4);
+
+      const facingFactor = verdict.factors.find(f => f.label === "陽台朝向");
+      assert.ok(facingFactor, "陽台朝向應列入因子");
+      assert.equal(facingFactor?.ratePercent, 3);
+
+      const balconyFactor = verdict.factors.find(f => f.label === "專用露台");
+      assert.ok(balconyFactor, "專用露台應列入因子");
+      assert.equal(balconyFactor?.ratePercent, 5);
+
+      assert.ok(verdict.positiveFactorsSumPercent >= 17, `優勢合計應大於等於 17%（實得 ${verdict.positiveFactorsSumPercent}%）`);
+      assert.ok(verdict.insightPoints.some(p => p.id === "factors_sum"), "應產生條件累計分析 insight point");
+    }
+  },
+  {
+    name: "自主管理、無電梯、社區規模及寵物飼育正確列入査定因子與優劣勢",
+    run: () => {
+      const verdict = buildSalePriceVerdict({
+        salePriceYen: 35_000_000,
+        medianPriceYen: 40_000_000,
+        layout: "ldk1",
+        areaSqm: 38,
+        ageYears: 35,
+        walkMinutes: 8,
+        floor: 4,
+        totalFloors: 5,
+        totalUnits: 120,
+        managementStyle: "自主管理",
+        buildingNotes: "エレベーター無 ペット飼育可",
+      });
+
+      const mgmtFactor = verdict.factors.find(f => f.label === "管理體制");
+      assert.ok(mgmtFactor, "自主管理應列入因子");
+      assert.equal(mgmtFactor?.ratePercent, -5);
+
+      const evFactor = verdict.factors.find(f => f.label === "電梯配置");
+      assert.ok(evFactor, "4樓無電梯應列入因子");
+      assert.equal(evFactor?.ratePercent, -6);
+
+      const scaleFactor = verdict.factors.find(f => f.label === "社區規模");
+      assert.ok(scaleFactor, "120戶大規模社區應列入因子");
+      assert.equal(scaleFactor?.ratePercent, 3);
+
+      const petFactor = verdict.factors.find(f => f.label === "寵物飼育");
+      assert.ok(petFactor, "寵物飼育可應列入因子");
+      assert.equal(petFactor?.ratePercent, 2);
+    }
   }
 ];
 

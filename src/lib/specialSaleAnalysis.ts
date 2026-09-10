@@ -5,6 +5,12 @@ export interface SpecialSaleFields {
   age?: string;
   propertyType?: string;
   buildingName?: string;
+  roomNumber?: string;
+  floor?: string;
+  buildingFloors?: string;
+  totalUnits?: string;
+  managementFee?: string;
+  repairReserve?: string;
   landArea?: string;
   buildingArea?: string;
   roadDetails?: string;
@@ -132,12 +138,28 @@ export function saleOccupancy(fields: SpecialSaleFields) {
 }
 
 export function buildSpecialSaleDetails(fields: SpecialSaleFields) {
+  const normalizedPropertyType = (fields.propertyType || "").normalize("NFKC");
   const kindText = `${fields.propertyType || ""} ${fields.buildingName || ""}`.normalize("NFKC");
-  const kind = /^(?:土地|売地|土地買賣)/.test((fields.propertyType || "").normalize("NFKC")) ? "land"
+  let kind: "land" | "whole_building" | "detached" | "condominium" | "unknown" =
+    /^(?:土地|売地|土地買賣)/.test(normalizedPropertyType) ? "land"
     : /一棟|1棟|整棟|売ビル/.test(kindText) ? "whole_building"
     : /戸建|一戸建|透天|獨棟/.test(kindText) ? "detached"
-    : /土地|売地/.test(fields.propertyType || "") ? "land"
-    : /区分|マンション|公寓/.test(kindText) ? "condominium" : "unknown";
+    : /土地|売地/.test(normalizedPropertyType) ? "land"
+    : /区分|マンション|公寓|共同住宅|分譲/.test(kindText) ? "condominium" : "unknown";
+
+  if (kind === "unknown") {
+    // 若名稱或類型未明寫「マンション」，但具備集合住宅特徵（如房號、管理費、修繕金、特定樓層或多戶），且非土地/透天/整棟，推定為區分公寓
+    const hasCondoTraits =
+      Boolean(fields.roomNumber?.trim()) ||
+      Boolean(fields.managementFee?.trim()) ||
+      Boolean(fields.repairReserve?.trim()) ||
+      (Boolean(fields.totalUnits?.trim()) && Number((fields.totalUnits || "").replace(/\D/g, "")) > 1) ||
+      (Boolean(fields.floor?.trim()) && Boolean(fields.buildingFloors?.trim()) && fields.floor !== fields.buildingFloors);
+
+    if (hasCondoTraits) {
+      kind = "condominium";
+    }
+  }
   const hospitalityText = `${fields.hospitalityDetails || ""} ${fields.specialNotes || ""} ${fields.occupancyStatus || ""}`.normalize("NFKC");
   const hospitality = /民泊|旅館|宿泊|住宿/.test(hospitalityText.replace(/民泊(?:不可|禁止)|(?:不可|禁止)民泊/g, ""));
   const pending = /申請中|申請済|申請済み|申請已|已申請|申請完了/.test(hospitalityText);
