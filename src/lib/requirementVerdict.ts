@@ -1927,10 +1927,16 @@ export function buildListingPriceVerdict(
     amenitiesList.forEach(a => positiveReasons.push(a));
 
     const areaNote = areaSqm && areaSqm >= 20 ? `（專有面積 ${areaSqm}㎡ 高於單身平均 17㎡）` : "";
+    const diffYen = totalMonthlyCost - range.median;
+    const netYen = Math.round(range.median * (netFactorsSumPercent / 100));
+    const comparisonText = netFactorsSumPercent >= nominalDiffPercent
+      ? `本案條件累計淨加成（+${netFactorsSumPercent.toFixed(1)}%，約 +${man(netYen)}）充分涵蓋當前月額相對中位數之溢價（+${nominalDiffPercent.toFixed(1)}%，+${man(diffYen)}）。考量硬體規格與生活便利性${areaNote}，當前租金溢價反映更好的居住品質，定價具備充分條件支撐與合理性。`
+      : `考量硬體規格與生活便利性${areaNote}，當前價格反映的是更好的居住品質，定價具合理性。`;
+
     return {
       status: "條件反映",
       headline: `每月總負擔 ${man(totalMonthlyCost)} 雖略高於同區行情均值，但綜合屋齡、站距與規格，屬於符合品質的「合理溢價」。`,
-      detail: `同區同房型基礎行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。考量硬體規格與生活便利性${areaNote}，當前價格反映的是更好的居住品質，定價具合理性。`,
+      detail: `同區同房型基礎行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。${comparisonText}`,
       factors,
       positiveFactorsSumPercent,
       negativeFactorsSumPercent,

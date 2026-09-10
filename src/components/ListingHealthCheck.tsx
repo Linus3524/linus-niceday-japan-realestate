@@ -4069,6 +4069,11 @@ export function ListingHealthCheck() {
                                         <span className="font-mono font-bold text-[#1A2A22]">
                                           {nominalDiff > 0 ? `+${nominalDiff.toFixed(1)}%` : nominalDiff < 0 ? `−${Math.abs(nominalDiff).toFixed(1)}%` : "0.0%"}
                                         </span>
+                                        {totalMonthlyCost && (
+                                          <span className="text-[10px] text-[#66736C]">
+                                            （約 {totalMonthlyCost >= result.range.median ? "+" : "−"}{formatYen(Math.abs(totalMonthlyCost - result.range.median))} / 月）
+                                          </span>
+                                        )}
                                       </div>
                                     )}
                                   </div>
@@ -4137,17 +4142,159 @@ export function ListingHealthCheck() {
                                 </div>
                               ) : null}
 
-                              {/* 評定解析 */}
-                              {conclusionText ? (
-                                <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
-                                  <span className="font-bold text-[#007D5A]">評定解析：</span>
-                                  <span>{conclusionText}</span>
-                                </div>
-                              ) : (
-                                <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
-                                  {cleanVerdictDetail}
-                                </div>
-                              )}
+                              {/* 條件累計與租金合理性對照（完全對齊買房體驗） */}
+                              {(() => {
+                                const posFactorsCount = rentalFactors.filter(f => f.ratePercent > 0).length;
+                                const negFactorsCount = rentalFactors.filter(f => f.ratePercent < 0).length;
+                                const medianRent = result.range?.median ?? 0;
+                                const nominalDiffYen = result.range && totalMonthlyCost ? totalMonthlyCost - medianRent : 0;
+                                const netDiffYen = result.range ? Math.round(medianRent * (netFactorsSum / 100)) : 0;
+
+                                const isWellSupported = nominalDiff > 0 && netFactorsSum >= nominalDiff - 1.5;
+                                const isOverpriced = nominalDiff > netFactorsSum + 5.0;
+                                const isDiscounted = nominalDiff < 0;
+
+                                const areaSqm = result.parsed?.area || (() => {
+                                  const aStr = result.extracted?.area || "";
+                                  const m = aStr.match(/(\d+(?:\.\d+)?)/);
+                                  return m ? Number(m[1]) : null;
+                                })();
+                                const roomType = result.parsed?.roomType;
+                                const benchmarkTarget = roomType === "ldk1" ? "1LDK 平均" : roomType === "ldk2" ? "2LDK 平均" : roomType === "ldk3" ? "3LDK 平均" : "單身平均";
+                                const benchmarkArea = roomType === "ldk1" ? "32㎡" : roomType === "ldk2" ? "48㎡" : roomType === "ldk3" ? "68㎡" : "18㎡";
+                                const areaPart = areaSqm && areaSqm >= (roomType === "ldk1" ? 35 : roomType === "ldk2" ? 50 : roomType === "ldk3" ? 70 : 20)
+                                  ? `專有面積 ${areaSqm}㎡ 高於${benchmarkTarget} ${benchmarkArea}`
+                                  : areaSqm ? `專有面積 ${areaSqm}㎡` : "";
+
+                                const topFeatures = rentalFactors
+                                  .filter(f => f.ratePercent > 0 && !/專有|空間|面積/.test(f.label))
+                                  .slice(0, 3)
+                                  .map(f => f.label)
+                                  .join("、");
+                                const featureClause = [areaPart, topFeatures ? `${topFeatures}等實用配備` : ""].filter(Boolean).join("、");
+                                const featureNote = featureClause ? `（${featureClause}）` : "";
+
+                                const verdictConclusionText = (() => {
+                                  if (!result.range) {
+                                    return conclusionText || cleanVerdictDetail;
+                                  }
+                                  if (isWellSupported) {
+                                    return `本案規格條件累計淨加成（+${netFactorsSum.toFixed(1)}%，換算居住價值約 +${formatYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}）。考量硬體規格與生活便利性${featureNote}，當前租金溢價完全反映在更好的居住品質與實用機能上，開價具備充分條件支撐，定價具高度合理性（屬於物有所值的「合理溢價」）。`;
+                                  }
+                                  if (isOverpriced) {
+                                    const excessPercent = (nominalDiff - netFactorsSum).toFixed(1);
+                                    const excessYen = Math.max(0, nominalDiffYen - netDiffYen);
+                                    return `當前每月租金相對區域中位數溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}），超出目前可量化之規格優勢加成（+${netFactorsSum.toFixed(1)}%，約 +${formatYen(netDiffYen)} / 月）約 +${excessPercent}%（約 +${formatYen(excessYen)} / 月）。若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），開價略有超額溢價，建議多比較周邊同級房源或爭取免禮金優惠。`;
+                                  }
+                                  if (isDiscounted) {
+                                    return `本案每月總負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%（每月折讓約 ${formatYen(Math.abs(nominalDiffYen))}）。${
+                                      netFactorsSum >= 0
+                                        ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢，性價比極高。`
+                                        : `租金已充分反映屋齡折舊或步程等折減，居住成本負擔合宜實惠。`
+                                    }`;
+                                  }
+                                  return `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${nominalDiff.toFixed(1)}% 貼近規格淨值 +${netFactorsSum.toFixed(1)}%）。考量硬體規格與生活便利性${featureNote}，定價合宜健康。`;
+                                })();
+
+                                return (
+                                  <div className="mt-3.5 border-t border-[#DDE3DF] pt-3.5 space-y-2.5">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-xs font-bold text-[#1A2A22]">優勢條件累計與租金合理性對照</span>
+                                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                                          加總驗證
+                                        </span>
+                                      </div>
+                                      <span className="text-[10px] text-[#8A9590]">
+                                        同區刊登中位數基準 ＋ 實務規格折溢價交叉驗算
+                                      </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                      {/* 卡片 1：本案條件淨加成 */}
+                                      <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-2.5 flex flex-col justify-between">
+                                        <div>
+                                          <div className="flex items-center justify-between gap-1">
+                                            <span className="text-[10px] text-[#66736C]">本案條件加成淨值</span>
+                                            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                                              規格加成
+                                            </span>
+                                          </div>
+                                          <span className={`block font-mono text-base font-black mt-1 ${netFactorsSum >= 0 ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                                            {netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}
+                                          </span>
+                                        </div>
+                                        <span className="block text-[9px] text-[#8A9590] mt-0.5">
+                                          {posFactorsCount} 項規格加成{negFactorsCount > 0 ? `・${negFactorsCount} 項讓利折減` : ""}
+                                          {result.range && `（約 ${netFactorsSum >= 0 ? "+" : "−"}${formatYen(Math.abs(netDiffYen))} / 月）`}
+                                        </span>
+                                      </div>
+
+                                      {/* 卡片 2：每月租金總額落點 */}
+                                      <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-2.5 flex flex-col justify-between">
+                                        <div>
+                                          <div className="flex items-center justify-between gap-1">
+                                            <span className="text-[10px] text-[#66736C]">每月租金總額落點</span>
+                                            <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${
+                                              nominalDiff > 0
+                                                ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
+                                                : nominalDiff < 0
+                                                  ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                                  : "border-[#DDE3DF] bg-white text-[#8A9590]"
+                                            }`}>
+                                              {nominalDiff > 0 ? "溢價開盤" : nominalDiff < 0 ? "讓利開盤" : "符合市價"}
+                                            </span>
+                                          </div>
+                                          <span className={`block font-mono text-base font-black mt-1 ${
+                                            nominalDiff > 0 ? "text-[#B13818]" : nominalDiff < 0 ? "text-[#007D5A]" : "text-[#8A9590]"
+                                          }`}>
+                                            {nominalDiff > 0 ? `▲ 溢價 ${nominalDiff.toFixed(1)}%` : nominalDiff < 0 ? `▼ 折讓 ${Math.abs(nominalDiff).toFixed(1)}%` : "符合市場基準"}
+                                          </span>
+                                        </div>
+                                        <span className="block text-[9px] text-[#8A9590] mt-0.5">
+                                          每月總負擔 {totalMonthlyCost ? formatYen(totalMonthlyCost) : "—"} / 月
+                                          {result.range && nominalDiffYen !== 0 && `（${nominalDiffYen > 0 ? "高出約 " : "折讓約 "}${formatYen(Math.abs(nominalDiffYen))}）`}
+                                        </span>
+                                      </div>
+
+                                      {/* 卡片 3：租金合理性剖析 */}
+                                      <div className={`border p-2.5 flex flex-col justify-between ${
+                                        isWellSupported
+                                          ? "border-[#9EE2CF] bg-[#E6F6F1]"
+                                          : isOverpriced
+                                            ? "border-[#FED7AA] bg-[#FFF7ED]"
+                                            : isDiscounted
+                                              ? "border-[#BAE6FD] bg-[#F0F9FF]"
+                                              : "border-[#DDE3DF] bg-[#F5F8F6]"
+                                      }`}>
+                                        <div>
+                                          <span className="block text-[10px] font-bold text-[#1A2A22]">租金定價合理性剖析</span>
+                                          <span className={`block text-xs font-bold mt-0.5 ${
+                                            isWellSupported ? "text-[#007D5A]" : isOverpriced ? "text-[#B13818]" : isDiscounted ? "text-[#0284C7]" : "text-[#007D5A]"
+                                          }`}>
+                                            {isWellSupported ? "✓ 租金有充分條件支撐" : isOverpriced ? "⚠ 超出條件支撐（超額溢價）" : isDiscounted ? "↓ 低於行情具性價比" : "✓ 租金落在合理區間"}
+                                          </span>
+                                        </div>
+                                        <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
+                                          {isWellSupported
+                                            ? `各項規格累計淨值（+${netFactorsSum.toFixed(1)}%）充分支撐開價差距（溢價 ${nominalDiff.toFixed(1)}%），屬高規格合理溢價。`
+                                            : isOverpriced
+                                              ? `即使計入各項規格優勢，租金仍高於客觀支撐約 ${(nominalDiff - netFactorsSum).toFixed(1)}%，建議評估議價或爭取免禮金空間。`
+                                              : isDiscounted
+                                                ? `月額負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%，具備顯著性價比讓利優勢。`
+                                                : "租金開價與條件規格加權後之行情落點相符。"}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* 評定解析（綜合加總與租金比對之結論） */}
+                                    <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
+                                      <span className="font-bold text-[#007D5A]">評定解析：</span>
+                                      <span>{verdictConclusionText}</span>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                             </div>
                           </div>
                         );
