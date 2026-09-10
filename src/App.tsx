@@ -60,6 +60,10 @@ const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.ur
 type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
 const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer"];
 
+// 模組層級的 in-flight 請求快取，見下方 useEffect 內的說明：避免 StrictMode
+// 的重複掛載把同一個訪客算成兩個新訪客。
+let visitorCountRequest: Promise<any> | null = null;
+
 // 分頁代號用穩定的語意名稱，不直接沿用內部的 AppTab id：
 // 之後改 UI 的變數命名時，已經累積的統計不會斷掉。
 const TAB_VIEW_NAME: Record<AppTab, TrackableView> = {
@@ -240,11 +244,24 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/visitor-count", { credentials: "same-origin" })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Unable to load visitor count.");
-        return response.json();
-      })
+    // 共用同一個 in-flight promise，而不是各自各發各的請求：StrictMode 在
+    // 開發模式會把這個 effect 連續執行兩次（mount → cleanup → remount），
+    // 若各自呼叫 fetch，第一次還沒設好 cookie 前第二次就已經送出去，兩邊
+    // 都會被 Redis 判定成「不同的新訪客」，把累計數字多加一次。
+    // 用模組層級的 promise 快取，讓底下的請求只真正送出一次，但每次 effect
+    // 掛載都還是能拿到同一個結果——單純用旗標擋住第二次呼叫的話，第二次
+    // （也就是真正留下來的那次掛載）會永遠等不到資料，畫面卡在「—」。
+    // 這個做法蓋不到「同一個全新訪客同時開兩個不同分頁」這種更少見的情況，
+    // 那需要伺服器端做請求合併才能完全避免，此處先接受這個殘餘誤差。
+    if (!visitorCountRequest) {
+      visitorCountRequest = fetch("/api/visitor-count", { credentials: "same-origin" }).then(
+        async (response) => {
+          if (!response.ok) throw new Error("Unable to load visitor count.");
+          return response.json();
+        },
+      );
+    }
+    visitorCountRequest
       .then((data) => {
         if (!cancelled && typeof data?.count === "number") setVisitorCount(data.count);
       })
@@ -272,9 +289,12 @@ export default function App() {
   // 後台頁自己不列入統計。
   //
   // isMobileHome 只有手機版有意義：它為 true 時手機只顯示主視覺，桌機版卻
-  // 早就把當前分頁的內容整頁攤開了。所以桌機一律回報，手機要離開首頁才算。
-  // 來源標記在進站時就送，與分頁回報分開：手機停在首頁不算任何分頁，
-  // 綁在一起會讓「從 LINE 點開、看一眼就關掉」這種造訪完全沒有紀錄。
+  // 早就把當前分頁的內容整頁攤開了。所以桌機一律回報分頁，手機停在首頁時
+  // 回報獨立的 "home"——原本這裡完全不送任何事件，導致「本月瀏覽次數」的
+  // 加總系統性漏掉「手機從 LINE／社群點開、看一眼首頁就關掉」這群人，而
+  // 這正是社群導流最常見的情境。
+  // 來源標記在進站時就送，與分頁回報分開：手機停在首頁不算「切到某個分頁」，
+  // 綁在一起會讓上述這群人的來源也一起漏記。
   useEffect(() => { trackSource(); }, []);
 
   useEffect(() => {
@@ -282,7 +302,7 @@ export default function App() {
     if (policyPage) { trackView("policy"); return; }
     if (isThreadsPage) { trackView("threads"); return; }
     const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (isDesktop || !isMobileHome) trackView(TAB_VIEW_NAME[activeTab]);
+    trackView(isDesktop || !isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
   }, [adminPage, policyPage, isThreadsPage, isMobileHome, activeTab]);
 
   useEffect(() => {

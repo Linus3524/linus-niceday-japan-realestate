@@ -29,7 +29,7 @@ export type UsageFeature = "chat" | "rent-analysis" | "listing-check";
  * 白名單寫死在這裡：這是公開可寫的端點，不限制的話任何人都能塞垃圾鍵值進來。
  */
 export const TRACKABLE_VIEWS = [
-  "rent-guide", "buy-guide", "calculator", "ai-advisor", "contact", "threads", "policy",
+  "rent-guide", "buy-guide", "calculator", "ai-advisor", "contact", "threads", "policy", "home",
 ] as const;
 export type TrackableView = (typeof TRACKABLE_VIEWS)[number];
 
@@ -69,7 +69,9 @@ const ACTIONS_PREFIX = "linus:usage:actions:";
 // 避免有人用隨機字串把 Redis 塞滿；超過上限的新標籤一律歸到 other。
 const MAX_DISTINCT_SOURCES = 50;
 // 月度 hash 保留約兩年，足夠看年度趨勢又不會無限成長。
-const MONTH_TTL_SECONDS = 60 * 60 * 24 * 760;
+// 匯出給 visitorCounter.ts 的月度訪客計數共用，避免它自己另訂一個 TTL、
+// 導致「本月訪客」比同一個月的其他統計（瀏覽次數、功能使用）先過期消失。
+export const MONTH_TTL_SECONDS = 60 * 60 * 24 * 760;
 
 const redis =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -80,8 +82,11 @@ export function usageMetricsConfigured() {
   return redis !== null;
 }
 
-/** 以日本時間分日：這個網站的使用者與業務都在日本時區，用 UTC 分日會把晚上的流量切到隔天。 */
-function tokyoParts(now = new Date()) {
+/**
+ * 以日本時間分日：這個網站的使用者與業務都在日本時區，用 UTC 分日會把晚上的流量切到隔天。
+ * 匯出給 visitorCounter.ts 共用，避免兩處各自實作、時區規則跑掉不同步。
+ */
+export function tokyoParts(now = new Date()) {
   const tokyo = new Date(now.getTime() + 9 * 60 * 60 * 1000);
   const year = tokyo.getUTCFullYear();
   const month = String(tokyo.getUTCMonth() + 1).padStart(2, "0");

@@ -10,7 +10,7 @@
  */
 
 export type TrackableView =
-  | "rent-guide" | "buy-guide" | "calculator" | "ai-advisor" | "contact" | "threads" | "policy";
+  | "rent-guide" | "buy-guide" | "calculator" | "ai-advisor" | "contact" | "threads" | "policy" | "home";
 
 /** 重要動作。與分頁瀏覽分開：這是「做了什麼」，不是「看了哪一區」。 */
 export type ThreadRecommendationSource = "rent" | "buy" | "ai";

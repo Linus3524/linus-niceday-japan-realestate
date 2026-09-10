@@ -1,4 +1,5 @@
 import { getUsageSummary, usageMetricsConfigured } from "../src/lib/usageMetrics.js";
+import { getMonthlyVisitorCount, getVisitorCount, visitorCounterConfigured } from "../src/lib/visitorCounter.js";
 
 /**
  * 後台使用量查詢。
@@ -33,7 +34,26 @@ export default async function handler(req: any, res: any) {
 
   try {
     const month = typeof req.query?.month === "string" ? req.query.month : undefined;
-    return res.json(await getUsageSummary(month));
+    const summary = await getUsageSummary(month);
+
+    // 訪客計數與其餘統計是兩個獨立的 Redis 模組（見 visitorCounter.ts 開頭的
+    // 說明），這裡在 API 層合併成一份回應，前端不用分開打兩支 API、也不必
+    // 自己處理「其中一個沒設定」的情況。monthlyVisitors 與前台首頁的累計
+    // 訪客數共用同一個 visitorId、同一套去重邏輯，兩者才能互相對照。
+    let monthlyVisitors: number | null = null;
+    let cumulativeVisitors: number | null = null;
+    if (visitorCounterConfigured()) {
+      try {
+        [monthlyVisitors, cumulativeVisitors] = await Promise.all([
+          getMonthlyVisitorCount(summary.month),
+          getVisitorCount(),
+        ]);
+      } catch (error) {
+        console.error("visitor counter merge failed (ignored):", error);
+      }
+    }
+
+    return res.json({ ...summary, monthlyVisitors, cumulativeVisitors });
   } catch (error) {
     console.error("usage-stats error:", error);
     return res.status(500).json({ error: "Unable to read usage metrics." });

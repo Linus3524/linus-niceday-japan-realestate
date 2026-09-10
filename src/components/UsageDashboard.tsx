@@ -30,6 +30,13 @@ interface UsageSummary {
   views: Record<string, number>;
   sources: Record<string, number>;
   actions: Record<string, number>;
+  /**
+   * 與前台首頁「VISITORS」共用同一個 visitorId、同一套去重邏輯算出來的
+   * 本月／累計訪客數（見 src/lib/visitorCounter.ts）。null 代表訪客計數器
+   * 沒有設定（缺 Upstash 環境變數），不是「這個月是 0 人」。
+   */
+  monthlyVisitors: number | null;
+  cumulativeVisitors: number | null;
 }
 
 /**
@@ -92,6 +99,7 @@ const VIEW_LABEL: Record<string, string> = {
   "contact": "聯絡諮詢",
   "threads": "精選 Threads 文",
   "policy": "條款與隱私",
+  "home": "手機首頁（未切分頁）",
 };
 
 interface AggregateRow { label: string; count: number; visitors: number }
@@ -250,6 +258,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
       .sort((a, b) => b.count - a.count);
   }, [data]);
 
+  // 這個月的總瀏覽次數：views 這個 hash 本身就是「各分頁被看了幾次」，
+  // 加總起來就是總瀏覽次數，不需要另外開一個計數器重複記一次。
+  const totalPageviews = useMemo(
+    () => Object.values(data?.views ?? {}).reduce((sum, value) => sum + (Number(value) || 0), 0),
+    [data],
+  );
+
   const geoRows = useMemo(() => {
     if (!data) return [];
     return Object.entries(data.geo)
@@ -351,12 +366,57 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <div className="mb-6 border border-[#E4C9A8] bg-[#FBF6EF] p-4 text-sm text-[#7A5B36]">{error}</div>
         )}
 
-        {/* 流量區：訪客與瀏覽數來自 Vercel Web Analytics */}
+        {/* 本站流量：與前台首頁「VISITORS」同一套 Redis 統計、同一個 visitorId
+            去重邏輯算出來的數字，是這個網站唯一「前後台保證同源」的流量數字。
+            放在 Vercel 那組之前，作為主要參考；Vercel 那組因為是前端腳本、
+            會被封鎖器擋掉，改列為次要對照。 */}
+        {data && (
+          <section className="mb-8">
+            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
+              本站流量
+              <span className="ml-2 font-normal text-xs text-zinc-400">
+                {data.month}・伺服器端記錄，與首頁 VISITORS 同源
+              </span>
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="border border-[#DDE3DF] bg-white p-5">
+                <div className="text-xs text-zinc-500">本月不重複訪客</div>
+                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
+                  {data.monthlyVisitors === null ? "—" : data.monthlyVisitors.toLocaleString()}
+                </div>
+                <div className="mt-1 text-[11px] leading-5 text-zinc-400">以造訪者的瀏覽器 cookie 去重</div>
+              </div>
+              <div className="border border-[#DDE3DF] bg-white p-5">
+                <div className="text-xs text-zinc-500">本月瀏覽次數</div>
+                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{totalPageviews.toLocaleString()}</div>
+                <div className="mt-1 text-[11px] leading-5 text-zinc-400">各分頁瀏覽次數加總（含手機首頁）</div>
+              </div>
+              <div className="border border-[#DDE3DF] bg-white p-5">
+                <div className="text-xs text-zinc-500">累計訪客（全站，不分月）</div>
+                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
+                  {data.cumulativeVisitors === null ? "—" : data.cumulativeVisitors.toLocaleString()}
+                </div>
+                <div className="mt-1 text-[11px] leading-5 text-zinc-400">首頁 VISITORS 顯示的就是這個數字</div>
+              </div>
+            </div>
+            {data.monthlyVisitors === null && (
+              <p className="mt-3 text-[11px] leading-5 text-zinc-400">
+                訪客計數器沒有設定（缺少 Upstash 環境變數），以上三格顯示「—」不代表沒有流量。
+              </p>
+            )}
+          </section>
+        )}
+
+        {/* 次要對照：Vercel Web Analytics。前端腳本統計，會被廣告封鎖器與
+            部分隱私瀏覽模式擋掉，數字通常會比實際流量低，僅供交叉參考——
+            與上方「本站流量」出現落差是正常現象，不代表哪一邊算錯。 */}
         {traffic && (
           <section className="mb-8">
             <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-              網站流量
-              <span className="ml-2 font-normal text-xs text-zinc-400">{traffic.month}・來自 Vercel</span>
+              外部對照（Vercel Analytics）
+              <span className="ml-2 font-normal text-xs text-zinc-400">
+                {traffic.month}・前端腳本統計，會被封鎖器擋掉
+              </span>
             </h2>
             <div className="mb-3 grid gap-3 sm:grid-cols-2">
               <div className="border border-[#DDE3DF] bg-white p-5">
@@ -381,8 +441,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
                         <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
                           {row.visitors.toLocaleString()}
+                          {/* 這裡原本寫「人次」，但 row.visitors 是去重後的訪客數（同一人不論
+                              造訪幾次只算一個），「人次」在中文裡指的是累計造訪次數、允許重複——
+                              兩個詞義相反，容易讓人誤解這欄和旁邊的「次」算的是同一種東西。 */}
                           <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
-                            人次／{row.count.toLocaleString()} 次
+                            人／{row.count.toLocaleString()} 次
                           </span>
                         </span>
                       </li>
@@ -417,7 +480,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {trafficNote && (
           <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-zinc-500">
-            網站流量：{trafficNote}
+            外部對照（Vercel Analytics）：{trafficNote}
           </div>
         )}
 
