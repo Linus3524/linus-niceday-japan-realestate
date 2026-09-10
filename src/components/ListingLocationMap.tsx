@@ -592,7 +592,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               onMouseEnter={() => handleCardHover(amenity.key)}
               onMouseLeave={() => handleCardHover(null)}
               onClick={() => handleCardClick(amenity.key)}
-              className={`flex cursor-pointer items-center justify-between gap-2 border p-2.5 transition-all ${
+              className={`flex min-w-0 cursor-pointer items-center justify-between gap-2 border p-2.5 transition-all ${
                 isHovered
                   ? "border-[#007d5a] bg-[#e6f6f1] shadow-md"
                   : "border-[#DDE3DF] bg-white hover:border-[#9ee2cf] hover:bg-[#FAFCFB]"

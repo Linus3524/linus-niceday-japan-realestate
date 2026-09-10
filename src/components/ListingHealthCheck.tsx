@@ -2283,12 +2283,19 @@ export function ListingHealthCheck() {
                                             }}
                                           />
                                         )}
+                                        {/* 標籤一律置中的話，最左與最右那兩個會各突出半個標籤寬，
+                                            在手機的窄容器上直接被切掉；貼邊時改成靠左／靠右對齊。 */}
                                         <div
-                                          className="absolute -translate-x-1/2 text-center leading-tight whitespace-nowrap"
+                                          className={`absolute leading-tight whitespace-nowrap ${
+                                            m.displayP <= 10 ? "text-left" : m.displayP >= 90 ? "text-right" : "text-center"
+                                          }`}
                                           style={{
                                             left: `${m.displayP}%`,
                                             top: `${rowOf[i] * ROW_HEIGHT}px`,
                                             color: m.tone,
+                                            transform: m.displayP <= 10
+                                              ? "translateX(0)"
+                                              : m.displayP >= 90 ? "translateX(-100%)" : "translateX(-50%)",
                                           }}
                                         >
                                           <span className={`block font-mono text-xs font-black tabular-nums ${m.strong ? "text-[#1A2A22]" : ""}`}>
@@ -3364,7 +3371,9 @@ export function ListingHealthCheck() {
                                       : "font-bold text-[#1A2A22]"
                                   }`}
                                 >
-                                  <div className="min-w-0">
+                                  {/* 「固定資產稅・都市計畫稅（概算）」這種長標籤在手機上會撐出容器，
+                                      允許在任意位置斷行才不會溢出。 */}
+                                  <div className="min-w-0 [overflow-wrap:anywhere]">
                                     <span>{item.name}</span>
                                     {item.note && (
                                       <span className="ml-1 text-[10px] text-[#66736C]">（{item.note}）</span>
@@ -3535,30 +3544,33 @@ export function ListingHealthCheck() {
                     </button>
                   </div>
 
-                  {/* 項目逐筆拆解表格 */}
+                  {/* 項目逐筆拆解表格。同租賃那張表：手機上用左右滑動看完整，不把欄位擠成一個字一行。 */}
                   {showSaleCostsDetails && (
                     <div className="mt-4 overflow-x-auto border border-[#DDE3DF]">
-                      <table className="w-full text-left text-xs">
+                      <table className="w-full min-w-[720px] text-left text-xs">
                         <thead className="border-b border-[#DDE3DF] bg-[#F5F8F6] text-[#66736C]">
                           <tr>
-                            <th className="p-2.5 font-bold">費用項目</th>
-                            <th className="p-2.5 text-right font-bold">預估金額</th>
-                            <th className="p-2.5 font-bold">計算標準與法定依據</th>
+                            <th className="p-2.5 font-bold whitespace-nowrap">費用項目</th>
+                            <th className="p-2.5 text-right font-bold whitespace-nowrap w-[110px]">預估金額</th>
+                            <th className="p-2.5 font-bold min-w-[360px]">計算標準與法定依據</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#DDE3DF]">
                           {saleInitialCosts.items.filter(item => (!isSpecialSale || item.id !== "managementPrepayment") && (specialSale.kind !== "land" || item.id !== "insurance")).map(item => (
                             <tr key={item.id} className="hover:bg-[#F5F8F6]">
-                              <td className="p-2.5 font-bold text-[#1A2A22]">{item.name}</td>
-                              <td className="p-2.5 text-right font-bold text-[#007D5A]">
+                              <td className="p-2.5 font-bold text-[#1A2A22] whitespace-nowrap">{item.name}</td>
+                              <td className="p-2.5 text-right font-bold text-[#007D5A] whitespace-nowrap tabular-nums">
                                 {item.id === "acquisitionTax" && acquisitionTaxAssessment?.amount == null ? "待核對，未計入" : formatYen(item.amount)}
                               </td>
-                              <td className="p-2.5 text-[11px] text-[#66736C]">{item.note}</td>
+                              <td className="p-2.5 text-[11px] leading-relaxed text-[#66736C]">{item.note}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
+                  )}
+                  {showSaleCostsDetails && (
+                    <p className="mt-2 text-[10px] text-[#8A9590] md:hidden">※ 表格可左右滑動，查看預估金額與計算依據。</p>
                   )}
 
                   <div className="mt-4 border border-[#EAB879] bg-[#FEF3C7] p-4 text-xs leading-relaxed">
@@ -4354,14 +4366,16 @@ export function ListingHealthCheck() {
                   {/* 項目逐筆拆解明細表格 */}
                   {showInitialCostDetails && (
                     <div className="space-y-2">
+                      {/* 備註原本在窄螢幕整欄隱藏、改成表格下方的條列，結果金額與說明被拆到兩個地方看。
+                          改成永遠留在同一列，表格給最小寬度讓手機用左右滑的看完整。 */}
                       <div className="overflow-x-auto border border-[#DDE3DF]">
-                        <table className="w-full text-left text-xs">
+                        <table className="w-full min-w-[760px] text-left text-xs">
                           <thead className="border-b border-[#DDE3DF] bg-[#F5F8F6] text-[#66736C]">
                             <tr>
                               <th className="p-2.5 font-bold whitespace-nowrap shrink-0">費用項目</th>
                               <th className="p-2.5 text-center font-bold whitespace-nowrap w-[76px]">依據來源</th>
                               <th className="p-2.5 text-right font-bold whitespace-nowrap w-[96px]">預估金額</th>
-                              <th className="hidden p-2.5 font-bold md:table-cell w-full">備註說明</th>
+                              <th className="p-2.5 font-bold min-w-[320px]">備註說明</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y border-[#DDE3DF]">
@@ -4382,7 +4396,7 @@ export function ListingHealthCheck() {
                                 <td className="p-2.5 text-right font-bold text-[#1A2A22] whitespace-nowrap tabular-nums">
                                   {item.isUnknown ? "待確認，未計入" : formatYen(item.amount)}
                                 </td>
-                                <td className="hidden p-2.5 text-[11px] text-[#66736C] md:table-cell">
+                                <td className="p-2.5 text-[11px] leading-relaxed text-[#66736C]">
                                   {item.note}
                                 </td>
                               </tr>
@@ -4391,12 +4405,7 @@ export function ListingHealthCheck() {
                         </table>
                       </div>
 
-                      {/* 手機版顯示備註折疊說明 */}
-                      <div className="space-y-1 text-[11px] text-[#66736C] md:hidden">
-                        {initialCost.items.map(item => (
-                          <p key={item.id}>• <strong>{item.name}</strong>：{item.note}</p>
-                        ))}
-                      </div>
+                      <p className="text-[10px] text-[#8A9590] md:hidden">※ 表格可左右滑動，查看預估金額與備註說明。</p>
                     </div>
                   )}
 
