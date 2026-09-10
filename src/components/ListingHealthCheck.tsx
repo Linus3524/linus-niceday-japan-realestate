@@ -2527,7 +2527,7 @@ export function ListingHealthCheck() {
                                       加總驗證
                                     </span>
                                   </div>
-                                  <span className="text-[10px] text-[#8A9590]">
+                                  <span className="text-[10px] text-[#66736C]">
                                     官方査定教科書 ＋ 東京カンテイ大數據統計
                                   </span>
                                 </div>
@@ -4204,7 +4204,7 @@ export function ListingHealthCheck() {
                                           加總驗證
                                         </span>
                                       </div>
-                                      <span className="text-[10px] text-[#8A9590]">
+                                      <span className="text-[10px] text-[#66736C]">
                                         同區刊登中位數基準 ＋ 實務規格折溢價交叉驗算
                                       </span>
                                     </div>
@@ -4592,12 +4592,9 @@ export function ListingHealthCheck() {
 
                 {/* 互動地圖與周邊生活機能：將房屋與所有周邊設施直接標記在地圖上 */}
                 <div className="border border-[#DDE3DF] bg-white p-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#007D5A]">
-                      <Store className="h-4 w-4 text-[#007D5A]" />
-                      <span>周邊 1.2 公里生活機能與互動地圖</span>
-                    </div>
-                    <span className="text-[10px] text-[#66736C]">車站最多 3 站　·　生活機能每類別取最近 3 筆</span>
+                  <div className="mb-3 flex items-center gap-2 text-xs font-bold text-[#007D5A]">
+                    <Store className="h-4 w-4 text-[#007D5A]" />
+                    <span>周邊 1.2 公里生活機能與互動地圖</span>
                   </div>
 
                   {/* 核心組件：地圖視覺化標出本物件與所有周邊設施 */}
