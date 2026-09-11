@@ -17,6 +17,7 @@ const {
   extractPrefecture,
   prefectureGrade,
   buildPrefectureResult,
+  normalizeAddress,
 } = __testing;
 
 /** 依 API 欄位建立測試列，未指定的欄位一律為 0。 */
@@ -148,5 +149,19 @@ assert.match(tokyoPref.summary, /全國平均/);
 assert.match(tokyoPref.summary, /第 \d+ 名/);
 assert.match(tokyoPref.credit, /e-Stat|社会生活統計指標/);
 assert.match(tokyoPref.fiscalYear, /年度/);
+
+/* ⑪ 地址正規化：圖紙 OCR 常給全形／漢数字，不轉會讓東京物件掉到縣級。 */
+assert.equal(normalizeAddress("東京都世田谷区経堂１丁目"), "東京都世田谷区経堂1丁目");
+assert.equal(normalizeAddress("東京都港区港南三丁目"), "東京都港区港南3丁目");
+assert.equal(normalizeAddress("東京都渋谷区神南 １ 丁目"), "東京都渋谷区神南1丁目");
+// 全形連字號要收斂成半形，否則番地會殘留怪符號。
+assert.equal(normalizeAddress("東京都新宿区西新宿２−８−１"), "東京都新宿区西新宿2-8-1");
+// 正規化後才抓得到町丁目；這是先前實測失敗的案例。
+assert.equal(extractWardAndTown("東京都世田谷区経堂１丁目"), "世田谷区経堂1丁目");
+assert.equal(extractWardAndTown("東京都港区港南三丁目"), "港区港南3丁目");
+// 不可誤傷原本就正常的半形地址。
+assert.equal(extractWardAndTown("東京都墨田区錦糸1丁目5-10"), "墨田区錦糸1丁目");
+// 縣名判斷同樣吃正規化後的字串。
+assert.equal(extractPrefecture("大阪市北区梅田１−１−１"), "大阪府");
 
 console.log("test-crime-safety: 全部通過");

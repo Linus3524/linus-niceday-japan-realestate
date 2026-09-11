@@ -133,12 +133,34 @@ export type CrimeLookupResult =
 /* ────────── 地址解析 ────────── */
 
 /**
+ * 地址正規化。圖紙 OCR 出來的地址常帶全形數字與漢數字
+ * （例：「世田谷区経堂１丁目」「港区港南三丁目」），而下游的 `\d`
+ * 與警視庁 API 的「市区町丁」欄位都只認半形阿拉伯數字。
+ * 不轉的話東京物件會白白掉到都道府県級，精度平白損失。
+ */
+function normalizeAddress(address: string): string {
+  let addr = address.replace(/\s+/g, "");
+  // 全形阿拉伯數字 → 半形
+  addr = addr.replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xfee0));
+  // 全形連字號類 → 半形，避免「１−１」殘留怪符號
+  addr = addr.replace(/[－―‐‑‒–—ー−]/g, "-");
+  // 漢数字丁目 → 阿拉伯数字丁目。町丁目最多到 9 丁目為主，
+  // 十位數（十一丁目等）罕見且格式不一，這裡只處理一～十。
+  const kanji: Record<string, string> = {
+    一: "1", 二: "2", 三: "3", 四: "4", 五: "5",
+    六: "6", 七: "7", 八: "8", 九: "9", 十: "10",
+  };
+  addr = addr.replace(/([一二三四五六七八九十])丁目/g, (_, d: string) => `${kanji[d]}丁目`);
+  return addr;
+}
+
+/**
  * 從 matchedAddress（如「東京都墨田区錦糸1丁目」）提取 API 可查的町丁目字串。
  * API 的「市区町丁」欄位格式為「墨田区錦糸1丁目」（不含「東京都」前綴）。
  * 可能回傳多個候選（精確町丁目 + 市區層級 fallback）。
  */
 function extractChocho(address: string): string[] {
-  const addr = address.replace(/\s+/g, "");
+  const addr = normalizeAddress(address);
   const candidates: string[] = [];
 
   // ① 嘗試匹配「◯◯区/市 ◯◯N丁目」（精確町丁目）
@@ -164,7 +186,7 @@ function extractChocho(address: string): string[] {
  * 例如 "東京都墨田区錦糸1丁目5-10" → "墨田区錦糸1丁目"
  */
 function extractWardAndTown(address: string): string | null {
-  const addr = address.replace(/\s+/g, "");
+  const addr = normalizeAddress(address);
   // 移除 "東京都" 前綴
   const noPrefix = addr.replace(/^東京都/, "");
   // 嘗試匹配：区/市 + 町名 + N丁目
@@ -416,7 +438,7 @@ const CITY_TO_PREFECTURE: Record<string, string> = {
 
 /** 從地址取出都道府県名。找不到回 null。 */
 function extractPrefecture(address: string): string | null {
-  const addr = address.replace(/\s+/g, "");
+  const addr = normalizeAddress(address);
   for (const name of PREFECTURE_NAMES) {
     if (addr.includes(name)) return name;
   }
@@ -508,4 +530,5 @@ export const __testing = {
   extractPrefecture,
   prefectureGrade,
   buildPrefectureResult,
+  normalizeAddress,
 };
