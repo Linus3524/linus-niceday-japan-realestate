@@ -929,7 +929,7 @@ export function calculateInitialCostBreakdown(params: {
 
   // 3. 初期費用優惠（3.8 倍以下）
   if (monthsMultipleMax <= 3.8 && missingCosts.length === 0) {
-    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.5～5.0 倍標準。`);
+    tips.push(`【初期費用划算】合計約 ${monthsMultipleMax} 個月租金，比市場常見的 4.5～5.0 個月省下不少，入住門檻明顯較低。`);
   }
 
   // 4. 禮金與押金動態解析
