@@ -31,6 +31,19 @@ export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack
           想分析自己手上的圖紙？到 LINUS 住好日的「費用試算」上傳仲介給的物件圖紙，即可取得同樣的分析。
         </p>
       </main>
+
+      <footer className="mt-12 border-t border-[#D4DDD8] bg-white">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-5 py-7 text-center sm:flex-row sm:px-8 sm:text-left">
+          <p className="font-jost text-[10px] tracking-[0.08em] text-[#7A847E]">
+            © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
+          </p>
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#526159]" aria-label="政策頁面">
+            <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
+            <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
+            <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }

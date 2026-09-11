@@ -106,136 +106,133 @@ const WECHAT_GREEN = "#07C160";
 const styles = StyleSheet.create({
   page: {
     fontFamily: ["NotoSansTC", "NotoSansJPSupplement"],
-    fontSize: 9,
+    fontSize: 8.5,
     color: INK,
-    paddingTop: 52,
-    paddingBottom: 54,
-    paddingHorizontal: 40,
-    // lineHeight 不放這裡：react-pdf 的 render prop（頁碼）Text 只要繼承到任何
-    // lineHeight 就不會渲染（實測）。內容的預設行高改設在 body 上，頁尾維持乾淨。
+    paddingTop: 44,
+    paddingBottom: 46,
+    paddingHorizontal: 36,
   },
-  body: { lineHeight: 1.5 },
+  body: {},
 
   /* 固定頁首／頁尾 */
   headerBar: { position: "absolute", top: 0, left: 0, right: 0, height: 5, backgroundColor: GREEN },
-  headerLeft: { position: "absolute", top: 16, left: 40, fontSize: 8, fontWeight: 700, color: INK },
-  headerRight: { position: "absolute", top: 16, right: 40, fontSize: 7.5, color: INK_MUTE },
-  headerRule: { position: "absolute", top: 34, left: 40, right: 40, borderTopWidth: 1, borderTopColor: LINE },
-  footerRule: { position: "absolute", bottom: 34, left: 40, right: 40, borderTopWidth: 1, borderTopColor: LINE },
-  // 不能有 lineHeight，否則右側用 render prop 的頁碼不會出現（見 page 樣式的說明）。
-  footerText: { fontSize: 6.5, color: INK_MUTE },
-  footerLeft: { position: "absolute", bottom: 22, left: 40 },
-  footerRight: { position: "absolute", bottom: 22, right: 40 },
+  headerLeft: { position: "absolute", top: 14, left: 36, fontSize: 8, fontWeight: 700, color: INK },
+  headerRight: { position: "absolute", top: 14, right: 36, fontSize: 7, color: INK_MUTE },
+  headerRule: { position: "absolute", top: 30, left: 36, right: 36, borderTopWidth: 1, borderTopColor: LINE },
+  footerRule: { position: "absolute", bottom: 30, left: 36, right: 36, borderTopWidth: 1, borderTopColor: LINE },
+  footerText: { fontSize: 6, color: INK_MUTE },
+  footerLeft: { position: "absolute", bottom: 18, left: 36 },
+  footerRight: { position: "absolute", bottom: 18, right: 36 },
 
   /* 標題區 */
-  titleBlock: { marginBottom: 12 },
-  eyebrow: { fontSize: 7.5, color: GREEN_DEEP, fontWeight: 700, letterSpacing: 1.5, marginBottom: 4 },
-  title: { fontSize: 18, fontWeight: 700, lineHeight: 1.3 },
-  subtitle: { fontSize: 8.5, color: INK_SOFT, marginTop: 3 },
-  chipRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6 },
-  chip: { borderWidth: 1, borderColor: LINE, backgroundColor: SOFT_BG, paddingHorizontal: 6, paddingVertical: 2, marginRight: 4, marginBottom: 4, fontSize: 7, color: INK_SOFT },
+  titleBlock: { marginBottom: 8 },
+  eyebrow: { fontSize: 6.5, color: GREEN_DEEP, fontWeight: 700, letterSpacing: 1.2, marginBottom: 2 },
+  title: { fontSize: 15, fontWeight: 700, lineHeight: 1.25 },
+  subtitle: { fontSize: 7.5, color: INK_SOFT, marginTop: 2 },
+  chipRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 4 },
+  chip: { borderWidth: 1, borderColor: LINE, backgroundColor: SOFT_BG, paddingHorizontal: 4, paddingVertical: 1.5, marginRight: 3, marginBottom: 3, fontSize: 6.5, color: INK_SOFT },
   chipAccent: { borderColor: GREEN_LINE, backgroundColor: GREEN_SOFT, color: GREEN_DEEP, fontWeight: 700 },
 
   /* KPI 列 */
-  kpiRow: { flexDirection: "row", marginBottom: 12 },
-  kpi: { flex: 1, borderWidth: 1, borderColor: LINE, backgroundColor: "#FFFFFF", padding: 8, marginRight: 6 },
+  kpiRow: { flexDirection: "row", marginBottom: 8 },
+  kpi: { flex: 1, borderWidth: 1, borderColor: LINE, backgroundColor: "#FFFFFF", paddingVertical: 5, paddingHorizontal: 6, marginRight: 5 },
   kpiLast: { marginRight: 0 },
-  kpiLabel: { fontSize: 6.5, color: INK_MUTE, letterSpacing: 0.5, marginBottom: 2 },
-  kpiValue: { fontSize: 14, fontWeight: 700, lineHeight: 1.25 },
-  kpiNote: { fontSize: 6.5, color: INK_MUTE, marginTop: 2 },
+  kpiLabel: { fontSize: 6, color: INK_MUTE, letterSpacing: 0.5, marginBottom: 1 },
+  kpiValue: { fontSize: 12, fontWeight: 700, lineHeight: 1.2 },
+  kpiNote: { fontSize: 6, color: INK_MUTE, marginTop: 1, lineHeight: 1.2 },
 
   /* 卡片 */
-  card: { borderWidth: 1, borderColor: LINE, marginBottom: 10 },
+  card: { borderWidth: 1, borderColor: LINE, marginBottom: 6 },
   cardHead: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
     backgroundColor: SOFT_BG, borderBottomWidth: 1, borderBottomColor: LINE,
-    paddingVertical: 6, paddingHorizontal: 10,
+    paddingVertical: 3.5, paddingHorizontal: 7,
   },
   cardTitleRow: { flexDirection: "row", alignItems: "center" },
-  cardAccent: { width: 3, height: 11, backgroundColor: GREEN, marginRight: 6 },
-  cardTitle: { fontSize: 9.5, fontWeight: 700 },
-  cardTag: { fontSize: 7, color: INK_MUTE },
-  cardBody: { paddingVertical: 8, paddingHorizontal: 10 },
+  cardAccent: { width: 2.5, height: 9, backgroundColor: GREEN, marginRight: 5 },
+  cardTitle: { fontSize: 8, fontWeight: 700 },
+  cardTag: { fontSize: 6.5, color: INK_MUTE },
+  cardBody: { paddingVertical: 4.5, paddingHorizontal: 7 },
 
-  sectionLabel: { fontSize: 7, fontWeight: 700, color: INK_MUTE, letterSpacing: 1, marginBottom: 3 },
-  subBlock: { paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
+  sectionLabel: { fontSize: 6.5, fontWeight: 700, color: INK_MUTE, letterSpacing: 0.8, marginBottom: 2 },
+  subBlock: { paddingVertical: 3.5, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
   subBlockLast: { borderBottomWidth: 0 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
-  gridCell: { width: "33.33%", paddingRight: 8, marginBottom: 6 },
-  gridCellHalf: { width: "50%", paddingRight: 8, marginBottom: 6 },
-  gridCellWide: { width: "100%", marginBottom: 6 },
-  label: { fontSize: 7, color: INK_MUTE, marginBottom: 1 },
-  value: { fontSize: 9.5, fontWeight: 700 },
-  valueSmall: { fontSize: 8.5 },
+  gridCell: { width: "33.33%", paddingRight: 6, marginBottom: 4 },
+  gridCellHalf: { width: "50%", paddingRight: 6, marginBottom: 4 },
+  gridCellWide: { width: "100%", marginBottom: 4 },
+  label: { fontSize: 6.5, color: INK_MUTE, marginBottom: 1 },
+  value: { fontSize: 8.5, fontWeight: 700 },
+  valueSmall: { fontSize: 7.5 },
 
-  verdictBox: { borderWidth: 1, padding: 8, marginBottom: 6 },
-  verdictStatus: { fontSize: 7, fontWeight: 700, letterSpacing: 1, marginBottom: 3 },
-  verdictHeadline: { fontSize: 10, fontWeight: 700, lineHeight: 1.45 },
-  verdictDetail: { fontSize: 8, marginTop: 4, lineHeight: 1.55, color: INK_SOFT },
+  verdictBox: { borderWidth: 1, paddingVertical: 4.5, paddingHorizontal: 7, marginBottom: 4 },
+  verdictStatus: { fontSize: 6.5, fontWeight: 700, letterSpacing: 0.8, marginBottom: 1.5 },
+  verdictHeadline: { fontSize: 8.5, fontWeight: 700, lineHeight: 1.25 },
+  verdictDetail: { fontSize: 7, marginTop: 2, lineHeight: 1.35, color: INK_SOFT },
 
   // 行高不能靠繼承：react-pdf 把 page 的 lineHeight 1.5 算成 13.5pt 後往下傳，
   // 20pt 的數字會被壓在 13.5pt 的行裡、跟下一個區塊重疊。每個大字都自己設。
-  bigNumberRow: { flexDirection: "row", alignItems: "flex-end", flexWrap: "wrap", marginBottom: 8 },
-  bigNumber: { fontSize: 20, fontWeight: 700, lineHeight: 1.25 },
-  bigNumberNote: { fontSize: 8, color: INK_SOFT, marginLeft: 8, marginBottom: 3, lineHeight: 1.4 },
+  bigNumberRow: { flexDirection: "row", alignItems: "flex-end", flexWrap: "wrap", marginBottom: 4 },
+  bigNumber: { fontSize: 16, fontWeight: 700, lineHeight: 1.2 },
+  bigNumberNote: { fontSize: 7.5, color: INK_SOFT, marginLeft: 6, marginBottom: 1.5, lineHeight: 1.25 },
 
-  tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: LINE_SOFT, paddingVertical: 4 },
+  tableRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: LINE_SOFT, paddingVertical: 2.5 },
   tableRowLast: { borderBottomWidth: 0 },
-  tdName: { width: "34%", fontSize: 8.5, fontWeight: 700, paddingRight: 6 },
-  tdAmount: { width: "18%", fontSize: 8.5, fontWeight: 700, textAlign: "right", paddingRight: 8 },
-  tdNote: { width: "48%", fontSize: 7.5, color: INK_SOFT, lineHeight: 1.45 },
+  tdName: { width: "34%", fontSize: 7.5, fontWeight: 700, paddingRight: 4 },
+  tdAmount: { width: "18%", fontSize: 7.5, fontWeight: 700, textAlign: "right", paddingRight: 6 },
+  tdNote: { width: "48%", fontSize: 7, color: INK_SOFT, lineHeight: 1.3 },
   tdUnknown: { color: INK_MUTE, fontWeight: 400 },
 
   /* 因素表（含小長條） */
-  factorRow: { flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: LINE_SOFT, paddingVertical: 4 },
-  factorLabel: { width: "24%", fontSize: 8.5, fontWeight: 700, paddingRight: 6, lineHeight: 1.3, justifyContent: "center" },
-  factorNote: { width: "48%", fontSize: 7.5, color: INK_SOFT, lineHeight: 1.45, paddingRight: 6 },
-  factorBarWrap: { width: "16%", paddingRight: 6 },
-  factorBarTrack: { height: 5, backgroundColor: LINE_SOFT, flexDirection: "row" },
-  factorPct: { width: "12%", fontSize: 8.5, fontWeight: 700, textAlign: "right" },
-  factorRef: { fontSize: 6.5, color: INK_MUTE, fontWeight: 400 },
+  factorRow: { flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: LINE_SOFT, paddingVertical: 2.5 },
+  factorLabel: { width: "24%", fontSize: 7.5, fontWeight: 700, paddingRight: 4, lineHeight: 1.2, justifyContent: "center" },
+  factorNote: { width: "48%", fontSize: 7, color: INK_SOFT, lineHeight: 1.3, paddingRight: 4 },
+  factorBarWrap: { width: "16%", paddingRight: 4 },
+  factorBarTrack: { height: 4, backgroundColor: LINE_SOFT, flexDirection: "row" },
+  factorPct: { width: "12%", fontSize: 7.5, fontWeight: 700, textAlign: "right" },
+  factorRef: { fontSize: 6, color: INK_MUTE, fontWeight: 400 },
 
-  bullet: { flexDirection: "row", marginBottom: 3 },
-  bulletDot: { width: 10, fontSize: 8, color: GREEN_DEEP },
-  bulletText: { flex: 1, fontSize: 8, lineHeight: 1.5 },
+  bullet: { flexDirection: "row", marginBottom: 2 },
+  bulletDot: { width: 8, fontSize: 7.5, color: GREEN_DEEP },
+  bulletText: { flex: 1, fontSize: 7.5, lineHeight: 1.35 },
 
   /* 設備 */
   tagWrap: { flexDirection: "row", flexWrap: "wrap" },
-  tag: { borderWidth: 1, borderColor: LINE, paddingHorizontal: 5, paddingVertical: 2, marginRight: 4, marginBottom: 4, fontSize: 7, color: INK_SOFT },
+  tag: { borderWidth: 1, borderColor: LINE, backgroundColor: "#FFFFFF", paddingHorizontal: 4, paddingVertical: 1.5, marginRight: 3, marginBottom: 3, fontSize: 6.5, color: INK_SOFT },
   tagHighlight: { borderColor: GREEN_LINE, backgroundColor: GREEN_SOFT, color: GREEN_DEEP, fontWeight: 700 },
 
   /* 特約 */
-  condRow: { flexDirection: "row", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
-  condRowTitle: { width: "22%", fontSize: 8, fontWeight: 700, paddingRight: 6, paddingTop: 1 },
+  condRow: { flexDirection: "row", paddingVertical: 3.5, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
+  condRowTitle: { width: "22%", fontSize: 7.5, fontWeight: 700, paddingRight: 5, paddingTop: 1 },
   condRowBody: { flex: 1 },
-  noteItem: { flexDirection: "row", paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
-  noteBadge: { width: 46, fontSize: 6.5, color: INK_MUTE, paddingTop: 1 },
+  noteItem: { flexDirection: "row", paddingVertical: 3, borderBottomWidth: 1, borderBottomColor: LINE_SOFT },
+  noteBadge: { width: 42, fontSize: 6, color: INK_MUTE, paddingTop: 1 },
   noteBody: { flex: 1 },
-  noteTitle: { fontSize: 8.5, fontWeight: 700 },
-  noteText: { fontSize: 7.5, color: INK_SOFT, lineHeight: 1.45, marginTop: 1 },
+  noteTitle: { fontSize: 8, fontWeight: 700 },
+  noteText: { fontSize: 7, color: INK_SOFT, lineHeight: 1.35, marginTop: 1 },
 
-  disclaimer: { marginTop: 4, borderWidth: 1, borderColor: LINE, backgroundColor: SOFT_BG, padding: 8 },
-  disclaimerText: { fontSize: 7, color: INK_SOFT, lineHeight: 1.5 },
+  disclaimer: { marginTop: 4, borderWidth: 1, borderColor: LINE, backgroundColor: SOFT_BG, padding: 6 },
+  disclaimerText: { fontSize: 6.5, color: INK_SOFT, lineHeight: 1.4 },
 
   /* 聯絡頁 */
-  contactHero: { borderWidth: 1, borderColor: GREEN_LINE, backgroundColor: GREEN_SOFT, padding: 14, flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  contactLogo: { width: 64, height: 64, marginRight: 14 },
-  contactTitle: { fontSize: 15, fontWeight: 700, color: GREEN_DEEP, lineHeight: 1.3 },
-  contactLead: { fontSize: 8.5, color: INK_SOFT, marginTop: 4, lineHeight: 1.55 },
-  qrRow: { flexDirection: "row", marginBottom: 12 },
-  qrCard: { flex: 1, borderWidth: 1, borderColor: LINE, padding: 12, alignItems: "center", marginRight: 10 },
+  contactHero: { borderWidth: 1, borderColor: GREEN_LINE, backgroundColor: GREEN_SOFT, padding: 8, flexDirection: "row", alignItems: "center", marginBottom: 8 },
+  contactLogo: { width: 44, height: 44, marginRight: 10 },
+  contactTitle: { fontSize: 13, fontWeight: 700, color: GREEN_DEEP, lineHeight: 1.25 },
+  contactLead: { fontSize: 7.5, color: INK_SOFT, marginTop: 2.5, lineHeight: 1.35 },
+  qrRow: { flexDirection: "row", marginBottom: 8 },
+  qrCard: { flex: 1, borderWidth: 1, borderColor: LINE, padding: 8, alignItems: "center", marginRight: 8 },
   qrCardLast: { marginRight: 0 },
-  qrBrand: { fontSize: 9, fontWeight: 700, color: "#FFFFFF", paddingHorizontal: 10, paddingVertical: 3, marginBottom: 8 },
-  qrImage: { width: 128, height: 128, marginBottom: 8 },
-  qrId: { fontSize: 11, fontWeight: 700, letterSpacing: 0.5 },
-  qrHint: { fontSize: 7, color: INK_MUTE, marginTop: 3, textAlign: "center", lineHeight: 1.45 },
-  channelRow: { flexDirection: "row", flexWrap: "wrap", marginBottom: 10 },
-  channel: { width: "50%", paddingRight: 8, marginBottom: 8 },
-  channelName: { fontSize: 7, color: INK_MUTE, letterSpacing: 0.5 },
-  channelValue: { fontSize: 9, fontWeight: 700, color: GREEN_DEEP, textDecoration: "none" },
-  companyBox: { borderTopWidth: 1, borderTopColor: LINE, paddingTop: 8 },
-  companyText: { fontSize: 7.5, color: INK_SOFT, lineHeight: 1.55 },
+  qrBrand: { fontSize: 8, fontWeight: 700, color: "#FFFFFF", paddingHorizontal: 8, paddingVertical: 2, marginBottom: 5 },
+  qrImage: { width: 100, height: 100, marginBottom: 5 },
+  qrId: { fontSize: 9.5, fontWeight: 700, letterSpacing: 0.5 },
+  qrHint: { fontSize: 6.5, color: INK_MUTE, marginTop: 2, textAlign: "center", lineHeight: 1.3 },
+  channelRow: { flexDirection: "row", flexWrap: "wrap", marginBottom: 8 },
+  channel: { width: "50%", paddingRight: 6, marginBottom: 5 },
+  channelName: { fontSize: 6.5, color: INK_MUTE, letterSpacing: 0.5 },
+  channelValue: { fontSize: 8, fontWeight: 700, color: GREEN_DEEP, textDecoration: "none" },
+  companyBox: { borderTopWidth: 1, borderTopColor: LINE, paddingTop: 6 },
+  companyText: { fontSize: 7, color: INK_SOFT, lineHeight: 1.35 },
 });
 
 /* ───────────── 判定配色 ───────────── */
@@ -294,7 +291,7 @@ export interface ListingReportPdfProps {
 /* ───────────── 共用小元件 ───────────── */
 function Card({ title, tag, children }: { title: string; tag?: string; children: any }) {
   return (
-    <View style={styles.card} wrap={false}>
+    <View style={styles.card}>
       <View style={styles.cardHead}>
         <View style={styles.cardTitleRow}>
           <View style={styles.cardAccent} />
@@ -422,7 +419,7 @@ function LocationCard({ locationContext, commute }: Pick<ListingReportPdfProps, 
   return (
     <Card title="位置與生活機能" tag="依圖紙地址即時查詢">
       {locationContext?.matchedAddress ? (
-        <Text style={{ fontSize: 7.5, color: INK_MUTE, marginBottom: 6 }}>定位地址：{locationContext.matchedAddress}</Text>
+        <Text style={{ fontSize: 7, color: INK_MUTE, marginBottom: 4 }}>定位地址：{locationContext.matchedAddress}</Text>
       ) : null}
       {walks.length ? (
         <View style={styles.subBlock}>
@@ -442,7 +439,7 @@ function LocationCard({ locationContext, commute }: Pick<ListingReportPdfProps, 
       {amenities.length ? (
         <View style={[styles.subBlock, commute ? {} : styles.subBlockLast]}>
           <Text style={styles.sectionLabel}>1.2 公里內最近的生活機能（共檢索到 {amenities.length} 處）</Text>
-          <Text style={{ fontSize: 8, lineHeight: 1.6 }}>
+          <Text style={{ fontSize: 7.5, lineHeight: 1.4 }}>
             {nearestByCategory(amenities).map(a => `${a.label} ${Math.round(a.distanceMeters)}m`).join("　・　")}
           </Text>
         </View>
@@ -450,12 +447,12 @@ function LocationCard({ locationContext, commute }: Pick<ListingReportPdfProps, 
       {commute ? (
         <View style={[styles.subBlock, styles.subBlockLast]}>
           <Text style={styles.sectionLabel}>我的實際通勤試算</Text>
-          <Text style={{ fontSize: 8.5 }}>
+          <Text style={{ fontSize: 7.5 }}>
             {commute.destination ? `到「${commute.destination}」` : ""}
             {typeof commute.totalMinutes === "number" ? `約 ${commute.totalMinutes} 分鐘` : ""}
             {typeof commute.transfers === "number" ? `・轉乘 ${commute.transfers} 次` : ""}
           </Text>
-          {commute.summary ? <Text style={{ fontSize: 7.5, color: INK_SOFT, marginTop: 2 }}>{commute.summary}</Text> : null}
+          {commute.summary ? <Text style={{ fontSize: 7, color: INK_SOFT, marginTop: 1.5, lineHeight: 1.3 }}>{commute.summary}</Text> : null}
         </View>
       ) : null}
     </Card>
@@ -677,23 +674,27 @@ function RentSections({ result }: { result: any }) {
         </Card>
       ) : null}
 
-      {/* 與網站「重要特約與法務事項」同一份資料：每個小區塊各自不斷頁，一頁放不下就整塊換頁。 */}
-      {sections.map((section, si) => (
+      {/* 與網站「重要特約與法務事項」同一份資料 */}
+      {sections.length ? (
         <Card
-          key={section.title}
-          title={`重要特約與法務事項｜${section.title}`}
-          tag={si === 0 ? "彙整圖紙刊載之重點特約與條款，簽約前請詳閱重要事項說明" : undefined}
+          title="重要特約與法務事項"
+          tag="彙整圖紙刊載之重點特約與條款，簽約前請詳閱重要事項說明"
         >
-          {section.rows.map((row, ri) => (
-            <View key={row.title} style={[styles.condRow, ri === section.rows.length - 1 ? styles.tableRowLast : {}]}>
-              <Text style={styles.condRowTitle}>{row.title}</Text>
-              <View style={styles.condRowBody}>
-                <Bullets items={row.items} />
-              </View>
+          {sections.map((section, si) => (
+            <View key={section.title} style={[styles.subBlock, si === sections.length - 1 ? styles.subBlockLast : {}]}>
+              <Text style={styles.sectionLabel}>{section.title}</Text>
+              {section.rows.map((row, ri) => (
+                <View key={row.title} style={[styles.condRow, ri === section.rows.length - 1 ? styles.tableRowLast : {}]}>
+                  <Text style={styles.condRowTitle}>{row.title}</Text>
+                  <View style={styles.condRowBody}>
+                    <Bullets items={row.items} />
+                  </View>
+                </View>
+              ))}
             </View>
           ))}
         </Card>
-      ))}
+      ) : null}
     </>
   );
 }

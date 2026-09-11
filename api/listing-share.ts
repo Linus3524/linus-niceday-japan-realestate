@@ -62,7 +62,7 @@ export default async function handler(req: any, res: any) {
     try {
       const stored = await getListingShare(id);
       if (!stored) {
-        return res.status(404).json({ error: "找不到這個分享連結，可能已過期（連結保存 30 天）。" });
+        return res.status(404).json({ error: "找不到這個分享連結，可能已過期（連結保存 14 天）。" });
       }
       return res.json({
         id,

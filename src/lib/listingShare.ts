@@ -13,7 +13,7 @@ import { randomBytes } from "crypto";
  */
 
 const SHARE_PREFIX = "linus:listing-share:";
-export const SHARE_TTL_SECONDS = 60 * 60 * 24 * 30;
+export const SHARE_TTL_SECONDS = 60 * 60 * 24 * 14;
 export const SHARE_ID_LENGTH = 8;
 // 分析結果 JSON 實測約 20～60KB；設上限擋掉異常的巨大 payload，不擋正常使用。
 export const SHARE_MAX_BYTES = 256 * 1024;

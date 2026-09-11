@@ -4877,7 +4877,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
             <p className="mb-4 text-xs leading-relaxed text-[#66736C]">
               {sharedMode
                 ? "可將這份分析下載成 PDF 留存。PDF 在你的瀏覽器裡產生，內容不會再傳到任何伺服器。"
-                : "建立連結後可直接傳給家人或朋友，連結保存 30 天。連結只包含分析結果，不包含你上傳的圖紙。PDF 在瀏覽器裡產生，不經過伺服器。"}
+                : "建立連結後可直接傳給家人或朋友，連結保存 14 天。連結只包含分析結果，不包含你上傳的圖紙。PDF 在瀏覽器裡產生，不經過伺服器。"}
             </p>
 
             {!sharedMode && (
@@ -4912,6 +4912,15 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                   {shareCopied ? "已複製" : "複製"}
                 </button>
+                <a
+                  href={shareUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex shrink-0 items-center gap-1 bg-[#007D5A] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#006347]"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  前往
+                </a>
               </div>
             )}
 
@@ -4941,7 +4950,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <p className="mt-3 text-xs text-[#B13818]">{shareError || pdfError}</p>
             )}
           </div>
-          <ListingContactCta />
+          {sharedMode && <ListingContactCta />}
         </div>
         </ErrorBoundary>
       )}

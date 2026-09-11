@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Facebook, Instagram, Mail, MessageCircle, QrCode } from "lucide-react";
+import { Check, Copy, Facebook, Instagram, Mail, MessageCircle, QrCode } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 import { trackAction } from "../lib/trackView";
 
@@ -9,8 +9,7 @@ import { trackAction } from "../lib/trackView";
  * 分析看完就是最想問問題的時候——分享頁的收件人尤其如此，他們可能根本沒逛過網站，
  * 這一塊是他們唯一會看到的聯絡入口。所以放在結果最後、分享頁與一般模式都顯示。
  *
- * 聯絡方式與埋點事件沿用站內既有的（linusContact、line-add／wechat-copy／wechat-qr），
- * 不另外維護一份會跑掉的清單。
+ * 簡約日系質感排版，主聯絡方式（LINE、微信）清晰突出，社群與牌照資訊優雅襯托。
  */
 
 const THREADS_ICON = (
@@ -27,6 +26,8 @@ const LINE_ICON = (
 
 export function ListingContactCta() {
   const [copiedWechat, setCopiedWechat] = useState(false);
+  const [copiedLine, setCopiedLine] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showWechatQr, setShowWechatQr] = useState(false);
 
   const copyWechat = async () => {
@@ -36,94 +37,181 @@ export function ListingContactCta() {
       setCopiedWechat(true);
       window.setTimeout(() => setCopiedWechat(false), 2000);
     } catch {
-      // 剪貼簿被擋就顯示 QR 讓使用者掃
       setShowWechatQr(true);
     }
   };
 
+  const copyLine = async () => {
+    try {
+      await navigator.clipboard.writeText(linusContact.lineId);
+      trackAction("line-copy");
+      setCopiedLine(true);
+      window.setTimeout(() => setCopiedLine(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(linusContact.email);
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
-    <section className="border border-[#9ee2cf] bg-[#f2faf7] p-5 md:p-7" aria-label="聯絡 Linus">
-      <div className="flex flex-col gap-5 md:flex-row md:items-start">
-        <img src="/logo.png" alt="" aria-hidden="true" className="h-16 w-16 shrink-0 md:h-20 md:w-20" />
-        <div className="min-w-0 flex-1">
-          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#007D5A]">Talk to Linus</div>
-          <h3 className="text-lg font-bold leading-snug text-[#1A2A22] md:text-xl">看完分析有問題？直接找 Linus 聊聊</h3>
-          <p className="mt-2 text-sm leading-relaxed text-[#3F5147]">
-            想確認物件細節、安排看房，或需要日本租屋・買房的全程協助，用你最習慣的方式聯絡就好。中文溝通、日本現地服務。
-          </p>
-
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            <a
-              href={`https://line.me/ti/p/~${linusContact.lineId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackAction("line-add")}
-              className="flex min-h-11 items-center justify-center gap-2 bg-[#06C755] px-3 text-sm font-bold text-white transition-colors hover:bg-[#05b34c]"
-            >
-              {LINE_ICON} 加 LINE 好友
-            </a>
-            <button
-              type="button"
-              onClick={copyWechat}
-              className="flex min-h-11 items-center justify-center gap-2 bg-[#07C160] px-3 text-sm font-bold text-white transition-colors hover:bg-[#06ad55]"
-            >
-              {copiedWechat ? <Check className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
-              {copiedWechat ? "已複製微信 ID" : "複製微信 ID"}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setShowWechatQr(v => !v); if (!showWechatQr) trackAction("wechat-qr"); }}
-              className="flex min-h-11 items-center justify-center gap-2 border border-[#07C160] bg-white px-3 text-sm font-bold text-[#07C160] transition-colors hover:bg-[#f0fbf4]"
-            >
-              <QrCode className="h-4 w-4" /> 微信 QR
-            </button>
-            <a
-              href={linusContact.threads}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-11 items-center justify-center gap-2 bg-[#1A2A22] px-3 text-sm font-bold text-white transition-colors hover:bg-[#303033]"
-            >
-              {THREADS_ICON} Threads
-            </a>
-            <a
-              href="https://www.instagram.com/linus3524"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-11 items-center justify-center gap-2 bg-[#E1306C] px-3 text-sm font-bold text-white transition-colors hover:bg-[#c92a5f]"
-            >
-              <Instagram className="h-4 w-4" /> Instagram
-            </a>
-            <a
-              href={linusContact.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-11 items-center justify-center gap-2 bg-[#1877F2] px-3 text-sm font-bold text-white transition-colors hover:bg-[#166fe5]"
-            >
-              <Facebook className="h-4 w-4" /> Facebook
-            </a>
+    <section className="border border-[#DDE3DF] bg-white p-6 sm:p-7 shadow-xs" aria-label="聯絡 Linus">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3.5">
+          <img
+            src="/logo.png"
+            alt=""
+            aria-hidden="true"
+            className="h-12 w-12 shrink-0 border border-[#E2E8E4] p-1 sm:h-14 sm:w-14"
+          />
+          <div>
+            <span className="inline-block border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#007D5A]">
+              Talk to Linus
+            </span>
+            <h3 className="mt-1 text-base font-bold text-[#1A2A22] sm:text-lg">
+              看完分析有問題？直接找 Linus 聊聊
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-[#526159] sm:text-sm">
+              想確認物件細節、安排看房，或需要日本租屋・買房的全程協助，用你最習慣的方式聯絡就好。中文溝通、日本現地服務。
+            </p>
           </div>
-
-          {showWechatQr && (
-            <div className="mt-3 flex items-center gap-4 border border-[#DDE3DF] bg-white p-3">
-              <img src="/wechat-add-friend-qr-branded.svg" alt="微信加好友 QR code" className="h-28 w-28 shrink-0" />
-              <div className="text-xs leading-relaxed text-[#3F5147]">
-                <p className="font-bold text-[#1A2A22]">微信「掃一掃」加好友</p>
-                <p className="mt-1">或搜尋 ID：<span className="font-mono font-bold">{linusContact.wechatId}</span></p>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-[#DDE3DF] pt-3 text-xs text-[#3F5147]">
-            <a href={`mailto:${linusContact.email}`} className="flex items-center gap-1.5 hover:text-[#007D5A]">
-              <Mail className="h-3.5 w-3.5" /> {linusContact.email}
-            </a>
-            <span>LINE ID <span className="font-mono font-bold">{linusContact.lineId}</span></span>
-            <span>微信 ID <span className="font-mono font-bold">{linusContact.wechatId}</span></span>
-          </div>
-          <p className="mt-2 text-[10px] leading-relaxed text-[#66736C]">
-            {linusContact.name}｜{linusContact.companyName}・{linusContact.licenseNo}
-          </p>
         </div>
+      </div>
+
+      {/* 主要聯絡按鈕（LINE／微信） */}
+      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+        <a
+          href={`https://line.me/ti/p/~${linusContact.lineId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackAction("line-add")}
+          className="flex min-h-11 items-center justify-center gap-2 bg-[#06C755] px-4 text-xs font-bold text-white transition-colors hover:bg-[#05b34c] sm:text-sm"
+        >
+          {LINE_ICON} 加 LINE 好友
+        </a>
+        <button
+          type="button"
+          onClick={copyWechat}
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm"
+        >
+          {copiedWechat ? <Check className="h-4 w-4 text-[#07C160]" /> : <MessageCircle className="h-4 w-4 text-[#07C160]" />}
+          {copiedWechat ? "已複製微信 ID" : "複製微信 ID"}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setShowWechatQr(v => !v); if (!showWechatQr) trackAction("wechat-qr"); }}
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm"
+        >
+          <QrCode className="h-4 w-4 text-[#07C160]" />
+          {showWechatQr ? "收合微信 QR" : "微信 QR"}
+        </button>
+      </div>
+
+      {/* 微信 QR 展開面板 */}
+      {showWechatQr && (
+        <div className="mt-3 flex items-center gap-4 border border-[#DDE3DF] bg-[#F8FAF9] p-4 animate-in fade-in duration-200">
+          <img src="/wechat-add-friend-qr-branded.svg" alt="微信加好友 QR code" className="h-24 w-24 shrink-0 bg-white border border-[#E2E8E4] p-1" />
+          <div className="text-xs leading-relaxed text-[#3F5147]">
+            <p className="font-bold text-[#1A2A22]">微信「掃一掃」加好友</p>
+            <p className="mt-1">
+              或搜尋 ID：
+              <button
+                type="button"
+                onClick={copyWechat}
+                className="ml-1 inline-flex items-center gap-1 bg-white px-2 py-0.5 font-mono font-bold text-[#07C160] border border-[#DDE3DF] hover:border-[#07C160]"
+                title="點擊複製"
+              >
+                {linusContact.wechatId}
+                <Copy className="h-3 w-3" />
+              </button>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 社群與其他管道（簡約膠囊標籤） */}
+      <div className="mt-4 flex flex-wrap items-center gap-2 pt-2 border-t border-dashed border-[#E2E8E4]">
+        <span className="font-sans text-[11px] font-semibold text-[#879089]">其他管道：</span>
+        <a
+          href={linusContact.threads}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1A2A22] hover:bg-white hover:text-[#1A2A22]"
+        >
+          {THREADS_ICON}
+          <span>Threads</span>
+        </a>
+        <a
+          href="https://www.instagram.com/linus3524"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#E1306C] hover:bg-white hover:text-[#E1306C]"
+        >
+          <Instagram className="h-3.5 w-3.5" />
+          <span>Instagram</span>
+        </a>
+        <a
+          href={linusContact.facebook}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1877F2] hover:bg-white hover:text-[#1877F2]"
+        >
+          <Facebook className="h-3.5 w-3.5" />
+          <span>Facebook</span>
+        </a>
+        <a
+          href={`mailto:${linusContact.email}`}
+          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#007D5A] hover:bg-white hover:text-[#007D5A]"
+        >
+          <Mail className="h-3.5 w-3.5" />
+          <span>{linusContact.email}</span>
+        </a>
+      </div>
+
+      {/* 底部牌照與快捷複製資訊 */}
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-[#EEF2F0] pt-3 text-[11px] text-[#66736C]">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <button
+            type="button"
+            onClick={copyLine}
+            className="hover:text-[#007D5A] transition-colors cursor-pointer"
+            title="點擊複製 LINE ID"
+          >
+            LINE ID <span className="font-mono font-semibold text-[#1A2A22]">{linusContact.lineId}</span>
+            {copiedLine && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
+          </button>
+          <span className="text-[#D4DDD8]" aria-hidden="true">·</span>
+          <button
+            type="button"
+            onClick={copyWechat}
+            className="hover:text-[#007D5A] transition-colors cursor-pointer"
+            title="點擊複製 微信 ID"
+          >
+            微信 ID <span className="font-mono font-semibold text-[#1A2A22]">{linusContact.wechatId}</span>
+            {copiedWechat && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
+          </button>
+          <span className="text-[#D4DDD8]" aria-hidden="true">·</span>
+          <button
+            type="button"
+            onClick={copyEmail}
+            className="hover:text-[#007D5A] transition-colors cursor-pointer"
+            title="點擊複製 Email"
+          >
+            <span className="font-mono text-[#526159]">{linusContact.email}</span>
+            {copiedEmail && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
+          </button>
+        </div>
+        <p className="text-[10px] text-[#879089]">
+          {linusContact.name}｜{linusContact.companyName}・{linusContact.licenseNo}
+        </p>
       </div>
     </section>
   );
