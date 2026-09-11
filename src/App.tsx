@@ -290,7 +290,13 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: "auto" });
     };
     window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    // 也要聽 popstate：returnHome 用 pushState 清掉 hash，使用者按瀏覽器上一頁
+    // 時只會觸發 popstate 而非 hashchange，沒接的話網址退回去了畫面卻不動。
+    window.addEventListener("popstate", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handleHashChange);
+    };
   }, []);
 
   // 回報目前實際顯示的是哪一頁。放在這裡而不是點擊處理器，是為了同時涵蓋
@@ -681,6 +687,10 @@ export default function App() {
     }
     setIsThreadsPage(false);
     setPolicyPage(null);
+    // pushState 不會觸發 hashchange，這裡得自己把 hash 驅動的頁面狀態清乾淨。
+    // 少清任何一個，畫面就會卡在原本那頁（實測分享頁按返回沒反應即為此因）。
+    setAdminPage(false);
+    setSharedListingId(null);
     setIsMobileHome(true);
     window.scrollTo({ top: 0, behavior: "auto" });
   };
