@@ -26,8 +26,10 @@ const redis =
     ? Redis.fromEnv()
     : null;
 
+const devMemoryStore = new Map<string, { share: StoredListingShare; expiresAt: string }>();
+
 export function listingShareConfigured() {
-  return redis !== null;
+  return redis !== null || process.env.NODE_ENV !== "production";
 }
 
 export function isValidShareId(value: unknown): value is string {
@@ -61,8 +63,6 @@ export async function createListingShare(input: {
   dealType: "sale" | "rent" | null;
   result: unknown;
 }): Promise<{ id: string; expiresAt: string }> {
-  if (!redis) throw new Error("Listing share storage is not configured.");
-
   const stored: StoredListingShare = {
     version: 1,
     createdAt: new Date().toISOString(),
@@ -70,6 +70,16 @@ export async function createListingShare(input: {
     dealType: input.dealType,
     result: input.result,
   };
+
+  if (!redis) {
+    if (process.env.NODE_ENV !== "production") {
+      const id = generateShareId();
+      const expiresAt = new Date(Date.now() + SHARE_TTL_SECONDS * 1000).toISOString();
+      devMemoryStore.set(id, { share: stored, expiresAt });
+      return { id, expiresAt };
+    }
+    throw new Error("Listing share storage is not configured.");
+  }
 
   // NX 確保不覆蓋既有連結；撞到的機率極低，但撞到就重抽，不能讓別人的分享被蓋掉。
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -83,8 +93,20 @@ export async function createListingShare(input: {
 }
 
 export async function getListingShare(id: string): Promise<(StoredListingShare & { expiresAt: string | null }) | null> {
-  if (!redis) throw new Error("Listing share storage is not configured.");
   if (!isValidShareId(id)) return null;
+
+  if (!redis) {
+    if (process.env.NODE_ENV !== "production") {
+      const entry = devMemoryStore.get(id);
+      if (!entry) return null;
+      return {
+        ...entry.share,
+        expiresAt: entry.expiresAt,
+      };
+    }
+    throw new Error("Listing share storage is not configured.");
+  }
+
   const key = `${SHARE_PREFIX}${id}`;
   const [stored, ttl] = await Promise.all([redis.get<StoredListingShare>(key), redis.ttl(key)]);
   if (!stored) return null;

@@ -1375,7 +1375,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           result={result}
           title={title}
           generatedAt={new Date()}
-          shareUrl={shareUrl}
+          shareUrl={shareUrl || (sharedId ? `${window.location.origin}/#listing/${sharedId}` : null)}
           // 圖片（logo、QR）用絕對網址：react-pdf 在瀏覽器裡是用 fetch 取圖，
           // 給站根絕對路徑最不會受目前 hash 路由影響。
           assetBase={window.location.origin}

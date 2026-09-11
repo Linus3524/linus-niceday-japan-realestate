@@ -133,6 +133,80 @@ const styles = StyleSheet.create({
   chip: { borderWidth: 1, borderColor: LINE, backgroundColor: SOFT_BG, paddingHorizontal: 4, paddingVertical: 1.5, marginRight: 3, marginBottom: 3, fontSize: 6.5, color: INK_SOFT },
   chipAccent: { borderColor: GREEN_LINE, backgroundColor: GREEN_SOFT, color: GREEN_DEEP, fontWeight: 700 },
 
+  /* 線上版本導外按鈕（PDF 右上方嵌入） */
+  onlineLinkBtn: {
+    borderWidth: 1,
+    borderColor: GREEN_LINE,
+    backgroundColor: GREEN_SOFT,
+    paddingHorizontal: 7,
+    paddingVertical: 3.5,
+    textDecoration: "none",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 2,
+  },
+  onlineLinkText: {
+    fontSize: 7,
+    fontWeight: 700,
+    color: GREEN_DEEP,
+    textDecoration: "none",
+  },
+
+  /* 行情對照三方卡片（本案開價 vs 實價登錄 vs 市場在售） */
+  benchmarkGrid: {
+    flexDirection: "row",
+    marginBottom: 6,
+  },
+  benchmarkCard: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: LINE,
+    borderLeftWidth: 3,
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    marginRight: 5,
+  },
+  benchmarkCardLast: {
+    marginRight: 0,
+  },
+  benchmarkHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  benchmarkCardTitle: {
+    fontSize: 7,
+    fontWeight: 700,
+    color: INK,
+  },
+  benchmarkCardPrice: {
+    fontSize: 12.5,
+    fontWeight: 700,
+    color: INK,
+    lineHeight: 1.15,
+  },
+  benchmarkMeta: {
+    marginTop: 2,
+  },
+  benchmarkMetaText: {
+    fontSize: 6,
+    color: INK_MUTE,
+    lineHeight: 1.25,
+  },
+  benchmarkDiffText: {
+    fontSize: 6.5,
+    fontWeight: 700,
+    marginTop: 1.5,
+  },
+  benchmarkMetaSub: {
+    fontSize: 5.5,
+    color: INK_MUTE,
+    marginTop: 1,
+    lineHeight: 1.2,
+  },
+
   /* KPI 列 */
   kpiRow: { flexDirection: "row", marginBottom: 8 },
   kpi: { flex: 1, borderWidth: 1, borderColor: LINE, backgroundColor: "#FFFFFF", paddingVertical: 5, paddingHorizontal: 6, marginRight: 5 },
@@ -289,9 +363,9 @@ export interface ListingReportPdfProps {
 }
 
 /* ───────────── 共用小元件 ───────────── */
-function Card({ title, tag, children }: { title: string; tag?: string; children: any }) {
+function Card({ title, tag, children, wrap = true }: { title: string; tag?: string; children: any; wrap?: boolean }) {
   return (
-    <View style={styles.card}>
+    <View style={styles.card} wrap={wrap}>
       <View style={styles.cardHead}>
         <View style={styles.cardTitleRow}>
           <View style={styles.cardAccent} />
@@ -337,14 +411,16 @@ function VerdictBox({ tone, status, headline, detail }: { tone: Tone; status: st
   );
 }
 
-/** 影響價格的因素表：與網站同樣用小長條表示強度，滿格 ±15%。 */
+/** 影響價格的因素表：與網站同樣用小長條表示強度，滿格 ±15%。加項為綠、減項為紅。 */
 function FactorTable({ factors, scale = 15 }: { factors: Array<{ label: string; ratePercent: number; note: string; applied?: boolean }>; scale?: number }) {
   return (
     <View>
       {factors.map((f, i) => {
         const reference = f.applied === false;
         const width = Math.min(100, (Math.abs(f.ratePercent) / scale) * 100);
-        const color = reference ? "#B6BFBA" : f.ratePercent > 0 ? "#D97706" : f.ratePercent < 0 ? GREEN_DEEP : "#8A9590";
+        const isUp = f.ratePercent > 0;
+        const isDown = f.ratePercent < 0;
+        const color = isUp ? GREEN_DEEP : isDown ? ORANGE_DEEP : "#8A9590";
         return (
           <View key={i} style={[styles.factorRow, i === factors.length - 1 ? styles.tableRowLast : {}]}>
             <View style={styles.factorLabel}>
@@ -481,16 +557,24 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
         <View style={styles.body}>
           {/* 標題區 */}
           <View style={styles.titleBlock}>
-            <Text style={styles.eyebrow}>PROPERTY LISTING DIAGNOSTICS</Text>
-            <Text style={styles.title}>{headline}</Text>
-            {buildingLine && buildingLine !== headline ? <Text style={styles.subtitle}>{buildingLine}</Text> : null}
-            {e.address ? <Text style={styles.subtitle}>{e.address}</Text> : null}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.eyebrow}>PROPERTY LISTING DIAGNOSTICS</Text>
+                <Text style={styles.title}>{headline}</Text>
+                {buildingLine && buildingLine !== headline ? <Text style={styles.subtitle}>{buildingLine}</Text> : null}
+                {e.address ? <Text style={styles.subtitle}>{e.address}</Text> : null}
+              </View>
+              {shareUrl ? (
+                <Link src={shareUrl} style={styles.onlineLinkBtn}>
+                  <Text style={styles.onlineLinkText}>線上版本 ↗</Text>
+                </Link>
+              ) : null}
+            </View>
             <View style={styles.chipRow}>
               <Text style={[styles.chip, styles.chipAccent]}>{isSale ? "買賣物件" : "租賃物件"}</Text>
               {e.layout ? <Text style={styles.chip}>{e.layout}</Text> : null}
               {e.area ? <Text style={styles.chip}>{e.area}</Text> : null}
               {e.age ? <Text style={styles.chip}>築 {e.age}</Text> : null}
-              {shareUrl ? <Text style={styles.chip}>線上版本 {shareUrl}</Text> : null}
             </View>
           </View>
 
@@ -587,7 +671,9 @@ function RentKpis({ result }: { result: any }) {
 function SaleKpis({ result }: { result: any }) {
   const s = result?.saleAnalysis;
   const m = s?.mlitComparison;
-  const tone = m ? SALE_TONE[m.verdict] ?? TONE_BLUE : TONE_BLUE;
+  const tone = m ? SALE_TONE[m.verdict] ?? (m.diffPercent > 15 ? TONE_ORANGE : TONE_BLUE) : TONE_BLUE;
+  const officialMan = m?.areaBaselineMan ?? m?.expectedPriceMan;
+  const listingMan = m?.typicalListingPriceMan;
   return (
     <View style={styles.kpiRow}>
       <View style={styles.kpi}>
@@ -603,7 +689,11 @@ function SaleKpis({ result }: { result: any }) {
       <View style={[styles.kpi, styles.kpiLast, { backgroundColor: tone.bg, borderColor: tone.border }]}>
         <Text style={[styles.kpiLabel, { color: tone.color }]}>價格定位</Text>
         <Text style={[styles.kpiValue, { color: tone.color }]}>{m ? pct(m.diffPercent) : "—"}</Text>
-        <Text style={[styles.kpiNote, { color: tone.color }]}>{m ? `相對預期價 ${man(m.expectedPriceMan)}` : "無可比對成交資料"}</Text>
+        <Text style={[styles.kpiNote, { color: tone.color }]}>
+          {m
+            ? `實價登錄 ${man(officialMan)}${listingMan ? `・在售 ${man(listingMan)}` : ""}`
+            : "無可比對成交資料"}
+        </Text>
       </View>
     </View>
   );
@@ -699,6 +789,110 @@ function RentSections({ result }: { result: any }) {
   );
 }
 
+function ReasonablenessCard({ mlit, salePriceMan }: { mlit: any; salePriceMan?: number }) {
+  if (!mlit) return null;
+  const factors: any[] = mlit.priceFactors ?? [];
+  let calculatedPos = 0;
+  for (const f of factors) {
+    if (f.ratePercent > 0) calculatedPos += f.ratePercent;
+  }
+  const posSum = mlit.positiveFactorsSumPercent ?? Math.round(calculatedPos * 10) / 10;
+  const askDiff = mlit.diffPercent ?? 0;
+  const baselineMan = mlit.areaBaselineMan ?? mlit.expectedPriceMan ?? mlit.medianPriceMan;
+  const diffAmountMan = baselineMan && salePriceMan ? salePriceMan - baselineMan : null;
+  const isOverpriced = askDiff > posSum + 15;
+  const isWellSupported = askDiff > 0 && askDiff <= posSum + 5;
+  const isDiscounted = askDiff < 0;
+  const hasReno = factors.some(
+    (f: any) => (f.label === "翻新" || f.label?.includes("翻新") || f.label?.includes("改裝")) && f.ratePercent > 0
+  );
+  const positiveCount = factors.filter((f: any) => f.ratePercent > 0).length;
+
+  const analysisTitle = isWellSupported
+    ? "✓ 開價有充分條件支撐"
+    : isOverpriced
+      ? "⚠ 超出條件支撐（超額溢價）"
+      : isDiscounted
+        ? (hasReno ? "↓ 翻新讓利／具價格優勢" : "↓ 屋況折讓／保留翻新預算")
+        : "開價落在合理範圍";
+
+  const analysisToneColor = isWellSupported ? GREEN_DEEP : isOverpriced ? ORANGE_DEEP : BLUE_DEEP;
+  const analysisBg = isWellSupported ? GREEN_SOFT : isOverpriced ? ORANGE_SOFT : BLUE_SOFT;
+  const analysisBorder = isWellSupported ? GREEN_LINE : isOverpriced ? ORANGE : BLUE_LINE;
+
+  const analysisDetail = isWellSupported
+    ? `各項規格累計（+${posSum.toFixed(1)}%）充分支撐賣方開價（溢價 ${askDiff.toFixed(1)}%），屬高規格正常開盤。`
+    : isOverpriced
+      ? `即使計入各項優勢，開價仍高於客觀支撐約 ${(askDiff - posSum).toFixed(1)}%，建議保留議價空間。`
+      : isDiscounted
+        ? (hasReno
+            ? `開價低於基準 ${Math.abs(askDiff).toFixed(1)}%，且已完成室內翻新（規格加成 +${posSum.toFixed(1)}%），具價格競爭力與讓利優勢。`
+            : `開價低於基準 ${Math.abs(askDiff).toFixed(1)}%，主要反映未整體翻新之屋況折讓，留出預算空間供買方自行裝修。`)
+        : "開價與條件加權後之行情落點相符。";
+
+  return (
+    <Card title="優勢條件累計與開價合理性對照" tag="官方査定教科書 ＋ 東京カンテイ大數據統計">
+      <View style={styles.benchmarkGrid}>
+        {/* ① 本案優勢條件加總 */}
+        <View style={[styles.benchmarkCard, { borderLeftColor: GREEN_DEEP }]}>
+          <View style={styles.benchmarkHeaderRow}>
+            <Text style={styles.benchmarkCardTitle}>本案優勢條件加總</Text>
+            <Text style={[styles.chip, styles.chipAccent, { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3 }]}>規格加成</Text>
+          </View>
+          <Text style={[styles.benchmarkCardPrice, { color: GREEN_DEEP }]}>
+            {posSum > 0 ? `+${posSum.toFixed(1)}%` : "0.0%"}
+          </Text>
+          <View style={styles.benchmarkMeta}>
+            <Text style={styles.benchmarkMetaText}>{positiveCount} 項正向規格加成</Text>
+          </View>
+        </View>
+
+        {/* ② 賣方開價落點 */}
+        <View style={[styles.benchmarkCard, { borderLeftColor: askDiff > 0 ? ORANGE_DEEP : askDiff < 0 ? GREEN_DEEP : "#8A9590" }]}>
+          <View style={styles.benchmarkHeaderRow}>
+            <Text style={styles.benchmarkCardTitle}>賣方開價落點</Text>
+            <Text style={[
+              styles.chip,
+              askDiff > 0 ? { borderColor: ORANGE, backgroundColor: ORANGE_SOFT, color: ORANGE_DEEP }
+                : askDiff < 0 ? styles.chipAccent
+                : {},
+              { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3 }
+            ]}>
+              {askDiff > 0 ? "溢價開盤" : askDiff < 0 ? "讓利開盤" : "符合市價"}
+            </Text>
+          </View>
+          <Text style={[styles.benchmarkCardPrice, { color: askDiff > 0 ? ORANGE_DEEP : askDiff < 0 ? GREEN_DEEP : "#8A9590" }]}>
+            {askDiff > 0 ? `▲ 溢價 ${askDiff.toFixed(1)}%` : askDiff < 0 ? `▼ 折讓 ${Math.abs(askDiff).toFixed(1)}%` : "符合市場基準"}
+          </Text>
+          <View style={styles.benchmarkMeta}>
+            <Text style={styles.benchmarkMetaText}>
+              相對同區同屋齡成交基準{diffAmountMan !== null ? `（${diffAmountMan > 0 ? "高出約 " : "折讓約 "}${Math.abs(Math.round(diffAmountMan)).toLocaleString()} 萬円）` : ""}
+            </Text>
+          </View>
+        </View>
+
+        {/* ③ 開價合理性剖析 */}
+        <View style={[styles.benchmarkCard, styles.benchmarkCardLast, { backgroundColor: analysisBg, borderColor: analysisBorder, borderLeftColor: analysisToneColor }]}>
+          <View style={styles.benchmarkHeaderRow}>
+            <Text style={styles.benchmarkCardTitle}>開價合理性剖析</Text>
+          </View>
+          <Text style={{ fontSize: 8.5, fontWeight: 700, color: analysisToneColor, marginTop: 1, lineHeight: 1.2 }}>
+            {analysisTitle}
+          </Text>
+          <View style={styles.benchmarkMeta}>
+            <Text style={[styles.benchmarkMetaText, { color: INK_SOFT, lineHeight: 1.3 }]}>
+              {analysisDetail}
+            </Text>
+          </View>
+        </View>
+      </View>
+      <Text style={{ fontSize: 6, color: INK_MUTE, marginTop: 2 }}>
+        ※ 査定依據來源：公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》官方標準，以及日本東京カンテイ（Tokyo Kantei）實證大數據統計。
+      </Text>
+    </Card>
+  );
+}
+
 /* ───────────── 買賣 ───────────── */
 function SaleSections({ result }: { result: any }) {
   const s = result?.saleAnalysis;
@@ -713,15 +907,105 @@ function SaleSections({ result }: { result: any }) {
   const applied = factors.filter(f => f.applied !== false);
   const reference = factors.filter(f => f.applied === false && f.label !== "屋齡");
 
+  const officialMan = m?.areaBaselineMan ?? m?.expectedPriceMan;
+  const officialLow = m?.fairLowMan;
+  const officialHigh = m?.fairHighMan;
+  const officialDiff = m?.diffPercent;
+
+  const listingMan = m?.typicalListingPriceMan;
+  const listingLow = m?.typicalListingPriceLowMan;
+  const listingHigh = m?.typicalListingPriceHighMan;
+  const listingDiff = m?.listingDiffPercent;
+
   return (
     <>
-      <Card title="價格定位" tag={m ? `${m.region ?? ""}${m.district ?? ""}・${m.layout ?? ""}` : "無對應行情分桶"}>
-        <View style={styles.bigNumberRow}>
-          <Text style={styles.bigNumber}>{man(s.salePriceMan)}</Text>
-          {s.tsuboAndSqm?.sqmPriceMan ? (
-            <Text style={styles.bigNumberNote}>{s.tsuboAndSqm.sqmPriceMan} 萬円/㎡・{s.tsuboAndSqm.tsuboPriceMan} 萬円/坪</Text>
-          ) : null}
-        </View>
+      <Card title="價格定位與行情對照" tag={m ? `${m.region ?? ""}${m.district ?? ""}・${m.layout ?? ""}` : "無對應行情分桶"}>
+        {officialMan != null ? (
+          <View style={styles.benchmarkGrid}>
+            {/* ① 本案開價 */}
+            <View style={[styles.benchmarkCard, { borderLeftColor: GREEN_DEEP }]}>
+              <View style={styles.benchmarkHeaderRow}>
+                <Text style={styles.benchmarkCardTitle}>本案開價</Text>
+                <Text style={[styles.chip, styles.chipAccent, { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3 }]}>
+                  中古公寓
+                </Text>
+              </View>
+              <Text style={[styles.benchmarkCardPrice, { color: GREEN_DEEP }]}>{man(s.salePriceMan)}</Text>
+              <View style={styles.benchmarkMeta}>
+                {s.tsuboAndSqm?.sqmPriceMan ? (
+                  <Text style={styles.benchmarkMetaText}>
+                    每㎡ {s.tsuboAndSqm.sqmPriceMan} 萬円・{s.tsuboAndSqm.tsuboPriceMan} 萬円/坪
+                  </Text>
+                ) : null}
+                {s.areaSqm ? (
+                  <Text style={styles.benchmarkMetaSub}>專有面積 {s.areaSqm} ㎡</Text>
+                ) : null}
+              </View>
+            </View>
+
+            {/* ② 實價登錄平均 */}
+            <View style={[styles.benchmarkCard, listingMan == null ? styles.benchmarkCardLast : {}, { borderLeftColor: "#0284C7" }]}>
+              <View style={styles.benchmarkHeaderRow}>
+                <Text style={styles.benchmarkCardTitle}>實價登錄平均</Text>
+                <Text style={[styles.chip, { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3, borderColor: "#BAE6FD", backgroundColor: "#F0F9FF", color: "#0284C7" }]}>
+                  國交省成約
+                </Text>
+              </View>
+              <Text style={[styles.benchmarkCardPrice, { color: "#0284C7" }]}>{man(officialMan)}</Text>
+              <View style={styles.benchmarkMeta}>
+                {officialLow != null && officialHigh != null ? (
+                  <Text style={styles.benchmarkMetaText}>
+                    區間 {man(officialLow)} 〜 {man(officialHigh)}
+                  </Text>
+                ) : null}
+                {officialDiff != null ? (
+                  <Text style={[styles.benchmarkDiffText, { color: officialDiff > 0 ? ORANGE_DEEP : officialDiff < 0 ? GREEN_DEEP : "#8A9590" }]}>
+                    {officialDiff > 0 ? `▲ 溢價 ${officialDiff.toFixed(1)}%` : officialDiff < 0 ? `▼ 折讓 ${Math.abs(officialDiff).toFixed(1)}%` : "等同基準"}
+                  </Text>
+                ) : null}
+                <Text style={styles.benchmarkMetaSub}>
+                  國土交通省成約{m?.sampleCount ? ` ${m.sampleCount} 筆` : ""}均價
+                </Text>
+              </View>
+            </View>
+
+            {/* ③ 市場同規模在售行情 */}
+            {listingMan != null ? (
+              <View style={[styles.benchmarkCard, styles.benchmarkCardLast, { borderLeftColor: AMBER_DEEP }]}>
+                <View style={styles.benchmarkHeaderRow}>
+                  <Text style={styles.benchmarkCardTitle}>市場同規模在售</Text>
+                  <Text style={[styles.chip, { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3, borderColor: AMBER_LINE, backgroundColor: AMBER_SOFT, color: AMBER_DEEP }]}>
+                    同規模校準
+                  </Text>
+                </View>
+                <Text style={[styles.benchmarkCardPrice, { color: AMBER_DEEP }]}>{man(listingMan)}</Text>
+                <View style={styles.benchmarkMeta}>
+                  {listingLow != null && listingHigh != null ? (
+                    <Text style={styles.benchmarkMetaText}>
+                      區間 {man(listingLow)} 〜 {man(listingHigh)}
+                    </Text>
+                  ) : null}
+                  {listingDiff != null ? (
+                    <Text style={[styles.benchmarkDiffText, { color: listingDiff > 0 ? ORANGE_DEEP : listingDiff < 0 ? GREEN_DEEP : "#8A9590" }]}>
+                      {listingDiff > 0 ? `▲ 溢價 ${listingDiff.toFixed(1)}%` : listingDiff < 0 ? `▼ 折讓 ${Math.abs(listingDiff).toFixed(1)}%` : "等同基準"}
+                    </Text>
+                  ) : null}
+                  <Text style={styles.benchmarkMetaSub}>
+                    {m?.listingBenchmarkSourceLabel ?? "公開刊登平均（賣方開價）"}
+                  </Text>
+                </View>
+              </View>
+            ) : null}
+          </View>
+        ) : (
+          <View style={styles.bigNumberRow}>
+            <Text style={styles.bigNumber}>{man(s.salePriceMan)}</Text>
+            {s.tsuboAndSqm?.sqmPriceMan ? (
+              <Text style={styles.bigNumberNote}>{s.tsuboAndSqm.sqmPriceMan} 萬円/㎡・{s.tsuboAndSqm.tsuboPriceMan} 萬円/坪</Text>
+            ) : null}
+          </View>
+        )}
+
         {m ? (
           <VerdictBox
             tone={tone}
@@ -734,12 +1018,14 @@ function SaleSections({ result }: { result: any }) {
         )}
         {m?.baselineNote ? <Text style={{ fontSize: 7.5, color: GREEN_DEEP, marginBottom: 4 }}>{m.baselineNote}</Text> : null}
         {applied.length || reference.length ? (
-          <View>
+          <View style={{ marginTop: 3 }}>
             <Text style={styles.sectionLabel}>影響價格的主要因素與評估依據（標示「參考」者為業界經驗值，未計入試算）</Text>
             <FactorTable factors={[...applied, ...reference]} />
           </View>
         ) : null}
       </Card>
+
+      {m ? <ReasonablenessCard mlit={m} salePriceMan={s.salePriceMan} /> : null}
 
       {m ? (
         <Card title="這個判斷是根據什麼" tag="可自行驗算">

@@ -26,8 +26,6 @@ const LINE_ICON = (
 
 export function ListingContactCta() {
   const [copiedWechat, setCopiedWechat] = useState(false);
-  const [copiedLine, setCopiedLine] = useState(false);
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showWechatQr, setShowWechatQr] = useState(false);
 
   const copyWechat = async () => {
@@ -41,38 +39,16 @@ export function ListingContactCta() {
     }
   };
 
-  const copyLine = async () => {
-    try {
-      await navigator.clipboard.writeText(linusContact.lineId);
-      trackAction("line-copy");
-      setCopiedLine(true);
-      window.setTimeout(() => setCopiedLine(false), 2000);
-    } catch {
-      // ignore
-    }
-  };
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(linusContact.email);
-      setCopiedEmail(true);
-      window.setTimeout(() => setCopiedEmail(false), 2000);
-    } catch {
-      // ignore
-    }
-  };
-
   return (
     <section className="border border-[#DDE3DF] bg-white p-6 sm:p-7 shadow-xs" aria-label="聯絡 Linus">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3.5">
+        <div className="flex items-start gap-4 sm:gap-5">
           <img
             src="/logo.png"
-            alt=""
-            aria-hidden="true"
-            className="h-12 w-12 shrink-0 border border-[#E2E8E4] p-1 sm:h-14 sm:w-14"
+            alt="Linus"
+            className="h-20 w-20 shrink-0 object-contain sm:h-[98px] sm:w-[98px]"
           />
-          <div>
+          <div className="min-w-0">
             <span className="inline-block border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#007D5A]">
               Talk to Linus
             </span>
@@ -176,40 +152,12 @@ export function ListingContactCta() {
         </a>
       </div>
 
-      {/* 底部牌照與快捷複製資訊 */}
-      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-[#EEF2F0] pt-3 text-[11px] text-[#66736C]">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <button
-            type="button"
-            onClick={copyLine}
-            className="hover:text-[#007D5A] transition-colors cursor-pointer"
-            title="點擊複製 LINE ID"
-          >
-            LINE ID <span className="font-mono font-semibold text-[#1A2A22]">{linusContact.lineId}</span>
-            {copiedLine && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
-          </button>
-          <span className="text-[#D4DDD8]" aria-hidden="true">·</span>
-          <button
-            type="button"
-            onClick={copyWechat}
-            className="hover:text-[#007D5A] transition-colors cursor-pointer"
-            title="點擊複製 微信 ID"
-          >
-            微信 ID <span className="font-mono font-semibold text-[#1A2A22]">{linusContact.wechatId}</span>
-            {copiedWechat && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
-          </button>
-          <span className="text-[#D4DDD8]" aria-hidden="true">·</span>
-          <button
-            type="button"
-            onClick={copyEmail}
-            className="hover:text-[#007D5A] transition-colors cursor-pointer"
-            title="點擊複製 Email"
-          >
-            <span className="font-mono text-[#526159]">{linusContact.email}</span>
-            {copiedEmail && <span className="ml-1 text-[10px] text-[#007D5A]">已複製</span>}
-          </button>
-        </div>
-        <p className="text-[10px] text-[#879089]">
+      {/* 底部牌照與版權宣告 */}
+      <div className="mt-4 flex flex-col gap-2 border-t border-[#EEF2F0] pt-3 text-[10px] text-[#879089] sm:flex-row sm:items-center sm:justify-between">
+        <p className="font-jost tracking-[0.06em]">
+          © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
+        </p>
+        <p className="shrink-0 font-sans">
           {linusContact.name}｜{linusContact.companyName}・{linusContact.licenseNo}
         </p>
       </div>
