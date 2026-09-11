@@ -33,6 +33,10 @@
       "destination": "/api/analyze-listing"
     },
     {
+      "source": "/api/listing-share",
+      "destination": "/api/listing-share"
+    },
+    {
       "source": "/api/listing-location",
       "destination": "/api/listing-location"
     }

@@ -16,6 +16,7 @@ import vercelAnalyticsHandler from "./api/vercel-analytics";
 import trackViewHandler from "./api/track-view";
 import analyzeListingHandler from "./api/analyze-listing";
 import listingLocationHandler from "./api/listing-location";
+import listingShareHandler from "./api/listing-share";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -33,7 +34,9 @@ const PORT = parseInt(process.env.PORT || "3000", 10);
 const jsonParserDefault = express.json();
 const jsonParserLarge = express.json({ limit: "5mb" });
 app.use((req, res, next) => {
-  if (req.path === "/api/analyze-listing") return jsonParserLarge(req, res, next);
+  // listing-share 收整份分析結果 JSON（實測 20～60KB，偶爾超過 100kb），
+  // handler 內另有 256KB 的自訂上限，這裡只是讓它先進得了門。
+  if (req.path === "/api/analyze-listing" || req.path === "/api/listing-share") return jsonParserLarge(req, res, next);
   return jsonParserDefault(req, res, next);
 });
 
@@ -162,6 +165,11 @@ app.post("/api/analyze-listing", async (req, res) => {
 // 第二階段：圖紙地址定位、步行路線、周邊機能與使用者指定通勤目的地。
 app.post("/api/listing-location", async (req, res) => {
   await listingLocationHandler(req, res);
+});
+
+// 圖紙分析結果的分享連結（建立與讀取）。
+app.all("/api/listing-share", async (req, res) => {
+  await listingShareHandler(req, res);
 });
 
 // Q&A and Chat endpoint

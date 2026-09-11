@@ -25,6 +25,7 @@ import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
 import { UsageDashboard } from "./components/UsageDashboard";
+import { SharedListingPage } from "./components/SharedListingPage";
 import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
 import { sanitizeRelatedThreads, type RelatedThread } from "./lib/threadSearch";
 
@@ -81,6 +82,12 @@ function getPolicyPageFromHash(): PolicyPageId | null {
 
 function isThreadsHash(hash = window.location.hash) {
   return hash === "#threads" || hash.startsWith("#threads?");
+}
+
+// 圖紙分析分享頁：#listing/XXXXXXXX（8 碼、去掉易混淆字元的字母表，與後端一致）。
+function getSharedListingIdFromHash(hash = window.location.hash): string | null {
+  const match = hash.match(/^#listing\/([A-HJ-NP-Z2-9]{8})$/i);
+  return match ? match[1].toUpperCase() : null;
 }
 
 function getThreadsSearchFromHash(hash = window.location.hash) {
@@ -215,6 +222,7 @@ export default function App() {
   const [policyPage, setPolicyPage] = useState<PolicyPageId | null>(() => getPolicyPageFromHash());
   // 後台使用量頁；沒有連結指向它，直接輸入 #admin 才會進來。
   const [adminPage, setAdminPage] = useState(() => window.location.hash === "#admin");
+  const [sharedListingId, setSharedListingId] = useState<string | null>(() => getSharedListingIdFromHash());
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   
   // UI Scroll States for Japanese Editorial Specs
@@ -278,6 +286,7 @@ export default function App() {
       setIsThreadsPage(isThreadsHash());
       setPolicyPage(getPolicyPageFromHash());
       setAdminPage(window.location.hash === "#admin");
+      setSharedListingId(getSharedListingIdFromHash());
       window.scrollTo({ top: 0, behavior: "auto" });
     };
     window.addEventListener("hashchange", handleHashChange);
@@ -298,12 +307,12 @@ export default function App() {
   useEffect(() => { trackSource(); }, []);
 
   useEffect(() => {
-    if (adminPage) return;
+    if (adminPage || sharedListingId) return;
     if (policyPage) { trackView("policy"); return; }
     if (isThreadsPage) { trackView("threads"); return; }
     const isDesktop = window.matchMedia("(min-width: 768px)").matches;
     trackView(isDesktop || !isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
-  }, [adminPage, policyPage, isThreadsPage, isMobileHome, activeTab]);
+  }, [adminPage, sharedListingId, policyPage, isThreadsPage, isMobileHome, activeTab]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -699,6 +708,10 @@ export default function App() {
 
   if (adminPage) {
     return <UsageDashboard onBack={returnHome} />;
+  }
+
+  if (sharedListingId) {
+    return <SharedListingPage shareId={sharedListingId} onBack={returnHome} />;
   }
 
   if (policyPage) {

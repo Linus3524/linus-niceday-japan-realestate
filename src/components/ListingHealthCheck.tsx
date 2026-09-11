@@ -41,6 +41,10 @@ import {
   Wrench,
   X,
   Compass,
+  Link2,
+  Download,
+  Copy,
+  Check,
 } from "lucide-react";
 import type { AxisStatus } from "../lib/requirementVerdict";
 import type { ListingLocationContext } from "../lib/listingLocation";
@@ -948,7 +952,7 @@ function buildClientInitialCost(result: AnalyzeListingResult): InitialCostEstima
 
   // 3. 初期費用優惠（3.8 倍以下）
   if (monthsMultipleMax <= 3.8 && missingCosts.length === 0) {
-    tips.push(`【初期費用偏低】約 ${monthsMultipleMax} 個月租金，低於市場常見的 4.5～5.0 倍標準。`);
+    tips.push(`【初期費用划算】合計約 ${monthsMultipleMax} 個月租金，比市場常見的 4.5～5.0 個月省下不少，入住門檻明顯較低。`);
   }
 
   // 4. 禮金與押金動態解析
@@ -1129,7 +1133,18 @@ function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnalysisVerd
   };
 }
 
-export function ListingHealthCheck() {
+export interface ListingHealthCheckProps {
+  /**
+   * 分享頁模式：帶入分享連結的 ID，元件會自行讀取已存的分析結果並以唯讀方式呈現，
+   * 不顯示上傳區。步行與周邊機能不存在分享資料裡，用結果中的地址重新查一次。
+   */
+  sharedId?: string;
+}
+
+export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
+  const sharedMode = Boolean(sharedId);
+  const [sharedTitle, setSharedTitle] = useState<string | null>(null);
+  const [sharedExpiresAt, setSharedExpiresAt] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
@@ -1149,9 +1164,48 @@ export function ListingHealthCheck() {
   const [commuteLoading, setCommuteLoading] = useState(false);
   const [commuteError, setCommuteError] = useState<string | null>(null);
   const [commute, setCommute] = useState<ListingCommuteResult | null>(null);
+  const [shareTitle, setShareTitle] = useState("");
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 分享頁：掛載時讀取已存的分析結果。只讀一次，ID 不會在頁面存活期間改變。
+  useEffect(() => {
+    if (!sharedId) return;
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetch(`/api/listing-share?id=${encodeURIComponent(sharedId)}`)
+      .then(async response => {
+        const body = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(body?.error || `讀取分享連結失敗（HTTP ${response.status}）。`);
+        return body;
+      })
+      .then(body => {
+        if (cancelled) return;
+        const analysis = body?.result as AnalyzeListingResult;
+        setSharedTitle(typeof body?.title === "string" ? body.title : null);
+        setSharedExpiresAt(typeof body?.expiresAt === "string" ? body.expiresAt : null);
+        setResult(analysis);
+        void loadLocationContext(analysis);
+      })
+      .catch(err => {
+        if (!cancelled) setError(err?.message || "讀取分享連結失敗。");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sharedId]);
 
   // 全螢幕檢視時支援 Esc 關閉
   useEffect(() => {
@@ -1263,6 +1317,81 @@ export function ListingHealthCheck() {
     setLocationContext(null);
     setCommute(null);
     setError(null);
+  };
+
+  // 分享連結：只送分析結果，不送圖紙（見 api/listing-share.ts 的說明）。
+  const createShareLink = async () => {
+    if (!result || shareLoading) return;
+    const title = shareTitle.trim();
+    if (!title) {
+      setShareError("請先填寫標題，收件人才知道這是哪一間。");
+      return;
+    }
+    setShareLoading(true);
+    setShareError(null);
+    try {
+      const response = await fetch("/api/listing-share", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, result }),
+      });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(body?.error || `建立連結失敗（HTTP ${response.status}）。`);
+      setShareUrl(`${window.location.origin}/#listing/${body.id}`);
+    } catch (err: any) {
+      setShareError(err?.message || "建立連結失敗，請稍後再試。");
+    } finally {
+      setShareLoading(false);
+    }
+  };
+
+  const copyShareUrl = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      window.setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // 剪貼簿被擋（例如非 https 或無權限）就讓使用者自己選取欄位複製
+    }
+  };
+
+  // PDF：在瀏覽器產生，不經過伺服器。@react-pdf/renderer 與兩個 5MB 的字型檔
+  // 都是按下去才載入，不放進主 bundle。
+  const downloadPdf = async () => {
+    if (!result || pdfLoading) return;
+    setPdfLoading(true);
+    setPdfError(null);
+    try {
+      const [{ pdf }, { ListingReportPdf, registerPdfFonts }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("./ListingReportPdf"),
+      ]);
+      registerPdfFonts("/fonts");
+      const title = (sharedMode ? sharedTitle ?? "" : shareTitle).trim() || reportHeading;
+      const blob = await pdf(
+        <ListingReportPdf
+          result={result}
+          title={title}
+          generatedAt={new Date()}
+          shareUrl={shareUrl}
+          locationContext={locationContext}
+        />,
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${title.replace(/[\\/:*?"<>|]+/g, "_")}-物件分析.pdf`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    } catch (err: any) {
+      console.error("PDF 產生失敗", err);
+      setPdfError("PDF 產生失敗，請稍後再試。");
+    } finally {
+      setPdfLoading(false);
+    }
   };
 
   const loadLocationContext = async (analysis: AnalyzeListingResult) => {
@@ -1625,11 +1754,22 @@ export function ListingHealthCheck() {
         <Sparkles className="h-4 w-4" /> PROPERTY LISTING DIAGNOSTICS
       </div>
       <h3 className="mb-2 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
-        物件圖紙分析與健檢
+        {sharedMode ? (sharedTitle || "物件圖紙分析結果") : "物件圖紙分析與健檢"}
       </h3>
-      <p className="mb-4 text-sm leading-relaxed text-[#3F5147]">
-        請上傳仲介提供的物件廣告或圖紙（支援圖片或 PDF）。系統將自動辨識租賃或買賣，為您產出完整的客觀分析報告。
-      </p>
+      {sharedMode ? (
+        <p className="mb-4 text-sm leading-relaxed text-[#3F5147]">
+          這是由他人分享的分析結果。原始圖紙不隨連結保存，請向分享者索取；步行時間與周邊機能依圖紙地址即時重新查詢。
+          {sharedExpiresAt && (
+            <span className="ml-1 text-[#66736C]">
+              連結有效至 {new Date(sharedExpiresAt).toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric" })}。
+            </span>
+          )}
+        </p>
+      ) : (
+        <p className="mb-4 text-sm leading-relaxed text-[#3F5147]">
+          請上傳仲介提供的物件廣告或圖紙（支援圖片或 PDF）。系統將自動辨識租賃或買賣，為您產出完整的客觀分析報告。
+        </p>
+      )}
 
       {/* 隱藏的檔案上傳 input */}
       <input
@@ -1638,8 +1778,8 @@ export function ListingHealthCheck() {
         className="hidden" onChange={handleFileSelect}
       />
 
-      {/* 現代化拖曳上傳 Dropzone */}
-      {!file ? (
+      {/* 現代化拖曳上傳 Dropzone（分享頁不顯示） */}
+      {sharedMode ? null : !file ? (
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -1780,6 +1920,14 @@ export function ListingHealthCheck() {
               )}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* 分享頁讀取中：上傳區藏起來了，讀取狀態要另外顯示，否則畫面是空白的 */}
+      {sharedMode && loading && !result && (
+        <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-4 text-sm text-[#3F5147]">
+          <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
+          正在讀取分享的分析結果…
         </div>
       )}
 
@@ -4693,6 +4841,80 @@ export function ListingHealthCheck() {
                   <p className="mt-3 text-xs text-[#66736C]">目前未取得詳細線路與上下車站資料，請重新計算通勤。</p>
                 )}
               </div>
+            )}
+          </div>
+
+          {/* ── 分享與下載 ── 放在報告最後：使用者看完整份分析才會想轉給別人或留存。 */}
+          <div className="border border-dashed border-[#8A9590] bg-[#F9FBFA] p-5 md:p-6">
+            <div className="mb-2 flex items-center gap-2 text-sm font-bold text-[#1A2A22]">
+              <Link2 className="h-4 w-4 text-[#007D5A]" />
+              分享與下載分析結果
+            </div>
+            <p className="mb-4 text-xs leading-relaxed text-[#66736C]">
+              {sharedMode
+                ? "可將這份分析下載成 PDF 留存。PDF 在你的瀏覽器裡產生，內容不會再傳到任何伺服器。"
+                : "建立連結後可直接傳給家人或朋友，連結保存 30 天。連結只包含分析結果，不包含你上傳的圖紙。PDF 在瀏覽器裡產生，不經過伺服器。"}
+            </p>
+
+            {!sharedMode && (
+              <div className="mb-3">
+                <label className="mb-1 block text-xs font-bold text-[#1A2A22]">
+                  標題 <span className="text-[#B13818]">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={shareTitle}
+                  onChange={event => { setShareTitle(event.target.value); setShareError(null); }}
+                  placeholder={`例如：${reportHeading}`}
+                  maxLength={60}
+                  className="w-full border border-[#DDE3DF] bg-white px-3 py-2.5 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:border-[#00A174] focus:outline-none"
+                />
+              </div>
+            )}
+
+            {!sharedMode && shareUrl && (
+              <div className="mb-3 flex items-center gap-2 border border-[#9ee2cf] bg-[#e6f6f1] p-2.5">
+                <input
+                  readOnly
+                  value={shareUrl}
+                  onFocus={event => event.currentTarget.select()}
+                  className="min-w-0 flex-1 bg-transparent font-mono text-xs text-[#007D5A] focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={copyShareUrl}
+                  className="flex shrink-0 items-center gap-1 border border-[#007D5A] bg-white px-2.5 py-1.5 text-xs font-bold text-[#007D5A] hover:bg-[#F5F8F6]"
+                >
+                  {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {shareCopied ? "已複製" : "複製"}
+                </button>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2 sm:flex-row">
+              {!sharedMode && (
+                <button
+                  type="button"
+                  onClick={createShareLink}
+                  disabled={shareLoading || !shareTitle.trim()}
+                  className="flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  {shareLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Link2 className="h-4 w-4" />}
+                  {shareUrl ? "重新建立連結" : "建立連結"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={downloadPdf}
+                disabled={pdfLoading}
+                className="flex min-h-11 flex-1 items-center justify-center gap-2 border border-[#1A2A22] bg-white px-5 text-sm font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6] disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                {pdfLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                {pdfLoading ? "產生 PDF 中…" : "下載 PDF"}
+              </button>
+            </div>
+            {(shareError || pdfError) && (
+              <p className="mt-3 text-xs text-[#B13818]">{shareError || pdfError}</p>
             )}
           </div>
         </div>
