@@ -16,7 +16,7 @@ export type TrackableView =
 export type ThreadRecommendationSource = "rent" | "buy" | "ai";
 
 export type TrackableAction =
-  | "line-add" | "line-copy" | "line-qr" | "wechat-copy" | "wechat-qr"
+  | "line-add" | "line-copy" | "line-qr" | "wechat-copy" | "wechat-qr" | "email-copy"
   | `threads-${ThreadRecommendationSource}-view`
   | `threads-${ThreadRecommendationSource}-click`
   | "calculator-applied"

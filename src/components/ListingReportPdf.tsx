@@ -1186,10 +1186,10 @@ function ContactPage({ assetBase }: { assetBase: string }) {
           <Text style={styles.qrHint}>LINE 掃描加好友，或搜尋 ID 後直接傳訊息</Text>
         </View>
         <View style={[styles.qrCard, styles.qrCardLast]}>
-          <Text style={[styles.qrBrand, { backgroundColor: WECHAT_GREEN }]}>WeChat 微信</Text>
+          <Text style={[styles.qrBrand, { backgroundColor: WECHAT_GREEN }]}>WeChat</Text>
           <Image src={src("/pdf/wechat-qr.png")} style={styles.qrImage} />
           <Text style={styles.qrId}>ID：{linusContact.wechatId}</Text>
-          <Text style={styles.qrHint}>微信「掃一掃」加好友，或搜尋 ID</Text>
+          <Text style={styles.qrHint}>WeChat「掃一掃」加好友，或搜尋 ID</Text>
         </View>
       </View>
 

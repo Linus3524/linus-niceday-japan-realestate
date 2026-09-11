@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Facebook, Instagram, Mail, MessageCircle, QrCode } from "lucide-react";
+import { Check, Copy, Facebook, Instagram, Mail, QrCode } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 import { trackAction } from "../lib/trackView";
 
@@ -26,6 +26,7 @@ const LINE_ICON = (
 
 export function ListingContactCta() {
   const [copiedWechat, setCopiedWechat] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showWechatQr, setShowWechatQr] = useState(false);
 
   const copyWechat = async () => {
@@ -36,6 +37,17 @@ export function ListingContactCta() {
       window.setTimeout(() => setCopiedWechat(false), 2000);
     } catch {
       setShowWechatQr(true);
+    }
+  };
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(linusContact.email);
+      trackAction("email-copy");
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      // ignore
     }
   };
 
@@ -62,7 +74,7 @@ export function ListingContactCta() {
         </div>
       </div>
 
-      {/* 主要聯絡按鈕（LINE／微信） */}
+      {/* 主要聯絡按鈕（LINE／WeChat） */}
       <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         <a
           href={`https://line.me/ti/p/~${linusContact.lineId}`}
@@ -76,33 +88,40 @@ export function ListingContactCta() {
         <button
           type="button"
           onClick={copyWechat}
-          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm"
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
         >
-          {copiedWechat ? <Check className="h-4 w-4 text-[#07C160]" /> : <MessageCircle className="h-4 w-4 text-[#07C160]" />}
-          {copiedWechat ? "已複製微信 ID" : "複製微信 ID"}
+          {copiedWechat ? (
+            <Check className="h-4 w-4 text-[#07C160]" />
+          ) : (
+            <img src="/wechat-icon.png" alt="WeChat" className="h-4 w-auto object-contain" />
+          )}
+          <span>{copiedWechat ? "已複製 WeChat ID" : "複製 WeChat ID"}</span>
         </button>
         <button
           type="button"
           onClick={() => { setShowWechatQr(v => !v); if (!showWechatQr) trackAction("wechat-qr"); }}
-          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm"
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
         >
           <QrCode className="h-4 w-4 text-[#07C160]" />
-          {showWechatQr ? "收合微信 QR" : "微信 QR"}
+          <span>{showWechatQr ? "收合 WeChat QR" : "WeChat QR"}</span>
         </button>
       </div>
 
-      {/* 微信 QR 展開面板 */}
+      {/* WeChat QR 展開面板 */}
       {showWechatQr && (
         <div className="mt-3 flex items-center gap-4 border border-[#DDE3DF] bg-[#F8FAF9] p-4 animate-in fade-in duration-200">
-          <img src="/wechat-add-friend-qr-branded.svg" alt="微信加好友 QR code" className="h-24 w-24 shrink-0 bg-white border border-[#E2E8E4] p-1" />
+          <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR code" className="h-24 w-24 shrink-0 bg-white border border-[#E2E8E4] p-1" />
           <div className="text-xs leading-relaxed text-[#3F5147]">
-            <p className="font-bold text-[#1A2A22]">微信「掃一掃」加好友</p>
+            <div className="flex items-center gap-2">
+              <img src="/wechat-logo.png" alt="WeChat" className="h-4 w-auto object-contain" />
+              <p className="font-bold text-[#1A2A22]">「掃一掃」加好友</p>
+            </div>
             <p className="mt-1">
               或搜尋 ID：
               <button
                 type="button"
                 onClick={copyWechat}
-                className="ml-1 inline-flex items-center gap-1 bg-white px-2 py-0.5 font-mono font-bold text-[#07C160] border border-[#DDE3DF] hover:border-[#07C160]"
+                className="ml-1 inline-flex items-center gap-1 bg-white px-2 py-0.5 font-mono font-bold text-[#07C160] border border-[#DDE3DF] hover:border-[#07C160] cursor-pointer"
                 title="點擊複製"
               >
                 {linusContact.wechatId}
@@ -143,23 +162,15 @@ export function ListingContactCta() {
           <Facebook className="h-3.5 w-3.5" />
           <span>Facebook</span>
         </a>
-        <a
-          href={`mailto:${linusContact.email}`}
-          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#007D5A] hover:bg-white hover:text-[#007D5A]"
+        <button
+          type="button"
+          onClick={copyEmail}
+          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#007D5A] hover:bg-white hover:text-[#007D5A] cursor-pointer"
+          title="點擊複製 Email"
         >
-          <Mail className="h-3.5 w-3.5" />
-          <span>{linusContact.email}</span>
-        </a>
-      </div>
-
-      {/* 底部牌照與版權宣告 */}
-      <div className="mt-4 flex flex-col gap-2 border-t border-[#EEF2F0] pt-3 text-[10px] text-[#879089] sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-jost tracking-[0.06em]">
-          © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
-        </p>
-        <p className="shrink-0 font-sans">
-          {linusContact.name}｜{linusContact.companyName}・{linusContact.licenseNo}
-        </p>
+          {copiedEmail ? <Check className="h-3.5 w-3.5 text-[#007D5A]" /> : <Mail className="h-3.5 w-3.5" />}
+          <span>{copiedEmail ? "已複製 Email" : linusContact.email}</span>
+        </button>
       </div>
     </section>
   );
