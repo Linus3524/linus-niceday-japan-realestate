@@ -1,11 +1,26 @@
 /**
- * crimeSafety.ts — 東京都オープンデータ API 治安查詢
+ * crimeSafety.ts — 全日本治安查詢（分層資料源）
  *
- * 資料來源：警視庁「区市町村の町丁別、罪種別及び手口別認知件数（月累計）」
- * API Base:  https://service.api.metro.tokyo.lg.jp
- * 授權：CC BY（クリエイティブ・コモンズ 表示 4.0）
- * 無需 API Key / 帳號註冊
+ * 資料精度依地區分兩層，因為日本並不存在全國統一的細粒度犯罪統計：
+ *
+ * ① 東京都 → 町丁目級・全罪種・月累計
+ *    警視庁「区市町村の町丁別、罪種別及び手口別認知件数」
+ *    https://service.api.metro.tokyo.lg.jp （CC BY 4.0，免金鑰）
+ *
+ * ② 其他 46 道府県 → 都道府県級・年度
+ *    総務省「社会生活統計指標」（e-Stat），建置期抓成靜態快照。
+ *
+ * 為什麼不做到全國町丁目級：其餘道府県的開放資料只涵蓋「窃盗7手口」
+ * 且 47 縣格式各異（逐筆事件 CSV、BODIK、CKAN…）；e-Stat 的市区町村級
+ * 全罪種表停在 2009 年度。與其拼湊出看似精細實則不可比的數字，
+ * 不如分層呈現並在 UI 明說精度差異。
  */
+
+import {
+  crimePrefectureMeta,
+  findCrimePrefecture,
+  type CrimePrefectureRow,
+} from "../data/crimePrefectureSnapshot.js";
 
 const CRIME_API_URL =
   "https://service.api.metro.tokyo.lg.jp/api/t000022d1700000021-4eb9de23250eaab070a45dad29e76372-0/json";
@@ -84,6 +99,36 @@ export interface CrimeSafetyResult {
   /** 資料來源標示 */
   credit: string;
 }
+
+/**
+ * 都道府県級治安結果（東京都以外）。
+ * 精度低於町丁目級，欄位刻意與 CrimeSafetyResult 分開，避免 UI 誤用成同等精度。
+ */
+export interface PrefectureSafetyResult {
+  prefecture: string;
+  /** 人口千人あたり刑法犯認知件数。 */
+  crimeRatePerThousand: number;
+  /** 全国平均（同年度）。 */
+  nationalRatePerThousand: number;
+  /** 相對全国平均的倍率，1 為與全国相同。 */
+  vsNational: number;
+  /** 1 = 全國最安全。 */
+  safetyRank: number;
+  totalPrefectures: number;
+  clearanceRatePercent: number | null;
+  felonySharePercent: number | null;
+  violentSharePercent: number | null;
+  theftSharePercent: number | null;
+  grade: SafetyGrade;
+  fiscalYear: string;
+  summary: string;
+  credit: string;
+}
+
+/** 查詢結果的統一封包，precision 讓 UI 明確區分兩種精度。 */
+export type CrimeLookupResult =
+  | { precision: "chome"; chome: CrimeSafetyResult }
+  | { precision: "prefecture"; prefecture: PrefectureSafetyResult };
 
 /* ────────── 地址解析 ────────── */
 
@@ -346,8 +391,121 @@ function mergeRows(rows: RawCrimeRow[]): RawCrimeRow {
   return base;
 }
 
+/* ────────── 都道府県級（東京都以外） ────────── */
+
+/** 47 都道府県的正式名稱。地址開頭比對用，長名優先避免「京都府」被「京都」誤切。 */
+const PREFECTURE_NAMES = [
+  "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
+  "茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県",
+  "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県",
+  "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県",
+  "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県", "広島県", "山口県",
+  "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県",
+  "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県",
+];
+
+/** 政令指定都市等，地址若省略都道府県時的回推對照。 */
+const CITY_TO_PREFECTURE: Record<string, string> = {
+  "札幌市": "北海道", "仙台市": "宮城県", "さいたま市": "埼玉県", "千葉市": "千葉県",
+  "横浜市": "神奈川県", "川崎市": "神奈川県", "相模原市": "神奈川県",
+  "新潟市": "新潟県", "静岡市": "静岡県", "浜松市": "静岡県", "名古屋市": "愛知県",
+  "京都市": "京都府", "大阪市": "大阪府", "堺市": "大阪府", "神戸市": "兵庫県",
+  "岡山市": "岡山県", "広島市": "広島県", "北九州市": "福岡県", "福岡市": "福岡県",
+  "熊本市": "熊本県",
+};
+
+/** 從地址取出都道府県名。找不到回 null。 */
+function extractPrefecture(address: string): string | null {
+  const addr = address.replace(/\s+/g, "");
+  for (const name of PREFECTURE_NAMES) {
+    if (addr.includes(name)) return name;
+  }
+  for (const [city, prefecture] of Object.entries(CITY_TO_PREFECTURE)) {
+    if (addr.includes(city)) return prefecture;
+  }
+  return null;
+}
+
+/**
+ * 都道府県等級：用「相對全国平均的倍率」而非絕對件數。
+ * 都道府県級的基數差異極大（東京 vs 秋田），絕對值不可比。
+ */
+function prefectureGrade(vsNational: number): SafetyGrade {
+  if (vsNational <= 0.6) return "A+";
+  if (vsNational <= 0.8) return "A";
+  if (vsNational <= 1.0) return "B+";
+  if (vsNational <= 1.2) return "B";
+  if (vsNational <= 1.5) return "C";
+  return "D";
+}
+
+function buildPrefectureResult(row: CrimePrefectureRow, totalPrefectures: number): PrefectureSafetyResult {
+  const national = crimePrefectureMeta.nationalRatePerThousand;
+  const diffPercent = Math.round((row.vsNational - 1) * 100);
+  const comparison =
+    diffPercent === 0 ? "與全國平均相當"
+      : diffPercent > 0 ? `高於全國平均 ${diffPercent}%`
+        : `低於全國平均 ${Math.abs(diffPercent)}%`;
+
+  const parts = [
+    `${row.prefecture}每千人刑法犯認知件數 ${row.crimeRatePerThousand} 件（全國平均 ${national} 件），${comparison}`,
+    `安全度在 47 都道府県中排第 ${row.safetyRank} 名`,
+  ];
+  if (row.theftSharePercent !== null) {
+    parts.push(`其中竊盜佔 ${row.theftSharePercent}%`);
+  }
+
+  return {
+    prefecture: row.prefecture,
+    crimeRatePerThousand: row.crimeRatePerThousand,
+    nationalRatePerThousand: national,
+    vsNational: row.vsNational,
+    safetyRank: row.safetyRank,
+    totalPrefectures,
+    clearanceRatePercent: row.clearanceRatePercent,
+    felonySharePercent: row.felonySharePercent,
+    violentSharePercent: row.violentSharePercent,
+    theftSharePercent: row.theftSharePercent,
+    grade: prefectureGrade(row.vsNational),
+    fiscalYear: crimePrefectureMeta.fiscalYear,
+    summary: parts.join("；") + "。",
+    credit: `資料來源：${crimePrefectureMeta.sourceName}／${crimePrefectureMeta.fiscalYear}`,
+  };
+}
+
+/**
+ * 全日本治安查詢入口。
+ * 東京都回町丁目級；其他道府県回都道府県級；都無法解析時回 null。
+ */
+export async function lookupCrimeSafety(matchedAddress: string): Promise<CrimeLookupResult | null> {
+  const prefecture = extractPrefecture(matchedAddress);
+
+  // 東京都優先走町丁目級。查不到（地址精度不足、或該町丁目無紀錄）時
+  // 不直接失敗，退回都道府県級，至少給得出可比的基準。
+  if (prefecture === "東京都" || prefecture === null) {
+    const chome = await getCrimeSafety(matchedAddress);
+    if (chome) return { precision: "chome", chome };
+  }
+
+  if (!prefecture) return null;
+
+  const row = findCrimePrefecture(prefecture);
+  if (!row) return null;
+  return {
+    precision: "prefecture",
+    prefecture: buildPrefectureResult(row, crimePrefectureMeta.prefectureCount),
+  };
+}
+
 /**
  * 僅供測試使用的內部函式出口（scripts/test-crime-safety.ts）。
  * 讓評級與明細對帳邏輯可以離線回歸，不需打外部 API。
  */
-export const __testing = { buildResult, extractWardAndTown, mergeRows };
+export const __testing = {
+  buildResult,
+  extractWardAndTown,
+  mergeRows,
+  extractPrefecture,
+  prefectureGrade,
+  buildPrefectureResult,
+};

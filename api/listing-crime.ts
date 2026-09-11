@@ -1,4 +1,4 @@
-import { getCrimeSafety } from "../src/lib/crimeSafety.js";
+import { lookupCrimeSafety } from "../src/lib/crimeSafety.js";
 
 const RATE_LIMIT = 20;
 const RATE_WINDOW_MS = 300_000;
@@ -38,17 +38,16 @@ export default async function handler(req: any, res: any) {
     const address = typeof req.body?.address === "string" ? req.body.address.trim().slice(0, 200) : "";
     if (!address) return res.status(400).json({ error: "請提供物件地址。" });
 
-    // 簡易判斷是否為東京都地址
-    if (!address.includes("東京都") && !address.match(/[区]/) && !address.match(/(武蔵野|三鷹|府中|調布|町田|小金井|小平|日野|東村山|国分寺|国立|狛江|東大和|清瀬|東久留米|多摩|稲城|西東京|八王子|立川|青梅|昭島|福生|羽村|あきる野)/)) {
-      return res.status(200).json({ found: false, message: "治安資料目前僅支援東京都內物件。" });
-    }
-
-    const result = await getCrimeSafety(address);
+    // 不再限定東京都：東京走町丁目級，其餘道府県回退到都道府県級。
+    const result = await lookupCrimeSafety(address);
     if (!result) {
-      return res.status(200).json({ found: false, message: "此地址未能在東京都犯罪統計中找到對應資料，可能為非東京都物件或地址定位精度不足。" });
+      return res.status(200).json({ found: false, message: "此地址未能對應到可用的犯罪統計，可能是地址定位精度不足。" });
     }
 
-    return res.status(200).json({ found: true, crime: result });
+    if (result.precision === "chome") {
+      return res.status(200).json({ found: true, precision: "chome", crime: result.chome });
+    }
+    return res.status(200).json({ found: true, precision: "prefecture", prefecture: result.prefecture });
   } catch (error) {
     console.error("Listing crime error:", error);
     return res.status(503).json({ error: "治安資料暫時無法取得，請稍後再試。" });

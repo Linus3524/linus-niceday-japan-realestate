@@ -9,8 +9,15 @@
  */
 import assert from "node:assert/strict";
 import { __testing } from "../src/lib/crimeSafety.js";
+import { crimePrefectureMeta, crimePrefectureRows } from "../src/data/crimePrefectureSnapshot.js";
 
-const { buildResult, extractWardAndTown } = __testing;
+const {
+  buildResult,
+  extractWardAndTown,
+  extractPrefecture,
+  prefectureGrade,
+  buildPrefectureResult,
+} = __testing;
 
 /** 依 API 欄位建立測試列，未指定的欄位一律為 0。 */
 function row(overrides: Record<string, number | string> = {}) {
@@ -93,5 +100,53 @@ assert.equal(extractWardAndTown("東京都八王子市旭町1丁目"), "八王�
 /* ⑥ CC BY 授權要求：資料來源標示不可遺失。 */
 assert.match(nishishinjuku.credit, /警視庁/);
 assert.match(nishishinjuku.credit, /CC BY/);
+
+/* ⑦ 都道府県解析：47 縣都要認得，含省略都道府県名的政令市寫法。 */
+assert.equal(extractPrefecture("大阪府大阪市北区梅田1-1-1"), "大阪府");
+assert.equal(extractPrefecture("北海道札幌市中央区北1条西2丁目"), "北海道");
+assert.equal(extractPrefecture("神奈川県横浜市西区みなとみらい2-3-1"), "神奈川県");
+assert.equal(extractPrefecture("東京都墨田区錦糸1丁目"), "東京都");
+// 「京都府」不可被「京都市」的比對搶先切成錯誤結果。
+assert.equal(extractPrefecture("京都府京都市中京区"), "京都府");
+// 省略都道府県的政令市地址要能回推。
+assert.equal(extractPrefecture("名古屋市中区栄3丁目"), "愛知県");
+assert.equal(extractPrefecture("福岡市博多区博多駅前2丁目"), "福岡県");
+assert.equal(extractPrefecture("Paris, France"), null);
+
+/* ⑧ 都道府県評級用「相對全国倍率」，不可用絕對件數。 */
+assert.equal(prefectureGrade(0.5), "A+");
+assert.equal(prefectureGrade(0.75), "A");
+assert.equal(prefectureGrade(0.95), "B+");
+assert.equal(prefectureGrade(1.1), "B");
+assert.equal(prefectureGrade(1.4), "C");
+assert.equal(prefectureGrade(1.8), "D");
+
+/* ⑨ 全國快照完整性：47 筆、排名唯一且連續、倍率與全国基準一致。 */
+assert.equal(crimePrefectureRows.length, 47, "都道府県快照應為 47 筆");
+assert.equal(crimePrefectureMeta.prefectureCount, 47);
+const ranks = crimePrefectureRows.map(r => r.safetyRank).sort((a, b) => a - b);
+assert.deepEqual(ranks, Array.from({ length: 47 }, (_, i) => i + 1), "安全度排名必須是 1..47 且不重複");
+for (const prefRow of crimePrefectureRows) {
+  assert.ok(prefRow.crimeRatePerThousand > 0, `${prefRow.prefecture} 犯罪率應為正數`);
+  const expected = prefRow.crimeRatePerThousand / crimePrefectureMeta.nationalRatePerThousand;
+  assert.ok(
+    Math.abs(prefRow.vsNational - expected) < 0.002,
+    `${prefRow.prefecture} 的 vsNational 與全国基準算出來的倍率不符`,
+  );
+}
+// 排名最前者的犯罪率必須真的最低，避免排序方向寫反。
+const safest = crimePrefectureRows.find(r => r.safetyRank === 1)!;
+const lowest = Math.min(...crimePrefectureRows.map(r => r.crimeRatePerThousand));
+assert.equal(safest.crimeRatePerThousand, lowest, "排名第 1 必須是犯罪率最低的縣");
+
+/* ⑩ 都道府県結果：摘要與來源標示要帶出年度與比較基準。 */
+const tokyoRow = crimePrefectureRows.find(r => r.prefecture === "東京都")!;
+const tokyoPref = buildPrefectureResult(tokyoRow, crimePrefectureRows.length);
+assert.equal(tokyoPref.totalPrefectures, 47);
+assert.equal(tokyoPref.nationalRatePerThousand, crimePrefectureMeta.nationalRatePerThousand);
+assert.match(tokyoPref.summary, /全國平均/);
+assert.match(tokyoPref.summary, /第 \d+ 名/);
+assert.match(tokyoPref.credit, /e-Stat|社会生活統計指標/);
+assert.match(tokyoPref.fiscalYear, /年度/);
 
 console.log("test-crime-safety: 全部通過");

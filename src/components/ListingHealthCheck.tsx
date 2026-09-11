@@ -90,7 +90,8 @@ import { ErrorBoundary } from "./ErrorBoundary";
 import { ListingContactCta } from "./ListingContactCta";
 import { trackAction } from "../lib/trackView";
 import { CrimeSafetyCard } from "./CrimeSafetyCard";
-import type { CrimeSafetyResult } from "../lib/crimeSafety";
+import { PrefectureSafetyCard } from "./PrefectureSafetyCard";
+import type { CrimeSafetyResult, PrefectureSafetyResult } from "../lib/crimeSafety";
 
 /**
  * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -1178,6 +1179,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
   const [crimeData, setCrimeData] = useState<CrimeSafetyResult | null>(null);
+  const [prefectureSafety, setPrefectureSafety] = useState<PrefectureSafetyResult | null>(null);
   const [crimeLoading, setCrimeLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -1238,6 +1240,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setLocationContext(null);
     setCommute(null);
     setCrimeData(null);
+    setPrefectureSafety(null);
 
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
@@ -1325,6 +1328,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setLocationContext(null);
     setCommute(null);
     setCrimeData(null);
+    setPrefectureSafety(null);
     setError(null);
   };
 
@@ -1457,7 +1461,11 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
         body: JSON.stringify({ address: matchedAddress }),
       });
       const body = await response.json().catch(() => null);
-      if (body?.found && body.crime) {
+      if (!body?.found) return;
+      // 東京都回町丁目級，其餘道府県回都道府県級，兩者精度不同、分開存。
+      if (body.precision === "prefecture" && body.prefecture) {
+        setPrefectureSafety(body.prefecture as PrefectureSafetyResult);
+      } else if (body.crime) {
         setCrimeData(body.crime as CrimeSafetyResult);
       }
     } catch {
@@ -1477,6 +1485,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setCommute(null);
     setCommuteError(null);
     setCrimeData(null);
+    setPrefectureSafety(null);
 
     try {
       const { files: encoded, layoutText } = await encodeForUpload(file);
@@ -4830,7 +4839,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   </ErrorBoundary>
                 </div>
 
-                {/* 周邊治安資料（東京都オープンデータ API） */}
+                {/* 周邊治安資料：東京都為町丁目級，其餘道府県為都道府県級 */}
                 {crimeLoading && (
                   <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
                     <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
@@ -4840,6 +4849,11 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                 {crimeData && !crimeLoading && (
                   <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
                     <CrimeSafetyCard crime={crimeData} />
+                  </ErrorBoundary>
+                )}
+                {prefectureSafety && !crimeData && !crimeLoading && (
+                  <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
+                    <PrefectureSafetyCard prefecture={prefectureSafety} />
                   </ErrorBoundary>
                 )}
 
