@@ -708,10 +708,14 @@ async function encodeForUpload(file: File): Promise<{ files: Array<{ mimeType: s
       const { rendered, layoutText } = await renderPdfForUpload(file);
       if (!rendered) return { files: [raw], layoutText };
       const combinedBytes = base64Bytes(raw.data) + base64Bytes(rendered.data);
-      // 超過上傳上限時捨棄轉出的圖，保留一定讀得到的原始 PDF 與版面文字。
+      // 超過上傳上限時保留轉出的圖、捨棄原始 PDF。
+      // 先前是反過來留 PDF，但實測純掃描 PDF（沒有文字層）只送 PDF 時，Gemini 對它
+      // 內部點陣化的解析度不夠，敷金／礼金這種小格子五次裡有四次讀錯；同一頁轉成
+      // 2200px JPEG 再送則五次全對。文字層的資訊已由 layoutText 另外帶上，
+      // 原始 PDF 在這條路徑上沒有 JPEG 給不了的東西。
       if (combinedBytes > MAX_TOTAL_IMAGE_BYTES) {
-        console.warn("PDF 轉圖後總量超過上限，只送原始 PDF。");
-        return { files: [raw], layoutText };
+        console.warn("PDF 轉圖後總量超過上限，只送轉出的圖與版面文字。");
+        return { files: [rendered], layoutText };
       }
       return { files: [rendered, raw], layoutText };
     } catch (error) {

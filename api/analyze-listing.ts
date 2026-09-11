@@ -287,7 +287,78 @@ export interface ExtractedListingFields extends SpecialSaleFields, RentalConditi
 function leaseTermValue(row: string, labels: string[]) {
   const normalized = row.normalize("NFKC");
   const labelPattern = labels.join("|");
-  return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|不要)`, "i"))?.[1]?.trim() || null;
+  return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|無|不要)`, "i"))?.[1]?.trim() || null;
+}
+
+/**
+ * 敷金／礼金的聚焦二次確認。
+ *
+ * 40 個欄位的大表格抽取，在密集的日文費用表格上很容易對位錯——實測アクアリガーレ
+ * 西日暮里（純掃描 PDF，沒有文字層可以靠座標對位）的「敷金｜無｜礼金｜無」這一列，
+ * 五次抽取裡四次專屬格子回空字串、一次把下一格「更新料 1.5ヶ月(新賃料)」錯抓成礼金，
+ * 對客人來說前者顯示「待確認」、後者憑空多算十幾萬円初期費用，都不能接受。
+ *
+ * 單獨只問「這兩格印什麼字」的窄問題，準確率遠高於一次抽 40 個欄位。租賃圖紙一律
+ * 執行，不做「可疑才確認」：最常見的錯法是把「無」幻覺成「1ヶ月」，和真實值無法
+ * 區分。多一次小呼叫，換到的是初期費用試算最關鍵的兩個數字。
+ */
+async function verifyLeaseCharges(
+  files: UploadedFile[],
+  current: { deposit: string; keyMoney: string },
+): Promise<{ deposit: string; keyMoney: string }> {
+  const prompt = `
+    這是一張日本賃貸物件的図面。只需要回答兩個問題，其他內容一律不要管：
+
+    1. 費用表格裡標示「敷金」的那一格，實際印的是什麼字？
+    2. 費用表格裡標示「礼金」的那一格，實際印的是什麼字？
+
+    判讀規則：
+    - 敷金與礼金通常在同一列並排：「敷金｜值｜礼金｜值」。請確認你讀的值就在該標籤的正右方。
+    - 緊接的下一列常是「敷引」「償却金」「保証金」「更新料」，這些是不同的項目；
+      它們的值（常是「-」或「1.5ヶ月(新賃料)」之類）絕對不能填進敷金或礼金。
+    - 格子印「無」「無し」「なし」「0」「0円」→ 回答「無」。
+    - 格子印月數或金額（如「1ヶ月」「115,000円」）→ 原樣回答。
+    - 格子真的空白、或整份圖紙找不到這一格 → 回答空字串。不要猜。
+  `;
+
+  // 有圖就只送圖、不送 PDF。實測純掃描 PDF 跟 JPEG 一起送時，Gemini 對 PDF 內部
+  // 點陣化的解析度不夠，會把清楚的 JPEG 一起拖下水（五次四錯）；只送 2200px JPEG
+  // 則五次全對。沒有圖的情況（前端轉圖失敗）才退回送原檔。
+  const imageFiles = files.filter(file => file.mimeType.startsWith("image/"));
+  const inputs = imageFiles.length ? imageFiles : files;
+
+  try {
+    const response = await getAiClient().models.generateContent({
+      model: "gemini-3.8-flash",
+      contents: { parts: [...inputs.map(file => ({ inlineData: file })), { text: prompt }] },
+      config: {
+        temperature: 0,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            deposit: { type: Type.STRING, description: "敷金格子內實際印的字；免收回「無」；空白回空字串" },
+            keyMoney: { type: Type.STRING, description: "礼金格子內實際印的字；免收回「無」；空白回空字串" },
+          },
+          required: ["deposit", "keyMoney"],
+        },
+      },
+    });
+    const parsed = JSON.parse(response.text || "{}");
+    const pick = (fresh: unknown, fallback: string) => {
+      const value = typeof fresh === "string" ? fresh.trim() : "";
+      // 二次確認也讀到串格特徵就不採用，寧可留原值讓下游顯示待確認。
+      if (!value || /新賃料|更新/.test(value)) return fallback;
+      return value;
+    };
+    return {
+      deposit: pick(parsed.deposit, current.deposit),
+      keyMoney: pick(parsed.keyMoney, current.keyMoney),
+    };
+  } catch (error) {
+    console.warn("analyze-listing: 敷金／礼金二次確認失敗，沿用第一次結果", error);
+    return current;
+  }
 }
 
 function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListingFields {
@@ -296,11 +367,15 @@ function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListin
   const deposit = leaseTermValue(row, ["敷金", "保証金"]);
   const keyMoney = leaseTermValue(row, ["礼金"]);
   const shikibiki = leaseTermValue(row, ["償却金", "敷金償却", "償却", "敷引"]);
+  // 專屬格子優先、整列只用來補漏。這個函式存在的目的是「圖紙漏填獨立欄位、
+  // 卻在契約條件列寫了敷金0・礼金0」時把值補回來，不是拿整列去覆蓋格子。
+  // 先前寫成 row 優先，結果 Gemini 把整列幻覺成「敷金 1ヶ月」時，會蓋掉專屬
+  // 格子裡正確讀到的「無」，客人平白多算出兩個月租金的初期費用。
   return {
     ...extracted,
-    deposit: deposit || extracted.deposit,
-    keyMoney: keyMoney || extracted.keyMoney,
-    shikibiki: shikibiki || extracted.shikibiki,
+    deposit: extracted.deposit?.trim() ? extracted.deposit : (deposit || extracted.deposit),
+    keyMoney: extracted.keyMoney?.trim() ? extracted.keyMoney : (keyMoney || extracted.keyMoney),
+    shikibiki: extracted.shikibiki?.trim() ? extracted.shikibiki : (shikibiki || extracted.shikibiki),
   };
 }
 
@@ -377,10 +452,18 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     租金與各項租約費用（若為租賃圖紙）：
     - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。
     - managementFee（管理費／共益費）：照原文抓取，格式如 "○,○○○円"，若寫込み或無則寫 "0円"。
-    - keyMoney（礼金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
-    - deposit（敷金／保証金）：照原文抓取，例如 "1ヶ月"、"なし" 或 "0"。
+    - keyMoney（礼金）與 deposit（敷金／保証金）：只抄「礼金」「敷金」那一格裡實際印的字，
+      一個字都不要改。這兩格最常見的內容有三類，請依格子上實際看到的輸出：
+        (a) 格子印的是「無」「無し」「なし」「0」「0円」→ 原樣輸出那幾個字，代表免收。
+        (b) 格子印的是月數或金額（格式如 "○ヶ月"、"○○,○○○円"）→ 原樣輸出。
+        (c) 格子空白或整份圖紙沒有這一格 → 輸出空字串。
+      嚴禁在格子印「無」時輸出任何月數：實測曾把「礼金 無」誤輸出成月數，讓客人多算出
+      數十萬円的初期費用。免收（a）和未載明（c）也不能混用——前者是圖紙明確寫了不收，
+      後者是圖紙沒說。
     - rentalConditions：逐字保留租賃完整特殊條件：契約種類與期間、更新費次數及金額是否未載、調租百分比與第幾次、入居日、敷禮優惠期限、養寵物額外押金、年次保證費及適用公司、生活支援費週期、抗菌處理費、事務費、另計保險與退去清掃費。不得把更新型一年租約套為兩年，不得把AD業者獎勵當租客費用；地平面以下是部分住居警語，未指明本室時不得推定本室地下。
-    - leaseTerms：把包含敷金、礼金、保証金、償却金或敷引的整列文字連同每個標籤逐字抄下，例如 "敷金 1ヶ月　礼金 1ヶ月　償却金 0円"。不可只抄數值。
+    - leaseTerms：把包含敷金、礼金、保証金、償却金或敷引的整列文字連同每個標籤逐字抄下
+      （格式如 "敷金 ○　礼金 ○　償却金 ○"，○ 為格子上實際印的字：可能是月數、金額、「無」或「-」）。
+      不可只抄數值，也不可自行補上圖紙沒印的月數。
     - 「敷金／保証金」與「償却金／敷引」是不同欄位：deposit 只能讀取緊接敷金或保証金標籤的值，絕對不可把償却金或敷引的 0円 填入 deposit。
     - guaranteeFee（保証会社費用／初回保証料）：照原文，例如 "50%"、"総賃料50%"、"4.5万円"、"外国人プラン80%"、"GTN100%"。若圖紙載有「外国人プラン」或外國籍專用保證料，請優先提取外國人方案之比例。
     - lockReplacementFee（鍵交換代／シリンダー交換代）：照原文，格式如 "○○,○○○円"，或 "無償"、"なし"。
@@ -1465,6 +1548,22 @@ export default async function handler(req: any, res: any) {
         mimeTypes: files.map(file => file.mimeType),
       });
       return res.status(422).json({ error: "無法從這張圖片讀出物件資訊，請確認上傳的是物件概要書或図面。" });
+    }
+
+    // 租賃圖紙一律對敷金／礼金做一次聚焦的二次確認（見 verifyLeaseCharges）。
+    // 不能只在「看起來可疑」時才確認：第一次抽取最常見的錯法是把「無」幻覺成
+    // 「1ヶ月」，這個值和真實的 1ヶ月 在字串上無法區分，事後判斷攔不到。
+    // 這兩個數字直接決定初期費用試算的結果，多一次小呼叫值得。
+    // 只看 dealType 而不看 salePrice：買賣圖紙沒有這兩格，問了也是白問。
+    if (extracted.dealType !== "sale") {
+      const verified = await verifyLeaseCharges(files, { deposit: extracted.deposit, keyMoney: extracted.keyMoney });
+      if (verified.deposit !== extracted.deposit || verified.keyMoney !== extracted.keyMoney) {
+        console.info("analyze-listing: 敷金／礼金經二次確認修正", {
+          before: { deposit: extracted.deposit, keyMoney: extracted.keyMoney },
+          after: verified,
+        });
+      }
+      extracted = { ...extracted, ...verified };
     }
 
     const rent = parseYenAmount(extracted.rent);

@@ -153,8 +153,14 @@ export function isFreeOrZero(text: unknown): boolean {
   if (typeof text !== "string") return false;
   const cleaned = toHalfWidth(text).trim();
   if (!cleaned) return false;
-  if (/^(?:0(?:\.0+)?\s*(?:円|ヶ月|ヵ月|カ月|個月)?|-|ー|―)$/.test(cleaned)) return true;
-  return /(?:無償|無料|不要|なし|無し|免除)/i.test(cleaned);
+  // 單獨一個「無」是租賃図面敷金／礼金格子最常見的免收寫法之一（與なし、無し並列）。
+  // 先前只認 無し／無償／無料，漏掉裸字「無」——Gemini 照原文回「無」時
+  // 就判成「未載明」，圖紙明明寫了免押金卻顯示待確認。
+  if (/^(?:0(?:\.0+)?\s*(?:円|ヶ月|ヵ月|カ月|個月)?|-|ー|―|無|無し|なし)$/.test(cleaned)) return true;
+  // 含正數金額或月數的字串不是「免」：例如 "1ヶ月（償却なし）" 押金是 1 個月，
+  // 不能因為括號裡出現なし就整筆當成零。要先擋這條，下面的關鍵字比對才安全。
+  if (/[1-9][\d,]*(?:\.\d+)?\s*(?:万円|円|ヶ月|ヵ月|カ月|個月)/.test(cleaned)) return false;
+  return /(?:無償|無料|不要|なし|無し|無|免除)/i.test(cleaned);
 }
 
 /**
@@ -168,7 +174,9 @@ export function hasExplicitZeroLeaseCharge(
   if (typeof text !== "string") return false;
   const cleaned = toHalfWidth(text).normalize("NFKC");
   const label = kind === "deposit" ? "(?:敷金|押金|保証金|保證金)" : "(?:礼金|禮金)";
-  return new RegExp(`${label}\\s*(?:[:：]?\\s*)?(?:0(?:\\.0+)?|なし|無し|不要|ゼロ)\\s*(?:円|ヶ月|ヵ月|カ月|個月)?`, "i").test(cleaned);
+  // 無し 要排在 無 前面：alternation 由左至右嘗試，先配到較長的寫法才不會
+  // 讓「無し」只吃到「無」、剩下的「し」再去干擾後面的單位比對。
+  return new RegExp(`${label}\\s*(?:[:：]?\\s*)?(?:0(?:\\.0+)?|なし|無し|無|不要|ゼロ)\\s*(?:円|ヶ月|ヵ月|カ月|個月)?`, "i").test(cleaned);
 }
 
 /**
