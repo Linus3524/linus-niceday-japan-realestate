@@ -2,6 +2,7 @@ import { getListingLocationContext, nearestStationForAddress } from "../src/lib/
 import { resolveListingCommuteRoute } from "../src/lib/transitRouteApi.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 import { originWalkIssue } from "../src/lib/commuteValidation.js";
+import { lookupCrimeSafety } from "../src/lib/crimeSafety.js";
 
 const RATE_LIMIT = 15;
 const RATE_WINDOW_MS = 300_000;
@@ -62,6 +63,21 @@ export default async function handler(req: any, res: any) {
       const context = await getListingLocationContext(address, stations, walkMinutes(req.body?.advertisedWalkMinutes));
       if (!context) return res.status(200).json({ found: false, message: "目前無法把圖紙地址定位到地圖，第一階段價格分析不受影響。" });
       return res.status(200).json({ found: true, context });
+    }
+
+    // 治安查詢併在這支 handler 裡：Vercel Hobby 只給 12 個 Serverless Function，
+    // 獨立成 api/listing-crime.ts 會讓總數變 13，整支在部署時被裁掉（線上實測 404）。
+    if (mode === "crime") {
+      const address = cleanString(req.body?.address, 200);
+      if (!address) return res.status(400).json({ error: "請提供物件地址。" });
+      const result = await lookupCrimeSafety(address);
+      if (!result) {
+        return res.status(200).json({ found: false, message: "此地址未能對應到可用的犯罪統計，可能是地址定位精度不足。" });
+      }
+      if (result.precision === "chome") {
+        return res.status(200).json({ found: true, precision: "chome", crime: result.chome });
+      }
+      return res.status(200).json({ found: true, precision: "prefecture", prefecture: result.prefecture });
     }
 
     if (mode === "commute") {

@@ -1446,6 +1446,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
       void loadCrimeData(ctx.matchedAddress);
     } catch (err: any) {
       setLocationError(err?.message || "位置資料暫時無法取得。");
+      // 定位失敗仍用圖紙原始地址查治安：県級資料只需要都道府県名即可命中。
+      void loadCrimeData(address);
     } finally {
       setLocationLoading(false);
     }
@@ -1455,10 +1457,10 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     if (!matchedAddress) return;
     setCrimeLoading(true);
     try {
-      const response = await fetch("/api/listing-crime", {
+      const response = await fetch("/api/listing-location", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address: matchedAddress }),
+        body: JSON.stringify({ mode: "crime", address: matchedAddress }),
       });
       const body = await response.json().catch(() => null);
       if (!body?.found) return;
@@ -4839,24 +4841,6 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   </ErrorBoundary>
                 </div>
 
-                {/* 周邊治安資料：東京都為町丁目級，其餘道府県為都道府県級 */}
-                {crimeLoading && (
-                  <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-                    <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
-                    <p className="text-xs text-[#66736C]">正在查詢周邊治安資料…</p>
-                  </div>
-                )}
-                {crimeData && !crimeLoading && (
-                  <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
-                    <CrimeSafetyCard crime={crimeData} />
-                  </ErrorBoundary>
-                )}
-                {prefectureSafety && !crimeData && !crimeLoading && (
-                  <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
-                    <PrefectureSafetyCard prefecture={prefectureSafety} />
-                  </ErrorBoundary>
-                )}
-
                 {/* 資料來源與免責聲明：純繁體中文呈現，不混合日文字句 */}
                 <div className="border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">
                   資料來源：
@@ -4866,6 +4850,25 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   本服務使用日本國土交通省不動產資訊資料庫 API，但不保證所提供資訊之即時性、正確性與完整性；周邊設施資料亦可能存在缺漏，實際現況請以現場與官方公開資訊為準。
                 </div>
               </div>
+            )}
+
+            {/* 周邊治安資料：東京都為町丁目級，其餘道府県為都道府県級。
+                刻意放在 locationContext 判斷之外——定位失敗時仍可只靠地址顯示県級治安。 */}
+            {crimeLoading && (
+              <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
+                <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
+                <p className="text-xs text-[#66736C]">正在查詢周邊治安資料…</p>
+              </div>
+            )}
+            {crimeData && !crimeLoading && (
+              <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
+                <CrimeSafetyCard crime={crimeData} />
+              </ErrorBoundary>
+            )}
+            {prefectureSafety && !crimeData && !crimeLoading && (
+              <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
+                <PrefectureSafetyCard prefecture={prefectureSafety} />
+              </ErrorBoundary>
             )}
           </div>
 
