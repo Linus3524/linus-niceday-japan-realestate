@@ -1,7 +1,6 @@
-import { useEffect, useRef } from "react";
 import { ExternalLink } from "lucide-react";
 import type { RelatedThread } from "../lib/threadSearch";
-import { trackAction, type ThreadRecommendationSource } from "../lib/trackView";
+import type { ThreadRecommendationSource } from "../lib/trackView";
 import { threadImageIndex } from "../data/threadImageIndex";
 
 interface RelatedThreadsProps {
@@ -12,20 +11,7 @@ interface RelatedThreadsProps {
   compact?: boolean;
 }
 
-export function RelatedThreads({ threads, source, query, total, compact = false }: RelatedThreadsProps) {
-  const impressionSignature = useRef("");
-
-  useEffect(() => {
-    if (threads.length === 0) return;
-    const signature = threads.map(thread => thread.id).join(",");
-    const timer = window.setTimeout(() => {
-      if (impressionSignature.current === signature) return;
-      impressionSignature.current = signature;
-      trackAction(`threads-${source}-view`);
-    }, 800);
-    return () => window.clearTimeout(timer);
-  }, [threads, source]);
-
+export function RelatedThreads({ threads, query, total, compact = false }: RelatedThreadsProps) {
   if (threads.length === 0) return null;
 
   const allThreadsHref = query
@@ -55,7 +41,6 @@ export function RelatedThreads({ threads, source, query, total, compact = false 
             href={thread.url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackAction(`threads-${source}-click`)}
             className="group flex min-w-0 flex-col border border-[#DDE3DF] bg-[#FFFDF9] p-4 text-left transition-all hover:border-[#00a174] hover:shadow-colored-soft"
           >
             {imageUrl && (

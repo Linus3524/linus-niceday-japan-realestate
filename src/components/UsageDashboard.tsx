@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, LoaderCircle, RefreshCw } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, LoaderCircle, RefreshCw } from "lucide-react";
 
 /**
  * 後台使用量頁面（#admin）。
@@ -39,41 +39,54 @@ interface UsageSummary {
   cumulativeVisitors: number | null;
 }
 
-/**
- * 同一個代號可能來自站上多個入口，所以標籤要寫清楚合併了哪些，
- * 不然看到數字會以為只算了其中一處。
- */
-const ACTION_LABEL: Record<string, string> = {
-  "line-add": "點擊加 LINE 好友",
-  "line-copy": "複製 LINE ID",
-  "line-qr": "開啟 LINE QR 掃碼",
-  "wechat-copy": "複製 WeChat ID",
-  "wechat-qr": "展開 WeChat QR 掃碼",
-  "threads-rent-view": "租屋搜尋文章曝光",
-  "threads-rent-click": "租屋搜尋文章點擊",
-  "threads-buy-view": "買房搜尋文章曝光",
-  "threads-buy-click": "買房搜尋文章點擊",
-  "threads-ai-view": "AI 推薦文章曝光",
-  "threads-ai-click": "AI 推薦文章點擊",
-  "calculator-applied": "套用推薦條件到試算",
-  "rent-analysis-submitted-structured-form": "租屋分析送出（選擇條件）",
-  "rent-analysis-submitted-natural-language": "租屋分析送出（描述需求）",
-};
+interface ContactChannelGroup {
+  id: string;
+  name: string;
+  badgeBg: string;
+  badgeText: string;
+  badgeBorder: string;
+  actions: Array<{
+    key: string;
+    label: string;
+    note: string;
+  }>;
+}
 
-/** 標籤下方的小字：說明這個數字合併了哪些入口。 */
-const ACTION_SOURCE_NOTE: Record<string, string> = {
-  "line-add": "首頁卡片 ＋ 聯絡分頁 ＋ AI 顧問回覆",
-  "line-copy": "首頁卡片 ＋ 聯絡分頁",
-  "line-qr": "首頁頭像翻卡 ＋ 聯絡分頁展開（合計）",
-  "wechat-copy": "聯絡分頁",
-  "wechat-qr": "聯絡分頁展開",
-  "threads-rent-view": "搜尋結果穩定顯示 0.8 秒後計入",
-  "threads-rent-click": "租屋指南搜尋結果",
-  "threads-buy-view": "搜尋結果穩定顯示 0.8 秒後計入",
-  "threads-buy-click": "買房置產搜尋結果",
-  "threads-ai-view": "AI 回覆下方推薦穩定顯示 0.8 秒後計入",
-  "threads-ai-click": "AI 顧問回覆",
-};
+const CONTACT_CHANNELS: ContactChannelGroup[] = [
+  {
+    id: "line",
+    name: "LINE 管道",
+    badgeBg: "#E8F9F0",
+    badgeText: "#06C755",
+    badgeBorder: "#A3E9C1",
+    actions: [
+      { key: "line-add", label: "點擊加 LINE 好友", note: "首頁卡片 ＋ 聯絡分頁 ＋ 物件分析 CTA ＋ AI 顧問回覆" },
+      { key: "line-copy", label: "複製 LINE ID", note: "首頁卡片 ＋ 聯絡分頁" },
+      { key: "line-qr", label: "開啟 LINE QR 掃碼", note: "首頁頭像翻卡 ＋ 聯絡分頁展開" },
+    ],
+  },
+  {
+    id: "wechat",
+    name: "WeChat 管道",
+    badgeBg: "#E6F7ED",
+    badgeText: "#07C160",
+    badgeBorder: "#9DE4B8",
+    actions: [
+      { key: "wechat-copy", label: "複製 WeChat ID", note: "聯絡分頁 ＋ 物件分析 CTA" },
+      { key: "wechat-qr", label: "展開 WeChat QR 掃碼", note: "聯絡分頁展開 ＋ 物件分析 CTA" },
+    ],
+  },
+  {
+    id: "email",
+    name: "Email 管道",
+    badgeBg: "#F0F3F1",
+    badgeText: "#526159",
+    badgeBorder: "#D4DDD8",
+    actions: [
+      { key: "email-copy", label: "點擊複製 Email", note: "物件分析 CTA 聯絡區" },
+    ],
+  },
+];
 
 // 常用管道的中文名。沒收錄的標記會直接顯示原字，不影響統計，
 // 想讓它顯示中文就在這裡加一行。
@@ -287,6 +300,70 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
       .sort((a, b) => b.count - a.count),
     [data],
   );
+
+  const [openChannels, setOpenChannels] = useState<Record<string, boolean>>({
+    line: true,
+    wechat: true,
+    email: true,
+  });
+  const [openListingSection, setOpenListingSection] = useState(true);
+  const [openAiSection, setOpenAiSection] = useState(true);
+
+  const toggleChannel = (id: string) => {
+    setOpenChannels(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleAllChannels = () => {
+    const allOpen = Object.values(openChannels).every(Boolean);
+    setOpenChannels({
+      line: !allOpen,
+      wechat: !allOpen,
+      email: !allOpen,
+    });
+  };
+
+  const contactTotals = useMemo(() => {
+    if (!data?.actions) return { total: 0, byChannel: {} as Record<string, number> };
+    const byChannel: Record<string, number> = {};
+    let total = 0;
+    for (const group of CONTACT_CHANNELS) {
+      let groupSum = 0;
+      for (const act of group.actions) {
+        groupSum += data.actions[act.key] ?? 0;
+      }
+      byChannel[group.id] = groupSum;
+      total += groupSum;
+    }
+    return { total, byChannel };
+  }, [data?.actions]);
+
+  const listingMetrics = useMemo(() => {
+    if (!data?.actions) return { sale: 0, rent: 0, shareCreate: 0, shareView: 0, pdfDownload: 0, total: 0 };
+    const sale = data.actions["listing-check-sale"] ?? 0;
+    const rent = data.actions["listing-check-rent"] ?? 0;
+    const shareCreate = data.actions["listing-share-create"] ?? 0;
+    const shareView = data.actions["listing-share-view"] ?? 0;
+    const pdfDownload = data.actions["listing-pdf-download"] ?? 0;
+    return {
+      sale,
+      rent,
+      shareCreate,
+      shareView,
+      pdfDownload,
+      total: sale + rent,
+    };
+  }, [data?.actions]);
+
+  const aiAnalysisMetrics = useMemo(() => {
+    if (!data?.actions) return { structured: 0, natural: 0, total: 0 };
+    const structured = data.actions["rent-analysis-submitted-structured-form"] ?? 0;
+    const natural = data.actions["rent-analysis-submitted-natural-language"] ?? 0;
+    return {
+      structured,
+      natural,
+      total: structured + natural,
+    };
+  }, [data?.actions]);
 
   if (!token) {
     return (
@@ -548,32 +625,291 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </section>
 
-            {/* 聯絡意圖：站上唯一的成交入口，跟「看了幾頁」分開看才有意義 */}
+            {/* 聯絡意圖與轉化分析：站上核心成交入口，分組收納式閱讀 */}
             <section className="mb-8">
-              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-                聯絡意圖
-                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}</span>
-              </h2>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {Object.keys(ACTION_LABEL).map(action => (
-                  <div key={action} className="border border-[#DDE3DF] bg-white p-5">
-                    <div className="font-jost text-2xl font-bold text-[#1A2A22]">
-                      {(data.actions?.[action] ?? 0).toLocaleString()}
-                    </div>
-                    <div className="text-xs text-zinc-500">{ACTION_LABEL[action]}</div>
-                    {ACTION_SOURCE_NOTE[action] && (
-                      <div className="mt-1 text-[11px] leading-5 text-zinc-400">
-                        {ACTION_SOURCE_NOTE[action]}
-                      </div>
-                    )}
-                  </div>
-                ))}
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-bold text-[#1A2A22]">
+                    聯絡意圖與轉化
+                  </h2>
+                  <span className="font-normal text-xs text-zinc-400">{data.month}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={toggleAllChannels}
+                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
+                >
+                  {Object.values(openChannels).every(Boolean) ? "全部收合" : "全部展開"}
+                </button>
               </div>
+
+              {/* 頂部總覽橫幅 */}
+              <div className="mb-3 border border-[#DDE3DF] bg-white p-4 sm:p-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-xs text-zinc-500">本月潛在客戶聯絡總意圖</div>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      <span className="font-jost text-3xl font-bold text-[#1A2A22]">
+                        {contactTotals.total.toLocaleString()}
+                      </span>
+                      <span className="text-xs font-medium text-zinc-400">次動作</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {CONTACT_CHANNELS.map(ch => {
+                      const count = contactTotals.byChannel[ch.id] ?? 0;
+                      const share = contactTotals.total > 0 ? Math.round((count / contactTotals.total) * 100) : 0;
+                      return (
+                        <div
+                          key={ch.id}
+                          className="flex items-center gap-1.5 border px-2.5 py-1 text-xs"
+                          style={{ borderColor: ch.badgeBorder, backgroundColor: ch.badgeBg, color: ch.badgeText }}
+                        >
+                          <span className="font-bold">{ch.name.replace(" 管道", "")}</span>
+                          <span className="font-jost font-bold tabular-nums">{count.toLocaleString()}</span>
+                          <span className="text-[10px] opacity-80">({share}%)</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {contactTotals.total > 0 && (
+                  <div className="mt-3.5 flex h-2 w-full overflow-hidden bg-[#F0F3F1]">
+                    {CONTACT_CHANNELS.map(ch => {
+                      const count = contactTotals.byChannel[ch.id] ?? 0;
+                      const widthPercent = (count / contactTotals.total) * 100;
+                      return (
+                        <div
+                          key={ch.id}
+                          style={{ width: `${widthPercent}%`, backgroundColor: ch.badgeText }}
+                          title={`${ch.name}: ${count} 次 (${widthPercent.toFixed(1)}%)`}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* 管道分組可折疊清單 */}
+              <div className="space-y-3">
+                {CONTACT_CHANNELS.map(channel => {
+                  const isOpen = openChannels[channel.id];
+                  const channelCount = contactTotals.byChannel[channel.id] ?? 0;
+                  const channelShare = contactTotals.total > 0 ? Math.round((channelCount / contactTotals.total) * 100) : 0;
+
+                  return (
+                    <div key={channel.id} className="border border-[#DDE3DF] bg-white transition-all">
+                      {/* 分組摺疊標題列 */}
+                      <button
+                        type="button"
+                        onClick={() => toggleChannel(channel.id)}
+                        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#F8FAF9] cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span
+                            className="border px-2 py-0.5 text-xs font-bold"
+                            style={{ borderColor: channel.badgeBorder, backgroundColor: channel.badgeBg, color: channel.badgeText }}
+                          >
+                            {channel.name}
+                          </span>
+                          <span className="text-xs text-zinc-400">
+                            共 {channel.actions.length} 項動作入口
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-jost font-bold text-sm text-[#1A2A22]">
+                            {channelCount.toLocaleString()}
+                            <span className="ml-1 text-[11px] font-normal text-zinc-400">次 ({channelShare}%)</span>
+                          </span>
+                          {isOpen ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
+                        </div>
+                      </button>
+
+                      {/* 展開之細項動作進度列表 */}
+                      {isOpen && (
+                        <div className="border-t border-[#EEF2F0] px-4 py-2 bg-[#FBFDFB]">
+                          <ul className="divide-y divide-[#F0F3F1]">
+                            {channel.actions.map(action => {
+                              const count = data.actions?.[action.key] ?? 0;
+                              const shareOfChannel = channelCount > 0 ? Math.round((count / channelCount) * 100) : 0;
+                              return (
+                                <li key={action.key} className="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                                  <div className="min-w-0 flex-1 pr-4">
+                                    <div className="text-xs font-bold text-[#1A2A22]">{action.label}</div>
+                                    <div className="text-[11px] text-zinc-400">{action.note}</div>
+                                  </div>
+                                  <div className="flex items-center gap-3 shrink-0 pt-1 sm:pt-0">
+                                    <span className="h-1.5 w-24 overflow-hidden bg-[#EEF2F0]">
+                                      <span
+                                        className="block h-full"
+                                        style={{ width: `${shareOfChannel}%`, backgroundColor: channel.badgeText }}
+                                      />
+                                    </span>
+                                    <span className="w-20 text-right font-jost font-bold text-sm text-[#1A2A22]">
+                                      {count.toLocaleString()}
+                                      <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
+                                        {shareOfChannel}%
+                                      </span>
+                                    </span>
+                                  </div>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
               <p className="mt-2 text-[11px] leading-5 text-zinc-400">
-                以按下的次數計算，同一個人按兩次算兩次。
-                手機上多數人習慣複製 ID，建議兩個數字一起看。
-                首頁的自動翻卡示範由系統觸發，只有客人自己點才會計入。
+                以按下的次數計算，同一個人按兩次算兩次。手機上多數人習慣複製 ID 直接搜尋，建議加好友與複製數字一起評估。
               </p>
+            </section>
+
+            {/* 物件圖紙健檢與報告互動：新功能深度分析 */}
+            <section className="mb-8">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-bold text-[#1A2A22]">
+                    物件圖紙健檢與報告互動
+                  </h2>
+                  <span className="font-normal text-xs text-zinc-400">{data.month}・新功能統計</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpenListingSection(v => !v)}
+                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  {openListingSection ? "收合" : "展開"}
+                  {openListingSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+
+              {openListingSection && (
+                <div className="space-y-3">
+                  {/* 四個核心 KPI 卡片 */}
+                  <div className="grid gap-3 sm:grid-cols-4">
+                    <div className="border border-[#DDE3DF] bg-white p-4">
+                      <div className="text-xs text-zinc-500">買賣物件分析</div>
+                      <div className="mt-1 font-jost text-2xl font-bold text-[#007D5A]">
+                        {listingMetrics.sale.toLocaleString()}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-zinc-400">
+                        {listingMetrics.total > 0 ? `佔 ${Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%` : "本月分析"}
+                      </div>
+                    </div>
+                    <div className="border border-[#DDE3DF] bg-white p-4">
+                      <div className="text-xs text-zinc-500">租賃物件分析</div>
+                      <div className="mt-1 font-jost text-2xl font-bold text-[#0284C7]">
+                        {listingMetrics.rent.toLocaleString()}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-zinc-400">
+                        {listingMetrics.total > 0 ? `佔 ${Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%` : "本月分析"}
+                      </div>
+                    </div>
+                    <div className="border border-[#DDE3DF] bg-white p-4">
+                      <div className="text-xs text-zinc-500">分享連結建立 / 瀏覽</div>
+                      <div className="mt-1 font-jost text-2xl font-bold text-[#D97706]">
+                        {listingMetrics.shareCreate.toLocaleString()}
+                        <span className="text-sm font-normal text-zinc-400 ml-1">/ {listingMetrics.shareView.toLocaleString()} 閱</span>
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-zinc-400">專屬 #listing 傳播</div>
+                    </div>
+                    <div className="border border-[#DDE3DF] bg-white p-4">
+                      <div className="text-xs text-zinc-500">完整 PDF 下載</div>
+                      <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">
+                        {listingMetrics.pdfDownload.toLocaleString()}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-zinc-400">A4 印刷診斷書</div>
+                    </div>
+                  </div>
+
+                  {/* 健檢比重長條 */}
+                  <div className="border border-[#DDE3DF] bg-white p-4">
+                    <div className="text-xs font-bold text-[#1A2A22] mb-2.5">買賣 vs 租賃健檢佔比</div>
+                    <div className="flex h-2.5 w-full overflow-hidden bg-[#EEF2F0]">
+                      <div
+                        style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }}
+                        title={`買賣: ${listingMetrics.sale} 次`}
+                      />
+                      <div
+                        style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }}
+                        title={`租賃: ${listingMetrics.rent} 次`}
+                      />
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-[#007D5A]" />
+                        買賣分析 {listingMetrics.sale.toLocaleString()} 次
+                        {listingMetrics.total > 0 && <span className="font-jost"> ({Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%)</span>}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
+                        租賃分析 {listingMetrics.rent.toLocaleString()} 次
+                        {listingMetrics.total > 0 && <span className="font-jost"> ({Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%)</span>}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* AI 需求分析偏好 */}
+            <section className="mb-8">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-bold text-[#1A2A22]">
+                    AI 需求分析偏好
+                  </h2>
+                  <span className="font-normal text-xs text-zinc-400">{data.month}・租屋分析模式</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpenAiSection(v => !v)}
+                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  {openAiSection ? "收合" : "展開"}
+                  {openAiSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+
+              {openAiSection && (
+                <div className="border border-[#DDE3DF] bg-white p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <div className="text-xs text-zinc-500">
+                      快速條件選單 vs 自然語言文字描述
+                    </div>
+                    <div className="text-xs font-jost text-zinc-400">
+                      合計 {aiAnalysisMetrics.total.toLocaleString()} 次
+                    </div>
+                  </div>
+                  <div className="flex h-2 w-full overflow-hidden bg-[#EEF2F0]">
+                    <div
+                      style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#00a174" }}
+                      title={`快速條件選單: ${aiAnalysisMetrics.structured} 次`}
+                    />
+                    <div
+                      style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.natural / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#6366F1" }}
+                      title={`自然語言描述: ${aiAnalysisMetrics.natural} 次`}
+                    />
+                  </div>
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-[#00a174]" />
+                      快速選單勾選：{aiAnalysisMetrics.structured.toLocaleString()} 次
+                      {aiAnalysisMetrics.total > 0 && <span className="font-jost text-zinc-400"> ({Math.round((aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100)}%)</span>}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-[#6366F1]" />
+                      自然語言描述：{aiAnalysisMetrics.natural.toLocaleString()} 次
+                      {aiAnalysisMetrics.total > 0 && <span className="font-jost text-zinc-400"> ({Math.round((aiAnalysisMetrics.natural / aiAnalysisMetrics.total) * 100)}%)</span>}
+                    </span>
+                  </div>
+                </div>
+              )}
             </section>
 
             <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">

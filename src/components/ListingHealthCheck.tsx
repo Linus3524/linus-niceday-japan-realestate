@@ -88,6 +88,7 @@ import { getSpecialSaleMarketComparison } from "../data/specialSaleMarket";
 import { RentalConditionSummary } from "./RentalConditionSummary";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { ListingContactCta } from "./ListingContactCta";
+import { trackAction } from "../lib/trackView";
 
 /**
  * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -1195,6 +1196,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
         setSharedExpiresAt(typeof body?.expiresAt === "string" ? body.expiresAt : null);
         setResult(analysis);
         void loadLocationContext(analysis);
+        trackAction("listing-share-view");
       })
       .catch(err => {
         if (!cancelled) setError(err?.message || "讀取分享連結失敗。");
@@ -1339,6 +1341,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
       const body = await response.json().catch(() => null);
       if (!response.ok) throw new Error(body?.error || `建立連結失敗（HTTP ${response.status}）。`);
       setShareUrl(`${window.location.origin}/#listing/${body.id}`);
+      trackAction("listing-share-create");
     } catch (err: any) {
       setShareError(err?.message || "建立連結失敗，請稍後再試。");
     } finally {
@@ -1396,6 +1399,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      trackAction("listing-pdf-download");
     } catch (err: any) {
       console.error("PDF 產生失敗", err);
       setPdfError("PDF 產生失敗，請稍後再試。");
@@ -1465,6 +1469,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
       const analysis = body as AnalyzeListingResult;
       setResult(analysis);
       void loadLocationContext(analysis);
+      trackAction(analysis.dealType === "sale" || Boolean(analysis.saleAnalysis) ? "listing-check-sale" : "listing-check-rent");
     } catch (err: any) {
       setError(err?.message || "圖片分析失敗，請稍後再試。");
     } finally {

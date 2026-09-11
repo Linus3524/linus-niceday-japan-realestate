@@ -242,7 +242,6 @@ export function CalculatorTab(props: CalculatorTabProps) {
       criteria.gasBurnersMin && criteria.gasBurnersMin >= 2 ? "twoBurners" : null,
       criteria.cityGasRequired ? "cityGas" : null
     ].filter(Boolean) as RentSearchFilter[]);
-    trackAction("calculator-applied");
     setAppliedNotice(`已將「${toJapanesePlaceName(item.district)}${selectedStation !== "none" ? `・${toJapaneseStationName(selectedStation)}駅` : ""}」及需求條件同步帶入上方表單與下方租金條件。`);
     setShowAdvancedTools(true);
 

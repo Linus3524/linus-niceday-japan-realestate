@@ -43,13 +43,11 @@ export function isTrackableView(value: unknown): value is TrackableView {
  * 同樣是公開可寫的端點，所以一樣走白名單。
  */
 export const TRACKABLE_ACTIONS = [
-  "line-add", "line-copy", "line-qr", "wechat-copy", "wechat-qr",
-  "threads-rent-view", "threads-rent-click",
-  "threads-buy-view", "threads-buy-click",
-  "threads-ai-view", "threads-ai-click",
-  // 送出方式編進事件名，與上面 threads-* 同一套慣例：
-  // recordAction 只依事件名累計次數，不存屬性，要分辨維度就只能從名字分。
-  "calculator-applied",
+  // 聯絡意圖
+  "line-add", "line-copy", "line-qr", "wechat-copy", "wechat-qr", "email-copy",
+  // 物件圖紙健檢與報告
+  "listing-check-sale", "listing-check-rent", "listing-share-create", "listing-share-view", "listing-pdf-download",
+  // AI 需求分析
   "rent-analysis-submitted-structured-form",
   "rent-analysis-submitted-natural-language",
 ] as const;

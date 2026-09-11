@@ -17,9 +17,7 @@ export type ThreadRecommendationSource = "rent" | "buy" | "ai";
 
 export type TrackableAction =
   | "line-add" | "line-copy" | "line-qr" | "wechat-copy" | "wechat-qr" | "email-copy"
-  | `threads-${ThreadRecommendationSource}-view`
-  | `threads-${ThreadRecommendationSource}-click`
-  | "calculator-applied"
+  | "listing-check-sale" | "listing-check-rent" | "listing-share-create" | "listing-share-view" | "listing-pdf-download"
   | "rent-analysis-submitted-structured-form"
   | "rent-analysis-submitted-natural-language";
 

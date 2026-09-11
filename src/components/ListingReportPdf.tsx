@@ -363,7 +363,7 @@ export interface ListingReportPdfProps {
 }
 
 /* ───────────── 共用小元件 ───────────── */
-function Card({ title, tag, children, wrap = true }: { title: string; tag?: string; children: any; wrap?: boolean }) {
+function Card({ title, tag, children, wrap = false }: { title: string; tag?: string; children: any; wrap?: boolean }) {
   return (
     <View style={styles.card} wrap={wrap}>
       <View style={styles.cardHead}>
@@ -556,7 +556,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
 
         <View style={styles.body}>
           {/* 標題區 */}
-          <View style={styles.titleBlock}>
+          <View style={styles.titleBlock} wrap={false}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
               <View style={{ flex: 1, paddingRight: 8 }}>
                 <Text style={styles.eyebrow}>PROPERTY LISTING DIAGNOSTICS</Text>
@@ -648,7 +648,7 @@ function RentKpis({ result }: { result: any }) {
   const verdict = result?.verdict;
   const tone = verdict ? VERDICT_TONE[verdict.status] ?? TONE_BLUE : TONE_BLUE;
   return (
-    <View style={styles.kpiRow}>
+    <View style={styles.kpiRow} wrap={false}>
       <View style={styles.kpi}>
         <Text style={styles.kpiLabel}>每月總負擔</Text>
         <Text style={styles.kpiValue}>{yen(monthly)}</Text>
@@ -675,7 +675,7 @@ function SaleKpis({ result }: { result: any }) {
   const officialMan = m?.areaBaselineMan ?? m?.expectedPriceMan;
   const listingMan = m?.typicalListingPriceMan;
   return (
-    <View style={styles.kpiRow}>
+    <View style={styles.kpiRow} wrap={false}>
       <View style={styles.kpi}>
         <Text style={styles.kpiLabel}>開價</Text>
         <Text style={styles.kpiValue}>{man(s?.salePriceMan)}</Text>
@@ -1166,7 +1166,7 @@ function PageChrome({ dateText }: { dateText: string }) {
 function ContactPage({ assetBase }: { assetBase: string }) {
   const src = (p: string) => `${assetBase}${p}`;
   return (
-    <View>
+    <View wrap={false}>
       <View style={styles.contactHero}>
         <Image src={src("/logo.png")} style={styles.contactLogo} />
         <View style={{ flex: 1 }}>
