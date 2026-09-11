@@ -108,10 +108,14 @@ const PDF_JPEG_QUALITY = 0.88;
 // 這種情況 try/catch 完全攔不到，使用者會看到分析永遠轉圈。
 // 用逾時把它視同渲染失敗，走既有的「改送原始 PDF」備援路徑。
 const PDF_RENDER_TIMEOUT_MS = 10000;
-// 縮圖只需貼合卡片與對照區的顯示寬度，不必用送審那份的解析度。
-const PDF_PREVIEW_MAX_DIMENSION = 900;
+// 這張預覽圖不只餵 84px 的小縮圖，也是整寬「原始圖紙對照」區的主體。
+// 那一區在桌機可達約 1,900 CSS px、Retina 再乘 2，先前用 900px 等於放大四倍，
+// 使用者要核對的正是敷金／礼金這種小格子，糊掉就失去對照的意義。
+// 與送審那份同解析度（約 180 DPI），代價是多一次同等級的渲染。
+const PDF_PREVIEW_MAX_DIMENSION = MAX_PDF_RENDER_DIMENSION;
 // 縮圖轉不出來就退回原生 PDF 預覽，等太久只是讓使用者對著轉圈發呆。
-const PDF_PREVIEW_TIMEOUT_MS = 8000;
+// 逾時與送審那份一致：兩者現在是同一個解析度，沒理由給不同的耐心。
+const PDF_PREVIEW_TIMEOUT_MS = PDF_RENDER_TIMEOUT_MS;
 // 還原後的版面文字長度上限，避免異常大的圖紙把請求撐爆。
 const MAX_LAYOUT_TEXT_CHARS = 6000;
 
@@ -602,9 +606,10 @@ async function renderPdfPreview(
     // 長寬比先回報：卡片與對照區可以立刻用正確比例撐開，不必等渲染完成。
     onAspect?.(aspect);
 
-    // 這張圖只餵給縮圖卡與對照區（最寬約 900 CSS px，含 2x 螢幕也綽綽有餘）。
-    // 舊版沿用 1800px 的上限，等於為了一張縮圖付四倍的渲染成本，是逾時的主因之一。
-    const scale = Math.min(2, PDF_PREVIEW_MAX_DIMENSION / Math.max(baseViewport.width, baseViewport.height));
+    // 解析度跟送審那份相同（見 PDF_PREVIEW_MAX_DIMENSION 的說明）。
+    // 不再用 Math.min(2, …) 封頂：A4 的 PDF 座標長邊約 842pt，scale 2 只有 1,684px，
+    // 會讓上面設定的上限形同虛設。
+    const scale = PDF_PREVIEW_MAX_DIMENSION / Math.max(baseViewport.width, baseViewport.height);
     const viewport = page.getViewport({ scale });
     const canvas = document.createElement("canvas");
     canvas.width = Math.ceil(viewport.width);
@@ -1823,17 +1828,20 @@ export function ListingHealthCheck() {
             className="flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-white/5 p-2 sm:p-4"
             onClick={(event) => event.stopPropagation()}
           >
-            {previewImageUrl ? (
+            {/* PDF 一律嵌原檔：放大檢視的目的是讀小字，瀏覽器原生檢視器不經 JPEG 壓縮、
+                可自由縮放，比再大的轉圖都清楚。轉出的 JPEG 只留給對照區的行內顯示。
+                圖片檔本身就是原檔，直接顯示即可。 */}
+            {isPdfPreview && previewUrl ? (
+              <iframe
+                src={`${previewUrl}#view=FitH`}
+                title="原始圖紙放大檢視（PDF 原檔）"
+                className="h-full w-full border-0 bg-white"
+              />
+            ) : previewImageUrl ? (
               <img
                 src={previewImageUrl}
                 alt="原始圖紙放大檢視"
                 className="max-h-full max-w-full object-contain shadow-2xl"
-              />
-            ) : isPdfPreview && previewUrl ? (
-              <iframe
-                src={previewUrl}
-                title="原始圖紙放大檢視"
-                className="h-full w-full border-0 bg-white"
               />
             ) : null}
           </div>
