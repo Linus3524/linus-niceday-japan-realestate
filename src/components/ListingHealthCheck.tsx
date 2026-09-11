@@ -87,6 +87,7 @@ import { SpecialSaleReport } from "./SpecialSaleReport";
 import { getSpecialSaleMarketComparison } from "../data/specialSaleMarket";
 import { RentalConditionSummary } from "./RentalConditionSummary";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { ListingContactCta } from "./ListingContactCta";
 
 /**
  * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -1375,7 +1376,16 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           title={title}
           generatedAt={new Date()}
           shareUrl={shareUrl}
+          // 圖片（logo、QR）用絕對網址：react-pdf 在瀏覽器裡是用 fetch 取圖，
+          // 給站根絕對路徑最不會受目前 hash 路由影響。
+          assetBase={window.location.origin}
           locationContext={locationContext}
+          commute={commute ? {
+            destination: commute.destinationInput || commute.destinationAddress,
+            totalMinutes: commute.totalMinutes,
+            transfers: commute.transfers,
+            summary: `出門到 ${commute.destinationStation ? `${commute.destinationStation}駅` : "目的地"}：步行 ${commute.originWalkMinutes} 分＋電車 ${commute.transitMinutes} 分＋步行 ${commute.destinationWalkMinutes} 分`,
+          } : null}
         />,
       ).toBlob();
       const url = URL.createObjectURL(blob);
@@ -2684,6 +2694,12 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                             const isOverpriced = askDiff > posSum + 15;
                             const isWellSupported = askDiff > 0 && askDiff <= posSum + 5;
                             const isDiscounted = askDiff < 0;
+                            const hasReno = c.priceFactors.some(
+                              f => (f.label === "翻新" || f.label.includes("翻新") || f.label.includes("改裝")) && f.ratePercent > 0
+                            );
+                            const factorsSumInsight = "insightPoints" in c && Array.isArray(c.insightPoints)
+                              ? c.insightPoints.find(p => p.id === "factors_sum")
+                              : undefined;
 
                             return (
                               <div className="mt-3 border-t border-[#DDE3DF] pt-3.5 space-y-2.5">
@@ -2752,7 +2768,13 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                                       <span className={`block text-xs font-bold mt-0.5 ${
                                         isWellSupported ? "text-[#007D5A]" : isOverpriced ? "text-[#B13818]" : "text-[#0284C7]"
                                       }`}>
-                                        {isWellSupported ? "✓ 開價有充分條件支撐" : isOverpriced ? "⚠ 超出條件支撐（超額溢價）" : isDiscounted ? "↓ 屋況折讓／保留翻新預算" : "開價落在合理範圍"}
+                                        {isWellSupported
+                                          ? "✓ 開價有充分條件支撐"
+                                          : isOverpriced
+                                            ? "⚠ 超出條件支撐（超額溢價）"
+                                            : isDiscounted
+                                              ? (hasReno ? "↓ 翻新讓利／具價格優勢" : "↓ 屋況折讓／保留翻新預算")
+                                              : "開價落在合理範圍"}
                                       </span>
                                     </div>
                                     <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
@@ -2761,7 +2783,9 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                                         : isOverpriced
                                           ? `即使計入各項優勢，開價仍高於客觀支撐約 ${(askDiff - posSum).toFixed(1)}%，建議保留議價空間。`
                                           : isDiscounted
-                                            ? `開價低於基準 ${Math.abs(askDiff)}%，主因未翻新，折讓金剛好供買方作為未來裝修預算。`
+                                            ? (hasReno
+                                                ? `開價低於基準 ${Math.abs(askDiff)}%，且已完成室內翻新（規格加成 +${posSum}%），具價格競爭力與讓利優勢。`
+                                                : `開價低於基準 ${Math.abs(askDiff)}%，主要反映未整體翻新之屋況折讓，留出預算空間供買方自行裝修。`)
                                             : "開價與條件加權後之行情落點相符。"}
                                     </span>
                                   </div>
@@ -4917,6 +4941,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <p className="mt-3 text-xs text-[#B13818]">{shareError || pdfError}</p>
             )}
           </div>
+          <ListingContactCta />
         </div>
         </ErrorBoundary>
       )}

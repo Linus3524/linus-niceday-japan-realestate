@@ -1435,7 +1435,11 @@ export function buildSalePriceVerdict(input: {
       }
     } else {
       factorsEvaluationText = `本案開價低於同區同屋齡基準 ${Math.abs(diffPercent)}%（本案條件加總淨值為 ${netFactorsSumPercent >= 0 ? "+" : ""}${netFactorsSumPercent}%），${
-        renoRate === 0 && ageYears && ageYears >= 30 ? "主要反映未整體翻新之屋況折讓，留出預算空間供買方自行裝修。" : "開價具備價格優勢。"
+        renoRate > 0
+          ? "且已包含室內翻新加成，開價具備讓利優勢與性價比。"
+          : ageYears && ageYears >= 30
+            ? "主要反映未整體翻新之屋況折讓，留出預算空間供買方自行裝修。"
+            : "開價具備價格優勢。"
       }`;
     }
 

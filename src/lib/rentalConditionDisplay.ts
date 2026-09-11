@@ -1,7 +1,100 @@
+import { parseAndExplainSpecialNotes } from "./specialNotesParser";
+
 export interface RentalConditionGroup {
   id: string;
   title: string;
   items: string[];
+}
+
+export interface RentalConditionSection {
+  title: string;
+  rows: Array<{ title: string; items: string[] }>;
+}
+
+const noteTopics = [
+  /寵物|ペット|小型犬|貓|猫/u,
+  /清潔|清掃|クリーニング/u,
+  /換鎖|鍵交換/u,
+  /保證|保証/u,
+  /保險|保険/u,
+  /24\s*小時|24時間|生活支援|緊急支援|サポート/u,
+  /停車|駐車/u,
+  /自行車|駐輪/u,
+  /違約|解約/u,
+] as const;
+
+function topicsOf(text: string) {
+  return noteTopics.flatMap((pattern, index) => pattern.test(text) ? [index] : []);
+}
+
+/**
+ * 「重要特約與法務事項」四大區塊的資料整理：租賃條件分組＋圖紙備考特約合併去重。
+ * 網站的 RentalConditionSummary 與 PDF 版型共用，兩邊看到的條款一定一致。
+ */
+export function buildRentalConditionSections({
+  rentalConditions,
+  optionalFacilities,
+  specialNotes,
+  shikibiki,
+}: {
+  rentalConditions?: string | null;
+  optionalFacilities?: string | null;
+  specialNotes?: string | null;
+  shikibiki?: string | null;
+}): RentalConditionSection[] {
+  const groups = rentalConditionGroups(rentalConditions, optionalFacilities);
+  const coveredTopics = new Set(topicsOf(`${rentalConditions || ""} ${optionalFacilities || ""}`));
+  const extraNotes = parseAndExplainSpecialNotes(specialNotes).filter((item) => {
+    const topics = topicsOf(`${item.title} ${item.explanation} ${item.rawJapanese || ""}`);
+    return topics.length === 0 || topics.some((topic) => !coveredTopics.has(topic));
+  });
+  if (!groups.length && !extraNotes.length) return [];
+
+  const getItems = (id: string, fallback: string) => groups.find((group) => group.id === id)?.items || [fallback];
+  const lease = getItems("lease", "圖紙未載明租期與續約條件，待核對正式契約。");
+  const moveIn = [...getItems("moveIn", "圖紙未載明入住日或優惠條件。"), ...(groups.find((group) => group.id === "pet")?.items || [])];
+  const guarantee = getItems("guarantee", "圖紙未載明保證公司方案與費用。");
+  const fees = getItems("fees", "圖紙未載明其他一次性或年度費用。");
+  const moveOut = getItems("moveOut", "圖紙未載明退租清潔費或房屋個別提醒。");
+  const optional = getItems("optional", "圖紙未載明停車或駐輪選配條件。");
+  const extraContract = extraNotes.filter((item) => ["合約特約", "入住條件"].includes(item.category)).map((item) => `${item.title}：${item.explanation}`);
+  const extraFees = extraNotes.filter((item) => item.category === "費用約定" || /支援|保險|保證/u.test(`${item.title}${item.explanation}`)).map((item) => `${item.title}：${item.explanation}`);
+  const usedExtra = new Set([...extraContract, ...extraFees]);
+  const extraOther = extraNotes.map((item) => `${item.title}：${item.explanation}`).filter((item) => !usedExtra.has(item));
+
+  return [
+    {
+      title: "合約與入住",
+      rows: [
+        { title: "租期與續約", items: lease },
+        { title: "入住與優惠", items: [...new Set(moveIn)] },
+        ...(extraContract.length ? [{ title: "其他入住與契約條件", items: extraContract }] : []),
+      ],
+    },
+    {
+      title: "費用與保證",
+      rows: [
+        { title: "保證與保險", items: guarantee },
+        { title: "附加費用與服務", items: [...fees, ...extraFees] },
+      ],
+    },
+    {
+      title: "退租與違約",
+      rows: [
+        {
+          title: "敷引約定",
+          items: [shikibiki
+            ? `圖紙載明 ${shikibiki}，退租時依約扣抵。`
+            : "圖紙未載明敷引；押金扣除承租人修繕責任後，餘額依契約返還。"],
+        },
+        { title: "退租與提前解約", items: moveOut },
+      ],
+    },
+    {
+      title: "附加條件與備考",
+      rows: [{ title: "停車、駐輪與其他條件", items: [...optional, ...extraOther] }],
+    },
+  ];
 }
 
 const groupOrder = [
