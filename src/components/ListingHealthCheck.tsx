@@ -89,6 +89,8 @@ import { RentalConditionSummary } from "./RentalConditionSummary";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { ListingContactCta } from "./ListingContactCta";
 import { trackAction } from "../lib/trackView";
+import { CrimeSafetyCard } from "./CrimeSafetyCard";
+import type { CrimeSafetyResult } from "../lib/crimeSafety";
 
 /**
  * 物件圖紙分析：上傳仲介提供的物件概要書／図面（單張圖紙或 PDF），
@@ -1175,6 +1177,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [showInitialCostDetails, setShowInitialCostDetails] = useState(true);
   const [showSaleCostsDetails, setShowSaleCostsDetails] = useState(true);
+  const [crimeData, setCrimeData] = useState<CrimeSafetyResult | null>(null);
+  const [crimeLoading, setCrimeLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 分享頁：掛載時讀取已存的分析結果。只讀一次，ID 不會在頁面存活期間改變。
@@ -1233,6 +1237,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setResult(null);
     setLocationContext(null);
     setCommute(null);
+    setCrimeData(null);
 
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
@@ -1319,6 +1324,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setResult(null);
     setLocationContext(null);
     setCommute(null);
+    setCrimeData(null);
     setError(null);
   };
 
@@ -1431,11 +1437,33 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
       const body = await response.json().catch(() => null);
       if (!response.ok) throw new Error(body?.error || "位置資料暫時無法取得。");
       if (!body?.found) throw new Error(body?.message || "目前無法定位此地址。");
-      setLocationContext(body.context as ListingLocationContext);
+      const ctx = body.context as ListingLocationContext;
+      setLocationContext(ctx);
+      void loadCrimeData(ctx.matchedAddress);
     } catch (err: any) {
       setLocationError(err?.message || "位置資料暫時無法取得。");
     } finally {
       setLocationLoading(false);
+    }
+  };
+
+  const loadCrimeData = async (matchedAddress: string) => {
+    if (!matchedAddress) return;
+    setCrimeLoading(true);
+    try {
+      const response = await fetch("/api/listing-crime", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address: matchedAddress }),
+      });
+      const body = await response.json().catch(() => null);
+      if (body?.found && body.crime) {
+        setCrimeData(body.crime as CrimeSafetyResult);
+      }
+    } catch {
+      // 治安資料查詢失敗不影響主流程，靜默處理
+    } finally {
+      setCrimeLoading(false);
     }
   };
 
@@ -1448,6 +1476,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     setLocationError(null);
     setCommute(null);
     setCommuteError(null);
+    setCrimeData(null);
 
     try {
       const { files: encoded, layoutText } = await encodeForUpload(file);
@@ -4800,6 +4829,19 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                     <ListingLocationMap context={locationContext} />
                   </ErrorBoundary>
                 </div>
+
+                {/* 周邊治安資料（東京都オープンデータ API） */}
+                {crimeLoading && (
+                  <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
+                    <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
+                    <p className="text-xs text-[#66736C]">正在查詢周邊治安資料…</p>
+                  </div>
+                )}
+                {crimeData && !crimeLoading && (
+                  <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
+                    <CrimeSafetyCard crime={crimeData} />
+                  </ErrorBoundary>
+                )}
 
                 {/* 資料來源與免責聲明：純繁體中文呈現，不混合日文字句 */}
                 <div className="border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">

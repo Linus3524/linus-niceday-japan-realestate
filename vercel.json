@@ -39,6 +39,10 @@
     {
       "source": "/api/listing-location",
       "destination": "/api/listing-location"
+    },
+    {
+      "source": "/api/listing-crime",
+      "destination": "/api/listing-crime"
     }
   ]
 }

@@ -17,6 +17,7 @@ import trackViewHandler from "./api/track-view";
 import analyzeListingHandler from "./api/analyze-listing";
 import listingLocationHandler from "./api/listing-location";
 import listingShareHandler from "./api/listing-share";
+import listingCrimeHandler from "./api/listing-crime";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -165,6 +166,11 @@ app.post("/api/analyze-listing", async (req, res) => {
 // 第二階段：圖紙地址定位、步行路線、周邊機能與使用者指定通勤目的地。
 app.post("/api/listing-location", async (req, res) => {
   await listingLocationHandler(req, res);
+});
+
+// 第三階段：物件周邊治安資料（東京都オープンデータ API）。
+app.post("/api/listing-crime", async (req, res) => {
+  await listingCrimeHandler(req, res);
 });
 
 // 圖紙分析結果的分享連結（建立與讀取）。
