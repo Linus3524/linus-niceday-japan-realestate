@@ -52,30 +52,30 @@ export function ListingContactCta() {
   };
 
   return (
-    <section className="border border-[#DDE3DF] bg-white p-6 sm:p-7 shadow-xs" aria-label="聯絡 Linus">
+    <section className="border border-[#DDE3DF] bg-white p-5 sm:p-6 shadow-xs" aria-label="聯絡 Linus">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-4 sm:gap-5">
           <img
             src="/logo.png"
             alt="Linus"
-            className="h-20 w-20 shrink-0 object-contain sm:h-[98px] sm:w-[98px]"
+            className="h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20"
           />
           <div className="min-w-0">
             <span className="inline-block border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#007D5A]">
               Talk to Linus
             </span>
             <h3 className="mt-1 text-base font-bold text-[#1A2A22] sm:text-lg">
-              看完分析有問題？直接找 Linus 聊聊
+              看完分析有疑問？直接找 Linus 聊聊
             </h3>
             <p className="mt-1 text-xs leading-relaxed text-[#526159] sm:text-sm">
-              想確認物件細節、安排看房，或需要日本租屋・買房的全程協助，用你最習慣的方式聯絡就好。中文溝通、日本現地服務。
+              想確認物件細節、安排實地看房，或需要日本買房與租屋的全程諮詢，用你最習慣的方式聯繫即可。全程中文溝通、日本現地專業服務。
             </p>
           </div>
         </div>
       </div>
 
       {/* 主要聯絡按鈕（LINE／WeChat） */}
-      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         <a
           href={`https://line.me/ti/p/~${linusContact.lineId}`}
           target="_blank"
@@ -132,8 +132,8 @@ export function ListingContactCta() {
         </div>
       )}
 
-      {/* 社群與其他管道（簡約膠囊標籤） */}
-      <div className="mt-4 flex flex-wrap items-center gap-2 pt-2 border-t border-dashed border-[#E2E8E4]">
+      {/* 社群與其他管道（簡約膠囊標籤，移除多餘分隔線） */}
+      <div className="mt-3.5 flex flex-wrap items-center gap-2">
         <span className="font-sans text-[11px] font-semibold text-[#879089]">其他管道：</span>
         <a
           href={linusContact.threads}
