@@ -413,7 +413,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                 <div>
                   <div className="text-[11px] font-medium text-[#66736C]">治安等級</div>
                   <div
-                    className="text-4xl font-black tracking-tight leading-none tabular-nums mt-1"
+                    className="h-9 flex items-baseline text-4xl font-black tracking-tight leading-none tabular-nums mt-1"
                     style={{ color: residentialStyle.text }}
                   >
                     {crime.residentialGrade}
@@ -421,8 +421,8 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                 </div>
                 <div>
                   <div className="text-[11px] font-medium text-[#66736C]">住家侵入全年</div>
-                  <div className="text-4xl font-black tracking-tight leading-none tabular-nums text-[#1A2A22] mt-1">
-                    {homeCount} <span className="text-base font-bold text-[#1A2A22]">件</span>
+                  <div className="h-9 flex items-baseline text-4xl font-black tracking-tight leading-none tabular-nums text-[#1A2A22] mt-1">
+                    {homeCount} <span className="text-base font-bold text-[#1A2A22] ml-1">件</span>
                   </div>
                 </div>
               </div>
@@ -476,7 +476,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
             </div>
           </div>
 
-          {/* 右卡：街區活動強度（圖一對齊版式） */}
+          {/* 右卡：街區活動強度（與左卡高度與網格完全對齊） */}
           <div
             className="flex flex-col justify-between border p-3.5 transition-colors"
             style={{
@@ -490,54 +490,62 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                   <Footprints className="h-4 w-4" style={{ color: activity.accent }} />
                   <span className="text-xs font-bold text-[#1A2A22]">街區活動強度</span>
                 </div>
-                <span className="text-[10px] font-medium text-[#8A9590]">非治安評級</span>
+                <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-bold text-[#66736C]">
+                  非治安評級
+                </span>
               </div>
 
-              <div className="pt-2.5 pb-1">
-                <div className="flex items-baseline gap-2">
-                  <span
-                    className="text-2xl font-black tracking-tight leading-none"
+              {/* 雙欄核心數據展示（高度與左卡完全相同） */}
+              <div className="grid grid-cols-2 gap-4 pt-3 pb-2">
+                <div>
+                  <div className="text-[11px] font-medium text-[#66736C]">活動等級</div>
+                  <div
+                    className="h-9 flex items-baseline text-xl sm:text-2xl font-black tracking-tight leading-none mt-1 truncate"
                     style={{ color: activity.accent }}
+                    title={activity.label}
                   >
                     {activity.label}
-                  </span>
-                  <span className="text-xs font-bold text-[#1A2A22]">
-                    街頭案件 {streetCount} 件／年
-                  </span>
+                  </div>
                 </div>
+                <div>
+                  <div className="text-[11px] font-medium text-[#66736C]">街頭案件全年</div>
+                  <div className="h-9 flex items-baseline text-4xl font-black tracking-tight leading-none tabular-nums text-[#1A2A22] mt-1">
+                    {streetCount} <span className="text-base font-bold text-[#1A2A22] ml-1">件</span>
+                  </div>
+                </div>
+              </div>
 
-                {/* 5 段式強度指示器 */}
-                <div className="flex gap-1 w-full mt-3">
-                  {([
-                    { lvl: 1, label: "安靜" },
-                    { lvl: 2, label: "較為寧靜" },
-                    { lvl: 3, label: "普通" },
-                    { lvl: 4, label: "稍微熱絡" },
-                    { lvl: 5, label: "熱絡繁華" },
-                  ] as const).map(({ lvl, label }) => {
-                    const isActive = lvl <= activity.level;
-                    const isCurrent = lvl === activity.level;
-                    return (
-                      <div key={lvl} className="flex-1 flex flex-col items-center gap-1">
-                        <div
-                          className="h-2 w-full"
-                          style={{
-                            backgroundColor: isActive ? activity.accent : `${activity.border}90`,
-                          }}
-                        />
-                        <span
-                          className="text-[9px] leading-tight text-center"
-                          style={{
-                            color: isCurrent ? activity.accent : "#8A9590",
-                            fontWeight: isCurrent ? 700 : 400,
-                          }}
-                        >
-                          {label}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+              {/* 5 段式強度指示器色塊線（與左卡高度完全一致） */}
+              <div className="flex gap-1 w-full mt-1 mb-1.5">
+                {([
+                  { lvl: 1, label: "安靜" },
+                  { lvl: 2, label: "較為寧靜" },
+                  { lvl: 3, label: "普通" },
+                  { lvl: 4, label: "稍微熱絡" },
+                  { lvl: 5, label: "熱絡繁華" },
+                ] as const).map(({ lvl, label }) => {
+                  const isActive = lvl <= activity.level;
+                  const isCurrent = lvl === activity.level;
+                  return (
+                    <div key={lvl} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className="h-2 w-full"
+                        style={{
+                          backgroundColor: isActive ? activity.accent : `${activity.border}90`,
+                        }}
+                      />
+                      <span
+                        className="text-[9px] leading-tight text-center"
+                        style={{
+                          color: isCurrent ? activity.accent : "#8A9590",
+                          fontWeight: isCurrent ? 700 : 400,
+                        }}
+                      >
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -588,7 +596,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
         {/* 2. 中層雙卡（參考圖一：對照全東京雙欄並排，年對年變化） */}
         {(crime.tokyoContext || crime.burglaryTrend || crime.streetTrend) && (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {/* 左卡：對照全東京（方案 A：全東京常態排位梯隊，置中版式） */}
+            {/* 左卡：對照全東京（方案 A + B 結合：梯隊位階＋精確 PR 與母體客觀分布） */}
             {crime.tokyoContext && (
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
                 <div>
@@ -598,64 +606,80 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                       <span>對照全東京 {crime.tokyoContext.chomeCount.toLocaleString()} 個町丁目</span>
                     </div>
                     <span className="border border-[#DDE3DF] bg-white px-1.5 py-0.5 text-[9px] font-medium text-[#66736C]">
-                      全東京橫向水準
+                      全東京橫向 PR 對照
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 divide-x divide-[#DDE3DF] py-3 text-center">
                     {/* 住家侵入 */}
                     <div className="px-2">
-                      <div className="text-[11px] font-medium text-[#66736C]">住家侵入水準</div>
-                      <div
-                        className="text-xl font-black tracking-tight mt-1"
-                        style={{
-                          color: homeCount === 0 ? "#007D5A" : homeCount <= 2 ? "#B76E00" : "#C81E1E",
-                        }}
-                      >
-                        {homeCount === 0 ? "全東京最優" : homeCount <= 2 ? "常態水準" : "稍多留意"}
+                      <div className="text-[11px] font-medium text-[#66736C]">住宅侵入防護</div>
+                      <div className="mt-1">
+                        <div
+                          className="text-xl font-black tracking-tight"
+                          style={{
+                            color: homeCount === 0 ? "#007D5A" : homeCount <= 2 ? "#B76E00" : "#C81E1E",
+                          }}
+                        >
+                          {homeCount === 0 ? "全東京最優梯隊" : homeCount <= 2 ? "僅零星個案" : "案件稍多留意"}
+                        </div>
+                        <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
+                          <span>安全 PR {crime.tokyoContext.residentialSaferThanPercent}</span>
+                          <span className="text-[9px] font-normal text-[#66736C]">
+                            {homeCount === 0 ? "（並列頂標）" : "（東京 95% 在 2 件內）"}
+                          </span>
+                        </div>
+                        <p className="text-[10px] leading-tight text-[#66736C]">
+                          {homeCount === 0
+                            ? "全東京 84% 區域同為 0 件，並列第 1 級"
+                            : homeCount <= 2
+                            ? `全年僅 ${homeCount} 件，未見集中趨勢`
+                            : "件數偏多，出入門禁宜加強留意"}
+                        </p>
                       </div>
-                      <p className="text-[10px] leading-tight text-[#66736C] mt-1">
-                        {homeCount === 0
-                          ? "並列第 1 級（84% 區域為 0 件）"
-                          : homeCount <= 2
-                          ? "東京 95% 區域在 2 件內"
-                          : "件數偏多，出入宜加強門禁"}
-                      </p>
                     </div>
 
                     {/* 全罪種 */}
                     <div className="px-2">
-                      <div className="text-[11px] font-medium text-[#66736C]">全罪種環境水準</div>
-                      <div
-                        className="text-xl font-black tracking-tight mt-1"
-                        style={{
-                          color:
-                            crime.totalCrimes <= 20
-                              ? "#007D5A"
-                              : crime.totalCrimes <= 60
-                              ? "#1E65B8"
-                              : "#B76E00",
-                        }}
-                      >
-                        {crime.totalCrimes <= 20
-                          ? "寧靜純住宅"
-                          : crime.totalCrimes <= 60
-                          ? "一般生活圈"
-                          : "熱絡商圈型"}
+                      <div className="text-[11px] font-medium text-[#66736C]">周邊街區型態</div>
+                      <div className="mt-1">
+                        <div
+                          className="text-xl font-black tracking-tight"
+                          style={{
+                            color:
+                              crime.totalCrimes <= 20
+                                ? "#007D5A"
+                                : crime.totalCrimes <= 60
+                                ? "#1E65B8"
+                                : "#B76E00",
+                          }}
+                        >
+                          {crime.totalCrimes <= 20
+                            ? "寧靜純住宅"
+                            : crime.totalCrimes <= 60
+                            ? "一般生活街區"
+                            : "熱鬧商圈型"}
+                        </div>
+                        <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
+                          <span>全罪種 PR {crime.tokyoContext.totalSaferThanPercent}</span>
+                          <span className="text-[9px] font-normal text-[#66736C]">
+                            （共 {crime.totalCrimes} 件）
+                          </span>
+                        </div>
+                        <p className="text-[10px] leading-tight text-[#66736C]">
+                          {crime.totalCrimes <= 20
+                            ? "全罪種總量極低，環境單純安全"
+                            : crime.totalCrimes <= 60
+                            ? "生活機能便利，案件量屬中段"
+                            : "商業活動密集，多屬自行車輕罪"}
+                        </p>
                       </div>
-                      <p className="text-[10px] leading-tight text-[#66736C] mt-1">
-                        {crime.totalCrimes <= 20
-                          ? "全罪種總量極低"
-                          : crime.totalCrimes <= 60
-                          ? "常見生活街區件數"
-                          : "多屬自行車輕罪"}
-                      </p>
                     </div>
                   </div>
                 </div>
 
                 <p className="text-[10px] leading-snug text-[#8A9590] pt-1.5 border-t border-[#DDE3DF]/60 text-center">
-                  說明：全東京 5,204 町丁目中 84% 全年無住家侵入；本卡提供客觀全東京橫向水準對照。
+                  註：PR 代表勝過全東京多少比例區域。因全東京 84% 區域全年無住家侵入，有些微件數即會使 PR 偏後，實際仍屬低散發。
                 </p>
               </div>
             )}
