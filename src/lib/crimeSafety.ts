@@ -167,16 +167,6 @@ export interface CrimeTrend {
   direction: "up" | "down" | "flat";
 }
 
-/** 今年至今累計（趨勢用；年初官網尚未發布時為 null）。 */
-export interface CrimeYtdSummary {
-  /** 例：「2026 年 1～7 月累計」 */
-  label: string;
-  throughMonth: number;
-  totalCrimes: number;
-  residentialCount: number;
-  streetCount: number;
-}
-
 /** 對照全東京所有町丁目的相對位置（僅單一町丁目命中時計算，合併多個町丁目時不可比）。 */
 export interface TokyoCrimeContext {
   /** 全東京町丁目數。 */
@@ -208,8 +198,6 @@ export interface CrimeSafetyResult {
   periodLabel: string;
   /** 評級所用的年份 */
   periodYear: number;
-  /** 今年至今累計（趨勢用） */
-  ytd: CrimeYtdSummary | null;
   /** 對照全東京的相對位置 */
   tokyoContext: TokyoCrimeContext | null;
   /** 犯罪總合計（評級期間） */
@@ -360,7 +348,6 @@ interface CrimeSnapshot {
   annual: CrimeSnapshotPeriod;
   /** 前一個完整年度，用於年對年趨勢。 */
   previous: CrimeSnapshotPeriod | null;
-  ytd: (CrimeSnapshotPeriod & { throughMonth: number }) | null;
 }
 
 const snapshot = tokyoCrimeSnapshot as unknown as CrimeSnapshot;
@@ -830,18 +817,6 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     { label: "其他刑法犯", count: merged.その他その他刑法犯, group: "other", icon: "📋" },
   ];
 
-  const ytdRows = snapshot.ytd ? findSameChome(snapshot.ytd, rows.map(r => r.市区町丁)) : [];
-  const ytdMerged = ytdRows.length === 0 ? null : ytdRows.length === 1 ? ytdRows[0] : mergeRows(ytdRows);
-  const ytd: CrimeYtdSummary | null = snapshot.ytd && ytdMerged
-    ? {
-        label: snapshot.ytd.label,
-        throughMonth: snapshot.ytd.throughMonth,
-        totalCrimes: ytdMerged.総合計,
-        residentialCount: ytdMerged.侵入窃盗計,
-        streetCount: ytdMerged.粗暴犯計,
-      }
-    : null;
-
   // 合併多個町丁目時件數是加總，跟單一町丁目的分布不可比，不給百分位。
   let tokyoContext: TokyoCrimeContext | null = null;
   if (rows.length === 1) {
@@ -867,7 +842,6 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     chocho,
     periodLabel: snapshot.annual.label,
     periodYear: snapshot.annual.year,
-    ytd,
     tokyoContext,
     totalCrimes: merged.総合計,
     burglaryRate,
