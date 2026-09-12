@@ -165,3 +165,33 @@ assert.equal(extractWardAndTown("東京都墨田区錦糸1丁目5-10"), "墨田�
 assert.equal(extractPrefecture("大阪市北区梅田１−１−１"), "大阪府");
 
 console.log("test-crime-safety: 全部通過");
+/* ④ 快照查詢：地址 → 町丁目、前綴合併、年度期間與全東京百分位。 */
+{
+  const { findSnapshotRows, snapshot, saferThanPercent } = __testing;
+  assert.ok(snapshot.annual.rows.length > 5000, "全年快照應涵蓋全東京五千多個町丁目");
+  assert.match(snapshot.annual.label, /全年$/, "評級期間必須是完整年度，不是月累計");
+
+  // 精確命中
+  const exact = findSnapshotRows(snapshot.annual, "荒川区西日暮里6丁目");
+  assert.equal(exact.length, 1);
+  assert.equal(exact[0].市区町丁, "荒川区西日暮里6丁目");
+
+  // 只給町名 → 撈整個町的各丁目；不能撈到別的町（「錦糸」不可含「錦糸町」以外的無關列）
+  const prefixed = findSnapshotRows(snapshot.annual, "墨田区錦糸");
+  assert.ok(prefixed.length >= 2);
+  assert.ok(prefixed.every(r => /^墨田区錦糸\d+丁目$/.test(r.市区町丁)));
+
+  // 町名本身含「番」：千代田区一番町 必須命中，不能被當番地切掉
+  assert.equal(extractWardAndTown("東京都千代田区一番町5"), "千代田区一番町");
+  assert.equal(findSnapshotRows(snapshot.annual, "千代田区一番町").length, 1);
+
+  // 中位名次法：0 件不會算成「勝過 0%」，最差值不會是 100%
+  assert.equal(saferThanPercent([0, 0, 0, 1], 0), 63);
+  assert.equal(saferThanPercent([0, 0, 0, 1], 1), 13);
+
+  const built = buildResult(exact);
+  assert.equal(built.periodYear, snapshot.annual.year);
+  assert.ok(built.tokyoContext && built.tokyoContext.chomeCount === snapshot.annual.rows.length);
+  assert.equal(buildResult(prefixed).tokyoContext, null, "合併多個町丁目時不可給百分位");
+}
+console.log("test-crime-safety: 快照查詢通過");

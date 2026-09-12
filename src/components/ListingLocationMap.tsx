@@ -600,7 +600,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             >
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <span
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-sm"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center text-sm"
                   style={{
                     backgroundColor: conf.bg,
                     color: conf.text,

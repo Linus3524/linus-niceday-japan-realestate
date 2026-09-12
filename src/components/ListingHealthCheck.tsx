@@ -4839,15 +4839,22 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   <ErrorBoundary fallbackTitle="地圖模組暫時無法載入">
                     <ListingLocationMap context={locationContext} />
                   </ErrorBoundary>
-                </div>
 
-                {/* 資料來源與免責聲明：純繁體中文呈現，不混合日文字句 */}
-                <div className="border-t border-[#DDE3DF] pt-3 text-[11px] leading-relaxed text-[#66736C]">
-                  資料來源：
-                  <a className="font-semibold underline hover:text-[#1A2A22]" href="https://maps.gsi.go.jp/" target="_blank" rel="noreferrer">國土地理院地址搜尋</a>、
-                  <a className="font-semibold underline hover:text-[#1A2A22]" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>、
-                  <a className="font-semibold underline hover:text-[#1A2A22]" href="https://www.reinfolib.mlit.go.jp/" target="_blank" rel="noreferrer">國土交通省 不動產資訊資料庫</a>。
-                  本服務使用日本國土交通省不動產資訊資料庫 API，但不保證所提供資訊之即時性、正確性與完整性；周邊設施資料亦可能存在缺漏，實際現況請以現場與官方公開資訊為準。
+                  {/* 資料來源與免責聲明：放在地圖卡片內最下方 */}
+                  <div className="mt-4 border-t border-[#DDE3DF] pt-3 flex items-start gap-2 text-[11px] leading-relaxed text-[#8A9590]">
+                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8A9590]" />
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div>
+                        <span className="font-semibold text-[#66736C]">資料來源：</span>
+                        <a className="underline hover:text-[#1A2A22]" href="https://maps.gsi.go.jp/" target="_blank" rel="noreferrer">國土地理院地址搜尋</a>、
+                        <a className="underline hover:text-[#1A2A22]" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>、
+                        <a className="underline hover:text-[#1A2A22]" href="https://www.reinfolib.mlit.go.jp/" target="_blank" rel="noreferrer">國土交通省 不動產資訊資料庫</a>。
+                      </div>
+                      <p className="text-[10px] leading-relaxed text-[#8A9590]">
+                        本服務使用日本國土交通省不動產資訊資料庫 API，但不保證所提供資訊之即時性、正確性與完整性；周邊設施資料亦可能存在缺漏，實際現況請以現場與官方公開資訊為準。
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

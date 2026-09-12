@@ -38,6 +38,7 @@
     "data:update:mlit-buy": "tsx scripts/update-mlit-buy-data.ts",
     "data:update:mlit-special-sale": "tsx scripts/update-mlit-special-sale-data.ts",
     "data:update:crime": "tsx scripts/update-crime-prefecture-data.ts",
+    "data:update:tokyo-crime": "tsx scripts/update-tokyo-crime-data.ts",
     "pdfjs:assets": "node scripts/copy-pdfjs-assets.mjs",
     "predev": "npm run pdfjs:assets",
     "test:rental-conditions": "tsx scripts/test-rental-conditions.ts",

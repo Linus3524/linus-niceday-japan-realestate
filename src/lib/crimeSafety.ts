@@ -3,9 +3,12 @@
  *
  * 資料精度依地區分兩層，因為日本並不存在全國統一的細粒度犯罪統計：
  *
- * ① 東京都 → 町丁目級・全罪種・月累計
- *    警視庁「区市町村の町丁別、罪種別及び手口別認知件数」
- *    https://service.api.metro.tokyo.lg.jp （CC BY 4.0，免金鑰）
+ * ① 東京都 → 町丁目級・全罪種
+ *    警視庁「区市町村の町丁別、罪種別及び手口別認知件数」官網 CSV（CC BY 4.0，免金鑰），
+ *    由 scripts/update-tokyo-crime-data.ts 抓成靜態快照：
+ *    上一個完整年（12 個月）做評級，今年至今累計顯示趨勢。
+ *    町丁目件數很小，半年以下的期間會因一兩件事件讓等級亂跳，全年才穩。
+ *    （東京都オープンデータ API 是 2024/02 之後就沒更新的快照、期間不明，已棄用。）
  *
  * ② 其他 46 道府県 → 都道府県級・年度
  *    総務省「社会生活統計指標」（e-Stat），建置期抓成靜態快照。
@@ -21,13 +24,11 @@ import {
   findCrimePrefecture,
   type CrimePrefectureRow,
 } from "../data/crimePrefectureSnapshot.js";
-
-const CRIME_API_URL =
-  "https://service.api.metro.tokyo.lg.jp/api/t000022d1700000021-4eb9de23250eaab070a45dad29e76372-0/json";
+import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json";
 
 /* ────────── 型別定義 ────────── */
 
-/** API 回傳的單筆町丁目犯罪紀錄（欄位名為日文） */
+/** 單筆町丁目犯罪紀錄（欄位名沿用警視庁 CSV 的日文表頭） */
 interface RawCrimeRow {
   row: number;
   市区町丁: string;
@@ -83,10 +84,40 @@ export interface CrimeBreakdownItem {
 
 export type SafetyGrade = "A+" | "A" | "B+" | "B" | "C" | "D";
 
+/** 今年至今累計（趨勢用；年初官網尚未發布時為 null）。 */
+export interface CrimeYtdSummary {
+  /** 例：「2026 年 1～7 月累計」 */
+  label: string;
+  throughMonth: number;
+  totalCrimes: number;
+  residentialCount: number;
+  streetCount: number;
+}
+
+/** 對照全東京所有町丁目的相對位置（僅單一町丁目命中時計算，合併多個町丁目時不可比）。 */
+export interface TokyoCrimeContext {
+  /** 全東京町丁目數。 */
+  chomeCount: number;
+  /** 住宅侵入件數低於全東京多少比例的町丁目（中位名次法，0～100）。 */
+  residentialSaferThanPercent: number;
+  /** 街區粗暴分數低於全東京多少比例的町丁目。 */
+  streetSaferThanPercent: number;
+  /** 全罪種總件數低於全東京多少比例的町丁目。 */
+  totalSaferThanPercent: number;
+}
+
 export interface CrimeSafetyResult {
-  /** 查到的町丁目名稱（API 原文） */
+  /** 查到的町丁目名稱（警視庁原文，丁目已轉半形） */
   chocho: string;
-  /** 犯罪總合計 */
+  /** 評級所用的統計期間，例：「令和7年（2025 年）全年」 */
+  periodLabel: string;
+  /** 評級所用的年份 */
+  periodYear: number;
+  /** 今年至今累計（趨勢用） */
+  ytd: CrimeYtdSummary | null;
+  /** 對照全東京的相對位置 */
+  tokyoContext: TokyoCrimeContext | null;
+  /** 犯罪總合計（評級期間） */
   totalCrimes: number;
   /** 住宅治安等級 */
   residentialGrade: SafetyGrade;
@@ -193,54 +224,104 @@ function extractWardAndTown(address: string): string | null {
   const m = noPrefix.match(/^([^区市]+[区市])(.+?\d+丁目)/);
   if (m) return m[1] + m[2];
   // 嘗試匹配：区/市 + 町名（不含丁目）
+  // 町名本身可能含「番」（千代田区一番町～六番町），不能把「番」當番地切掉；
+  // [^\d]+ 已經在第一個數字前停下，番地數字不會混進來。
   const m2 = noPrefix.match(/^([^区市]+[区市])([^\d]+)/);
-  if (m2) return m2[1] + m2[2].replace(/[番号號].*$/, "");
+  if (m2) return m2[1] + m2[2].replace(/(?:番地|番|号|號)$/, "");
   return null;
 }
 
-/* ────────── API 呼叫 ────────── */
+/* ────────── 快照查詢 ────────── */
 
-async function queryTokyoCrimeApi(searchTerm: string): Promise<RawCrimeRow[]> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-  try {
-    const res = await fetch(`${CRIME_API_URL}?limit=20`, {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        searchCondition: {
-          conditionRelationship: "and",
-          stringAndSearch: [
-            { column: "市区町丁", relationship: "contains", condition: searchTerm },
-          ],
-        },
-      }),
-      signal: controller.signal,
-    });
-    if (!res.ok) {
-      console.error(`Tokyo crime API error: HTTP ${res.status}`);
-      return [];
-    }
-    const data = await res.json();
-    return (data?.hits ?? []) as RawCrimeRow[];
-  } catch (err: any) {
-    if (err?.name === "AbortError") {
-      console.error("Tokyo crime API timeout");
-    } else {
-      console.error("Tokyo crime API error:", err?.message ?? err);
-    }
-    return [];
-  } finally {
-    clearTimeout(timeout);
+type SnapshotRow = [string, ...number[]];
+
+interface CrimeSnapshotPeriod {
+  year: number;
+  label: string;
+  rows: SnapshotRow[];
+}
+
+interface CrimeSnapshot {
+  generatedAt: string;
+  source: { name: string; url: string; license: string };
+  columns: string[];
+  annual: CrimeSnapshotPeriod;
+  ytd: (CrimeSnapshotPeriod & { throughMonth: number }) | null;
+}
+
+const snapshot = tokyoCrimeSnapshot as unknown as CrimeSnapshot;
+
+/** 快照用陣列存以省空間，這裡展開成有欄位名的物件；只在命中時做，不預先展開五千筆。 */
+function inflateRow(row: SnapshotRow, index: number): RawCrimeRow {
+  const obj: Record<string, number | string> = { row: index, 市区町丁: row[0] };
+  snapshot.columns.forEach((column, i) => { obj[column] = row[i + 1] ?? 0; });
+  return obj as unknown as RawCrimeRow;
+}
+
+/**
+ * 依「区＋町名（＋丁目）」找町丁目。先找完全一致，沒有再用前綴找
+ * （例如「墨田区錦糸」會撈到錦糸 1～4 丁目，由呼叫端合併）。
+ * 前綴比對要求下一個字不是同一個町名的延續（「西日暮里」不能撈到「西日暮里台」這種不存在的假設情境），
+ * 所以只接受後面直接接數字或結束。
+ */
+function findSnapshotRows(period: CrimeSnapshotPeriod, term: string): RawCrimeRow[] {
+  const exact: RawCrimeRow[] = [];
+  const prefixed: RawCrimeRow[] = [];
+  period.rows.forEach((row, index) => {
+    const name = row[0];
+    if (name === term) exact.push(inflateRow(row, index));
+    else if (name.startsWith(term) && /^\d/.test(name.slice(term.length))) prefixed.push(inflateRow(row, index));
+  });
+  return exact.length ? exact : prefixed;
+}
+
+/** 依名稱在另一期間找同一組町丁目（趨勢對照用）。 */
+function findSameChome(period: CrimeSnapshotPeriod, names: string[]): RawCrimeRow[] {
+  const wanted = new Set(names);
+  const found: RawCrimeRow[] = [];
+  period.rows.forEach((row, index) => { if (wanted.has(row[0])) found.push(inflateRow(row, index)); });
+  return found;
+}
+
+/** 中位名次法百分位：嚴格更差的比例 + 相同者的一半。件數為 0 時不會得到「勝過 0%」這種誤導值。 */
+function saferThanPercent(values: number[], value: number): number {
+  let worse = 0;
+  let same = 0;
+  for (const v of values) {
+    if (v > value) worse++;
+    else if (v === value) same++;
   }
+  return Math.round(((worse + same / 2) / values.length) * 100);
+}
+
+let tokyoDistribution: { residential: number[]; street: number[]; total: number[] } | null = null;
+
+/** 全東京町丁目的分布，只算一次。 */
+function getTokyoDistribution() {
+  if (tokyoDistribution) return tokyoDistribution;
+  const col = (name: string) => snapshot.columns.indexOf(name) + 1;
+  const iInv = col("侵入窃盗計");
+  const iViolent = col("粗暴犯計");
+  const iSnatch = col("非侵入窃盗ひったくり");
+  const iPick = col("非侵入窃盗すり");
+  const iFelony = col("凶悪犯計");
+  const iTotal = col("総合計");
+  const residential: number[] = [];
+  const street: number[] = [];
+  const total: number[] = [];
+  for (const row of snapshot.annual.rows) {
+    residential.push(row[iInv] as number);
+    street.push(streetScore(row[iViolent] as number, row[iSnatch] as number, row[iPick] as number, row[iFelony] as number));
+    total.push(row[iTotal] as number);
+  }
+  tokyoDistribution = { residential, street, total };
+  return tokyoDistribution;
 }
 
 /* ────────── 等級計算 ────────── */
 
 function residentialGrade(burglaryTotal: number): SafetyGrade {
+  // 令和 7 年全年全東京分布：0 件約 69%、1 件累計 88%、≤3 件 96%、≤6 件 97.5%。
   if (burglaryTotal === 0) return "A";
   if (burglaryTotal === 1) return "B+";
   if (burglaryTotal <= 3) return "B";
@@ -252,13 +333,20 @@ function residentialGrade(burglaryTotal: number): SafetyGrade {
  * 街區環境評分：粗暴犯為基礎，搶奪（對行人直接下手）加權 2 倍，
  * 凶惡犯（強盜・殺人・放火等）影響最大，加權 3 倍。
  */
+function streetScore(violentTotal: number, snatching: number, pickpocket: number, feloniousTotal = 0): number {
+  return violentTotal + snatching * 2 + pickpocket + feloniousTotal * 3;
+}
+
 function streetGrade(violentTotal: number, snatching: number, pickpocket: number, feloniousTotal = 0): SafetyGrade {
-  const score = violentTotal + snatching * 2 + pickpocket + feloniousTotal * 3;
+  // 門檻依令和 7 年全年、全東京 5,266 個町丁目的分布校準：
+  // 0 分約占 41%、≤1 約 63%、≤3 約 80%、≤6 約 91%、≤15 約 96%，
+  // 等級大致對應「前四成／前六成／前八成／前九成／後 4%」。
+  const score = streetScore(violentTotal, snatching, pickpocket, feloniousTotal);
   if (score === 0) return "A+";
-  if (score <= 2) return "A";
-  if (score <= 5) return "B+";
-  if (score <= 10) return "B";
-  if (score <= 20) return "C";
+  if (score <= 1) return "A";
+  if (score <= 3) return "B+";
+  if (score <= 6) return "B";
+  if (score <= 15) return "C";
   return "D";
 }
 
@@ -315,34 +403,20 @@ function buildSummary(row: RawCrimeRow): string {
 /* ────────── 主函式 ────────── */
 
 export async function getCrimeSafety(matchedAddress: string): Promise<CrimeSafetyResult | null> {
-  // 解析地址，提取查詢用的町丁目
   const chocho = extractWardAndTown(matchedAddress);
-  if (!chocho) {
-    // fallback 用 extractChocho
-    const candidates = extractChocho(matchedAddress);
-    if (candidates.length === 0) return null;
-    // 嘗試第一個候選
-    const rows = await queryTokyoCrimeApi(candidates[0]);
-    if (rows.length === 0 && candidates.length > 1) {
-      const rows2 = await queryTokyoCrimeApi(candidates[1]);
-      if (rows2.length === 0) return null;
-      return buildResult(rows2);
-    }
-    if (rows.length === 0) return null;
-    return buildResult(rows);
-  }
+  const candidates = chocho ? [chocho] : extractChocho(matchedAddress);
+  if (candidates.length === 0) return null;
 
-  const rows = await queryTokyoCrimeApi(chocho);
-  if (rows.length === 0) {
-    // fallback: 用区名 + 町名（不含丁目數字）做更寬的搜尋
-    const broader = chocho.replace(/\d+丁目$/, "");
-    if (broader !== chocho) {
-      const rows2 = await queryTokyoCrimeApi(broader);
-      if (rows2.length > 0) return buildResult(rows2);
-    }
-    return null;
+  // 先精確到丁目，查不到再退到「区＋町名」（不含丁目數字）合併整個町。
+  const terms = [...candidates];
+  const broader = candidates[0].replace(/\d+丁目$/, "");
+  if (broader !== candidates[0] && !terms.includes(broader)) terms.push(broader);
+
+  for (const term of terms) {
+    const rows = findSnapshotRows(snapshot.annual, term);
+    if (rows.length > 0) return buildResult(rows);
   }
-  return buildResult(rows);
+  return null;
 }
 
 function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
@@ -391,14 +465,45 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     { label: "其他刑法犯", count: merged.その他その他刑法犯, group: "other", icon: "📋" },
   ];
 
+  const ytdRows = snapshot.ytd ? findSameChome(snapshot.ytd, rows.map(r => r.市区町丁)) : [];
+  const ytdMerged = ytdRows.length === 0 ? null : ytdRows.length === 1 ? ytdRows[0] : mergeRows(ytdRows);
+  const ytd: CrimeYtdSummary | null = snapshot.ytd && ytdMerged
+    ? {
+        label: snapshot.ytd.label,
+        throughMonth: snapshot.ytd.throughMonth,
+        totalCrimes: ytdMerged.総合計,
+        residentialCount: ytdMerged.侵入窃盗計,
+        streetCount: ytdMerged.粗暴犯計,
+      }
+    : null;
+
+  // 合併多個町丁目時件數是加總，跟單一町丁目的分布不可比，不給百分位。
+  let tokyoContext: TokyoCrimeContext | null = null;
+  if (rows.length === 1) {
+    const dist = getTokyoDistribution();
+    tokyoContext = {
+      chomeCount: dist.total.length,
+      residentialSaferThanPercent: saferThanPercent(dist.residential, merged.侵入窃盗計),
+      streetSaferThanPercent: saferThanPercent(
+        dist.street,
+        streetScore(merged.粗暴犯計, merged.非侵入窃盗ひったくり, merged.非侵入窃盗すり, merged.凶悪犯計),
+      ),
+      totalSaferThanPercent: saferThanPercent(dist.total, merged.総合計),
+    };
+  }
+
   return {
     chocho,
+    periodLabel: snapshot.annual.label,
+    periodYear: snapshot.annual.year,
+    ytd,
+    tokyoContext,
     totalCrimes: merged.総合計,
     residentialGrade: rGrade,
     streetGrade: sGrade,
     breakdown,
     summary: buildSummary(merged),
-    credit: "資料來源：警視庁・東京都オープンデータ（CC BY 4.0）｜区市町村町丁別犯罪認知件數（月累計）",
+    credit: `資料來源：警視庁「区市町村の町丁別、罪種別及び手口別認知件数」（CC BY 4.0）｜${snapshot.annual.label}`,
   };
 }
 
@@ -521,7 +626,7 @@ export async function lookupCrimeSafety(matchedAddress: string): Promise<CrimeLo
 
 /**
  * 僅供測試使用的內部函式出口（scripts/test-crime-safety.ts）。
- * 讓評級與明細對帳邏輯可以離線回歸，不需打外部 API。
+ * 讓評級與明細對帳邏輯可以離線回歸。
  */
 export const __testing = {
   buildResult,
@@ -531,4 +636,7 @@ export const __testing = {
   prefectureGrade,
   buildPrefectureResult,
   normalizeAddress,
+  saferThanPercent,
+  findSnapshotRows,
+  snapshot,
 };
