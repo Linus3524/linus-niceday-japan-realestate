@@ -1,0 +1,90 @@
+api/analyze-listing.ts(618,12): error TS2790: The operand of a 'delete' operator must be optional.
+api/analyze-listing.ts(619,12): error TS2790: The operand of a 'delete' operator must be optional.
+src/components/listing/BuildingHealthSection.tsx(34,30): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(40,14): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(70,28): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(89,66): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(91,19): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(95,14): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(110,38): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(115,18): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(116,25): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(120,16): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(122,14): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(124,18): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(139,18): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(143,16): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(148,12): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(154,16): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(163,12): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(163,59): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/BuildingHealthSection.tsx(169,16): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(28,49): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(29,34): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(51,16): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(59,12): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(65,32): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(65,64): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(71,32): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(76,16): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(80,27): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(85,22): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(94,132): error TS2345: Argument of type 'AnalyzeListingResult | null' is not assignable to parameter of type 'AnalyzeListingResult'.
+  Type 'null' is not assignable to type 'AnalyzeListingResult'.
+src/components/listing/RentalMarketSection.tsx(117,28): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(119,57): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(129,30): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(131,59): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(142,26): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(150,57): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(150,128): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(223,23): error TS2322: Type 'AnalyzeListingResult | null' is not assignable to type 'AnalyzeListingResult'.
+  Type 'null' is not assignable to type 'AnalyzeListingResult'.
+src/components/listing/RentalMarketSection.tsx(262,32): error TS18047: 'result' is possibly 'null'.
+src/components/listing/RentalMarketSection.tsx(287,32): error TS18047: 'result' is possibly 'null'.
+src/components/listing/SaleAgeComparison.tsx(32,31): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/components/listing/SalePriceFactors.tsx(28,16): error TS18048: 'c.priceFactors' is possibly 'undefined'.
+src/components/listing/SalePriceFactors.tsx(44,22): error TS2488: Type '{ label: string; ratePercent: number; note: string; applied?: boolean | undefined; basis?: "estimate" | "data" | undefined; }[] | ({ label: string; ratePercent: number; note: string; applied: boolean; basis: "data"; } | { ...; })[] | undefined' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/listing/SalePriceFactors.tsx(114,33): error TS18048: 'c.priceFactors' is possibly 'undefined'.
+src/components/listing/SalePriceFactors.tsx(123,38): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(124,41): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(124,56): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(125,38): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(126,33): error TS18048: 'c.priceFactors' is possibly 'undefined'.
+src/components/listing/SalePriceFactors.tsx(161,28): error TS18048: 'c.priceFactors' is possibly 'undefined'.
+src/components/listing/SalePriceFactors.tsx(168,91): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(170,35): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(174,32): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(174,55): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(177,89): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(177,122): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(178,30): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(178,52): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(178,76): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(178,107): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/components/listing/SalePriceFactors.tsx(210,57): error TS18047: 'askDiff' is possibly 'null'.
+src/components/listing/SalePriceFactors.tsx(213,56): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/components/listing/SalePriceFactors.tsx(214,56): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/components/listing/SalePricePosition.tsx(65,22): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listing/SalePricePosition.tsx(67,100): error TS18047: 'saleAnalysis' is possibly 'null'.
+src/components/listingPdf/sale.tsx(12,45): error TS18047: 'm.diffPercent' is possibly 'null'.
+src/components/ThreadsCarousel.tsx(507,29): error TS2345: Argument of type 'HTMLElement | null' is not assignable to parameter of type 'Node'.
+  Type 'null' is not assignable to type 'Node'.
+src/hooks/useCalculatorController.tsx(187,5): error TS2322: Type '(commuteStation?: string) => string | null' is not assignable to type '(commuteStation?: string | undefined) => string'.
+  Type 'string | null' is not assignable to type 'string'.
+    Type 'null' is not assignable to type 'string'.
+src/lib/listing/rentalMarketPresentation.ts(154,17): error TS18047: 'totalMonthlyCost' is possibly 'null'.
+src/lib/listing/reportModel.ts(128,75): error TS2339: Property 'ageBandComparison' does not exist on type '{ region: string; district: string; layout: string; listingLayout?: string | undefined; medianPriceYen: number | null; medianPriceMan: number | null; medianSqmPriceYen?: number | null | undefined; ... 42 more ...; stationWalkFactor: { ...; }; } | null'.
+src/lib/listing/saleMarketPresentation.ts(130,27): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/lib/listingExtraction.ts(1055,53): error TS18048: 'ageYears' is possibly 'undefined'.
+src/lib/rentAnalysis.ts(433,46): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rentAnalysis.ts(680,29): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/specialSaleAnalysis.ts(79,41): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/lib/specialSaleAnalysis.ts(84,41): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.

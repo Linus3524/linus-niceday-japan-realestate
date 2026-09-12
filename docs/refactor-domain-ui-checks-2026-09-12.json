@@ -1,0 +1,171 @@
+{
+  "baseline": "Immediately before domain/UI extraction on 2026-09-12",
+  "runtimeDeclarations": {
+    "requirementVerdict": 33,
+    "ListingReportPdf": 54
+  },
+  "htmlScenes": [
+    {
+      "name": "buy-all-",
+      "sha256": "5d503a0b622c7458c03461021dfef4b6def021b9771faa3b955c0bfefdae364f"
+    },
+    {
+      "name": "buy-all-民泊",
+      "sha256": "8008e3e66405395b2806c8cded11804bd8ae763ba3c0052c9d2f952d6812b239"
+    },
+    {
+      "name": "buy-drawing-",
+      "sha256": "8ac8970a99e7e95c90454458d14ee1b8517f4f321b7a7c9f298aa1f7549beebc"
+    },
+    {
+      "name": "buy-drawing-民泊",
+      "sha256": "a1b585662107eb3cefa182572dd243458b32e75d57bfce55f3c18091fa2118e9"
+    },
+    {
+      "name": "buy-fee-",
+      "sha256": "632a1a9dd9785e77211b33a954a6d275dfd6545f04bc5ba32dad6fc6c7f816d0"
+    },
+    {
+      "name": "buy-fee-民泊",
+      "sha256": "c46e4b99075db88940323dfc066ff90f3b9681a1545738d4168c0ed946cd97f7"
+    },
+    {
+      "name": "buy-steps-",
+      "sha256": "915a364fa59d0c71edeefeb721e1fdb03ce2e7ce0ebf566de65534b1e4da266d"
+    },
+    {
+      "name": "buy-steps-民泊",
+      "sha256": "8581ac9eefa2e7f0fa23432190f4e84fe0d733f36f1667d5e2e208f356f4b57a"
+    },
+    {
+      "name": "buy-loans-",
+      "sha256": "852a49ed5cdeae1061ff479cc32283b0addc43a59d82210b635e6c41c2be0677"
+    },
+    {
+      "name": "buy-loans-民泊",
+      "sha256": "68849b1b2f778f695d01bfd3c6dc40a080e38a6d970068a6dd8ca63b869e334e"
+    },
+    {
+      "name": "buy-minpaku-",
+      "sha256": "ba937e2d5d8a733e3050cd759db1de51e31a79327ad52f092f23fe3f20bfc87d"
+    },
+    {
+      "name": "buy-minpaku-民泊",
+      "sha256": "b5fdd37cb32b03e121ff398d79e39b2ed3bb54aead02ab391a5edbf38f670ec2"
+    },
+    {
+      "name": "buy-qa-",
+      "sha256": "5ed65ea5d0d9be1a6a3945f16a448386cdf2828345ac9d4fdd6fffe152868b71"
+    },
+    {
+      "name": "buy-qa-民泊",
+      "sha256": "514603acf25227187dfb7ca6c3eebde2b2186677fccda4fb4a7779b6910a14b9"
+    },
+    {
+      "name": "rent-all-",
+      "sha256": "3746215eb7839d5056dc1f158474e5dd1a6b39ce1e2223c2f2d3f59813f56793"
+    },
+    {
+      "name": "rent-all-敷金",
+      "sha256": "ff5a59b2a263f6da7215c9233e67de7419cc51413fe46ea07ee18aa065a5ced7"
+    },
+    {
+      "name": "rent-initial-",
+      "sha256": "304a141c93e67555bdf47e8fa5d642ac5620f41ac5b59467fff1a1aa21e58157"
+    },
+    {
+      "name": "rent-initial-敷金",
+      "sha256": "ce853d8472dc7dbd106cd1b90ffa8e63d688e6e1612d475f5452a2bda9c9255b"
+    },
+    {
+      "name": "rent-terms-",
+      "sha256": "d41f535a9e0c6bb0cf0e934e1710f3fb3cc1859b1d4baa672b40e31fd0127bce"
+    },
+    {
+      "name": "rent-terms-敷金",
+      "sha256": "cd30889d4ded2f4ba1310853d89a1a4c4f9607b30914ded131159f1f9dfdc0d0"
+    },
+    {
+      "name": "rent-steps-",
+      "sha256": "fbbc053ecb11b6cf255117273af77a6316a6b1a17d2ef082ccf8e185771a9658"
+    },
+    {
+      "name": "rent-steps-敷金",
+      "sha256": "145910bc1de7b830ac1c00d21ebe6c351f3fa397fc31b91a8188d6edc7e0c37e"
+    },
+    {
+      "name": "rent-qa-",
+      "sha256": "0d4cc4f7c9885942bd18b85fcef1d9144d77b39e9e77979b5a92552d7a02942d"
+    },
+    {
+      "name": "rent-qa-敷金",
+      "sha256": "4d1374f86fa7b4e8a88e900755db10ddba466b298c1ee8f14bab48eebd193ae6"
+    },
+    {
+      "name": "calculator-ai",
+      "sha256": "085434ff02683f3f36f0a4e2df5c2f20309977372575a20d499ef6d4c03b70a6"
+    },
+    {
+      "name": "calculator-structured",
+      "sha256": "4f7ded9cd983900ea4d97ff331a9275ec5a62935664e8bf9db578d034d7d9382"
+    },
+    {
+      "name": "sale-sale-occupied",
+      "sha256": "027cc40e0611af2ae9e667826254ebd64c63a780f6b087188e3df3aa082558bc"
+    },
+    {
+      "name": "sale-detached",
+      "sha256": "6b30d0afbc27dec9cf2efb5ab38811eedac11814df1c823725170d16b3428e38"
+    }
+  ],
+  "pdfPages": [
+    {
+      "page": "current-missing-charges-1.png",
+      "sha256": "e3c423f1634c9bb814086e40343d56aa0b61112ada6422e7f3688304351314cb"
+    },
+    {
+      "page": "current-missing-charges-2.png",
+      "sha256": "71508cbd4dc2ae78d0d99b1d83e847533047dfa0076635fbf016a2a9480c4c8f"
+    },
+    {
+      "page": "current-sale-occupied-1.png",
+      "sha256": "da6159c07823f81e57da8fc9928d25df8d93742a7a5a19a02a3e542e876bedbb"
+    },
+    {
+      "page": "current-sale-occupied-2.png",
+      "sha256": "ef88590a32f3a5ec710237cae2b08d44eb47a4e37261986d28193d1df882c24f"
+    },
+    {
+      "page": "current-sale-occupied-3.png",
+      "sha256": "4145444825e3ca4c6b9c86602f1c56bd2c8d7178656f50d871b6ea94b378b005"
+    },
+    {
+      "page": "current-detached-1.png",
+      "sha256": "e84bb4afa7fdedf6f4bd5bbc678e9f478e72dfe83b350e6cb6bdfc2149293335"
+    },
+    {
+      "page": "current-detached-2.png",
+      "sha256": "7afb0ab725b6b918c026debb9e640b1c05f34e221da9e4a151077b3c71bb8a9f"
+    },
+    {
+      "page": "current-detached-3.png",
+      "sha256": "4145444825e3ca4c6b9c86602f1c56bd2c8d7178656f50d871b6ea94b378b005"
+    }
+  ],
+  "tests": {
+    "registeredScripts": 21,
+    "passed": 21,
+    "listingRaceCases": 36
+  },
+  "typeChecks": {
+    "configuredErrors": 0,
+    "fullStrictBefore": 163,
+    "fullStrictAfter": 78,
+    "enabled": [
+      "strictFunctionTypes",
+      "strictBindCallApply",
+      "noImplicitThis"
+    ]
+  },
+  "limitations": "Controlled fixtures. HTML output equality is not a production API availability check. PDF comparisons use local fonts and assets."
+}

@@ -1,33 +1,44 @@
-import { useState, useEffect, useRef, FormEvent } from "react";
 import {
-  ExternalLink, ArrowUp, MousePointerClick
+ArrowUp,
+ExternalLink,
+MousePointerClick
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import {
-  initialFees, specialTerms, processSteps, otherQA, linusContact, QAItem, InitialFeeItem
-} from "./data/rentGuideData";
-import {
-  buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseQAs, BuyHouseTermItem
-} from "./data/buyHouseData";
-import { getBudgetModifier, type BudgetModifierId } from "./data/rentGuideData";
-import type { BuyModifierId } from "./data/buyHouseData";
-import { districtStations } from "./data/housingMarket";
-import { hasTowerMansionSupport } from "./lib/calcRules";
-import { RentGuideTab } from "./components/RentGuideTab";
-import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
-import { buildHaystack, matchesAllTokens, tokenizeQuery } from "./lib/search";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
 import { ContactTab } from "./components/ContactTab";
-import { TermModal } from "./components/TermModal";
-import { ThreadsCarousel } from "./components/ThreadsCarousel";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
-import { UsageDashboard } from "./components/UsageDashboard";
+import { RentGuideTab } from "./components/RentGuideTab";
 import { SharedListingPage } from "./components/SharedListingPage";
-import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
+import { TermModal } from "./components/TermModal";
+import { ThreadsCarousel } from "./components/ThreadsCarousel";
+import { UsageDashboard } from "./components/UsageDashboard";
+import type { BuyModifierId } from "./data/buyHouseData";
+import {
+buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseQAs
+} from "./data/buyHouseData";
+import { districtStations } from "./data/housingMarket";
+import type { ProcessStep, SpecialTermItem } from "./data/rentGuideData";
+import {
+getBudgetModifier,
+InitialFeeItem,
+initialFees,
+linusContact,
+otherQA,
+processSteps,
+QAItem,
+specialTerms,
+type BudgetModifierId
+} from "./data/rentGuideData";
+import { getRentStaticMatches, hasMinimumKnowledgeSearchLength } from "./data/rentStaticSearchData";
+import { hasTowerMansionSupport } from "./lib/calcRules";
+import { buildHaystack, matchesAllTokens, tokenizeQuery } from "./lib/search";
 import { sanitizeRelatedThreads, type RelatedThread } from "./lib/threadSearch";
+import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
+import type { AppTab, TermDetail } from "./lib/uiTypes";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -58,7 +69,6 @@ const HERO_SETS = [
 ];
 const HERO_ROTATE_MS = 15000;
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
-type AppTab = "cards" | "buyHouse" | "calculator" | "chat" | "contact";
 const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer"];
 
 // 模組層級的 in-flight 請求快取，見下方 useEffect 內的說明：避免 StrictMode
@@ -343,7 +353,7 @@ export default function App() {
   // Knowledge Base (圖卡) States
   const [kbCategory, setKbCategory] = useState<"all" | "initial" | "terms" | "steps" | "qa">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFee, setSelectedFee] = useState<InitialFeeItem | BuyHouseTermItem | any | null>(null);
+  const [selectedFee, setSelectedFee] = useState<TermDetail | null>(null);
 
   // Buy House Tab States
   const [buyCategory, setBuyCategory] = useState<"all" | "drawing" | "fee" | "steps" | "loans" | "minpaku" | "qa">("all");
@@ -573,8 +583,8 @@ export default function App() {
 
     // Step 1: Filter by category
     let matchedInitialFees: InitialFeeItem[] = [];
-    let matchedSpecialTerms = [];
-    let matchedSteps = [];
+    let matchedSpecialTerms: SpecialTermItem[] = [];
+    let matchedSteps: ProcessStep[] = [];
     let matchedQA: QAItem[] = [];
 
     if (kbCategory === "all" || kbCategory === "initial") {

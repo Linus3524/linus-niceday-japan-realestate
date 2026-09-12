@@ -43,7 +43,10 @@
     "predev": "npm run pdfjs:assets",
     "test:rental-conditions": "tsx scripts/test-rental-conditions.ts",
     "test:listing-audit": "tsx scripts/test-listing-audit.ts",
-    "test:consumer-listing": "tsx scripts/test-consumer-listing.ts"
+    "test:consumer-listing": "tsx scripts/test-consumer-listing.ts",
+    "test:refactor-contracts": "tsx scripts/test-refactor-contracts.ts",
+    "test:listing-upload": "tsx scripts/test-listing-upload.ts",
+    "test:controller-flows": "tsx scripts/test-controller-flows.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

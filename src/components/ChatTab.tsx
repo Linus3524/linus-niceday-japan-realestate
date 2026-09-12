@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef } from "react";
+import { ExternalLink, Send } from "lucide-react";
 import { motion } from "motion/react";
-import { Send, ExternalLink } from "lucide-react";
-import { formatMessageText } from "../lib/format";
+import { useEffect, useMemo, useRef } from "react";
 import { linusContact } from "../data/rentGuideData";
+import { formatMessageText } from "../lib/format";
+import type { RelatedThread } from "../lib/threadSearch";
 import { trackAction } from "../lib/trackView";
+import type { SendMessage } from "../lib/uiTypes";
 import { PageIntroCard } from "./PageIntroCard";
 import { RelatedThreads } from "./RelatedThreads";
-import type { RelatedThread } from "../lib/threadSearch";
 
 interface ChatTabProps {
   chatMessages: Array<{ role: "user" | "model"; text: string; relatedThreads?: RelatedThread[] }>;
@@ -14,7 +15,7 @@ interface ChatTabProps {
   setChatInput: (v: string) => void;
   chatLoading: boolean;
   chatError: string | null;
-  handleSendMessage: (e?: any, customMsg?: string) => void;
+  handleSendMessage: SendMessage;
 }
 
 // 使用者問到第幾個問題之後，主動顯示一次加 LINE 的邀請

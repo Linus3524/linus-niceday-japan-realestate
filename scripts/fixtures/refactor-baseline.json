@@ -1,0 +1,2730 @@
+{
+  "commit": "78ea857",
+  "clock": "2026-09-12T00:00:00Z",
+  "listing": [
+    {
+      "name": "missing-charges",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡"
+        },
+        "parsed": {
+          "rent": 100000,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 25
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": {
+          "totalMin": 353500,
+          "totalMax": 406000,
+          "monthsMultipleMin": 3.4,
+          "monthsMultipleMax": 3.9,
+          "level": "standard",
+          "levelText": "必要費用未齊，暫不分級",
+          "items": [
+            {
+              "id": "deposit",
+              "name": "敷金（押金）",
+              "amount": 0,
+              "isUnknown": true,
+              "isFromFlyer": false,
+              "note": "押金未確認，未計入小計"
+            },
+            {
+              "id": "keyMoney",
+              "name": "禮金（礼金）",
+              "amount": 0,
+              "isUnknown": true,
+              "isFromFlyer": false,
+              "note": "禮金未確認，未計入小計"
+            },
+            {
+              "id": "advanceRent",
+              "name": "前家賃（次月完整租金＋管理費）",
+              "amount": 105000,
+              "isFromFlyer": true,
+              "note": "簽約時預先繳交入住次月之全月租金與共益費"
+            },
+            {
+              "id": "proratedRent",
+              "name": "起租月日割租金（按日計租預估）",
+              "amount": 52500,
+              "isFromFlyer": false,
+              "note": "以月中 15 天起租試算；若起租日靠近月底（例如 25 號後）可降至更低"
+            },
+            {
+              "id": "guaranteeFee",
+              "name": "保證會社初回保證料",
+              "amount": 52500,
+              "isFromFlyer": false,
+              "note": "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%"
+            },
+            {
+              "id": "brokerageFee",
+              "name": "仲介手續費（仲介手数料）",
+              "amount": 110000,
+              "isFromFlyer": false,
+              "note": "依日本租賃仲介費法定上限，以 1 個月租金加消費稅計。本試算先按此上限預留，實際是否收取及金額以申請管道、媒介契約與簽約前說明為準。"
+            },
+            {
+              "id": "insuranceFee",
+              "name": "火災保險／家財保險（期間待核對）",
+              "amount": 20000,
+              "isFromFlyer": false,
+              "note": "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）"
+            },
+            {
+              "id": "lockReplacementFee",
+              "name": "鑰匙更換費（鍵交換代）",
+              "amount": 22000,
+              "isFromFlyer": false,
+              "note": "交屋前換新鎖芯費用（一般鎖約 1.6 萬～2.2 萬円，電子鎖約 3.3 萬円）"
+            },
+            {
+              "id": "cleaningFee",
+              "name": "退去清掃費／室內清潔費",
+              "amount": 44000,
+              "isFromFlyer": false,
+              "note": "金額與收費時點未載，暫列44,000円預備金；不是已確認的簽約請款"
+            }
+          ],
+          "tips": [
+            "【費用待確認】押金、禮金未載明，目前只列已知及暫估小計；未載明項目不代表免收。",
+            "【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。",
+            "【起租日影響首期】首期預收「起租月日割租金＋次月完整租金與管理費」。起租日通常在審查通過後 10～20 天內，若落在下旬，日割天數少、首筆金額較低。",
+            "【海外匯款】初期費用多需由日本國內銀行匯款。海外電匯請預留約 4,000 円日本端手續費與匯差。"
+          ]
+        },
+        "saleAnalysis": null
+      }
+    },
+    {
+      "name": "explicit-zero-beats-parsed",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "0円",
+          "deposit": "無",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡",
+          "lockReplacementFee": "0円"
+        },
+        "parsed": {
+          "rent": 100000,
+          "managementFee": 5000,
+          "keyMoney": 100000,
+          "deposit": 100000,
+          "roomType": "k1",
+          "area": 25
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": {
+          "totalMin": 331500,
+          "totalMax": 384000,
+          "monthsMultipleMin": 3.2,
+          "monthsMultipleMax": 3.7,
+          "level": "low",
+          "levelText": "低於市場常態（約 3 ～ 4 倍）",
+          "items": [
+            {
+              "id": "deposit",
+              "name": "敷金（押金）",
+              "amount": 0,
+              "isUnknown": false,
+              "isFromFlyer": true,
+              "note": "免押金（需留意退租時之原狀恢復或預收清掃費條款）"
+            },
+            {
+              "id": "keyMoney",
+              "name": "禮金（礼金）",
+              "amount": 0,
+              "isUnknown": false,
+              "isFromFlyer": true,
+              "note": "免禮金（無須額外贈與房東謝禮，初期負擔大幅減輕）"
+            },
+            {
+              "id": "advanceRent",
+              "name": "前家賃（次月完整租金＋管理費）",
+              "amount": 105000,
+              "isFromFlyer": true,
+              "note": "簽約時預先繳交入住次月之全月租金與共益費"
+            },
+            {
+              "id": "proratedRent",
+              "name": "起租月日割租金（按日計租預估）",
+              "amount": 52500,
+              "isFromFlyer": false,
+              "note": "以月中 15 天起租試算；若起租日靠近月底（例如 25 號後）可降至更低"
+            },
+            {
+              "id": "guaranteeFee",
+              "name": "保證會社初回保證料",
+              "amount": 52500,
+              "isFromFlyer": false,
+              "note": "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%"
+            },
+            {
+              "id": "brokerageFee",
+              "name": "仲介手續費（仲介手数料）",
+              "amount": 110000,
+              "isFromFlyer": false,
+              "note": "依日本租賃仲介費法定上限，以 1 個月租金加消費稅計。本試算先按此上限預留，實際是否收取及金額以申請管道、媒介契約與簽約前說明為準。"
+            },
+            {
+              "id": "insuranceFee",
+              "name": "火災保險／家財保險（期間待核對）",
+              "amount": 20000,
+              "isFromFlyer": false,
+              "note": "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）"
+            },
+            {
+              "id": "lockReplacementFee",
+              "name": "鑰匙更換費（鍵交換代）",
+              "amount": 0,
+              "isFromFlyer": true,
+              "note": "免換鎖費用（圖紙標示：0円）"
+            },
+            {
+              "id": "cleaningFee",
+              "name": "退去清掃費／室內清潔費",
+              "amount": 44000,
+              "isFromFlyer": false,
+              "note": "金額與收費時點未載，暫列44,000円預備金；不是已確認的簽約請款"
+            }
+          ],
+          "tips": [
+            "【初期費用划算】合計約 3.7 個月租金，比市場常見的 4.5～5.0 個月省下不少，入住門檻明顯較低。",
+            "【免禮金免押金】初期省約 2 個月租金。需確認退租時的清掃費與原狀恢復特約。",
+            "【免換鎖費】圖紙載明鍵交換代 0 円，省約 2～4 萬円。",
+            "【起租日影響首期】首期預收「起租月日割租金＋次月完整租金與管理費」。起租日通常在審查通過後 10～20 天內，若落在下旬，日割天數少、首筆金額較低。",
+            "【海外匯款】初期費用多需由日本國內銀行匯款。海外電匯請預留約 4,000 円日本端手續費與匯差。"
+          ]
+        },
+        "saleAnalysis": null
+      }
+    },
+    {
+      "name": "custom-guarantee-cleaning",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "2ヶ月",
+          "deposit": "1ヶ月",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡",
+          "guaranteeFee": "月額総賃料の30%",
+          "cleaningFee": "４４，０００円",
+          "supportFee": "16,500円",
+          "shikibiki": "1ヶ月",
+          "freeRent": "1ヶ月",
+          "specialNotes": "インターネット無料"
+        },
+        "parsed": {
+          "rent": 100000,
+          "managementFee": 5000,
+          "keyMoney": 200000,
+          "deposit": 100000,
+          "roomType": "k1",
+          "area": 25
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": {
+          "totalMin": 649000,
+          "totalMax": 701500,
+          "monthsMultipleMin": 6.2,
+          "monthsMultipleMax": 6.7,
+          "level": "high",
+          "levelText": "高於市場常態（5.5 倍以上）",
+          "items": [
+            {
+              "id": "deposit",
+              "name": "敷金（押金）",
+              "amount": 100000,
+              "isUnknown": false,
+              "isFromFlyer": true,
+              "note": "擔保性質費用（ 含「1 個月（退租固定扣抵）」扣除約定，退租時不退還）"
+            },
+            {
+              "id": "keyMoney",
+              "name": "禮金（礼金）",
+              "amount": 200000,
+              "isUnknown": false,
+              "isFromFlyer": true,
+              "note": "日本傳統贈與房東之謝禮，退租時不予退還"
+            },
+            {
+              "id": "advanceRent",
+              "name": "前家賃（次月完整租金＋管理費）",
+              "amount": 105000,
+              "isFromFlyer": true,
+              "note": "簽約時預先繳交入住次月之全月租金與共益費"
+            },
+            {
+              "id": "proratedRent",
+              "name": "起租月日割租金（按日計租預估）",
+              "amount": 52500,
+              "isFromFlyer": false,
+              "note": "以月中 15 天起租試算；若起租日靠近月底（例如 25 號後）可降至更低"
+            },
+            {
+              "id": "guaranteeFee",
+              "name": "保證會社初回保證料",
+              "amount": 31500,
+              "isFromFlyer": true,
+              "note": "圖紙載明：月額総賃料の30%（依月總租金 ¥105,000 計約 ¥31,500）"
+            },
+            {
+              "id": "brokerageFee",
+              "name": "仲介手續費（仲介手数料）",
+              "amount": 110000,
+              "isFromFlyer": false,
+              "note": "依日本租賃仲介費法定上限，以 1 個月租金加消費稅計。本試算先按此上限預留，實際是否收取及金額以申請管道、媒介契約與簽約前說明為準。"
+            },
+            {
+              "id": "insuranceFee",
+              "name": "火災保險／家財保險（期間待核對）",
+              "amount": 20000,
+              "isFromFlyer": false,
+              "note": "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）"
+            },
+            {
+              "id": "lockReplacementFee",
+              "name": "鑰匙更換費（鍵交換代）",
+              "amount": 22000,
+              "isFromFlyer": false,
+              "note": "交屋前換新鎖芯費用（一般鎖約 1.6 萬～2.2 萬円，電子鎖約 3.3 萬円）"
+            },
+            {
+              "id": "cleaningFee",
+              "name": "退去清掃費／室內清潔費",
+              "amount": 44000,
+              "isFromFlyer": true,
+              "note": "圖紙標示：４４，０００円"
+            },
+            {
+              "id": "supportFee",
+              "name": "入居者サポート／24小時生活支援",
+              "amount": 16500,
+              "isFromFlyer": true,
+              "note": "圖紙標示：16,500円（24 小時生活急修與支援服務）"
+            }
+          ],
+          "tips": [
+            "【免租期】圖紙載明「1ヶ月」，首月可減免租金，約省 ¥100,000。",
+            "【敷引／償却】圖紙載明「1 個月（退租固定扣抵）」，退租時不予退還，初期預算建議直接列為固定支出。",
+            "【禮金偏高】禮金 2 個月，常見於熱門地段，初期成本較高。",
+            "【附免費網路】免自行申辦，年省約 5～6 萬円。",
+            "【起租日影響首期】首期預收「起租月日割租金＋次月完整租金與管理費」。起租日通常在審查通過後 10～20 天內，若落在下旬，日割天數少、首筆金額較低。",
+            "【海外匯款】初期費用多需由日本國內銀行匯款。海外電匯請預留約 4,000 円日本端手續費與匯差。"
+          ]
+        },
+        "saleAnalysis": null
+      }
+    },
+    {
+      "name": "zero-rent",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡"
+        },
+        "parsed": {
+          "rent": 0,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 25
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": null
+      }
+    },
+    {
+      "name": "unknown-rent",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": null,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 25
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": null
+      }
+    },
+    {
+      "name": "sale-occupied",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "40.04㎡",
+          "dealType": "sale",
+          "propertyType": "区分マンション",
+          "salePrice": "6,380万円",
+          "currentRent": "18万円",
+          "occupancyStatus": "賃貸中",
+          "totalUnits": "22戸",
+          "repairReserve": "15,220円",
+          "taxDetails": "固定資産税・都市計画税 年額120,000円"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 40.04,
+          "salePrice": 63800000,
+          "repairReserve": 15220
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": {
+          "salePriceYen": 63800000,
+          "salePriceMan": 6380,
+          "areaSqm": 40.04,
+          "tsuboAndSqm": {
+            "tsubo": 12.11,
+            "tsuboPriceYen": 5268373,
+            "tsuboPriceMan": 526.8,
+            "sqmPriceYen": 1593407,
+            "sqmPriceMan": 159.3
+          },
+          "monthlyHoldingCosts": {
+            "managementFee": 5000,
+            "repairReserve": 15220,
+            "repairFund": 0,
+            "otherMonthlyFees": 0,
+            "totalMonthlyHoldingCost": 20220,
+            "items": [
+              {
+                "name": "管理費",
+                "amount": 5000,
+                "note": "大樓日常維護與共用部費用"
+              },
+              {
+                "name": "修繕積立金",
+                "amount": 15220,
+                "note": "管委會大樓長期修繕儲備基金"
+              }
+            ]
+          },
+          "buildingHealth": {
+            "totalUnits": 22,
+            "ageYears": 20,
+            "reservePerSqm": 380,
+            "reserveHealthLevel": "heavy",
+            "reserveHealthText": "積立金水準偏高",
+            "reserveHealthNote": "每平米月提撥達 ¥380/㎡，高於指針基準。管委會提撥充裕、財務體質穩健，但每月固定持有支出較顯著，需納入長期現金流考量。",
+            "guidelineRange": "200 〜 350 円/㎡/月",
+            "reserveRatio": 75,
+            "feeRatioNote": "管理與修繕費用配置：修繕積立金佔月維護費約 75%，大樓著重長期資本儲備，公共維護提撥充足。",
+            "scaleRiskLevel": "medium",
+            "scaleRiskText": "中小規模社區（20-49戶）",
+            "scaleRiskNote": "總戶數約 22 戶，規模適中，自住率高時共識較易凝聚；建議確認社區是否有正式長期修繕計劃書及電梯設備更新排程。",
+            "specialStrengths": [
+              "符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）"
+            ],
+            "specialCautions": []
+          },
+          "mlitComparison": null,
+          "occupancyAssessment": {
+            "status": "tenanted_investment",
+            "statusText": "賃貸中",
+            "investmentYield": {
+              "monthlyRentYen": 180000,
+              "annualIncomeYen": 2160000,
+              "grossYield": 3.4,
+              "netYieldEstimated": 2.6,
+              "breakdown": {
+                "monthlyRentYen": 180000,
+                "annualIncomeYen": 2160000,
+                "grossYield": 3.4,
+                "monthlyHoldingCostsYen": 20220,
+                "annualHoldingCostsYen": 242640,
+                "pmFeeRatePercent": 5,
+                "annualPmFeeYen": 108000,
+                "monthlyPmFeeYen": 9000,
+                "annualEstimatedPropertyTaxYen": 120000,
+                "monthlyEstimatedPropertyTaxYen": 10000,
+                "propertyTaxNote": "依圖紙記載之固定資產稅與都市計畫稅合計",
+                "annualNetOperatingIncomeYen": 1689360,
+                "monthlyNetOperatingIncomeYen": 140780,
+                "netYieldPercent": 2.6,
+                "items": [
+                  {
+                    "name": "年間租金毛收入",
+                    "amountYen": 180000,
+                    "annualAmountYen": 2160000,
+                    "type": "income",
+                    "note": "現況月租金 × 12 個月"
+                  },
+                  {
+                    "name": "大樓管理費與修繕積立金",
+                    "amountYen": -20220,
+                    "annualAmountYen": -242640,
+                    "type": "deduction",
+                    "note": "大樓管委會常態維持與儲備費用"
+                  },
+                  {
+                    "name": "租賃代管委託費（集金代行）",
+                    "amountYen": -9000,
+                    "annualAmountYen": -108000,
+                    "type": "deduction",
+                    "note": "日本租賃管理公司常規費率約 5%（含招租、催繳與修繕窗口）"
+                  },
+                  {
+                    "name": "固都稅（概算）",
+                    "amountYen": -10000,
+                    "annualAmountYen": -120000,
+                    "type": "deduction",
+                    "note": "依圖紙記載之固定資產稅與都市計畫稅合計"
+                  },
+                  {
+                    "name": "預估年實質淨到手收入（NOI）",
+                    "amountYen": 140780,
+                    "annualAmountYen": 1689360,
+                    "type": "subtotal",
+                    "note": "扣除各項常態營運維持成本後之實質營業淨收益"
+                  }
+                ]
+              }
+            },
+            "mortgageTaxEligible": false,
+            "mortgageTaxNote": "專有面積約 40.04㎡（壁芯）。住宅貸款減稅嚴格要求「登記簿謄本內法面積 ≥ 40.00㎡」；因圖紙標示多為壁芯面積（比謄本內法約大 5%～8%），壁芯僅約 40～42㎡ 者，登記謄本內法實測極高機率縮減至約 37～38㎡，通常無法適用住宅貸款減稅。若有自住節稅規劃，請務必先調閱謄本確認。"
+          },
+          "initialCosts": {
+            "total": 3136553,
+            "percentageOfPrice": 4.9,
+            "items": [
+              {
+                "id": "brokerage",
+                "name": "仲介手續費（法定上限含稅）",
+                "amount": 2171400,
+                "note": "（總價 × 3% + 6萬円）× 1.1 消費稅"
+              },
+              {
+                "id": "registration",
+                "name": "登記免許稅與司法書士報酬",
+                "amount": 638000,
+                "note": "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+              },
+              {
+                "id": "stamp",
+                "name": "不動產買賣契約書印紙代",
+                "amount": 30000,
+                "note": "日本國稅廳印花稅階梯級距"
+              },
+              {
+                "id": "insurance",
+                "name": "火災保險・地震保險（預估）",
+                "amount": 200000,
+                "note": "依建物構造、專有面積、保障內容與投保期間調整"
+              },
+              {
+                "id": "propertyTaxProration",
+                "name": "固都稅日割清算",
+                "amount": 36493,
+                "note": "預估全年固都稅 120,000 円 × 暫以分析日至年底約 111/365 日估算（實際依簽約交屋日結算）"
+              },
+              {
+                "id": "acquisitionTax",
+                "name": "不動產取得稅",
+                "amount": 0,
+                "note": "租賃中／帶租約物件不符合買方自住要件，未套用 1,200 萬円建物評價額扣除"
+              },
+              {
+                "id": "managementPrepayment",
+                "name": "管理費與修繕積立金預繳",
+                "amount": 60660,
+                "note": "（管理費 5,000 円 + 修繕積立金 15,220 円）× 3 個月"
+              }
+            ],
+            "settings": {
+              "handoverDate": "2026-09-12",
+              "remainingDays": 111,
+              "daysInYear": 365,
+              "prepaidMonths": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "sale-zero-assessments",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "1996年6月",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "54.47㎡",
+          "dealType": "sale",
+          "propertyType": "区分マンション",
+          "salePrice": "7,298万円",
+          "buildingAssessedValue": 0,
+          "realEstateAcquisitionTax": 0,
+          "registrationFee": 0,
+          "fixedAssetTax": 108900,
+          "cityPlanningTax": 0,
+          "totalUnits": "19戸",
+          "repairReserve": "14,650円"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 54.47,
+          "salePrice": 72980000
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": {
+          "salePriceYen": 72980000,
+          "salePriceMan": 7298,
+          "areaSqm": 54.47,
+          "tsuboAndSqm": {
+            "tsubo": 16.48,
+            "tsuboPriceYen": 4428398,
+            "tsuboPriceMan": 442.8,
+            "sqmPriceYen": 1339820,
+            "sqmPriceMan": 134
+          },
+          "monthlyHoldingCosts": {
+            "managementFee": 5000,
+            "repairReserve": 14650,
+            "repairFund": 0,
+            "otherMonthlyFees": 0,
+            "totalMonthlyHoldingCost": 19650,
+            "items": [
+              {
+                "name": "管理費",
+                "amount": 5000,
+                "note": "大樓日常維護與共用部費用"
+              },
+              {
+                "name": "修繕積立金",
+                "amount": 14650,
+                "note": "管委會大樓長期修繕儲備基金"
+              }
+            ]
+          },
+          "buildingHealth": {
+            "totalUnits": 19,
+            "ageYears": 30,
+            "reservePerSqm": 269,
+            "reserveHealthLevel": "healthy",
+            "reserveHealthText": "積立金水準適中",
+            "reserveHealthNote": "每平米月提撥約 ¥269/㎡，符合日本國土交通省長期修繕計畫指針建議水準（約 200 〜 350 円/㎡/月），大樓儲備提撥平準。",
+            "guidelineRange": "200 〜 350 円/㎡/月",
+            "reserveRatio": 75,
+            "feeRatioNote": "管理與修繕費用配置：修繕積立金佔月維護費約 75%，大樓著重長期資本儲備，公共維護提撥充足。",
+            "scaleRiskLevel": "high_risk",
+            "scaleRiskText": "極小規模社區（<20戶）",
+            "scaleRiskNote": "總戶數僅 19 戶，戶數較少，每戶分攤電梯保養、外牆清洗與屋頂防水等固定公共開銷相對顯著；管理形式多為巡回或自主管理，需留意管委會運作與修繕儲備。",
+            "specialStrengths": [
+              "符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）"
+            ],
+            "specialCautions": [
+              "社區總戶數僅 19 戶（少於 20 戶之小規模社區）：每戶分攤的外牆拉皮與電梯維修等重大費用沉重，易面臨月修繕金大幅調漲或大修資金缺口。"
+            ]
+          },
+          "mlitComparison": null,
+          "occupancyAssessment": {
+            "status": "unknown",
+            "statusText": "一般買賣物件",
+            "mortgageTaxEligible": true,
+            "mortgageTaxNote": "專有面積約 54.47㎡（壁芯達標 50㎡）。若登記簿謄本內法面積亦維持在 50㎡ 以上，符合日本「住宅貸款減稅（住宅ローン減税）」所得稅扣除之一般主要門檻。"
+          },
+          "initialCosts": {
+            "total": 3526207,
+            "percentageOfPrice": 4.8,
+            "items": [
+              {
+                "id": "brokerage",
+                "name": "仲介手續費（法定上限含稅）",
+                "amount": 2474340,
+                "note": "（總價 × 3% + 6萬円）× 1.1 消費稅"
+              },
+              {
+                "id": "registration",
+                "name": "登記免許稅與司法書士報酬",
+                "amount": 729800,
+                "note": "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+              },
+              {
+                "id": "stamp",
+                "name": "不動產買賣契約書印紙代",
+                "amount": 30000,
+                "note": "日本國稅廳印花稅階梯級距"
+              },
+              {
+                "id": "insurance",
+                "name": "火災保險・地震保險（預估）",
+                "amount": 200000,
+                "note": "依建物構造、專有面積、保障內容與投保期間調整"
+              },
+              {
+                "id": "propertyTaxProration",
+                "name": "固都稅日割清算",
+                "amount": 33117,
+                "note": "預估全年固都稅 108,900 円 × 暫以分析日至年底約 111/365 日估算（實際依簽約交屋日結算）"
+              },
+              {
+                "id": "acquisitionTax",
+                "name": "不動產取得稅",
+                "amount": 0,
+                "note": "符合自住、40～240㎡ 及新耐震條件，因建物評價額低於 1,200 萬円扣除額上限，全額折抵後稅額為 0 円"
+              },
+              {
+                "id": "managementPrepayment",
+                "name": "管理費與修繕積立金預繳",
+                "amount": 58950,
+                "note": "（管理費 5,000 円 + 修繕積立金 14,650 円）× 3 個月"
+              }
+            ],
+            "settings": {
+              "handoverDate": "2026-09-12",
+              "remainingDays": 111,
+              "daysInYear": 365,
+              "prepaidMonths": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "land",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "",
+          "dealType": "sale",
+          "propertyType": "土地",
+          "salePrice": "3,500万円",
+          "landArea": "120㎡",
+          "buildingAssessedValue": 0
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": null,
+          "salePrice": 35000000
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": {
+          "salePriceYen": 35000000,
+          "salePriceMan": 3500,
+          "areaSqm": 120,
+          "tsuboAndSqm": {
+            "tsubo": 36.3,
+            "tsuboPriceYen": 964187,
+            "tsuboPriceMan": 96.4,
+            "sqmPriceYen": 291667,
+            "sqmPriceMan": 29.2
+          },
+          "monthlyHoldingCosts": {
+            "managementFee": 5000,
+            "repairReserve": 0,
+            "repairFund": 0,
+            "otherMonthlyFees": 0,
+            "totalMonthlyHoldingCost": 5000,
+            "items": [
+              {
+                "name": "管理費",
+                "amount": 5000,
+                "note": "大樓日常維護與共用部費用"
+              },
+              {
+                "name": "修繕積立金",
+                "amount": 0,
+                "note": "管委會大樓長期修繕儲備基金"
+              }
+            ]
+          },
+          "buildingHealth": {
+            "totalUnits": null,
+            "ageYears": 20,
+            "reservePerSqm": 0,
+            "reserveHealthLevel": "inadequate",
+            "reserveHealthText": "積立金提撥偏低",
+            "reserveHealthNote": "每平米月提撥約 ¥0/㎡，低於國交省指針建議區間（200 〜 350 円/㎡/月）。大樓屋齡已屆成熟期，需留意修繕儲備金是否充足，建議向管委會調閱長期修繕計畫與總會報告，確認是否有儲備不足、後續調漲或徵收修繕一時金之規劃。",
+            "guidelineRange": "200 〜 350 円/㎡/月",
+            "reserveRatio": null,
+            "feeRatioNote": null,
+            "scaleRiskLevel": "safe",
+            "scaleRiskText": "總戶數待確認",
+            "scaleRiskNote": "圖紙未載明大樓總戶數，建議向仲介確認戶數規模，以客觀評估每戶分攤公共維修費之負擔。",
+            "specialStrengths": [
+              "符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）"
+            ],
+            "specialCautions": []
+          },
+          "mlitComparison": null,
+          "occupancyAssessment": {
+            "status": "unknown",
+            "statusText": "一般買賣物件",
+            "mortgageTaxEligible": null,
+            "mortgageTaxNote": "須核對買方自住用途、登記面積與其他適用條件；民泊／旅館營運收益不能作為自住減稅資格依據。"
+          },
+          "initialCosts": {
+            "total": 1581000,
+            "percentageOfPrice": 4.5,
+            "items": [
+              {
+                "id": "brokerage",
+                "name": "仲介手續費（法定上限含稅）",
+                "amount": 1221000,
+                "note": "（總價 × 3% + 6萬円）× 1.1 消費稅"
+              },
+              {
+                "id": "registration",
+                "name": "登記免許稅與司法書士報酬",
+                "amount": 350000,
+                "note": "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+              },
+              {
+                "id": "stamp",
+                "name": "不動產買賣契約書印紙代",
+                "amount": 10000,
+                "note": "日本國稅廳印花稅階梯級距"
+              },
+              {
+                "id": "insurance",
+                "name": "火災保險・地震保險（預估）",
+                "amount": 0,
+                "note": "依建物構造、專有面積、保障內容與投保期間調整"
+              },
+              {
+                "id": "propertyTaxProration",
+                "name": "固都稅日割清算",
+                "amount": 0,
+                "note": "圖紙與 AI 均未取得固都稅年額，目前未計入；正式交屋時依賣方納稅通知書日割清算"
+              },
+              {
+                "id": "acquisitionTax",
+                "name": "不動產取得稅",
+                "amount": 0,
+                "note": "土地／整棟／透天須個別核對課稅用途、新築或中古、土地與建物評價額；取得稅暫未計入，未套用區分公寓試算。"
+              },
+              {
+                "id": "managementPrepayment",
+                "name": "管理費與修繕積立金預繳",
+                "amount": 0,
+                "note": "（管理費 5,000 円 + 修繕積立金 0 円）× 0 個月"
+              }
+            ],
+            "settings": {
+              "handoverDate": "2026-09-12",
+              "remainingDays": 111,
+              "daysInYear": 365,
+              "prepaidMonths": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "detached",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "平成10年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡",
+          "dealType": "sale",
+          "propertyType": "戸建",
+          "salePrice": "7,580万円",
+          "buildingArea": "85㎡",
+          "landArea": "70㎡",
+          "occupancyStatus": "空家"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 85,
+          "salePrice": 75800000
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": {
+          "salePriceYen": 75800000,
+          "salePriceMan": 7580,
+          "areaSqm": 85,
+          "tsuboAndSqm": {
+            "tsubo": 25.71,
+            "tsuboPriceYen": 2948269,
+            "tsuboPriceMan": 294.8,
+            "sqmPriceYen": 891765,
+            "sqmPriceMan": 89.2
+          },
+          "monthlyHoldingCosts": {
+            "managementFee": 5000,
+            "repairReserve": 0,
+            "repairFund": 0,
+            "otherMonthlyFees": 0,
+            "totalMonthlyHoldingCost": 5000,
+            "items": [
+              {
+                "name": "管理費",
+                "amount": 5000,
+                "note": "大樓日常維護與共用部費用"
+              },
+              {
+                "name": "修繕積立金",
+                "amount": 0,
+                "note": "管委會大樓長期修繕儲備基金"
+              }
+            ]
+          },
+          "buildingHealth": {
+            "totalUnits": null,
+            "ageYears": 28,
+            "reservePerSqm": 0,
+            "reserveHealthLevel": "inadequate",
+            "reserveHealthText": "積立金提撥偏低",
+            "reserveHealthNote": "每平米月提撥約 ¥0/㎡，低於國交省指針建議區間（200 〜 350 円/㎡/月）。大樓屋齡已屆成熟期，需留意修繕儲備金是否充足，建議向管委會調閱長期修繕計畫與總會報告，確認是否有儲備不足、後續調漲或徵收修繕一時金之規劃。",
+            "guidelineRange": "200 〜 350 円/㎡/月",
+            "reserveRatio": null,
+            "feeRatioNote": null,
+            "scaleRiskLevel": "safe",
+            "scaleRiskText": "總戶數待確認",
+            "scaleRiskNote": "圖紙未載明大樓總戶數，建議向仲介確認戶數規模，以客觀評估每戶分攤公共維修費之負擔。",
+            "specialStrengths": [
+              "符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）"
+            ],
+            "specialCautions": []
+          },
+          "mlitComparison": null,
+          "occupancyAssessment": {
+            "status": "unknown",
+            "statusText": "空家",
+            "mortgageTaxEligible": null,
+            "mortgageTaxNote": "須核對買方自住用途、登記面積與其他適用條件；民泊／旅館營運收益不能作為自住減稅資格依據。"
+          },
+          "initialCosts": {
+            "total": 3555400,
+            "percentageOfPrice": 4.7,
+            "items": [
+              {
+                "id": "brokerage",
+                "name": "仲介手續費（法定上限含稅）",
+                "amount": 2567400,
+                "note": "（總價 × 3% + 6萬円）× 1.1 消費稅"
+              },
+              {
+                "id": "registration",
+                "name": "登記免許稅與司法書士報酬",
+                "amount": 758000,
+                "note": "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+              },
+              {
+                "id": "stamp",
+                "name": "不動產買賣契約書印紙代",
+                "amount": 30000,
+                "note": "日本國稅廳印花稅階梯級距"
+              },
+              {
+                "id": "insurance",
+                "name": "火災保險・地震保險（預估）",
+                "amount": 200000,
+                "note": "依建物構造、專有面積、保障內容與投保期間調整"
+              },
+              {
+                "id": "propertyTaxProration",
+                "name": "固都稅日割清算",
+                "amount": 0,
+                "note": "圖紙與 AI 均未取得固都稅年額，目前未計入；正式交屋時依賣方納稅通知書日割清算"
+              },
+              {
+                "id": "acquisitionTax",
+                "name": "不動產取得稅",
+                "amount": 0,
+                "note": "土地／整棟／透天須個別核對課稅用途、新築或中古、土地與建物評價額；取得稅暫未計入，未套用區分公寓試算。"
+              },
+              {
+                "id": "managementPrepayment",
+                "name": "管理費與修繕積立金預繳",
+                "amount": 0,
+                "note": "（管理費 5,000 円 + 修繕積立金 0 円）× 0 個月"
+              }
+            ],
+            "settings": {
+              "handoverDate": "2026-09-12",
+              "remainingDays": 111,
+              "daysInYear": 365,
+              "prepaidMonths": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "sale-gross-yield",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡",
+          "dealType": "sale",
+          "propertyType": "区分マンション",
+          "salePrice": "2,800万円",
+          "annualIncome": "1,800,000円",
+          "grossYield": "6.42%",
+          "occupancyStatus": "オーナーチェンジ",
+          "repairFund": "2,000円",
+          "otherMonthlyFees": "1,100円"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 25,
+          "salePrice": 28000000
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": {
+          "salePriceYen": 28000000,
+          "salePriceMan": 2800,
+          "areaSqm": 25,
+          "tsuboAndSqm": {
+            "tsubo": 7.56,
+            "tsuboPriceYen": 3703704,
+            "tsuboPriceMan": 370.4,
+            "sqmPriceYen": 1120000,
+            "sqmPriceMan": 112
+          },
+          "monthlyHoldingCosts": {
+            "managementFee": 5000,
+            "repairReserve": 0,
+            "repairFund": 2000,
+            "otherMonthlyFees": 1100,
+            "totalMonthlyHoldingCost": 8100,
+            "items": [
+              {
+                "name": "管理費",
+                "amount": 5000,
+                "note": "大樓日常維護與共用部費用"
+              },
+              {
+                "name": "修繕積立金",
+                "amount": 0,
+                "note": "管委會大樓長期修繕儲備基金"
+              },
+              {
+                "name": "修繕積立基金（月額）",
+                "amount": 2000,
+                "note": "定期追加修繕準備金"
+              },
+              {
+                "name": "其他月額雜費",
+                "amount": 1100,
+                "note": "1,100円"
+              }
+            ]
+          },
+          "buildingHealth": {
+            "totalUnits": null,
+            "ageYears": 20,
+            "reservePerSqm": 80,
+            "reserveHealthLevel": "inadequate",
+            "reserveHealthText": "積立金提撥偏低",
+            "reserveHealthNote": "每平米月提撥約 ¥80/㎡，低於國交省指針建議區間（200 〜 350 円/㎡/月）。大樓屋齡已屆成熟期，需留意修繕儲備金是否充足，建議向管委會調閱長期修繕計畫與總會報告，確認是否有儲備不足、後續調漲或徵收修繕一時金之規劃。",
+            "guidelineRange": "200 〜 350 円/㎡/月",
+            "reserveRatio": 29,
+            "feeRatioNote": null,
+            "scaleRiskLevel": "safe",
+            "scaleRiskText": "總戶數待確認",
+            "scaleRiskNote": "圖紙未載明大樓總戶數，建議向仲介確認戶數規模，以客觀評估每戶分攤公共維修費之負擔。",
+            "specialStrengths": [
+              "符合新耐震基準（耐震性高、銀行承貸與資產保值性佳）"
+            ],
+            "specialCautions": []
+          },
+          "mlitComparison": null,
+          "occupancyAssessment": {
+            "status": "tenanted_investment",
+            "statusText": "オーナーチェンジ",
+            "investmentYield": {
+              "monthlyRentYen": 150000,
+              "annualIncomeYen": 1800000,
+              "grossYield": 6.4,
+              "netYieldEstimated": 5.4,
+              "breakdown": {
+                "monthlyRentYen": 150000,
+                "annualIncomeYen": 1800000,
+                "grossYield": 6.4,
+                "monthlyHoldingCostsYen": 8100,
+                "annualHoldingCostsYen": 97200,
+                "pmFeeRatePercent": 5,
+                "annualPmFeeYen": 90000,
+                "monthlyPmFeeYen": 7500,
+                "annualEstimatedPropertyTaxYen": 90000,
+                "monthlyEstimatedPropertyTaxYen": 7500,
+                "propertyTaxNote": "依中古公寓常態按售價 0.25% 概算（約合 1 個月租金水準）",
+                "annualNetOperatingIncomeYen": 1522800,
+                "monthlyNetOperatingIncomeYen": 126900,
+                "netYieldPercent": 5.4,
+                "items": [
+                  {
+                    "name": "年間租金毛收入",
+                    "amountYen": 150000,
+                    "annualAmountYen": 1800000,
+                    "type": "income",
+                    "note": "現況月租金 × 12 個月"
+                  },
+                  {
+                    "name": "大樓管理費與修繕積立金",
+                    "amountYen": -8100,
+                    "annualAmountYen": -97200,
+                    "type": "deduction",
+                    "note": "大樓管委會常態維持與儲備費用"
+                  },
+                  {
+                    "name": "租賃代管委託費（集金代行）",
+                    "amountYen": -7500,
+                    "annualAmountYen": -90000,
+                    "type": "deduction",
+                    "note": "日本租賃管理公司常規費率約 5%（含招租、催繳與修繕窗口）"
+                  },
+                  {
+                    "name": "固都稅（概算）",
+                    "amountYen": -7500,
+                    "annualAmountYen": -90000,
+                    "type": "deduction",
+                    "note": "依中古公寓常態按售價 0.25% 概算（約合 1 個月租金水準）"
+                  },
+                  {
+                    "name": "預估年實質淨到手收入（NOI）",
+                    "amountYen": 126900,
+                    "annualAmountYen": 1522800,
+                    "type": "subtotal",
+                    "note": "扣除各項常態營運維持成本後之實質營業淨收益"
+                  }
+                ]
+              }
+            },
+            "mortgageTaxEligible": false,
+            "mortgageTaxNote": "專有面積約 25㎡，未達住宅貸款減稅特例最低 40㎡ 標準，無法申請住宅ローン減稅。"
+          },
+          "initialCosts": {
+            "total": 1501000,
+            "percentageOfPrice": 5.4,
+            "items": [
+              {
+                "id": "brokerage",
+                "name": "仲介手續費（法定上限含稅）",
+                "amount": 990000,
+                "note": "（總價 × 3% + 6萬円）× 1.1 消費稅"
+              },
+              {
+                "id": "registration",
+                "name": "登記免許稅與司法書士報酬",
+                "amount": 280000,
+                "note": "尚無圖紙評價資料，暫以房價 1.0% 估算；實際依固定資產評價額、貸款與司法書士報價"
+              },
+              {
+                "id": "stamp",
+                "name": "不動產買賣契約書印紙代",
+                "amount": 10000,
+                "note": "日本國稅廳印花稅階梯級距"
+              },
+              {
+                "id": "insurance",
+                "name": "火災保險・地震保險（預估）",
+                "amount": 200000,
+                "note": "依建物構造、專有面積、保障內容與投保期間調整"
+              },
+              {
+                "id": "propertyTaxProration",
+                "name": "固都稅日割清算",
+                "amount": 0,
+                "note": "圖紙與 AI 均未取得固都稅年額，目前未計入；正式交屋時依賣方納稅通知書日割清算"
+              },
+              {
+                "id": "acquisitionTax",
+                "name": "不動產取得稅",
+                "amount": 0,
+                "note": "租賃中／帶租約物件不符合買方自住要件，未套用 1,200 萬円建物評價額扣除"
+              },
+              {
+                "id": "managementPrepayment",
+                "name": "管理費與修繕積立金預繳",
+                "amount": 21000,
+                "note": "（管理費 5,000 円 + 修繕積立金 2,000 円）× 3 個月"
+              }
+            ],
+            "settings": {
+              "handoverDate": "2026-09-12",
+              "remainingDays": 111,
+              "daysInYear": 365,
+              "prepaidMonths": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "sale-no-price",
+      "input": {
+        "extracted": {
+          "station": "中野",
+          "walkTime": "8",
+          "layout": "1K",
+          "rent": "100,000円",
+          "managementFee": "5,000円",
+          "keyMoney": "",
+          "deposit": "",
+          "age": "築20年",
+          "floor": "3階",
+          "address": "東京都中野区中野",
+          "area": "25㎡",
+          "dealType": "sale",
+          "propertyType": "区分マンション",
+          "salePrice": "価格応相談"
+        },
+        "parsed": {
+          "rent": null,
+          "managementFee": 5000,
+          "keyMoney": null,
+          "deposit": null,
+          "roomType": "k1",
+          "area": 25,
+          "salePrice": null
+        },
+        "range": {
+          "low": 90000,
+          "median": 100000,
+          "high": 110000
+        },
+        "verdict": null,
+        "initialCostMonths": null
+      },
+      "expected": {
+        "initialCost": null,
+        "saleAnalysis": null
+      }
+    }
+  ],
+  "calculator": [
+    {
+      "name": "calculator-0",
+      "input": {
+        "calcDistrict": "新宿區",
+        "calcRoomType": "r1",
+        "calcModifiers": [],
+        "calcBuyModifiers": [],
+        "calcStation": "新宿",
+        "rentSearchFilters": [
+          "noDeposit",
+          "noKeyMoney"
+        ],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 3,
+        "loanRatio": 0,
+        "loanYears": 20,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 0,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 116000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 14000000,
+        "monthlyPayment": 0,
+        "districtPrice": 1400,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "免禮金",
+            "免押金／免敷金"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「100㎡以上」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 0
+        },
+        "affordable": {
+          "quickLoanRatio": 0,
+          "quickLoanMonths": 240,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 0,
+          "buyFeeRate": 0.07,
+          "maxPriceByCash": 14018691.588785047,
+          "maxPriceByPayment": "Infinity",
+          "affordableBuyPrice": 14000000,
+          "affordableBuyLow": 12600000,
+          "affordableBuyFees": 980000.0000000001,
+          "affordableDownPayment": 14000000
+        }
+      }
+    },
+    {
+      "name": "calculator-1",
+      "input": {
+        "calcDistrict": "武藏野市",
+        "calcRoomType": "r1",
+        "calcModifiers": [
+          "tower",
+          "walk_within_5min"
+        ],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "pets",
+          "cityGas"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 7,
+        "loanRatio": 70,
+        "loanYears": 30,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 82000,
+        "districtScale": 0.6089999999999999,
+        "modifierPrice": 6000,
+        "price": 18200000,
+        "monthlyPayment": 48374,
+        "districtPrice": 1500,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "可養寵物",
+            "塔樓建築",
+            "都市瓦斯指定"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「可養寵物」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 2
+        },
+        "affordable": {
+          "quickLoanRatio": 0.7,
+          "quickLoanMonths": 360,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 47405741.66809052,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 38461538.461538464,
+          "maxPriceByPayment": 67722488.09727217,
+          "affordableBuyPrice": 38400000,
+          "affordableBuyLow": 34500000,
+          "affordableBuyFees": 3456000,
+          "affordableDownPayment": 11520000.000000002
+        }
+      }
+    },
+    {
+      "name": "calculator-2",
+      "input": {
+        "calcDistrict": "橫濱市中區",
+        "calcRoomType": "r1",
+        "calcModifiers": [
+          "wooden",
+          "first_floor",
+          "age_over_40y"
+        ],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 15,
+        "loanRatio": 100,
+        "loanYears": 35,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 66000,
+        "districtScale": 0.72,
+        "modifierPrice": 7000,
+        "price": 6100000,
+        "monthlyPayment": 20839,
+        "districtPrice": 940,
+        "availability": {
+          "supply": {
+            "label": "選擇較多",
+            "tone": "text-[#007d5a]",
+            "width": "w-[88%]"
+          },
+          "competition": {
+            "label": "競爭較低",
+            "tone": "text-[#007d5a]",
+            "width": "w-[25%]"
+          },
+          "limitingConditions": [
+            "屋齡 15 年內"
+          ],
+          "expandingConditions": [
+            "屋齡 40 年以上",
+            "木造建築",
+            "房間位於一樓"
+          ],
+          "advice": "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 420,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 52690294.35181048,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 52690294.35181048,
+          "affordableBuyPrice": 52600000,
+          "affordableBuyLow": 47300000,
+          "affordableBuyFees": 4734000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-3",
+      "input": {
+        "calcDistrict": "大阪市北區",
+        "calcRoomType": "r1",
+        "calcModifiers": [
+          "separate_bath",
+          "washbasin_and_bidet",
+          "compact_25sqm"
+        ],
+        "calcBuyModifiers": [],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 30,
+        "loanRatio": 120,
+        "loanYears": 1,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 92000,
+        "districtScale": 0.43499999999999994,
+        "modifierPrice": 4000,
+        "price": 18400000,
+        "monthlyPayment": 1840000,
+        "districtPrice": 1840,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭偏高",
+            "tone": "text-[#B13818]",
+            "width": "w-[70%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "乾濕分離（衛浴分離・BT別）",
+            "同時具備獨立洗面台與免治馬桶"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「100㎡以上」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 12,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 2160000,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 2160000,
+          "affordableBuyPrice": 2100000,
+          "affordableBuyLow": 1800000,
+          "affordableBuyFees": 189000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-4",
+      "input": {
+        "calcDistrict": "不存在區域",
+        "calcRoomType": "k1",
+        "calcModifiers": [],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "noDeposit",
+          "noKeyMoney"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 3,
+        "loanRatio": 0,
+        "loanYears": 20,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 129000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 38300000,
+        "monthlyPayment": 0,
+        "districtPrice": 3300,
+        "availability": {
+          "supply": {
+            "label": "房源一般",
+            "tone": "text-[#7A5A1F]",
+            "width": "w-[60%]"
+          },
+          "competition": {
+            "label": "競爭一般",
+            "tone": "text-[#7A5A1F]",
+            "width": "w-[48%]"
+          },
+          "limitingConditions": [
+            "免禮金",
+            "免押金／免敷金",
+            "屋齡 3 年內"
+          ],
+          "expandingConditions": [],
+          "advice": "目前仍有搜尋空間，但符合全部條件的物件不會平均出現在每個車站；建議預先排好條件優先順序。",
+          "selectedCount": 2,
+          "modifierCount": 0
+        },
+        "affordable": {
+          "quickLoanRatio": 0,
+          "quickLoanMonths": 240,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 34923673.53943828,
+          "buyFeeRate": 0.07,
+          "maxPriceByCash": 14018691.588785047,
+          "maxPriceByPayment": "Infinity",
+          "affordableBuyPrice": 14000000,
+          "affordableBuyLow": 12600000,
+          "affordableBuyFees": 980000.0000000001,
+          "affordableDownPayment": 14000000
+        }
+      }
+    },
+    {
+      "name": "calculator-5",
+      "input": {
+        "calcDistrict": "新宿區",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "tower",
+          "walk_within_5min"
+        ],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "新宿",
+        "rentSearchFilters": [
+          "pets",
+          "cityGas"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 7,
+        "loanRatio": 70,
+        "loanYears": 30,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 167000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 20900000,
+        "monthlyPayment": 55550,
+        "districtPrice": 2900,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "可養寵物",
+            "塔樓建築",
+            "都市瓦斯指定"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「可養寵物」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 2
+        },
+        "affordable": {
+          "quickLoanRatio": 0.7,
+          "quickLoanMonths": 360,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 47405741.66809052,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 38461538.461538464,
+          "maxPriceByPayment": 67722488.09727217,
+          "affordableBuyPrice": 38400000,
+          "affordableBuyLow": 34500000,
+          "affordableBuyFees": 3456000,
+          "affordableDownPayment": 11520000.000000002
+        }
+      }
+    },
+    {
+      "name": "calculator-6",
+      "input": {
+        "calcDistrict": "武藏野市",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "wooden",
+          "first_floor",
+          "age_over_40y"
+        ],
+        "calcBuyModifiers": [],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 15,
+        "loanRatio": 100,
+        "loanYears": 35,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 73000,
+        "districtScale": 0.6089999999999999,
+        "modifierPrice": 6000,
+        "price": 26000000,
+        "monthlyPayment": 61904.76190476191,
+        "districtPrice": 2600,
+        "availability": {
+          "supply": {
+            "label": "選擇較多",
+            "tone": "text-[#007d5a]",
+            "width": "w-[88%]"
+          },
+          "competition": {
+            "label": "競爭較低",
+            "tone": "text-[#007d5a]",
+            "width": "w-[25%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "屋齡 15 年內"
+          ],
+          "expandingConditions": [
+            "屋齡 40 年以上",
+            "木造建築",
+            "房間位於一樓"
+          ],
+          "advice": "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 420,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 75600000,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 75600000,
+          "affordableBuyPrice": 75600000,
+          "affordableBuyLow": 68000000,
+          "affordableBuyFees": 6804000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-7",
+      "input": {
+        "calcDistrict": "橫濱市中區",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "separate_bath",
+          "washbasin_and_bidet",
+          "compact_25sqm"
+        ],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 30,
+        "loanRatio": 120,
+        "loanYears": 1,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 113000,
+        "districtScale": 0.72,
+        "modifierPrice": 7000,
+        "price": 31200000,
+        "monthlyPayment": 3157305,
+        "districtPrice": 2400,
+        "availability": {
+          "supply": {
+            "label": "房源一般",
+            "tone": "text-[#7A5A1F]",
+            "width": "w-[60%]"
+          },
+          "competition": {
+            "label": "競爭偏高",
+            "tone": "text-[#B13818]",
+            "width": "w-[70%]"
+          },
+          "limitingConditions": [
+            "乾濕分離（衛浴分離・BT別）",
+            "同時具備獨立洗面台與免治馬桶",
+            "1K房型 25平方米以上"
+          ],
+          "expandingConditions": [],
+          "advice": "目前仍有搜尋空間，但符合全部條件的物件不會平均出現在每個車站；建議預先排好條件優先順序。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 12,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 2134478.714823816,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 2134478.714823816,
+          "affordableBuyPrice": 2100000,
+          "affordableBuyLow": 1800000,
+          "affordableBuyFees": 189000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-8",
+      "input": {
+        "calcDistrict": "大阪市北區",
+        "calcRoomType": "ldk1",
+        "calcModifiers": [],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "noDeposit",
+          "noKeyMoney"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 3,
+        "loanRatio": 0,
+        "loanYears": 20,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 124000,
+        "districtScale": 0.43499999999999994,
+        "modifierPrice": 4000,
+        "price": 19500000,
+        "monthlyPayment": 0,
+        "districtPrice": 3000,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭一般",
+            "tone": "text-[#7A5A1F]",
+            "width": "w-[48%]"
+          },
+          "limitingConditions": [
+            "免禮金",
+            "免押金／免敷金",
+            "屋齡 3 年內"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「免禮金」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 0
+        },
+        "affordable": {
+          "quickLoanRatio": 0,
+          "quickLoanMonths": 240,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 34923673.53943828,
+          "buyFeeRate": 0.07,
+          "maxPriceByCash": 14018691.588785047,
+          "maxPriceByPayment": "Infinity",
+          "affordableBuyPrice": 14000000,
+          "affordableBuyLow": 12600000,
+          "affordableBuyFees": 980000.0000000001,
+          "affordableDownPayment": 14000000
+        }
+      }
+    },
+    {
+      "name": "calculator-9",
+      "input": {
+        "calcDistrict": "不存在區域",
+        "calcRoomType": "ldk1",
+        "calcModifiers": [
+          "tower",
+          "walk_within_5min"
+        ],
+        "calcBuyModifiers": [],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "pets",
+          "cityGas"
+        ],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 7,
+        "loanRatio": 70,
+        "loanYears": 30,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 225000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 58000000,
+        "monthlyPayment": 112777.77777777778,
+        "districtPrice": 7000,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "可養寵物",
+            "塔樓建築",
+            "100㎡以上"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「可養寵物」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 2
+        },
+        "affordable": {
+          "quickLoanRatio": 0.7,
+          "quickLoanMonths": 360,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 64800000,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 38461538.461538464,
+          "maxPriceByPayment": 92571428.57142858,
+          "affordableBuyPrice": 38400000,
+          "affordableBuyLow": 34500000,
+          "affordableBuyFees": 3456000,
+          "affordableDownPayment": 11520000.000000002
+        }
+      }
+    },
+    {
+      "name": "calculator-10",
+      "input": {
+        "calcDistrict": "新宿區",
+        "calcRoomType": "ldk1",
+        "calcModifiers": [
+          "wooden",
+          "first_floor",
+          "age_over_40y"
+        ],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "新宿",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 15,
+        "loanRatio": 100,
+        "loanYears": 35,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 163000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 76600000,
+        "monthlyPayment": 261680,
+        "districtPrice": 5800,
+        "availability": {
+          "supply": {
+            "label": "選擇較多",
+            "tone": "text-[#007d5a]",
+            "width": "w-[88%]"
+          },
+          "competition": {
+            "label": "競爭偏高",
+            "tone": "text-[#B13818]",
+            "width": "w-[70%]"
+          },
+          "limitingConditions": [
+            "屋齡 15 年內"
+          ],
+          "expandingConditions": [
+            "屋齡 40 年以上",
+            "木造建築",
+            "房間位於一樓"
+          ],
+          "advice": "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 420,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 52690294.35181048,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 52690294.35181048,
+          "affordableBuyPrice": 52600000,
+          "affordableBuyLow": 47300000,
+          "affordableBuyFees": 4734000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-11",
+      "input": {
+        "calcDistrict": "武藏野市",
+        "calcRoomType": "ldk1",
+        "calcModifiers": [
+          "separate_bath",
+          "washbasin_and_bidet",
+          "compact_25sqm"
+        ],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 30,
+        "loanRatio": 120,
+        "loanYears": 1,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 147000,
+        "districtScale": 0.6089999999999999,
+        "modifierPrice": 6000,
+        "price": 19400000,
+        "monthlyPayment": 1963196,
+        "districtPrice": 3600,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭偏高",
+            "tone": "text-[#B13818]",
+            "width": "w-[70%]"
+          },
+          "limitingConditions": [
+            "乾濕分離（衛浴分離・BT別）",
+            "同時具備獨立洗面台與免治馬桶",
+            "1K房型 25平方米以上"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「乾濕分離（衛浴分離・BT別）」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 12,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 2134478.714823816,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 2134478.714823816,
+          "affordableBuyPrice": 2100000,
+          "affordableBuyLow": 1800000,
+          "affordableBuyFees": 189000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-12",
+      "input": {
+        "calcDistrict": "橫濱市中區",
+        "calcRoomType": "ldk2",
+        "calcModifiers": [],
+        "calcBuyModifiers": [],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "noDeposit",
+          "noKeyMoney"
+        ],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 3,
+        "loanRatio": 0,
+        "loanYears": 20,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 161000,
+        "districtScale": 0.72,
+        "modifierPrice": 7000,
+        "price": 45000000,
+        "monthlyPayment": 0,
+        "districtPrice": 4500,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭偏高",
+            "tone": "text-[#B13818]",
+            "width": "w-[70%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "免禮金",
+            "免押金／免敷金"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「100㎡以上」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 0
+        },
+        "affordable": {
+          "quickLoanRatio": 0,
+          "quickLoanMonths": 240,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 43200000,
+          "buyFeeRate": 0.07,
+          "maxPriceByCash": 14018691.588785047,
+          "maxPriceByPayment": "Infinity",
+          "affordableBuyPrice": 14000000,
+          "affordableBuyLow": 12600000,
+          "affordableBuyFees": 980000.0000000001,
+          "affordableDownPayment": 14000000
+        }
+      }
+    },
+    {
+      "name": "calculator-13",
+      "input": {
+        "calcDistrict": "大阪市北區",
+        "calcRoomType": "ldk2",
+        "calcModifiers": [
+          "tower",
+          "walk_within_5min"
+        ],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "pets",
+          "cityGas"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 7,
+        "loanRatio": 70,
+        "loanYears": 30,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 199000,
+        "districtScale": 0.43499999999999994,
+        "modifierPrice": 4000,
+        "price": 62400000,
+        "monthlyPayment": 165853,
+        "districtPrice": 4800,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "可養寵物",
+            "塔樓建築",
+            "都市瓦斯指定"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「可養寵物」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 2
+        },
+        "affordable": {
+          "quickLoanRatio": 0.7,
+          "quickLoanMonths": 360,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 47405741.66809052,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 38461538.461538464,
+          "maxPriceByPayment": 67722488.09727217,
+          "affordableBuyPrice": 38400000,
+          "affordableBuyLow": 34500000,
+          "affordableBuyFees": 3456000,
+          "affordableDownPayment": 11520000.000000002
+        }
+      }
+    },
+    {
+      "name": "calculator-14",
+      "input": {
+        "calcDistrict": "不存在區域",
+        "calcRoomType": "ldk2",
+        "calcModifiers": [
+          "wooden",
+          "first_floor",
+          "age_over_40y"
+        ],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 15,
+        "loanRatio": 100,
+        "loanYears": 35,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 206000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 67000000,
+        "monthlyPayment": 228885,
+        "districtPrice": 15000,
+        "availability": {
+          "supply": {
+            "label": "選擇較多",
+            "tone": "text-[#007d5a]",
+            "width": "w-[88%]"
+          },
+          "competition": {
+            "label": "競爭較低",
+            "tone": "text-[#007d5a]",
+            "width": "w-[25%]"
+          },
+          "limitingConditions": [
+            "屋齡 15 年內"
+          ],
+          "expandingConditions": [
+            "屋齡 40 年以上",
+            "木造建築",
+            "房間位於一樓"
+          ],
+          "advice": "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 420,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 52690294.35181048,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 52690294.35181048,
+          "affordableBuyPrice": 52600000,
+          "affordableBuyLow": 47300000,
+          "affordableBuyFees": 4734000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-15",
+      "input": {
+        "calcDistrict": "新宿區",
+        "calcRoomType": "ldk2",
+        "calcModifiers": [
+          "separate_bath",
+          "washbasin_and_bidet",
+          "compact_25sqm"
+        ],
+        "calcBuyModifiers": [],
+        "calcStation": "新宿",
+        "rentSearchFilters": [],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 30,
+        "loanRatio": 120,
+        "loanYears": 1,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 278000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 93000000,
+        "monthlyPayment": 9300000,
+        "districtPrice": 9300,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "乾濕分離（衛浴分離・BT別）",
+            "同時具備獨立洗面台與免治馬桶"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「100㎡以上」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 12,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 2160000,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 2160000,
+          "affordableBuyPrice": 2100000,
+          "affordableBuyLow": 1800000,
+          "affordableBuyFees": 189000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-16",
+      "input": {
+        "calcDistrict": "武藏野市",
+        "calcRoomType": "ldk3",
+        "calcModifiers": [],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "noDeposit",
+          "noKeyMoney"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 3,
+        "loanRatio": 0,
+        "loanYears": 20,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 255000,
+        "districtScale": 0.6089999999999999,
+        "modifierPrice": 6000,
+        "price": 107700000,
+        "monthlyPayment": 0,
+        "districtPrice": 8900,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭一般",
+            "tone": "text-[#7A5A1F]",
+            "width": "w-[48%]"
+          },
+          "limitingConditions": [
+            "免禮金",
+            "免押金／免敷金",
+            "屋齡 3 年內"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「免禮金」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 0
+        },
+        "affordable": {
+          "quickLoanRatio": 0,
+          "quickLoanMonths": 240,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 34923673.53943828,
+          "buyFeeRate": 0.07,
+          "maxPriceByCash": 14018691.588785047,
+          "maxPriceByPayment": "Infinity",
+          "affordableBuyPrice": 14000000,
+          "affordableBuyLow": 12600000,
+          "affordableBuyFees": 980000.0000000001,
+          "affordableDownPayment": 14000000
+        }
+      }
+    },
+    {
+      "name": "calculator-17",
+      "input": {
+        "calcDistrict": "橫濱市中區",
+        "calcRoomType": "ldk3",
+        "calcModifiers": [
+          "tower",
+          "walk_within_5min"
+        ],
+        "calcBuyModifiers": [
+          "tenanted",
+          "old_earthquake_standard"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [
+          "pets",
+          "cityGas"
+        ],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 7,
+        "loanRatio": 70,
+        "loanYears": 30,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 221000,
+        "districtScale": 0.72,
+        "modifierPrice": 7000,
+        "price": 40300000,
+        "monthlyPayment": 107114,
+        "districtPrice": 6200,
+        "availability": {
+          "supply": {
+            "label": "房源稀少",
+            "tone": "text-[#B13818]",
+            "width": "w-[18%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "可養寵物",
+            "塔樓建築",
+            "都市瓦斯指定"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「可養寵物」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 2,
+          "modifierCount": 2
+        },
+        "affordable": {
+          "quickLoanRatio": 0.7,
+          "quickLoanMonths": 360,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 47405741.66809052,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 38461538.461538464,
+          "maxPriceByPayment": 67722488.09727217,
+          "affordableBuyPrice": 38400000,
+          "affordableBuyLow": 34500000,
+          "affordableBuyFees": 3456000,
+          "affordableDownPayment": 11520000.000000002
+        }
+      }
+    },
+    {
+      "name": "calculator-18",
+      "input": {
+        "calcDistrict": "大阪市北區",
+        "calcRoomType": "ldk3",
+        "calcModifiers": [
+          "wooden",
+          "first_floor",
+          "age_over_40y"
+        ],
+        "calcBuyModifiers": [],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 100,
+        "guidedAgeMax": 15,
+        "loanRatio": 100,
+        "loanYears": 35,
+        "annualRate": 0,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 213000,
+        "districtScale": 0.43499999999999994,
+        "modifierPrice": 4000,
+        "price": 67000000,
+        "monthlyPayment": 159523.80952380953,
+        "districtPrice": 6700,
+        "availability": {
+          "supply": {
+            "label": "選擇較多",
+            "tone": "text-[#007d5a]",
+            "width": "w-[88%]"
+          },
+          "competition": {
+            "label": "競爭較低",
+            "tone": "text-[#007d5a]",
+            "width": "w-[25%]"
+          },
+          "limitingConditions": [
+            "100㎡以上",
+            "屋齡 15 年內"
+          ],
+          "expandingConditions": [
+            "屋齡 40 年以上",
+            "木造建築",
+            "房間位於一樓"
+          ],
+          "advice": "目前篩選條件保有彈性，較容易比較租金、通勤與屋況後再做取捨。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 420,
+          "quickMonthlyRate": 0,
+          "maxLoanByPayment": 75600000,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 75600000,
+          "affordableBuyPrice": 75600000,
+          "affordableBuyLow": 68000000,
+          "affordableBuyFees": 6804000,
+          "affordableDownPayment": 0
+        }
+      }
+    },
+    {
+      "name": "calculator-19",
+      "input": {
+        "calcDistrict": "不存在區域",
+        "calcRoomType": "ldk3",
+        "calcModifiers": [
+          "separate_bath",
+          "washbasin_and_bidet",
+          "compact_25sqm"
+        ],
+        "calcBuyModifiers": [
+          "full_renovation",
+          "vacant"
+        ],
+        "calcStation": "none",
+        "rentSearchFilters": [],
+        "guidedMinArea": 0,
+        "guidedAgeMax": 30,
+        "loanRatio": 120,
+        "loanYears": 1,
+        "annualRate": 2.2,
+        "buyMonthlyPaymentBudget": 180000,
+        "buyAvailableCash": 15000000
+      },
+      "expected": {
+        "rent": 369000,
+        "districtScale": 1.29,
+        "modifierPrice": 13000,
+        "price": 198000000,
+        "monthlyPayment": 20036742,
+        "districtPrice": 27000,
+        "availability": {
+          "supply": {
+            "label": "房源偏少",
+            "tone": "text-[#B13818]",
+            "width": "w-[35%]"
+          },
+          "competition": {
+            "label": "競爭激烈",
+            "tone": "text-[#B13818]",
+            "width": "w-[92%]"
+          },
+          "limitingConditions": [
+            "乾濕分離（衛浴分離・BT別）",
+            "同時具備獨立洗面台與免治馬桶",
+            "1K房型 25平方米以上"
+          ],
+          "expandingConditions": [],
+          "advice": "目前條件疊加後會大幅縮小選擇。建議將「乾濕分離（衛浴分離・BT別）」以外的項目分成必要與可妥協兩組，並同步擴大車站、屋齡或步行範圍。",
+          "selectedCount": 0,
+          "modifierCount": 3
+        },
+        "affordable": {
+          "quickLoanRatio": 1,
+          "quickLoanMonths": 12,
+          "quickMonthlyRate": 0.0018333333333333335,
+          "maxLoanByPayment": 2134478.714823816,
+          "buyFeeRate": 0.09,
+          "maxPriceByCash": 166666666.6666667,
+          "maxPriceByPayment": 2134478.714823816,
+          "affordableBuyPrice": 2100000,
+          "affordableBuyLow": 1800000,
+          "affordableBuyFees": 189000,
+          "affordableDownPayment": 0
+        }
+      }
+    }
+  ]
+}

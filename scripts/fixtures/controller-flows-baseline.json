@@ -1,0 +1,4697 @@
+{
+  "sourceHashes": {
+    "useListingHealthCheckController.tsx": "a73bd92f488ad67194f16f7372147f6963485121c07497a06249a4d5c33955d2",
+    "useCalculatorController.tsx": "6b86291f2e37d9ff314cb85f1d437eba08c2f43a6147398da4578b7ede7f4b05"
+  },
+  "capturedFrom": "controllers before responsibility extraction, 2026-09-12",
+  "snapshots": {
+    "listing-empty-guard": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": null,
+        "previewUrl": null,
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "idle",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": []
+    },
+    "preview-reverse-completion": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.pdf",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:A",
+        "previewAspect": 1,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "A.pdf"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "B.pdf"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:B"
+        }
+      ]
+    },
+    "preview-completes-after-removal": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": null,
+        "previewUrl": null,
+        "previewImageUrl": "blob:C",
+        "previewAspect": 3,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "A.pdf"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "B.pdf"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:B"
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:A"
+        },
+        {
+          "createUrl": "blob:test-3",
+          "name": "C.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "C.pdf"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-2"
+        },
+        {
+          "revokeUrl": "blob:A"
+        },
+        {
+          "revokeUrl": "blob:test-3"
+        },
+        {
+          "revokeUrl": "blob:test-3"
+        }
+      ]
+    },
+    "preview-native-fallback": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "blank.pdf",
+        "previewUrl": "blob:test-1",
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "failed",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "blank.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "blank.pdf"
+          }
+        }
+      ]
+    },
+    "preview-escape": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "blank.pdf",
+        "previewUrl": "blob:test-1",
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "failed",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "blank.pdf"
+        },
+        {
+          "kind": "preview",
+          "payload": {
+            "name": "blank.pdf"
+          }
+        }
+      ]
+    },
+    "analysis-loading-guard-and-file-switch": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": true,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        }
+      ]
+    },
+    "analysis-old-file-response": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": true,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        }
+      ]
+    },
+    "location-failure-starts-raw-address-crime": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": "定位服務逾時",
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": true,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        }
+      ]
+    },
+    "crime-prefecture-fallback": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": "定位服務逾時",
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        }
+      ]
+    },
+    "commute-missing-walk-guard": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": "定位服務逾時",
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": "尚未取得可靠的出門步行時間，請先重新取得物件位置與車站資料。",
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        }
+      ]
+    },
+    "commute-request-and-loading-guard": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": true,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        }
+      ]
+    },
+    "commute-not-found": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": "路線なし",
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        }
+      ]
+    },
+    "commute-success": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        }
+      ]
+    },
+    "share-title-and-loading-guard": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": null,
+        "shareLoading": true,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        }
+      ]
+    },
+    "share-clipboard-failure": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        },
+        {
+          "track": "listing-share-create"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        }
+      ]
+    },
+    "share-clipboard-success": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": true,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        },
+        {
+          "track": "listing-share-create"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        }
+      ]
+    },
+    "pdf-lazy-export-and-loading-guard": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": true,
+        "pdfLoading": true,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "pdf",
+          "payload": {
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            },
+            "title": "新宿測試",
+            "generatedAt": "2026-09-12T00:00:00.000Z",
+            "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+            "assetBase": "http://controller.test",
+            "locationContext": {
+              "matchedAddress": "東京都新宿区西新宿一丁目",
+              "stationWalks": [
+                {
+                  "station": "新宿",
+                  "normalMinutes": 6,
+                  "advertisedMinutes": 5
+                }
+              ]
+            },
+            "commute": {
+              "totalMinutes": 25,
+              "transfers": 1,
+              "summary": "出門到 目的地：步行 undefined 分＋電車 undefined 分＋步行 undefined 分"
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        },
+        {
+          "track": "listing-share-create"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "fonts": "/fonts"
+        },
+        {
+          "kind": "pdf",
+          "payload": {
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            },
+            "title": "新宿測試",
+            "generatedAt": "2026-09-12T00:00:00.000Z",
+            "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+            "assetBase": "http://controller.test",
+            "locationContext": {
+              "matchedAddress": "東京都新宿区西新宿一丁目",
+              "stationWalks": [
+                {
+                  "station": "新宿",
+                  "normalMinutes": 6,
+                  "advertisedMinutes": 5
+                }
+              ]
+            },
+            "commute": {
+              "totalMinutes": 25,
+              "transfers": 1,
+              "summary": "出門到 目的地：步行 undefined 分＋電車 undefined 分＋步行 undefined 分"
+            }
+          }
+        }
+      ]
+    },
+    "pdf-download-success": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": true,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        },
+        {
+          "track": "listing-share-create"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "fonts": "/fonts"
+        },
+        {
+          "kind": "pdf",
+          "payload": {
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            },
+            "title": "新宿測試",
+            "generatedAt": "2026-09-12T00:00:00.000Z",
+            "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+            "assetBase": "http://controller.test",
+            "locationContext": {
+              "matchedAddress": "東京都新宿区西新宿一丁目",
+              "stationWalks": [
+                {
+                  "station": "新宿",
+                  "normalMinutes": 6,
+                  "advertisedMinutes": 5
+                }
+              ]
+            },
+            "commute": {
+              "totalMinutes": 25,
+              "transfers": 1,
+              "summary": "出門到 目的地：步行 undefined 分＋電車 undefined 分＋步行 undefined 分"
+            }
+          }
+        },
+        {
+          "createUrl": "blob:test-3",
+          "name": "blob"
+        },
+        {
+          "download": "新宿測試-物件分析.pdf",
+          "href": "blob:test-3"
+        },
+        {
+          "track": "listing-pdf-download"
+        }
+      ]
+    },
+    "pdf-render-failure": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "B.png",
+        "previewUrl": "blob:test-2",
+        "previewImageUrl": "blob:test-2",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": {
+          "matchedAddress": "東京都新宿区西新宿一丁目",
+          "stationWalks": [
+            {
+              "station": "新宿",
+              "normalMinutes": 6,
+              "advertisedMinutes": 5
+            }
+          ]
+        },
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": {
+          "name": "東京都",
+          "level": "test"
+        },
+        "crimeLoading": false,
+        "commute": {
+          "totalMinutes": 25,
+          "transfers": 1
+        },
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "  新宿測試  ",
+        "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": true,
+        "pdfLoading": false,
+        "pdfError": "PDF 產生失敗，請稍後再試。"
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "A.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "A.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "createUrl": "blob:test-2",
+          "name": "B.png"
+        },
+        {
+          "revokeUrl": "blob:test-1"
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-check-rent"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿一丁目"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "commute",
+            "originStation": "新宿",
+            "originWalkMinutes": 6,
+            "originAdvertisedMinutes": 5,
+            "addressContext": "東京都新宿区西新宿1丁目",
+            "destination": "東京駅"
+          }
+        },
+        {
+          "kind": "share",
+          "payload": {
+            "title": "新宿測試",
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            }
+          }
+        },
+        {
+          "track": "listing-share-create"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "clipboard": "http://controller.test/#listing/ABCDEFGH"
+        },
+        {
+          "fonts": "/fonts"
+        },
+        {
+          "kind": "pdf",
+          "payload": {
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            },
+            "title": "新宿測試",
+            "generatedAt": "2026-09-12T00:00:00.000Z",
+            "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+            "assetBase": "http://controller.test",
+            "locationContext": {
+              "matchedAddress": "東京都新宿区西新宿一丁目",
+              "stationWalks": [
+                {
+                  "station": "新宿",
+                  "normalMinutes": 6,
+                  "advertisedMinutes": 5
+                }
+              ]
+            },
+            "commute": {
+              "totalMinutes": 25,
+              "transfers": 1,
+              "summary": "出門到 目的地：步行 undefined 分＋電車 undefined 分＋步行 undefined 分"
+            }
+          }
+        },
+        {
+          "createUrl": "blob:test-3",
+          "name": "blob"
+        },
+        {
+          "download": "新宿測試-物件分析.pdf",
+          "href": "blob:test-3"
+        },
+        {
+          "track": "listing-pdf-download"
+        },
+        {
+          "fonts": "/fonts"
+        },
+        {
+          "kind": "pdf",
+          "payload": {
+            "result": {
+              "extracted": {
+                "station": "新宿，西新宿",
+                "walkTime": "徒歩5分，8分",
+                "layout": "1K",
+                "rent": "100,000円",
+                "managementFee": "5,000円",
+                "keyMoney": "",
+                "deposit": "",
+                "age": "築20年",
+                "floor": "3階",
+                "address": "東京都新宿区西新宿1丁目",
+                "area": "25㎡"
+              },
+              "parsed": {
+                "rent": 100000,
+                "managementFee": 5000,
+                "keyMoney": null,
+                "deposit": null,
+                "roomType": "k1",
+                "area": 25
+              },
+              "range": {
+                "low": 90000,
+                "median": 100000,
+                "high": 110000
+              },
+              "verdict": null,
+              "initialCostMonths": null,
+              "dealType": "rent"
+            },
+            "title": "新宿測試",
+            "generatedAt": "2026-09-12T00:00:00.000Z",
+            "shareUrl": "http://controller.test/#listing/ABCDEFGH",
+            "assetBase": "http://controller.test",
+            "locationContext": {
+              "matchedAddress": "東京都新宿区西新宿一丁目",
+              "stationWalks": [
+                {
+                  "station": "新宿",
+                  "normalMinutes": 6,
+                  "advertisedMinutes": 5
+                }
+              ]
+            },
+            "commute": {
+              "totalMinutes": 25,
+              "transfers": 1,
+              "summary": "出門到 目的地：步行 undefined 分＋電車 undefined 分＋步行 undefined 分"
+            }
+          }
+        }
+      ]
+    },
+    "analysis-size-limit": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "large.png",
+        "previewUrl": "blob:test-1",
+        "previewImageUrl": "blob:test-1",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": "圖片壓縮後仍超過 3MB 上限，請改用 JPG／PNG 格式再試。",
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "large.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        }
+      ]
+    },
+    "analysis-invalid-json-error": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "large.png",
+        "previewUrl": "blob:test-1",
+        "previewImageUrl": "blob:test-1",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": "分析失敗（HTTP 502）。",
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "large.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        }
+      ]
+    },
+    "analysis-encoding-rejection": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": "large.png",
+        "previewUrl": "blob:test-1",
+        "previewImageUrl": "blob:test-1",
+        "previewAspect": null,
+        "previewState": "ready",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": "decode failed",
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "createUrl": "blob:test-1",
+          "name": "large.png"
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        },
+        {
+          "kind": "analysis",
+          "payload": {
+            "files": [
+              {
+                "mimeType": "image/jpeg",
+                "data": "YQ=="
+              }
+            ],
+            "mode": "auto",
+            "layoutText": "layout text"
+          }
+        },
+        {
+          "kind": "encode",
+          "payload": {
+            "name": "large.png",
+            "type": "image/png"
+          }
+        }
+      ]
+    },
+    "shared-id-cleanup-ignores-old-response": {
+      "state": {
+        "sharedTitle": null,
+        "sharedExpiresAt": null,
+        "file": null,
+        "previewUrl": null,
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "idle",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": true,
+        "error": null,
+        "result": null,
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "readShare",
+          "payload": "BBBBBBBB"
+        }
+      ],
+      "events": [
+        {
+          "kind": "readShare",
+          "payload": "AAAAAAAA"
+        },
+        {
+          "kind": "readShare",
+          "payload": "BBBBBBBB"
+        }
+      ]
+    },
+    "shared-current-response": {
+      "state": {
+        "sharedTitle": "new",
+        "sharedExpiresAt": "2026-09-20",
+        "file": null,
+        "previewUrl": null,
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "idle",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": false,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": true,
+        "locationError": null,
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "kind": "readShare",
+          "payload": "AAAAAAAA"
+        },
+        {
+          "kind": "readShare",
+          "payload": "BBBBBBBB"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-share-view"
+        }
+      ]
+    },
+    "shared-unmount-ignores-rejection": {
+      "state": {
+        "sharedTitle": "new",
+        "sharedExpiresAt": "2026-09-20",
+        "file": null,
+        "previewUrl": null,
+        "previewImageUrl": null,
+        "previewAspect": null,
+        "previewState": "idle",
+        "showFullPreview": false,
+        "isDragging": false,
+        "loading": true,
+        "error": null,
+        "result": {
+          "extracted": {
+            "station": "新宿，西新宿",
+            "walkTime": "徒歩5分，8分",
+            "layout": "1K",
+            "rent": "100,000円",
+            "managementFee": "5,000円",
+            "keyMoney": "",
+            "deposit": "",
+            "age": "築20年",
+            "floor": "3階",
+            "address": "東京都新宿区西新宿1丁目",
+            "area": "25㎡"
+          },
+          "parsed": {
+            "rent": 100000,
+            "managementFee": 5000,
+            "keyMoney": null,
+            "deposit": null,
+            "roomType": "k1",
+            "area": 25
+          },
+          "range": {
+            "low": 90000,
+            "median": 100000,
+            "high": 110000
+          },
+          "verdict": null,
+          "initialCostMonths": null,
+          "dealType": "rent"
+        },
+        "locationContext": null,
+        "locationLoading": false,
+        "locationError": "null",
+        "crimeData": null,
+        "prefectureSafety": null,
+        "crimeLoading": false,
+        "commute": null,
+        "commuteError": null,
+        "commuteLoading": false,
+        "shareTitle": "",
+        "shareUrl": null,
+        "shareLoading": false,
+        "shareError": null,
+        "shareCopied": false,
+        "pdfLoading": false,
+        "pdfError": null
+      },
+      "pending": [],
+      "events": [
+        {
+          "kind": "readShare",
+          "payload": "AAAAAAAA"
+        },
+        {
+          "kind": "readShare",
+          "payload": "BBBBBBBB"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "context",
+            "address": "東京都新宿区西新宿1丁目",
+            "stations": [
+              "新宿",
+              "西新宿"
+            ],
+            "advertisedWalkMinutes": [
+              5,
+              8
+            ]
+          }
+        },
+        {
+          "track": "listing-share-view"
+        },
+        {
+          "kind": "location",
+          "payload": {
+            "mode": "crime",
+            "address": "東京都新宿区西新宿1丁目"
+          }
+        },
+        {
+          "kind": "readShare",
+          "payload": "CCCCCCCC"
+        }
+      ]
+    },
+    "calculator-modifier-synchronization": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_30sqm",
+          "floor_2f_plus",
+          "wooden"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 30,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 2,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "木造",
+        "guidedAutoLock": false,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "secondFloor",
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": null,
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": []
+    },
+    "natural-language-loading-guard": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_30sqm",
+          "floor_2f_plus",
+          "wooden"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 30,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 2,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "木造",
+        "guidedAutoLock": false,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "secondFloor",
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": null,
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": true,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        }
+      ],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        }
+      ]
+    },
+    "natural-language-sync-success": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "district": "新宿區",
+            "maxBudget": 120000,
+            "minBudget": 80000,
+            "areaMin": 25,
+            "autoLock": true,
+            "cityGasRequired": true
+          },
+          "recommendations": [],
+          "advisorAdvice": "advisor"
+        },
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        }
+      ]
+    },
+    "structured-local-recommendation-fallback": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "areaMin": 25,
+            "minBudget": 80000,
+            "maxBudget": 120000,
+            "budgetIncludesFees": true,
+            "initialCostBudget": null,
+            "district": "新宿區",
+            "districts": [
+              "新宿區"
+            ],
+            "line": null,
+            "lines": [],
+            "station": null,
+            "stations": [],
+            "walkMinutes": null,
+            "commuteStation": null,
+            "commuteMinutes": null,
+            "visaType": null,
+            "applicationChannel": "domestic",
+            "buildingAgeMax": null,
+            "floorMin": null,
+            "separateBath": false,
+            "washbasin": false,
+            "bidet": false,
+            "autoLock": true,
+            "elevator": false,
+            "structure": null,
+            "furnished": false,
+            "furnishedPriority": null,
+            "tower": false,
+            "lpGasAccepted": false,
+            "petsAllowed": false,
+            "freeInternet": false,
+            "noKeyMoney": false,
+            "noDeposit": false,
+            "balcony": false,
+            "gasBurnersMin": null,
+            "cityGasRequired": true
+          },
+          "recommendations": [
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "下落合",
+              "lines": [
+                "西武新宿線各停"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            },
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "中井",
+              "lines": [
+                "西武新宿線",
+                "大江戶線"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            },
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "若松河田",
+              "lines": [
+                "大江戶線各停"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            }
+          ],
+          "advisorAdvice": null
+        },
+        "analysisLoading": false,
+        "analysisNotice": "upstream failed；已先保留可行性與車站推薦，不顯示固定文字冒充 AI 意見。",
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        }
+      ]
+    },
+    "natural-language-invalid-json-preserves-result": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "areaMin": 25,
+            "minBudget": 80000,
+            "maxBudget": 120000,
+            "budgetIncludesFees": true,
+            "initialCostBudget": null,
+            "district": "新宿區",
+            "districts": [
+              "新宿區"
+            ],
+            "line": null,
+            "lines": [],
+            "station": null,
+            "stations": [],
+            "walkMinutes": null,
+            "commuteStation": null,
+            "commuteMinutes": null,
+            "visaType": null,
+            "applicationChannel": "domestic",
+            "buildingAgeMax": null,
+            "floorMin": null,
+            "separateBath": false,
+            "washbasin": false,
+            "bidet": false,
+            "autoLock": true,
+            "elevator": false,
+            "structure": null,
+            "furnished": false,
+            "furnishedPriority": null,
+            "tower": false,
+            "lpGasAccepted": false,
+            "petsAllowed": false,
+            "freeInternet": false,
+            "noKeyMoney": false,
+            "noDeposit": false,
+            "balcony": false,
+            "gasBurnersMin": null,
+            "cityGasRequired": true
+          },
+          "recommendations": [
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "下落合",
+              "lines": [
+                "西武新宿線各停"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            },
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "中井",
+              "lines": [
+                "西武新宿線",
+                "大江戶線"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            },
+            {
+              "district": "新宿區",
+              "region": "東京都",
+              "station": "若松河田",
+              "lines": [
+                "大江戶線各停"
+              ],
+              "estimate": 135000,
+              "rangeLow": 122000,
+              "rangeHigh": 149000,
+              "budgetGap": 15000,
+              "fit": "需調整",
+              "recommendationType": "指定範圍",
+              "reasons": [
+                "位於指定行政區範圍",
+                "需要調整條件或預算"
+              ],
+              "commuteFit": "未指定通勤地",
+              "commuteTimeFit": "未指定時間",
+              "cautions": []
+            }
+          ],
+          "advisorAdvice": null
+        },
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": "AI 暫時無法整理需求，請稍後再試。",
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        }
+      ]
+    },
+    "independent-analysis-flows-reverse-completion": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "district": "新宿區",
+            "maxBudget": 120000,
+            "minBudget": 80000,
+            "areaMin": 25,
+            "autoLock": true,
+            "cityGasRequired": true
+          },
+          "recommendations": [],
+          "advisorAdvice": "natural"
+        },
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        }
+      ]
+    },
+    "structured-incompatible-commute-guard": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "新宿區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "新宿區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "大阪",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "district": "新宿區",
+            "maxBudget": 120000,
+            "minBudget": 80000,
+            "areaMin": 25,
+            "autoLock": true,
+            "cityGasRequired": true
+          },
+          "recommendations": [],
+          "advisorAdvice": "natural"
+        },
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": "通勤地點「大阪」與目前選擇的 關東 地區不在同一生活圈，請調整希望地區或通勤地點。",
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        }
+      ]
+    },
+    "district-guard-and-removal": {
+      "state": {
+        "calcMode": "rent",
+        "calcDistrict": "澀谷區",
+        "calcStation": "none",
+        "calcRoomType": "k1",
+        "calcModifiers": [
+          "compact_25sqm",
+          "autolock_elevator"
+        ],
+        "calcBuyModifiers": [],
+        "guidedDistrictSelections": [
+          "澀谷區"
+        ],
+        "guidedLineSelections": [],
+        "guidedStationSelections": [],
+        "guidedMinArea": 25,
+        "guidedAgeMax": 0,
+        "guidedFloorMin": 0,
+        "guidedWalkMinutes": 0,
+        "guidedStructure": "",
+        "guidedAutoLock": true,
+        "guidedElevator": false,
+        "guidedCommuteStation": "",
+        "guidedCommuteMinutes": 45,
+        "rentSearchFilters": [
+          "cityGas"
+        ],
+        "rentMonthlyBudget": 120000,
+        "rentMonthlyBudgetMin": 80000,
+        "aiResult": {
+          "criteria": {
+            "roomType": "k1",
+            "district": "新宿區",
+            "maxBudget": 120000,
+            "minBudget": 80000,
+            "areaMin": 25,
+            "autoLock": true,
+            "cityGasRequired": true
+          },
+          "recommendations": [],
+          "advisorAdvice": "natural"
+        },
+        "analysisLoading": false,
+        "analysisNotice": null,
+        "aiInputLoading": false,
+        "aiInputError": null,
+        "appliedNotice": null,
+        "locationGuardNotice": null,
+        "showAdvancedTools": false
+      },
+      "pending": [],
+      "events": [
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-natural-language"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "prompt": "  希望住新宿  "
+          }
+        },
+        {
+          "track": "rent-analysis-submitted-structured-form"
+        },
+        {
+          "kind": "rent",
+          "payload": {
+            "criteria": {
+              "roomType": "k1",
+              "areaMin": 25,
+              "minBudget": 80000,
+              "maxBudget": 120000,
+              "budgetIncludesFees": true,
+              "initialCostBudget": null,
+              "district": "新宿區",
+              "districts": [
+                "新宿區"
+              ],
+              "line": null,
+              "lines": [],
+              "station": null,
+              "stations": [],
+              "walkMinutes": null,
+              "commuteStation": null,
+              "commuteMinutes": null,
+              "visaType": null,
+              "applicationChannel": "domestic",
+              "buildingAgeMax": null,
+              "floorMin": null,
+              "separateBath": false,
+              "washbasin": false,
+              "bidet": false,
+              "autoLock": true,
+              "elevator": false,
+              "structure": null,
+              "furnished": false,
+              "furnishedPriority": null,
+              "tower": false,
+              "lpGasAccepted": false,
+              "petsAllowed": false,
+              "freeInternet": false,
+              "noKeyMoney": false,
+              "noDeposit": false,
+              "balcony": false,
+              "gasBurnersMin": null,
+              "cityGasRequired": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

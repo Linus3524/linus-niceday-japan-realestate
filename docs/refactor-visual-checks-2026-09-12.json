@@ -1,0 +1,126 @@
+{
+  "baselineCommit": "78ea857",
+  "browser": "Playwright Chromium",
+  "fixedTime": "2026-09-12T00:00:00Z",
+  "apiMode": "Controlled mock responses; external resources blocked consistently",
+  "assertions": [
+    "Visible report/calculator text identical",
+    "Screenshot PNG hashes identical",
+    "Form mode retained after rent/buy switching",
+    "No uncaught page errors"
+  ],
+  "checks": [
+    {
+      "width": 1440,
+      "scenario": "rent-default",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "ab333feb2f72a26aa0f87f35070c2918941df0a0db497631857586f1e6ca56d2",
+      "refactoredSha256": "ab333feb2f72a26aa0f87f35070c2918941df0a0db497631857586f1e6ca56d2"
+    },
+    {
+      "width": 1440,
+      "scenario": "rent-structured",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "0c2b124f385a51f99da009663482d7335503291cb3777e0b75052809d0ab8257",
+      "refactoredSha256": "0c2b124f385a51f99da009663482d7335503291cb3777e0b75052809d0ab8257"
+    },
+    {
+      "width": 1440,
+      "scenario": "rent-advanced",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "0c721b09b7157a320ef8c12e5d2355fef5a5e8628d2a76a1f00aea7b91508f08",
+      "refactoredSha256": "0c721b09b7157a320ef8c12e5d2355fef5a5e8628d2a76a1f00aea7b91508f08"
+    },
+    {
+      "width": 1440,
+      "scenario": "buy-updated",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "09f4628bd28c81ae09fb6590cfd5c5d025374d13ea2679c81c623b8ed4dd3dda",
+      "refactoredSha256": "09f4628bd28c81ae09fb6590cfd5c5d025374d13ea2679c81c623b8ed4dd3dda"
+    },
+    {
+      "width": 1440,
+      "scenario": "listing-upload",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "bf0eddefa5643de7a11b6edb6d8410e8fd83f7524dde9416e15c6f0744dfd056",
+      "refactoredSha256": "bf0eddefa5643de7a11b6edb6d8410e8fd83f7524dde9416e15c6f0744dfd056"
+    },
+    {
+      "width": 1440,
+      "scenario": "listing-rent",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "0a4254e2aad78701206e5ec64e996037f3dda45c598cc4d5d91bf6a9b26ee177",
+      "refactoredSha256": "0a4254e2aad78701206e5ec64e996037f3dda45c598cc4d5d91bf6a9b26ee177"
+    },
+    {
+      "width": 1440,
+      "scenario": "listing-sale",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "c282d302ce945c8846f9f82c2da7905224a5ff1874a445214e46c0f9e1c1a764",
+      "refactoredSha256": "c282d302ce945c8846f9f82c2da7905224a5ff1874a445214e46c0f9e1c1a764"
+    },
+    {
+      "width": 390,
+      "scenario": "rent-default",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "3233409101df7a2a30789d0734b264b0dd5b62da466f333238dcc739f02354a6",
+      "refactoredSha256": "3233409101df7a2a30789d0734b264b0dd5b62da466f333238dcc739f02354a6"
+    },
+    {
+      "width": 390,
+      "scenario": "rent-structured",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "781847833539fecf010962a2c53595f2c6cb72a3312aafa6c4acaa516f8019a8",
+      "refactoredSha256": "781847833539fecf010962a2c53595f2c6cb72a3312aafa6c4acaa516f8019a8"
+    },
+    {
+      "width": 390,
+      "scenario": "rent-advanced",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "f12ab8eeb5300b2e22adca9a7dc8c03c4d423167b2b77c35235058760e189951",
+      "refactoredSha256": "f12ab8eeb5300b2e22adca9a7dc8c03c4d423167b2b77c35235058760e189951"
+    },
+    {
+      "width": 390,
+      "scenario": "buy-updated",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "8b8b0ae91b9b40f3804f9b834abae6327f69dae8355c0040af51d2495c8997c0",
+      "refactoredSha256": "8b8b0ae91b9b40f3804f9b834abae6327f69dae8355c0040af51d2495c8997c0"
+    },
+    {
+      "width": 390,
+      "scenario": "listing-upload",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "9c02470c5881e4081aabdf2a3f60c76dfefb37ec4d6a3a6e6738741b965e7ee7",
+      "refactoredSha256": "9c02470c5881e4081aabdf2a3f60c76dfefb37ec4d6a3a6e6738741b965e7ee7"
+    },
+    {
+      "width": 390,
+      "scenario": "listing-rent",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "ad6db18a531e272d5390a0681bf315638cdfd1ae87dffdb8107c225a8f7a746f",
+      "refactoredSha256": "ad6db18a531e272d5390a0681bf315638cdfd1ae87dffdb8107c225a8f7a746f"
+    },
+    {
+      "width": 390,
+      "scenario": "listing-sale",
+      "textEqual": true,
+      "pixelsEqual": true,
+      "baselineSha256": "055ac4d48fc62c71ab3449d3b9c72beb11468eee14365cc86bfee6cbdfeddc7a",
+      "refactoredSha256": "055ac4d48fc62c71ab3449d3b9c72beb11468eee14365cc86bfee6cbdfeddc7a"
+    }
+  ]
+}

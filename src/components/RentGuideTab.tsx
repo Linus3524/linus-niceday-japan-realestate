@@ -1,177 +1,35 @@
+import { ArrowRight, Search, X } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useState, type ReactNode } from "react";
-import { Search, ArrowRight, FileText, X, ChevronDown } from "lucide-react";
-import { InitialFeeItem, SpecialTermItem, ProcessStep, QAItem } from "../data/rentGuideData";
+import { useState } from "react";
+import { InitialFeeItem, ProcessStep, QAItem, SpecialTermItem } from "../data/rentGuideData";
 import {
-  applicationRoutes,
-  domesticScreeningDocuments,
-  domesticScreeningNotice,
-  domesticSop,
-  getRentStaticMatches,
-  hasMinimumKnowledgeSearchLength,
-  overseasScreeningDocuments,
-  overseasSop,
-  processReminders,
-  screeningDocumentDisclaimer,
-  type RentStaticSectionId
+applicationRoutes,
+domesticSop,
+hasMinimumKnowledgeSearchLength,
+overseasSop,
+processReminders,
+type RentStaticSectionId
 } from "../data/rentStaticSearchData";
-import { renderFormattedText } from "../lib/format";
-import { QACard } from "./QACard";
-import { JapaneseRuby } from "./JapaneseRuby";
-import { TermDetailList } from "./TermDetailList";
-import { PageIntroCard } from "./PageIntroCard";
-import { RelatedThreads } from "./RelatedThreads";
 import { searchThreads } from "../lib/threadSearch";
-
-const availabilityStyle = {
-  "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
-  "一般": "bg-[#FFF9ED] text-[#7A5A1F] border-[#DCC8A1]",
-  "最少": "bg-[#FBDFD2] text-[#B13818] border-[#E94E2B]",
-  "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
-};
-
-function renderDocumentLabel(document: string) {
-  const match = document.match(/^(.*?)\*(\d+)$/);
-  if (!match) return document;
-  const [, text, noteNum] = match;
-  return (
-    <>
-      {text}
-      <sup className="ml-0.5 text-[10px] font-bold text-[#007d5a]">※{noteNum}</sup>
-    </>
-  );
-}
-
-function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
-  const [screeningMode, setScreeningMode] = useState<"overseas" | "domestic">("overseas");
-  useEffect(() => {
-    if (!hasMinimumKnowledgeSearchLength(searchQuery)) return;
-    const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-    const overseasText = overseasScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])]).join(" ").toLocaleLowerCase();
-    const domesticText = [domesticScreeningNotice, ...domesticScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])])].join(" ").toLocaleLowerCase();
-    if (domesticText.includes(normalizedQuery) && !overseasText.includes(normalizedQuery)) {
-      setScreeningMode("domestic");
-    } else if (overseasText.includes(normalizedQuery)) {
-      setScreeningMode("overseas");
-    }
-  }, [searchQuery]);
-  const profiles = screeningMode === "overseas" ? overseasScreeningDocuments : domesticScreeningDocuments;
-  return (
-    <div className="space-y-5 font-sans">
-      <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
-        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審査</button>
-        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
-      </div>
-      {screeningMode === "domestic" && (
-        <div className="border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 text-sm leading-7 text-[#3F5147]">{domesticScreeningNotice}</div>
-      )}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {profiles.map(profile => (
-          <article key={profile.profile} className="flex h-full flex-col border border-[#DDE3DF] bg-white p-5 md:p-6">
-            <div className="flex items-start justify-between gap-3 border-b border-[#DDE3DF] pb-3">
-              <h6 className="text-base font-bold leading-6 text-[#1A2A22]">{profile.profile}</h6>
-              <span className={`shrink-0 border px-2.5 py-1 text-[11px] font-bold ${availabilityStyle[profile.availability]}`}>房源量：{profile.availability}</span>
-            </div>
-            <p className="mt-4 text-xs font-bold tracking-wider text-[#66736C]">申請時建議先準備</p>
-            <ul className="mt-3 space-y-2.5 flex-1">
-              {profile.documents.map(document => {
-                const isOptional = document.includes("非必備");
-                return (
-                  <li key={document} className="flex items-start gap-2.5 text-sm leading-6 text-[#3F5147]">
-                    <span className={`mt-0.5 inline-flex h-5 w-4 shrink-0 items-center justify-center font-bold ${isOptional ? "text-[#b87333]" : "text-[#00a174]"}`}>
-                      {isOptional ? "＋" : "✓"}
-                    </span>
-                    <span className="flex-1">{renderDocumentLabel(document)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-            {profile.notes && profile.notes.length > 0 && (
-              <div className="mt-4 space-y-1.5 border-t border-dashed border-[#DDE3DF] pt-3 text-xs leading-5 text-[#66736C]">
-                {profile.notes.map((noteItem, idx) => (
-                  <p key={idx}>{noteItem}</p>
-                ))}
-              </div>
-            )}
-          </article>
-        ))}
-      </div>
-      <div className="border border-[#DCC8A1] bg-[#FFF9ED] p-4 text-xs leading-6 text-[#66583D] md:text-sm">{screeningDocumentDisclaimer}</div>
-    </div>
-  );
-}
-
-// 這類術語卡的內容本來就完整攤在卡片上，再開一層 TermModal 只會看到更少的東西，
-// 所以改成就地收合：長清單露出前幾條，其餘由使用者自己決定要不要展開。
-const TERM_DETAIL_PREVIEW = 5;
-// 只藏一兩條反而多一次點擊，不划算；要藏得夠多才值得收合（例如 4 條的「建物種別」就整份攤開）。
-const TERM_DETAIL_MIN_HIDDEN = 3;
-
-function SpecialTermCard({ term, onAskAI }: { key?: string | number; term: SpecialTermItem; onAskAI: () => void }) {
-  const [expanded, setExpanded] = useState(false);
-  const isFloorPlanTerm = term.name === "間取り";
-  const isBuildingStructureTerm = term.name === "建築構造";
-  const details = term.details ?? [];
-  const isCollapsible = !isFloorPlanTerm && !isBuildingStructureTerm && details.length >= TERM_DETAIL_PREVIEW + TERM_DETAIL_MIN_HIDDEN;
-  const visibleDetails = isCollapsible && !expanded ? details.slice(0, TERM_DETAIL_PREVIEW) : details;
-  const hiddenCount = details.length - TERM_DETAIL_PREVIEW;
-
-  return (
-    <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 relative">
-      <div className="flex justify-between items-start gap-2 mb-3">
-        <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]">
-          <JapaneseRuby text={term.name} />
-        </h4>
-        {term.jpName && (
-          <span className="shrink-0 text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">
-            {term.jpName}
-          </span>
-        )}
-      </div>
-      <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
-
-      {details.length > 0 && (
-        <div className={isFloorPlanTerm ? "" : "bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5"}>
-          <TermDetailList termName={term.name} details={visibleDetails} allDetails={details} />
-          {isCollapsible && (
-            <button
-              type="button"
-              onClick={() => setExpanded(prev => !prev)}
-              aria-expanded={expanded}
-              className="flex w-full items-center justify-center gap-1 border-t border-zinc-200 pt-2.5 font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174] cursor-pointer"
-            >
-              {expanded ? "收合" : `展開其餘 ${hiddenCount} 項`}
-              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
-            </button>
-          )}
-        </div>
-      )}
-
-      <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
-        <span>房屋／設備</span>
-        <button
-          type="button"
-          onClick={onAskAI}
-          className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
-        >
-          向 AI 顧問諮詢 →
-        </button>
-      </div>
-    </div>
-  );
-}
+import type { AppTab, RentGuideCategory, SelectTerm, SendMessage } from "../lib/uiTypes";
+import { SpecialTermCard, VisaDocumentMatrix } from './guides/rentGuideCards';
+import { RentProcessSection } from './guides/RentProcessSection';
+import { RentSearchResults } from './guides/RentSearchResults';
+import { JapaneseRuby } from "./JapaneseRuby";
+import { PageIntroCard } from "./PageIntroCard";
+import { QACard } from "./QACard";
 
 interface RentGuideTabProps {
   kbCategory: string;
-  setKbCategory: (c: any) => void;
+  setKbCategory: (c: RentGuideCategory) => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filtered: { fees: InitialFeeItem[]; terms: SpecialTermItem[]; steps: ProcessStep[]; qa: QAItem[] };
   staticMatches: RentStaticSectionId[];
   hasNoResults: boolean;
-  setSelectedFee: (fee: any) => void;
-  handleTabChange: (tab: any) => void;
-  handleSendMessage: (e?: any, customMsg?: string) => void;
+  setSelectedFee: SelectTerm;
+  handleTabChange: (tab: AppTab) => void;
+  handleSendMessage: SendMessage;
 }
 
 export function RentGuideTab(props: RentGuideTabProps) {
@@ -296,7 +154,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   ].map(cat => (
                     <button
                       key={cat.id}
-                      onClick={() => setKbCategory(cat.id as any)}
+                      onClick={() => setKbCategory(cat.id as RentGuideCategory)}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         kbCategory === cat.id 
                           ? "bg-[#00a174] text-white border-[#00a174]" 
@@ -336,96 +194,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   請輸入至少 2 個字的完整詞，例如「先行契約」或「保證公司」。
                 </div>
               )}
-              {isSearchActive && (
-                <section className="border border-[#DDE3DF] bg-white p-5 md:p-8">
-                  <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#DDE3DF] pb-4">
-                    <div>
-                      <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">租屋知識搜尋結果</h3>
-                      <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
-                        「{searchQuery.trim()}」找到 {rentSearchResultCount} 筆站內知識
-                        {threadMatches.total > 0 && `，另有 ${threadMatches.total} 篇實務分享`}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery("")}
-                      className="shrink-0 font-sans text-xs font-bold text-[#007D5A] hover:text-[#00a174]"
-                    >
-                      清除搜尋
-                    </button>
-                  </div>
-
-                  {hasNoResults && threadMatches.total === 0 ? (
-                    <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
-                      <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
-                      <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「敷金」、「先行契約」、「保證公司」或「審査」。</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-7">
-                      <RelatedThreads
-                        threads={threadMatches.results}
-                        total={threadMatches.total}
-                        query={searchQuery}
-                        source="rent"
-                      />
-
-                      {(filtered.fees.length > 0 || filtered.terms.length > 0) && (
-                        <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {[...filtered.fees, ...filtered.terms].map(term => (
-                              <button
-                                key={`${term.name}-${term.jpName || ""}`}
-                                type="button"
-                                onClick={() => setSelectedFee(term)}
-                                className="border border-[#DDE3DF] bg-[#F8FAF9] p-4 text-left transition-colors hover:border-[#00a174]"
-                              >
-                                <strong className="font-serif text-sm text-[#1A2A22]">{term.name}</strong>
-                                {term.jpName && <span className="ml-2 font-sans text-[10px] text-zinc-500">{term.jpName}</span>}
-                                <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-zinc-600">{term.description}</p>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {(filtered.steps.length > 0 || staticRentSearchItems.length > 0) && (
-                        <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">指南與流程</h4>
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {filtered.steps.map(step => (
-                              <article key={step.id} className="border border-[#DDE3DF] bg-white p-4">
-                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">租屋申請流程</span>
-                                <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{step.name}</h5>
-                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{step.description}</p>
-                              </article>
-                            ))}
-                            {staticRentSearchItems.map(item => (
-                              <article key={item.id} className="border border-[#DDE3DF] bg-white p-4">
-                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
-                                <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
-                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{item.text}</p>
-                              </article>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {filtered.qa.length > 0 && (
-                        <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關租屋問答</h4>
-                          <div className="space-y-3">
-                            {filtered.qa.map((qa, idx) => (
-                              <QACard key={qa.id} question={qa.question} summary={qa.summary} answer={qa.answer} number={idx + 1} />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                    </div>
-                  )}
-                </section>
-              )}
+              <RentSearchResults isSearchActive={isSearchActive} searchQuery={searchQuery} rentSearchResultCount={rentSearchResultCount} threadMatches={threadMatches} setSearchQuery={setSearchQuery} hasNoResults={hasNoResults} filtered={filtered} setSelectedFee={setSelectedFee} staticRentSearchItems={staticRentSearchItems} />
 
               {/* CARD SECTOR: INITIAL FEES */}
               {!isSearchActive && filtered.fees.length > 0 && (
@@ -496,245 +265,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
 
               {/* CARD SECTOR: PROCESS STEPS */}
-              {!isSearchActive && showProcessSection && (
-                <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3">
-                    <span>日本租屋正式申請與引渡流程 SOP</span>
-                  </h3>
-                  
-                  {/* General / Overseas SOP highlight banner */}
-                  {showSop && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans text-xs">
-                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#00a174] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#00a174] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">{overseasSop.badge}</div>
-                      <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
-                        <span>✈ {overseasSop.title}</span>
-                      </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
-                        {overseasSop.description}
-                      </p>
-                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
-                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
-                          {overseasSop.steps.map((step, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <span className="bg-[#1A2A22] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
-                                {idx + 1}
-                              </span>
-                              <span>{step}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-white p-5 border border-[#DDE3DF] hover:border-[#00a174] transition-all duration-300 hover:shadow-colored-soft relative">
-                      <div className="absolute top-0 right-0 bg-[#00a174] text-white px-2 py-0.5 font-bold font-jost text-[10px] tracking-wide">{domesticSop.badge}</div>
-                      <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
-                        <span>🇯🇵 {domesticSop.title}</span>
-                      </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
-                        {domesticSop.description}
-                      </p>
-                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 入境審査 SOP 完整步驟：</span>
-                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
-                          {domesticSop.steps.map((step, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <span className="bg-[#00a174] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
-                                {idx + 1}
-                              </span>
-                              <span>{step}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  )}
-
-                  {/* Required Documents Section for Overseas vs Domestic Screenings */}
-                  {showDocuments && (
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
-                    <button
-                      type="button"
-                      onClick={() => setDocumentsExpanded(current => !current)}
-                      disabled={isDocumentSearchResult}
-                      aria-expanded={isDocumentsOpen}
-                      aria-controls="screening-document-matrix"
-                      className={`flex w-full items-center justify-between gap-4 text-left ${isDocumentsOpen ? "border-b border-zinc-300 pb-3 mb-4" : ""}`}
-                    >
-                      <span className="flex min-w-0 items-start gap-3">
-                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
-                        <span>
-                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審査所需資料與準備文件對照</span>
-                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，查看建議先準備的文件</span>
-                        </span>
-                      </span>
-                      <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#00a174]">
-                        {isDocumentSearchResult ? "符合搜尋" : isDocumentsOpen ? "收合" : "展開查看"}
-                        {!isDocumentSearchResult && (
-                          <ChevronDown className={`h-4 w-4 transition-transform ${isDocumentsOpen ? "rotate-180" : ""}`} />
-                        )}
-                      </span>
-                    </button>
-
-                    {isDocumentsOpen && (
-                      <div id="screening-document-matrix">
-                        <VisaDocumentMatrix searchQuery={searchQuery} />
-                      </div>
-                    )}
-                    <div className="hidden" aria-hidden="true">
-                      <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
-                          <span>✈ 海外審査需要資料</span>
-                        </h5>
-                        <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>護照影本：</strong>個人照片頁、簽證貼紙頁（若已核發）。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>在留資格認定證明書 (COE)：</strong>或打工度假簽證證明。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>入學許可書 / 內定通知書：</strong>學生提供學校錄取書；就職者提供公司給予的內定通知/薪資證明。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>緊急聯絡人：</strong>通常需要兩位，一位為母國二親等內家長（能提供戶籍謄本佐證親屬關係較佳），另一位為日本在留者（部分保證會社要求，若無可向仲介諮詢協助）。</span>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
-                          <span>🇯🇵 境內審査需要資料</span>
-                        </h5>
-                        <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>護照影本：</strong>個人照片頁、日本入境章戳頁。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>在留卡（正反面）：</strong>住居地欄位及申報狀態依個案確認；不得把沒有實際居住的親友、飯店或短租地址當成自己的住址申報。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>日本手機門號：</strong>保證會社審査時會撥打電話照會，必須能正常通話與接聽。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>日本銀行帳戶 & 提款卡/存摺：</strong>合約通過後綁定每個月房租自動扣款使用。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>所得證明 / 學生證：</strong>在日就職者需提供近期的源泉徵收票、課稅證明書或薪資單；學生需提供在學證明或學生證影本。</span>
-                          </li>
-                          <li className="flex items-start gap-1.5">
-                            <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>在日緊急聯絡人：</strong>通常要求必須是居住在日本境內、且能用日文進行基本電話溝通的朋友或長輩。</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  )}
-
-                  {/* Application route comparison */}
-                  {showRoutes && (
-                  <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="mb-4 flex flex-col gap-1 border-b border-zinc-200 pb-3 sm:flex-row sm:items-end sm:justify-between">
-                      <div>
-                        <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
-                        <p className="mt-1 text-xs leading-relaxed text-zinc-600 font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
-                      </div>
-                      <span className="text-xs font-bold text-[#00a174] font-sans">三種申請方式</span>
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3 font-sans">
-                      {applicationRoutes.map((route, index) => (
-                        <div key={route.title} className="border border-[#DDE3DF] p-4">
-                          <div className="mb-3 flex items-start justify-between gap-2">
-                            <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
-                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#e6f6f1] text-[#007d5a]"}`}>{route.condition}</span>
-                          </div>
-                          <p className="text-xs leading-relaxed text-zinc-700">{route.body}</p>
-                          <p className={`mt-3 border-t border-zinc-100 pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  )}
-
-                  {/* Vertical Linear Steps Timeline */}
-                  {filtered.steps.length > 0 && (
-                  <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="absolute top-0 right-6 bg-[#00a174] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
-                      租屋申請9步驟
-                    </div>
-                    <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
-                      租屋審查、付款與入住步驟全解析
-                      <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
-                    </h4>
-                    
-                    <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
-                      {filtered.steps.map((step, idx) => (
-                        <div key={idx} className="relative group">
-                          {/* Single numbered timeline node: the title itself no longer repeats the step number. */}
-                          <div className="absolute -left-[38px] top-0.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#00a174] bg-white text-xs font-bold text-[#00a174] font-sans transition-colors group-hover:bg-[#00a174] group-hover:text-white">
-                            {step.id}
-                          </div>
-                          
-                          <div className="flex flex-col md:flex-row justify-between items-start gap-2 mb-1.5">
-                            <h5 className="font-bold text-sm text-[#1A2A22]">
-                              {step.name.replace(/^[①②③④⑤⑥⑦⑧⑨]\s*/, "")}
-                            </h5>
-                            <span className="text-xs bg-[#F5F8F6] border border-zinc-300 text-zinc-600 px-2 py-0.5 font-sans shrink-0">
-                              作業天數：{step.duration}
-                            </span>
-                          </div>
-                          <div className="border-l-2 border-[#9ee2cf] pl-3 text-xs text-zinc-700 leading-relaxed text-justify font-sans">
-                            <span className="mr-2 text-[10px] font-bold tracking-wide text-[#00a174]">作業重點</span>
-                            {renderFormattedText(step.description)}
-                          </div>
-                          {step.details && step.details.length > 0 && (
-                            <ul className="mt-3 space-y-1.5 pl-3 text-xs leading-relaxed text-zinc-600 font-sans">
-                              {step.details.map((detail, detailIndex) => (
-                                <li key={detailIndex} className="flex gap-2">
-                                  <span className="shrink-0 text-[#00a174]">•</span>
-                                  <span>{detail}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  )}
-
-                  {showReminders && (
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed font-sans space-y-2">
-                      <span className="font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
-                      <ul className="space-y-1.5">
-                        {processReminders.map(reminder => (
-                          <li key={reminder} className="flex gap-2">
-                            <span className="shrink-0 text-[#00a174]">•</span>
-                            <span>{reminder}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </section>
-              )}
+              <RentProcessSection isSearchActive={isSearchActive} showProcessSection={showProcessSection} showSop={showSop} showDocuments={showDocuments} setDocumentsExpanded={setDocumentsExpanded} isDocumentSearchResult={isDocumentSearchResult} isDocumentsOpen={isDocumentsOpen} searchQuery={searchQuery} showRoutes={showRoutes} filtered={filtered} showReminders={showReminders} VisaDocumentMatrix={VisaDocumentMatrix} />
 
               {/* CARD SECTOR: Q&A */}
               {!isSearchActive && filtered.qa.length > 0 && (

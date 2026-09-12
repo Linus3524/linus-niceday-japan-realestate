@@ -1,21 +1,22 @@
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect } from "react";
 import { renderFormattedText } from "../lib/format";
+import type { AppTab, SelectTerm, SendMessage, TermDetail } from "../lib/uiTypes";
 import { JapaneseRuby } from "./JapaneseRuby";
 import { TermDetailList } from "./TermDetailList";
 
 interface TermModalProps {
-  selectedFee: any | null;
-  setSelectedFee: (fee: any | null) => void;
-  handleTabChange: (tab: any) => void;
-  handleSendMessage: (e?: any, customMsg?: string) => void;
+  selectedFee: TermDetail | null;
+  setSelectedFee: SelectTerm;
+  handleTabChange: (tab: AppTab) => void;
+  handleSendMessage: SendMessage;
 }
 
 // 依項目類型動態決定按鈕文字與帶入 AI 的問句，避免「圖紙用語」也被稱為「費用」的錯置狀況。
 // 注意 category: "drawing" 底下混了兩種東西：真正的圖紙標示（間取り、主要採光面）與
 // 建築知識（建築構造、ガスの種類），後者叫「圖紙用語」會誤導，所以一律用中性的「項目」。
-function getItemTypeLabel(item: any): string {
+function getItemTypeLabel(item: TermDetail | null): string {
   if (!item) return "項目";
   if (item.category === "fee") return "費用";
   if (item.category === "step" || item.duration !== undefined || item.step !== undefined) return "流程步驟";
