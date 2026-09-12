@@ -1,3 +1,5 @@
+import { SourceBadge } from "../ui/SourceBadge";
+import { informationStyle } from "../../lib/ui/informationStyles";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 import { ageBandLabel } from '../../lib/listing/formatters';
 import type { buildSaleMarketPresentation } from "../../lib/listing/saleMarketPresentation";
@@ -17,11 +19,11 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
               {/* 左卡：國土交通省 實價成交換算基準 */}
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-4">
                 <div>
-                  <div className="flex items-center justify-between border-b border-[#DDE3DF] pb-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-2">
                     <span className="text-xs font-bold text-[#007D5A]">國土交通省 實價成交換算基準</span>
-                    <span className="border border-[#DDE3DF] bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#66736C]">
+                    <SourceBadge>
                       {typeof c.sampleCount === "number" ? `${c.sampleCount.toLocaleString()} 筆成約` : "實際成交"}
-                    </span>
+                    </SourceBadge>
                   </div>
                   {typeof c.medianSqmPriceYen === "number" && !isNaN(c.medianSqmPriceYen) && c.medianSqmPriceYen > 0 && parsedArea ? (
                     <div className="mt-3">
@@ -31,14 +33,14 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
                       </p>
                     </div>
                   ) : null}
-                  <p className="mt-2 text-[11px] leading-relaxed text-[#66736C]">
+                  <p className={`mt-2 ${informationStyle.source}`}>
                     比較基準：{c.region}{c.district}・{c.layout}
                     {c.marketAgeBand ? `・${ageBandLabel(c.marketAgeBand)}` : ""}
                     {c.periodStart && c.periodEnd ? `（${c.periodStart}～${c.periodEnd}）` : ""}
                   </p>
                 </div>
                 <div className="mt-3.5 border-t border-[#DDE3DF] pt-2 flex items-center justify-between">
-                  <span className="text-[11px] text-[#8A9590]">本案開價 vs 成交基準</span>
+                  <span className="text-[11px] text-[#66736C]">本案開價 vs 成交基準</span>
                   <span className={`border px-2 py-0.5 text-xs font-bold tabular-nums ${typeof officialDiffPercent !== "number" || isNaN(officialDiffPercent)
                       ? "border-[#DDE3DF] bg-white text-[#1A2A22]"
                       : officialDiffPercent > 0
@@ -61,11 +63,11 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
               {/* 右卡：在售競品交叉驗證 */}
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-4">
                 <div>
-                  <div className="flex items-center justify-between border-b border-[#DDE3DF] pb-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-2">
                     <span className="text-xs font-bold text-[#1A2A22]">{isSpecialSale ? "At Home 在售競品交叉驗證" : "市場同規模在售行情比對"}</span>
-                    <span className="border border-[#DDE3DF] bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#66736C]">
+                    <SourceBadge>
                       {listingRangeText ? "校準開價" : "公開牌價"}
-                    </span>
+                    </SourceBadge>
                   </div>
                   {listingMan !== null ? (
                     <div className="mt-3">
@@ -80,12 +82,12 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
                       )}
                     </div>
                   ) : null}
-                  <p className="mt-2 text-[11px] leading-relaxed text-[#66736C]">
+                  <p className={`mt-2 ${informationStyle.source}`}>
                     {c.listingBenchmarkSourceLabel || "刊登價為賣方開價，非實際成交價，通常保留議價空間"}
                   </p>
                 </div>
                 <div className="mt-3.5 border-t border-[#DDE3DF] pt-2 flex items-center justify-between">
-                  <span className="text-[11px] text-[#8A9590]">本案開價 vs 在售行情</span>
+                  <span className="text-[11px] text-[#66736C]">本案開價 vs 在售行情</span>
                   <span className={`border px-2 py-0.5 text-xs font-bold tabular-nums ${typeof c.listingDiffPercent !== "number" || isNaN(c.listingDiffPercent)
                       ? "border-[#DDE3DF] bg-white text-[#1A2A22]"
                       : c.listingDiffPercent > 0

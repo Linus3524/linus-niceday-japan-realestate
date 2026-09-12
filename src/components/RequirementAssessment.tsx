@@ -1,6 +1,6 @@
 import { AlertTriangle, CheckCircle2, ClipboardCheck, HelpCircle } from "lucide-react";
 import type { RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
-import { criteriaTagStyle } from "../lib/criteriaTagStyles";
+import { statusBadgeStyle } from "../lib/ui/statusStyles";
 import {
   axisImpactLevel,
   buildAxisVerdicts,
@@ -10,17 +10,17 @@ import {
 } from "../lib/requirementVerdict";
 
 const badgeStyle: Record<AxisImpactLevel, string> = {
-  "容易達成": criteriaTagStyle.equipment,
-  "需要取捨": criteriaTagStyle.layout,
-  "較難兼顧": criteriaTagStyle.budget,
-  "待補資料": criteriaTagStyle.transport
+  "容易達成": statusBadgeStyle.positive,
+  "需要取捨": statusBadgeStyle.caution,
+  "較難兼顧": statusBadgeStyle.negative,
+  "待補資料": statusBadgeStyle.pending
 };
 
 const overallStyle: Record<OverallLevel, string> = {
-  "可行": "border-[#9ee2cf] bg-[#e6f6f1] text-[#007d5a]",
-  "有條件可行": "border-[#DCC8A1] bg-[#FFF9ED] text-[#7A5A1F]",
-  "難度高": "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]",
-  "資料不足": "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"
+  "可行": statusBadgeStyle.positive,
+  "有條件可行": statusBadgeStyle.caution,
+  "難度高": statusBadgeStyle.negative,
+  "資料不足": statusBadgeStyle.pending
 };
 
 export function RequirementAssessment({ criteria, recommendations }: {
@@ -37,8 +37,8 @@ export function RequirementAssessment({ criteria, recommendations }: {
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-4 w-4 text-[#00a174]" />
-              <h4 id="requirement-assessment-title" className="text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
+              <ClipboardCheck className="h-4 w-4 text-[#007D5A]" />
+              <h4 id="requirement-assessment-title" className="ui-section-heading font-sans text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
             </div>
             <p className="mt-1 font-sans text-[10px] text-[#66736C]">根據預算、地點與設備條件判斷</p>
           </div>

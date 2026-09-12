@@ -1,3 +1,4 @@
+import { informationStyle } from "../../lib/ui/informationStyles";
 import type { CalculatorViewModel } from '../../hooks/useCalculatorController';
 import { formatManYen, formatManYenNumber } from '../../lib/calculator/formatters';
 
@@ -91,28 +92,28 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
     <div className="p-5 lg:col-span-7 md:p-6">
       <div className="border-b border-[#DDE3DF] pb-4">
         <p className="text-[10px] font-bold tracking-[0.14em] text-[#66736C] uppercase font-sans">Affordable range</p>
-        <h4 className="mt-1 text-lg font-bold text-[#1A2A22]">建議購屋總價控制在</h4>
-        <p className="mt-2 font-mono text-2xl font-black text-[#00a174]">
+        <h4 className="ui-section-heading font-sans mt-1 text-lg font-bold text-[#1A2A22]">建議購屋總價控制在</h4>
+        <p className={`mt-2 ${informationStyle.amount}`}>
           {formatManYenNumber(affordableBuyLow, 0)}～{formatManYen(affordableBuyPrice, 0)}
         </p>
-        <p className="mt-1 text-[10px] text-zinc-400">依現金與月付能力取較低上限，並保留約 10% 緩衝。</p>
+        <p className={`mt-1 ${informationStyle.note}`}>依現金與月付能力取較低上限，並保留約 10% 緩衝。</p>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-px border border-[#DDE3DF] bg-[#DDE3DF] sm:grid-cols-3">
         <div className="bg-white p-4">
-          <p className="text-[10px] font-bold text-[#66736C]">頭期款概算</p>
+          <p className={informationStyle.label}>頭期款概算</p>
           <p className="mt-1 font-mono text-lg font-bold text-[#1A2A22]">{formatManYen(affordableDownPayment, 0)}</p>
-          <p className="mt-1 text-[9px] text-zinc-400">總價的 {100 - loanRatio}%</p>
+          <p className={`mt-1 ${informationStyle.source}`}>總價的 {100 - loanRatio}%</p>
         </div>
         <div className="bg-white p-4">
-          <p className="text-[10px] font-bold text-[#66736C]">初期諸費用概算</p>
+          <p className={informationStyle.label}>初期諸費用概算</p>
           <p className="mt-1 font-mono text-lg font-bold text-[#1A2A22]">{formatManYen(affordableBuyFees, 0)}</p>
-          <p className="mt-1 text-[9px] text-zinc-400">目前以總價約 {Math.round(buyFeeRate * 100)}% 準備</p>
+          <p className={`mt-1 ${informationStyle.source}`}>目前以總價約 {Math.round(buyFeeRate * 100)}% 準備</p>
         </div>
         <div className="bg-white p-4">
-          <p className="text-[10px] font-bold text-[#66736C]">貸款假設</p>
+          <p className={informationStyle.label}>貸款假設</p>
           <p className="mt-1 font-mono text-lg font-bold text-[#1A2A22]">{annualRate}%／{loanYears} 年</p>
-          <p className="mt-1 text-[9px] text-zinc-400">貸款成數 {loanRatio}%</p>
+          <p className={`mt-1 ${informationStyle.source}`}>貸款成數 {loanRatio}%</p>
         </div>
       </div>
 

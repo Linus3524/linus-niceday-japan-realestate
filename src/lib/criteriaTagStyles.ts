@@ -1,4 +1,4 @@
-/** 需求條件與影響標籤共用色票。 */
+/** 需求條件分類色票；評估程度使用 ui/statusStyles，避免分類與風險混用。 */
 export const criteriaTagStyle = {
   layout: "border-[#facc15] bg-[#fef9c3] text-[#854D0E]",
   equipment: "border-[#86efac] bg-[#dcfce7] text-[#166534]",

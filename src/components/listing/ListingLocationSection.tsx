@@ -1,7 +1,9 @@
+import { LoadingNotice } from "../ui/LoadingNotice";
+import { ErrorNotice } from "../ui/ErrorNotice";
+import { informationStyle } from "../../lib/ui/informationStyles";
 import {
 Footprints,
 Info,
-LoaderCircle,
 MapPin,
 RefreshCw,
 Store
@@ -49,21 +51,13 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
     </div>
 
     {locationLoading && (
-      <div className="flex items-center justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-        <div className="flex items-center gap-2.5">
-          <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
-          <div>
-            <p className="text-xs font-bold text-[#1A2A22]">正在定位門牌與檢索周邊生活機能設施…</p>
-            <p className="mt-0.5 text-[11px] text-[#66736C]">比對真實道路步行時間，並搜尋周邊 1.2km 超商、超市、藥妝、公園等生活設施</p>
-          </div>
-        </div>
-      </div>
+      <LoadingNotice description="比對真實道路步行時間，並搜尋周邊 1.2km 超商、超市、藥妝、公園等生活設施">
+        正在定位門牌與檢索周邊生活機能設施…
+      </LoadingNotice>
     )}
 
     {locationError && !locationLoading && (
-      <div className="flex flex-col gap-2 border border-[#E8C4A8] bg-[#FFF9ED] p-3.5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-relaxed text-[#7A5A1F]">{locationError}</p>
-        {result && (
+      <ErrorNotice tone="caution" action={result && (
           <button
             type="button"
             onClick={() => void loadLocationContext(result)}
@@ -71,8 +65,9 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
           >
             <RefreshCw className="h-3.5 w-3.5" /> 重新載入設施與地圖
           </button>
-        )}
-      </div>
+        )}>
+        {locationError}
+      </ErrorNotice>
     )}
 
     {locationContext && (
@@ -197,7 +192,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
           </ErrorBoundary>
 
           {/* 資料來源與免責聲明：放在地圖卡片內最下方 */}
-          <div className="mt-4 border-t border-[#DDE3DF] pt-3 flex items-start gap-2 text-[11px] leading-relaxed text-[#8A9590]">
+          <div className="mt-4 border-t border-[#DDE3DF] pt-3 flex items-start gap-2 text-[11px] leading-relaxed text-[#66736C]">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8A9590]" />
             <div className="min-w-0 flex-1 space-y-1">
               <div>
@@ -206,7 +201,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                 <a className="underline hover:text-[#1A2A22]" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>、
                 <a className="underline hover:text-[#1A2A22]" href="https://www.reinfolib.mlit.go.jp/" target="_blank" rel="noreferrer">國土交通省 不動產資訊資料庫</a>。
               </div>
-              <p className="text-[10px] leading-relaxed text-[#8A9590]">
+              <p className={informationStyle.source}>
                 本服務使用日本國土交通省不動產資訊資料庫 API，但不保證所提供資訊之即時性、正確性與完整性；周邊設施資料亦可能存在缺漏，實際現況請以現場與官方公開資訊為準。
               </p>
             </div>
@@ -218,10 +213,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
     {/* 周邊治安資料：東京都為町丁目級，其餘道府県為都道府県級。
                 刻意放在 locationContext 判斷之外——定位失敗時仍可只靠地址顯示県級治安。 */}
     {crimeLoading && (
-      <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
-        <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
-        <p className="text-xs text-[#66736C]">正在查詢周邊治安資料…</p>
-      </div>
+      <LoadingNotice>正在查詢周邊治安資料…</LoadingNotice>
     )}
     {crimeData && !crimeLoading && (
       <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">

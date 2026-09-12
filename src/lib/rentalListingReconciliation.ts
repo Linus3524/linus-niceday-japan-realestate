@@ -1,3 +1,5 @@
+import { reconcileListingLayout } from "./listingLayoutReconciliation.js";
+
 type RentalListingFields = {
   dealType?: string;
   buildingName?: string;
@@ -164,5 +166,5 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
     result.specialNotes = specialNotes.join("。");
   }
 
-  return result;
+  return reconcileListingLayout(result, layoutText);
 }

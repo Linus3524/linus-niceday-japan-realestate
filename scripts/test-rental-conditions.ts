@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { normalizeRoomType } from "../src/lib/listingExtraction.js";
 import { calculateInitialCostBreakdown } from "../api/analyze-listing.js";
 import { additionalRentalFees } from "../src/lib/rentalConditions.js";
 import { rentalConditionGroups } from "../src/lib/rentalConditionDisplay.js";
@@ -131,3 +132,22 @@ assert.equal(excelanCosts.items.find(item => item.id === "cleaningFee")?.amount,
 assert.equal(excelanCosts.items.find(item => item.id === "disinfectionFee")?.amount, 26400);
 assert.equal(excelanCosts.items.find(item => item.id === "supportFee")?.amount, 3190);
 console.log("Rental PDF conditions: additional fees, annual/optional exclusions and totals passed.");
+
+
+// A flyer may label its header 1DK while its explicit room breakdown says 1LDK.
+const layoutCase = { dealType: "rent", layout: "1DK", specialNotes: "既有契約注意事項" };
+const roomDetail = "間取り 1DK\nLDK(10.3畳) 洋室(6.4畳)\n間取詳細\n構造 鉄筋コンクリート";
+const correctedLayout = reconcileRentalListingText(layoutCase, roomDetail);
+assert.equal(correctedLayout.layout, "1LDK");
+assert.match(correctedLayout.specialNotes!, /既有契約注意事項/);
+assert.match(correctedLayout.specialNotes!, /總格局為 1DK.*行情比較依詳細格局採 1LDK/);
+assert.equal(layoutCase.layout, "1DK", "do not mutate the original extraction");
+assert.equal(reconcileRentalListingText(correctedLayout, roomDetail).specialNotes, correctedLayout.specialNotes, "idempotent reconciliation");
+for (const detail of ["LDK", "LDK(10.3畳)", "DK(10.3畳) 洋室(6.4畳)", "LDK(10.3畳) 洋室(6.4畳) 洋室(5畳)", "LDK(10.3畳) 洋室(6.4畳) 和室", "LDK(10.3畳) 洋室(6.4畳) 納戸(3畳)"]) {
+  assert.equal(reconcileRentalListingText(layoutCase, `間取詳細 ${detail}`).layout, "1DK", `do not infer from incomplete/conflicting detail: ${detail}`);
+}
+assert.equal(reconcileRentalListingText(layoutCase, "備考：LDK(10.3畳) 洋室(6.4畳)").layout, "1DK", "unlabelled prose is not a breakdown");
+assert.equal(reconcileRentalListingText(layoutCase, "間取詳細 ＬＤＫ（１０．３帖）＋洋室（６．４帖）").layout, "1LDK");
+assert.equal(reconcileRentalListingText({ ...layoutCase, layout: "2DK" }, "間取詳細 LDK(12畳) 洋室(6畳) 和室(5畳)").layout, "2LDK");
+
+assert.equal(normalizeRoomType(correctedLayout.layout), "ldk1", "corrected layout must use 1LDK market group, never k1");

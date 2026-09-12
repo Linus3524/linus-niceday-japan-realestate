@@ -8,7 +8,6 @@ import {
   Building2,
   HelpCircle,
   FileSearch,
-  CheckCircle2,
 } from "lucide-react";
 
 const STRING_ICON_MAP: Record<string, LucideIcon> = {
@@ -23,7 +22,7 @@ const STRING_ICON_MAP: Record<string, LucideIcon> = {
 
 interface PageIntroCardProps {
   id?: string;
-  /** 左側圖示，可傳入 LucideIcon、ReactNode 或 Material Symbols 名稱字串 */
+  /** 左側圖示，可傳入 LucideIcon、ReactNode 或 既有名稱字串（統一映射為 Lucide） */
   icon?: LucideIcon | ReactNode | string;
   /** 主標題 */
   title: ReactNode;
@@ -58,14 +57,8 @@ export function PageIntroCard({
     }
     if (typeof icon === "string") {
       const MappedLucide = STRING_ICON_MAP[icon];
-      if (MappedLucide) {
-        return <MappedLucide className="h-5 w-5 text-[#00a174]" />;
-      }
-      return (
-        <span className="material-symbols-rounded select-none text-[22px] leading-none text-[#00a174] overflow-hidden inline-block w-6 h-6 text-center" aria-hidden="true">
-          {icon}
-        </span>
-      );
+      const IconComponent = MappedLucide || HelpCircle;
+      return <IconComponent className="h-5 w-5 text-[#00a174]" />;
     }
     return null;
   };

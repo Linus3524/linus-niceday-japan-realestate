@@ -130,6 +130,11 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-serif);
 }
 
+/* 共用閱讀標題明確使用黑體，覆蓋未分層的全域 h1–h6 襯線規則。 */
+.ui-section-heading {
+  font-family: var(--font-sans);
+}
+
 /* 圖紙分析的綠色區塊標題統一使用內文黑體，避免租賃、一般買賣與特殊買賣各自繼承不同字級。 */
 .listing-section-title {
   font-family: var(--font-sans);

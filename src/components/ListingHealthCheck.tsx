@@ -1,5 +1,6 @@
+import { LoadingNotice } from "./ui/LoadingNotice";
+import { ErrorNotice } from "./ui/ErrorNotice";
 import {
-  AlertCircle,
   CheckCircle2,
   ExternalLink,
   FileText,
@@ -271,18 +272,12 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
 
       {/* 分享頁讀取中：上傳區藏起來了，讀取狀態要另外顯示，否則畫面是空白的 */}
       {sharedMode && loading && !result && (
-        <div className="flex items-center gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-4 text-sm text-[#3F5147]">
-          <LoaderCircle className="h-4 w-4 animate-spin text-[#007D5A]" />
-          正在讀取分享的分析結果…
-        </div>
+        <LoadingNotice>正在讀取分享的分析結果…</LoadingNotice>
       )}
 
       {/* 錯誤提示 */}
       {error && (
-        <div className="mt-4 flex items-start gap-2.5 border border-[#E94E2B] bg-[#FBDFD2] p-3.5 text-xs text-[#B13818]">
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-          <p className="leading-relaxed">{error}</p>
-        </div>
+        <div className="mt-4"><ErrorNotice>{error}</ErrorNotice></div>
       )}
 
       {/* 全螢幕圖紙檢視 */}
