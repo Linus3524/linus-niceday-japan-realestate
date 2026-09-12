@@ -106,6 +106,14 @@ function occurrenceCount(text: string, aliases: string[]) {
   }, 0);
 }
 
+/** 同一個寫法（非跨同義詞加總）在正文重複出現的最高次數。 */
+function maxSingleAliasOccurrences(text: string, aliases: string[]) {
+  return aliases.reduce((best, alias) => {
+    if (!alias) return best;
+    return Math.max(best, text.split(alias).length - 1);
+  }, 0);
+}
+
 function scoreDocument(document: ThreadDocument, tokens: string[], rawQuery: string, requireAllTokens: boolean) {
   const bodyText = document.text.toLocaleLowerCase();
   let matchedTokens = 0;
@@ -133,6 +141,13 @@ function scoreDocument(document: ThreadDocument, tokens: string[], rawQuery: str
     score += Math.min(occurrences * 2, 6);
     if (occurrences >= 3) score += 8;
     if (!inTitle && inLeading && occurrences >= 2) score += 14;
+    // 主題寫在正文深處的解說文補償：標題、人工關鍵字與開頭都沒命中，
+    // 但同一個寫法被反覆解說 4 次以上時，仍應視為該概念的專文。
+    // 例如更新料專文首段在講其他圖紙用語，「更新料」則在後段出現 7 次；
+    // 若不補分，會輸給只是順帶提到續約／續租／再契約各一次的個案求助文。
+    if (!inTitle && !inKeywords && !inLeading && maxSingleAliasOccurrences(bodyText, aliases) >= 4) {
+      score += 22;
+    }
   }
 
   if (matchedTokens === 0 || (requireAllTokens && matchedTokens !== tokens.length)) return 0;

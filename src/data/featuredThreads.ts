@@ -190,6 +190,28 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DaR-TnYk_lu" },
       { url: "https://www.threads.com/@linus3524/post/DaVEYlVE1qp" },
       { url: "https://www.threads.com/@linus3524/post/Dcz1JlXAWOX" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DdBP-eek-ds",
+        keywords: [
+          "租屋文化",
+          "立ち退き",
+          "立退料",
+          "逼退",
+          "退去要求",
+          "退去費用",
+          "房東換人",
+          "オーナーチェンジ",
+          "普通借家契約",
+          "定期借家契約",
+          "借地借家法",
+          "租金調漲",
+          "賃料増額",
+          "契約條件變更",
+          "敷金全額退還",
+          "原狀回復免除",
+          "法律諮詢"
+        ]
+      },
     ],
   },
   {
