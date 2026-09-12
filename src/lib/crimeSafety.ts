@@ -25,6 +25,7 @@ import {
   type CrimePrefectureRow,
 } from "../data/crimePrefectureSnapshot.js";
 import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json";
+import tokyoPopulationSnapshot from "../data/tokyoPopulationSnapshot.json";
 
 /* ────────── 型別定義 ────────── */
 
@@ -84,6 +85,88 @@ export interface CrimeBreakdownItem {
 
 export type SafetyGrade = "A+" | "A" | "B+" | "B" | "C" | "D";
 
+/**
+ * 住宅侵入竊盜率（每千戶・年）。
+ *
+ * 為什麼要有這個：
+ * 絕對件數無法比較不同規模的町丁目。實測中央区銀座8丁目侵入竊盜 50 件（全東京最高），
+ * 但住家手口 0 件、住戶 495 戶——那 50 件全是店舖遭竊。只看件數會把它判成最危險，
+ * 但對住戶而言風險是 0。
+ *
+ * 分子刻意只取住家三手口（空き巣・忍込み・居空き）：
+ * 警視庁的「侵入窃盗計」混入事務所荒し・出店荒し・学校荒し，實測佔比高達 58.5%，
+ * 那些是商業設施遭竊，與住戶曝險無關。
+ *
+ * 分母用世帯數而非人口：侵入竊盜的標的是「一戶住宅」，不是「一個人」。
+ */
+export interface ResidentialBurglaryRate {
+  /** 住家三手口合計件數（評級期間）。 */
+  count: number;
+  /** 該町丁目世帯數。 */
+  households: number;
+  /** 每千戶件數。 */
+  per1000: number;
+  /** 低於全東京多少比例的町丁目（愈高愈安全）。 */
+  saferThanPercent: number;
+}
+
+/**
+ * 無法計算率的原因。分母太小或查無資料時，硬算會產生無意義的極端值
+ * （實測大田区昭和島1丁目：3 件 ÷ 1 戶 = 每千戶 3,000 件）。
+ */
+export type RateUnavailableReason = "no-population-data" | "too-few-households";
+
+/**
+ * 街區活動強度。**刻意不是治安等級。**
+ *
+ * 原本這裡是「街區人身環境 A+~D」，但實測顯示那個分數在測的其實是人流量：
+ *   與総合計的 Spearman 0.613（主要驅動力是「這裡發生多少事」）
+ *   與人口的 Spearman 僅 0.327（跟住多少人關係不大）
+ *   佔比最大的「暴行」與商業指標相關 0.351，是所有項目中最受商業污染的
+ *
+ * 而且無法用人口標準化修正——ひったくり vs 人口 Spearman 只有 0.022，
+ * すり 0.014，街頭犯罪根本不隨居住人口等比例增加，沒有正確的分母可用。
+ *
+ * 所以改成事實陳述：把同一個分數的意義從「治安好壞」改成
+ * 「安靜住宅區 ↔ 繁華商業區」，這才是它真正測到的東西。
+ * 歌舞伎町是 `entertainment` 不再是扣分，而是準確的描述。
+ */
+export type StreetActivityLevel =
+  | "quiet"          // 全年無街頭案件紀錄
+  | "residential"    // 一般生活街區
+  | "mixed"          // 住商混合
+  | "busy"           // 人流密集商圈
+  | "entertainment"; // 繁華街／大型轉運站
+
+/**
+ * 對行人的直接危害事件。
+ *
+ * 與街區活動強度分開呈現的理由：
+ * ひったくり 與商業指標相關性只有 0.088、凶悪犯 0.203，
+ * 明顯低於暴行的 0.351——它們是「對路過的人下手」，不是商圈熱鬧的副產品。
+ * 但兩者合計只有 14.5% 的町丁目非零，做成等級會有 85% 同分為 0，
+ * 因此只列件數，不給等級。
+ */
+export interface PedestrianRiskItem {
+  label: string;
+  count: number;
+  /** 全東京有多少個町丁目也發生過此類事件，用來說明稀有程度。 */
+  chomeWithAny: number;
+}
+
+/** 年對年趨勢。必須同為完整年度，否則 7 個月對 12 個月會假性下降。 */
+export interface CrimeTrend {
+  /** 例：「令和7年」 */
+  currentLabel: string;
+  /** 例：「令和6年」 */
+  previousLabel: string;
+  current: number;
+  previous: number;
+  /** 變化百分比；previous 為 0 時為 null（無法計算倍率）。 */
+  changePercent: number | null;
+  direction: "up" | "down" | "flat";
+}
+
 /** 今年至今累計（趨勢用；年初官網尚未發布時為 null）。 */
 export interface CrimeYtdSummary {
   /** 例：「2026 年 1～7 月累計」 */
@@ -100,10 +183,22 @@ export interface TokyoCrimeContext {
   chomeCount: number;
   /** 住宅侵入件數低於全東京多少比例的町丁目（中位名次法，0～100）。 */
   residentialSaferThanPercent: number;
-  /** 街區粗暴分數低於全東京多少比例的町丁目。 */
+  /**
+   * 街區分數低於全東京多少比例的町丁目。
+   * 注意：街區分數已改為「活動強度」，高低無優劣之分，
+   * UI 刻意不把這個數字放進「愈高愈安全」的並列，只保留供分析使用。
+   */
   streetSaferThanPercent: number;
   /** 全罪種總件數低於全東京多少比例的町丁目。 */
   totalSaferThanPercent: number;
+  /**
+   * 住宅侵入率由高到低的名次（1 = 全東京最高）。
+   * C／D 這種開放區間內部差距極大，只給等級會讓兩端看起來一樣嚴重，
+   * 因此另外提供名次做程度區分。
+   */
+  residentialRankFromWorst: number;
+  /** 街區分數由高到低的名次（1 = 全東京最熱鬧）。 */
+  streetRankFromWorst: number;
 }
 
 export interface CrimeSafetyResult {
@@ -119,10 +214,27 @@ export interface CrimeSafetyResult {
   tokyoContext: TokyoCrimeContext | null;
   /** 犯罪總合計（評級期間） */
   totalCrimes: number;
+  /**
+   * 住宅侵入竊盜率。可計算時為物件，否則為無法計算的原因。
+   * 評級優先採用率；退回件數時 UI 必須明確標示精度差異。
+   */
+  burglaryRate: ResidentialBurglaryRate | RateUnavailableReason;
   /** 住宅治安等級 */
   residentialGrade: SafetyGrade;
-  /** 街區環境等級 */
-  streetGrade: SafetyGrade;
+  /**
+   * 街區活動強度（非治安等級）。
+   * 保留 streetGrade 會讓「住宅 A ／街區 D」同框出現，實測有 302 個町丁目
+   * （6.5%）落在這種組合，清一色是神保町、銀座、赤坂這類住家侵入 0 件的地方。
+   */
+  streetActivity: StreetActivityLevel;
+  /** 街區案件加權分數。保留原始數值供排序與名次使用。 */
+  streetScore: number;
+  /** 對行人的直接危害事件（搶奪、凶惡犯），稀有故只列件數。 */
+  pedestrianRisks: PedestrianRiskItem[];
+  /** 住家侵入竊盜的年對年趨勢。 */
+  burglaryTrend: CrimeTrend | null;
+  /** 街區案件的年對年趨勢。 */
+  streetTrend: CrimeTrend | null;
   /** 犯罪種類拆解清單 */
   breakdown: CrimeBreakdownItem[];
   /** 一句話摘要 */
@@ -246,6 +358,8 @@ interface CrimeSnapshot {
   source: { name: string; url: string; license: string };
   columns: string[];
   annual: CrimeSnapshotPeriod;
+  /** 前一個完整年度，用於年對年趨勢。 */
+  previous: CrimeSnapshotPeriod | null;
   ytd: (CrimeSnapshotPeriod & { throughMonth: number }) | null;
 }
 
@@ -294,13 +408,45 @@ function saferThanPercent(values: number[], value: number): number {
   return Math.round(((worse + same / 2) / values.length) * 100);
 }
 
-let tokyoDistribution: { residential: number[]; street: number[]; total: number[] } | null = null;
+/**
+ * 由高到低的名次（1 = 最高）。同分取最前面的名次，與體育排名同慣例。
+ * 用來區分同一等級內的程度差異。
+ */
+function rankFromWorst(values: number[], value: number): number {
+  let worse = 0;
+  for (const v of values) {
+    if (v > value) worse++;
+  }
+  return worse + 1;
+}
 
-/** 全東京町丁目的分布，只算一次。 */
+/**
+ * 警視庁 CSV 內含「◯◯区計」「23区計」「多摩地区・島部計」「合計」等彙總列（共 62 列）。
+ * findSnapshotRows 查詢時因為要求前綴後接數字，不會誤中這些列；
+ * 但百分位的母體若混入它們，就等於把「整個區的件數」當成一個町丁目來比，
+ * 會系統性高估每個物件的安全百分位（實測約 +1 個百分點），且方向偏樂觀。
+ */
+function isAggregateRow(name: string): boolean {
+  return name === "合計" || /計$/.test(name);
+}
+
+let tokyoDistribution: {
+  residential: number[];
+  street: number[];
+  total: number[];
+  chomeCount: number;
+} | null = null;
+
+/** 全東京町丁目的分布，只算一次。已排除彙總列，母體為真實町丁目。 */
 function getTokyoDistribution() {
   if (tokyoDistribution) return tokyoDistribution;
   const col = (name: string) => snapshot.columns.indexOf(name) + 1;
-  const iInv = col("侵入窃盗計");
+  // 住宅分布用住家三手口，與評級同一把尺。
+  // 用「侵入窃盗計」會把事務所荒し算進來（佔全體 58.5%），
+  // 導致百分位跟等級講不同的故事。
+  const iAkisu = col("侵入窃盗空き巣");
+  const iShinobi = col("侵入窃盗忍込み");
+  const iIaki = col("侵入窃盗居空き");
   const iViolent = col("粗暴犯計");
   const iSnatch = col("非侵入窃盗ひったくり");
   const iPick = col("非侵入窃盗すり");
@@ -310,22 +456,113 @@ function getTokyoDistribution() {
   const street: number[] = [];
   const total: number[] = [];
   for (const row of snapshot.annual.rows) {
-    residential.push(row[iInv] as number);
+    if (isAggregateRow(row[0] as string)) continue;
+    residential.push((row[iAkisu] as number) + (row[iShinobi] as number) + (row[iIaki] as number));
     street.push(streetScore(row[iViolent] as number, row[iSnatch] as number, row[iPick] as number, row[iFelony] as number));
     total.push(row[iTotal] as number);
   }
-  tokyoDistribution = { residential, street, total };
+  tokyoDistribution = { residential, street, total, chomeCount: total.length };
   return tokyoDistribution;
+}
+
+/* ────────── 住宅侵入竊盜率 ────────── */
+
+/**
+ * 世帯數低於此值就不計算率。
+ * 商辦・工業・埋立地的町丁目住戶數可能只有個位數，任何一件都會讓率爆炸
+ * （實測：大田区昭和島1丁目 3 件 ÷ 1 戶 = 每千戶 3,000 件）。
+ * 300 戶約可讓「1 件」對應到 3.3 件/千戶，仍在可解釋範圍內。
+ * 此門檻會排除約 8% 的町丁目，它們退回顯示絕對件數。
+ */
+const MIN_HOUSEHOLDS_FOR_RATE = 300;
+
+/**
+ * D 級（唯一的紅色警示）至少要有這麼多件才成立，否則最多給到 C。
+ *
+ * 純用率會讓「400 戶的町丁目發生 1 件」= 2.5 件/千戶 = D。
+ * 但單一事件在統計上根本無法區分 2.5 與 0.5 的地區，那只是一次意外。
+ * 實測 58 個 D 級中有 39 個（67%）是靠 1～2 件撐起來的。
+ *
+ * 這個門檻也順帶解決了多摩地區被系統性上修的問題：
+ * D 級佔比 23區 0.77% vs 多摩島 2.03%（2.7 倍落差），
+ * 加上「至少 3 件」後變成 0.42% vs 0.40%（0.9 倍）——落差完全消失。
+ * 可見那不是多摩獨棟住宅區真的比較危險，而是郊區町丁目戶數較少、
+ * 分母小導致單一案件被放大。用最低件數處理比針對地區做例外更誠實。
+ */
+const MIN_INCIDENTS_FOR_WORST_GRADE = 3;
+
+const populationSnapshot = tokyoPopulationSnapshot as unknown as {
+  year: number;
+  label: string;
+  households: Record<string, [number, number]>;
+};
+
+/** 查該町丁目的世帯數。查無回 null。 */
+function lookupHouseholds(chocho: string): number | null {
+  const entry = populationSnapshot.households[chocho];
+  return entry ? entry[0] : null;
+}
+
+/** 住家三手口：空き巣（空屋）、忍込み（夜間潛入）、居空き（在宅時潛入）。 */
+function residentialBurglaryCount(row: RawCrimeRow): number {
+  return row.侵入窃盗空き巣 + row.侵入窃盗忍込み + row.侵入窃盗居空き;
+}
+
+let burglaryRateDistribution: number[] | null = null;
+
+/** 全東京各町丁目的住宅侵入竊盜率分布（僅含戶數足夠者），只算一次。 */
+function getBurglaryRateDistribution(): number[] {
+  if (burglaryRateDistribution) return burglaryRateDistribution;
+  const col = (name: string) => snapshot.columns.indexOf(name) + 1;
+  const iAkisu = col("侵入窃盗空き巣");
+  const iShinobi = col("侵入窃盗忍込み");
+  const iIaki = col("侵入窃盗居空き");
+  const rates: number[] = [];
+  for (const row of snapshot.annual.rows) {
+    const name = row[0] as string;
+    if (isAggregateRow(name)) continue;
+    const households = lookupHouseholds(name);
+    if (households === null || households < MIN_HOUSEHOLDS_FOR_RATE) continue;
+    const count = (row[iAkisu] as number) + (row[iShinobi] as number) + (row[iIaki] as number);
+    rates.push((count / households) * 1000);
+  }
+  burglaryRateDistribution = rates;
+  return rates;
 }
 
 /* ────────── 等級計算 ────────── */
 
-function residentialGrade(burglaryTotal: number): SafetyGrade {
-  // 令和 7 年全年全東京分布：0 件約 69%、1 件累計 88%、≤3 件 96%、≤6 件 97.5%。
-  if (burglaryTotal === 0) return "A";
-  if (burglaryTotal === 1) return "B+";
-  if (burglaryTotal <= 3) return "B";
-  if (burglaryTotal <= 6) return "C";
+/**
+ * 住宅評級（率）。門檻依令和 7 年全年、4,639 個戶數足夠的町丁目校準：
+ *   0 件      → 84.2%
+ *   ≤0.5 件   → 89.8%
+ *   ≤1 件     → 95.3%
+ *   ≤2 件     → 98.7%
+ * 界線取 0.5 的整數倍，方便對使用者解釋（「每千戶每年 2 件以上」）。
+ */
+function residentialGradeByRate(per1000: number, count: number): SafetyGrade {
+  if (per1000 === 0) return "A";
+  if (per1000 <= 0.5) return "B+";
+  if (per1000 <= 1) return "B";
+  if (per1000 <= 2) return "C";
+  // 率雖然到 D，但件數太少不足以支撐「紅色警示」這種強度的結論。
+  return count >= MIN_INCIDENTS_FOR_WORST_GRADE ? "D" : "C";
+}
+
+/**
+ * 住宅評級（件數）。僅在無法取得世帯數時退回使用。
+ *
+ * 傳入值必須是住家三手口（空き巣＋忍込み＋居空き），**不可以是「侵入窃盗計」**：
+ * 後者有 58.5% 是事務所荒し・出店荒し，而會走到這條退回路徑的地方
+ * 正是商辦與繁華街（世帯數 < 300），污染最嚴重。
+ * 歌舞伎町1丁目住家侵入 0 件，若用合計會被評成 D，等於對著住戶
+ * 拿商家的遭竊數字說「你家危險」。
+ */
+function residentialGrade(homeBurglaryCount: number): SafetyGrade {
+  if (homeBurglaryCount === 0) return "A";
+  if (homeBurglaryCount === 1) return "B+";
+  if (homeBurglaryCount <= 3) return "B";
+  if (homeBurglaryCount <= 6) return "C";
   return "D";
 }
 
@@ -337,17 +574,63 @@ function streetScore(violentTotal: number, snatching: number, pickpocket: number
   return violentTotal + snatching * 2 + pickpocket + feloniousTotal * 3;
 }
 
-function streetGrade(violentTotal: number, snatching: number, pickpocket: number, feloniousTotal = 0): SafetyGrade {
-  // 門檻依令和 7 年全年、全東京 5,266 個町丁目的分布校準：
-  // 0 分約占 41%、≤1 約 63%、≤3 約 80%、≤6 約 91%、≤15 約 96%，
-  // 等級大致對應「前四成／前六成／前八成／前九成／後 4%」。
-  const score = streetScore(violentTotal, snatching, pickpocket, feloniousTotal);
-  if (score === 0) return "A+";
-  if (score <= 1) return "A";
-  if (score <= 3) return "B+";
-  if (score <= 6) return "B";
-  if (score <= 15) return "C";
-  return "D";
+/**
+ * 街區活動強度。沿用原本的分數與門檻，但改成描述性分類而非優劣等級。
+ *
+ * 門檻依令和 7 年全年、全東京町丁目分布校準：
+ * 0 分約占 41%、≤3 約 80%、≤6 約 91%、≤15 約 96%。
+ * 分界點不變是刻意的——這個分數確實能區分安靜住宅區與繁華街（與総合計相關 0.613），
+ * 問題只在於原本把「熱鬧」講成「危險」。
+ */
+function streetActivityLevel(score: number): StreetActivityLevel {
+  if (score === 0) return "quiet";
+  if (score <= 3) return "residential";
+  if (score <= 6) return "mixed";
+  if (score <= 15) return "busy";
+  return "entertainment";
+}
+
+/**
+ * 計算年對年趨勢。
+ *
+ * 只接受兩個完整年度。刻意不提供「YTD vs 全年」的版本：
+ * 官網沒有去年同期的累計檔，7 個月對 12 個月會讓每個地區都假性下降約 40%。
+ */
+function buildTrend(
+  current: number,
+  previous: number,
+  currentLabel: string,
+  previousLabel: string,
+): CrimeTrend {
+  const diff = current - previous;
+  // 町丁目件數很小，±1 件在統計上沒有意義，視為持平。
+  const direction = Math.abs(diff) <= 1 ? "flat" : diff > 0 ? "up" : "down";
+  return {
+    currentLabel,
+    previousLabel,
+    current,
+    previous,
+    changePercent: previous === 0 ? null : Math.round((diff / previous) * 100),
+    direction,
+  };
+}
+
+let pedestrianPrevalence: { snatch: number; felony: number } | null = null;
+
+/** 全東京有多少町丁目發生過搶奪／凶惡犯，用來說明這類事件有多罕見。 */
+function getPedestrianPrevalence() {
+  if (pedestrianPrevalence) return pedestrianPrevalence;
+  const iSnatch = snapshot.columns.indexOf("非侵入窃盗ひったくり") + 1;
+  const iFelony = snapshot.columns.indexOf("凶悪犯計") + 1;
+  let snatch = 0;
+  let felony = 0;
+  for (const row of snapshot.annual.rows) {
+    if (isAggregateRow(row[0] as string)) continue;
+    if ((row[iSnatch] as number) > 0) snatch++;
+    if ((row[iFelony] as number) > 0) felony++;
+  }
+  pedestrianPrevalence = { snatch, felony };
+  return pedestrianPrevalence;
 }
 
 /* ────────── 摘要文字 ────────── */
@@ -360,17 +643,31 @@ function buildSummary(row: RawCrimeRow): string {
     parts.push(`凶惡犯罪 ${row.凶悪犯計} 件${row.凶悪犯強盗 > 0 ? `（含強盜 ${row.凶悪犯強盗} 件）` : ""}`);
   }
 
-  // 住宅侵入
+  // 住家侵入。先講住家三手口，再把非住家的部分分開列，
+  // 避免商辦遭竊被讀成住戶風險。
+  const homeBurglary = residentialBurglaryCount(row);
   if (row.侵入窃盗計 === 0) {
-    parts.push("未見住宅侵入竊盜紀錄");
+    parts.push("未見侵入竊盜紀錄");
+  } else if (homeBurglary === 0) {
+    parts.push(`侵入竊盜 ${row.侵入窃盗計} 件（全為事務所、店舖等非住家案件）`);
   } else {
     const details: string[] = [];
     if (row.侵入窃盗空き巣 > 0) details.push(`空巢 ${row.侵入窃盗空き巣} 件`);
     if (row.侵入窃盗忍込み > 0) details.push(`忍込み ${row.侵入窃盗忍込み} 件`);
     if (row.侵入窃盗居空き > 0) details.push(`居空き ${row.侵入窃盗居空き} 件`);
-    if (row.侵入窃盗事務所荒し > 0) details.push(`事務所荒し ${row.侵入窃盗事務所荒し} 件`);
-    if (row.侵入窃盗出店荒し > 0) details.push(`出店荒し ${row.侵入窃盗出店荒し} 件`);
-    parts.push(`侵入竊盜 ${row.侵入窃盗計} 件（${details.join("・") || "其他手法"}）`);
+    parts.push(`住家侵入竊盜 ${homeBurglary} 件（${details.join("・")}）`);
+
+    // 非住家的部分獨立成句，不與住家數字混在同一個括號裡。
+    const nonHome = row.侵入窃盗計 - homeBurglary;
+    if (nonHome > 0) {
+      const nonHomeDetails: string[] = [];
+      if (row.侵入窃盗事務所荒し > 0) nonHomeDetails.push(`事務所荒し ${row.侵入窃盗事務所荒し} 件`);
+      if (row.侵入窃盗出店荒し > 0) nonHomeDetails.push(`出店荒し ${row.侵入窃盗出店荒し} 件`);
+      parts.push(
+        `另有非住家侵入 ${nonHome} 件` +
+        (nonHomeDetails.length ? `（${nonHomeDetails.join("・")}）` : "")
+      );
+    }
   }
 
   // 粗暴犯
@@ -429,20 +726,88 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     ? rows[0].市区町丁
     : rows.map(r => r.市区町丁).join("・");
 
-  const rGrade = residentialGrade(merged.侵入窃盗計);
-  const sGrade = streetGrade(
+  // 跨多個町丁目時戶數要一起加總，否則率會被高估數倍。
+  // 任一町丁目查不到戶數就整體放棄計算率——用殘缺的分母比不算更糟。
+  const householdCounts = rows.map(r => lookupHouseholds(r.市区町丁));
+  const totalHouseholds = householdCounts.some(h => h === null)
+    ? null
+    : householdCounts.reduce<number>((sum, h) => sum + (h as number), 0);
+
+  const burglaryCount = residentialBurglaryCount(merged);
+  let burglaryRate: ResidentialBurglaryRate | RateUnavailableReason;
+  if (totalHouseholds === null) {
+    burglaryRate = "no-population-data";
+  } else if (totalHouseholds < MIN_HOUSEHOLDS_FOR_RATE * rows.length) {
+    burglaryRate = "too-few-households";
+  } else {
+    const per1000 = (burglaryCount / totalHouseholds) * 1000;
+    burglaryRate = {
+      count: burglaryCount,
+      households: totalHouseholds,
+      per1000: Math.round(per1000 * 100) / 100,
+      // 必須用中位名次法：84% 的町丁目為 0 件，若只算「嚴格更差」的比例，
+      // 零案件的地方會顯示「安全於 16%」，看起來像後段班。
+      saferThanPercent: saferThanPercent(getBurglaryRateDistribution(), per1000),
+    };
+  }
+
+  // 有率就用率；退回件數只是保底，UI 會標示精度差異。
+  const rGrade = typeof burglaryRate === "string"
+    ? residentialGrade(residentialBurglaryCount(merged))
+    : residentialGradeByRate(burglaryRate.per1000, burglaryRate.count);
+  const sScoreValue = streetScore(
     merged.粗暴犯計,
     merged.非侵入窃盗ひったくり,
     merged.非侵入窃盗すり,
     merged.凶悪犯計,
   );
+  const sActivity = streetActivityLevel(sScoreValue);
+
+  // 對行人的直接危害。只列非零項目——把「搶奪 0 件」印出來反而像在暗示這是個議題。
+  const prevalence = getPedestrianPrevalence();
+  const pedestrianRisks: PedestrianRiskItem[] = [
+    { label: "搶奪（ひったくり）", count: merged.非侵入窃盗ひったくり, chomeWithAny: prevalence.snatch },
+    { label: "凶惡犯（強盜・殺人・放火等）", count: merged.凶悪犯計, chomeWithAny: prevalence.felony },
+  ].filter(item => item.count > 0);
+
+  // 年對年趨勢：同為完整年度才可比。
+  const previousRows = snapshot.previous
+    ? findSameChome(snapshot.previous, rows.map(r => r.市区町丁))
+    : [];
+  const previousMerged = previousRows.length === 0
+    ? null
+    : previousRows.length === 1 ? previousRows[0] : mergeRows(previousRows);
+
+  const burglaryTrend = snapshot.previous && previousMerged
+    ? buildTrend(
+        residentialBurglaryCount(merged),
+        residentialBurglaryCount(previousMerged),
+        snapshot.annual.label,
+        snapshot.previous.label,
+      )
+    : null;
+  const streetTrend = snapshot.previous && previousMerged
+    ? buildTrend(
+        sScoreValue,
+        streetScore(
+          previousMerged.粗暴犯計,
+          previousMerged.非侵入窃盗ひったくり,
+          previousMerged.非侵入窃盗すり,
+          previousMerged.凶悪犯計,
+        ),
+        snapshot.annual.label,
+        snapshot.previous.label,
+      )
+    : null;
 
   const breakdown: CrimeBreakdownItem[] = [
     // 住宅相關
     { label: "侵入竊盜（空巢）", count: merged.侵入窃盗空き巣, group: "residential", icon: "🏠" },
     { label: "侵入竊盜（忍込み）", count: merged.侵入窃盗忍込み, group: "residential", icon: "🌙" },
     { label: "侵入竊盜（居空き）", count: merged.侵入窃盗居空き, group: "residential", icon: "🚪" },
-    { label: "侵入竊盜（其他）", count: merged.侵入窃盗事務所荒し + merged.侵入窃盗出店荒し + merged.侵入窃盗学校荒し + merged.侵入窃盗金庫破り + merged.侵入窃盗その他, group: "residential", icon: "🔓" },
+    // 明講「非住家」：事務所荒し・出店荒し・学校荒し佔了侵入竊盜的 58.5%，
+    // 標成「其他」會讓使用者把商辦遭竊誤讀成自家風險（銀座 8 丁目 50 件中住家 0 件）。
+    { label: "侵入竊盜（非住家）", count: merged.侵入窃盗事務所荒し + merged.侵入窃盗出店荒し + merged.侵入窃盗学校荒し + merged.侵入窃盗金庫破り + merged.侵入窃盗その他, group: "residential", icon: "🔓" },
     // 街區人身安全
     { label: "暴行", count: merged.粗暴犯暴行, group: "street", icon: "⚠️" },
     { label: "傷害", count: merged.粗暴犯傷害, group: "street", icon: "🩹" },
@@ -481,14 +846,20 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
   let tokyoContext: TokyoCrimeContext | null = null;
   if (rows.length === 1) {
     const dist = getTokyoDistribution();
+    const sScore = sScoreValue;
     tokyoContext = {
-      chomeCount: dist.total.length,
-      residentialSaferThanPercent: saferThanPercent(dist.residential, merged.侵入窃盗計),
-      streetSaferThanPercent: saferThanPercent(
-        dist.street,
-        streetScore(merged.粗暴犯計, merged.非侵入窃盗ひったくり, merged.非侵入窃盗すり, merged.凶悪犯計),
-      ),
+      chomeCount: dist.chomeCount,
+      // 有率就用率的百分位，與等級同一把尺；否則退回件數百分位。
+      residentialSaferThanPercent: typeof burglaryRate === "string"
+        ? saferThanPercent(dist.residential, residentialBurglaryCount(merged))
+        : burglaryRate.saferThanPercent,
+      streetSaferThanPercent: saferThanPercent(dist.street, sScore),
       totalSaferThanPercent: saferThanPercent(dist.total, merged.総合計),
+      // 名次同樣跟著等級的基準走，避免卡片上「等級用率、名次用件數」互相矛盾。
+      residentialRankFromWorst: typeof burglaryRate === "string"
+        ? rankFromWorst(dist.residential, residentialBurglaryCount(merged))
+        : rankFromWorst(getBurglaryRateDistribution(), burglaryRate.per1000),
+      streetRankFromWorst: rankFromWorst(dist.street, sScore),
     };
   }
 
@@ -499,8 +870,13 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     ytd,
     tokyoContext,
     totalCrimes: merged.総合計,
+    burglaryRate,
     residentialGrade: rGrade,
-    streetGrade: sGrade,
+    streetActivity: sActivity,
+    streetScore: sScoreValue,
+    pedestrianRisks,
+    burglaryTrend,
+    streetTrend,
     breakdown,
     summary: buildSummary(merged),
     credit: `資料來源：警視庁「区市町村の町丁別、罪種別及び手口別認知件数」（CC BY 4.0）｜${snapshot.annual.label}`,
@@ -637,6 +1013,11 @@ export const __testing = {
   buildPrefectureResult,
   normalizeAddress,
   saferThanPercent,
+  rankFromWorst,
+  isAggregateRow,
+  getTokyoDistribution,
   findSnapshotRows,
+  streetActivityLevel,
+  buildTrend,
   snapshot,
 };

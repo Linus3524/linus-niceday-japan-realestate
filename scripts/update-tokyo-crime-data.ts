@@ -7,10 +7,16 @@
  * 警視庁官網本身就直接提供 CSV（免金鑰、CC BY 4.0），每月更新，
  * 且同時有「上一個完整年」與「今年至今累計」兩份，才是該用的來源。
  *
- * 產出兩組資料：
- *   annual — 上一個完整年（12 個月），主要評級用；町丁目件數很小，
- *            半年以下的期間會因一兩件事件讓等級亂跳，全年才穩。
- *   ytd    — 今年 1 月～最新月的累計，顯示趨勢用。
+ * 產出三組資料：
+ *   annual   — 上一個完整年（12 個月），主要評級用；町丁目件數很小，
+ *              半年以下的期間會因一兩件事件讓等級亂跳，全年才穩。
+ *   previous — 再前一個完整年，與 annual 做同期間長度的年對年趨勢比較。
+ *   ytd      — 今年 1 月～最新月的累計，顯示今年進度用。
+ *
+ * 為什麼趨勢要用 annual vs previous，而不是 ytd vs annual：
+ * 官網只提供「今年的月累計」（R8.1～R8.7），沒有去年同期的累計檔，
+ * 拿 7 個月對 12 個月會系統性地看起來「下降 40%」，那是假的。
+ * 兩個完整年度相比才是唯一能誠實計算的口徑。
  *
  * 用法（每月跑一次即可；不需要任何金鑰）：
  *   npm run data:update:tokyo-crime
@@ -41,7 +47,7 @@ async function fetchText(url: string, encoding: "utf-8" | "shift_jis") {
  */
 function parseIndex(html: string) {
   const links = [...html.matchAll(/href="[^"]*ninchikensu\.files\/(R(\d+)(?:\.\d+)?\.csv)"[^>]*>([^<]*)</g)];
-  let annual: { file: string; reiwa: number } | null = null;
+  const annuals: Array<{ file: string; reiwa: number }> = [];
   let ytd: { file: string; reiwa: number; throughMonth: number } | null = null;
   for (const [, file, reiwaText, label] of links) {
     const reiwa = Number(reiwaText);
@@ -49,11 +55,16 @@ function parseIndex(html: string) {
     if (ytdMatch && /^R\d+\.csv$/.test(file)) {
       if (!ytd || reiwa > ytd.reiwa) ytd = { file, reiwa, throughMonth: Number(ytdMatch[1]) };
     } else if (/令和\d+年/.test(label) && !ytdMatch) {
-      if (!annual || reiwa > annual.reiwa) annual = { file, reiwa };
+      annuals.push({ file, reiwa });
     }
   }
-  if (!annual) throw new Error("索引頁找不到全年 CSV，官網版面可能改了。");
-  return { annual, ytd };
+  if (!annuals.length) throw new Error("索引頁找不到全年 CSV，官網版面可能改了。");
+  // 由新到舊，取最新兩年做年對年比較。
+  annuals.sort((a, b) => b.reiwa - a.reiwa);
+  const annual = annuals[0];
+  // 必須恰好是前一年，中間斷年的話趨勢會變成「兩年前對比」而不自知。
+  const previous = annuals.find(a => a.reiwa === annual.reiwa - 1) ?? null;
+  return { annual, previous, ytd };
 }
 
 function parseCsv(text: string) {
@@ -76,12 +87,17 @@ function parseCsv(text: string) {
 const html = await fetchText(INDEX_URL, "utf-8");
 const index = parseIndex(html);
 console.log(`全年：${index.annual.file}（令和${index.annual.reiwa}年）`);
+console.log(index.previous ? `前年：${index.previous.file}（令和${index.previous.reiwa}年）` : "前年：無（無法計算年對年趨勢）");
 console.log(index.ytd ? `至今：${index.ytd.file}（令和${index.ytd.reiwa}年 1～${index.ytd.throughMonth}月）` : "至今：無（年初尚未發布）");
 
 const annualCsv = parseCsv(await fetchText(FILES_BASE + index.annual.file, "shift_jis"));
+const previousCsv = index.previous ? parseCsv(await fetchText(FILES_BASE + index.previous.file, "shift_jis")) : null;
 const ytdCsv = index.ytd ? parseCsv(await fetchText(FILES_BASE + index.ytd.file, "shift_jis")) : null;
 if (ytdCsv && ytdCsv.columns.join() !== annualCsv.columns.join()) {
   throw new Error("全年與至今兩份 CSV 的欄位不一致，不能合併使用。");
+}
+if (previousCsv && previousCsv.columns.join() !== annualCsv.columns.join()) {
+  throw new Error("兩個年度的 CSV 欄位不一致，逐年比較會對到錯誤的罪種。");
 }
 
 const snapshot = {
@@ -97,6 +113,13 @@ const snapshot = {
     label: `令和${index.annual.reiwa}年（${reiwaToYear(index.annual.reiwa)} 年）全年`,
     rows: annualCsv.rows,
   },
+  previous: index.previous && previousCsv
+    ? {
+        year: reiwaToYear(index.previous.reiwa),
+        label: `令和${index.previous.reiwa}年（${reiwaToYear(index.previous.reiwa)} 年）全年`,
+        rows: previousCsv.rows,
+      }
+    : null,
   ytd: index.ytd && ytdCsv
     ? {
         year: reiwaToYear(index.ytd.reiwa),
@@ -108,4 +131,7 @@ const snapshot = {
 };
 
 await writeFile(OUTPUT_PATH, JSON.stringify(snapshot));
-console.log(`已寫入 ${OUTPUT_PATH}：全年 ${annualCsv.rows.length} 筆、至今 ${ytdCsv?.rows.length ?? 0} 筆`);
+console.log(
+  `已寫入 ${OUTPUT_PATH}：全年 ${annualCsv.rows.length} 筆、` +
+  `前年 ${previousCsv?.rows.length ?? 0} 筆、至今 ${ytdCsv?.rows.length ?? 0} 筆`
+);
