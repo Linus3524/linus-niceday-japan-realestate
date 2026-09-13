@@ -93,10 +93,10 @@ function getRegionalMarketInsight(
           多摩住宅區有許多中低密度社區，除確認 1981 新耐震外，中古公寓之<strong>管理費與修繕積立金總額</strong>是否充足，是影響未來轉手評價與居住品質的關鍵指標。
         </>
       ),
-      consultantTitle: `Linus 房產顧問觀點：${jpDistrict} 空間性價比與生活機能`,
+      consultantTitle: `Linus 房產顧問觀點：${jpDistrict} 居住空間與生活機能優勢`,
       consultantText: (
         <>
-          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。多摩生活圈擁有優質綠意、學區與寬敞空間性價比，受在地家庭與穩定育兒族青睞，適合兼顧「居住空間尺度」與「合理購屋總價」的買方。
+          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。多摩生活圈擁有優質綠意、學區與寬敞居住空間優勢，受在地家庭與穩定育兒族青睞，適合兼顧「居住空間尺度」與「合理購屋總價」的買方。
         </>
       )
     };
@@ -116,10 +116,10 @@ function getRegionalMarketInsight(
           除了 1981 年新耐震基準外，首都圈外圍購買中古公寓應特別調閱<strong>「長期修繕計畫書」</strong>，確認外牆與電梯是否依期保養，避免過戶後隨即面臨臨時增收修繕費。
         </>
       ),
-      consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）之剛需性價比`,
+      consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）之剛需價格優勢`,
       consultantText: (
         <>
-          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為東京生活圈的主要衛星城市，擁有龐大且穩定的通勤剛需，購屋總價門檻較東京都心親民許多，租金收益率與自住舒適度具備極佳性價比。
+          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為東京生活圈的主要衛星城市，擁有龐大且穩定的通勤剛需，購屋總價門檻較東京都心親民許多，租金收益率與自住舒適度具備極佳競爭力。
         </>
       )
     };

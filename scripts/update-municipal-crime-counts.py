@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+"""Build current municipality crime snapshots from prefectural-police tables.
+
+Each prefecture needs an explicit parser because the National Police Agency does
+not publish a current nationwide municipality table. The output schema is shared,
+so newly supported prefectures automatically use the same UI and fallback rules.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+import urllib.request
+from pathlib import Path
+
+import pdfplumber
+
+ROOT = Path(__file__).resolve().parents[1]
+OUTPUT = ROOT / "src/data/municipalCrimeCounts.json"
+CHIBA_URL = "https://www.police.pref.chiba.jp/content/common/000071144.pdf"
+SOURCES = {
+    "北海道": "https://www.police.pref.hokkaido.lg.jp/statis/hanzai/shityouson-betu/r03-r07.pdf",
+    "青森県": "https://www.police.pref.aomori.jp/keijibu/soubun/toukei_siryo/toukei2025/C4-2.pdf",
+    "宮城県": "https://www.police.pref.miyagi.jp/sousashien/pdf/keihou%20kakuteichi2.pdf",
+    "福島県": "https://www.police.pref.fukushima.jp/07.anzen/-hanzaitoukei/r7kakuteichi.pdf",
+    "茨城県": "https://www.pref.ibaraki.jp/kenkei/a01_safety/statistics/documents/r07-12_number-of-reported-rrimes.pdf",
+    "栃木県": "https://www.pref.tochigi.lg.jp/keisatu/n18/anzenanshin/documents/20260212111659.pdf",
+    "埼玉県": "https://www.police.pref.saitama.lg.jp/documents/27624/r7keihoukansityouson.pdf",
+    "千葉県": CHIBA_URL,
+    "山形県": "https://www.pref.yamagata.jp/documents/5698/hp_r07.pdf",
+}
+POPULATION_API = "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionalRank=4&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y"
+
+GROUPS = [
+    ("A", "凶惡犯罪", 3, [(4, "殺人"), (5, "強盜"), (7, "縱火"), (8, "不同意性交等")]),
+    ("B", "粗暴犯罪", 9, [(10, "攜械聚集"), (11, "暴行"), (12, "傷害"), (13, "脅迫"), (14, "恐嚇")]),
+    ("C", "竊盜犯罪", 15, [(16, "住宅空巢竊盜"), (17, "住宅夜間潛入"), (18, "辦公室侵入竊盜"), (19, "店鋪侵入竊盜"), (20, "其他侵入竊盜"), (21, "汽車竊盜"), (22, "機車竊盜"), (23, "自行車竊盜"), (24, "車內物品竊盜"), (25, "搶奪"), (26, "零件竊盜"), (27, "自動販賣機竊盜"), (28, "其他非侵入竊盜")]),
+    ("D", "詐欺等知能犯罪", 29, [(30, "詐欺"), (31, "侵占"), (32, "其他知能犯罪")]),
+    ("E", "風俗犯罪", 33, []),
+    ("F", "其他刑法犯罪", 39, [(40, "侵入住居"), (41, "侵占遺失物等"), (42, "其他")]),
+]
+
+
+def number(value: str | None) -> int:
+    normalized = (value or "0").replace(",", "").strip()
+    return 0 if normalized in {"", "-", "－"} else int(normalized)
+
+
+def fetch_json(url: str) -> dict:
+    with urllib.request.urlopen(url) as response:
+        return json.load(response)
+
+
+def population_by_prefecture() -> dict[str, dict[str, int]]:
+    data = fetch_json(POPULATION_API)["GET_STATS"]["STATISTICAL_DATA"]
+    names = next(item["CLASS"] for item in data["CLASS_INF"]["CLASS_OBJ"] if item["@id"] == "regionCode")
+    region_names = {item["@code"]: item["@name"] for item in names}
+    by_prefecture: dict[str, dict[str, int]] = {}
+    for item in data["DATA_INF"]["DATA_OBJ"]:
+        value = item["VALUE"]
+        if value["@time"] != "2025CY00" or value["@regionCode"] not in region_names:
+            continue
+        code = value["@regionCode"]
+        by_prefecture.setdefault(code[:2], {})[region_names[code]] = int(float(value["$"]))
+    return by_prefecture
+
+
+PREFECTURE_CODES = {
+    "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
+    "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
+}
+
+
+def compact(value: str | None) -> str:
+    return (value or "").replace(" ", "").replace("\n", "").replace("ヶ", "ケ")
+
+
+def population_for(prefecture: str, name: str, populations: dict[str, dict[str, int]]) -> int | None:
+    expected = compact(name)
+    rows = populations[PREFECTURE_CODES[prefecture]]
+    exact = next((population for label, population in rows.items() if compact(label) == expected), None)
+    if exact is not None:
+        return exact
+    suffixes = sorted(((label, population) for label, population in rows.items() if expected.endswith(compact(label))), key=lambda item: len(compact(item[0])), reverse=True)
+    return suffixes[0][1] if suffixes else None
+
+
+def broad_groups(values: list[int]) -> list[dict]:
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    return [{"code": code, "label": label, "count": count, "items": []}
+            for (code, label), count in zip(labels, values)]
+
+
+def record(prefecture: str, name: str, total: int, populations: dict[str, dict[str, int]], groups=None) -> dict | None:
+    population = population_for(prefecture, name, populations)
+    if population is None:
+        return None
+    rows = populations[PREFECTURE_CODES[prefecture]]
+    canonical = next((label for label in rows if compact(label) == compact(name)), None)
+    if canonical is None:
+        labels = sorted((label for label in rows if compact(name).endswith(compact(label))), key=lambda label: len(compact(label)), reverse=True)
+        if not labels:
+            return None
+        canonical = labels[0]
+    return {"municipality": canonical,
+            "population": population, "total": total, "groups": groups or []}
+
+
+def parse_chiba(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
+    rows: list[list[str | None]] = []
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            rows.extend(page.extract_tables()[0][2:])
+    records = []
+    for row in rows:
+        # Page two omits the empty spacer column after the municipality name.
+        if len(row) == 42:
+            row.insert(1, None)
+        # The six Chiba-city wards are printed under a merged "千葉市" cell,
+        # so pdfplumber exposes the ward name in the spacer column.
+        name = row[0] or row[1]
+        if name in {"中央区", "花見川区", "稲毛区", "若葉区", "緑区", "美浜区"}:
+            name = f"千葉市{name}"
+        # Police and Statistics Dashboard use different glyphs for the same city.
+        if name == "袖ヶ浦市":
+            name = "袖ケ浦市"
+        if not name or name in {"総数", "千葉市", "県外", "国外"}:
+            continue
+        total = number(row[2])
+        groups = []
+        for code, label, total_index, items in GROUPS:
+            groups.append({
+                "code": code,
+                "label": label,
+                "count": number(row[total_index]),
+                "items": [
+                    {"code": f"{code}-{index}", "label": item_label, "original": item_label, "count": number(row[index])}
+                    for index, item_label in items
+                ],
+            })
+        parsed = record("千葉県", name, total, populations, groups)
+        if parsed:
+            records.append(parsed)
+    record_total = sum(item["total"] for item in records)
+    if len(records) != 59 or record_total != 39728:
+        raise RuntimeError(
+            "Unexpected Chiba municipality table; refusing to publish a partial snapshot "
+            f"(areas={len(records)}, total={record_total})"
+        )
+    return records
+
+
+def first_number(value: str | None) -> int:
+    token = (value or "").replace(",", "").split()
+    return int(token[0]) if token and token[0] not in {"-", "－"} else 0
+
+
+def parse_hokkaido(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages[1:]:
+            current_name = ""
+            for row in page.extract_tables()[0][3:]:
+                if compact(row[0]):
+                    current_name = compact(row[0])
+                if row[1] != "令和７年":
+                    continue
+                name = current_name
+                if name.endswith("区") and "市" not in name:
+                    name = f"札幌市{name}"
+                if not name or name in {"札幌市", "不明", "合計"}:
+                    continue
+                parsed = record("北海道", name, number(row[2]), populations,
+                                broad_groups([number(row[i]) for i in (4, 6, 8, 10, 12, 14)]))
+                if parsed:
+                    records.append(parsed)
+    return records
+
+
+def parse_simple_broad(path: Path, prefecture: str, header_rows: int, indexes: tuple[int, ...]) -> list[dict]:
+    populations = POPULATIONS
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            for row in page.extract_tables()[0][header_rows:]:
+                name = compact(row[0])
+                if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外")):
+                    continue
+                total = number(row[indexes[0]])
+                groups = broad_groups([number(row[i]) for i in indexes[1:]])
+                parsed = record(prefecture, name, total, populations, groups)
+                if parsed:
+                    records.append(parsed)
+    return records
+
+
+def parse_miyagi(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for row in pdf.pages[0].extract_tables()[0][2:]:
+            name = compact(row[1] or row[0])
+            if name == "仙台市" or not name or "総数" in name:
+                continue
+            if name.endswith("区"):
+                name = f"仙台市{name}"
+            parsed = record("宮城県", name, number(row[2]), populations,
+                            broad_groups([first_number(row[i]) for i in (4, 5, 6, 7, 8, 9)]))
+            if parsed:
+                records.append(parsed)
+    return records
+
+
+def parse_total_rows(path: Path, prefecture: str, pages: list[int], name_indexes: tuple[int, ...], total_index: int, skip: int) -> list[dict]:
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for page_index in pages:
+            for row in pdf.pages[page_index].extract_tables()[0][skip:]:
+                name = next((compact(row[i]) for i in name_indexes if i < len(row) and compact(row[i])), "")
+                if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外", "その他")):
+                    continue
+                parsed = record(prefecture, name, number(row[total_index]), POPULATIONS)
+                if parsed:
+                    records.append(parsed)
+    return records
+
+
+def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for row in pdf.pages[0].extract_tables()[0][3:]:
+            first, second = compact(row[0]), compact(row[1])
+            name = f"さいたま市{second}" if second and (first == "さいたま市" or second.endswith("区")) else first
+            if not name or name in {"県外", "国外", "合計"}:
+                continue
+            parsed = record("埼玉県", name, number(row[2]), populations)
+            if parsed:
+                records.append(parsed)
+    return records
+
+
+POPULATIONS: dict[str, dict[str, int]] = {}
+
+
+def main() -> None:
+    global POPULATIONS
+    work = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/tmp/municipal-crime")
+    work.mkdir(parents=True, exist_ok=True)
+    POPULATIONS = population_by_prefecture()
+    paths = {}
+    for prefecture, url in SOURCES.items():
+        pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025.pdf"
+        urllib.request.urlretrieve(url, pdf)
+        paths[prefecture] = pdf
+    prefectures = {
+        "北海道": {"year": 2025, "sourceUrl": SOURCES["北海道"], "records": parse_hokkaido(paths["北海道"], POPULATIONS)},
+        "青森県": {"year": 2025, "sourceUrl": SOURCES["青森県"], "records": parse_simple_broad(paths["青森県"], "青森県", 2, (1, 3, 5, 7, 9, 11, 13))},
+        "宮城県": {"year": 2025, "sourceUrl": SOURCES["宮城県"], "records": parse_miyagi(paths["宮城県"], POPULATIONS)},
+        "山形県": {"year": 2025, "sourceUrl": SOURCES["山形県"], "records": parse_total_rows(paths["山形県"], "山形県", [3], (1, 0), 3, 3)},
+        "福島県": {"year": 2025, "sourceUrl": SOURCES["福島県"], "records": parse_total_rows(paths["福島県"], "福島県", [1, 2], (1, 0), 2, 3)},
+        "茨城県": {"year": 2025, "sourceUrl": SOURCES["茨城県"], "records": parse_total_rows(paths["茨城県"], "茨城県", [0], (2, 0), 3, 3)},
+        "栃木県": {"year": 2025, "sourceUrl": SOURCES["栃木県"], "records": parse_simple_broad(paths["栃木県"], "栃木県", 4, (1, 4, 6, 8, 10, 12, 14))},
+        "埼玉県": {"year": 2025, "sourceUrl": SOURCES["埼玉県"], "records": parse_saitama(paths["埼玉県"], POPULATIONS)},
+        "千葉県": {"year": 2025, "sourceUrl": CHIBA_URL, "records": parse_chiba(paths["千葉県"], POPULATIONS)},
+    }
+    for prefecture, data in prefectures.items():
+        if not data["records"]:
+            raise RuntimeError(f"No municipality records parsed for {prefecture}")
+    snapshot = {
+        "generatedAt": "2026-09-13",
+        "populationYear": 2025,
+        "prefectures": prefectures,
+    }
+    OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n")
+    print(f"Wrote {OUTPUT} with {sum(len(data['records']) for data in prefectures.values())} areas across {len(prefectures)} prefectures")
+
+
+if __name__ == "__main__":
+    main()

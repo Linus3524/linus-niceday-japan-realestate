@@ -126,7 +126,7 @@ export const getDynamicBuyModifierMultiplier = (id: BuyModifierId, district: str
       if (isTokyo23 || region === "大阪") return 0.15;
       if (region === "神奈川") return 0.12;
       return 0.10; // 埼玉、千葉、多摩
-    case "walk_11_15min": // 步行 11～15 分鐘性價比住宅區
+    case "walk_11_15min": // 步行 11～15 分鐘實惠住宅區
       if (isTokyo23) return -0.06;
       if (region === "神奈川" || region === "大阪") return -0.08;
       return -0.10; // 埼玉、千葉、多摩

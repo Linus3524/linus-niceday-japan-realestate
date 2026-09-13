@@ -1500,9 +1500,8 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 .prefecture-safety-evidence {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  padding-block: 0 !important;
-  height: 100%;
+  justify-content: flex-start;
+  gap: 8px;
 }
 .prefecture-safety-evidence > div {
   margin-top: 0 !important;
@@ -1519,4 +1518,9 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   }
   .prefecture-safety-pair .prefecture-safety-top { display: contents; }
   .prefecture-safety-pair .prefecture-safety-description { padding-bottom: 12px; }
+}
+
+/* Equal outer heights for Tokyo; internal sections keep their natural spacing. */
+.tokyo-safety-pair > .prefecture-safety-card {
+  grid-template-rows: auto auto 1fr;
 }

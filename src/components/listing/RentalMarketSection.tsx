@@ -319,7 +319,13 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                       ? "text-[#0284C7]"
                                       : "text-[#007D5A]"
                                 }`}>
-                                {isWellSupported ? "✓ 租金有充分條件支撐" : isOverpriced ? "⚠ 超出條件支撐（超額溢價）" : isDiscounted ? "↓ 低於行情具性價比" : "✓ 租金落在合理區間"}
+                                {isWellSupported
+                                  ? "✓ 租金有充分條件支撐"
+                                  : isOverpriced
+                                    ? "⚠ 超出條件支撐（超額溢價）"
+                                    : isDiscounted
+                                      ? "↓ 低於行情具價格優勢"
+                                      : "✓ 租金落在合理區間"}
                               </span>
                             </div>
                             <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
@@ -328,7 +334,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                 : isOverpriced
                                   ? `即使計入各項規格優勢，租金仍高於客觀支撐約 ${(nominalDiff - netFactorsSum).toFixed(1)}%，建議評估議價或爭取免禮金空間。`
                                   : isDiscounted
-                                    ? `月額負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%，具備顯著性價比讓利優勢。`
+                                    ? `月額負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%，具備顯著讓利優勢。`
                                     : "租金開價與條件規格加權後之行情落點相符。"}
                             </span>
                           </div>

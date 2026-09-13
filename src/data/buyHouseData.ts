@@ -1523,11 +1523,11 @@ export const buyBudgetModifiers: BuyBudgetModifier[] = [
   },
   {
     id: "walk_11_15min",
-    text: "步行 11～15 分鐘性價比住宅區",
+    text: "步行 11～15 分鐘實惠住宅區",
     multiplier: -0.08,
     type: "minus",
     category: "location",
-    description: "距離捷運站稍有腳程，但換取較為寬敞的室內使用面積與安靜住宅環境，性價比極高"
+    description: "距離捷運站稍有腳程，但換取較為寬敞的室內使用面積與安靜住宅環境，相對超值划算"
   },
   {
     id: "walk_over_15min",

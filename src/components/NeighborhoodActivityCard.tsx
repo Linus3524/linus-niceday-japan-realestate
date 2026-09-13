@@ -73,18 +73,25 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
         })}
       </div>
       <p className={`${alignRows ? "prefecture-safety-description " : ""}mt-3 text-[11px] leading-relaxed text-[#55635B]`}>{explanation}</p>
-      {annualStreetCrime && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#CFE0D8] pt-2 text-[10px] leading-relaxed text-[#66736C]">
-        <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>
-        <p className="break-words">案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p>
+      {annualStreetCrime && !alignRows && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#CFE0D8] pt-2 text-[10px] leading-relaxed text-[#66736C]">
+        {annualStreetCrime && <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>}
+        <p className="break-words">街頭案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p>
       </div>}
       {showCounts && !alignRows && <ActivityCounts activity={activity} standalone />}
     </div>
-    {alignRows && <div className="prefecture-safety-middle prefecture-safety-evidence h-full flex flex-col justify-evenly">
+    {alignRows && <div className="prefecture-safety-middle prefecture-safety-evidence">
       {showCounts && <ActivityCounts activity={activity} standalone={false} />}
+          <div className="space-y-0.5 text-[10px] leading-relaxed text-[#66736C]">
+            {annualStreetCrime && <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>}
+            {annualStreetCrime ? <p className="break-words">街頭案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p> : <p className="break-words">場所統計：商店／餐飲／娛樂 500m、近處商家 150m、住宅建物 250m。</p>}
+          </div>
+
       {(!activity || activity.status === "unavailable" || activity.status === "imprecise") && <p className="text-[10px] text-[#66736C] my-auto">場所件數資料待確認</p>}
     </div>}
     {showNightInfo && (alignRows
-      ? <div className="prefecture-safety-bottom prefecture-safety-evidence"><ActivityNightInfo activity={activity} /></div>
+      ? <div className="prefecture-safety-bottom space-y-2">
+          <div className="prefecture-safety-evidence" style={{ height: "auto" }}><ActivityNightInfo activity={activity} /></div>
+        </div>
       : <ActivityNightInfo activity={activity} />)}
   </div>;
 }
@@ -141,7 +148,7 @@ function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
           </li>
           <li className="flex items-start gap-1.5">
             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#8A9590]" />
-            <span>數據依周邊商住設施之客觀分布推估街區活動強度，不代表犯罪風險或室內隔音評級；實際街區氛圍與夜間環境，仍建議配合現地不同時段綜合觀察。</span>
+            <span>依地圖收錄設施推估活動程度，可能漏登；不代表犯罪風險或隔音，實際環境需分時段現勘。</span>
           </li>
         </ul>
         {activity && <p className="pt-0.5 text-[10px] text-[#66736C]">來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）</p>}

@@ -10,10 +10,11 @@
  *    町丁目件數很小，半年以下的期間會因一兩件事件讓等級亂跳，全年才穩。
  *    （東京都オープンデータ API 是 2024/02 之後就沒更新的快照、期間不明，已棄用。）
  *
- * ② 其他 46 道府県 → 都道府県級・年度
- *    総務省「社会生活統計指標」（e-Stat），建置期抓成靜態快照。
+ * ② 其他 46 道府県 → 優先市區町村級・年度；無同口徑資料時退回都道府県級
+ *    市區町村資料由各都道府県警官方表逐縣接入；備援為総務省
+ *    「社会生活統計指標」（e-Stat）的都道府県靜態快照。
  *
- * 為什麼不做到全國町丁目級：其餘道府県的開放資料只涵蓋「窃盗7手口」
+ * 為什麼不直接做到全國町丁目級：其餘道府県的標準開放資料只涵蓋「窃盗7手口」
  * 且 47 縣格式各異（逐筆事件 CSV、BODIK、CKAN…）；e-Stat 的市区町村級
  * 全罪種表停在 2009 年度。與其拼湊出看似精細實則不可比的數字，
  * 不如分層呈現並在 UI 明說精度差異。
@@ -30,6 +31,7 @@ import {
 import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json" with { type: "json" };
 import tokyoPopulationSnapshot from "../data/tokyoPopulationSnapshot.json" with { type: "json" };
 import { getPrefectureCrimeBreakdown, type PrefectureCrimeBreakdown } from "./prefectureCrimeBreakdown.js";
+import { getMunicipalCrimeResult, type MunicipalCrimeResult } from "./municipalCrimeBreakdown.js";
 
 /* ────────── 型別定義 ────────── */
 
@@ -173,6 +175,7 @@ export interface CrimeTrend {
 
 /** 對照全東京所有町丁目的相對位置（僅單一町丁目命中時計算，合併多個町丁目時不可比）。 */
 export interface TokyoCrimeContext {
+  residentialRanking?: { rank: number; total: number; tied: number; area: string; count: number; averageCount: number };
   /** 全東京町丁目數。 */
   chomeCount: number;
   /** 住宅侵入件數低於全東京多少比例的町丁目（中位名次法，0～100）。 */
@@ -236,11 +239,13 @@ export interface CrimeSafetyResult {
 }
 
 /**
- * 都道府県級治安結果（東京都以外）。
- * 精度低於町丁目級，欄位刻意與 CrimeSafetyResult 分開，避免 UI 誤用成同等精度。
+ * 東京都外治安結果。municipal 有值時整卡採市區町村口徑，否則採縣級備援。
+ * 欄位刻意與 CrimeSafetyResult 分開，避免 UI 誤用成町丁目精度。
  */
 export interface PrefectureSafetyResult {
   breakdown?: PrefectureCrimeBreakdown | null;
+  /** 同口徑的市區町村統計；未接入該縣官方表時為 null，整卡退回縣級。 */
+  municipal?: MunicipalCrimeResult | null;
   prefecture: string;
   /** 人口千人あたり刑法犯認知件数。 */
   crimeRatePerThousand: number;
@@ -828,6 +833,16 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
     const dist = getTokyoDistribution();
     const sScore = sScoreValue;
     tokyoContext = {
+      residentialRanking: (() => {
+        // Use official municipality totals, never compare a chome against a whole ward.
+        const totals = snapshot.annual.rows.filter(row => /[区市町村]計$/.test(String(row[0])) && !/[0-9０-９]/.test(String(row[0])));
+        const target = totals.find(row => chocho.startsWith(String(row[0]).slice(0, -1)));
+        if (!target) return undefined;
+        const countFor = (row: (string | number)[]) => ["侵入窃盗空き巣", "侵入窃盗忍込み", "侵入窃盗居空き"].reduce((sum, col) => sum + Number(row[snapshot.columns.indexOf(col) + 1]), 0);
+        const count = countFor(target);
+        const values = totals.map(countFor);
+        return { rank: values.filter(v => v < count).length + 1, total: values.length, tied: values.filter(v => v === count).length, area: String(target[0]).slice(0, -1), count, averageCount: values.reduce((sum, value) => sum + value, 0) / values.length };
+      })(),
       chomeCount: dist.chomeCount,
       // 有率就用率的百分位，與等級同一把尺；否則退回件數百分位。
       residentialSaferThanPercent: typeof burglaryRate === "string"
@@ -921,7 +936,7 @@ function prefectureGrade(vsNational: number): SafetyGrade {
   return "D";
 }
 
-function buildPrefectureResult(row: CrimePrefectureRow, totalPrefectures: number): PrefectureSafetyResult {
+function buildPrefectureResult(row: CrimePrefectureRow, totalPrefectures: number, address = ""): PrefectureSafetyResult {
   const national = crimePrefectureMeta.nationalRatePerThousand;
   const diffPercent = Math.round((row.vsNational - 1) * 100);
   const comparison =
@@ -937,8 +952,10 @@ function buildPrefectureResult(row: CrimePrefectureRow, totalPrefectures: number
     parts.push(`其中竊盜佔 ${row.theftSharePercent}%`);
   }
 
+  const municipal = address ? getMunicipalCrimeResult(address, row.prefecture) : null;
   return {
-    breakdown: getPrefectureCrimeBreakdown(row.prefecture, crimePrefectureMeta.fiscalYear),
+    breakdown: municipal?.breakdown ?? getPrefectureCrimeBreakdown(row.prefecture, crimePrefectureMeta.fiscalYear),
+    municipal,
     prefecture: row.prefecture,
     crimeRatePerThousand: row.crimeRatePerThousand,
     nationalRatePerThousand: national,
@@ -976,7 +993,7 @@ export async function lookupCrimeSafety(matchedAddress: string): Promise<CrimeLo
   if (!row) return null;
   return {
     precision: "prefecture",
-    prefecture: buildPrefectureResult(row, crimePrefectureMeta.prefectureCount),
+    prefecture: buildPrefectureResult(row, crimePrefectureMeta.prefectureCount, matchedAddress),
   };
 }
 

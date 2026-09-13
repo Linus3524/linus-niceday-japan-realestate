@@ -216,7 +216,7 @@ export function calculateInitialCostBreakdown(params: {
     tips.push(`【費用待確認】${missingCosts.join("、")}未載明，目前只列已知及暫估小計；未載明項目不代表免收。`);
   }
 
-  // 1. 租金高性價比／超值物件
+  // 1. 租金具價格優勢／超值物件
   if (params.marketVerdict?.status === "超值") {
     tips.push("【低於行情】租金＋管理費低於同區同房型行情。這類物件去化較快，審查通過後建議儘早決定。");
   }

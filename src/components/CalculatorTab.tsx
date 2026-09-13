@@ -1,5 +1,4 @@
 import {
-  Building,
   Calculator,
   ChevronDown,
   FileSearch,
@@ -29,14 +28,14 @@ import { RentMarketReports } from "./RentMarketReports";
 export function CalculatorTab(props: CalculatorTabProps) {
   const model = useCalculatorController(props);
   const {
-    setCalcMode,
     calcMode,
+    setCalcMode,
+    showAdvancedTools,
+    setShowAdvancedTools,
     rentInputMode,
     aiResult,
     applyRecommendationToCalculator,
     appliedNotice,
-    setShowAdvancedTools,
-    showAdvancedTools,
   } = model;
   return (
             <motion.div
@@ -58,7 +57,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
-                  <Building className="w-4 h-4 shrink-0" />
+                  <Calculator className="w-4 h-4 shrink-0" />
                   租屋預算健檢
                 </button>
                 <button
@@ -88,7 +87,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
               {/* Preface Intro for Calc */}
               <PageIntroCard
                 id="calc-intro"
-                icon={calcMode === "listing" ? FileSearch : Calculator}
+                icon={calcMode === "listing" ? FileSearch : calcMode === "buy" ? Landmark : Calculator}
                 title={
                   calcMode === "listing"
                     ? "日本不動產圖紙深度解析"

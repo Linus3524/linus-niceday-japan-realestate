@@ -574,7 +574,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
               <strong>關於買房折溢價與實務：</strong>
             </p>
             <p className="text-justify leading-relaxed">
-              在日本置產，<strong>「全新 (新築)」</strong>建案存在極高造價與品牌溢價，若一購入往往會立刻產生折舊。相比之下，屋齡在 15~25 年且進行過<strong>「全面現代化翻新 (リノベーション済み)」</strong>的中古公寓 (中古マンション)，內部裝潢、廚衛設備更與新成屋無異，具備最高的性價比與投資回報率！
+              在日本置產，<strong>「全新 (新築)」</strong>建案存在極高造價與品牌溢價，若一購入往往會立刻產生折舊。相比之下，屋齡在 15~25 年且進行過<strong>「全面現代化翻新 (リノベーション済み)」</strong>的中古公寓 (中古マンション)，內部裝潢、廚衛設備更與新成屋無異，具備極佳的價格優勢與投資回報率！
             </p>
             <p className="text-justify leading-relaxed">
               此外，<strong>「帶租約出售（オーナーチェンジ）」</strong>的投資房，因承接既有租約、通常不能進入室內確認，且過戶後不能立即收回自住，市場價格往往會低於同條件的空屋。購入前應一併確認現行租金、租客與契約內容、修繕紀錄及未來空置風險，並以長期純收租的前提評估。

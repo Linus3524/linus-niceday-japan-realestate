@@ -2,7 +2,7 @@ import {
 AlertTriangle,
 ChevronDown,
 LoaderCircle,
-Sparkles
+Calculator
 } from "lucide-react";
 import type { CalculatorViewModel } from '../../hooks/useCalculatorController';
 import {
@@ -258,7 +258,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
           disabled={analysisLoading}
           className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:bg-[#9AA9A2] font-sans"
         >
-          {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+          {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
           {analysisLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
         </button>
         <p className="text-[10px] leading-relaxed text-[#66736C]">

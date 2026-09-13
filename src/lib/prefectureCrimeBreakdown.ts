@@ -4,6 +4,9 @@ export interface PrefectureCrimeBreakdown {
   year: number;
   total: number;
   sourceUrl: string;
+  scopeKind?: "prefecture" | "municipality";
+  scopeLabel?: string;
+  sourceLabel?: string;
   groups: Array<{
     code: string;
     label: string;
@@ -22,6 +25,9 @@ export function getPrefectureCrimeBreakdown(prefecture: string, fiscalYear: stri
     year: snapshot.year,
     total: row.total,
     sourceUrl: snapshot.sourceUrl,
+    scopeKind: "prefecture",
+    scopeLabel: prefecture,
+    sourceLabel: "警察廳「令和5年的犯罪」第3、5表",
     groups: snapshot.groups.map(group => ({
       code: group.code, label: group.label, count: row.counts[group.code],
       percent: row.total ? row.counts[group.code] / row.total * 100 : 0,

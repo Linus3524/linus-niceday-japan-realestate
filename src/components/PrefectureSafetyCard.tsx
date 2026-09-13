@@ -91,8 +91,14 @@ function barWidth(vsNational: number): number {
 }
 
 export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyCardProps) {
-  const config = GRADE_CONFIG[prefecture.grade] || GRADE_CONFIG.A;
-  const diffPercent = Math.round((prefecture.vsNational - 1) * 100);
+  const local = prefecture.municipal ?? null;
+  const effectiveGrade = local?.grade ?? prefecture.grade;
+  const effectiveRate = local?.crimeRatePerThousand ?? prefecture.crimeRatePerThousand;
+  const comparisonRate = local?.prefectureAverageRate ?? prefecture.nationalRatePerThousand;
+  const comparisonRatio = local?.vsPrefecture ?? prefecture.vsNational;
+  const comparisonLabel = local ? `${prefecture.prefecture}市區町村平均` : "全國平均";
+  const config = GRADE_CONFIG[effectiveGrade] || GRADE_CONFIG.A;
+  const diffPercent = Math.round((comparisonRatio - 1) * 100);
 
   const shares = [
     { label: "竊盜犯罪", value: prefecture.theftSharePercent, color: SAFETY_PALETTE.green },
@@ -125,17 +131,17 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
           <div className="flex items-center gap-1.5 text-[#66736C]">
             <MapPin className="h-3.5 w-3.5 text-[#007D5A] shrink-0" />
             <span className="font-bold text-[#66736C]">統計範圍：</span>
-            <span className="font-bold text-[#1A2A22]">{prefecture.prefecture}</span>
+            <span className="font-bold text-[#1A2A22]">{local?.municipality ?? prefecture.prefecture}</span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-medium text-[#66736C]">
-              都道府県廣域統計
+              {local ? "市區町村統計" : "縣級備援"}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
-              {prefecture.fiscalYear}
+              {local ? `${local.year} 年` : prefecture.fiscalYear}
             </span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
-              全國 47 都道府縣第 {prefecture.safetyRank} 名
+              {local ? `${prefecture.prefecture}內每千人案件第 ${local.rank} 名` : `全國每千人案件第 ${prefecture.safetyRank} 名`}
             </span>
           </div>
         </div>
@@ -144,7 +150,9 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
         <div className="flex items-start gap-2.5 border border-zinc-200 bg-zinc-50 px-3.5 py-2.5">
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500" />
           <p className="text-[11px] leading-relaxed text-zinc-600">
-            日本官方除東京都外未公開町丁目犯罪月報，故本區採<strong className="font-bold text-zinc-800">都道府県廣域指標</strong>為基準；右側街區活動則依周邊 500m 環境推估，供綜合評估參考。
+            {local
+              ? <>本區採用<strong className="font-bold text-zinc-800">官方市區町村全罪種統計</strong>；右側街區活動依物件周邊 500m 環境推估。兩者範圍不同，會分開標示。</>
+              : <>目前未接入可同年度比較的市區町村全罪種表，本區採<strong className="font-bold text-zinc-800">都道府県統計備援</strong>；右側街區活動依物件周邊 500m 環境推估。</>}
           </p>
         </div>
 
@@ -167,23 +175,23 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
                 borderColor: config.badgeBorder,
               }}
             >
-              {config.label}
+              {local ? config.label.replace("全國", prefecture.prefecture) : config.label}
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-3 pb-2">
             <div>
-              <div className="text-[11px] font-medium text-[#66736C]">縣級統計評級</div>
-              <div className="mt-1 text-4xl font-black leading-none" style={{ color: config.text }}>{prefecture.grade}</div>
+              <div className="text-[11px] font-medium text-[#66736C]">{local ? "市區町村統計評級" : "縣級統計評級"}</div>
+              <div className="mt-1 text-4xl font-black leading-none" style={{ color: config.text }}>{effectiveGrade}</div>
             </div>
             <div>
               <div className="text-[11px] font-medium text-[#66736C]">每千人刑法犯</div>
-              <div className="mt-1 text-4xl font-black leading-none text-[#1A2A22]">{prefecture.crimeRatePerThousand}<span className="ml-1 text-base">件</span></div>
+              <div className="mt-1 text-4xl font-black leading-none text-[#1A2A22]">{effectiveRate}<span className="ml-1 text-base">件</span></div>
             </div>
           </div>
           <div className="flex gap-1">
             {["明顯偏高", "偏高", "接近平均", "較低", "明顯較低"].map((label, index) => {
-              const gradeLevel = (({ "A+": 5, A: 4, "B+": 4, B: 3, C: 2, D: 1 } as Record<string, number>)[prefecture.grade] ?? 3);
+              const gradeLevel = (({ "A+": 5, A: 4, "B+": 4, B: 3, C: 2, D: 1 } as Record<string, number>)[effectiveGrade] ?? 3);
               const isCurrent = index + 1 === gradeLevel;
               return <div className="min-w-0 flex-1 text-center" key={label}>
                 <div className="h-2" style={{ backgroundColor: index < gradeLevel ? config.accent : `${config.border}90` }} />
@@ -198,22 +206,22 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
           </div>
           <div className="prefecture-safety-description mt-3 flex flex-wrap items-center gap-1 text-[11px] leading-relaxed font-bold" style={{ color: config.text }}>
             {diffPercent <= 0 ? <TrendingDown className="h-3.5 w-3.5" /> : <TrendingUp className="h-3.5 w-3.5" />}
-            {diffPercent > 0 ? "+" : ""}{diffPercent}% 比全國平均
+            {diffPercent > 0 ? "+" : ""}{diffPercent}% 比{comparisonLabel}
           </div>
           </div>
         {/* 縣級排名與破案率併入左側統計卡 */}
         <div className="prefecture-safety-middle grid grid-cols-2 gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
-              <Trophy className="h-3 w-3" style={{ color: SAFETY_PALETTE.orange }} />
-              <span>全國排名（犯罪率低至高）</span>
+              <Trophy className="h-3 w-3" style={{ color: config.accent }} />
+              <span>每千人案件由少至多排名</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">
               <span className="text-xl font-black tabular-nums text-[#1A2A22]">
-                第 {prefecture.safetyRank}
+                第 {local?.rank ?? prefecture.safetyRank}
               </span>
               <span className="text-[10px] font-semibold text-[#8A9590]">
-                ／ {prefecture.totalPrefectures} 都道府縣
+                ／ {local ? `${local.totalAreas} 個市區町村` : `${prefecture.totalPrefectures} 都道府縣`}
               </span>
             </div>
           </div>
@@ -221,39 +229,42 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
           <div className="min-w-0">
             <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
               <CheckCircle2 className="h-3 w-3 text-[#007D5A]" />
-              <span>刑案破案率（檢舉率）</span>
+              <span>{local ? "全年刑法犯認知件數" : "刑案破案率（檢舉率）"}</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">
               <span className="text-xl font-black tabular-nums text-[#1A2A22]">
-                {prefecture.clearanceRatePercent !== null ? `${prefecture.clearanceRatePercent}%` : "—"}
+                {local ? local.total.toLocaleString() : prefecture.clearanceRatePercent !== null ? `${prefecture.clearanceRatePercent}%` : "—"}
               </span>
               <span className="text-[10px] font-semibold text-[#8A9590]">
-                破獲水準
+                {local ? "件" : "破獲水準"}
               </span>
             </div>
           </div>
+          <p className="col-span-2 text-[10px] leading-relaxed text-[#66736C]">第 1 名＝每千人案件最少；同值採相同名次。</p>
         </div>
 
           <div className="prefecture-safety-bottom space-y-3">
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]">
-                <FileText className="h-3.5 w-3.5 shrink-0" />都道府縣統計摘要
+                <FileText className="h-3.5 w-3.5 shrink-0" />{local ? "市區町村統計摘要" : "都道府縣統計摘要"}
               </div>
-              <p className="text-[11px] leading-relaxed text-[#55635B]">{prefecture.summary}</p>
+              <p className="text-[11px] leading-relaxed text-[#55635B]">{local
+                ? `${local.municipality}全年共 ${local.total.toLocaleString()} 件，每千人 ${local.crimeRatePerThousand} 件；在${prefecture.prefecture} ${local.totalAreas} 個可比較市區町村中排第 ${local.rank} 名。`
+                : prefecture.summary}</p>
             </div>
           {/* 與全國平均的視覺對照 */}
           <div className="space-y-1.5 pt-1">
             <div className="relative h-2 w-full bg-white border border-[#DDE3DF]">
               <div
                 className="h-full transition-all duration-300"
-                style={{ width: `${barWidth(prefecture.vsNational)}%`, backgroundColor: config.accent }}
+                style={{ width: `${barWidth(comparisonRatio)}%`, backgroundColor: config.accent }}
               />
               {/* 全國平均基準線固定在 50% */}
               <div className="absolute inset-y-0 left-1/2 w-0.5 bg-[#1A2A22]/50" />
             </div>
             <div className="flex justify-between text-[10px] font-medium text-[#66736C]">
               <span>低於平均</span>
-              <span className="font-bold text-[#1A2A22]">全國平均 {prefecture.nationalRatePerThousand} 件</span>
+              <span className="font-bold text-[#1A2A22]">{comparisonLabel} {comparisonRate} 件</span>
               <span>高於平均</span>
             </div>
           </div>
@@ -298,16 +309,16 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
               <span className="font-semibold text-[#66736C]">資料來源：</span>
               <a
                 className="underline hover:text-[#1A2A22]"
-                href="https://www.e-stat.go.jp/"
+                href={local?.sourceUrl ?? "https://www.e-stat.go.jp/"}
                 target="_blank"
                 rel="noreferrer"
               >
-                總務省統計局「社會生活統計指標」
+                {local ? `${prefecture.prefecture}警察官方統計` : "總務省統計局「社會生活統計指標」"}
               </a>
-              <span>（e-Stat）都道府縣級公開統計基準</span>
+              <span>{local ? `／人口：Statistics Dashboard（${local.populationYear} 年）` : "（e-Stat）都道府縣級公開統計基準"}</span>
             </div>
             <p className="text-[10px] leading-relaxed text-[#8A9590]">
-              統計單位：都道府縣千人犯罪認知率與刑案破獲率。官方公開指標反映廣域宏觀數據，微觀街區環境建議實地勘查。
+              {local ? `統計單位：${local.municipality}全區；非物件所在町丁目。犯罪件數與人口年份均標示於卡片。` : "統計單位：都道府縣千人犯罪認知率與刑案破獲率。廣域統計不等於物件周邊風險。"}
             </p>
           </div>
         </div>

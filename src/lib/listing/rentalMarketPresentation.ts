@@ -201,7 +201,7 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
     }
     if (isDiscounted) {
       return `本案每月總負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%（每月折讓約 ${formatYen(Math.abs(nominalDiffYen))}）。${netFactorsSum >= 0
-          ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢，性價比極高。`
+          ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢，整體相當超值。`
           : `租金已充分反映屋齡折舊或步程等折減，居住成本負擔合宜實惠。`
         }`;
     }

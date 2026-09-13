@@ -466,7 +466,7 @@ export function buildListingPriceVerdict(
   return {
     status: "明顯偏高",
     headline: `每月總負擔 ${man(totalMonthlyCost)} 明顯高於周邊同條件行情約 ${gapPercent}%，建議審慎評估自身承擔能力。`,
-    detail: `此物件月額負擔超出周邊同等屋齡與距離之行情上限甚多。除非有特定不可替代之偏好（如特殊景觀或高品質裝潢），否則性價比偏低；考量日本租屋習慣無談判議價空間，建議謹慎衡量個人每月承受力，並優先多比較周邊同級房源。`,
+    detail: `此物件月額負擔超出周邊同等屋齡與距離之行情上限甚多。除非有特定不可替代之偏好（如特殊景觀或高品質裝潢），否則整體 CP 值偏低；考量日本租屋習慣無談判議價空間，建議謹慎衡量個人每月承受力，並優先多比較周邊同級房源。`,
     factors,
     positiveFactorsSumPercent,
     negativeFactorsSumPercent,

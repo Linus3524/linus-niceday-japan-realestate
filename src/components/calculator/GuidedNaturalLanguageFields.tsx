@@ -1,6 +1,6 @@
 import {
 LoaderCircle,
-Sparkles
+Calculator
 } from "lucide-react";
 import type { CalculatorViewModel } from "../../hooks/useCalculatorController";
 import { RequirementAssessment } from "../RequirementAssessment";
@@ -9,7 +9,7 @@ type Props = Pick<CalculatorViewModel, "aiPrompt" | "setAiPrompt" | "analyzeNatu
 export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNaturalLanguageRent, aiInputLoading, aiResult, aiInputError }: Props) {
   return (<><div role="tabpanel">
         <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00a174] font-sans">
-          <Sparkles className="h-4 w-4" /> AI Market Reality Check
+          <Calculator className="h-4 w-4" /> AI Market Reality Check
         </div>
         <h3 className="mb-3 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
           說出理想生活，找到真住得起的選擇
@@ -33,7 +33,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
             disabled={!aiPrompt.trim() || aiInputLoading}
             className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:cursor-not-allowed disabled:opacity-45 font-sans"
           >
-            {aiInputLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+            {aiInputLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
             {aiInputLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
           </button>
           <button
