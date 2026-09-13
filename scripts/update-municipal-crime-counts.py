@@ -243,22 +243,6 @@ def parse_simple_broad(path: Path, prefecture: str, header_rows: int, indexes: t
     return records
 
 
-def parse_miyagi(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
-    records = []
-    with pdfplumber.open(path) as pdf:
-        for row in pdf.pages[0].extract_tables()[0][2:]:
-            name = compact(row[1] or row[0])
-            if name == "仙台市" or not name or "総数" in name:
-                continue
-            if name.endswith("区"):
-                name = f"仙台市{name}"
-            parsed = record("宮城県", name, number(row[2]), populations,
-                            broad_groups([first_number(row[i]) for i in (4, 5, 6, 7, 8, 9)]))
-            if parsed:
-                records.append(parsed)
-    return records
-
-
 def parse_total_rows(path: Path, prefecture: str, pages: list[int], name_indexes: tuple[int, ...], total_index: int, skip: int) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -659,63 +643,160 @@ def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[di
 POPULATIONS: dict[str, dict[str, int]] = {}
 
 
+# ── 驗證規則 ─────────────────────────────────────────────────────────────
+# 各縣的市區町村數（政令市算區、不算市本身）。解析器吃到舊格式或新格式時
+# 最常見的壞法是「少一半」或「多出小計列」，筆數對不上就直接失敗，不寫檔。
+EXPECTED_AREAS = {
+    "北海道": 188,
+    "青森県": 40,
+    "宮城県": 39,
+    "山形県": 35,
+    "福島県": 59,
+    "茨城県": 44,
+    "栃木県": 25,
+    "埼玉県": 72,
+    "千葉県": 59,
+    "神奈川県": 58,
+    "大阪府": 72,
+    "愛知県": 69,
+    "兵庫県": 49,
+    "京都府": 36,
+    "福岡県": 72,
+    "静岡県": 39,
+    "新潟県": 37,
+    "長野県": 77,
+    "岐阜県": 42,
+    "三重県": 29,
+    "滋賀県": 19,
+    "奈良県": 39,
+    "和歌山県": 30,
+    "岡山県": 30,
+    "広島県": 30,
+    "熊本県": 49,
+    "山口県": 19,
+    "鹿児島県": 43,
+    "宮崎県": 26,
+    "長崎県": 21,
+    "佐賀県": 20,
+    "香川県": 17,
+    "石川県": 19,
+    "秋田県": 25,
+    "富山県": 15,
+    "福井県": 17,
+    "山梨県": 27,
+    "鳥取県": 19,
+    "島根県": 19,
+    "高知県": 34,
+}
+# 相對上一版快照，單一縣的年度總數變動超過這個比例就視為解析異常
+# （治安件數年變動通常在 ±20% 內；±40% 以上幾乎都是抓錯表）。
+DRIFT_LIMIT = 0.4
+
+
+def validate(prefectures: dict, previous: dict | None, allow_drift: bool) -> None:
+    problems: list[str] = []
+    for prefecture, data in prefectures.items():
+        records = data["records"]
+        if not records:
+            problems.append(f"{prefecture}: 沒有解析到任何市區町村")
+            continue
+        expected = EXPECTED_AREAS.get(prefecture)
+        if expected is not None and len(records) != expected:
+            problems.append(f"{prefecture}: 市區町村數 {len(records)}，預期 {expected}")
+        names = [item["municipality"] for item in records]
+        if len(set(names)) != len(names):
+            problems.append(f"{prefecture}: 市區町村重複 {sorted({n for n in names if names.count(n) > 1})}")
+        for item in records:
+            if item["groups"] and sum(group["count"] for group in item["groups"]) != item["total"]:
+                problems.append(f"{prefecture} {item['municipality']}: 六大分類加總 ≠ 總數 {item['total']}")
+        total = sum(item["total"] for item in records)
+        old = previous and previous.get("prefectures", {}).get(prefecture)
+        if old and not allow_drift:
+            old_total = sum(item["total"] for item in old["records"])
+            if old_total and abs(total / old_total - 1) > DRIFT_LIMIT:
+                problems.append(f"{prefecture}: 總數 {old_total} → {total}，變動超過 {int(DRIFT_LIMIT * 100)}%（若確認是真的變動，加 --allow-drift）")
+    if problems:
+        raise RuntimeError("驗證失敗，未覆寫快照：\n  " + "\n  ".join(problems))
+
+
 def main() -> None:
+    """用法：
+      python3 scripts/update-municipal-crime-counts.py [快取目錄] [--only=愛知県,群馬県] [--allow-drift] [--refresh]
+    --only       只重跑這幾縣，其餘沿用既有快照（逐縣補資料時用）
+    --allow-drift 某縣總數相對上一版變動超過 40% 也放行
+    --refresh    忽略快取重新下載
+    """
     global POPULATIONS
-    work = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/tmp/municipal-crime")
+    positional = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
+    work = Path(positional[0]) if positional else Path("/tmp/municipal-crime")
     work.mkdir(parents=True, exist_ok=True)
+    only_arg = next((arg.split("=", 1)[1] for arg in sys.argv if arg.startswith("--only=")), "")
+    only = {name.strip() for name in only_arg.split(",") if name.strip()}
+    allow_drift = "--allow-drift" in sys.argv
+    refresh = "--refresh" in sys.argv
+    previous = json.loads(OUTPUT.read_text()) if OUTPUT.exists() else None
+
     POPULATIONS = population_by_prefecture()
     paths = {}
     for prefecture, url in SOURCES.items():
+        if only and prefecture not in only:
+            continue
         suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".html" if url.lower().endswith((".html", ".htm")) else ".csv" if url.lower().endswith(".csv") else ".pdf"
-        pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025{suffix}"
-        if not pdf.exists():
+        # 檔名帶資料年度，隔年更新時不會誤用去年的快取
+        pdf = work / f"{PREFECTURE_CODES[prefecture]}-{SOURCE_YEARS.get(prefecture, 2025)}{suffix}"
+        if refresh or not pdf.exists():
             urllib.request.urlretrieve(url, pdf)
         paths[prefecture] = pdf
-    prefectures = {
-        "北海道": {"year": 2025, "sourceUrl": SOURCES["北海道"], "records": parse_hokkaido(paths["北海道"], POPULATIONS)},
-        "青森県": {"year": 2025, "sourceUrl": SOURCES["青森県"], "records": parse_simple_broad(paths["青森県"], "青森県", 2, (1, 3, 5, 7, 9, 11, 13))},
-        "宮城県": {"year": 2025, "sourceUrl": SOURCES["宮城県"], "records": parse_miyagi(paths["宮城県"], POPULATIONS)},
-        "山形県": {"year": 2025, "sourceUrl": SOURCES["山形県"], "records": parse_total_rows(paths["山形県"], "山形県", [3], (1, 0), 3, 3)},
-        "福島県": {"year": 2025, "sourceUrl": SOURCES["福島県"], "records": parse_total_rows(paths["福島県"], "福島県", [1, 2], (1, 0), 2, 3)},
-        "茨城県": {"year": 2025, "sourceUrl": SOURCES["茨城県"], "records": parse_total_rows(paths["茨城県"], "茨城県", [0], (2, 0), 3, 3)},
-        "栃木県": {"year": 2025, "sourceUrl": SOURCES["栃木県"], "records": parse_simple_broad(paths["栃木県"], "栃木県", 4, (1, 4, 6, 8, 10, 12, 14))},
-        "埼玉県": {"year": 2025, "sourceUrl": SOURCES["埼玉県"], "records": parse_saitama(paths["埼玉県"], POPULATIONS)},
-        "千葉県": {"year": 2025, "sourceUrl": CHIBA_URL, "records": parse_chiba(paths["千葉県"], POPULATIONS)},
+    all_prefectures = {
+        "北海道": lambda: {"year": 2025, "sourceUrl": SOURCES["北海道"], "records": parse_hokkaido(paths["北海道"], POPULATIONS)},
+        "青森県": lambda: {"year": 2025, "sourceUrl": SOURCES["青森県"], "records": parse_simple_broad(paths["青森県"], "青森県", 2, (1, 3, 5, 7, 9, 11, 13))},
+        # 宮城：每格是「認知 検挙」一對數字，其中一個空白時舊解析會把検挙誤當認知
+        # （東松島市 凶悪犯 認知 0・検挙 1 被讀成 1，加總比總數多 1）。改用座標對欄。
+        "宮城県": lambda: {"year": 2025, "sourceUrl": SOURCES["宮城県"], "records": parse_by_reference_row(
+            paths["宮城県"], "宮城県", 0, "総数", 145, {"total": 0, "A": 2, "B": 4, "C": 6, "D": 8, "E": 10, "F": 12},
+            exclude=("総数", "仙台市", "不明", "県外"),
+            ward_city={w: "仙台市" for w in ("青葉区", "宮城野区", "若林区", "太白区", "泉区")})},
+        "山形県": lambda: {"year": 2025, "sourceUrl": SOURCES["山形県"], "records": parse_total_rows(paths["山形県"], "山形県", [3], (1, 0), 3, 3)},
+        "福島県": lambda: {"year": 2025, "sourceUrl": SOURCES["福島県"], "records": parse_total_rows(paths["福島県"], "福島県", [1, 2], (1, 0), 2, 3)},
+        "茨城県": lambda: {"year": 2025, "sourceUrl": SOURCES["茨城県"], "records": parse_total_rows(paths["茨城県"], "茨城県", [0], (2, 0), 3, 3)},
+        "栃木県": lambda: {"year": 2025, "sourceUrl": SOURCES["栃木県"], "records": parse_simple_broad(paths["栃木県"], "栃木県", 4, (1, 4, 6, 8, 10, 12, 14))},
+        "埼玉県": lambda: {"year": 2025, "sourceUrl": SOURCES["埼玉県"], "records": parse_saitama(paths["埼玉県"], POPULATIONS)},
+        "千葉県": lambda: {"year": 2025, "sourceUrl": CHIBA_URL, "records": parse_chiba(paths["千葉県"], POPULATIONS)},
         # 神奈川：第 0～1 頁是罪名別（含六大分類與部分細項），第 2～3 頁是竊盜手口別，這裡只取前兩頁。
-        "神奈川県": {"year": 2025, "sourceUrl": SOURCES["神奈川県"], "records": parse_city_ward_table(
+        "神奈川県": lambda: {"year": 2025, "sourceUrl": SOURCES["神奈川県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["神奈川県"], [0, 1], 3), "神奈川県", 3, (4, 8, 13, 14, 17, 20),
             {"A": [(5, "強盜"), (6, "縱火"), (7, "其他")], "B": [(9, "暴行"), (10, "傷害"), (11, "恐嚇"), (12, "其他")],
              "D": [(15, "詐欺"), (16, "其他")], "E": [(18, "不同意猥褻"), (19, "其他")],
              "F": [(21, "侵入住居"), (22, "器物損壞"), (23, "其他")]},
             exclude=("総数", "合計", "不明", "国外", "県外", "発生地"))},
         # 大阪：府警直接給 Excel，第 10 列起是資料列；大阪市計／堺市計底下接各區。
-        "大阪府": {"year": 2025, "sourceUrl": SOURCES["大阪府"], "records": parse_city_ward_table(
+        "大阪府": lambda: {"year": 2025, "sourceUrl": SOURCES["大阪府"], "records": parse_city_ward_table(
             rows_from_xlsx(paths["大阪府"], 10), "大阪府", 3, (4, 8, 13, 31, 33, 35),
             {"A": [(5, "強盜"), (7, "縱火")], "B": [(9, "暴行"), (10, "傷害"), (11, "脅迫"), (12, "恐嚇")],
              "C": [(14, "侵入竊盜"), (21, "汽車竊盜"), (22, "機車竊盜"), (23, "自行車竊盜"), (24, "搶奪"), (27, "車內物品竊盜"), (30, "順手牽羊")],
              "D": [(32, "詐欺")], "E": [(34, "公然猥褻")],
              "F": [(36, "侵占遺失物"), (37, "妨害公務"), (38, "侵入住居"), (39, "器物損壞")]},
             exclude=("総数", "合計", "不明", "国外", "府内", "他府県", "発生地"))},
-        "愛知県": {"year": SOURCE_YEARS["愛知県"], "sourceUrl": SOURCES["愛知県"], "records": parse_aichi(paths["愛知県"])},
+        "愛知県": lambda: {"year": SOURCE_YEARS["愛知県"], "sourceUrl": SOURCES["愛知県"], "records": parse_aichi(paths["愛知県"])},
         # 兵庫：縣警只給總數與幾種主要罪種，沒有六大分類；分類由 UI 退回縣級。
-        "兵庫県": {"year": 2025, "sourceUrl": SOURCES["兵庫県"], "records": parse_city_ward_table(
+        "兵庫県": lambda: {"year": 2025, "sourceUrl": SOURCES["兵庫県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["兵庫県"], [0], 3), "兵庫県", 3, (), city_index=0, sub_index=1,
             exclude=("県下", "不明", "県外"))},
-        "京都府": {"year": 2025, "sourceUrl": SOURCES["京都府"], "records": parse_simple_broad(paths["京都府"], "京都府", 2, (1, 2, 3, 4, 8, 9, 10))},
+        "京都府": lambda: {"year": 2025, "sourceUrl": SOURCES["京都府"], "records": parse_simple_broad(paths["京都府"], "京都府", 2, (1, 2, 3, 4, 8, 9, 10))},
         # 福岡：政令市的區不冠市名（門司区、東区…），用對照表補回。
-        "福岡県": {"year": 2025, "sourceUrl": SOURCES["福岡県"], "records": parse_simple_broad(
+        "福岡県": lambda: {"year": 2025, "sourceUrl": SOURCES["福岡県"], "records": parse_simple_broad(
             paths["福岡県"], "福岡県", 1, (1, 2, 3, 4, 5, 6, 7),
             ward_city={**{w: "北九州市" for w in ("門司区", "若松区", "戸畑区", "小倉北区", "小倉南区", "八幡東区", "八幡西区")},
                        **{w: "福岡市" for w in ("東区", "博多区", "中央区", "南区", "西区", "城南区", "早良区")}})},
-        "静岡県": {"year": 2025, "sourceUrl": SOURCES["静岡県"], "records": parse_simple_broad(paths["静岡県"], "静岡県", 3, (1, 2, 3, 6, 39, 40, 41))},
+        "静岡県": lambda: {"year": 2025, "sourceUrl": SOURCES["静岡県"], "records": parse_simple_broad(paths["静岡県"], "静岡県", 3, (1, 2, 3, 6, 39, 40, 41))},
         # 新潟：市部／郡部 → 市 → 區三層，只有總數與幾種手口，分類退回縣級。
-        "新潟県": {"year": 2025, "sourceUrl": SOURCES["新潟県"], "records": parse_city_ward_table(
+        "新潟県": lambda: {"year": 2025, "sourceUrl": SOURCES["新潟県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["新潟県"], [0], 2), "新潟県", 3, (), city_index=1, sub_index=2,
             exclude=("合計", "その他", "不明", "県外"))},
         # 長野：第 0 欄是警察署、第 1 欄是市町村，Ｒ７ 總數在第 3 欄；只有總數。
-        "長野県": {"year": 2025, "sourceUrl": SOURCES["長野県"], "records": parse_total_rows(paths["長野県"], "長野県", [0], (1,), 3, 2)},
+        "長野県": lambda: {"year": 2025, "sourceUrl": SOURCES["長野県"], "records": parse_total_rows(paths["長野県"], "長野県", [0], (1,), 3, 2)},
         # 岐阜：六大分類拆成 (1)(2) 兩張表各兩頁，各欄都是 R7／R6／増減 三格，取 R7。
-        "岐阜県": {"year": 2025, "sourceUrl": SOURCES["岐阜県"], "records": merge_split_groups(
+        "岐阜県": lambda: {"year": 2025, "sourceUrl": SOURCES["岐阜県"], "records": merge_split_groups(
             parse_city_ward_table(rows_from_pdf(paths["岐阜県"], [0, 2], 3), "岐阜県", 2, (5, 8, 17, 2, 2, 2),
                                   {"B": [(11, "暴行"), (14, "傷害")], "C": [(20, "侵入竊盜")]},
                                   city_index=0, sub_index=1, exclude=("総数", "計", "不明", "県外")),
@@ -723,65 +804,67 @@ def main() -> None:
                                   {"D": [(5, "詐欺")], "E": [(11, "不同意猥褻")], "F": [(17, "侵占遺失物"), (20, "侵入住居"), (23, "器物損壞")]},
                                   city_index=0, sub_index=1, exclude=("総数", "計", "不明", "県外")))},
         # 三重：認知・検挙状況資料的別添資料３（第 5 頁），各欄 令和７／令和６／増減 三格。
-        "三重県": {"year": 2025, "sourceUrl": SOURCES["三重県"], "records": parse_simple_broad(paths["三重県"], "三重県", 2, (1, 4, 7, 10, 13, 16, 19), pages=[5])},
-        "滋賀県": {"year": 2025, "sourceUrl": SOURCES["滋賀県"], "records": parse_multitable_first_line(
+        "三重県": lambda: {"year": 2025, "sourceUrl": SOURCES["三重県"], "records": parse_simple_broad(paths["三重県"], "三重県", 2, (1, 4, 7, 10, 13, 16, 19), pages=[5])},
+        "滋賀県": lambda: {"year": 2025, "sourceUrl": SOURCES["滋賀県"], "records": parse_multitable_first_line(
             paths["滋賀県"], "滋賀県", 1, (2, 7, 13, 17, 20, 24), exclude=("総数", "地域", "不明", "市町"))},
         # 奈良：只有總數與主要罪種，第 2 欄是 R7 12 月末累計。
-        "奈良県": {"year": 2025, "sourceUrl": SOURCES["奈良県"], "records": parse_total_rows(paths["奈良県"], "奈良県", [0], (0,), 2, 4)},
-        "和歌山県": {"year": SOURCE_YEARS["和歌山県"], "sourceUrl": SOURCES["和歌山県"], "records": parse_total_rows(paths["和歌山県"], "和歌山県", [0], (1, 2), 4, 3)},
+        "奈良県": lambda: {"year": 2025, "sourceUrl": SOURCES["奈良県"], "records": parse_total_rows(paths["奈良県"], "奈良県", [0], (0,), 2, 4)},
+        "和歌山県": lambda: {"year": SOURCE_YEARS["和歌山県"], "sourceUrl": SOURCES["和歌山県"], "records": parse_total_rows(paths["和歌山県"], "和歌山県", [0], (1, 2), 4, 3)},
         # 岡山：四頁，每頁兩個分類（各佔 9 欄：認知 3、検挙 3、検挙率 3），總數在第 0 頁第 2 欄。
-        "岡山県": {"year": 2025, "sourceUrl": SOURCES["岡山県"], "records": merge_group_parts([
+        "岡山県": lambda: {"year": 2025, "sourceUrl": SOURCES["岡山県"], "records": merge_group_parts([
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [0], 3), "岡山県", 2, (11, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "A"),
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [1], 3), "岡山県", 2, (2, 2, 11, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "BC"),
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [2], 3), "岡山県", 2, (2, 2, 2, 2, 11, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "DE"),
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [3], 3), "岡山県", 2, (2, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "F"),
         ])},
-        "広島県": {"year": 2025, "sourceUrl": SOURCES["広島県"], "records": parse_hiroshima(paths["広島県"])},
+        "広島県": lambda: {"year": 2025, "sourceUrl": SOURCES["広島県"], "records": parse_hiroshima(paths["広島県"])},
         # 熊本：只有總數與主要罪種，第 1 欄是認知總數。
-        "熊本県": {"year": 2025, "sourceUrl": SOURCES["熊本県"], "records": parse_total_rows(paths["熊本県"], "熊本県", [0], (0,), 1, 3)},
+        "熊本県": lambda: {"year": 2025, "sourceUrl": SOURCES["熊本県"], "records": parse_total_rows(paths["熊本県"], "熊本県", [0], (0,), 1, 3)},
         # 山口：兩頁各一張表（第二張才是資料），認知／検挙成對，取認知欄。
-        "山口県": {"year": 2025, "sourceUrl": SOURCES["山口県"], "records": merge_group_parts([
+        "山口県": lambda: {"year": 2025, "sourceUrl": SOURCES["山口県"], "records": merge_group_parts([
             (parse_city_ward_table(rows_from_pdf(paths["山口県"], [0], 3, 1), "山口県", 1, (3, 5, 7, 1, 1, 1), city_index=0, sub_index=1, exclude=("総数", "不明")), "ABC"),
             (parse_city_ward_table(rows_from_pdf(paths["山口県"], [1], 3, 1), "山口県", 1, (1, 1, 1, 5, 7, 9), city_index=0, sub_index=1, exclude=("総数", "不明")), "DEF"),
         ])},
         # 鹿児島：「市町村別の犯罪発生実態」第 2 頁刑法犯，只有總數。
-        "鹿児島県": {"year": 2025, "sourceUrl": SOURCES["鹿児島県"], "records": parse_total_rows(paths["鹿児島県"], "鹿児島県", [2], (1,), 3, 2)},
+        "鹿児島県": lambda: {"year": 2025, "sourceUrl": SOURCES["鹿児島県"], "records": parse_total_rows(paths["鹿児島県"], "鹿児島県", [2], (1,), 3, 2)},
         # 宮崎：市町村別犯罪率一年一頁（令和 2～7），最後一頁是令和 7 年。
-        "宮崎県": {"year": 2025, "sourceUrl": SOURCES["宮崎県"], "records": parse_total_rows(paths["宮崎県"], "宮崎県", [5], (0,), 2, 2)},
+        "宮崎県": lambda: {"year": 2025, "sourceUrl": SOURCES["宮崎県"], "records": parse_total_rows(paths["宮崎県"], "宮崎県", [5], (0,), 2, 2)},
         # 長崎：第 3 頁市町別，郡名在第 0 欄、町名在第 1 欄；六大分類齊全。
-        "長崎県": {"year": 2025, "sourceUrl": SOURCES["長崎県"], "records": parse_city_ward_table(
+        "長崎県": lambda: {"year": 2025, "sourceUrl": SOURCES["長崎県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["長崎県"], [3], 1), "長崎県", 2, (4, 5, 6, 7, 8, 9), city_index=0, sub_index=1, exclude=("総数", "その他"))},
         # 佐賀：一年一頁（第 1 頁是令和 7 年），郡名在第 0 欄、町名在第 1 欄。
-        "佐賀県": {"year": 2025, "sourceUrl": SOURCES["佐賀県"], "records": parse_city_ward_table(
+        "佐賀県": lambda: {"year": 2025, "sourceUrl": SOURCES["佐賀県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["佐賀県"], [1], 3), "佐賀県", 2, (4, 5, 6, 7, 8, 9), city_index=0, sub_index=1, exclude=("総数", "その他"))},
         # 香川：「数字でみるさぬきの安全（令和 8 年版）」第 52 頁「80 市町別刑法犯認知状況」，只有總數。
-        "香川県": {"year": 2025, "sourceUrl": SOURCES["香川県"], "records": parse_stacked_pair(paths["香川県"], "香川県", 52)},
+        "香川県": lambda: {"year": 2025, "sourceUrl": SOURCES["香川県"], "records": parse_stacked_pair(paths["香川県"], "香川県", 52)},
         # 石川：表頭把凶悪・粗暴・風俗擠在同一欄，分類口徑對不上六大分類，只取總數。
-        "石川県": {"year": 2025, "sourceUrl": SOURCES["石川県"], "records": parse_total_rows(paths["石川県"], "石川県", [0], (0,), 1, 3)},
+        "石川県": lambda: {"year": 2025, "sourceUrl": SOURCES["石川県"], "records": parse_total_rows(paths["石川県"], "石川県", [0], (0,), 1, 3)},
         # 秋田：表格偵測漏掉知能・風俗・その他三欄，改以「秋田県」列的數字右緣當錨點逐列對欄。
-        "秋田県": {"year": 2025, "sourceUrl": SOURCES["秋田県"], "records": parse_by_reference_row(
+        "秋田県": lambda: {"year": 2025, "sourceUrl": SOURCES["秋田県"], "records": parse_by_reference_row(
             paths["秋田県"], "秋田県", 0, "秋田県", 140, {"total": 0, "A": 1, "B": 2, "C": 3, "D": 12, "E": 13, "F": 14})},
         # 富山：網頁表格，令和 7 年在第 1 欄，只有總數。
-        "富山県": {"year": 2025, "sourceUrl": SOURCES["富山県"], "records": parse_city_ward_table(
+        "富山県": lambda: {"year": 2025, "sourceUrl": SOURCES["富山県"], "records": parse_city_ward_table(
             rows_from_html(paths["富山県"]), "富山県", 1, (), city_index=0, sub_index=1, exclude=("区分", "不詳", "その他"))},
-        "福井県": {"year": 2025, "sourceUrl": SOURCES["福井県"], "records": parse_fukui(paths["福井県"])},
+        "福井県": lambda: {"year": 2025, "sourceUrl": SOURCES["福井県"], "records": parse_fukui(paths["福井県"])},
         # 山梨：「市町村別刑法犯認知件数過去１０年」，最後一欄是令和 7 年；只有總數。
-        "山梨県": {"year": 2025, "sourceUrl": SOURCES["山梨県"], "records": parse_total_rows(paths["山梨県"], "山梨県", [0], (0,), 11, 1)},
+        "山梨県": lambda: {"year": 2025, "sourceUrl": SOURCES["山梨県"], "records": parse_total_rows(paths["山梨県"], "山梨県", [0], (0,), 11, 1)},
         # 鳥取：犯罪統計第 5 頁第二張表「市町村別 刑法犯・窃盗犯」，只有總數。
-        "鳥取県": {"year": 2025, "sourceUrl": SOURCES["鳥取県"], "records": parse_city_ward_table(
+        "鳥取県": lambda: {"year": 2025, "sourceUrl": SOURCES["鳥取県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["鳥取県"], [5], 3, 1), "鳥取県", 1, (), city_index=0, sub_index=1, exclude=("総数", "不明", "市部", "郡部"))},
         # 島根：凶悪與粗暴合併成一欄，對不上六大分類，只取總數。
-        "島根県": {"year": 2025, "sourceUrl": SOURCES["島根県"], "records": parse_total_rows(paths["島根県"], "島根県", [0], (0,), 1, 3)},
+        "島根県": lambda: {"year": 2025, "sourceUrl": SOURCES["島根県"], "records": parse_total_rows(paths["島根県"], "島根県", [0], (0,), 1, 3)},
         # 高知：刑法犯の概況第 3 頁「市町村別刑法犯認知件数」，六大分類齊全。
-        "高知県": {"year": 2025, "sourceUrl": SOURCES["高知県"], "records": parse_simple_broad(paths["高知県"], "高知県", 1, (1, 2, 3, 4, 5, 6, 7), pages=[3])},
+        "高知県": lambda: {"year": 2025, "sourceUrl": SOURCES["高知県"], "records": parse_simple_broad(paths["高知県"], "高知県", 1, (1, 2, 3, 4, 5, 6, 7), pages=[3])},
     }
-    for prefecture, data in prefectures.items():
-        if not data["records"]:
-            raise RuntimeError(f"No municipality records parsed for {prefecture}")
+    prefectures = {name: build() for name, build in all_prefectures.items() if not only or name in only}
+    if only and previous:
+        # 沒重跑的縣沿用上一版
+        prefectures = {**previous["prefectures"], **prefectures}
+    validate(prefectures, previous, allow_drift)
     snapshot = {
-        "generatedAt": "2026-09-13",
+        "generatedAt": __import__("datetime").date.today().isoformat(),
         "populationYear": 2025,
-        "prefectures": prefectures,
+        "prefectures": dict(sorted(prefectures.items(), key=lambda item: PREFECTURE_CODES[item[0]])),
     }
     OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, separators=(",", ":")) + "\n")
     print(f"Wrote {OUTPUT} with {sum(len(data['records']) for data in prefectures.values())} areas across {len(prefectures)} prefectures")
