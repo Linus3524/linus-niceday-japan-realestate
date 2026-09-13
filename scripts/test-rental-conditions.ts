@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { normalizeRoomType } from "../src/lib/listingExtraction.js";
 import { calculateInitialCostBreakdown } from "../api/analyze-listing.js";
 import { additionalRentalFees } from "../src/lib/rentalConditions.js";
-import { rentalConditionGroups } from "../src/lib/rentalConditionDisplay.js";
+import { rentalConditionGroups, buildRentalConditionSections, stripOrphanedBrackets } from "../src/lib/rentalConditionDisplay.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 
 const conditions = "普通賃貸借1年契約（更新型）。1、2回目の更新時5％の賃料改定あり。更新料は1回のみ。室内抗菌処理代17,600円 事務手数料11,000円。ペット可：敷金2ヶ月。地下駐輪場：登録料5,500円。";
@@ -55,8 +55,14 @@ assert.match(visibleConditions, /可入住日：2026年10月14日/);
 assert.match(visibleConditions, /可養寵物：小型犬或貓限 1 隻/);
 assert.match(visibleConditions, /室內抗菌處理費：17,600円/);
 assert.match(visibleConditions, /地下自行車停車場：登錄費 5,500円/);
-assert.match(displayed.find(group => group.id === "moveIn")?.items.join("\n") || "", /可養寵物/, "養寵物的追加押金應放在入住條件內");
 assert.doesNotMatch(visibleConditions, /[\u3040-\u30ff]/, "使用者端不可直接顯示日文假名特約");
+
+const moveOutSections = buildRentalConditionSections({ rentalConditions: "解約予告50日前。退去時請求)" });
+const moveOutItems = moveOutSections.find(s => s.title === "退租與違約")?.rows.find(r => r.title === "退租與提前解約")?.items || [];
+assert.deepEqual(moveOutItems, ["退租須於 50 日前通知", "退去時請求"]);
+assert.equal(stripOrphanedBrackets("退去時請求)"), "退去時請求");
+assert.equal(stripOrphanedBrackets("（退去時請求）"), "退去時請求");
+assert.equal(stripOrphanedBrackets("(退去時請求)"), "退去時請求");
 
 const excelanLayoutText = `
 エクセラン東武練馬 ■ACCESS

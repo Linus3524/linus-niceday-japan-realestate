@@ -298,8 +298,26 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                   : "border-[#DDE3DF] bg-[#F5F8F6]"
                             }`}>
                             <div>
-                              <span className="block text-[10px] font-bold text-[#1A2A22]">租金定價合理性剖析</span>
-                              <span className={`block text-xs font-bold mt-0.5 ${isWellSupported ? "text-[#007D5A]" : isOverpriced ? "text-[#B13818]" : isDiscounted ? "text-[#0284C7]" : "text-[#007D5A]"
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="text-[10px] text-[#66736C]">租金定價合理性剖析</span>
+                                <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${isWellSupported
+                                    ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                    : isOverpriced
+                                      ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
+                                      : isDiscounted
+                                        ? "border-[#BAE6FD] bg-[#E0F2FE] text-[#0284C7]"
+                                        : "border-[#DDE3DF] bg-white text-[#66736C]"
+                                  }`}>
+                                  {isWellSupported ? "充分支撐" : isOverpriced ? "超額溢價" : isDiscounted ? "讓利優勢" : "合理區間"}
+                                </span>
+                              </div>
+                              <span className={`block text-base font-black mt-1 tracking-tight ${isWellSupported
+                                  ? "text-[#007D5A]"
+                                  : isOverpriced
+                                    ? "text-[#B13818]"
+                                    : isDiscounted
+                                      ? "text-[#0284C7]"
+                                      : "text-[#007D5A]"
                                 }`}>
                                 {isWellSupported ? "✓ 租金有充分條件支撐" : isOverpriced ? "⚠ 超出條件支撐（超額溢價）" : isDiscounted ? "↓ 低於行情具性價比" : "✓ 租金落在合理區間"}
                               </span>

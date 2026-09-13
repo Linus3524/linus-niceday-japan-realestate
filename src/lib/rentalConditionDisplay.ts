@@ -50,17 +50,24 @@ export function buildRentalConditionSections({
   });
   if (!groups.length && !extraNotes.length) return [];
 
-  const getItems = (id: string, fallback: string) => groups.find((group) => group.id === id)?.items || [fallback];
+  const getItems = (id: string, fallback: string) =>
+    (groups.find((group) => group.id === id)?.items || [fallback]).map(stripOrphanedBrackets).filter(Boolean);
   const lease = getItems("lease", "圖紙未載明租期與續約條件，待核對正式契約。");
-  const moveIn = [...getItems("moveIn", "圖紙未載明入住日或優惠條件。"), ...(groups.find((group) => group.id === "pet")?.items || [])];
+  const moveIn = [...getItems("moveIn", "圖紙未載明入住日或優惠條件。"), ...(groups.find((group) => group.id === "pet")?.items || [])].map(stripOrphanedBrackets);
   const guarantee = getItems("guarantee", "圖紙未載明保證公司方案與費用。");
   const fees = getItems("fees", "圖紙未載明其他一次性或年度費用。");
   const moveOut = getItems("moveOut", "圖紙未載明退租清潔費或房屋個別提醒。");
   const optional = getItems("optional", "圖紙未載明停車或駐輪選配條件。");
-  const extraContract = extraNotes.filter((item) => ["合約特約", "入住條件"].includes(item.category)).map((item) => `${item.title}：${item.explanation}`);
-  const extraFees = extraNotes.filter((item) => item.category === "費用約定" || /支援|保險|保證/u.test(`${item.title}${item.explanation}`)).map((item) => `${item.title}：${item.explanation}`);
+  const extraContract = extraNotes
+    .filter((item) => ["合約特約", "入住條件"].includes(item.category))
+    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`));
+  const extraFees = extraNotes
+    .filter((item) => item.category === "費用約定" || /支援|保險|保證/u.test(`${item.title}${item.explanation}`))
+    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`));
   const usedExtra = new Set([...extraContract, ...extraFees]);
-  const extraOther = extraNotes.map((item) => `${item.title}：${item.explanation}`).filter((item) => !usedExtra.has(item));
+  const extraOther = extraNotes
+    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`))
+    .filter((item) => !usedExtra.has(item));
 
   return [
     {
@@ -97,6 +104,42 @@ export function buildRentalConditionSections({
   ];
 }
 
+export function stripOrphanedBrackets(str: string): string {
+  if (!str) return "";
+  let s = str.trim();
+
+  // 若整句被成對括號包覆，例如 "(退去時請求)" 或 "（退去時請求）"，拆除最外層括號
+  const wrappedMatch = s.match(/^[\(（\[【「『]([^\(\)（）\[\]【】「』]+)[\)）\]】」』]$/);
+  if (wrappedMatch) {
+    s = wrappedMatch[1].trim();
+  }
+
+  // 移除首部孤立的開括號（字串內無任何閉括號時）
+  while (/^[\(（\[【「『]/.test(s) && !/[\)）\]】」』]/.test(s)) {
+    s = s.slice(1).trim();
+  }
+  // 移除尾部孤立的閉括號（字串內無任何開括號時，如「退去時請求)」）
+  while (/[\)）\]】」』]$/.test(s) && !/[\(（\[【「『]/.test(s)) {
+    s = s.slice(0, -1).trim();
+  }
+
+  // 檢查圓括號平衡度，若閉括號多於開括號且結尾是閉括號，移除結尾多餘閉括號
+  const openCount = (s.match(/[\(（]/g) || []).length;
+  const closeCount = (s.match(/[\)）]/g) || []).length;
+  if (closeCount > openCount && /[\)）]$/.test(s)) {
+    s = s.replace(/[\)）]+$/, "").trim();
+  }
+
+  // 檢查方括號平衡度
+  const openSquare = (s.match(/[\[【]/g) || []).length;
+  const closeSquare = (s.match(/[\]】]/g) || []).length;
+  if (closeSquare > openSquare && /[\]】]$/.test(s)) {
+    s = s.replace(/[\]】]+$/, "").trim();
+  }
+
+  return s;
+}
+
 const groupOrder = [
   ["lease", "租期與續約"],
   ["moveIn", "入住與優惠"],
@@ -111,14 +154,15 @@ export function rentalConditionGroups(raw?: string | null, optionalFacilities?: 
   const grouped = new Map<string, string[]>();
   const clauses = (raw || "")
     .normalize("NFKC")
-    .replace(/[,、・]\s*(?=(?:普通賃貸借|契約期間|解約予告|★?キャンペーン|入居日|ペット|M保証|木下グループ保証|木下の賃貸|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヵ月|CATV|実入居者|※?退去時))/gu, "。")
+    .replace(/[,、・]\s*(?=(?:普通賃貸借|契約期間|解約予告|★?キャンペーン|入居日|ペット|M保証|木下グループ保証|木下の賃貸|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヵ月|CATV|実入居者))/gu, "。")
+    .replace(/[,、]\s*(?=※?退去時)/gu, "。")
     .split(/[。\n]+/u)
-    .map((clause) => clause.trim())
+    .map((clause) => stripOrphanedBrackets(clause.trim()))
     .filter(Boolean);
 
   for (const clause of clauses) {
     const id = classifyClause(clause);
-    const translated = translateRentalClause(clause);
+    const translated = stripOrphanedBrackets(translateRentalClause(clause));
     const items = grouped.get(id) || [];
     if (!items.includes(translated)) items.push(translated);
     grouped.set(id, items);
@@ -128,9 +172,10 @@ export function rentalConditionGroups(raw?: string | null, optionalFacilities?: 
     const items = optionalFacilities
       .normalize("NFKC")
       .split(/[、，\n]+|(?<!\d),(?!\d)/u)
-      .map((item) => item.trim())
+      .map((item) => stripOrphanedBrackets(item.trim()))
       .filter(Boolean)
-      .map(translateOptionalFacility);
+      .map(translateOptionalFacility)
+      .map(stripOrphanedBrackets);
     if (items.length) grouped.set("optional", [...new Set(items)]);
   }
 
@@ -150,7 +195,7 @@ function classifyClause(clause: string) {
 }
 
 function translateRentalClause(source: string) {
-  let text = source.replace(/^[※■●◆\s]+/u, "").trim();
+  let text = stripOrphanedBrackets(source.replace(/^[※■●◆\s]+/u, "").trim());
   text = text
     .replace(/^契約条件\s*[：:]\s*/gu, "")
     .replace(/ペット可\s*[：:]\s*小型犬[・、]猫1匹迄敷金2ヶ月預かり/gu, "可養寵物：小型犬或貓限 1 隻，另收 2 個月押金")
@@ -163,7 +208,8 @@ function translateRentalClause(source: string) {
     .replace(/普通賃貸借\s*(\d+)年契約\s*[（(]更新型[）)]/gu, "普通租賃契約，租期 $1 年（可續約）")
     .replace(/契約期間\s*(\d+)年/gu, "普通租賃契約，租期 $1 年")
     .replace(/更新料\s*新賃料\s*(\d+(?:\.\d+)?)ヶ月/gu, "續約費：新租金 $1 個月")
-    .replace(/解約予告\s*(\d+)ヶ月前(?:に当社宛に通知)?/gu, "退租須於 $1 個月前通知")
+    .replace(/解約予告\s*(\d+)\s*日前(?:に当社宛に通知)?/gu, "退租須於 $1 日前通知")
+    .replace(/解約予告\s*(\d+)\s*(?:ヶ月|ヵ月|カ月)前(?:に当社宛に通知)?/gu, "退租須於 $1 個月前通知")
     .replace(/1、2回目の更新時\s*(\d+(?:\.\d+)?)%の賃料改定あり/gu, "第 1、2 次續約時，租金調整 $1%")
     .replace(/更新料は1回のみ/gu, "續約費僅收取 1 次")
     .replace(/2回目以降の更新料は無い為、安心して永くお住まいいただけます/gu, "第 2 次起不再收取續約費")
@@ -203,6 +249,8 @@ function translateRentalClause(source: string) {
     .replace(/）(?=第)/gu, "）；")
     .replace(/\s+/gu, " ")
     .trim();
+
+  text = stripOrphanedBrackets(text);
 
   return /[\u3040-\u30ff]/u.test(text)
     ? "圖紙另有個別日文特約，簽約前請向仲介或宅建士確認重要事項說明。"

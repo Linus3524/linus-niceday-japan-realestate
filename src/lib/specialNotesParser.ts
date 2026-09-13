@@ -457,11 +457,27 @@ export function parseAndExplainSpecialNotes(rawNotes?: string | null): ParsedSpe
   return results;
 }
 
+function stripOrphanedBrackets(str: string): string {
+  if (!str) return "";
+  let s = str.trim();
+  const wrappedMatch = s.match(/^[\(（\[【「『]([^\(\)（）\[\]【】「』]+)[\)）\]】」』]$/);
+  if (wrappedMatch) s = wrappedMatch[1].trim();
+  while (/^[\(（\[【「『]/.test(s) && !/[\)）\]】」』]/.test(s)) s = s.slice(1).trim();
+  while (/[\)）\]】」』]$/.test(s) && !/[\(（\[【「『]/.test(s)) s = s.slice(0, -1).trim();
+  const openCount = (s.match(/[\(（]/g) || []).length;
+  const closeCount = (s.match(/[\)）]/g) || []).length;
+  if (closeCount > openCount && /[\)）]$/.test(s)) s = s.replace(/[\)）]+$/, "").trim();
+  const openSquare = (s.match(/[\[【]/g) || []).length;
+  const closeSquare = (s.match(/[\]】]/g) || []).length;
+  if (closeSquare > openSquare && /[\]】]$/.test(s)) s = s.replace(/[\]】]+$/, "").trim();
+  return s;
+}
+
 /**
  * 萬用備用解析器：針對未命中規則表的日文字句進行基礎斷詞與繁中說明整理
  */
 function generateFallbackExplanation(token: string): ParsedSpecialNoteItem | null {
-  const clean = token.replace(/^[■●・\-\*]\s*/, "").trim();
+  const clean = stripOrphanedBrackets(token.replace(/^[■●・\-\*]\s*/, "").trim());
   if (!clean || clean.length <= 1) return null;
 
   // 1. 禁止類（不可 / 禁止）
