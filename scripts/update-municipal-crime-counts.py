@@ -45,6 +45,7 @@ SOURCES = {
     # 和歌山令和 7 年只出了警察署別，市町村別犯罪率表最新是令和 6 年。
     "和歌山県": "https://www.police.pref.wakayama.lg.jp/04_toukei/documents/r6/hanzairitsur6.pdf",
     "岡山県": "https://www.pref.okayama.jp/uploaded/attachment/405322.pdf",
+    "広島県": "https://www.pref.hiroshima.lg.jp/soshiki_file/police/hantour7.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -87,7 +88,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34",
 }
 
 
@@ -456,6 +457,47 @@ def merge_group_parts(parts: list[tuple[list[dict], str]]) -> list[dict]:
     return merged
 
 
+def parse_hiroshima(path: Path, page_index: int = 101) -> list[dict]:
+    """広島犯罪統計書「12 市区町別 包括罪種別 認知件数」：pdfplumber 的表格偵測把名稱和數字
+    黏在同一格，改用文字座標：x<150 的字是名稱，數字依右緣對到七個欄位。"""
+    right_edges = [192, 241, 289, 337, 385, 433, 481]   # 総数 凶悪 粗暴 窃盗 知能 風俗 その他
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    records = []
+    with pdfplumber.open(path) as pdf:
+        page = pdf.pages[page_index]
+        lines: list[list[dict]] = []
+        for word in sorted(page.extract_words(x_tolerance=1.5, y_tolerance=2), key=lambda w: w["top"]):
+            if lines and abs(word["top"] - lines[-1][0]["top"]) <= 3:
+                lines[-1].append(word)
+            else:
+                lines.append([word])
+        parent = ""
+        for line in lines:
+            words = sorted(line, key=lambda w: w["x0"])
+            name = compact("".join(w["text"] for w in words if w["x1"] <= 150))
+            values = [0] * 7
+            seen = False
+            for w in words:
+                if w["x0"] <= 150 or not w["text"].replace(",", "").isdigit():
+                    continue
+                index = min(range(7), key=lambda i: abs(right_edges[i] - w["x1"]))
+                values[index] = number(w["text"]); seen = True
+            if not name or not seen or any(k in name for k in ("総数", "計", "不詳", "その他")) or name.endswith("郡"):
+                continue
+            if name.endswith("市"):
+                parent = name
+            if name.endswith("区"):
+                name = f"{parent}{name}"
+            groups = [{"code": code, "label": label, "count": values[i + 1], "items": []}
+                      for i, (code, label) in enumerate(labels)]
+            records.append((name, values[0], groups))
+    # 広島市那一列是各區小計，只收區
+    parents = {n[: n.index("市") + 1] for n, _, _ in records if n.endswith("区")}
+    return [parsed for name, total, groups in records if name not in parents
+            for parsed in [record("広島県", name, total, POPULATIONS, groups)] if parsed]
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -550,6 +592,7 @@ def main() -> None:
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [2], 3), "岡山県", 2, (2, 2, 2, 2, 11, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "DE"),
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [3], 3), "岡山県", 2, (2, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "F"),
         ])},
+        "広島県": {"year": 2025, "sourceUrl": SOURCES["広島県"], "records": parse_hiroshima(paths["広島県"])},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
