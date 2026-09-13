@@ -38,6 +38,7 @@ SOURCES = {
     "静岡県": "https://www.pref.shizuoka.jp/police/_res/projects/project_police/_page_/002/001/146/r7zyoukyouhyou.pdf",
     "新潟県": "https://www.pref.niigata.lg.jp/uploaded/attachment/503121.pdf",
     "長野県": "https://www.pref.nagano.lg.jp/police/toukei/documents/r7toukei-chichouson.pdf",
+    "岐阜県": "https://www.pref.gifu.lg.jp/uploaded/attachment/485367.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -80,7 +81,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21",
 }
 
 
@@ -387,6 +388,20 @@ def items_from_values(pairs: list[tuple[int, str]], code: str) -> list[dict]:
             for i, (count, label) in enumerate(pairs)]
 
 
+def merge_split_groups(left: list[dict], right: list[dict]) -> list[dict]:
+    """有些縣把六大分類拆成左右兩張表（(1) 凶悪・粗暴・窃盗、(2) 知能・風俗・その他），
+    兩邊各自解析後用市區町村名接起來；右表的 A～C 佔位資料丟掉、換成右表的 D～F。"""
+    by_name = {item["municipality"]: item for item in right}
+    merged = []
+    for item in left:
+        other = by_name.get(item["municipality"])
+        if other is None:
+            continue
+        groups = item["groups"][:3] + other["groups"][3:]
+        merged.append({**item, "groups": groups})
+    return merged
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -459,6 +474,14 @@ def main() -> None:
             exclude=("合計", "その他", "不明", "県外"))},
         # 長野：第 0 欄是警察署、第 1 欄是市町村，Ｒ７ 總數在第 3 欄；只有總數。
         "長野県": {"year": 2025, "sourceUrl": SOURCES["長野県"], "records": parse_total_rows(paths["長野県"], "長野県", [0], (1,), 3, 2)},
+        # 岐阜：六大分類拆成 (1)(2) 兩張表各兩頁，各欄都是 R7／R6／増減 三格，取 R7。
+        "岐阜県": {"year": 2025, "sourceUrl": SOURCES["岐阜県"], "records": merge_split_groups(
+            parse_city_ward_table(rows_from_pdf(paths["岐阜県"], [0, 2], 3), "岐阜県", 2, (5, 8, 17, 2, 2, 2),
+                                  {"B": [(11, "暴行"), (14, "傷害")], "C": [(20, "侵入竊盜")]},
+                                  city_index=0, sub_index=1, exclude=("総数", "計", "不明", "県外")),
+            parse_city_ward_table(rows_from_pdf(paths["岐阜県"], [1, 3], 3), "岐阜県", 2, (2, 2, 2, 2, 8, 14),
+                                  {"D": [(5, "詐欺")], "E": [(11, "不同意猥褻")], "F": [(17, "侵占遺失物"), (20, "侵入住居"), (23, "器物損壞")]},
+                                  city_index=0, sub_index=1, exclude=("総数", "計", "不明", "県外")))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
