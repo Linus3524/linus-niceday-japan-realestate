@@ -137,7 +137,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
         <div className="flex items-start gap-2.5 border border-[#B9DCFF] bg-[#EBF5FF] px-3.5 py-2.5">
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#1E65B8]" />
           <p className="text-[11px] leading-relaxed text-[#1E65B8]">
-            街區活動依物件周邊環境推估；目前接入的犯罪統計為<strong>都道府縣層級</strong>，不能代表這個物件所在街區的犯罪風險。
+            日本官方除東京都外未公開町丁目犯罪月報，故本區採<strong>都道府県廣域指標</strong>為基準；右側街區活動則依周邊 500m 環境推估，供綜合評估參考。
           </p>
         </div>
 
