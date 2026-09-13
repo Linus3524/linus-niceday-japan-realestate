@@ -48,6 +48,7 @@ SOURCES = {
     "広島県": "https://www.pref.hiroshima.lg.jp/soshiki_file/police/hantour7.pdf",
     "熊本県": "https://www.pref.kumamoto.jp/uploaded/life/270526_839892_misc.pdf",
     "山口県": "https://www.pref.yamaguchi.lg.jp/uploaded/attachment/231950.pdf",
+    "鹿児島県": "https://www.pref.kagoshima.jp/ja09/documents/105004_20260311100303-1.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -90,7 +91,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46",
 }
 
 
@@ -605,6 +606,8 @@ def main() -> None:
             (parse_city_ward_table(rows_from_pdf(paths["山口県"], [0], 3, 1), "山口県", 1, (3, 5, 7, 1, 1, 1), city_index=0, sub_index=1, exclude=("総数", "不明")), "ABC"),
             (parse_city_ward_table(rows_from_pdf(paths["山口県"], [1], 3, 1), "山口県", 1, (1, 1, 1, 5, 7, 9), city_index=0, sub_index=1, exclude=("総数", "不明")), "DEF"),
         ])},
+        # 鹿児島：「市町村別の犯罪発生実態」第 2 頁刑法犯，只有總數。
+        "鹿児島県": {"year": 2025, "sourceUrl": SOURCES["鹿児島県"], "records": parse_total_rows(paths["鹿児島県"], "鹿児島県", [2], (1,), 3, 2)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
