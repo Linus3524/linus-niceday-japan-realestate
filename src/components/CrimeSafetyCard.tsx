@@ -593,10 +593,10 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
           </div>
         )}
 
-        {/* 2. 中層雙卡（參考圖一：對照全東京雙欄並排，年對年變化） */}
+        {/* 2. 中層雙卡（對照全東京雙欄並排，年對年變化） */}
         {(crime.tokyoContext || crime.burglaryTrend || crime.streetTrend) && (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {/* 左卡：對照全東京（方案 A + B 結合：梯隊位階＋精確 PR 與母體客觀分布） */}
+            {/* 左卡：對照全東京（精確 PR 與母體客觀分布） */}
             {crime.tokyoContext && (
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
                 <div>
@@ -621,7 +621,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                             color: homeCount === 0 ? "#007D5A" : homeCount <= 2 ? "#B76E00" : "#C81E1E",
                           }}
                         >
-                          {homeCount === 0 ? "全東京最優梯隊" : homeCount <= 2 ? "僅零星個案" : "案件稍多留意"}
+                          {homeCount === 0 ? "極低侵入風險" : homeCount <= 2 ? "僅零星個案" : "案件稍多留意"}
                         </div>
                         <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
                           <span>安全 PR {crime.tokyoContext.residentialSaferThanPercent}</span>
@@ -631,7 +631,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                         </div>
                         <p className="text-[10px] leading-tight text-[#66736C]">
                           {homeCount === 0
-                            ? "全東京 84% 區域同為 0 件，並列第 1 級"
+                            ? "全東京 84% 區域同為 0 件，並列最低風險"
                             : homeCount <= 2
                             ? `全年僅 ${homeCount} 件，未見集中趨勢`
                             : "件數偏多，出入門禁宜加強留意"}
@@ -684,54 +684,145 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
               </div>
             )}
 
-            {/* 右卡：年對年變化（圖一對齊版式） */}
+            {/* 右卡：年對年變化（對稱儀表板結構，與左卡完全對齊） */}
             {(crime.burglaryTrend || crime.streetTrend) && (
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-3.5">
                 <div>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22] pb-2 border-b border-[#DDE3DF]/60">
-                    <TrendingUp className="h-4 w-4 text-[#007D5A]" />
-                    <span>
-                      年對年變化（
-                      {trendLabels ? `${trendLabels.prev}→${trendLabels.curr}` : "前後年度對比"}
-                      ）
+                  <div className="flex items-center justify-between pb-2 border-b border-[#DDE3DF]/60">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+                      <TrendingUp className="h-4 w-4 text-[#007D5A]" />
+                      <span>
+                        年對年變化（
+                        {trendLabels ? `${trendLabels.prev}→${trendLabels.curr}` : "前後年度對比"}
+                        ）
+                      </span>
+                    </div>
+                    <span className="border border-[#DDE3DF] bg-white px-1.5 py-0.5 text-[9px] font-medium text-[#66736C]">
+                      年度同期趨勢
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 divide-x divide-[#DDE3DF] py-3 text-center">
                     {/* 住家侵入 */}
-                    <div className="pr-2">
-                      <div className="text-[11px] font-medium text-[#66736C]">住家侵入</div>
-                      <div className="text-lg font-black tabular-nums text-[#1A2A22] mt-1">
-                        {crime.burglaryTrend
-                          ? `${crime.burglaryTrend.previous} → ${crime.burglaryTrend.current} 件`
-                          : "—"}
-                      </div>
-                      <div className="text-[11px] font-bold text-[#66736C] mt-0.5">
-                        {crime.burglaryTrend
-                          ? `= ${TREND_META[crime.burglaryTrend.direction].label.replace("較前年", "").replace("與前年", "")}`
-                          : ""}
+                    <div className="px-2">
+                      <div className="text-[11px] font-medium text-[#66736C]">住家侵入趨勢</div>
+                      <div className="mt-1">
+                        {crime.burglaryTrend ? (
+                          <>
+                            <div
+                              className="text-xl font-black tracking-tight"
+                              style={{
+                                color:
+                                  crime.burglaryTrend.current === 0
+                                    ? "#007D5A"
+                                    : crime.burglaryTrend.direction === "down"
+                                    ? "#007D5A"
+                                    : crime.burglaryTrend.direction === "flat"
+                                    ? "#66736C"
+                                    : "#B76E00",
+                              }}
+                            >
+                              {crime.burglaryTrend.current === 0 && crime.burglaryTrend.previous === 0
+                                ? "連續維持 0 件"
+                                : crime.burglaryTrend.direction === "down"
+                                ? `改善減少 ${crime.burglaryTrend.previous - crime.burglaryTrend.current} 件`
+                                : crime.burglaryTrend.direction === "flat"
+                                ? "件數維持持平"
+                                : `較前年增加 ${crime.burglaryTrend.current - crime.burglaryTrend.previous} 件`}
+                            </div>
+                            <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
+                              <span>
+                                {crime.burglaryTrend.previous} → {crime.burglaryTrend.current} 件
+                              </span>
+                              <span className="text-[9px] font-normal text-[#66736C]">
+                                （
+                                {crime.burglaryTrend.current === 0 && crime.burglaryTrend.previous === 0
+                                  ? "持平零件"
+                                  : TREND_META[crime.burglaryTrend.direction].label
+                                      .replace("較前年", "")
+                                      .replace("與前年", "")}
+                                ）
+                              </span>
+                            </div>
+                            <p className="text-[10px] leading-tight text-[#66736C]">
+                              {crime.burglaryTrend.current === 0 && crime.burglaryTrend.previous === 0
+                                ? "連續兩年無侵入紀錄，防護極穩定"
+                                : crime.burglaryTrend.direction === "down"
+                                ? "住宅防護呈現改善，侵入風險降低"
+                                : crime.burglaryTrend.direction === "flat"
+                                ? "件數維持平穩，未見異常集中跡象"
+                                : "件數較前年增加，門禁防盜宜多留意"}
+                            </p>
+                          </>
+                        ) : (
+                          <div className="text-sm font-bold text-[#8A9590] py-4">無年度對比數據</div>
+                        )}
                       </div>
                     </div>
 
                     {/* 街頭案件 */}
-                    <div className="pl-2">
-                      <div className="text-[11px] font-medium text-[#66736C]">街頭案件</div>
-                      <div className="text-lg font-black tabular-nums text-[#1A2A22] mt-1">
-                        {crime.streetTrend
-                          ? `${crime.streetTrend.previous} → ${crime.streetTrend.current} 件`
-                          : "—"}
-                      </div>
-                      <div className="text-[11px] font-bold text-[#66736C] mt-0.5">
-                        {crime.streetTrend
-                          ? `= ${TREND_META[crime.streetTrend.direction].label.replace("較前年", "").replace("與前年", "")}`
-                          : ""}
+                    <div className="px-2">
+                      <div className="text-[11px] font-medium text-[#66736C]">街頭案件趨勢</div>
+                      <div className="mt-1">
+                        {crime.streetTrend ? (
+                          <>
+                            <div
+                              className="text-xl font-black tracking-tight"
+                              style={{
+                                color:
+                                  crime.streetTrend.direction === "down"
+                                    ? "#007D5A"
+                                    : crime.streetTrend.current <= 2
+                                    ? "#007D5A"
+                                    : crime.streetTrend.direction === "flat"
+                                    ? "#1E65B8"
+                                    : "#B76E00",
+                              }}
+                            >
+                              {crime.streetTrend.current < crime.streetTrend.previous
+                                ? `微幅減少 ${crime.streetTrend.previous - crime.streetTrend.current} 件`
+                                : crime.streetTrend.current === 0 && crime.streetTrend.previous === 0
+                                ? "連續維持 0 件"
+                                : crime.streetTrend.current <= 2
+                                ? "維持平穩低量"
+                                : crime.streetTrend.direction === "flat"
+                                ? "件數維持持平"
+                                : `較前年微增 ${crime.streetTrend.current - crime.streetTrend.previous} 件`}
+                            </div>
+                            <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
+                              <span>
+                                {crime.streetTrend.previous} → {crime.streetTrend.current} 件
+                              </span>
+                              <span className="text-[9px] font-normal text-[#66736C]">
+                                （
+                                {crime.streetTrend.current < crime.streetTrend.previous
+                                  ? `減少 ${crime.streetTrend.previous - crime.streetTrend.current} 件`
+                                  : crime.streetTrend.current > crime.streetTrend.previous
+                                  ? `增加 ${crime.streetTrend.current - crime.streetTrend.previous} 件`
+                                  : "持平"}
+                                ）
+                              </span>
+                            </div>
+                            <p className="text-[10px] leading-tight text-[#66736C]">
+                              {crime.streetTrend.current < crime.streetTrend.previous
+                                ? "人身與街頭案件減少，整體環境改善"
+                                : crime.streetTrend.current <= 2
+                                ? "街頭案件維持極低量，周邊環境安定"
+                                : crime.streetTrend.direction === "flat"
+                                ? "年際增減在 1 件以內，波動屬常態"
+                                : "商圈人流案件略增，深夜宜稍加留意"}
+                            </p>
+                          </>
+                        ) : (
+                          <div className="text-sm font-bold text-[#8A9590] py-4">無年度對比數據</div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-[10px] leading-snug text-[#8A9590] pt-1.5 border-t border-[#DDE3DF]/60">
-                  町丁目件數基數小，±1 件視為持平；單一年度的增減未必代表長期趨勢。
+                <p className="text-[10px] leading-snug text-[#8A9590] pt-1.5 border-t border-[#DDE3DF]/60 text-center">
+                  註：町丁目件數基數小，±1 件視為持平；單一年度的增減未必代表長期趨勢。
                 </p>
               </div>
             )}
