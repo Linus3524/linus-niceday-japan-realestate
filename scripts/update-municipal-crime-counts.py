@@ -36,6 +36,8 @@ SOURCES = {
     "京都府": "https://www.pref.kyoto.jp/fukei/anzen/toke/documents/28-r7-10.pdf",
     "福岡県": "https://www.police.pref.fukuoka.jp/data/open/cnt/3/183/1/R07kakuteiCIty.pdf",
     "静岡県": "https://www.pref.shizuoka.jp/police/_res/projects/project_police/_page_/002/001/146/r7zyoukyouhyou.pdf",
+    "新潟県": "https://www.pref.niigata.lg.jp/uploaded/attachment/503121.pdf",
+    "長野県": "https://www.pref.nagano.lg.jp/police/toukei/documents/r7toukei-chichouson.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -78,7 +80,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20",
 }
 
 
@@ -451,6 +453,12 @@ def main() -> None:
             ward_city={**{w: "北九州市" for w in ("門司区", "若松区", "戸畑区", "小倉北区", "小倉南区", "八幡東区", "八幡西区")},
                        **{w: "福岡市" for w in ("東区", "博多区", "中央区", "南区", "西区", "城南区", "早良区")}})},
         "静岡県": {"year": 2025, "sourceUrl": SOURCES["静岡県"], "records": parse_simple_broad(paths["静岡県"], "静岡県", 3, (1, 2, 3, 6, 39, 40, 41))},
+        # 新潟：市部／郡部 → 市 → 區三層，只有總數與幾種手口，分類退回縣級。
+        "新潟県": {"year": 2025, "sourceUrl": SOURCES["新潟県"], "records": parse_city_ward_table(
+            rows_from_pdf(paths["新潟県"], [0], 2), "新潟県", 3, (), city_index=1, sub_index=2,
+            exclude=("合計", "その他", "不明", "県外"))},
+        # 長野：第 0 欄是警察署、第 1 欄是市町村，Ｒ７ 總數在第 3 欄；只有總數。
+        "長野県": {"year": 2025, "sourceUrl": SOURCES["長野県"], "records": parse_total_rows(paths["長野県"], "長野県", [0], (1,), 3, 2)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
