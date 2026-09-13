@@ -56,6 +56,7 @@ SOURCES = {
     "石川県": "https://www2.police.pref.ishikawa.lg.jp/information/upload/e3c21f519fdccc805367195c4e3bcbe9_2.pdf",
     "秋田県": "https://www.police.pref.akita.lg.jp/uploads/contents/pages_0000000338_00/HP02%EF%BC%BF%E5%88%91%E6%B3%95%E3%83%BB%E7%BD%AA%E7%A8%AE%E3%83%BB%E5%B8%82%E7%94%BA%E6%9D%91_2025-01-12%E3%80%90%E7%A2%BA%E5%AE%9A%E5%80%A4%E3%80%91.pdf",
     "富山県": "https://police.pref.toyama.jp/6108/toukei/hanzaijousei/kj00020958-003-01.html",
+    "福井県": "https://www.pref.fukui.lg.jp/kenkei/doc/kenkei/naka9naka300_d/fil/R7_5_toukei_opendate.csv",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -98,7 +99,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17", "秋田県": "05", "富山県": "16",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17", "秋田県": "05", "富山県": "16", "福井県": "18",
 }
 
 
@@ -609,6 +610,34 @@ def rows_from_html(path: Path, table_index: int = 0) -> list[list[str]]:
     return parser.tables[table_index]
 
 
+def parse_fukui(path: Path) -> list[dict]:
+    """福井縣警開放資料 CSV（Shift_JIS）：同一份檔上半段是總數與凶悪～知能，
+    下半段再列一次市町給風俗・その他；市町名第二次出現就是下半段。"""
+    import csv
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    upper: dict[str, list[str]] = {}
+    lower: dict[str, list[str]] = {}
+    with open(path, encoding="shift_jis", errors="ignore", newline="") as handle:
+        for row in csv.reader(handle):
+            name = compact(row[1]) if len(row) > 1 else ""
+            # 下半段的風俗犯欄常是空白，不能用第 4 欄有沒有值來判斷是不是資料列
+            if not name or name in ("市町", "合計", "罪種") or "※" in name:
+                continue
+            (lower if name in upper else upper)[name] = row
+    records = []
+    for name, up in upper.items():
+        low = lower.get(name)
+        if low is None:
+            continue
+        groups = [{"code": code, "label": label, "count": count, "items": []} for (code, label), count in zip(
+            labels, (number(up[6]), number(up[7]), number(up[13]), number(up[17]), number(low[4]), number(low[7])))]
+        parsed = record("福井県", name, number(up[4]), POPULATIONS, groups)
+        if parsed:
+            records.append(parsed)
+    return records
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -633,7 +662,7 @@ def main() -> None:
     POPULATIONS = population_by_prefecture()
     paths = {}
     for prefecture, url in SOURCES.items():
-        suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".html" if url.lower().endswith((".html", ".htm")) else ".pdf"
+        suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".html" if url.lower().endswith((".html", ".htm")) else ".csv" if url.lower().endswith(".csv") else ".pdf"
         pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025{suffix}"
         if not pdf.exists():
             urllib.request.urlretrieve(url, pdf)
@@ -731,6 +760,7 @@ def main() -> None:
         # 富山：網頁表格，令和 7 年在第 1 欄，只有總數。
         "富山県": {"year": 2025, "sourceUrl": SOURCES["富山県"], "records": parse_city_ward_table(
             rows_from_html(paths["富山県"]), "富山県", 1, (), city_index=0, sub_index=1, exclude=("区分", "不詳", "その他"))},
+        "福井県": {"year": 2025, "sourceUrl": SOURCES["福井県"], "records": parse_fukui(paths["福井県"])},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
