@@ -47,6 +47,7 @@ SOURCES = {
     "岡山県": "https://www.pref.okayama.jp/uploaded/attachment/405322.pdf",
     "広島県": "https://www.pref.hiroshima.lg.jp/soshiki_file/police/hantour7.pdf",
     "熊本県": "https://www.pref.kumamoto.jp/uploaded/life/270526_839892_misc.pdf",
+    "山口県": "https://www.pref.yamaguchi.lg.jp/uploaded/attachment/231950.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -89,7 +90,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35",
 }
 
 
@@ -267,9 +268,9 @@ def items_from(row: list, spec: list[tuple[int, str]], code: str) -> list[dict]:
             for index, label in spec]
 
 
-def rows_from_pdf(path: Path, pages: list[int], skip: int) -> list[list]:
+def rows_from_pdf(path: Path, pages: list[int], skip: int, table_index: int = 0) -> list[list]:
     with pdfplumber.open(path) as pdf:
-        return [row for page_index in pages for row in pdf.pages[page_index].extract_tables()[0][skip:]]
+        return [row for page_index in pages for row in pdf.pages[page_index].extract_tables()[table_index][skip:]]
 
 
 def rows_from_xlsx(path: Path, min_row: int, sheet: int = 0) -> list[list]:
@@ -297,6 +298,9 @@ def parse_city_ward_table(rows: list[list], prefecture: str,
         # 兵庫的「神戸市」小計列把第一個區名一起塞進同一格（"神戸市\n東灘区"），只取第一行
         city = compact((row[city_index] or "").split("\n")[0]).removesuffix("計")
         sub = compact(row[sub_index]).removeprefix("うち")
+        # 單欄名稱的表把 sub_index 指到數字欄時，數字不是子行政區
+        if sub.replace(",", "").replace("-", "").isdigit():
+            sub = ""
         if city:
             parent = city
             if sub:
@@ -596,6 +600,11 @@ def main() -> None:
         "広島県": {"year": 2025, "sourceUrl": SOURCES["広島県"], "records": parse_hiroshima(paths["広島県"])},
         # 熊本：只有總數與主要罪種，第 1 欄是認知總數。
         "熊本県": {"year": 2025, "sourceUrl": SOURCES["熊本県"], "records": parse_total_rows(paths["熊本県"], "熊本県", [0], (0,), 1, 3)},
+        # 山口：兩頁各一張表（第二張才是資料），認知／検挙成對，取認知欄。
+        "山口県": {"year": 2025, "sourceUrl": SOURCES["山口県"], "records": merge_group_parts([
+            (parse_city_ward_table(rows_from_pdf(paths["山口県"], [0], 3, 1), "山口県", 1, (3, 5, 7, 1, 1, 1), city_index=0, sub_index=1, exclude=("総数", "不明")), "ABC"),
+            (parse_city_ward_table(rows_from_pdf(paths["山口県"], [1], 3, 1), "山口県", 1, (1, 1, 1, 5, 7, 9), city_index=0, sub_index=1, exclude=("総数", "不明")), "DEF"),
+        ])},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
