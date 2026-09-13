@@ -54,6 +54,7 @@ SOURCES = {
     "佐賀県": "https://www.police.pref.saga.jp/var/rev0/0020/0286/12622594221.pdf",
     "香川県": "https://www.pref.kagawa.lg.jp/documents/15487/reiwa8sanukinoanzen.pdf",
     "石川県": "https://www2.police.pref.ishikawa.lg.jp/information/upload/e3c21f519fdccc805367195c4e3bcbe9_2.pdf",
+    "秋田県": "https://www.police.pref.akita.lg.jp/uploads/contents/pages_0000000338_00/HP02%EF%BC%BF%E5%88%91%E6%B3%95%E3%83%BB%E7%BD%AA%E7%A8%AE%E3%83%BB%E5%B8%82%E7%94%BA%E6%9D%91_2025-01-12%E3%80%90%E7%A2%BA%E5%AE%9A%E5%80%A4%E3%80%91.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -96,7 +97,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17", "秋田県": "05",
 }
 
 
@@ -525,6 +526,52 @@ def parse_stacked_pair(path: Path, prefecture: str, page_index: int, table_index
     return records
 
 
+def parse_by_reference_row(path: Path, prefecture: str, page_index: int, reference: str,
+                           name_max_x: float, column_map: dict[str, int],
+                           exclude: tuple[str, ...] = ("総数", "合計", "不明", "県外", "その他"),
+                           ward_city: dict[str, str] | None = None) -> list[dict]:
+    """秋田那種 pdfplumber 只抓得到一半欄位的表：拿「縣總數」那一列（每一欄都有數字）
+    的各數字右緣當欄位錨點，其餘每列的數字依右緣就近對上去，空白格自然跳過。
+    column_map 給 {"total": 欄序, "A": …}。"""
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    records = []
+    with pdfplumber.open(path) as pdf:
+        page = pdf.pages[page_index]
+        lines: list[list[dict]] = []
+        for word in sorted(page.extract_words(x_tolerance=1.5, y_tolerance=2), key=lambda w: w["top"]):
+            if lines and abs(word["top"] - lines[-1][0]["top"]) <= 3:
+                lines[-1].append(word)
+            else:
+                lines.append([word])
+        anchors: list[float] = []
+        rows: list[tuple[str, list[dict]]] = []
+        for line in lines:
+            words = sorted(line, key=lambda w: w["x0"])
+            name = compact("".join(w["text"] for w in words if w["x1"] <= name_max_x))
+            numbers = [w for w in words if w["x0"] > name_max_x and w["text"].replace(",", "").isdigit()]
+            if name == reference:
+                anchors = [w["x1"] for w in numbers]
+            elif name and numbers:
+                rows.append((name, numbers))
+        if not anchors:
+            raise RuntimeError(f"{prefecture}: reference row {reference!r} not found")
+        for name, numbers in rows:
+            if any(word in name for word in exclude):
+                continue
+            values = [0] * len(anchors)
+            for w in numbers:
+                values[min(range(len(anchors)), key=lambda i: abs(anchors[i] - w["x1"]))] = number(w["text"])
+            if ward_city and name in ward_city:
+                name = f"{ward_city[name]}{name}"
+            groups = [{"code": code, "label": label, "count": values[column_map[code]], "items": []}
+                      for code, label in labels] if all(code in column_map for code, _ in labels) else []
+            parsed = record(prefecture, name, values[column_map["total"]], POPULATIONS, groups)
+            if parsed:
+                records.append(parsed)
+    return records
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -641,6 +688,9 @@ def main() -> None:
         "香川県": {"year": 2025, "sourceUrl": SOURCES["香川県"], "records": parse_stacked_pair(paths["香川県"], "香川県", 52)},
         # 石川：表頭把凶悪・粗暴・風俗擠在同一欄，分類口徑對不上六大分類，只取總數。
         "石川県": {"year": 2025, "sourceUrl": SOURCES["石川県"], "records": parse_total_rows(paths["石川県"], "石川県", [0], (0,), 1, 3)},
+        # 秋田：表格偵測漏掉知能・風俗・その他三欄，改以「秋田県」列的數字右緣當錨點逐列對欄。
+        "秋田県": {"year": 2025, "sourceUrl": SOURCES["秋田県"], "records": parse_by_reference_row(
+            paths["秋田県"], "秋田県", 0, "秋田県", 140, {"total": 0, "A": 1, "B": 2, "C": 3, "D": 12, "E": 13, "F": 14})},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
