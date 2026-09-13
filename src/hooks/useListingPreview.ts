@@ -54,13 +54,14 @@ export function useListingPreview(context: Context) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [showFullPreview]);
 
-  // 當 previewUrl 或 previewImageUrl 變動時妥善釋放 object URL，避免記憶體洩漏
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      if (previewImageUrl && previewImageUrl !== previewUrl) URL.revokeObjectURL(previewImageUrl);
-    };
-  }, [previewUrl, previewImageUrl]);
+  // 原檔與縮圖各自管理生命週期；縮圖完成不可釋放仍供 PDF 檢視器使用的原檔。
+  useEffect(() => () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  useEffect(() => () => {
+    if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
+  }, [previewImageUrl]);
 
   const selectSingleFile = (selectedFile: File) => {
     requests.invalidateAll();

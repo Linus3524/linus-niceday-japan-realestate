@@ -174,6 +174,14 @@ try {
   }
   assert.deepEqual(checkpoint("analysis-current-file-response").state.result, analysis);
   assert.equal(checkpoint("shared-unmount-ignores-rejection").state.result, null);
+  // Completing the JPEG preview must leave the original PDF available to the viewer.
+  await run('await h.mount("listing"); await h.file("lifecycle.pdf", "application/pdf");');
+  const originalPdfUrl = await run('return h.snapshot().state.previewUrl;');
+  await run('await h.settle("preview", {blobUrl:"blob:lifecycle-thumbnail", aspect:1.4});');
+  assert.equal(await run(`return h.events.some(e => e.revokeUrl === ${JSON.stringify(originalPdfUrl)});`), false, "PDF remains live after thumbnail completion");
+  await run('await h.call("removeFile");');
+  assert.equal(await run(`return h.events.some(e => e.revokeUrl === ${JSON.stringify(originalPdfUrl)});`), true, "Removed PDF is released");
+  assert.equal(await run('return h.events.some(e => e.revokeUrl === "blob:lifecycle-thumbnail");'), true, "Removed thumbnail is released");
   console.log("Controller flows: historical non-race contracts and corrected stale-response assertions passed.");
 
 } finally {
