@@ -217,12 +217,12 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
     )}
     {crimeData && !crimeLoading && (
       <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
-        <CrimeSafetyCard crime={crimeData} />
+        <CrimeSafetyCard crime={crimeData} location={locationContext} />
       </ErrorBoundary>
     )}
     {prefectureSafety && !crimeData && !crimeLoading && (
       <ErrorBoundary fallbackTitle="治安資料模組暫時無法載入">
-        <PrefectureSafetyCard prefecture={prefectureSafety} />
+        <PrefectureSafetyCard prefecture={prefectureSafety} location={locationContext} />
       </ErrorBoundary>
     )}
   </div>);

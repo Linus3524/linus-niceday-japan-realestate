@@ -1,0 +1,104 @@
+import { SAFETY_PALETTE } from "../lib/safetyPalette";
+import { ChevronDown, Footprints, Moon } from "lucide-react";
+import { ACTIVITY_LABELS, type NeighborhoodActivity } from "../lib/neighborhoodActivity";
+
+interface NeighborhoodActivityCardProps {
+  activity?: NeighborhoodActivity;
+  address?: string;
+  showCounts?: boolean;
+  showNightInfo?: boolean;
+  alignRows?: boolean;
+  annualStreetCrime?: { count: number; area: string; period: string };
+}
+
+export function NeighborhoodActivityCard({ activity, address, showCounts = false, showNightInfo = false, alignRows = false, annualStreetCrime }: NeighborhoodActivityCardProps) {
+  const level = activity?.level ?? null;
+  const explanation = !activity || activity.status === "unavailable"
+    ? "周邊環境資料暫時無法取得，尚不能判斷街區活動程度。"
+    : activity.status === "imprecise"
+      ? "目前僅定位到街區附近，請確認完整門牌後再分析物件周邊。"
+      : activity.status === "sparse"
+        ? "地圖收錄的住宅與商業資訊不足，尚不能判定繁華或安靜。"
+        : level === 5 ? "地圖收錄較多酒吧、娛樂場所及商店，推估周邊娛樂活動較集中。"
+          : level === 4 ? "地圖收錄較密集的商店與餐飲場所，推估周邊商業活動較熱絡。"
+            : level === 3 ? "附近同時有住宅建物與多處商店、餐飲場所，呈現住商混合特徵。"
+              : "近處有多棟明確標註的住宅建物，已收錄商店較少，暫估住宅為主。";
+  const accent = level === 5 ? SAFETY_PALETTE.purple : level && level >= 3 ? SAFETY_PALETTE.blue : SAFETY_PALETTE.green;
+  const palette = !level ? { bg: "#F5F8F6", border: "#CFE0D8" }
+    : level === 5 ? { bg: "#F7F5FC", border: "#DED4F2" }
+      : level >= 3 ? { bg: "#F4F8FD", border: "#CFE0F4" }
+        : { bg: "#F2FAF7", border: "#CDEBE0" };
+  return <div style={{ backgroundColor: palette.bg, borderColor: palette.border }} className={`${alignRows ? "prefecture-safety-card" : "flex flex-col justify-between"} border border-[#CFE0D8] bg-[#F5F8F6] p-3.5`}>
+    <div className={alignRows ? "prefecture-safety-top" : undefined}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]"><Footprints className="h-4 w-4" />街區活動程度</span>
+        <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] text-[#66736C]">{level ? "環境推估・資料有限" : "資料待確認"}</span>
+      </div>
+      {annualStreetCrime ? <div className="grid grid-cols-2 gap-4 pt-3 pb-2">
+        <div className="min-w-0">
+          <div className="text-[11px] font-medium text-[#66736C]">活動程度</div>
+          <div className="mt-1 flex h-9 items-baseline text-xl sm:text-2xl font-black leading-none tracking-tight" style={{ color: accent }}>{level ? ACTIVITY_LABELS[level - 1] : "待確認"}</div>
+        </div>
+        <div className="min-w-0">
+          <div className="text-[11px] font-medium text-[#66736C]">街頭案件全年</div>
+          <div className="mt-1 flex h-9 items-baseline text-4xl font-black leading-none tabular-nums text-[#1A2A22]">{annualStreetCrime.count.toLocaleString()}<span className="ml-1 text-base font-bold">件</span></div>
+        </div>
+      </div> : <div className={alignRows ? "pt-3 pb-2" : undefined}>
+        <p className={`${alignRows ? "" : "mt-3"} text-2xl font-black`} style={{ color: accent }}>{level ? ACTIVITY_LABELS[level - 1] : "待確認"}</p>
+        <p className="mt-1 break-words text-[10px] text-[#66736C]">{address || "物件位置待確認"}・周邊 500m</p>
+      </div>}
+      <div className={`${alignRows ? "" : annualStreetCrime ? "mt-1" : "mt-3"} flex gap-1`} aria-label={level ? `街區活動程度：${ACTIVITY_LABELS[level - 1]}` : "街區活動程度尚無法判斷"}>
+        {ACTIVITY_LABELS.map((label, index) => <div key={label} className="min-w-0 flex-1 text-center">
+          <div className="h-2" style={{ backgroundColor: level && index < level ? accent : `${palette.border}90` }} />
+          <span className="mt-1 block text-[9px] leading-tight" style={{ color: index + 1 === level ? accent : "#66736C" }}>{label}</span>
+        </div>)}
+      </div>
+      <p className={`${alignRows ? "prefecture-safety-description " : ""}mt-3 text-[11px] leading-relaxed text-[#55635B]`}>{explanation}</p>
+      {annualStreetCrime && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#CFE0D8] pt-2 text-[10px] leading-relaxed text-[#66736C]">
+        <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>
+        <p className="break-words">案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p>
+      </div>}
+      {showCounts && !alignRows && <ActivityCounts activity={activity} />}
+    </div>
+    {alignRows && <div className="prefecture-safety-middle prefecture-safety-evidence">
+      {showCounts && <ActivityCounts activity={activity} />}
+      {(!activity || activity.status === "unavailable" || activity.status === "imprecise") && <p className="text-[10px] text-[#66736C]">場所件數資料待確認</p>}
+    </div>}
+    {showNightInfo && (alignRows
+      ? <div className="prefecture-safety-bottom prefecture-safety-evidence"><ActivityNightInfo activity={activity} /></div>
+      : <ActivityNightInfo activity={activity} />)}
+  </div>;
+}
+
+export function NeighborhoodActivityEvidence({ activity, showCounts = true }: { activity?: NeighborhoodActivity; showCounts?: boolean }) {
+  return <details className="group border border-[#DDE3DF] bg-[#FAFCFB] p-3">
+    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[11px] font-bold text-[#66736C] [&::-webkit-details-marker]:hidden">
+      <span className="flex items-center gap-1.5"><Footprints className="h-3.5 w-3.5" />街區環境依據與夜間資訊</span>
+      <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-180" />
+    </summary>
+    {showCounts && <ActivityCounts activity={activity} />}
+    <ActivityNightInfo activity={activity} />
+  </details>;
+}
+
+function ActivityCounts({ activity }: { activity?: NeighborhoodActivity }) {
+  const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
+  return <>      {!unavailable && <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#DDE3DF] pt-2 text-[10px] text-[#66736C]">
+        <span>商店／餐飲／娛樂 <strong className="text-[#1A2A22]">{activity.commercial} 處</strong></span>
+        <span>其中娛樂場所 <strong className="text-[#1A2A22]">{activity.entertainment} 處</strong></span>
+        <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
+        <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
+      </div>}
+</>;
+}
+
+function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
+  const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
+  return <div className="mt-3 space-y-1 border-t border-dashed border-[#CFE0D8] pt-2">
+      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><Moon className="h-3.5 w-3.5 shrink-0" />夜間環境與資料說明</div>
+      <div className="space-y-2 text-[11px] leading-relaxed text-[#55635B]"><p>{!unavailable && activity.aroundTheClock > 0 ? `地圖標註 ${activity.aroundTheClock} 處全天營業；` : "深夜營業資訊尚不足；"}照明、人流及返家路線尚未實地確認。</p>
+      <p>反映已收錄的場所分布，不是犯罪風險或室內噪音評級。地圖可能漏登；「活動較少」需更多在地觀察佐證。</p>
+      {activity && <p>來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）</p>}
+      </div>
+    </div>;
+}

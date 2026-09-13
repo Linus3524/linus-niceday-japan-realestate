@@ -1,3 +1,6 @@
+import { SAFETY_PALETTE } from "../lib/safetyPalette";
+import { NeighborhoodActivityCard, NeighborhoodActivityEvidence } from "./NeighborhoodActivityCard";
+import type { ListingLocationContext } from "../lib/listingLocation";
 import {
   ShieldCheck,
   ChevronDown,
@@ -27,11 +30,11 @@ import type {
   CrimeBreakdownItem,
   SafetyGrade,
   RateUnavailableReason,
-  StreetActivityLevel,
 } from "../lib/crimeSafety";
 
 interface CrimeSafetyCardProps {
   crime: CrimeSafetyResult;
+  location?: ListingLocationContext | null;
 }
 
 interface GradeStyle {
@@ -53,61 +56,61 @@ interface GradeCopy {
 const GRADE_CONFIG: Record<SafetyGrade, GradeStyle> = {
   "A+": {
     bg: "#F2FAF7",
-    text: "#007D5A",
+    text: SAFETY_PALETTE.green,
     border: "#CDEBE0",
-    accent: "#007D5A",
+    accent: SAFETY_PALETTE.green,
     badgeBg: "#FFFFFF",
-    badgeText: "#007D5A",
+    badgeText: SAFETY_PALETTE.green,
     badgeBorder: "#9EE2CF",
     level: 5,
   },
   A: {
     bg: "#F2FAF7",
-    text: "#007D5A",
+    text: SAFETY_PALETTE.green,
     border: "#CDEBE0",
-    accent: "#007D5A",
+    accent: SAFETY_PALETTE.green,
     badgeBg: "#FFFFFF",
-    badgeText: "#007D5A",
+    badgeText: SAFETY_PALETTE.green,
     badgeBorder: "#9EE2CF",
     level: 5,
   },
   "B+": {
     bg: "#F4F8FD",
-    text: "#1E65B8",
+    text: SAFETY_PALETTE.blue,
     border: "#CFE0F4",
-    accent: "#1E65B8",
+    accent: SAFETY_PALETTE.blue,
     badgeBg: "#FFFFFF",
-    badgeText: "#1E65B8",
+    badgeText: SAFETY_PALETTE.blue,
     badgeBorder: "#B9DCFF",
     level: 4,
   },
   B: {
-    bg: "#FFF9F0",
-    text: "#B76E00",
-    border: "#FFE2B8",
-    accent: "#B76E00",
+    bg: "#FFF8F1",
+    text: SAFETY_PALETTE.orangeText,
+    border: "#FFDDBA",
+    accent: SAFETY_PALETTE.orange,
     badgeBg: "#FFFFFF",
-    badgeText: "#B76E00",
-    badgeBorder: "#FFD599",
+    badgeText: SAFETY_PALETTE.orangeText,
+    badgeBorder: "#FFDDBA",
     level: 3,
   },
   C: {
     bg: "#FFF9F0",
-    text: "#B76E00",
+    text: SAFETY_PALETTE.orangeText,
     border: "#FFE2B8",
-    accent: "#B76E00",
+    accent: SAFETY_PALETTE.orange,
     badgeBg: "#FFFFFF",
-    badgeText: "#B76E00",
+    badgeText: SAFETY_PALETTE.orangeText,
     badgeBorder: "#FFD599",
     level: 2,
   },
   D: {
     bg: "#FDF2F2",
-    text: "#C81E1E",
+    text: SAFETY_PALETTE.red,
     border: "#F9C8C8",
-    accent: "#C81E1E",
+    accent: SAFETY_PALETTE.red,
     badgeBg: "#FFFFFF",
-    badgeText: "#C81E1E",
+    badgeText: SAFETY_PALETTE.red,
     badgeBorder: "#F8B4B4",
     level: 1,
   },
@@ -145,55 +148,9 @@ const RATE_UNAVAILABLE_COPY: Record<RateUnavailableReason, string> = {
   "too-few-households": "本町丁目登記住戶極少（多為商辦、工業或填海區），換算成每千戶發生率不具參考意義，以下僅顯示原始件數。",
 };
 
-const ACTIVITY_COPY: Record<
-  StreetActivityLevel,
-  { label: string; description: string; accent: string; bg: string; border: string; level: number }
-> = {
-  quiet: {
-    label: "安靜住宅區",
-    description: "全年無街頭案件報案紀錄，屬人流量低的純住宅環境。",
-    accent: "#007D5A",
-    bg: "#F2FAF7",
-    border: "#CDEBE0",
-    level: 1,
-  },
-  residential: {
-    label: "一般生活街區",
-    description: "街頭案件僅零星紀錄，屬多數東京住宅區的常見水準。",
-    accent: "#007D5A",
-    bg: "#F2FAF7",
-    border: "#CDEBE0",
-    level: 2,
-  },
-  mixed: {
-    label: "住商混合",
-    description: "有一定的店舖與通勤人流，街頭案件數屬東京中段水準。",
-    accent: "#1E65B8",
-    bg: "#F4F8FD",
-    border: "#CFE0F4",
-    level: 3,
-  },
-  busy: {
-    label: "人流密集商圈",
-    description: "車站、商店街或飲食店密集，日間與夜間人流量大，街頭案件數隨之偏高。",
-    accent: "#1E65B8",
-    bg: "#F4F8FD",
-    border: "#CFE0F4",
-    level: 4,
-  },
-  entertainment: {
-    label: "繁華街／轉運站",
-    description: "屬大型繁華街或轉運站周邊，案件多集中於飲食店街與深夜時段，與住宅區的居住環境是兩回事。",
-    accent: "#7C5CBF",
-    bg: "#F7F5FC",
-    border: "#DED4F2",
-    level: 5,
-  },
-};
-
 const TREND_META = {
-  up: { icon: "▲", color: "#B76E00", label: "較前年增加" },
-  down: { icon: "▼", color: "#007D5A", label: "較前年減少" },
+  up: { icon: "▲", color: SAFETY_PALETTE.orange, label: "較前年增加" },
+  down: { icon: "▼", color: SAFETY_PALETTE.green, label: "較前年減少" },
   flat: { icon: "＝", color: "#66736C", label: "與前年持平" },
 } as const;
 
@@ -204,19 +161,19 @@ const GROUP_META: Record<
   residential: {
     label: "侵入竊盜類",
     icon: Home,
-    color: "#007D5A",
+    color: SAFETY_PALETTE.green,
     desc: "空巢、忍込み等住家侵入，以及事務所、店舖等非住家侵入",
   },
   street: {
     label: "街頭案件",
     icon: Footprints,
-    color: "#1E65B8",
+    color: SAFETY_PALETTE.blue,
     desc: "暴行、傷害、搶奪等發生於街頭的案件，多集中於商圈與深夜時段",
   },
   property: {
     label: "財產竊盜輕罪",
     icon: Bike,
-    color: "#B76E00",
+    color: SAFETY_PALETTE.orange,
     desc: "自行車盜、車內物品盜、隨身順手牽羊等",
   },
   other: {
@@ -238,7 +195,7 @@ function getCrimeIcon(label: string): LucideIcon {
   return Layers;
 }
 
-export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
+export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   // 分組統計
@@ -274,47 +231,18 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
 
   const residentialStyle = GRADE_CONFIG[crime.residentialGrade] || GRADE_CONFIG.A;
   const residentialCopy = RESIDENTIAL_COPY[crime.residentialGrade] || RESIDENTIAL_COPY.A;
-  const activity = ACTIVITY_COPY[crime.streetActivity] || ACTIVITY_COPY.quiet;
 
   const homeCount =
     typeof crime.burglaryRate === "string" ? residentialCount : crime.burglaryRate.count;
-
-  // 商圈脈絡提示
-  const districtContext = useMemo(() => {
-    const streetIsHigh =
-      crime.streetActivity === "busy" || crime.streetActivity === "entertainment";
-    const residentialIsLow =
-      crime.residentialGrade === "A+" ||
-      crime.residentialGrade === "A" ||
-      crime.residentialGrade === "B+";
-    if (!streetIsHigh || !residentialIsLow) return null;
-
-    return {
-      headline:
-        crime.streetActivity === "entertainment"
-          ? "本區屬繁華街／大型轉運站型街區"
-          : "本區屬人流密集的商圈型街區",
-      body:
-        `街頭案件數偏高主要反映白天與夜間的人流量，案件多集中於車站周邊、` +
-        `飲食店街與深夜時段，並非住宅區治安問題。` +
-        (typeof crime.burglaryRate === "string"
-          ? ""
-          : `本町丁目全年住家侵入竊盜 ${crime.burglaryRate.count} 件` +
-            `（${crime.burglaryRate.households.toLocaleString()} 戶），`) +
-        `居住環境指標在東京屬${
-          crime.residentialGrade === "B+" ? "良好" : "優良"
-        }水準。`,
-    };
-  }, [crime.streetActivity, crime.residentialGrade, crime.burglaryRate]);
 
   // 三項核心指標資料（住家侵入／街頭案件／凶惡案件）
   const summaryStats = useMemo(() => {
     const tone = (count: number, amberMax: number) =>
       count === 0
-        ? { bg: "#E6F6F1", border: "#9EE2CF", text: "#007D5A" }
+        ? { bg: "#E6F6F1", border: "#9EE2CF", text: SAFETY_PALETTE.green }
         : count <= amberMax
-          ? { bg: "#FFF9F0", border: "#FFE2B8", text: "#B76E00" }
-          : { bg: "#FDF2F2", border: "#F9C8C8", text: "#C81E1E" };
+          ? { bg: "#FFF9F0", border: "#FFE2B8", text: SAFETY_PALETTE.orange }
+          : { bg: "#FDF2F2", border: "#F9C8C8", text: SAFETY_PALETTE.red };
 
     return [
       { label: "住家侵入", count: homeCount, tone: tone(homeCount, 3) },
@@ -328,10 +256,10 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
   const segments = useMemo(() => {
     if (total <= 0) return [];
     return [
-      { key: "property", label: "自行車/財產輕罪", count: propertyCount, color: "#007D5A" },
-      { key: "other", label: "其他刑法", count: otherCount, color: "#8A9590" },
-      { key: "street", label: "街區粗暴", count: streetCount, color: "#B76E00" },
-      { key: "residential", label: "住宅侵入", count: residentialCount, color: "#C81E1E" },
+      { key: "property", label: "自行車/財產輕罪", count: propertyCount, color: SAFETY_PALETTE.green },
+      { key: "other", label: "其他刑法", count: otherCount, color: SAFETY_PALETTE.gray },
+      { key: "street", label: "街區粗暴", count: streetCount, color: SAFETY_PALETTE.orange },
+      { key: "residential", label: "住宅侵入", count: residentialCount, color: SAFETY_PALETTE.red },
     ].filter((s) => s.count > 0);
   }, [total, propertyCount, otherCount, streetCount, residentialCount]);
 
@@ -449,7 +377,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                       <span
                         className="text-[9px] leading-tight text-center"
                         style={{
-                          color: isCurrent ? residentialStyle.accent : "#8A9590",
+                          color: isCurrent ? residentialStyle.accent : SAFETY_PALETTE.gray,
                           fontWeight: isCurrent ? 700 : 400,
                         }}
                       >
@@ -476,122 +404,21 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
             </div>
           </div>
 
-          {/* 右卡：街區活動強度（與左卡高度與網格完全對齊） */}
-          <div
-            className="flex flex-col justify-between border p-3.5 transition-colors"
-            style={{
-              backgroundColor: activity.bg,
-              borderColor: activity.border,
-            }}
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Footprints className="h-4 w-4" style={{ color: activity.accent }} />
-                  <span className="text-xs font-bold text-[#1A2A22]">街區活動強度</span>
-                </div>
-                <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-bold text-[#66736C]">
-                  非治安評級
-                </span>
-              </div>
-
-              {/* 雙欄核心數據展示（高度與左卡完全相同） */}
-              <div className="grid grid-cols-2 gap-4 pt-3 pb-2">
-                <div>
-                  <div className="text-[11px] font-medium text-[#66736C]">活動等級</div>
-                  <div
-                    className="h-9 flex items-baseline text-xl sm:text-2xl font-black tracking-tight leading-none mt-1 truncate"
-                    style={{ color: activity.accent }}
-                    title={activity.label}
-                  >
-                    {activity.label}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] font-medium text-[#66736C]">街頭案件全年</div>
-                  <div className="h-9 flex items-baseline text-4xl font-black tracking-tight leading-none tabular-nums text-[#1A2A22] mt-1">
-                    {streetCount} <span className="text-base font-bold text-[#1A2A22] ml-1">件</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5 段式強度指示器色塊線（與左卡高度完全一致） */}
-              <div className="flex gap-1 w-full mt-1 mb-1.5">
-                {([
-                  { lvl: 1, label: "安靜" },
-                  { lvl: 2, label: "較為寧靜" },
-                  { lvl: 3, label: "普通" },
-                  { lvl: 4, label: "稍微熱絡" },
-                  { lvl: 5, label: "熱絡繁華" },
-                ] as const).map(({ lvl, label }) => {
-                  const isActive = lvl <= activity.level;
-                  const isCurrent = lvl === activity.level;
-                  return (
-                    <div key={lvl} className="flex-1 flex flex-col items-center gap-1">
-                      <div
-                        className="h-2 w-full"
-                        style={{
-                          backgroundColor: isActive ? activity.accent : `${activity.border}90`,
-                        }}
-                      />
-                      <span
-                        className="text-[9px] leading-tight text-center"
-                        style={{
-                          color: isCurrent ? activity.accent : "#8A9590",
-                          fontWeight: isCurrent ? 700 : 400,
-                        }}
-                      >
-                        {label}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <p className="text-[11px] leading-relaxed text-[#55635B]">
-                {activity.description}
-              </p>
-              {crime.pedestrianRisks.length > 0 && (
-                <div
-                  className="space-y-1 border-t border-dashed pt-2 mt-1.5"
-                  style={{ borderColor: activity.border }}
-                >
-                  <div className="text-[10px] font-bold text-[#1A2A22]">對行人的直接危害</div>
-                  {crime.pedestrianRisks.map((risk) => (
-                    <div key={risk.label} className="flex items-baseline justify-between gap-2">
-                      <span className="text-[10px] text-[#3F5147]">{risk.label}</span>
-                      <span className="text-[10px] font-bold tabular-nums text-[#1A2A22]">
-                        {risk.count} 件
-                        <span className="ml-1 font-normal text-[#66736C]">
-                          （全東京 {risk.chomeWithAny.toLocaleString()} 個町丁目有紀錄）
-                        </span>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <NeighborhoodActivityCard
+            activity={location?.neighborhoodActivity}
+            address={location?.matchedAddress}
+            annualStreetCrime={{ count: streetCount, area: crime.chocho, period: crime.periodLabel }}
+          />
         </div>
+        <NeighborhoodActivityEvidence activity={location?.neighborhoodActivity} />
 
-        {/* 商圈脈絡提示 */}
-        {districtContext && (
-          <div className="border border-[#B9DCFF] bg-[#EBF5FF] p-3">
-            <div className="flex items-start gap-2">
-              <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#1E65B8]" />
-              <div className="space-y-1">
-                <div className="text-[11px] font-bold text-[#1E65B8]">
-                  {districtContext.headline}
-                </div>
-                <p className="text-[11px] leading-relaxed text-[#3F5147]">
-                  {districtContext.body}
-                </p>
-              </div>
-            </div>
+        {crime.pedestrianRisks.length > 0 && <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-3">
+          <div className="text-xs font-bold text-[#1A2A22]">對行人的直接危害紀錄</div>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-[11px] text-[#55635B]">
+            {crime.pedestrianRisks.map(risk => <span key={risk.label}>{risk.label} <strong>{risk.count} 件</strong></span>)}
           </div>
-        )}
+        </div>}
+
 
         {/* 2. 中層雙卡（對照全東京雙欄並排，年對年變化） */}
         {(crime.tokyoContext || crime.burglaryTrend || crime.streetTrend) && (
@@ -618,7 +445,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                         <div
                           className="text-xl font-black tracking-tight"
                           style={{
-                            color: homeCount === 0 ? "#007D5A" : homeCount <= 2 ? "#B76E00" : "#C81E1E",
+                            color: homeCount === 0 ? SAFETY_PALETTE.green : homeCount <= 2 ? SAFETY_PALETTE.orange : SAFETY_PALETTE.red,
                           }}
                         >
                           {homeCount === 0 ? "極低侵入風險" : homeCount <= 2 ? "僅零星個案" : "案件稍多留意"}
@@ -641,24 +468,20 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
 
                     {/* 全罪種 */}
                     <div className="px-2">
-                      <div className="text-[11px] font-medium text-[#66736C]">周邊街區型態</div>
+                      <div className="text-[11px] font-medium text-[#66736C]">全罪種案件紀錄</div>
                       <div className="mt-1">
                         <div
                           className="text-xl font-black tracking-tight"
                           style={{
                             color:
                               crime.totalCrimes <= 20
-                                ? "#007D5A"
+                                ? SAFETY_PALETTE.green
                                 : crime.totalCrimes <= 60
-                                ? "#1E65B8"
-                                : "#B76E00",
+                                ? SAFETY_PALETTE.blue
+                                : SAFETY_PALETTE.orange,
                           }}
                         >
-                          {crime.totalCrimes <= 20
-                            ? "寧靜純住宅"
-                            : crime.totalCrimes <= 60
-                            ? "一般生活街區"
-                            : "熱鬧商圈型"}
+                          {crime.totalCrimes} 件
                         </div>
                         <div className="inline-flex items-center gap-1 my-1 px-1.5 py-0.5 border border-[#DDE3DF] bg-white text-[10px] font-bold tabular-nums text-[#1A2A22]">
                           <span>全罪種 PR {crime.tokyoContext.totalSaferThanPercent}</span>
@@ -667,11 +490,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                           </span>
                         </div>
                         <p className="text-[10px] leading-tight text-[#66736C]">
-                          {crime.totalCrimes <= 20
-                            ? "全罪種總量極低，環境單純安全"
-                            : crime.totalCrimes <= 60
-                            ? "生活機能便利，案件量屬中段"
-                            : "商業活動密集，多屬自行車輕罪"}
+                          案件總量與街區環境分開呈現
                         </p>
                       </div>
                     </div>
@@ -714,12 +533,12 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                               style={{
                                 color:
                                   crime.burglaryTrend.current === 0
-                                    ? "#007D5A"
+                                    ? SAFETY_PALETTE.green
                                     : crime.burglaryTrend.direction === "down"
-                                    ? "#007D5A"
+                                    ? SAFETY_PALETTE.green
                                     : crime.burglaryTrend.direction === "flat"
                                     ? "#66736C"
-                                    : "#B76E00",
+                                    : SAFETY_PALETTE.orange,
                               }}
                             >
                               {crime.burglaryTrend.current === 0 && crime.burglaryTrend.previous === 0
@@ -771,12 +590,12 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                               style={{
                                 color:
                                   crime.streetTrend.direction === "down"
-                                    ? "#007D5A"
+                                    ? SAFETY_PALETTE.green
                                     : crime.streetTrend.current <= 2
-                                    ? "#007D5A"
+                                    ? SAFETY_PALETTE.green
                                     : crime.streetTrend.direction === "flat"
-                                    ? "#1E65B8"
-                                    : "#B76E00",
+                                    ? SAFETY_PALETTE.blue
+                                    : SAFETY_PALETTE.orange,
                               }}
                             >
                               {crime.streetTrend.current < crime.streetTrend.previous
@@ -1000,7 +819,7 @@ export function CrimeSafetyCard({ crime }: CrimeSafetyCardProps) {
                                     : groupKey === "residential" || groupKey === "street"
                                     ? item.count >= 3
                                       ? "text-[#C81E1E]"
-                                      : "text-[#B76E00]"
+                                      : "text-[#F28C28]"
                                     : "text-[#1A2A22]"
                                 }`}
                               >

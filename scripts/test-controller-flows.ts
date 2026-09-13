@@ -165,7 +165,10 @@ try {
       // and request payloads against the same successful historical report.
       const actual = checkpoint(name);
       const old = expected.snapshots[name];
-      assert.deepEqual(actual.state, old.state, name + " state");
+      // Refresh now clears the previous crime result even if its replacement
+      // fails. Preserve other historical contracts and assert this correction.
+      const refreshed = pipeline.indexOf(name) >= pipeline.indexOf("commute-request-and-loading-guard");
+      assert.deepEqual(actual.state, refreshed ? { ...old.state, prefectureSafety: null } : old.state, name + " state");
       assert.deepEqual(actual.pending, old.pending, name + " requests");
     } else assert.deepEqual(value, expected.snapshots[name], name);
   }

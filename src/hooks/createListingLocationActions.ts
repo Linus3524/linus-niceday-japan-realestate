@@ -46,6 +46,8 @@ export function createListingLocationActions(context: Context) {
     const task = requests.begin("location");
     requests.invalidate("crime", "commute");
     setCrimeLoading(false);
+    setCrimeData(null);
+    setPrefectureSafety(null);
     setCommuteLoading(false);
     setLocationContext(null);
     setCommute(null);
@@ -95,8 +97,10 @@ export function createListingLocationActions(context: Context) {
       if (!task.current() || !body?.found) return;
       // 東京都回町丁目級，其餘道府県回都道府県級，兩者精度不同、分開存。
       if (body.precision === "prefecture" && body.prefecture) {
+        setCrimeData(null);
         setPrefectureSafety(body.prefecture as PrefectureSafetyResult);
       } else if (body.crime) {
+        setPrefectureSafety(null);
         setCrimeData(body.crime as CrimeSafetyResult);
       }
     } catch {

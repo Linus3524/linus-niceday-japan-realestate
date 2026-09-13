@@ -1,5 +1,7 @@
 # 治安資料涵蓋範圍查核紀錄
 
+> **2026-09-13 更正：下方為歷史查核，當時搜尋範圍不足，不應將「只取得兩縣 2018 年檔案」推論成全國資料只有兩縣或均過舊。** 警察廳有[各縣犯罪開放資料入口](https://www.npa.go.jp/toukei/seianki/hanzaiopendatalink.html)；[千葉縣警](https://www.police.pref.chiba.jp/seisoka/safe-life_publicspace-statistics_00002.html)已有 2025 年七類竊盜 CSV；[千葉市](https://www.city.chiba.jp/shimin/shimin/chiikianzen/hanzai-hassei-jokyo.html)有 2020～2024 年町丁別七類犯罪件數。部分罪種仍可作地方明細，未提供人口分母也不妨礙呈現原始件數；但不能等同完整住宅風險評級。這次更新先加入全國物件周邊環境指標，地方犯罪快照尚未新增；非東京繼續明示縣級資料。詳見 [全國街區活動卡片](NEIGHBORHOOD_ACTIVITY.md)。
+
 查核日期：2026-09-11  
 範圍：`src/lib/crimeSafety.ts`、`src/data/crimePrefectureSnapshot.ts`、`api/listing-crime.ts` 的資料來源選擇。
 

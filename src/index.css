@@ -1482,3 +1482,32 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     animation: none;
   }
 }
+
+/* Shared intrinsic rows align the prefecture cards' separators even when copy wraps. */
+.prefecture-safety-card {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  row-gap: 0;
+  min-width: 0;
+}
+.prefecture-safety-top { padding-bottom: 12px; }
+.prefecture-safety-middle {
+  border-top: 1px solid #DDE3DF;
+  border-bottom: 1px solid #DDE3DF;
+  padding-block: 12px;
+}
+.prefecture-safety-bottom { padding-top: 12px; }
+.prefecture-safety-evidence > div {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+@media (min-width: 640px) {
+  .prefecture-safety-pair { row-gap: 0; }
+  .prefecture-safety-pair > .prefecture-safety-card {
+    grid-row: span 6;
+    grid-template-rows: subgrid;
+  }
+  .prefecture-safety-pair .prefecture-safety-top { display: contents; }
+  .prefecture-safety-pair .prefecture-safety-description { padding-bottom: 12px; }
+}

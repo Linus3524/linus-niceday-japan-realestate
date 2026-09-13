@@ -29,6 +29,7 @@ import {
 // 本機 tsx／Vite 都不會報錯，所以只在正式站爆。
 import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json" with { type: "json" };
 import tokyoPopulationSnapshot from "../data/tokyoPopulationSnapshot.json" with { type: "json" };
+import { getPrefectureCrimeBreakdown, type PrefectureCrimeBreakdown } from "./prefectureCrimeBreakdown.js";
 
 /* ────────── 型別定義 ────────── */
 
@@ -239,6 +240,7 @@ export interface CrimeSafetyResult {
  * 精度低於町丁目級，欄位刻意與 CrimeSafetyResult 分開，避免 UI 誤用成同等精度。
  */
 export interface PrefectureSafetyResult {
+  breakdown?: PrefectureCrimeBreakdown | null;
   prefecture: string;
   /** 人口千人あたり刑法犯認知件数。 */
   crimeRatePerThousand: number;
@@ -936,6 +938,7 @@ function buildPrefectureResult(row: CrimePrefectureRow, totalPrefectures: number
   }
 
   return {
+    breakdown: getPrefectureCrimeBreakdown(row.prefecture, crimePrefectureMeta.fiscalYear),
     prefecture: row.prefecture,
     crimeRatePerThousand: row.crimeRatePerThousand,
     nationalRatePerThousand: national,

@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 import { MLIT_API_CREDIT } from "../data/marketDataSources.js";
+import { analyzeNeighborhood, type NeighborhoodActivity } from "./neighborhoodActivity.js";
 
 export interface GeoPoint {
   lat: number;
@@ -32,6 +33,7 @@ export interface ListingStationWalk {
 }
 
 export interface ListingLocationContext {
+  neighborhoodActivity?: NeighborhoodActivity;
   address: string;
   matchedAddress: string;
   coordinate: GeoPoint;
@@ -264,7 +266,11 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
   const amenityQuery = includeAmenities ? `
     nw(around:900,${point.lat},${point.lon})[shop~"^(convenience|supermarket|chemist|department_store)$"];
     nw(around:900,${point.lat},${point.lon})[amenity~"^(pharmacy|police|post_office|hospital|clinic|school)$"];
-    nw(around:900,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];` : "";
+    nw(around:900,${point.lat},${point.lon})[leisure~"^(park|sports_centre|fitness_centre)$"];
+    nw(around:500,${point.lat},${point.lon})[shop];
+    nw(around:500,${point.lat},${point.lon})[amenity~"^(restaurant|cafe|fast_food|food_court|cinema|bar|pub|nightclub|karaoke)$"];
+    nw(around:500,${point.lat},${point.lon})[leisure~"^(adult_gaming_centre|amusement_arcade)$"];
+    way(around:250,${point.lat},${point.lon})[building~"^(house|apartments|residential|detached|terrace)$"];` : "";
   const query = `[out:json][timeout:8];(${amenityQuery}
     nw(around:4000,${point.lat},${point.lon})[railway~"^(station|halt)$"];
     nw(around:4000,${point.lat},${point.lon})[public_transport=station];
@@ -285,14 +291,14 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
         });
         if (!response.ok) throw new Error(`Overpass status ${response.status} from ${endpoint}`);
         const data = await response.json();
-        if (!Array.isArray(data?.elements)) throw new Error(`Invalid elements from ${endpoint}`);
+        if (!Array.isArray(data?.elements) || data.remark) throw new Error(`Incomplete elements from ${endpoint}`);
         return data.elements as OsmElement[];
       })
     );
     return remember(key, elements);
   } catch (error) {
     console.warn("All Overpass endpoints failed or timed out:", error);
-    return [];
+    throw error;
   }
 }
 
@@ -567,10 +573,11 @@ export async function getListingLocationContext(address: string, stations: strin
   }
 
   // 並行查詢 OSM 圖資與 MLIT 設施
-  const [elements, mlit] = await Promise.all([
-    queryOsm(geocoded.point, true).catch(() => [] as OsmElement[]),
+  const [osmResult, mlit] = await Promise.all([
+    queryOsm(geocoded.point, true).catch(() => null),
     mlitFacilities(geocoded.point).catch(() => [] as ListingAmenity[]),
   ]);
+  const elements = osmResult || [];
 
   const osmStations = osmStationPoints(elements, geocoded.point);
   let officialStations: StationPoint[] = [];
@@ -617,6 +624,7 @@ export async function getListingLocationContext(address: string, stations: strin
 
   return {
     address,
+    neighborhoodActivity: analyzeNeighborhood(osmResult, geocoded.point, geocoded.confidence === "high"),
     matchedAddress: geocoded.matchedAddress,
     coordinate: geocoded.point,
     stationWalks,

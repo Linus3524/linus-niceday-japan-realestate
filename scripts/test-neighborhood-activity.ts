@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import { analyzeNeighborhood, type ActivityElement } from "../src/lib/neighborhoodActivity.js";
+const origin = { lat: 35.6, lon: 140.1 };
+const items = (n: number, tags: Record<string, string>, offset = 0): ActivityElement[] =>
+  Array.from({ length: n }, (_, i) => ({ type: "node", id: i + offset, ...origin, tags }));
+const analyze = (rows: ActivityElement[] | null, precise = true) => analyzeNeighborhood(rows, origin, precise);
+assert.equal(analyze(null).status, "unavailable");
+assert.equal(analyze([]).level, null, "empty data is not quiet");
+assert.equal(analyze(items(60, { shop: "convenience" }), false).status, "imprecise");
+assert.equal(analyze(items(40, { shop: "convenience" })).level, 4);
+assert.equal(analyze(items(40, { shop: "convenience" })).entertainment, 0, "convenience stores are not nightlife");
+assert.equal(analyze(items(20, { amenity: "bar" })).level, 5);
+assert.equal(analyze(items(20, { building: "house" })).level, 2, "positive residential evidence can establish residential character, not quietness");
+assert.equal(analyze([...items(5, { building: "apartments" }), ...items(8, { amenity: "cafe" }, 100)]).level, 3);
+const duplicate = items(1, { shop: "supermarket", name: "同一店" });
+assert.equal(analyze([...duplicate, ...duplicate, { ...duplicate[0], type: "way", id: 9 }]).commercial, 1);
+assert.equal(analyze(items(50, { shop: "vacant" })).level, null);
+assert.equal(analyze(items(50, { shop: "supermarket", disused: "yes" })).commercial, 0);
+assert.equal(analyze(items(50, { shop: "supermarket" }).map(i => ({ ...i, lat: 36 }))).commercial, 0);
+assert.equal(analyze(items(1, { amenity: "bar" })).aroundTheClock, 0, "venue category cannot establish hours");
+assert.equal(analyze(items(1, { shop: "convenience", opening_hours: "24/7" })).aroundTheClock, 1);
+assert.equal(analyze(items(1, { shop: "convenience", opening_hours: "24/7; PH off" })).aroundTheClock, 0);
+console.log("Neighborhood activity: sparse data, precision, category, deduplication, radius and hours checks passed.");
