@@ -44,6 +44,7 @@ SOURCES = {
     "奈良県": "https://www.police.pref.nara.jp/cmsfiles/contents/0000000/452/R7.pdf",
     # 和歌山令和 7 年只出了警察署別，市町村別犯罪率表最新是令和 6 年。
     "和歌山県": "https://www.police.pref.wakayama.lg.jp/04_toukei/documents/r6/hanzairitsur6.pdf",
+    "岡山県": "https://www.pref.okayama.jp/uploaded/attachment/405322.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -86,7 +87,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33",
 }
 
 
@@ -293,7 +294,7 @@ def parse_city_ward_table(rows: list[list], prefecture: str,
     for row in rows:
         # 兵庫的「神戸市」小計列把第一個區名一起塞進同一格（"神戸市\n東灘区"），只取第一行
         city = compact((row[city_index] or "").split("\n")[0]).removesuffix("計")
-        sub = compact(row[sub_index])
+        sub = compact(row[sub_index]).removeprefix("うち")
         if city:
             parent = city
             if sub:
@@ -435,6 +436,26 @@ def parse_multitable_first_line(path: Path, prefecture: str, total_index: int, g
     return records
 
 
+def merge_group_parts(parts: list[tuple[list[dict], str]]) -> list[dict]:
+    """岡山那種每頁兩個分類、六大分類分散在四頁的表：每個 part 是
+    (parse_city_ward_table 的結果, 這一頁提供的分類代碼字串如 "AB")，
+    以第一個 part 的市區町村與總數為準，各分類各取自己那一頁。"""
+    base, _ = parts[0]
+    lookup = [({item["municipality"]: item for item in records}, codes) for records, codes in parts]
+    merged = []
+    for item in base:
+        groups = []
+        for code_index, code in enumerate("ABCDEF"):
+            source = next((records[item["municipality"]] for records, codes in lookup
+                           if code in codes and item["municipality"] in records), None)
+            if source is None:
+                groups = []
+                break
+            groups.append(source["groups"][code_index])
+        merged.append({**item, "groups": groups})
+    return merged
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -522,6 +543,13 @@ def main() -> None:
         # 奈良：只有總數與主要罪種，第 2 欄是 R7 12 月末累計。
         "奈良県": {"year": 2025, "sourceUrl": SOURCES["奈良県"], "records": parse_total_rows(paths["奈良県"], "奈良県", [0], (0,), 2, 4)},
         "和歌山県": {"year": SOURCE_YEARS["和歌山県"], "sourceUrl": SOURCES["和歌山県"], "records": parse_total_rows(paths["和歌山県"], "和歌山県", [0], (1, 2), 4, 3)},
+        # 岡山：四頁，每頁兩個分類（各佔 9 欄：認知 3、検挙 3、検挙率 3），總數在第 0 頁第 2 欄。
+        "岡山県": {"year": 2025, "sourceUrl": SOURCES["岡山県"], "records": merge_group_parts([
+            (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [0], 3), "岡山県", 2, (11, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "A"),
+            (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [1], 3), "岡山県", 2, (2, 2, 11, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "BC"),
+            (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [2], 3), "岡山県", 2, (2, 2, 2, 2, 11, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "DE"),
+            (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [3], 3), "岡山県", 2, (2, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "F"),
+        ])},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
