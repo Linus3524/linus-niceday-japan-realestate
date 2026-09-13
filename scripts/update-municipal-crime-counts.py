@@ -42,9 +42,11 @@ SOURCES = {
     "三重県": "https://www.police.pref.mie.jp/pdf/07_ninchi_kenkyo.pdf",
     "滋賀県": "https://www.pref.shiga.lg.jp/documents/333/5592613_1.pdf",
     "奈良県": "https://www.police.pref.nara.jp/cmsfiles/contents/0000000/452/R7.pdf",
+    # 和歌山令和 7 年只出了警察署別，市町村別犯罪率表最新是令和 6 年。
+    "和歌山県": "https://www.police.pref.wakayama.lg.jp/04_toukei/documents/r6/hanzairitsur6.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
-SOURCE_YEARS = {"愛知県": 2024}
+SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
 POPULATION_API = "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionalRank=4&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y"
 
 GROUPS = [
@@ -84,7 +86,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30",
 }
 
 
@@ -245,10 +247,13 @@ def parse_total_rows(path: Path, prefecture: str, pages: list[int], name_indexes
     with pdfplumber.open(path) as pdf:
         for page_index in pages:
             for row in pdf.pages[page_index].extract_tables()[0][skip:]:
-                name = next((compact(row[i]) for i in name_indexes if i < len(row) and compact(row[i])), "")
-                if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外", "その他")):
+                # 郡小計列會把底下的町名一起塞進同一格（"海草郡の計\n紀美野町"），只看第一行，
+                # 帶「計」的就是小計列直接跳過。
+                name = next((compact((row[i] or "").split("\n")[0]) for i in name_indexes if i < len(row) and compact(row[i])), "")
+                if not name or any(word in name for word in ("総数", "合計", "の計", "不明", "国外", "県外", "その他")):
                     continue
-                parsed = record(prefecture, name, number(row[total_index]), POPULATIONS)
+                # 和歌山把件數印成「2,117 (52.12%)」，只取第一個數
+                parsed = record(prefecture, name, first_number(row[total_index]), POPULATIONS)
                 if parsed:
                     records.append(parsed)
     return records
@@ -516,6 +521,7 @@ def main() -> None:
             paths["滋賀県"], "滋賀県", 1, (2, 7, 13, 17, 20, 24), exclude=("総数", "地域", "不明", "市町"))},
         # 奈良：只有總數與主要罪種，第 2 欄是 R7 12 月末累計。
         "奈良県": {"year": 2025, "sourceUrl": SOURCES["奈良県"], "records": parse_total_rows(paths["奈良県"], "奈良県", [0], (0,), 2, 4)},
+        "和歌山県": {"year": SOURCE_YEARS["和歌山県"], "sourceUrl": SOURCES["和歌山県"], "records": parse_total_rows(paths["和歌山県"], "和歌山県", [0], (1, 2), 4, 3)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
