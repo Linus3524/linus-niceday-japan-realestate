@@ -32,6 +32,8 @@ SOURCES = {
     "大阪府": "https://www.police.pref.osaka.lg.jp/material/files/group/2/hanzaitokei09_r07.xlsx",
     # 愛知只在年度「犯罪統計書」放市區町村別，令和 7 年版尚未出版，先用令和 6 年。
     "愛知県": "https://www.pref.aichi.jp/police/anzen/hassei/keiji-s/images/Aichi-HanzaiTokei2024.pdf",
+    "兵庫県": "https://www.police.pref.hyogo.lg.jp/seikatu/gaitou/statis/data/R07.pdf",
+    "京都府": "https://www.pref.kyoto.jp/fukei/anzen/toke/documents/28-r7-10.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -74,7 +76,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26",
 }
 
 
@@ -99,7 +101,14 @@ def broad_groups(values: list[int]) -> list[dict]:
             for (code, label), count in zip(labels, values)]
 
 
+# 縣警表沿用舊名、統計儀表板用現名的市町村。
+NAME_ALIASES = {
+    "篠山市": "丹波篠山市",   # 2019 年改名，兵庫縣警的表還是舊名
+}
+
+
 def record(prefecture: str, name: str, total: int, populations: dict[str, dict[str, int]], groups=None) -> dict | None:
+    name = NAME_ALIASES.get(compact(name), name)
     population = population_for(prefecture, name, populations)
     if population is None:
         return None
@@ -264,7 +273,9 @@ def parse_city_ward_table(rows: list[list], prefecture: str,
     entries: list[tuple[str, str, list]] = []
     parent = ""
     for row in rows:
-        city, sub = compact(row[city_index]).removesuffix("計"), compact(row[sub_index])
+        # 兵庫的「神戸市」小計列把第一個區名一起塞進同一格（"神戸市\n東灘区"），只取第一行
+        city = compact((row[city_index] or "").split("\n")[0]).removesuffix("計")
+        sub = compact(row[sub_index])
         if city:
             parent = city
             if sub:
@@ -422,6 +433,11 @@ def main() -> None:
              "F": [(36, "侵占遺失物"), (37, "妨害公務"), (38, "侵入住居"), (39, "器物損壞")]},
             exclude=("総数", "合計", "不明", "国外", "府内", "他府県", "発生地"))},
         "愛知県": {"year": SOURCE_YEARS["愛知県"], "sourceUrl": SOURCES["愛知県"], "records": parse_aichi(paths["愛知県"])},
+        # 兵庫：縣警只給總數與幾種主要罪種，沒有六大分類；分類由 UI 退回縣級。
+        "兵庫県": {"year": 2025, "sourceUrl": SOURCES["兵庫県"], "records": parse_city_ward_table(
+            rows_from_pdf(paths["兵庫県"], [0], 3), "兵庫県", 3, (), city_index=0, sub_index=1,
+            exclude=("県下", "不明", "県外"))},
+        "京都府": {"year": 2025, "sourceUrl": SOURCES["京都府"], "records": parse_simple_broad(paths["京都府"], "京都府", 2, (1, 2, 3, 4, 8, 9, 10))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
