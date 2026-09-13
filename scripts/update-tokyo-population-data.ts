@@ -18,7 +18,7 @@
  */
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import crimeSnapshot from "../src/data/tokyoCrimeSnapshot.json";
+import crimeSnapshot from "../src/data/tokyoCrimeSnapshot.json" with { type: "json" };
 
 const INDEX_URL = "https://www.toukei.metro.tokyo.lg.jp/juukiy/jy-index.htm";
 const BASE = "https://www.toukei.metro.tokyo.lg.jp";

@@ -24,8 +24,11 @@ import {
   findCrimePrefecture,
   type CrimePrefectureRow,
 } from "../data/crimePrefectureSnapshot.js";
-import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json";
-import tokyoPopulationSnapshot from "../data/tokyoPopulationSnapshot.json";
+// Vercel 的 Node ESM 執行環境要求 JSON 匯入必須帶 import attribute，
+// 少了它整個 /api/listing-location 會在載入模組時就掛掉（FUNCTION_INVOCATION_FAILED），
+// 本機 tsx／Vite 都不會報錯，所以只在正式站爆。
+import tokyoCrimeSnapshot from "../data/tokyoCrimeSnapshot.json" with { type: "json" };
+import tokyoPopulationSnapshot from "../data/tokyoPopulationSnapshot.json" with { type: "json" };
 
 /* ────────── 型別定義 ────────── */
 
