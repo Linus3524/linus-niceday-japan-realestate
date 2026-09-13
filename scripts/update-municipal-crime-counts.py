@@ -52,6 +52,7 @@ SOURCES = {
     "宮崎県": "https://www.pref.miyazaki.lg.jp/documents/28743/28743_20260424090447-1.pdf",
     "長崎県": "https://www.police.pref.nagasaki.jp/police/wp-content/uploads/2026/02/16bdae313e049ff2d3a62346ee6ad263-2.pdf",
     "佐賀県": "https://www.police.pref.saga.jp/var/rev0/0020/0286/12622594221.pdf",
+    "香川県": "https://www.pref.kagawa.lg.jp/documents/15487/reiwa8sanukinoanzen.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -94,7 +95,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37",
 }
 
 
@@ -507,6 +508,22 @@ def parse_hiroshima(path: Path, page_index: int = 101) -> list[dict]:
             for parsed in [record("広島県", name, total, POPULATIONS, groups)] if parsed]
 
 
+def parse_stacked_pair(path: Path, prefecture: str, page_index: int, table_index: int = 0, row_index: int = 1) -> list[dict]:
+    """香川「数字でみるさぬきの安全」：全部市町名塞在一格、件數塞在隔壁那格，各自用換行分開。"""
+    with pdfplumber.open(path) as pdf:
+        row = pdf.pages[page_index].extract_tables()[table_index][row_index]
+    names = [compact(n) for n in (row[0] or "").split("\n")]
+    values = [first_number(v) for v in (row[1] or "").split("\n")]
+    records = []
+    for name, total in zip(names, values):
+        if not name or any(word in name for word in ("県外", "不明", "計")):
+            continue
+        parsed = record(prefecture, name, total, POPULATIONS)
+        if parsed:
+            records.append(parsed)
+    return records
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -619,6 +636,8 @@ def main() -> None:
         # 佐賀：一年一頁（第 1 頁是令和 7 年），郡名在第 0 欄、町名在第 1 欄。
         "佐賀県": {"year": 2025, "sourceUrl": SOURCES["佐賀県"], "records": parse_city_ward_table(
             rows_from_pdf(paths["佐賀県"], [1], 3), "佐賀県", 2, (4, 5, 6, 7, 8, 9), city_index=0, sub_index=1, exclude=("総数", "その他"))},
+        # 香川：「数字でみるさぬきの安全（令和 8 年版）」第 52 頁「80 市町別刑法犯認知状況」，只有總數。
+        "香川県": {"year": 2025, "sourceUrl": SOURCES["香川県"], "records": parse_stacked_pair(paths["香川県"], "香川県", 52)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
