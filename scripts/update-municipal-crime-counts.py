@@ -39,6 +39,8 @@ SOURCES = {
     "新潟県": "https://www.pref.niigata.lg.jp/uploaded/attachment/503121.pdf",
     "長野県": "https://www.pref.nagano.lg.jp/police/toukei/documents/r7toukei-chichouson.pdf",
     "岐阜県": "https://www.pref.gifu.lg.jp/uploaded/attachment/485367.pdf",
+    "三重県": "https://www.police.pref.mie.jp/pdf/07_ninchi_kenkyo.pdf",
+    "滋賀県": "https://www.pref.shiga.lg.jp/documents/333/5592613_1.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -81,7 +83,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25",
 }
 
 
@@ -200,13 +202,13 @@ def parse_hokkaido(path: Path, populations: dict[str, dict[str, int]]) -> list[d
 
 
 def parse_simple_broad(path: Path, prefecture: str, header_rows: int, indexes: tuple[int, ...],
-                       ward_city: dict[str, str] | None = None) -> list[dict]:
+                       ward_city: dict[str, str] | None = None, pages: list[int] | None = None) -> list[dict]:
     """單欄名稱＋六大分類的表。ward_city 給「區名→市名」對照，
     給那些把政令市的區直接印成「門司区」不冠市名的縣用。"""
     populations = POPULATIONS
     records = []
     with pdfplumber.open(path) as pdf:
-        for page in pdf.pages:
+        for page in (pdf.pages if pages is None else [pdf.pages[i] for i in pages]):
             for row in page.extract_tables()[0][header_rows:]:
                 name = compact(row[0])
                 if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外", "その他")):
@@ -402,6 +404,31 @@ def merge_split_groups(left: list[dict], right: list[dict]) -> list[dict]:
     return merged
 
 
+def parse_multitable_first_line(path: Path, prefecture: str, total_index: int, group_indexes: tuple[int, ...],
+                                exclude: tuple[str, ...]) -> list[dict]:
+    """滋賀那種每個市町佔三列（R7／R6／増減）、而且一頁被切成好幾張小表的格式。
+    只看有名稱的那一列（R7），儲存格裡若有兩行也只取第一行。"""
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    first = lambda cell: number((cell or "").split("\n")[0])
+    records = []
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            for table in page.extract_tables():
+                for row in table:
+                    name = compact(row[0])
+                    if not name or any(word in name for word in exclude) or not (row[total_index] or "").strip():
+                        continue
+                    if not (row[total_index] or "").split("\n")[0].replace(",", "").strip().isdigit():
+                        continue
+                    groups = [{"code": code, "label": label, "count": first(row[index]), "items": []}
+                              for (code, label), index in zip(labels, group_indexes)]
+                    parsed = record(prefecture, name, first(row[total_index]), POPULATIONS, groups)
+                    if parsed:
+                        records.append(parsed)
+    return records
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -482,6 +509,10 @@ def main() -> None:
             parse_city_ward_table(rows_from_pdf(paths["岐阜県"], [1, 3], 3), "岐阜県", 2, (2, 2, 2, 2, 8, 14),
                                   {"D": [(5, "詐欺")], "E": [(11, "不同意猥褻")], "F": [(17, "侵占遺失物"), (20, "侵入住居"), (23, "器物損壞")]},
                                   city_index=0, sub_index=1, exclude=("総数", "計", "不明", "県外")))},
+        # 三重：認知・検挙状況資料的別添資料３（第 5 頁），各欄 令和７／令和６／増減 三格。
+        "三重県": {"year": 2025, "sourceUrl": SOURCES["三重県"], "records": parse_simple_broad(paths["三重県"], "三重県", 2, (1, 4, 7, 10, 13, 16, 19), pages=[5])},
+        "滋賀県": {"year": 2025, "sourceUrl": SOURCES["滋賀県"], "records": parse_multitable_first_line(
+            paths["滋賀県"], "滋賀県", 1, (2, 7, 13, 17, 20, 24), exclude=("総数", "地域", "不明", "市町"))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
