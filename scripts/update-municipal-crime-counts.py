@@ -55,6 +55,7 @@ SOURCES = {
     "香川県": "https://www.pref.kagawa.lg.jp/documents/15487/reiwa8sanukinoanzen.pdf",
     "石川県": "https://www2.police.pref.ishikawa.lg.jp/information/upload/e3c21f519fdccc805367195c4e3bcbe9_2.pdf",
     "秋田県": "https://www.police.pref.akita.lg.jp/uploads/contents/pages_0000000338_00/HP02%EF%BC%BF%E5%88%91%E6%B3%95%E3%83%BB%E7%BD%AA%E7%A8%AE%E3%83%BB%E5%B8%82%E7%94%BA%E6%9D%91_2025-01-12%E3%80%90%E7%A2%BA%E5%AE%9A%E5%80%A4%E3%80%91.pdf",
+    "富山県": "https://police.pref.toyama.jp/6108/toukei/hanzaijousei/kj00020958-003-01.html",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -97,7 +98,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17", "秋田県": "05",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43", "山口県": "35", "鹿児島県": "46", "宮崎県": "45", "長崎県": "42", "佐賀県": "41", "香川県": "37", "石川県": "17", "秋田県": "05", "富山県": "16",
 }
 
 
@@ -572,6 +573,42 @@ def parse_by_reference_row(path: Path, prefecture: str, page_index: int, referen
     return records
 
 
+def rows_from_html(path: Path, table_index: int = 0) -> list[list[str]]:
+    """富山縣警直接把市町村表放在網頁裡，沒有 PDF；用標準庫的 HTMLParser 把 <table> 拆成列。"""
+    from html.parser import HTMLParser
+
+    class TableParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__()
+            self.tables: list[list[list[str]]] = []
+            self.row: list[str] | None = None
+            self.cell: list[str] | None = None
+
+        def handle_starttag(self, tag: str, attrs: list) -> None:
+            if tag == "table":
+                self.tables.append([])
+            elif tag == "tr" and self.tables:
+                self.row = []
+            elif tag in ("td", "th") and self.row is not None:
+                self.cell = []
+
+        def handle_endtag(self, tag: str) -> None:
+            if tag in ("td", "th") and self.cell is not None and self.row is not None:
+                self.row.append("".join(self.cell).strip())
+                self.cell = None
+            elif tag == "tr" and self.row is not None:
+                self.tables[-1].append(self.row)
+                self.row = None
+
+        def handle_data(self, data: str) -> None:
+            if self.cell is not None:
+                self.cell.append(data)
+
+    parser = TableParser()
+    parser.feed(path.read_text(encoding="utf-8", errors="ignore"))
+    return parser.tables[table_index]
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -596,7 +633,7 @@ def main() -> None:
     POPULATIONS = population_by_prefecture()
     paths = {}
     for prefecture, url in SOURCES.items():
-        suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".pdf"
+        suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".html" if url.lower().endswith((".html", ".htm")) else ".pdf"
         pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025{suffix}"
         if not pdf.exists():
             urllib.request.urlretrieve(url, pdf)
@@ -691,6 +728,9 @@ def main() -> None:
         # 秋田：表格偵測漏掉知能・風俗・その他三欄，改以「秋田県」列的數字右緣當錨點逐列對欄。
         "秋田県": {"year": 2025, "sourceUrl": SOURCES["秋田県"], "records": parse_by_reference_row(
             paths["秋田県"], "秋田県", 0, "秋田県", 140, {"total": 0, "A": 1, "B": 2, "C": 3, "D": 12, "E": 13, "F": 14})},
+        # 富山：網頁表格，令和 7 年在第 1 欄，只有總數。
+        "富山県": {"year": 2025, "sourceUrl": SOURCES["富山県"], "records": parse_city_ward_table(
+            rows_from_html(paths["富山県"]), "富山県", 1, (), city_index=0, sub_index=1, exclude=("区分", "不詳", "その他"))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
