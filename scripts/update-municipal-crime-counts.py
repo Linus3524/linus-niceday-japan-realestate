@@ -28,6 +28,8 @@ SOURCES = {
     "埼玉県": "https://www.police.pref.saitama.lg.jp/documents/27624/r7keihoukansityouson.pdf",
     "千葉県": CHIBA_URL,
     "山形県": "https://www.pref.yamagata.jp/documents/5698/hp_r07.pdf",
+    "神奈川県": "https://www.police.pref.kanagawa.jp/assets/entry/c0030_67.pdf",
+    "大阪府": "https://www.police.pref.osaka.lg.jp/material/files/group/2/hanzaitokei09_r07.xlsx",
 }
 POPULATION_API = "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionalRank=4&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y"
 
@@ -42,8 +44,8 @@ GROUPS = [
 
 
 def number(value: str | None) -> int:
-    normalized = (value or "0").replace(",", "").strip()
-    return 0 if normalized in {"", "-", "－"} else int(normalized)
+    normalized = str(value if value is not None else "0").replace(",", "").strip()
+    return 0 if normalized in {"", "-", "－", "None"} else int(float(normalized))
 
 
 def fetch_json(url: str) -> dict:
@@ -68,6 +70,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
+    "神奈川県": "14", "大阪府": "27",
 }
 
 
@@ -225,6 +228,63 @@ def parse_total_rows(path: Path, prefecture: str, pages: list[int], name_indexes
     return records
 
 
+def items_from(row: list, spec: list[tuple[int, str]], code: str) -> list[dict]:
+    return [{"code": f"{code}-{index}", "label": label, "original": label, "count": number(row[index])}
+            for index, label in spec]
+
+
+def rows_from_pdf(path: Path, pages: list[int], skip: int) -> list[list]:
+    with pdfplumber.open(path) as pdf:
+        return [row for page_index in pages for row in pdf.pages[page_index].extract_tables()[0][skip:]]
+
+
+def rows_from_xlsx(path: Path, min_row: int, sheet: int = 0) -> list[list]:
+    import openpyxl
+    workbook = openpyxl.load_workbook(path, data_only=True)
+    return [[None if cell is None else str(cell) for cell in row]
+            for row in workbook.worksheets[sheet].iter_rows(min_row=min_row, values_only=True)]
+
+
+def parse_city_ward_table(rows: list[list], prefecture: str,
+                          total_index: int, group_indexes: tuple[int, ...],
+                          group_items: dict[str, list[tuple[int, str]]] | None = None,
+                          city_index: int = 1, sub_index: int = 2,
+                          exclude: tuple[str, ...] = ("総数", "合計", "不明", "国外", "県外", "府外", "他府県", "他県")) -> list[dict]:
+    """政令市的區與郡下的町村印在第二欄、上一列是市／郡的小計。
+
+    小計列一律跳過（政令市用區、郡不是行政單位），只收最細的那一層；
+    單獨成列的一般市直接收。「大阪市計」這種帶「計」的小計名也視為父列。"""
+    labels = [("A", "凶惡犯罪"), ("B", "粗暴犯罪"), ("C", "竊盜犯罪"),
+              ("D", "詐欺等知能犯罪"), ("E", "風俗犯罪"), ("F", "其他刑法犯罪")]
+    # (name, parent, row)；parent 只在「第二欄的子列」上有值
+    entries: list[tuple[str, str, list]] = []
+    parent = ""
+    for row in rows:
+        city, sub = compact(row[city_index]).removesuffix("計"), compact(row[sub_index])
+        if city:
+            parent = city
+            if sub:
+                entries.append((f"{city}{sub}", city, row))
+            elif not city.endswith("郡"):
+                entries.append((city, "", row))
+        elif sub:
+            # 郡下的町村本身就是行政單位，不冠郡名；政令市的區要冠市名
+            entries.append((f"{parent}{sub}" if parent.endswith("市") else sub, parent, row))
+    # 政令市那一列是它底下各區的小計，有子列的市一律不收，只收區。
+    parents_with_children = {parent for _, parent, _ in entries if parent}
+    records = []
+    for name, _, row in entries:
+        if name in parents_with_children or any(word in name for word in exclude):
+            continue
+        groups = [{"code": code, "label": label, "count": number(row[index]),
+                   "items": items_from(row, (group_items or {}).get(code, []), code)}
+                  for (code, label), index in zip(labels, group_indexes)]
+        parsed = record(prefecture, name, number(row[total_index]), POPULATIONS, groups)
+        if parsed:
+            records.append(parsed)
+    return records
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -249,8 +309,10 @@ def main() -> None:
     POPULATIONS = population_by_prefecture()
     paths = {}
     for prefecture, url in SOURCES.items():
-        pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025.pdf"
-        urllib.request.urlretrieve(url, pdf)
+        suffix = ".xlsx" if url.lower().endswith((".xlsx", ".xls")) else ".pdf"
+        pdf = work / f"{PREFECTURE_CODES[prefecture]}-2025{suffix}"
+        if not pdf.exists():
+            urllib.request.urlretrieve(url, pdf)
         paths[prefecture] = pdf
     prefectures = {
         "北海道": {"year": 2025, "sourceUrl": SOURCES["北海道"], "records": parse_hokkaido(paths["北海道"], POPULATIONS)},
@@ -262,6 +324,21 @@ def main() -> None:
         "栃木県": {"year": 2025, "sourceUrl": SOURCES["栃木県"], "records": parse_simple_broad(paths["栃木県"], "栃木県", 4, (1, 4, 6, 8, 10, 12, 14))},
         "埼玉県": {"year": 2025, "sourceUrl": SOURCES["埼玉県"], "records": parse_saitama(paths["埼玉県"], POPULATIONS)},
         "千葉県": {"year": 2025, "sourceUrl": CHIBA_URL, "records": parse_chiba(paths["千葉県"], POPULATIONS)},
+        # 神奈川：第 0～1 頁是罪名別（含六大分類與部分細項），第 2～3 頁是竊盜手口別，這裡只取前兩頁。
+        "神奈川県": {"year": 2025, "sourceUrl": SOURCES["神奈川県"], "records": parse_city_ward_table(
+            rows_from_pdf(paths["神奈川県"], [0, 1], 3), "神奈川県", 3, (4, 8, 13, 14, 17, 20),
+            {"A": [(5, "強盜"), (6, "縱火"), (7, "其他")], "B": [(9, "暴行"), (10, "傷害"), (11, "恐嚇"), (12, "其他")],
+             "D": [(15, "詐欺"), (16, "其他")], "E": [(18, "不同意猥褻"), (19, "其他")],
+             "F": [(21, "侵入住居"), (22, "器物損壞"), (23, "其他")]},
+            exclude=("総数", "合計", "不明", "国外", "県外", "発生地"))},
+        # 大阪：府警直接給 Excel，第 10 列起是資料列；大阪市計／堺市計底下接各區。
+        "大阪府": {"year": 2025, "sourceUrl": SOURCES["大阪府"], "records": parse_city_ward_table(
+            rows_from_xlsx(paths["大阪府"], 10), "大阪府", 3, (4, 8, 13, 31, 33, 35),
+            {"A": [(5, "強盜"), (7, "縱火")], "B": [(9, "暴行"), (10, "傷害"), (11, "脅迫"), (12, "恐嚇")],
+             "C": [(14, "侵入竊盜"), (21, "汽車竊盜"), (22, "機車竊盜"), (23, "自行車竊盜"), (24, "搶奪"), (27, "車內物品竊盜"), (30, "順手牽羊")],
+             "D": [(32, "詐欺")], "E": [(34, "公然猥褻")],
+             "F": [(36, "侵占遺失物"), (37, "妨害公務"), (38, "侵入住居"), (39, "器物損壞")]},
+            exclude=("総数", "合計", "不明", "国外", "府内", "他府県", "発生地"))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
