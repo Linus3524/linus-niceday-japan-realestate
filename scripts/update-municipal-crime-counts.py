@@ -30,7 +30,11 @@ SOURCES = {
     "山形県": "https://www.pref.yamagata.jp/documents/5698/hp_r07.pdf",
     "神奈川県": "https://www.police.pref.kanagawa.jp/assets/entry/c0030_67.pdf",
     "大阪府": "https://www.police.pref.osaka.lg.jp/material/files/group/2/hanzaitokei09_r07.xlsx",
+    # 愛知只在年度「犯罪統計書」放市區町村別，令和 7 年版尚未出版，先用令和 6 年。
+    "愛知県": "https://www.pref.aichi.jp/police/anzen/hassei/keiji-s/images/Aichi-HanzaiTokei2024.pdf",
 }
+# 各縣的資料年度；沒列的都是 2025（令和 7 年）。
+SOURCE_YEARS = {"愛知県": 2024}
 POPULATION_API = "https://dashboard.e-stat.go.jp/api/1.0/Json/getData?Lang=JP&IndicatorCode=0201010000000010000&RegionalRank=4&Cycle=3&IsSeasonalAdjustment=1&MetaGetFlg=Y"
 
 GROUPS = [
@@ -70,7 +74,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23",
 }
 
 
@@ -285,6 +289,84 @@ def parse_city_ward_table(rows: list[list], prefecture: str,
     return records
 
 
+def parse_grid_pages(path: Path, pages: list[int], name_column: int = 1) -> dict[str, list[int]]:
+    """愛知犯罪統計書那種表：pdfplumber 的表格偵測只抓到上半部（有框線的部分），
+    下半部一般市的列會漏掉；而且數字中間被塞了空白（"1 ,169"），純文字也切不準。
+    改用表格的欄位 x 邊界把整頁的文字逐字塞回欄位，再依 y 座標分列，
+    就能同時吃到有框線與沒框線的列。政令市的區會冠上市名。"""
+    result: dict[str, list[int]] = {}
+    with pdfplumber.open(path) as pdf:
+        for page_index in pages:
+            page = pdf.pages[page_index]
+            table = page.find_tables()[0]
+            edges: list[float] = []
+            for x in sorted({round(c[0]) for c in table.cells} | {round(c[2]) for c in table.cells}):
+                if not edges or x - edges[-1] > 3:
+                    edges.append(x)
+            lines: list[list[dict]] = []
+            for word in sorted(page.extract_words(x_tolerance=1.5, y_tolerance=2), key=lambda w: w["top"]):
+                if lines and abs(word["top"] - lines[-1][0]["top"]) <= 3:
+                    lines[-1].append(word)
+                else:
+                    lines.append([word])
+            parent = ""
+            for line in lines:
+                cells = [""] * (len(edges) - 1)
+                for word in sorted(line, key=lambda w: w["x0"]):
+                    center = (word["x0"] + word["x1"]) / 2
+                    for i in range(len(edges) - 1):
+                        if edges[i] <= center < edges[i + 1]:
+                            cells[i] += word["text"]
+                            break
+                # 第一頁多一個 8pt 的空白間隔欄、第二頁沒有，名稱欄位置逐列判斷
+                name_index = next((i for i, cell in enumerate(cells) if cell and not cell.replace(",", "").replace("-", "").isdigit()), None)
+                if name_index is None or name_index > name_column:
+                    continue
+                name = compact(cells[name_index])
+                values = cells[name_index + 1:]
+                if not name or not values[0] or not all(v == "-" or v.replace(",", "").isdigit() for v in values if v):
+                    continue
+                if name.endswith("市") and values[0]:
+                    parent = name
+                if name.endswith("区"):
+                    name = f"{parent}{name}"
+                result[name] = [number(v) for v in values]
+    return result
+
+
+def parse_aichi(path: Path) -> list[dict]:
+    """愛知：犯罪統計書「12 市区町村別 罪種別 認知件数」共 4 頁，前兩頁是總數與
+    凶悪・粗暴・窃盗，後兩頁是知能・風俗・その他，用市區町村名把兩邊接起來。"""
+    left = parse_grid_pages(path, [49, 50])
+    right = parse_grid_pages(path, [51, 52])
+    # 名古屋市那一列是 16 個區的小計，只收區
+    parents = {name.removesuffix(sub) for name in left for sub in [name[name.rfind("市") + 1:]] if sub.endswith("区")}
+    records = []
+    for name, l in left.items():
+        if any(word in name for word in ("総数", "不明", "国外", "県外")) or name.endswith("郡") or name in parents:
+            continue
+        r = right.get(name)
+        if r is None:
+            continue
+        groups = [
+            {"code": "A", "label": "凶惡犯罪", "count": l[1], "items": items_from_values([(l[2], "殺人"), (l[3], "強盜"), (l[4], "縱火"), (l[5], "不同意性交等")], "A")},
+            {"code": "B", "label": "粗暴犯罪", "count": l[6], "items": items_from_values([(l[8], "暴行"), (l[9], "傷害"), (l[10], "脅迫"), (l[11], "恐嚇")], "B")},
+            {"code": "C", "label": "竊盜犯罪", "count": l[12], "items": items_from_values([(l[13], "侵入竊盜"), (l[21], "交通工具竊盜"), (r[0], "非侵入竊盜")], "C")},
+            {"code": "D", "label": "詐欺等知能犯罪", "count": r[12], "items": items_from_values([(r[13], "詐欺")], "D")},
+            {"code": "E", "label": "風俗犯罪", "count": r[15], "items": []},
+            {"code": "F", "label": "其他刑法犯罪", "count": r[20], "items": items_from_values([(r[21], "侵占遺失物"), (r[22], "器物損壞"), (r[23], "侵入住居")], "F")},
+        ]
+        parsed = record("愛知県", name, l[0], POPULATIONS, groups)
+        if parsed:
+            records.append(parsed)
+    return records
+
+
+def items_from_values(pairs: list[tuple[int, str]], code: str) -> list[dict]:
+    return [{"code": f"{code}-{i}", "label": label, "original": label, "count": count}
+            for i, (count, label) in enumerate(pairs)]
+
+
 def parse_saitama(path: Path, populations: dict[str, dict[str, int]]) -> list[dict]:
     records = []
     with pdfplumber.open(path) as pdf:
@@ -339,6 +421,7 @@ def main() -> None:
              "D": [(32, "詐欺")], "E": [(34, "公然猥褻")],
              "F": [(36, "侵占遺失物"), (37, "妨害公務"), (38, "侵入住居"), (39, "器物損壞")]},
             exclude=("総数", "合計", "不明", "国外", "府内", "他府県", "発生地"))},
+        "愛知県": {"year": SOURCE_YEARS["愛知県"], "sourceUrl": SOURCES["愛知県"], "records": parse_aichi(paths["愛知県"])},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
