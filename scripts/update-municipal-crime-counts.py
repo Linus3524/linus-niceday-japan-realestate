@@ -41,6 +41,7 @@ SOURCES = {
     "岐阜県": "https://www.pref.gifu.lg.jp/uploaded/attachment/485367.pdf",
     "三重県": "https://www.police.pref.mie.jp/pdf/07_ninchi_kenkyo.pdf",
     "滋賀県": "https://www.pref.shiga.lg.jp/documents/333/5592613_1.pdf",
+    "奈良県": "https://www.police.pref.nara.jp/cmsfiles/contents/0000000/452/R7.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -83,7 +84,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29",
 }
 
 
@@ -513,6 +514,8 @@ def main() -> None:
         "三重県": {"year": 2025, "sourceUrl": SOURCES["三重県"], "records": parse_simple_broad(paths["三重県"], "三重県", 2, (1, 4, 7, 10, 13, 16, 19), pages=[5])},
         "滋賀県": {"year": 2025, "sourceUrl": SOURCES["滋賀県"], "records": parse_multitable_first_line(
             paths["滋賀県"], "滋賀県", 1, (2, 7, 13, 17, 20, 24), exclude=("総数", "地域", "不明", "市町"))},
+        # 奈良：只有總數與主要罪種，第 2 欄是 R7 12 月末累計。
+        "奈良県": {"year": 2025, "sourceUrl": SOURCES["奈良県"], "records": parse_total_rows(paths["奈良県"], "奈良県", [0], (0,), 2, 4)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
