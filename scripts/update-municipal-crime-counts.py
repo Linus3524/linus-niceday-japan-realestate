@@ -34,6 +34,8 @@ SOURCES = {
     "愛知県": "https://www.pref.aichi.jp/police/anzen/hassei/keiji-s/images/Aichi-HanzaiTokei2024.pdf",
     "兵庫県": "https://www.police.pref.hyogo.lg.jp/seikatu/gaitou/statis/data/R07.pdf",
     "京都府": "https://www.pref.kyoto.jp/fukei/anzen/toke/documents/28-r7-10.pdf",
+    "福岡県": "https://www.police.pref.fukuoka.jp/data/open/cnt/3/183/1/R07kakuteiCIty.pdf",
+    "静岡県": "https://www.pref.shizuoka.jp/police/_res/projects/project_police/_page_/002/001/146/r7zyoukyouhyou.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024}
@@ -76,7 +78,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22",
 }
 
 
@@ -194,15 +196,20 @@ def parse_hokkaido(path: Path, populations: dict[str, dict[str, int]]) -> list[d
     return records
 
 
-def parse_simple_broad(path: Path, prefecture: str, header_rows: int, indexes: tuple[int, ...]) -> list[dict]:
+def parse_simple_broad(path: Path, prefecture: str, header_rows: int, indexes: tuple[int, ...],
+                       ward_city: dict[str, str] | None = None) -> list[dict]:
+    """單欄名稱＋六大分類的表。ward_city 給「區名→市名」對照，
+    給那些把政令市的區直接印成「門司区」不冠市名的縣用。"""
     populations = POPULATIONS
     records = []
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
             for row in page.extract_tables()[0][header_rows:]:
                 name = compact(row[0])
-                if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外")):
+                if not name or any(word in name for word in ("総数", "合計", "不明", "国外", "県外", "その他")):
                     continue
+                if ward_city and name in ward_city:
+                    name = f"{ward_city[name]}{name}"
                 total = number(row[indexes[0]])
                 groups = broad_groups([number(row[i]) for i in indexes[1:]])
                 parsed = record(prefecture, name, total, populations, groups)
@@ -438,6 +445,12 @@ def main() -> None:
             rows_from_pdf(paths["兵庫県"], [0], 3), "兵庫県", 3, (), city_index=0, sub_index=1,
             exclude=("県下", "不明", "県外"))},
         "京都府": {"year": 2025, "sourceUrl": SOURCES["京都府"], "records": parse_simple_broad(paths["京都府"], "京都府", 2, (1, 2, 3, 4, 8, 9, 10))},
+        # 福岡：政令市的區不冠市名（門司区、東区…），用對照表補回。
+        "福岡県": {"year": 2025, "sourceUrl": SOURCES["福岡県"], "records": parse_simple_broad(
+            paths["福岡県"], "福岡県", 1, (1, 2, 3, 4, 5, 6, 7),
+            ward_city={**{w: "北九州市" for w in ("門司区", "若松区", "戸畑区", "小倉北区", "小倉南区", "八幡東区", "八幡西区")},
+                       **{w: "福岡市" for w in ("東区", "博多区", "中央区", "南区", "西区", "城南区", "早良区")}})},
+        "静岡県": {"year": 2025, "sourceUrl": SOURCES["静岡県"], "records": parse_simple_broad(paths["静岡県"], "静岡県", 3, (1, 2, 3, 6, 39, 40, 41))},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
