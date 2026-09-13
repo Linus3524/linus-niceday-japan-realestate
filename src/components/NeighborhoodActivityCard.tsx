@@ -28,11 +28,22 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
     : level === 5 ? { bg: "#F7F5FC", border: "#DED4F2" }
       : level >= 3 ? { bg: "#F4F8FD", border: "#CFE0F4" }
         : { bg: "#F2FAF7", border: "#CDEBE0" };
+  const badgeBorder = !level ? "#DDE3DF" : level === 5 ? "#DED4F2" : level >= 3 ? "#B9DCFF" : "#9EE2CF";
+  const badgeText = !level ? "#66736C" : accent;
   return <div style={{ backgroundColor: palette.bg, borderColor: palette.border }} className={`${alignRows ? "prefecture-safety-card" : "flex flex-col justify-between"} border border-[#CFE0D8] bg-[#F5F8F6] p-3.5`}>
     <div className={alignRows ? "prefecture-safety-top" : undefined}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]"><Footprints className="h-4 w-4" />街區活動程度</span>
-        <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] text-[#66736C]">{level ? "環境推估・資料有限" : "資料待確認"}</span>
+        <span
+          className="border px-2 py-0.5 text-[10px] font-bold"
+          style={{
+            borderColor: badgeBorder,
+            color: badgeText,
+            backgroundColor: "#FFFFFF",
+          }}
+        >
+          {level ? "環境推估・資料有限" : "資料待確認"}
+        </span>
       </div>
       {annualStreetCrime ? <div className="grid grid-cols-2 gap-4 pt-3 pb-2">
         <div className="min-w-0">
@@ -48,21 +59,29 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
         <p className="mt-1 break-words text-[10px] text-[#66736C]">{address || "物件位置待確認"}・周邊 500m</p>
       </div>}
       <div className={`${alignRows ? "" : annualStreetCrime ? "mt-1" : "mt-3"} flex gap-1`} aria-label={level ? `街區活動程度：${ACTIVITY_LABELS[level - 1]}` : "街區活動程度尚無法判斷"}>
-        {ACTIVITY_LABELS.map((label, index) => <div key={label} className="min-w-0 flex-1 text-center">
-          <div className="h-2" style={{ backgroundColor: level && index < level ? accent : `${palette.border}90` }} />
-          <span className="mt-1 block text-[9px] leading-tight" style={{ color: index + 1 === level ? accent : "#66736C" }}>{label}</span>
-        </div>)}
+        {ACTIVITY_LABELS.map((label, index) => {
+          const isCurrent = level !== null && index + 1 === level;
+          return <div key={label} className="min-w-0 flex-1 text-center">
+            <div className="h-2" style={{ backgroundColor: level && index < level ? accent : `${palette.border}90` }} />
+            <span
+              className={`mt-1 block text-[9px] leading-tight ${isCurrent ? "font-bold" : "font-normal"}`}
+              style={{ color: isCurrent ? accent : "#66736C" }}
+            >
+              {label}
+            </span>
+          </div>;
+        })}
       </div>
       <p className={`${alignRows ? "prefecture-safety-description " : ""}mt-3 text-[11px] leading-relaxed text-[#55635B]`}>{explanation}</p>
       {annualStreetCrime && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#CFE0D8] pt-2 text-[10px] leading-relaxed text-[#66736C]">
         <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>
         <p className="break-words">案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p>
       </div>}
-      {showCounts && !alignRows && <ActivityCounts activity={activity} />}
+      {showCounts && !alignRows && <ActivityCounts activity={activity} standalone />}
     </div>
-    {alignRows && <div className="prefecture-safety-middle prefecture-safety-evidence">
-      {showCounts && <ActivityCounts activity={activity} />}
-      {(!activity || activity.status === "unavailable" || activity.status === "imprecise") && <p className="text-[10px] text-[#66736C]">場所件數資料待確認</p>}
+    {alignRows && <div className="prefecture-safety-middle prefecture-safety-evidence h-full flex flex-col justify-evenly">
+      {showCounts && <ActivityCounts activity={activity} standalone={false} />}
+      {(!activity || activity.status === "unavailable" || activity.status === "imprecise") && <p className="text-[10px] text-[#66736C] my-auto">場所件數資料待確認</p>}
     </div>}
     {showNightInfo && (alignRows
       ? <div className="prefecture-safety-bottom prefecture-safety-evidence"><ActivityNightInfo activity={activity} /></div>
@@ -76,29 +95,56 @@ export function NeighborhoodActivityEvidence({ activity, showCounts = true }: { 
       <span className="flex items-center gap-1.5"><Footprints className="h-3.5 w-3.5" />街區環境依據與夜間資訊</span>
       <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-180" />
     </summary>
-    {showCounts && <ActivityCounts activity={activity} />}
+    {showCounts && <ActivityCounts activity={activity} standalone />}
     <ActivityNightInfo activity={activity} />
   </details>;
 }
 
-function ActivityCounts({ activity }: { activity?: NeighborhoodActivity }) {
+function ActivityCounts({ activity, standalone = false }: { activity?: NeighborhoodActivity; standalone?: boolean }) {
   const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
-  return <>      {!unavailable && <div className="mt-3 grid grid-cols-2 gap-2 border-t border-[#DDE3DF] pt-2 text-[10px] text-[#66736C]">
+  if (unavailable) return null;
+
+  if (standalone) {
+    return (
+      <div className="mt-3 grid grid-cols-2 gap-x-2 gap-y-2 border-t border-[#DDE3DF] pt-2 text-[10px] leading-normal text-[#66736C]">
         <span>商店／餐飲／娛樂 <strong className="text-[#1A2A22]">{activity.commercial} 處</strong></span>
         <span>其中娛樂場所 <strong className="text-[#1A2A22]">{activity.entertainment} 處</strong></span>
         <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
         <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
-      </div>}
-</>;
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-x-2 text-[10px] leading-tight text-[#66736C]">
+        <span>商店／餐飲／娛樂 <strong className="text-[#1A2A22]">{activity.commercial} 處</strong></span>
+        <span>其中娛樂場所 <strong className="text-[#1A2A22]">{activity.entertainment} 處</strong></span>
+      </div>
+      <div className="grid grid-cols-2 gap-x-2 text-[10px] leading-tight text-[#66736C]">
+        <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
+        <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
+      </div>
+    </>
+  );
 }
 
 function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
   const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
   return <div className="mt-3 space-y-1 border-t border-dashed border-[#CFE0D8] pt-2">
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><Moon className="h-3.5 w-3.5 shrink-0" />夜間環境與資料說明</div>
-      <div className="space-y-2 text-[11px] leading-relaxed text-[#55635B]"><p>{!unavailable && activity.aroundTheClock > 0 ? `地圖標註 ${activity.aroundTheClock} 處全天營業；` : "深夜營業資訊尚不足；"}照明、人流及返家路線尚未實地確認。</p>
-      <p>反映已收錄的場所分布，不是犯罪風險或室內噪音評級。地圖可能漏登；「活動較少」需更多在地觀察佐證。</p>
-      {activity && <p>來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）</p>}
+      <div className="space-y-1.5 text-[11px] leading-relaxed text-[#55635B]">
+        <ul className="space-y-1.5 text-[#55635B]">
+          <li className="flex items-start gap-1.5">
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#8A9590]" />
+            <span>{!unavailable && activity.aroundTheClock > 0 ? `地圖標註 ${activity.aroundTheClock} 處全天營業；` : "深夜營業資訊尚不足；"}照明、人流及返家路線需要實地確認。</span>
+          </li>
+          <li className="flex items-start gap-1.5">
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#8A9590]" />
+            <span>數據依周邊商住設施之客觀分布推估街區活動強度，不代表犯罪風險或室內隔音評級；實際街區氛圍與夜間環境，仍建議配合現地不同時段綜合觀察。</span>
+          </li>
+        </ul>
+        {activity && <p className="pt-0.5 text-[10px] text-[#66736C]">來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）</p>}
       </div>
     </div>;
 }

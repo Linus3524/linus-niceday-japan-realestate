@@ -127,10 +127,17 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
             <span className="font-bold text-[#66736C]">統計範圍：</span>
             <span className="font-bold text-[#1A2A22]">{prefecture.prefecture}</span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-medium text-[#66736C]">
-              {prefecture.fiscalYear}
+              都道府県廣域統計
             </span>
           </div>
-
+          <div className="flex items-center gap-2">
+            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
+              {prefecture.fiscalYear}
+            </span>
+            <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
+              全國 47 都道府縣第 {prefecture.safetyRank} 名
+            </span>
+          </div>
         </div>
 
         {/* 精度說明 */}
@@ -176,10 +183,16 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
           </div>
           <div className="flex gap-1">
             {["明顯偏高", "偏高", "接近平均", "較低", "明顯較低"].map((label, index) => {
-              const gradeLevel = ({ "A+": 5, A: 4, "B+": 4, B: 3, C: 2, D: 1 } as const)[prefecture.grade];
+              const gradeLevel = (({ "A+": 5, A: 4, "B+": 4, B: 3, C: 2, D: 1 } as Record<string, number>)[prefecture.grade] ?? 3);
+              const isCurrent = index + 1 === gradeLevel;
               return <div className="min-w-0 flex-1 text-center" key={label}>
                 <div className="h-2" style={{ backgroundColor: index < gradeLevel ? config.accent : `${config.border}90` }} />
-                <span className="mt-1 block text-[9px] leading-tight text-[#66736C]">{label}</span>
+                <span
+                  className={`mt-1 block text-[9px] leading-tight ${isCurrent ? "font-bold" : "font-normal"}`}
+                  style={{ color: isCurrent ? config.accent : "#66736C" }}
+                >
+                  {label}
+                </span>
               </div>;
             })}
           </div>

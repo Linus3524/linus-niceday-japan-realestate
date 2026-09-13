@@ -1497,10 +1497,19 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   padding-block: 12px;
 }
 .prefecture-safety-bottom { padding-top: 12px; }
+.prefecture-safety-evidence {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-block: 0 !important;
+  height: 100%;
+}
 .prefecture-safety-evidence > div {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: 0;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-top: 0 !important;
 }
 @media (min-width: 640px) {
   .prefecture-safety-pair { row-gap: 0; }

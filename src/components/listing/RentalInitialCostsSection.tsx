@@ -71,7 +71,7 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
                     <td className="p-2.5 text-center whitespace-nowrap">
                       {item.isFromFlyer ? (
                         <SourceBadge>
-                          圖紙載明
+                          圖紙表明
                         </SourceBadge>
                       ) : (
                         <SourceBadge estimated>
