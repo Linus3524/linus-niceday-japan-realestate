@@ -46,6 +46,7 @@ SOURCES = {
     "和歌山県": "https://www.police.pref.wakayama.lg.jp/04_toukei/documents/r6/hanzairitsur6.pdf",
     "岡山県": "https://www.pref.okayama.jp/uploaded/attachment/405322.pdf",
     "広島県": "https://www.pref.hiroshima.lg.jp/soshiki_file/police/hantour7.pdf",
+    "熊本県": "https://www.pref.kumamoto.jp/uploaded/life/270526_839892_misc.pdf",
 }
 # 各縣的資料年度；沒列的都是 2025（令和 7 年）。
 SOURCE_YEARS = {"愛知県": 2024, "和歌山県": 2024}
@@ -88,7 +89,7 @@ def population_by_prefecture() -> dict[str, dict[str, int]]:
 PREFECTURE_CODES = {
     "北海道": "01", "青森県": "02", "宮城県": "04", "山形県": "06",
     "福島県": "07", "茨城県": "08", "栃木県": "09", "埼玉県": "11", "千葉県": "12",
-    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34",
+    "神奈川県": "14", "大阪府": "27", "愛知県": "23", "兵庫県": "28", "京都府": "26", "福岡県": "40", "静岡県": "22", "新潟県": "15", "長野県": "20", "岐阜県": "21", "三重県": "24", "滋賀県": "25", "奈良県": "29", "和歌山県": "30", "岡山県": "33", "広島県": "34", "熊本県": "43",
 }
 
 
@@ -593,6 +594,8 @@ def main() -> None:
             (parse_city_ward_table(rows_from_pdf(paths["岡山県"], [3], 3), "岡山県", 2, (2, 2, 2, 2, 2, 2), city_index=0, sub_index=1, exclude=("総数", "不明", "県外")), "F"),
         ])},
         "広島県": {"year": 2025, "sourceUrl": SOURCES["広島県"], "records": parse_hiroshima(paths["広島県"])},
+        # 熊本：只有總數與主要罪種，第 1 欄是認知總數。
+        "熊本県": {"year": 2025, "sourceUrl": SOURCES["熊本県"], "records": parse_total_rows(paths["熊本県"], "熊本県", [0], (0,), 1, 3)},
     }
     for prefecture, data in prefectures.items():
         if not data["records"]:
