@@ -3,6 +3,7 @@ import { ErrorNotice } from "./ui/ErrorNotice";
 import {
   CheckCircle2,
   ExternalLink,
+  FileSearch,
   FileText,
   Info,
   Landmark,
@@ -98,7 +99,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
       {/* 區塊頂部標題 */}
       <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00A174]">
-        <Sparkles className="h-4 w-4" /> PROPERTY LISTING DIAGNOSTICS
+        <FileSearch className="h-4 w-4" /> PROPERTY LISTING DIAGNOSTICS
       </div>
       <h3 className="mb-2 text-xl font-bold leading-snug text-[#1A2A22] md:text-2xl">
         {sharedMode ? (sharedTitle || "物件圖紙分析結果") : "物件圖紙分析與健檢"}
@@ -347,7 +348,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           {/* 物件標題 */}
           <div className="border-b border-[#DDE3DF] pb-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-              <Sparkles className="h-4 w-4 text-[#007D5A]" />
+              <FileSearch className="h-4 w-4 text-[#007D5A]" />
               <span>LINUS {isSaleListing ? "買賣圖紙分析" : "租賃圖紙健檢"}</span>
             </div>
             <div className="mt-2">

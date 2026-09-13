@@ -4,8 +4,7 @@ import {
   ChevronDown,
   FileSearch,
   Landmark,
-  MapPin,
-  Sparkles
+  MapPin
 } from "lucide-react";
 import { useCalculatorController } from '../hooks/useCalculatorController';
 import { AdvancedCalculatorInputs } from './calculator/AdvancedCalculatorInputs';
@@ -81,7 +80,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                       : "bg-transparent text-zinc-700 hover:bg-zinc-200"
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 shrink-0" />
+                  <FileSearch className="w-4 h-4 shrink-0" />
                   物件圖紙分析
                 </button>
               </div>
