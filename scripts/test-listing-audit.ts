@@ -31,4 +31,32 @@ assert.ok(buildListingAudit({ ...sale, hospitalityDetails: "民泊申請中 許�
 for (const variant of ["合計７０㎡ １階４０㎡ ２階４０㎡", "合計70m² 1F:40m² 2F:40m²"]) {
   assert.ok(buildListingAudit({ ...sale, buildingArea: variant }, "sale").issues.some(i => i.code === "floor-area-conflict"));
 }
+// 交通動線漏條的防線：2026-09 的「同站多路線只剩一條」在 5 個環節連鎖靜默失敗，
+// 沒有任何一層察覺數量不對。這裡確認稽核會出聲。
+const shortfall = buildListingAudit({
+  ...sale, station: "両国,両国", walkTime: "1,6",
+  transitLegs: [{ lineName: "都営大江戸線", stationName: "両国", walkMin: 1 }],
+}, "sale");
+assert.ok(shortfall.issues.some(i => i.code === "transit-legs-shortfall"),
+  "圖紙 2 站卻只解析出 1 條動線時必須提出 notice");
+
+// 完整解析出兩條動線時不可誤報。
+const complete = buildListingAudit({
+  ...sale, station: "両国,両国", walkTime: "1,6",
+  transitLegs: [
+    { lineName: "都営大江戸線", stationName: "両国", walkMin: 1 },
+    { lineName: "中央・総武線各停", stationName: "両国", walkMin: 6 },
+  ],
+}, "sale");
+assert.ok(!complete.issues.some(i => i.code === "transit-legs-shortfall"),
+  "動線數與站數一致時不可誤報");
+
+// 真正的重複刊載會被刻意收斂，legs 少於站數屬正常，但仍會提示人工確認——
+// 這是可接受的保守行為（notice 不 block），優於靜默漏條。
+const dedup = buildListingAudit({
+  ...sale, station: "両国,両国", walkTime: "1,1",
+  transitLegs: [{ lineName: "", stationName: "両国", walkMin: 1 }],
+}, "sale");
+assert.equal(dedup.blocksComparison, false, "交通動線提示不可阻斷行情比對");
+
 console.log("Listing audit: provenance, missing/zero, conflicts, full-width units and safe comparison gates passed.");

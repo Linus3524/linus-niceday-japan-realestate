@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 import { MLIT_API_CREDIT } from "../data/marketDataSources.js";
 import { analyzeNeighborhood, type NeighborhoodActivity } from "./neighborhoodActivity.js";
+import railLineModes from "../data/railLineModes.json" with { type: "json" };
 
 export interface GeoPoint {
   lat: number;
@@ -399,15 +400,59 @@ async function mlitStations(point: GeoPoint): Promise<StationPoint[]> {
 }
 
 /**
- * 地下鐵路線關鍵字。
- * 東京メトロ與都営的多數線名（日比谷線、銀座線、丸ノ内線…）在圖紙上常省略
- * 「東京メトロ」前綴，只靠 `メトロ|地下鉄|都営` 判斷會整批落到 fallback，
- * 導致地下鐵站被對位到數百公尺外的 JR 站體。
+ * 路線 → 運輸型態對照。由 scripts/build-line-modes.ts 從 tokyoTransitGraph.json
+ * （171 條路線、49 家業者）推導，取代先前手寫的關鍵字白名單——手寫清單漏列
+ * 新路線時會落到「無法判斷」，少一層站體對位驗證。
+ *
+ * 圖資的線名是正式全名（「東京メトロ日比谷線」），圖紙常省略業者前綴只寫
+ * 「日比谷線」，因此比對時雙向包含即算命中。
  */
-const SUBWAY_LINE_KEYWORDS = /subway|地下鉄|メトロ|都営|大江戸|日比谷線|銀座線|丸ノ内線|丸の内線|半蔵門線|千代田線|有楽町線|副都心線|南北線|東西線|浅草線|三田線|新宿線|ブルーライン|グリーンライン|今里筋線|御堂筋線|谷町線|四つ橋線|中央線\(大阪\)/i;
+const SUBWAY_LINE_NAMES = railLineModes.subway.map(name => name.toLowerCase());
+const SURFACE_LINE_NAMES = railLineModes.surface.map(name => name.toLowerCase());
 
-/** 地面鐵路（JR 在來線・私鐵・モノレール・新交通）關鍵字。 */
-const SURFACE_LINE_KEYWORDS = /jr|山手線|京浜東北|総武|中央線|常磐線|埼京線|高崎線|宇都宮線|東海道線|横須賀線|京葉線|武蔵野線|南武線|横浜線|根岸線|青梅線|五日市線|川越線|湘南新宿|上野東京|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|りんかい|ゆりかもめ|モノレール|ライナー|新交通|江ノ電|電鉄|スカイツリーライン/i;
+/**
+ * 圖資未覆蓋的區域（關西等）與圖紙慣用簡稱的補充關鍵字。
+ * 圖資只含首都圈，大阪市営地下鉄等線名不在其中。
+ */
+const SUBWAY_FALLBACK = /subway|地下鉄|メトロ|今里筋線|御堂筋線|谷町線|四つ橋線|堺筋線|中央線\(大阪\)/i;
+const SURFACE_FALLBACK = /jr|モノレール|ライナー|新交通|電鉄|トラム|ライトレール/i;
+
+/**
+ * 圖紙線名與圖資線名雙向包含即視為同一條路線。
+ *
+ * 「圖資線名包含圖紙線名」這個方向需要長度下限：圖紙若只殘留「線」「駅」等
+ * 一兩個字（解析不完整時會發生），會命中一大堆正式線名而誤判運輸型態。
+ * 3 字是最短的實際簡稱長度（如「南北線」「東西線」）。
+ */
+const MIN_LINE_FRAGMENT = 3;
+
+/**
+ * 圖紙用語與 GTFS 圖資用語的差異正規化。
+ * 兩邊對同一條路線的稱法不同，直接比對會落空：
+ *   圖紙「中央・総武線各停」 vs 圖資「JR中央・総武緩行線」
+ * 因此比對前先去掉業者前綴、列車種別與「線」字，只留骨幹（中央・総武）。
+ */
+function lineBackbone(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/^(?:jr東日本|jr|東京メトロ|都営地下鉄|都営|横浜市営地下鉄|大阪市営地下鉄|東京都交通局)/, "")
+    .replace(/(?:各駅停車|各停|緩行|快速急行|通勤快速|通勤準急|区間急行|区間準急|新快速|特別快速|快速|急行|準急|特急|普通|本線|支線)/g, "")
+    .replace(/[線\s・･·]/g, "")
+    .trim();
+}
+
+function matchesAnyLine(wantedLine: string, names: string[]): boolean {
+  if (wantedLine.length < MIN_LINE_FRAGMENT) return false;
+  if (names.some(name => name.includes(wantedLine) || wantedLine.includes(name))) return true;
+  // 骨幹比對：兩邊都剝掉業者前綴與列車種別後再比，且骨幹本身要夠長才算命中。
+  const wantedBackbone = lineBackbone(wantedLine);
+  if (wantedBackbone.length < 2) return false;
+  return names.some(name => {
+    const backbone = lineBackbone(name);
+    return backbone.length >= 2
+      && (backbone === wantedBackbone || backbone.includes(wantedBackbone) || wantedBackbone.includes(backbone));
+  });
+}
 
 /**
  * 依「站名＋路線」挑出最合適的實體站體節點。
@@ -426,8 +471,11 @@ export function nearestOfficialStation(stations: StationPoint[], requestedName?:
     if (!wantedLine) return null;
     // 旗標缺失（如 MLIT 官方資料集）時無從判斷，不可視為衝突。
     if (station.hasSubway === undefined && station.hasSurfaceRail === undefined) return null;
-    if (SUBWAY_LINE_KEYWORDS.test(wantedLine)) return Boolean(station.hasSubway);
-    if (SURFACE_LINE_KEYWORDS.test(wantedLine)) return Boolean(station.hasSurfaceRail);
+    // 圖資推導的正式線名優先，其次才是簡稱／關西補充。
+    if (matchesAnyLine(wantedLine, SUBWAY_LINE_NAMES)) return Boolean(station.hasSubway);
+    if (matchesAnyLine(wantedLine, SURFACE_LINE_NAMES)) return Boolean(station.hasSurfaceRail);
+    if (SUBWAY_FALLBACK.test(wantedLine)) return Boolean(station.hasSubway);
+    if (SURFACE_FALLBACK.test(wantedLine)) return Boolean(station.hasSurfaceRail);
     return null;
   };
 
@@ -470,7 +518,7 @@ function mergeNearbyStationPoints(...groups: StationPoint[][]) {
   return [...byName.values()].sort((left, right) => left.distance - right.distance);
 }
 
-function selectStationWalkSeeds(
+export function selectStationWalkSeeds(
   stations: string[],
   advertisedMinutes: Array<number | null>,
   osmStations: StationPoint[],
@@ -482,21 +530,44 @@ function selectStationWalkSeeds(
   const used = new Set<string>();
 
   // 圖紙刊載站優先保留；支援同一車站的不同路線（如都營地下鐵 vs JR 在來線）各自獨立成站點條目
+  const bodyKeyOf = (point: GeoPoint) => `${point.lat.toFixed(5)},${point.lon.toFixed(5)}`;
   for (let index = 0; index < stations.length && seeds.length < maximum; index++) {
     const rawStation = stations[index];
     const station = toJapaneseStationName(rawStation);
     const line = stationLines[index] || "";
-    const key = line ? `${line}_${normalizeStation(station)}` : normalizeStation(station);
+    const advertised = advertisedMinutes[index] ?? null;
+    // 路線名缺失時用刊載分鐘數區分：「両国 徒歩1分」與「両国 徒歩6分」是兩個站體，
+    // 只用站名當 key 會把第二條整個吃掉。
+    const key = line
+      ? `${line}_${normalizeStation(station)}`
+      : `${normalizeStation(station)}${advertised === null ? "" : `_${advertised}`}`;
     if (!key || used.has(key)) continue;
 
-    const match = nearestOfficialStation(osmStations, station, line) || nearestOfficialStation(officialStations, station, line);
+    // 同名站的不同站體（都営大江戸線両国 vs JR両国相距約 500m）：
+    // 已經被前一條動線佔走的站體先排除，讓第二條去對另一個站體；
+    // 路線名缺失時，再用「刊載分鐘 × 80m」挑直線距離最接近的那個。
+    const takenBodies = new Set(seeds
+      .filter(seed => normalizeStation(seed.station) === normalizeStation(station))
+      .map(seed => bodyKeyOf(seed.match.point)));
+    const untaken = (list: StationPoint[]) => list.filter(candidate => !takenBodies.has(bodyKeyOf(candidate.point)));
+    let match: StationPoint | null = null;
+    if (!line && advertised !== null && takenBodies.size > 0) {
+      const sameName = [...untaken(osmStations), ...untaken(officialStations)]
+        .filter(candidate => normalizeStation(candidate.name) === normalizeStation(station));
+      match = sameName.sort((a, b) =>
+        Math.abs(a.distance / 80 - advertised) - Math.abs(b.distance / 80 - advertised))[0] || null;
+    }
+    match = match
+      || nearestOfficialStation(untaken(osmStations), station, line)
+      || nearestOfficialStation(untaken(officialStations), station, line)
+      || nearestOfficialStation(osmStations, station, line)
+      || nearestOfficialStation(officialStations, station, line);
     if (!match) continue;
 
     // 同一實體站體（osmStationPoints 已依 250m 聚類）若已被其他路線佔用，
     // 只在「刊載步行時間也相同」時才視為重複刊載而略過。
     // 圖紙對同一站體給出不同分鐘數時，代表走不同出口／改札，兩者都該保留給使用者比對。
-    const nodeKey = `${match.point.lat.toFixed(5)},${match.point.lon.toFixed(5)}`;
-    const advertised = advertisedMinutes[index] ?? null;
+    const nodeKey = bodyKeyOf(match.point);
     const duplicate = seeds.find(seed =>
       `${seed.match.point.lat.toFixed(5)},${seed.match.point.lon.toFixed(5)}` === nodeKey
       && seed.advertisedMinutes === advertised);

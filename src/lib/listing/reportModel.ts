@@ -281,7 +281,11 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
     extracted?.facilities || extracted?.specialNotes,
     extracted?.facilityTranslations,
   );
-  const stationItems = parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
+  // transitLegs 是交通動線的事實來源，直接採用；沒有它的資料（舊分享連結）
+  // 才退回從 transitAccess／station／walkTime 重新解析。
+  const stationItems = extracted?.transitLegs?.length
+    ? extracted.transitLegs
+    : parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
   return {
     extracted,
     parsed,

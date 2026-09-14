@@ -2,6 +2,7 @@ import { districtStations as dsHousing } from "../data/housingMarket.js";
 import { districtStations as dsStation } from "../data/stationData.js";
 import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
 import { toJapaneseStationName, toJapanesePlaceName } from "./transit.js";
+import { stripStationOperatorPrefix } from "./listingExtraction.js";
 import {
   BULLET,
   LINE_STATION_WALK,
@@ -10,11 +11,107 @@ import {
   normalizeLineKey,
 } from "./transitPatterns.js";
 
-export interface ParsedStationItem {
-  stationName: string;
+/**
+ * 一條獨立的交通動線：路線 × 車站 × 步行時間，三者綁在一起不可分離。
+ *
+ * 這是交通資訊的唯一事實來源。歷史上交通資訊靠 `station` / `walkTime`
+ * 兩個逗號分隔字串「以 index 對齊」傳遞，有三個結構性問題：
+ *   1. 路線維度無處可放（`lineName` 解析完就丟失）。
+ *   2. 任何一層對其中一個陣列去重，就會與另一個錯位，而且完全靜默。
+ *   3. 無法表達「同站不同線」——`"両国,両国"` 這種寫法本身就在誘導別人去重。
+ *
+ * 2026-09 的同站多路線漏失 bug 正是問題 2 造成的。
+ */
+export interface TransitLeg {
+  /** 原文路線名，顯示用（如「中央・総武線各停」）。 */
   lineName: string;
+  /** 正規化站名，不含「駅」。 */
+  stationName: string;
+  /** 圖紙刊載的步行分鐘；未刊載時為 null。 */
   walkMin: number | null;
+  /** 原文子句，供稽核與人工比對。 */
   rawText?: string;
+}
+
+/**
+ * @deprecated 改用 `TransitLeg`。保留別名讓既有引用不必一次全改。
+ */
+export type ParsedStationItem = TransitLeg;
+
+/**
+ * 把 legs 序列化回 `station` / `walkTime` 兩個對外相容欄位。
+ *
+ * 分享連結與既有 baseline fixture 仍讀這兩個欄位，因此 legs 成為事實來源後，
+ * 這兩個欄位降級為「由 legs 產生的結果」而非各自維護的狀態。
+ * 兩個陣列**必定等長**，這是此函式存在的主要理由。
+ */
+/**
+ * 把圖紙「交通」欄的原文拆成 TransitLeg 清單，是 transitLegs 的事實來源。
+ * 同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，刻意不依站名去重。
+ */
+export function parseTransitAccessLegs(transitAccess: string | null | undefined): TransitLeg[] {
+  const raw = (transitAccess || "").normalize("NFKC");
+  if (!raw.trim()) return [];
+  const legs: TransitLeg[] = [];
+  const lines = raw.split(/[\r\n；;]+/).map(s => s.trim()).filter(Boolean);
+  // 必須用 g flag 逐行掃出「所有」符合項：同一車站的多條路線常被排版在同一行
+  // （如「東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分」），
+  // 每行只取第一筆會讓第二站之後全部消失。
+  // 只用「徒歩 N 分」當錨點，站名與路線名從「上一個錨點結束 → 這個錨點」之間的描述取。
+  // 先前用一個不含空白的 capture group 去抓站名，「都営大江戸線 両国 徒歩1分」這種
+  // 以空白分隔線名與站名的寫法（圖紙最常見）會只抓到「両国」、路線名整個丟掉，
+  // 於是同名站的兩條路線（都営 vs JR 両国）在下游被當成同一條動線去重，JR 那條就消失。
+  const anchor = /徒歩\s*(\d{1,3})\s*分/gu;
+
+  for (const line of lines) {
+    let cursor = 0;
+    for (const match of line.matchAll(anchor)) {
+      const descriptor = line
+        .slice(cursor, match.index)
+        .replace(/^[\s／/・、,，;；:：]+/u, "")
+        .replace(/\s*(?:より|から|まで)\s*$/u, "")
+        .trim();
+      cursor = (match.index ?? 0) + match[0].length;
+      const minutes = Number(match[1]);
+      if (!descriptor || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
+
+      // 「都営大江戸線「両国」駅」：括號內是站名、括號前是路線。
+      // 「東急目黒線／不動前駅」「都営大江戸線 両国」：最後一段是站名、其餘是路線。
+      const bracket = descriptor.match(/[「『【\[［]([^」』】\]］]+)[」』】\]］]/u);
+      let stationPart: string;
+      let linePart: string;
+      if (bracket) {
+        stationPart = bracket[1];
+        linePart = descriptor.slice(0, bracket.index);
+      } else {
+        const segments = descriptor.split(/[／/\s]+/u).filter(Boolean);
+        stationPart = segments.at(-1) || "";
+        linePart = segments.slice(0, -1).join(" ");
+      }
+      const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
+      if (!station) continue;
+      // 「駅」字改為可選後，バス停・コンビニ・学校等距離描述也會命中，必須擋掉，
+      // 否則 station 欄位會混入非車站文字並破壞後續行情與地圖定位。
+      if (!isPlausibleStationToken(station)) continue;
+      // 路線名取不到時留空字串，不可猜測——空字串代表「圖紙沒寫」，與「寫了但解析失敗」
+      // 在下游是不同處理。
+      const lineName = linePart.replace(/[「」『』【】\[\]［］]/gu, "").replace(/[／/\s]+$/u, "").trim();
+      // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
+      // 必須保留成兩個 leg。但「路線＋站名＋分鐘」全等屬重複刊載，應收斂。
+      if (legs.some(leg =>
+        leg.stationName === station && leg.walkMin === minutes && leg.lineName === lineName)) continue;
+      legs.push({ lineName, stationName: station, walkMin: minutes, rawText: `${descriptor} ${match[0]}` });
+    }
+  }
+
+  return legs;
+}
+
+export function serializeTransitLegs(legs: TransitLeg[]): { station: string; walkTime: string } {
+  return {
+    station: legs.map(leg => leg.stationName).join(","),
+    walkTime: legs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin)).join(","),
+  };
 }
 
 const allCuratedStations = [...Object.values(dsHousing).flat(), ...Object.values(dsStation).flat()];
@@ -142,8 +239,12 @@ export function parseTransitStations(
       if (!cleanLinePart) {
         const sameStation = items.filter(it => toJapaneseStationName(it.stationName) === normKey);
         if (sameStation.length) {
+          // walkValue 為 null 只能併進「同樣沒有時間」的既有項。
+          // 併進已有時間的項會讓那條動線消失：station="両国,両国,錦糸町"
+          // walkTime="1,,8" 的第二個両国是未刊載時間的獨立動線，
+          // 若併進第一個両国（1 分），錦糸町 就會往前位移吃到錯誤的時間。
           const mergeable = walkValue === null
-            ? sameStation[0]
+            ? sameStation.find(it => it.walkMin === null)
             : sameStation.find(it => it.walkMin === null || it.walkMin === walkValue);
           if (mergeable) {
             if (walkValue !== null && (mergeable.walkMin === null || walkValue < mergeable.walkMin)) {
@@ -213,13 +314,19 @@ export function parseTransitStations(
     // 2. 若缺少 transitAccess 或未完整，補足 station 與 walkTime
     if (stationStr) {
       const stations = stationStr.split(/[,，、]/).map(s => cleanStationName(s)).filter(Boolean);
-      const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim()).filter(Boolean);
+      // walkTimes 刻意不 filter：空格代表「這條動線未刊載步行時間」，
+      // 必須保留佔位才能與 stations 以 index 對齊。
+      // 過濾掉空值會讓後續全部往前位移——實測 station="両国,両国,錦糸町"
+      // walkTime="1,,8" 會把錦糸町的 8 分錯配給第二個両国。
+      const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim());
 
       for (let i = 0; i < stations.length; i++) {
         const station = stations[i];
         if (!station) continue;
 
-        const rawWalk = walkTimes[i] || (walkTimes.length === 1 ? walkTimes[0] : null);
+        // 只刊一個時間卻有多站時（「両国,錦糸町 徒歩5分」），該時間套用到全部站；
+        // 但若刊了多個時間，缺漏的那格就是「未刊載」，不可拿別站的時間頂替。
+        const rawWalk = walkTimes[i] || (walkTimes.filter(Boolean).length === 1 ? walkTimes.find(Boolean) : null);
         const walkNum = rawWalk ? Number(rawWalk.replace(/\D/g, "")) : null;
 
         registerStation(station, null, walkNum !== null && !isNaN(walkNum) ? walkNum : null);

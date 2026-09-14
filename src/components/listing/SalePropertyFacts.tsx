@@ -157,7 +157,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
       {stationItems.length > 0 && (
         <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-bold text-[#1A2A22]">最寄り駅・各路線徒步時間</span>
+            <span className="text-xs font-bold text-[#1A2A22]">最近車站與各路線徒步時間</span>
             <span className="text-[10px] text-[#66736C]">
               共確認 {stationItems.length} 個利用車站
             </span>

@@ -60,11 +60,14 @@ export function createListingLocationActions(context: Context) {
       setLocationError("圖紙上未載明完整地址，因此無法進行精確步行與生活機能定位。");
       return;
     }
-    const stationItems = parseTransitStations(
-      analysis?.extracted?.transitAccess,
-      analysis?.extracted?.station,
-      analysis?.extracted?.walkTime
-    );
+    // transitLegs 是交通動線的事實來源；舊分享連結沒有它時才重新解析。
+    const stationItems = analysis?.extracted?.transitLegs?.length
+      ? analysis.extracted.transitLegs
+      : parseTransitStations(
+        analysis?.extracted?.transitAccess,
+        analysis?.extracted?.station,
+        analysis?.extracted?.walkTime
+      );
     const stations = stationItems.length > 0
       ? stationItems.map(item => item.stationName)
       : (analysis?.extracted?.station || "").split(/[,，]/).map(v => v.trim()).filter(Boolean);

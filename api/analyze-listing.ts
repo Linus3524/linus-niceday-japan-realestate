@@ -20,6 +20,7 @@ import {
 } from "../src/lib/listingExtraction.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
+import { parseTransitAccessLegs, parseTransitStations, serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
@@ -316,39 +317,11 @@ function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListin
 }
 
 function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedListingFields {
-  const raw = (extracted.transitAccess || "").normalize("NFKC");
-  if (!raw.trim()) return extracted;
-  const pairs: Array<{ station: string; minutes: string }> = [];
-  const lines = raw.split(/[\r\n；;]+/).map(s => s.trim()).filter(Boolean);
-  // 必須用 g flag 逐行掃出「所有」符合項：同一車站的多條路線常被排版在同一行
-  // （如「東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分」），
-  // 每行只取第一筆會讓第二站之後全部消失。
-  const pattern = /([^\s、,，;；\n]{1,50}?)(?:駅)?\s*(?:より|から)?\s*徒歩\s*(\d{1,3})\s*分/gu;
-
-  for (const line of lines) {
-    for (const match of line.matchAll(pattern)) {
-      const rawPart = match[1];
-      const stationPart = rawPart.split(/[／/\s]+/).at(-1) || "";
-      const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
-      const minutes = Number(match[2]);
-      if (!station || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
-      // 「駅」字改為可選後，バス停・コンビニ・学校等距離描述也會命中，必須擋掉，
-      // 否則 station 欄位會混入非車站文字並破壞後續行情與地圖定位。
-      if (!isPlausibleStationToken(station)) continue;
-      // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
-      // 必須完整輸出成 station="両国,両国" walkTime="1,6"。
-      // 但完全相同的「站名＋分鐘」組合屬於重複刊載，應收斂。
-      if (pairs.some(pair => pair.station === station && pair.minutes === String(minutes))) continue;
-      pairs.push({ station, minutes: String(minutes) });
-    }
-  }
-
-  if (!pairs.length) return extracted;
-  return {
-    ...extracted,
-    station: pairs.map(pair => pair.station).join(","),
-    walkTime: pairs.map(pair => pair.minutes).join(","),
-  };
+  const legs = parseTransitAccessLegs(extracted.transitAccess);
+  if (!legs.length) return extracted;
+  // legs 是事實來源；station／walkTime 由它序列化而來，因此兩者必定等長。
+  // 先前這兩個欄位各自維護，某一層對其中一個去重就會靜默錯位（2026-09 的漏失 bug）。
+  return { ...extracted, transitLegs: legs, ...serializeTransitLegs(legs) };
 }
 
 async function extractListingFields(files: UploadedFile[], layoutText = ""): Promise<ExtractedListingFields> {
@@ -760,11 +733,39 @@ export default async function handler(req: any, res: any) {
     const managementFee = parseYenAmount(extracted.managementFee);
     const salePrice = parseSalePrice(extracted.salePrice);
     const roomType = normalizeRoomType(extracted.layout);
-    const stations = extracted.station
-      .split(/[,，]/)
-      .map(s => stripStationOperatorPrefix(s))
+    // 交通動線以 transitLegs 為事實來源，避免 station 與 walkTime 各自
+    // 過濾後 index 錯位（未刊載步行時間的動線會讓 walkTime 少一格）。
+    const transitLegs = extracted.transitLegs?.length
+      ? extracted.transitLegs
+      : parseTransitStations(extracted.transitAccess, extracted.station, extracted.walkTime);
+    const stations = transitLegs
+      .map(leg => stripStationOperatorPrefix(leg.stationName))
       .filter((s): s is string => Boolean(s));
-    const walkTimes = extracted.walkTime.split(/[,，]/).map(w => w.trim());
+    const walkTimes = transitLegs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
+
+    // 交通動線漏抄的最後一道防線。
+    //
+    // listingAudit 的 transit-legs-shortfall 比對的是 station 欄位數與 legs 數，
+    // 抓得到「解析階段漏條」；但如果是 Gemini 自己只抄了第一列，station 與 legs
+    // 會同時是 1、看起來一致，那條稽核完全靜默——2026-09 的漏失就是這樣潛伏的。
+    //
+    // 圖紙文字層是唯一不受 AI 判讀影響的基準：它直接來自 PDF 文字層座標還原，
+    // 上面有幾個「徒歩X分」就是幾條動線。這裡用它回頭校驗 AI 的輸出。
+    if (layoutText) {
+      const advertisedLegCount = (layoutText.normalize("NFKC").match(/徒歩\s*\d+\s*分/g) || []).length;
+      if (advertisedLegCount > transitLegs.length) {
+        console.warn("analyze-listing: 交通動線疑似漏抄", {
+          layoutLegCount: advertisedLegCount,
+          parsedLegCount: transitLegs.length,
+          transitAccess: extracted.transitAccess,
+          station: extracted.station,
+        });
+        extracted.transitShortfallNotice =
+          `圖紙文字層可見 ${advertisedLegCount} 條交通動線，本次僅讀出 ${transitLegs.length} 條；`
+          + `可能有路線未被完整讀取，請以圖紙原文為準。`;
+      }
+    }
+
     const area = parseArea(extracted.area);
 
     // 判斷是買賣圖紙還是租屋圖紙。

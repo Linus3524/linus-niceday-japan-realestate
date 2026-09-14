@@ -2,8 +2,10 @@ import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
 import { parseEquipmentList } from "../../lib/equipmentParser";
 import type { AnalyzeListingResult } from "../../lib/listing/types";
 import { formatDirection } from "../../lib/listing/formatters.js";
+import { parseTransitStations } from "../../lib/transitParser.js";
 import { splitList } from './formatters.js';
 import { LocationCard } from './location.js';
+import { SafetyCard } from './safety.js';
 import { ContactPage, PageChrome } from './pageChrome.js';
 import { Card, Cell, EquipmentCard, SpecialNotesCard } from './primitives.js';
 import { RentKpis, RentSections } from './rental.js';
@@ -13,12 +15,18 @@ import type { ListingReportPdfProps } from './types.js';
 
 
 /* ───────────── 主文件 ───────────── */
-export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBase = "", locationContext, commute }: ListingReportPdfProps) {
+export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBase = "", locationContext, commute, safety }: ListingReportPdfProps) {
   const e: Partial<AnalyzeListingResult["extracted"]> = result?.extracted ?? {};
   const isSale = result?.dealType === "sale" || Boolean(result?.saleAnalysis);
-  const stations = splitList(e.station);
-  const walks = splitList(e.walkTime);
-  const stationText = stations.map((s, i) => `${s}${walks[i] ? ` 徒步 ${walks[i]} 分` : ""}`).join("／");
+  // 交通動線以 transitLegs 為事實來源。splitList 會 filter 掉空值，
+  // 任一條動線未刊載步行時間就會讓 walks 少一格而讓後續 index 全部位移
+  // （実測 station="両国,両国,錦糸町" walkTime="1,,8" 會把 8 分錯配給第二個両国）。
+  const transitLegs = e.transitLegs?.length
+    ? e.transitLegs
+    : parseTransitStations(e.transitAccess, e.station, e.walkTime);
+  const stationText = transitLegs
+    .map(leg => `${leg.stationName}${leg.walkMin !== null ? ` 徒步 ${leg.walkMin} 分` : ""}`)
+    .join("／");
   const dateText = generatedAt.toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric" });
   const buildingLine = [e.buildingName, e.roomNumber].filter(Boolean).join(" ");
   const headline = title || buildingLine || (isSale ? "買賣物件圖紙分析" : "租賃物件圖紙分析");
@@ -94,6 +102,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
           <EquipmentCard items={equipment} />
           {isSale ? <SpecialNotesCard notes={e.specialNotes} /> : null}
           <LocationCard locationContext={locationContext} commute={commute} />
+          <SafetyCard safety={safety} />
 
           <View style={styles.disclaimer} wrap={false}>
             <Text style={styles.disclaimerText}>

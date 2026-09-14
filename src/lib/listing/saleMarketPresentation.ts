@@ -1,4 +1,5 @@
 import type { ListingLocationContext } from '../listingLocation.js';
+import { parseTransitStations } from '../transitParser.js';
 import type { ListingReportModel } from './reportModel.js';
 
 export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnalysis, locationContext, extracted }: Pick<ListingReportModel, 'saleAnalysis' | 'extracted'> & { effectiveMlitComparison: NonNullable<ListingReportModel['effectiveMlitComparison']>; locationContext: ListingLocationContext | null }) {
@@ -36,14 +37,18 @@ export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnaly
       .map(k => ({ category: k, ...nearest.get(k)! }));
   })();
 
-  const stationFacts = (extracted?.station || "")
-    .split(/[,，]/)
-    .map(v => v.trim())
-    .filter(Boolean);
-  const walkFacts = (extracted?.walkTime || "")
-    .split(/[,，]/)
-    .map(v => v.trim())
-    .filter(Boolean);
+  // 交通動線以 transitLegs 為事實來源。
+  //
+  // 舊寫法是把 station 與 walkTime 各自 split 後 filter(Boolean)，下游再用
+  // stationFacts[i] / walkFacts[i] 配對。只要有任一條動線未刊載步行時間，
+  // walkTime 就會少一格而讓後續全部錯位——實測 station="両国,両国,錦糸町"
+  // walkTime="1,,8" 會把錦糸町的 8 分錯配給第二個両国。
+  // legs 把三個維度綁在一起，結構上不可能錯位。
+  const legs = extracted?.transitLegs?.length
+    ? extracted.transitLegs
+    : parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
+  const stationFacts = legs.map(leg => leg.stationName).filter(Boolean);
+  const walkFacts = legs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
 
   const officialMan = typeof c.areaBaselineMan === "number" && c.areaBaselineMan > 0
     ? c.areaBaselineMan

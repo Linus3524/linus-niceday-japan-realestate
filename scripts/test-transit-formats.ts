@@ -15,7 +15,8 @@ import { dirname, join } from "node:path";
 import { parseTransitStations } from "../src/lib/transitParser.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { normalizeLineKey, isPlausibleStationToken } from "../src/lib/transitPatterns.js";
-import { osmStationPoints, nearestOfficialStation } from "../src/lib/listingLocation.js";
+import { osmStationPoints, nearestOfficialStation, selectStationWalkSeeds } from "../src/lib/listingLocation.js";
+import { parseTransitAccessLegs, serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 
 type ExpectedLeg = { lineName?: string | null; stationName: string; walkMin: number | null };
 type FormatCase = { label: string; transitAccess: string; expect: ExpectedLeg[] };
@@ -175,4 +176,170 @@ assert.ok(
 );
 
 console.log("Geospatial station-body clustering and line matching passed.");
+
+// ── 路線 → 運輸型態對照表（由 tokyoTransitGraph 推導，取代手寫白名單）──
+// 兩個站體：一個純地下鐵、一個純地面鐵，看線名會被判到哪一邊。
+const bothModes = osmStationPoints(
+  [osmNode("両国", 35.6961, 139.7931, true), osmNode("両国", 35.6958, 139.7983, false)],
+  origin
+);
+const modeCases: Array<[string, "subway" | "surface"]> = [
+  ["日比谷線", "subway"],              // 省略業者前綴
+  ["東京メトロ日比谷線", "subway"],      // 圖資正式全名
+  ["都営大江戸線", "subway"],
+  ["大江戸線", "subway"],
+  ["横浜市営地下鉄ブルーライン", "subway"],
+  ["大阪市営地下鉄御堂筋線", "subway"],  // 圖資未覆蓋，靠 fallback
+  ["JR総武線", "surface"],
+  ["中央・総武線各停", "surface"],
+  ["山手線", "surface"],
+  ["ゆりかもめ", "surface"],
+  ["つくばエクスプレス", "surface"],
+  // operator 是「都営地下鉄」但實際是路面電車／新交通，不可判為地下鐵。
+  ["都営東京さくらトラム", "surface"],
+  ["都営日暮里・舎人ライナー", "surface"],
+];
+for (const [line, expected] of modeCases) {
+  const picked = nearestOfficialStation(bothModes, "両国", line);
+  assert.ok(picked, `${line} 應能對位到站體`);
+  assert.equal(
+    picked!.hasSubway ? "subway" : "surface", expected,
+    `${line} 應判定為 ${expected}（實際對位到 ${picked!.hasSubway ? "subway" : "surface"} 站體）`
+  );
+}
+
+// 解析不完整時只殘留一兩個字，不可命中任何正式線名而誤判運輸型態。
+for (const fragment of ["線", "駅", "の"]) {
+  const picked = nearestOfficialStation(bothModes, "両国", fragment);
+  assert.ok(picked, `殘片「${fragment}」仍應回傳站體（依距離）`);
+  assert.equal(picked!.distance, Math.min(...bothModes.map(s => s.distance)),
+    `殘片「${fragment}」不可命中線名，應純依距離選最近站體`);
+}
+
+console.log("Rail-line mode table (derived from transit graph) passed.");
+
+// ── TransitLeg 作為事實來源：序列化不變量 ──
+// legs → station/walkTime 兩個相容欄位必定等長。歷史上這兩個字串各自維護，
+// 任一層對其中一個去重就會靜默錯位（2026-09 同站多路線漏失的成因）。
+const legSets: TransitLeg[][] = [
+  [
+    { lineName: "都営大江戸線", stationName: "両国", walkMin: 1 },
+    { lineName: "中央・総武線各停", stationName: "両国", walkMin: 6 },
+  ],
+  [{ lineName: "", stationName: "御徒町", walkMin: null }],
+  [],
+  [
+    { lineName: "東急目黒線", stationName: "不動前", walkMin: 7 },
+    { lineName: "JR山手線", stationName: "五反田", walkMin: 14 },
+    { lineName: "", stationName: "大崎", walkMin: null },
+  ],
+];
+for (const legs of legSets) {
+  const { station, walkTime } = serializeTransitLegs(legs);
+  // 空 legs 會序列化成空字串；非空時逗號分隔的欄位數必定等於 legs 數。
+  // 注意不能用 `value ? split : []` 判斷——單一 leg 且 walkMin 為 null 時
+  // walkTime 正好是空字串，但它代表「1 個未刊載時間」而非「0 筆」。
+  const countOf = (value: string) => legs.length === 0 ? 0 : value.split(",").length;
+  assert.equal(countOf(station), legs.length, "station 欄位數必須等於 legs 數");
+  assert.equal(countOf(walkTime), legs.length, "walkTime 欄位數必須等於 legs 數");
+  assert.equal(countOf(station), countOf(walkTime),
+    "station 與 walkTime 必定等長——這是 legs 作為事實來源的核心不變量");
+}
+
+// 同站不同線必須完整保留成兩筆，且序列化後仍是「両国,両国」與「1,6」。
+const ryogokuLegs = legSets[0];
+const serialized = serializeTransitLegs(ryogokuLegs);
+assert.equal(serialized.station, "両国,両国", "同名站的不同路線不可被折疊");
+assert.equal(serialized.walkTime, "1,6", "各路線的步行時間必須各自保留");
+
+// 未刊載步行時間者序列化為空字串，仍佔一個位置以維持 index 對齊。
+assert.equal(serializeTransitLegs(legSets[3]).walkTime, "7,14,",
+  "walkMin 為 null 時須留空佔位，不可省略而讓後續 index 位移");
+
+// ── 缺漏步行時間不可造成 index 錯位 ──
+// 舊寫法把 station 與 walkTime 各自 split 後 filter(Boolean)，再用
+// stationFacts[i] / walkFacts[i] 配對。只要有動線未刊載時間，walkTime 就少一格，
+// 後續全部往前位移：station="両国,両国,錦糸町" walkTime="1,,8" 會把錦糸町的
+// 8 分錯配給第二個両国。legs 把三維綁在一起，結構上不可能錯位。
+const gapLegs = parseTransitStations(null, "両国,両国,錦糸町", "1,,8");
+const pairedStations = gapLegs.map(leg => leg.stationName);
+const pairedWalks = gapLegs.map(leg => leg.walkMin);
+assert.deepEqual(pairedStations, ["両国", "両国", "錦糸町"], "三條動線都必須保留");
+assert.equal(pairedWalks[2], 8, "錦糸町 的步行時間必須是 8 分，不可被前面的缺漏往前擠");
+assert.notEqual(pairedWalks[1], 8, "第二個両国不可吃到錦糸町 的 8 分");
+
+// 舊的 filter(Boolean) 寫法確實會錯位——這裡示範它為何不可再用。
+const naiveWalks = "1,,8".split(",").map(v => v.trim()).filter(Boolean);
+assert.notEqual(naiveWalks.length, pairedStations.length,
+  "filter(Boolean) 後長度與站數不等，這正是不可用 index 配對的原因");
+
+console.log("TransitLeg serialization invariants passed.");
+
+// 圖紙文字層是唯一不受 AI 判讀影響的基準。analyze-listing 用「徒歩X分」的
+// 出現次數回頭校驗 AI 有沒有漏抄整列——這是 listingAudit 抓不到的情況
+// （AI 只抄一列時 station 與 legs 同時為 1，看起來一致，稽核完全靜默）。
+{
+  const countLegs = (layout: string) =>
+    (layout.normalize("NFKC").match(/徒歩\s*\d+\s*分/g) || []).length;
+
+  // 真實案例：メインステージ両国駅前（同一站兩條路線）
+  const ryogoku = "交通 都営大江戸線 両国 徒歩1分\n  中央・総武線各停 両国 徒歩6分";
+  assert.equal(countLegs(ryogoku), 2, "圖紙兩列動線必須數出 2");
+
+  // AI 只抄第一列時 2 > 1，會觸發提醒
+  assert.ok(countLegs(ryogoku) > 1, "AI 漏抄第二列時必須能被偵測");
+
+  // 全形數字：NFKC 正規化後才數得到
+  assert.equal(countLegs("ＪＲ山手線 五反田 徒歩１４分"), 1, "全形數字須經 NFKC 後命中");
+
+  // 「徒歩」與分鐘之間有空白的排版
+  assert.equal(countLegs("東急目黒線 不動前 徒歩 7 分"), 1, "含空白排版須命中");
+
+  console.log("Layout-text leg count guard passed.");
+}
+// ── 7. transitLegs 事實來源：parseTransitAccessLegs ──
+// 真實案例：メインステージ両国駅前。線名與站名用空白分隔（圖紙最常見的寫法），
+// 舊版只抓「両国」、路線名丟掉，下游依站名去重時 JR 那條整個消失。
+{
+  const legs = parseTransitAccessLegs("都営大江戸線 両国 徒歩1分\n中央・総武線各停 両国 徒歩6分");
+  assert.deepEqual(legs.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["都営大江戸線", "両国", 1], ["中央・総武線各停", "両国", 6]], "同名站兩條路線都要保留且各帶路線名");
+
+  const slash = parseTransitAccessLegs("東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分");
+  assert.deepEqual(slash.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["東急目黒線", "不動前", 7], ["JR山手線", "五反田", 14]], "同一行兩條動線、斜線分隔");
+
+  const bracket = parseTransitAccessLegs("都営浅草線「蔵前」駅徒歩2分、都営大江戸線「蔵前」駅徒歩6分");
+  assert.deepEqual(bracket.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["都営浅草線", "蔵前", 2], ["都営大江戸線", "蔵前", 6]], "括號站名、無空白排版");
+
+  const yori = parseTransitAccessLegs("両国駅より徒歩1分");
+  assert.deepEqual(yori.map(l => [l.lineName, l.stationName, l.walkMin]), [["", "両国", 1]], "「より」要剝掉、沒寫路線就留空");
+
+  console.log("parseTransitAccessLegs line-name extraction passed.");
+}
+
+// ── 8. 同名不同站體：路線名缺失時也要對到兩個站體 ──
+// 都営大江戸線両国與 JR両国相距約 500m，是兩個站體；圖紙寫「両国 徒歩1分」「両国 徒歩6分」
+// 而路線名沒抄到時，第二條不能被站名去重吃掉，也不能對到同一個站體。
+{
+  const home = { lat: 35.6960, lon: 139.7930 };
+  const body = (name: string, lat: number, lon: number, subway: boolean) => ({
+    name, point: { lat, lon }, hasSubway: subway, hasSurfaceRail: !subway,
+    distance: Math.round(Math.hypot((lat - home.lat) * 111_000, (lon - home.lon) * 91_000)),
+  });
+  const oedo = body("両国", 35.6969, 139.7974, true);     // 約 400m
+  const jr = body("両国", 35.6958, 139.7930, false);      // 約 30m（測試用，只求兩個站體不同）
+  const seeds = selectStationWalkSeeds(["両国", "両国"], [1, 6], [jr, oedo], [], ["", ""]);
+  const flyer = seeds.filter(seed => seed.source === "flyer");
+  assert.equal(flyer.length, 2, "兩條同名動線都要保留");
+  assert.notEqual(`${flyer[0].match.point.lat}`, `${flyer[1].match.point.lat}`, "兩條要對到不同站體");
+
+  const withLines = selectStationWalkSeeds(["両国", "両国"], [1, 6], [jr, oedo], [], ["都営大江戸線", "中央・総武線"]);
+  const named = withLines.filter(seed => seed.source === "flyer");
+  assert.equal(named.length, 2);
+  assert.equal(named[0].match.hasSubway, true, "都営那條要對到地下鐵站體");
+  assert.equal(named[1].match.hasSurfaceRail, true, "総武線那條要對到在來線站體");
+  console.log("Same-name distinct-body station seeding passed.");
+}
 console.log("All transit format regression tests passed successfully! ✓");

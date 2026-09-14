@@ -216,6 +216,8 @@ export function useListingHealthCheckController({ sharedId }: ListingHealthCheck
     reportHeading,
     sharedId,
     locationContext,
+    crimeData,
+    prefectureSafety,
     commute,
   });
 
