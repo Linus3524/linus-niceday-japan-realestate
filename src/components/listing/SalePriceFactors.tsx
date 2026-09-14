@@ -171,7 +171,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                                   ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
                                   : "border-[#DDE3DF] bg-white text-[#8A9590]"
                               }`}>
-                              {askDiff > 0 ? "溢價開盤" : askDiff < 0 ? "讓利開盤" : "符合市價"}
+                              {askDiff > 0 ? "溢價開價" : askDiff < 0 ? "讓利開價" : "符合行情"}
                             </span>
                           </div>
                           <span className={`block font-mono text-base font-black mt-1 ${askDiff > 0 ? "text-[#B13818]" : askDiff < 0 ? "text-[#007D5A]" : "text-[#8A9590]"}`}>
@@ -205,7 +205,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                         </div>
                         <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
                           {isWellSupported
-                            ? `各項規格累計（+${posSum}%）充分支撐賣方開價（溢價 ${askDiff}%），屬高規格正常開盤。`
+                            ? `各項規格累計（+${posSum}%）充分支撐賣方開價（溢價 ${askDiff}%），屬高規格合理開價。`
                             : isOverpriced
                               ? `即使計入各項優勢，開價仍高於客觀支撐約 ${(askDiff - posSum).toFixed(1)}%，建議保留議價空間。`
                               : isDiscounted

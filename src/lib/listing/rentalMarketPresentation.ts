@@ -156,6 +156,11 @@ export function buildRentalMarketFactors(result: AnalyzeListingResult, tags: str
   return { rentalFactors, positiveFactorsSum, negativeFactorsSum, netFactorsSum, nominalDiff };
 }
 
+export interface RentalConclusionPoint {
+  label: string;
+  text: string;
+}
+
 export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthlyCost, netFactorsSum, nominalDiff, conclusionText, cleanVerdictDetail }: { result: AnalyzeListingResult; rentalFactors: ReturnType<typeof buildRentalMarketFactors>['rentalFactors']; totalMonthlyCost: number | null; netFactorsSum: number; nominalDiff: number; conclusionText: string; cleanVerdictDetail: string }) {
   const posFactorsCount = rentalFactors.filter(f => f.ratePercent > 0).length;
   const negFactorsCount = rentalFactors.filter(f => f.ratePercent < 0).length;
@@ -207,5 +212,98 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
     }
     return `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${nominalDiff.toFixed(1)}% 貼近規格淨值 +${netFactorsSum.toFixed(1)}%）。考量硬體規格與生活便利性${featureNote}，定價合宜健康。`;
   })();
-  return { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText };
+
+  const conclusionPoints: RentalConclusionPoint[] = (() => {
+    if (!result.range) {
+      const fallback = conclusionText || cleanVerdictDetail;
+      if (!fallback) return [];
+      const parts = fallback.split(/[。；;]\s*/).map(p => p.trim()).filter(Boolean);
+      if (parts.length <= 1) {
+        return [{ label: "評定重點", text: fallback }];
+      }
+      return parts.map((part, i) => ({
+        label: i === 0 ? "行情診斷" : i === parts.length - 1 ? "建議事項" : `分析要點 ${i + 1}`,
+        text: part.endsWith("。") ? part : `${part}。`,
+      }));
+    }
+
+    if (isWellSupported) {
+      const points: RentalConclusionPoint[] = [
+        {
+          label: "價值對照",
+          text: `規格條件累計淨加成（+${netFactorsSum.toFixed(1)}%，換算居住價值約 +${formatYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}）。`,
+        },
+      ];
+      if (featureClause) {
+        points.push({
+          label: "規格支撐",
+          text: `主要優勢包含：${featureClause}，客觀條件充足。`,
+        });
+      }
+      points.push({
+        label: "定價結論",
+        text: "當前租金溢價完全反映在更好的居住品質與實用機能上，開價具備充分條件支撐，定價具高度合理性（屬於物有所值的「合理溢價」）。",
+      });
+      return points;
+    }
+
+    if (isOverpriced) {
+      const excessPercent = (nominalDiff - netFactorsSum).toFixed(1);
+      return [
+        {
+          label: "價格落點",
+          text: `當前每月租金相對區域中位數溢價 +${nominalDiff.toFixed(1)}%（每月高出約 +${formatYen(nominalDiffYen)}）。`,
+        },
+        {
+          label: "條件差距",
+          text: `超出目前可量化之規格優勢加成（+${netFactorsSum.toFixed(1)}%，約 +${formatYen(netDiffYen)} / 月）約 +${excessPercent}%。`,
+        },
+        {
+          label: "顧問建議",
+          text: "若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），開價略有超額溢價，建議多比較周邊同級房源或爭取免禮金優惠。",
+        },
+      ];
+    }
+
+    if (isDiscounted) {
+      return [
+        {
+          label: "價格落點",
+          text: `本案每月總負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%（每月折讓約 ${formatYen(Math.abs(nominalDiffYen))}）。`,
+        },
+        {
+          label: "規格優勢",
+          text: netFactorsSum >= 0
+            ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢。`
+            : "租金已充分反映屋齡折舊或步程等折減，居住成本負擔合宜實惠。",
+        },
+        {
+          label: "定價結論",
+          text: netFactorsSum >= 0
+            ? "居住品質與租金負擔兼顧，屬於市場上少見的高性價比房源。"
+            : "適合注重實質每月支出、追求經濟實惠的承租需求。",
+        },
+      ];
+    }
+
+    const points: RentalConclusionPoint[] = [
+      {
+        label: "價格落點",
+        text: `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${nominalDiff.toFixed(1)}% 貼近規格淨值 +${netFactorsSum.toFixed(1)}%）。`,
+      },
+    ];
+    if (featureClause) {
+      points.push({
+        label: "規格支撐",
+        text: `硬體空間與實用配備（${featureClause}）與租金水準相互吻合。`,
+      });
+    }
+    points.push({
+      label: "定價結論",
+      text: "考量硬體規格與生活便利性，開價與規格條件客觀吻合，定價合宜健康。",
+    });
+    return points;
+  })();
+
+  return { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText, conclusionPoints };
 }

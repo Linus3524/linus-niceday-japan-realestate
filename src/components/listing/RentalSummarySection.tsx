@@ -14,6 +14,7 @@ interface RentalSummarySectionProps {
     | "parsed"
     | "displayArea"
     | "displayStructure"
+    | "displayDirection"
     | "stationItems"
     | "equipmentList"
   >;
@@ -28,6 +29,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
     parsed,
     displayArea,
     displayStructure,
+    displayDirection,
     stationItems,
     equipmentList,
   } = model;
@@ -111,10 +113,16 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
           <dt className="text-[#66736C]">樓層／總階數</dt>
           <dd className="font-bold text-[#1A2A22]">{extracted?.floor || "—"}</dd>
         </div>
-        <div className="col-span-2 sm:col-span-2">
+        <div>
           <dt className="text-[#66736C]">建物構造</dt>
           <dd className="font-bold text-[#1A2A22]">
             {displayStructure || "未於圖面載明"}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-[#66736C]">主要採光面（朝向）</dt>
+          <dd className="font-bold text-[#1A2A22]">
+            {displayDirection || "未於圖面載明"}
           </dd>
         </div>
       </dl>

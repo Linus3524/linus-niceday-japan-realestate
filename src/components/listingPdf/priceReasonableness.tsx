@@ -36,7 +36,7 @@ export function ReasonablenessCard({ mlit, salePriceMan }: { mlit: NonNullable<N
   const analysisBorder = isWellSupported ? GREEN_LINE : isOverpriced ? ORANGE : BLUE_LINE;
 
   const analysisDetail = isWellSupported
-    ? `各項規格累計（+${posSum.toFixed(1)}%）充分支撐賣方開價（溢價 ${askDiff.toFixed(1)}%），屬高規格正常開盤。`
+    ? `各項規格累計（+${posSum.toFixed(1)}%）充分支撐賣方開價（溢價 ${askDiff.toFixed(1)}%），屬高規格合理開價。`
     : isOverpriced
       ? `即使計入各項優勢，開價仍高於客觀支撐約 ${(askDiff - posSum).toFixed(1)}%，建議保留議價空間。`
       : isDiscounted
@@ -73,7 +73,7 @@ export function ReasonablenessCard({ mlit, salePriceMan }: { mlit: NonNullable<N
                 : {},
               { fontSize: 6, paddingVertical: 1, paddingHorizontal: 3 }
             ]}>
-              {askDiff > 0 ? "溢價開盤" : askDiff < 0 ? "讓利開盤" : "符合市價"}
+              {askDiff > 0 ? "溢價開價" : askDiff < 0 ? "讓利開價" : "符合行情"}
             </Text>
           </View>
           <Text style={[styles.benchmarkCardPrice, { color: askDiff > 0 ? ORANGE_DEEP : askDiff < 0 ? GREEN_DEEP : "#8A9590" }]}>

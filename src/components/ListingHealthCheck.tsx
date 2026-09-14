@@ -535,6 +535,9 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   optionalFacilities={extracted?.optionalFacilities}
                   specialNotes={extracted?.specialNotes}
                   shikibiki={formattedShikibiki}
+                  guaranteeFee={extracted?.guaranteeFee}
+                  insuranceFee={extracted?.insuranceFee}
+                  totalMonthlyCost={(result.parsed.rent || 0) + (result.parsed.managementFee || 0)}
                   hasCancellationPenalty={hasPenalty}
                 />
 

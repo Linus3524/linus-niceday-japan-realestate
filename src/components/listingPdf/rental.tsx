@@ -52,6 +52,9 @@ export function RentSections({ result }: { result: AnalyzeListingResult }) {
     optionalFacilities: e.optionalFacilities,
     specialNotes: e.specialNotes,
     shikibiki: formatShikibiki(rawShikibiki),
+    guaranteeFee: e.guaranteeFee,
+    insuranceFee: e.insuranceFee,
+    totalMonthlyCost: monthly,
   });
 
   return (

@@ -5,7 +5,7 @@
  */
 
 export interface ParsedSpecialNoteItem {
-  category: "合約特約" | "費用約定" | "生活規範" | "使用限制" | "入住條件" | "設施設備" | "買賣特約" | "其他備考";
+  category: "契約特約" | "合約特約" | "費用約定" | "生活規範" | "使用限制" | "入住條件" | "設施設備" | "買賣特約" | "其他備考";
   title: string;
   explanation: string;
   rawJapanese?: string;
@@ -179,7 +179,7 @@ const RULES: SpecialNoteRule[] = [
   // 6. 合約特約與解約違約金
   {
     pattern: /短期解約違約金[：:]?|違約金/i,
-    category: "合約特約",
+    category: "契約特約",
     title: "短期解約違約金約定",
     explanation: (text) => {
       const match = text.match(/(\d+)\s*(?:ヶ月|年)未満.*?(\d+(?:ヶ月|分)?)/);
@@ -192,21 +192,21 @@ const RULES: SpecialNoteRule[] = [
   },
   {
     pattern: /定期借家|定期借家契約|定借/i,
-    category: "合約特約",
+    category: "契約特約",
     title: "定期租賃契約（定期借家）",
-    explanation: "本約定為「定期借家契約」，合約期滿後自動終止；除非雙方協議再簽署新合約，否則租客無一般普通租賃的法定續約保障。",
+    explanation: "本約定為「定期借家契約」，契約期滿後確定終止；除非雙方合意簽署「再契約」，否則租客無一般普通租賃之法定更新保障。",
     badgeTone: "amber",
   },
   {
     pattern: /先行申込|先行契約/i,
-    category: "合約特約",
+    category: "契約特約",
     title: "接受尚未看屋前先行送件／簽約",
     explanation: "物件目前可能仍有人居住或正在整修，接受租客先遞交申請資料或先完成簽約手續以鎖定承租順位。",
     badgeTone: "blue",
   },
   {
     pattern: /現状有姿|現状優先|図面と現状が異なる場合/i,
-    category: "合約特約",
+    category: "契約特約",
     title: "以現場點交實際現況為準",
     explanation: "若圖紙記載或格局繪製與現場有些微出入，交屋驗收時一律以現場實際現況為準。",
     badgeTone: "neutral",
@@ -316,8 +316,8 @@ const RULES: SpecialNoteRule[] = [
     explanation: (text) => {
       const fee = text.match(/[\d,]+円|\d+(?:\.\d+)?万(?:円)?/)?.[0];
       return fee
-        ? `每 2 年續約時，除固定更新料外，管理公司另收續約作業行政手續費（${fee}）。`
-        : "每 2 年續約時，管理公司另收續約作業行政手續費。";
+        ? `每 2 年契約更新時，除固定契約更新費外，管理公司另收更新作業行政手續費（${fee}）。`
+        : "每 2 年契約更新時，管理公司另收更新作業行政手續費。";
     },
     badgeTone: "neutral",
   },

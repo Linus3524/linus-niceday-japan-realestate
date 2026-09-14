@@ -1,6 +1,7 @@
 import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
 import { parseEquipmentList } from "../../lib/equipmentParser";
 import type { AnalyzeListingResult } from "../../lib/listing/types";
+import { formatDirection } from "../../lib/listing/formatters.js";
 import { splitList } from './formatters.js';
 import { LocationCard } from './location.js';
 import { ContactPage, PageChrome } from './pageChrome.js';
@@ -64,7 +65,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
               <Cell label="築年" value={e.age} />
               <Cell label="所在樓層" value={e.floor ? `${e.floor}${e.buildingFloors ? `／共 ${e.buildingFloors} 層` : ""}` : null} />
               <Cell label="構造" value={e.structure} />
-              <Cell label="向き" value={e.direction} />
+              <Cell label="向き" value={formatDirection(e.direction) || e.direction} />
               {isSale ? (
                 <>
                   <Cell label="販売価格" value={e.salePrice} />

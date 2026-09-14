@@ -16,6 +16,7 @@ interface SalePropertyFactsProps {
     | "displayArea"
     | "saleAnalysis"
     | "displayStructure"
+    | "displayDirection"
     | "stationItems"
     | "equipmentList"
   >;
@@ -29,6 +30,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
     displayArea,
     saleAnalysis,
     displayStructure,
+    displayDirection,
     stationItems,
     equipmentList,
   } = model;
@@ -101,9 +103,13 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
             {isSpecialSale ? (extracted?.optionalFacilities || "圖紙未註明") : (extracted?.managementStyle || "—")}
           </dd>
         </div>
-        <div className="col-span-2">
+        <div>
           <dt className="text-[#66736C]">建物構造</dt>
           <dd className="font-bold text-[#1A2A22]">{displayStructure || "未於圖面載明"}</dd>
+        </div>
+        <div>
+          <dt className="text-[#66736C]">主要採光面（朝向）</dt>
+          <dd className="font-bold text-[#1A2A22]">{displayDirection || "未於圖面載明"}</dd>
         </div>
         {isSpecialSale && extracted?.buildingArea && (
           <div className="col-span-2 border-t border-[#DDE3DF] pt-2">

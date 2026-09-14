@@ -219,7 +219,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
 
                   {/* 條件累計與租金合理性對照（完全對齊買房體驗） */}
                   {(() => {
-                    const { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText } = buildRentalMarketConclusion({
+                    const { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText, conclusionPoints } = buildRentalMarketConclusion({
                       result,
                       rentalFactors,
                       totalMonthlyCost,
@@ -274,7 +274,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                       ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
                                       : "border-[#DDE3DF] bg-white text-[#8A9590]"
                                   }`}>
-                                  {nominalDiff > 0 ? "溢價開盤" : nominalDiff < 0 ? "讓利開盤" : "符合市價"}
+                                  {nominalDiff > 0 ? "溢價開價" : nominalDiff < 0 ? "讓利開價" : "符合行情"}
                                 </span>
                               </div>
                               <span className={`block font-mono text-base font-black mt-1 ${nominalDiff > 0 ? "text-[#B13818]" : nominalDiff < 0 ? "text-[#007D5A]" : "text-[#8A9590]"
@@ -341,9 +341,27 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         </div>
 
                         {/* 評定解析（綜合加總與租金比對之結論） */}
-                        <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
-                          <span className="font-bold text-[#007D5A]">評定解析：</span>
-                          <span>{verdictConclusionText}</span>
+                        <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs text-[#1A2A22]">
+                          <div className="mb-2 flex items-center gap-1.5 font-bold text-[#007D5A]">
+                            <span>評定解析・重點摘要</span>
+                          </div>
+                          {conclusionPoints && conclusionPoints.length > 0 ? (
+                            <ul className="space-y-2 leading-relaxed text-[#3F5147]">
+                              {conclusionPoints.map((point, idx) => (
+                                <li key={idx} className="flex items-start gap-2">
+                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#007D5A]" />
+                                  <div>
+                                    <span className="font-bold text-[#1A2A22]">{point.label}：</span>
+                                    <span>{point.text}</span>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="leading-relaxed text-[#3F5147]">
+                              {verdictConclusionText}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

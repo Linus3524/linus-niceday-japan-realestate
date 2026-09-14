@@ -2,16 +2,21 @@ import { buildRentalConditionSections } from "../lib/rentalConditionDisplay";
 import { Car, CheckCircle2, Clock3, Coins, FileWarning, House, ShieldCheck, type LucideIcon } from "lucide-react";
 
 const sectionIcons: Record<string, LucideIcon> = {
+  "契約與入住": House,
   "合約與入住": House,
+  "保證、保險與附加費用": Coins,
+  "費用、保證與保險": Coins,
   "費用與保證": Coins,
   "退租與違約": FileWarning,
   "附加條件與備考": Car,
 };
 
 const rowIcons: Record<string, LucideIcon> = {
+  "租期與契約更新": Clock3,
   "租期與續約": Clock3,
   "入住與優惠": House,
   "其他入住與契約條件": FileWarning,
+  "保證料與火災保險": ShieldCheck,
   "保證與保險": ShieldCheck,
   "附加費用與服務": Coins,
   "敷引約定": CheckCircle2,
@@ -24,14 +29,29 @@ export function RentalConditionSummary({
   optionalFacilities,
   specialNotes,
   shikibiki,
+  guaranteeFee,
+  insuranceFee,
+  totalMonthlyCost,
+  hasCancellationPenalty,
 }: {
   rentalConditions?: string | null;
   optionalFacilities?: string | null;
   specialNotes?: string | null;
   shikibiki?: string | null;
+  guaranteeFee?: string | null;
+  insuranceFee?: string | null;
+  totalMonthlyCost?: number | null;
   hasCancellationPenalty?: boolean;
 }) {
-  const sections = buildRentalConditionSections({ rentalConditions, optionalFacilities, specialNotes, shikibiki });
+  const sections = buildRentalConditionSections({
+    rentalConditions,
+    optionalFacilities,
+    specialNotes,
+    shikibiki,
+    guaranteeFee,
+    insuranceFee,
+    totalMonthlyCost,
+  });
   if (!sections.length) return null;
 
   return (

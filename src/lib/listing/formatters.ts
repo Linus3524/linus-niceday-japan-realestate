@@ -45,3 +45,28 @@ export function formatFileSize(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
+
+
+/** 採光面朝向（向き）標準化繁體中文 */
+export function formatDirection(direction?: string | null): string {
+  if (!direction) return "";
+  const trimmed = direction.trim();
+  if (!trimmed) return "";
+  if (/^[-ー—－／/]+$/.test(trimmed) || /^(?:無|なし|未定)$/.test(trimmed)) {
+    return "圖面標示 -（未載明）";
+  }
+  if (/^(?:未載明|未於圖面載明|不明)$/.test(trimmed)) {
+    return "未於圖面載明";
+  }
+  const normalized = trimmed.normalize("NFKC");
+  if (/東南|南東/i.test(normalized)) return "東南向";
+  if (/西南|南西/i.test(normalized)) return "西南向";
+  if (/東北|北東/i.test(normalized)) return "東北向";
+  if (/西北|北西/i.test(normalized)) return "西北向";
+  if (/南/i.test(normalized)) return "南向";
+  if (/東/i.test(normalized)) return "東向";
+  if (/西/i.test(normalized)) return "西向";
+  if (/北/i.test(normalized)) return "北向";
+  return trimmed;
+}
+

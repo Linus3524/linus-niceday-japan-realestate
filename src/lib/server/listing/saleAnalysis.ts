@@ -107,6 +107,7 @@ export function buildSaleAnalysis(params: {
   });
 
   const unitFeatures = detectUnitFeatures({
+    direction: extracted.direction,
     specialNotes: extracted.specialNotes,
     renovationDetails: extracted.renovationDetails,
     otherConditions: extracted.otherConditions,

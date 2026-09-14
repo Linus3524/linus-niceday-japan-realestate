@@ -90,6 +90,7 @@ export function buildClientSaleAnalysis(result: AnalyzeListingResult): SaleAnaly
   );
 
   const unitFeatures = detectUnitFeatures({
+    direction: result.extracted.direction,
     specialNotes: result.extracted.specialNotes,
     renovationDetails: result.extracted.renovationDetails,
     otherConditions: result.extracted.otherConditions,

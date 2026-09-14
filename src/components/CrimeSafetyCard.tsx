@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   AlertCircle,
   AlertTriangle,
-  Sparkles,
   MapPin,
   Bike,
   Car,
@@ -695,17 +694,15 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
           ))}
         </div>
 
-        {/* 4. 治安專業診斷結論（改回原版橫向簡潔樣式） */}
-        <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3">
-          <div className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#007D5A]" />
-            <div className="space-y-0.5">
-              <span className="text-xs font-bold text-[#1A2A22]">治安專業診斷結論</span>
-              <p className="text-xs leading-relaxed text-[#3F5147]">
-                {crime.summary}
-              </p>
-            </div>
+        {/* 4. 治安專業診斷結論 */}
+        <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3 space-y-1">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-[#007D5A]" />
+            <span>治安專業診斷結論</span>
           </div>
+          <p className="text-xs leading-relaxed text-[#3F5147]">
+            {crime.summary}
+          </p>
         </div>
 
         {/* 5. 案件結構佔比分析（改回原版比例條條狀展示） */}

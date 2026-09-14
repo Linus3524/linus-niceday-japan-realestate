@@ -7,6 +7,7 @@ import { buildListingAudit } from "../listingAudit";
 import {
   assessRealEstateAcquisitionTax,
   calculateSaleInitialCosts,
+  detectUnitFeatures,
   formatShikibiki,
   normalizeStructure,
   parseAgeYears,
@@ -17,7 +18,7 @@ import { buildSpecialSaleDetails, statedCombinedAnnualPropertyTax } from "../spe
 import { parseTransitStations } from "../transitParser";
 import { buildClientInitialCost } from './clientInitialCost';
 import { buildClientSaleAnalysis } from './clientSaleAnalysis';
-import { summarizeTaxEstimationBasis } from './formatters';
+import { formatDirection, summarizeTaxEstimationBasis } from './formatters';
 import type { AnalyzeListingResult, SaleAnalysisVerdict } from './types';
 
 /** Derived report values; preserves API-first values and client fallback order. */
@@ -57,6 +58,23 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
     normalizeStructure(extracted?.structure) ||
     extracted?.structure ||
     null;
+
+  const displayDirection = (() => {
+    const formatted = formatDirection(extracted?.direction);
+    if (formatted) return formatted;
+    const unitFeatures = detectUnitFeatures({
+      direction: extracted?.direction,
+      specialNotes: extracted?.specialNotes,
+      renovationDetails: extracted?.renovationDetails,
+      otherConditions: extracted?.otherConditions,
+      facilities: extracted?.facilities,
+      balconyArea: extracted?.balconyArea,
+      landRights: extracted?.landRights,
+      propertyName: extracted?.buildingName,
+    });
+    if (unitFeatures.facingDirectionZh) return unitFeatures.facingDirectionZh;
+    return "未於圖面載明";
+  })();
 
   const rawShikibiki =
     extracted?.shikibiki ||
@@ -275,6 +293,7 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
     parsedArea,
     displayArea,
     displayStructure,
+    displayDirection,
     formattedShikibiki,
     hasPenalty,
     cleanVerdictHeadline,

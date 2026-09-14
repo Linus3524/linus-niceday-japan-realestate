@@ -455,6 +455,10 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - structure（建物構造／構造・規模）：
       * 請仔細在「構造」「建物構造」「構造・規模」搜尋。
       * 常見寫法：英文簡稱如 RC、SRC、S、ALC、PC、W；日文漢字如 鉄筋コンクリート造、鉄骨鉄筋コンクリート造、鉄骨造、木造等。
+    - direction（主要採光面／朝向／向き）：
+      * 請在表格、間取り圖或建物概要中尋找「向き」「方角」「主要採光面」「バルコニー方向」等。
+      * 常見如 "南"、"南東"、"東南"、"南西"、"西南"、"東"、"西"、"北"、"南向き" 等。
+      * 若圖紙標示「-」或「無」等，請填 "-"；若完全未標示或找不到則留空字串。
     - age（築年數／建築年月，例如 "築4年"、"平成11年2月"、"2002年5月"、"2013年2月"）。
     - floor（所在階／總階數，例如 "4階部分 / 8階建"、"6階部分"）。
     - address（所在地／住所，例如 "東京都世田谷区太子堂4-30-31"、"千葉県船橋市本町2-6-14"）。
@@ -542,6 +546,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           address: { type: Type.STRING, description: "地址／所在地" },
           area: { type: Type.STRING, description: "専有面積，例如 40.17㎡" },
           structure: { type: Type.STRING, description: "建物構造，例如 RC造" },
+          direction: { type: Type.STRING, description: "主要採光面／朝向／向き，例如 南、東南、南向き、北；若圖面標示 - 則填 -，未標示則留空" },
           guaranteeFee: { type: Type.STRING, description: "保證公司費用，照原文" },
           lockReplacementFee: { type: Type.STRING, description: "鍵交換費用，照原文" },
           cleaningFee: { type: Type.STRING, description: "退去清掃費／室内クリーニング代／エアコン清掃代，照原文；不可填入敷引或償却金" },
@@ -594,7 +599,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           "propertyType", "priceDetails", "handoverDetails", "unitBreakdown", "optionalFacilities", "buildingCondition", "landArea", "buildingArea", "roadDetails", "hospitalityDetails", "revenueDetails", "revenueScope", "taxDetails",
           "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
           "keyMoney", "deposit", "leaseTerms", "rentalConditions", "age", "floor", "address",
-          "area", "structure", "guaranteeFee", "lockReplacementFee",
+          "area", "structure", "direction", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
           "renewalFee", "facilities", "balconyArea", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
           "otherMonthlyFees", "occupancyStatus", "currentRent", "annualIncome",

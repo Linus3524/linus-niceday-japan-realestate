@@ -1155,6 +1155,7 @@ export interface UnitFeatureEvaluation {
  */
 export function detectUnitFeatures(
   textSources: {
+    direction?: unknown;
     specialNotes?: unknown;
     renovationDetails?: unknown;
     otherConditions?: unknown;
@@ -1166,6 +1167,7 @@ export function detectUnitFeatures(
   }
 ): UnitFeatureEvaluation {
   const combined = [
+    typeof textSources.direction === "string" ? textSources.direction : "",
     typeof textSources.specialNotes === "string" ? textSources.specialNotes : "",
     typeof textSources.renovationDetails === "string" ? textSources.renovationDetails : "",
     typeof textSources.otherConditions === "string" ? textSources.otherConditions : "",
@@ -1183,30 +1185,59 @@ export function detectUnitFeatures(
   let facingDirection: FacingDirection | null = null;
   let facingDirectionZh: string | null = null;
 
-  if (/南東向き|南東向|東南向き|東南向|南東側/i.test(combined)) {
+  const rawDirection = typeof textSources.direction === "string" ? textSources.direction.trim().normalize("NFKC") : "";
+  if (/東南|南東/i.test(rawDirection)) {
     facingDirection = "southeast";
     facingDirectionZh = "東南向";
-  } else if (/南西向き|南西向|西南向き|西南向|南西側/i.test(combined)) {
+  } else if (/西南|南西/i.test(rawDirection)) {
     facingDirection = "southwest";
     facingDirectionZh = "西南向";
-  } else if (/南向き|南向|南面採光|南面バルコニー|南側バルコニー|バルコニー南/i.test(combined)) {
-    facingDirection = "south";
-    facingDirectionZh = "南向";
-  } else if (/東向き|東向|東面採光|東面バルコニー|東側バルコニー|バルコニー東/i.test(combined)) {
-    facingDirection = "east";
-    facingDirectionZh = "東向";
-  } else if (/西向き|西向|西面採光|西面バルコニー|西側バルコニー|バルコニー西/i.test(combined)) {
-    facingDirection = "west";
-    facingDirectionZh = "西向";
-  } else if (/北東向き|北東向|東北向き|東北向/i.test(combined)) {
+  } else if (/東北|北東/i.test(rawDirection)) {
     facingDirection = "northeast";
     facingDirectionZh = "東北向";
-  } else if (/北西向き|北西向|西北向き|西北向/i.test(combined)) {
+  } else if (/西北|北西/i.test(rawDirection)) {
     facingDirection = "northwest";
     facingDirectionZh = "西北向";
-  } else if (/北向き|北向|北面採光|北面バルコニー|北側バルコニー/i.test(combined)) {
+  } else if (/南/i.test(rawDirection) && !/[-ー—]/.test(rawDirection)) {
+    facingDirection = "south";
+    facingDirectionZh = "南向";
+  } else if (/東/i.test(rawDirection) && !/[-ー—]/.test(rawDirection)) {
+    facingDirection = "east";
+    facingDirectionZh = "東向";
+  } else if (/西/i.test(rawDirection) && !/[-ー—]/.test(rawDirection)) {
+    facingDirection = "west";
+    facingDirectionZh = "西向";
+  } else if (/北/i.test(rawDirection) && !/[-ー—]/.test(rawDirection)) {
     facingDirection = "north";
     facingDirectionZh = "北向";
+  }
+
+  if (!facingDirection) {
+    if (/南東向き|南東向|東南向き|東南向|南東側|向き[:：\s]*南東|向き[:：\s]*東南/i.test(combined)) {
+      facingDirection = "southeast";
+      facingDirectionZh = "東南向";
+    } else if (/南西向き|南西向|西南向き|西南向|南西側|向き[:：\s]*南西|向き[:：\s]*西南/i.test(combined)) {
+      facingDirection = "southwest";
+      facingDirectionZh = "西南向";
+    } else if (/南向き|南向|南面採光|南面バルコニー|南側バルコニー|バルコニー南|向き[:：\s]*南/i.test(combined)) {
+      facingDirection = "south";
+      facingDirectionZh = "南向";
+    } else if (/東向き|東向|東面採光|東面バルコニー|東側バルコニー|バルコニー東|向き[:：\s]*東/i.test(combined)) {
+      facingDirection = "east";
+      facingDirectionZh = "東向";
+    } else if (/西向き|西向|西面採光|西面バルコニー|西側バルコニー|バルコニー西|向き[:：\s]*西/i.test(combined)) {
+      facingDirection = "west";
+      facingDirectionZh = "西向";
+    } else if (/北東向き|北東向|東北向き|東北向|向き[:：\s]*北東|向き[:：\s]*東北/i.test(combined)) {
+      facingDirection = "northeast";
+      facingDirectionZh = "東北向";
+    } else if (/北西向き|北西向|西北向き|西北向|向き[:：\s]*北西|向き[:：\s]*西北/i.test(combined)) {
+      facingDirection = "northwest";
+      facingDirectionZh = "西北向";
+    } else if (/北向き|北向|北面採光|北面バルコニー|北側バルコニー|向き[:：\s]*北/i.test(combined)) {
+      facingDirection = "north";
+      facingDirectionZh = "北向";
+    }
   }
 
   // 3. 專用露台 / 私人庭院

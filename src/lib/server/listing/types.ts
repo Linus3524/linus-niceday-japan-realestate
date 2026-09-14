@@ -20,6 +20,7 @@ export interface ExtractedListingFields extends SpecialSaleFields, RentalConditi
   address: string;
   area: string;
   structure: string;
+  direction?: string;
   guaranteeFee: string;
   lockReplacementFee: string;
   cleaningFee: string;

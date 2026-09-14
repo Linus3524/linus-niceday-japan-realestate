@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { normalizeRoomType } from "../src/lib/listingExtraction.js";
+import { normalizeRoomType, detectUnitFeatures } from "../src/lib/listingExtraction.js";
+import { formatDirection } from "../src/lib/listing/formatters.js";
 import { calculateInitialCostBreakdown } from "../api/analyze-listing.js";
 import { additionalRentalFees } from "../src/lib/rentalConditions.js";
 import { rentalConditionGroups, buildRentalConditionSections, stripOrphanedBrackets } from "../src/lib/rentalConditionDisplay.js";
@@ -49,7 +50,7 @@ const displayed = rentalConditionGroups(
 );
 const visibleConditions = displayed.flatMap(group => group.items).join("\n");
 assert.match(visibleConditions, /普通租賃契約，租期 1 年/);
-assert.match(visibleConditions, /第 1、2 次續約時，租金調整 5%/);
+assert.match(visibleConditions, /第 1、2 次契約更新時，租金調整 5%/);
 assert.match(visibleConditions, /免押金、免禮金/);
 assert.match(visibleConditions, /可入住日：2026年10月14日/);
 assert.match(visibleConditions, /可養寵物：小型犬或貓限 1 隻/);
@@ -63,6 +64,41 @@ assert.deepEqual(moveOutItems, ["退租須於 50 日前通知", "退去時請求
 assert.equal(stripOrphanedBrackets("退去時請求)"), "退去時請求");
 assert.equal(stripOrphanedBrackets("（退去時請求）"), "退去時請求");
 assert.equal(stripOrphanedBrackets("(退去時請求)"), "退去時請求");
+
+// 測試：定期借家 + 更新料 - + 入居時期 2026年11月中旬予定 的拆分與 Option A 解析
+const ryogokuSections = buildRentalConditionSections({
+  rentalConditions: "定期借家契約 2年、更新料 -、入居時期 2026年11月中旬予定",
+  guaranteeFee: "必須　家賃総額より50％～",
+  insuranceFee: "有 22,200円 24ヶ月",
+  specialNotes: "その他費用 AMLクラブサポート費用（契約時請求）：16,500円",
+  totalMonthlyCost: 200000,
+});
+const contractSection = ryogokuSections.find(s => s.title === "契約與入住");
+assert.ok(contractSection, "必須包含「契約與入住」大分類");
+const leaseRow = contractSection.rows.find(r => r.title === "租期與契約更新");
+assert.ok(leaseRow, "必須包含「租期與契約更新」");
+assert.match(leaseRow.items.join("\n"), /定期借家契約 2 年/);
+assert.match(leaseRow.items.join("\n"), /定期借家契約期滿確定終止，無自動更新；若期滿雙方合意辦理「再契約」，手續費待向管理公司確認（圖紙標示 -）/);
+assert.doesNotMatch(leaseRow.items.join("\n"), /續約費\s*-/);
+
+const moveInRow = contractSection.rows.find(r => r.title === "入住與優惠");
+assert.ok(moveInRow, "必須包含「入住與優惠」");
+assert.match(moveInRow.items.join("\n"), /2026年11月中旬/);
+assert.doesNotMatch(moveInRow.items.join("\n"), /圖紙未載明入住日或優惠條件/);
+
+const feeSection = ryogokuSections.find(s => s.title === "保證、保險與附加費用");
+assert.ok(feeSection, "必須包含「保證、保險與附加費用」");
+const guaranteeRow = feeSection.rows.find(r => r.title === "保證料與火災保險");
+assert.ok(guaranteeRow, "必須包含「保證料與火災保險」");
+assert.match(guaranteeRow.items.join("\n"), /50％ 起/);
+assert.match(guaranteeRow.items.join("\n"), /約 100,000円/);
+assert.match(guaranteeRow.items.join("\n"), /火災保險：須投保，22,200円/);
+assert.doesNotMatch(guaranteeRow.items.join("\n"), /圖紙未載明保證公司方案/);
+
+const addFeeRow = feeSection.rows.find(r => r.title === "附加費用與服務");
+assert.ok(addFeeRow, "必須包含「附加費用與服務」");
+assert.match(addFeeRow.items.join("\n"), /AML/);
+assert.doesNotMatch(addFeeRow.items.join("\n"), /圖紙未載明其他一次性或年度費用/, "有其他費用時不可自相矛盾出現未載明警語");
 
 const excelanLayoutText = `
 エクセラン東武練馬 ■ACCESS
@@ -104,11 +140,11 @@ assert.match(excelan.guaranteeFee || "", /初回80%/);
 assert.match(excelan.cancellationPenalty || "", /12ヵ月未満/);
 assert.match(excelan.optionalFacilities || "", /駐車場：施設なし・空きなし/);
 assert.doesNotMatch(excelan.optionalFacilities || "", /0円|無料/);
-assert.doesNotMatch(`${excelan.rentalConditions}\n${excelan.specialNotes}`, /取引態様|広告料/);
+assert.doesNotMatch(`${excelan.rentalConditions}\n${excelan.specialNotes}`, /取引態樣|取引態様|広告料/);
 const excelanGroups = rentalConditionGroups(excelan.rentalConditions, excelan.optionalFacilities);
 const excelanVisible = excelanGroups.flatMap(group => group.items).join("\n");
 assert.match(excelanVisible, /普通租賃契約，租期 2 年/);
-assert.match(excelanVisible, /續約費：新租金 1.25 個月/);
+assert.match(excelanVisible, /契約更新費：新租金 1.25 個月/);
 assert.match(excelanVisible, /木下集團保證：初回費為月租總額 80%/);
 assert.match(excelanVisible, /換鎖費：27,500円/);
 assert.match(excelanVisible, /室內消毒費：26,400円/);
@@ -157,3 +193,27 @@ assert.equal(reconcileRentalListingText(layoutCase, "間取詳細 ＬＤＫ（�
 assert.equal(reconcileRentalListingText({ ...layoutCase, layout: "2DK" }, "間取詳細 LDK(12畳) 洋室(6畳) 和室(5畳)").layout, "2LDK");
 
 assert.equal(normalizeRoomType(correctedLayout.layout), "ldk1", "corrected layout must use 1LDK market group, never k1");
+
+// 採光面朝向（向き）驗證
+assert.equal(formatDirection("南"), "南向");
+assert.equal(formatDirection("南向き"), "南向");
+assert.equal(formatDirection("南東"), "東南向");
+assert.equal(formatDirection("東南向き"), "東南向");
+assert.equal(formatDirection("南西"), "西南向");
+assert.equal(formatDirection("北東"), "東北向");
+assert.equal(formatDirection("北西"), "西北向");
+assert.equal(formatDirection("東"), "東向");
+assert.equal(formatDirection("西"), "西向");
+assert.equal(formatDirection("北"), "北向");
+assert.equal(formatDirection("-"), "圖面標示 -（未載明）");
+assert.equal(formatDirection("ー"), "圖面標示 -（未載明）");
+assert.equal(formatDirection("なし"), "圖面標示 -（未載明）");
+assert.equal(formatDirection(""), "");
+
+assert.equal(detectUnitFeatures({ direction: "南" }).facingDirectionZh, "南向");
+assert.equal(detectUnitFeatures({ direction: "南東向き" }).facingDirectionZh, "東南向");
+assert.equal(detectUnitFeatures({ specialNotes: "バルコニー南向き日当たり良好" }).facingDirectionZh, "南向");
+
+const dirCase = reconcileRentalListingText({ dealType: "rent" }, "向き 南\n賃料120,000円");
+assert.equal(dirCase.direction, "南");
+console.log("Direction formatting and reconciliation tests passed.");

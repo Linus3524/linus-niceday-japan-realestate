@@ -19,6 +19,7 @@ type RentalListingFields = {
   address?: string;
   area?: string;
   structure?: string;
+  direction?: string;
   guaranteeFee?: string;
   lockReplacementFee?: string;
   cleaningFee?: string;
@@ -40,7 +41,7 @@ function compactText(value: string) {
 
 function isWeak(value: unknown) {
   const text = String(value || "").trim();
-  return !text || /^(?:未載明|なし|不明|待確認|費用がかかります)$/u.test(text);
+  return !text || /^(?:未載明|なし|不明|待確認|費用がかかります|[-ー—－])$/u.test(text);
 }
 
 function fill<T extends RentalListingFields, K extends keyof T>(target: T, key: K, value: T[K] | undefined) {
@@ -78,6 +79,7 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   const floor = capture(compact, /規模\d+階建(\d+)階/u);
   const age = capture(compact, /竣工日(\d{4}年\d{1,2}月)/u);
   const totalUnits = capture(compact, /総戸数(\d+戸)/u);
+  const direction = capture(compact, /向き[:：]?([南東西北\-ー—]+(?:向き)?)/u);
 
   result.dealType = "rent";
   fill(result, "buildingName", buildingName as T["buildingName"]);
@@ -95,6 +97,7 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   fill(result, "floor", floor ? `${floor}階` as T["floor"] : undefined);
   fill(result, "age", age as T["age"]);
   fill(result, "totalUnits", totalUnits as T["totalUnits"]);
+  fill(result, "direction", direction as T["direction"]);
 
   const transitMatches = [...normalized.matchAll(/([^\s\n]{2,20}線)\s+([^\s\n]+?)(?:駅)?(?=\s*徒歩)\s*徒歩\s*(\d{1,3})分/gu)];
   if (transitMatches.length) {
@@ -118,6 +121,9 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   const guaranteeInitial = capture(compact, /初回保証料(\d+%)/u);
   const guaranteeMonthly = capture(compact, /利用手数料月額([\d,]+円)(?:\(税込\))?/u);
   const guaranteeRenewal = compact.match(/継続保証委託料([\d,]+円)\(?([\d]+)年毎\)?/u);
+  const guaranteeGeneric = capture(normalized, /保証会社\s*(?:[：:]|必須)?\s*([^\n\r]+?(?:50%|80%|100%|\d+万|[\d,]+円)[^\n\r]*)/u)
+    || capture(compact, /保証会社必須(?:家賃総額より)?(\d+%[~～]?)/u);
+  const insuranceGeneric = capture(normalized, /(?:損害保険|火災保険|家財保険)\s*(?:[：:]|有)?\s*([\d,]+円[^\n\r]*)/u);
 
   add(leaseYears ? `契約期間${leaseYears}年` : undefined);
   add(renewalMonths ? `更新料 新賃料${renewalMonths}ヶ月` : undefined);
@@ -125,6 +131,8 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   add(/入居日即内見可/u.test(compact) ? "入居日：即、内見可" : undefined);
   add(/ペット飼育不可/u.test(compact) ? "ペット飼育不可" : undefined);
   add(guaranteeInitial ? `木下グループ保証：初回保証料${guaranteeInitial}${guaranteeMonthly ? `、利用手数料月額${guaranteeMonthly}` : ""}${guaranteeRenewal ? `、継続保証委託料${guaranteeRenewal[1]}（${guaranteeRenewal[2]}年毎）` : ""}` : undefined);
+  add(guaranteeGeneric && !guaranteeInitial ? `保証会社：${guaranteeGeneric}` : undefined);
+  add(insuranceGeneric && !clubFee ? `損害保険：${insuranceGeneric}` : undefined);
   add(clubFee ? `木下の賃貸友の会加入必須。友の会費${clubFee}（税込）/月額。入居者補償制度（火災保険）、緊急サポートを含む` : undefined);
   add(lockFee ? `鍵交換代${lockFee}（税込）` : undefined);
   add(disinfectionFee ? `消毒代${disinfectionFee}（税込）` : undefined);
@@ -139,8 +147,8 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   fill(result, "lockReplacementFee", lockFee as T["lockReplacementFee"]);
   fill(result, "cleaningFee", cleaningFee as T["cleaningFee"]);
   fill(result, "supportFee", clubFee ? `木下の賃貸友の会費${clubFee}（税込）/月額` as T["supportFee"] : undefined);
-  fill(result, "insuranceFee", clubFee ? "木下の賃貸友の会費に入居者補償制度（火災保険）を含む（金額内訳待確認）" as T["insuranceFee"] : undefined);
-  fill(result, "guaranteeFee", guaranteeInitial ? `木下グループ保証：初回${guaranteeInitial}${guaranteeMonthly ? `、月額利用手数料${guaranteeMonthly}` : ""}${guaranteeRenewal ? `、継続保証委託料${guaranteeRenewal[1]}（${guaranteeRenewal[2]}年毎）` : ""}` as T["guaranteeFee"] : undefined);
+  fill(result, "insuranceFee", (clubFee ? "木下の賃貸友の会費に入居者補償制度（火災保険）を含む（金額内訳待確認）" : insuranceGeneric) as T["insuranceFee"]);
+  fill(result, "guaranteeFee", (guaranteeInitial ? `木下グループ保証：初回${guaranteeInitial}${guaranteeMonthly ? `、月額利用手数料${guaranteeMonthly}` : ""}${guaranteeRenewal ? `、継続保証委託料${guaranteeRenewal[1]}（${guaranteeRenewal[2]}年毎）` : ""}` : guaranteeGeneric) as T["guaranteeFee"]);
   fill(result, "occupancyStatus", /入居日即/u.test(compact) ? "即入居可・内見可" as T["occupancyStatus"] : undefined);
 
   const optional: string[] = [];
