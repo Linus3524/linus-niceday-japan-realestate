@@ -74,8 +74,9 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
   // 先前用一個不含空白的 capture group 去抓站名，「都営大江戸線 両国 徒歩1分」這種
   // 以空白分隔線名與站名的寫法（圖紙最常見）會只抓到「両国」、路線名整個丟掉，
   // 於是同名站的兩條路線（都営 vs JR 両国）在下游被當成同一條動線去重，JR 那條就消失。
-  // 「停歩」是圖紙對「バス停から徒歩」的慣用縮寫，也是錨點。
-  const anchor = /(?:徒歩|停歩)\s*(\d{1,3})\s*分/gu;
+  // 「停歩」是「バス停から徒歩」、「駅歩」是「駅から徒歩」的慣用縮寫；
+  // レオパレス系圖紙更只寫「歩4分」，所以錨點收到單一個「歩」。
+  const anchor = /(?:徒歩|停歩|駅歩|歩)\s*(\d{1,3})\s*分/gu;
 
   for (const line of lines) {
     let cursor = 0;
@@ -93,6 +94,7 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
       // 「バス N 分」之前是路線＋車站，之後是巴士站；徒歩分鐘是走到巴士站的時間。
       let busMin: number | null = null;
       let busStop = "";
+      // 「駅バス11分」＝從該站搭巴士 11 分
       const bus = descriptor.match(/バス\s*(?:乗車\s*)?(\d{1,3})\s*分/u);
       if (bus) {
         busMin = Number(bus[1]);

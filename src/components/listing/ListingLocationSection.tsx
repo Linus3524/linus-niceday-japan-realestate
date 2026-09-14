@@ -117,7 +117,12 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
             </div>
 
             <div className="space-y-2.5">
-              {locationContext.stationWalks.map((walk, idx) => (
+              {locationContext.stationWalks.map((walk, idx) => {
+                // 圖紙寫的是巴士接駁時，這一站的實際步行距離只是參考，要講清楚圖紙口徑
+                const busLeg = walk.source === "flyer"
+                  ? result?.extracted?.transitLegs?.find(leg => leg.busMin && leg.stationName === walk.station)
+                  : undefined;
+                return (
                 <div
                   key={`${walk.station}-${walk.lineName || idx}`}
                   className="flex flex-col justify-between gap-3 border border-[#DDE3DF] bg-white p-3 transition-colors sm:flex-row sm:items-center"
@@ -166,6 +171,12 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                         圖紙未刊載，依物件座標補充之最近車站（實際步行約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘）
                       </p>
                     )}
+                    {busLeg && (
+                      <p className="mt-1 text-[11px] text-[#66736C]">
+                        圖紙為巴士接駁：バス <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.busMin}</span> 分＋徒歩 <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.walkMin}</span> 分
+                        {busLeg.busStop ? `（巴士站 ${busLeg.busStop}）` : ""}；直接步行到車站約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘
+                      </p>
+                    )}
                   </div>
 
                   {/* 3 段速度緊湊膠囊（含每分鐘公尺數標註） */}
@@ -187,7 +198,8 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

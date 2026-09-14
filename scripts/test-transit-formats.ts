@@ -322,6 +322,15 @@ console.log("TransitLeg serialization invariants passed.");
   assert.deepEqual(bus.map(l => [l.lineName, l.stationName, l.walkMin, l.busMin, l.busStop ?? ""]),
     [["JR中央線", "三鷹", 3, 15, "野崎"], ["小田急線", "町田", 2, 12, ""]], "巴士接駁要拆出車程、巴士站與走到巴士站的分鐘");
   assert.deepEqual(serializeTransitLegs(bus), { station: "三鷹,町田", walkTime: "18,14" }, "walkTime 序列化用總分鐘");
+  // レオパレス系圖紙：「駅バス11分 バス停「長沼」歩4分」「「足立小台」駅歩15分」，
+  // 錨點只有一個「歩」、巴士寫成「駅バス」。實測 44221／53807／36941 三張圖紙。
+  const leo = parseTransitAccessLegs("千葉モノレール「スポーツセンター」駅バス11分 バス停「長沼」歩4分");
+  assert.deepEqual(leo.map(l => [l.lineName, l.stationName, l.walkMin, l.busMin, l.busStop]),
+    [["千葉モノレール", "スポーツセンター", 4, 11, "長沼"]]);
+  assert.equal(serializeTransitLegs(leo).walkTime, "15");
+  const ekiho = parseTransitAccessLegs("日暮里・舎人ライナー「足立小台」駅歩15分\n都電荒川線「小台」駅歩12分\n東北本線「尾久」駅歩26分");
+  assert.deepEqual(ekiho.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["日暮里・舎人ライナー", "足立小台", 15], ["都電荒川線", "小台", 12], ["東北本線", "尾久", 26]]);
   const busStopOnly = parseTransitAccessLegs("JR山手線「目黒」駅 徒歩14分\nバス停「目黒車庫」まで徒歩2分");
   assert.deepEqual(busStopOnly.map(l => l.stationName), ["目黒"], "只有巴士站沒有車程的句子不是車站動線");
   console.log("parseTransitAccessLegs line-name extraction passed.");
