@@ -89,16 +89,32 @@ export interface TransitLeg {
 |---|---|---|
 | 1. 先加不拆（型別 + 可選欄位） | ✅ 完成 | `06a24e0` |
 | 2. 雙寫（產生端同時輸出 legs 與舊欄位） | ✅ 完成 | `06a24e0` |
-| 3. 下游逐個切換到讀 legs | 🔄 部分（`reportModel`、`createListingLocationActions` 已切） |
-| 4. 收斂舊欄位為純序列化產物 | ⬜ 未開始 |
+| 3. 下游切換到讀 legs | ✅ 完成 | `06a24e0` `3daa5c1` |
+| 4. 收斂舊欄位為純序列化產物 | ⬜ 未開始（非必要，見下） |
 
-**階段 3 剩餘**：`saleAnalysis.ts`（`evaluateTransitHub`）、
-`rentalMarketPresentation.ts`、`saleMarketPresentation.ts`、
-`listingPdf/document.tsx`、`rentalListingReconciliation.ts`。
+**已切換到 legs 的消費者**：`reportModel`、`createListingLocationActions`、
+`saleMarketPresentation`、`listingPdf/document`、`analyze-listing`
+（`evaluateTransitHub` 輸入）。
 
-**階段 4 的前置條件**：需先確認所有讀 `station`/`walkTime` 的地方都已切換，
-否則收斂會破壞舊分享連結。建議在 `listingAudit` 先加一條「legs 與舊欄位不一致」
-的稽核項，跑一段時間確認沒有告警後再動。
+**刻意不切換**：
+- `rentalMarketPresentation` — 只取第一個數字當代表步行時間，不做 index 配對。
+- `reportModel` 的 `stationSummary` — 只列站名、不配對時間。
+- `rentalListingReconciliation` — 它是**產生端**（PDF 文字層 → 欄位），
+  輸出字串給 `analyze-listing` 再解析，不是消費端。
+
+階段 3 過程中實測抓到一個尚未被發現的錯位 bug（`3daa5c1`）：
+`walkTime="1,,8"` 的空格是「未刊載」的有意義佔位，四處程式碼都把它
+`filter(Boolean)` 濾掉後再用 index 配對，導致後續動線全部位移。
+與 2026-09 的漏失 bug 同源。
+
+**階段 4 的評估**：目前 legs 已是事實來源、舊欄位由 `serializeTransitLegs`
+產生，**錯位風險已經消除**。真正刪掉 `station`/`walkTime` 需要：
+1. 分享連結格式升版與舊連結遷移；
+2. 兩個 immutable baseline fixture 重新產生；
+3. `listingAudit` 的 `auditKeys` 移除這兩個 key（會影響稽核報表欄位）。
+
+成本高而收益低（風險已消除），建議**維持現狀**，除非日後要改分享格式時
+順手一起做。
 
 ---
 
