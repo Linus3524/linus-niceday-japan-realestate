@@ -83,6 +83,25 @@ export interface TransitLeg {
 
 ---
 
+## 進度
+
+| 階段 | 狀態 | commit |
+|---|---|---|
+| 1. 先加不拆（型別 + 可選欄位） | ✅ 完成 | `06a24e0` |
+| 2. 雙寫（產生端同時輸出 legs 與舊欄位） | ✅ 完成 | `06a24e0` |
+| 3. 下游逐個切換到讀 legs | 🔄 部分（`reportModel`、`createListingLocationActions` 已切） |
+| 4. 收斂舊欄位為純序列化產物 | ⬜ 未開始 |
+
+**階段 3 剩餘**：`saleAnalysis.ts`（`evaluateTransitHub`）、
+`rentalMarketPresentation.ts`、`saleMarketPresentation.ts`、
+`listingPdf/document.tsx`、`rentalListingReconciliation.ts`。
+
+**階段 4 的前置條件**：需先確認所有讀 `station`/`walkTime` 的地方都已切換，
+否則收斂會破壞舊分享連結。建議在 `listingAudit` 先加一條「legs 與舊欄位不一致」
+的稽核項，跑一段時間確認沒有告警後再動。
+
+---
+
 ## 4. 建議施作順序
 
 1. **先加不拆**：`TransitLeg` 型別 + `transitLegs` 可選欄位，`station`/`walkTime` 完全不動。
