@@ -160,7 +160,7 @@ function PrefectureSafety({ prefecture }: { prefecture: PrefectureSafetyResult }
 export function SafetyCard({ safety }: Pick<ListingReportPdfProps, "safety">) {
   if (!safety) return null;
   return (
-    <Card title="周邊治安" tag={safety.precision === "chome" ? "警視庁町丁目統計" : "各縣警・総務省統計"} wrap>
+    <Card title="周邊治安" tag={safety.precision === "chome" ? "警視庁町丁目統計" : "各縣警・総務省統計"}>
       {safety.precision === "chome" ? <ChomeSafety crime={safety.chome} /> : <PrefectureSafety prefecture={safety.prefecture} />}
     </Card>
   );
