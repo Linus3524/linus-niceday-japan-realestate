@@ -175,4 +175,45 @@ assert.ok(
 );
 
 console.log("Geospatial station-body clustering and line matching passed.");
+
+// ── 路線 → 運輸型態對照表（由 tokyoTransitGraph 推導，取代手寫白名單）──
+// 兩個站體：一個純地下鐵、一個純地面鐵，看線名會被判到哪一邊。
+const bothModes = osmStationPoints(
+  [osmNode("両国", 35.6961, 139.7931, true), osmNode("両国", 35.6958, 139.7983, false)],
+  origin
+);
+const modeCases: Array<[string, "subway" | "surface"]> = [
+  ["日比谷線", "subway"],              // 省略業者前綴
+  ["東京メトロ日比谷線", "subway"],      // 圖資正式全名
+  ["都営大江戸線", "subway"],
+  ["大江戸線", "subway"],
+  ["横浜市営地下鉄ブルーライン", "subway"],
+  ["大阪市営地下鉄御堂筋線", "subway"],  // 圖資未覆蓋，靠 fallback
+  ["JR総武線", "surface"],
+  ["中央・総武線各停", "surface"],
+  ["山手線", "surface"],
+  ["ゆりかもめ", "surface"],
+  ["つくばエクスプレス", "surface"],
+  // operator 是「都営地下鉄」但實際是路面電車／新交通，不可判為地下鐵。
+  ["都営東京さくらトラム", "surface"],
+  ["都営日暮里・舎人ライナー", "surface"],
+];
+for (const [line, expected] of modeCases) {
+  const picked = nearestOfficialStation(bothModes, "両国", line);
+  assert.ok(picked, `${line} 應能對位到站體`);
+  assert.equal(
+    picked!.hasSubway ? "subway" : "surface", expected,
+    `${line} 應判定為 ${expected}（實際對位到 ${picked!.hasSubway ? "subway" : "surface"} 站體）`
+  );
+}
+
+// 解析不完整時只殘留一兩個字，不可命中任何正式線名而誤判運輸型態。
+for (const fragment of ["線", "駅", "の"]) {
+  const picked = nearestOfficialStation(bothModes, "両国", fragment);
+  assert.ok(picked, `殘片「${fragment}」仍應回傳站體（依距離）`);
+  assert.equal(picked!.distance, Math.min(...bothModes.map(s => s.distance)),
+    `殘片「${fragment}」不可命中線名，應純依距離選最近站體`);
+}
+
+console.log("Rail-line mode table (derived from transit graph) passed.");
 console.log("All transit format regression tests passed successfully! ✓");

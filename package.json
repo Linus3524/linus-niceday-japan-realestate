@@ -18,6 +18,7 @@
     "test:equipment": "tsx scripts/test-equipment-parser.ts",
     "test:transit": "tsx scripts/test-transit-parser.ts",
     "test:transit-formats": "tsx scripts/test-transit-formats.ts",
+    "data:build:line-modes": "tsx scripts/build-line-modes.ts",
     "test:listing-commute": "tsx scripts/test-listing-commute.ts",
     "test:special-sale": "tsx scripts/test-special-sale.ts",
     "test:special-market": "tsx scripts/test-special-sale-market.ts",
