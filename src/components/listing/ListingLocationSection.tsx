@@ -95,6 +95,14 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
           <p key={notice} className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">{notice}</p>
         ))}
 
+        {/* 圖紙文字層顯示的動線比實際讀出的多，代表可能有路線沒被讀到。
+            這種情況使用者無從察覺，必須主動說。 */}
+        {result?.extracted?.transitShortfallNotice && (
+          <p className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">
+            {result.extracted.transitShortfallNotice}
+          </p>
+        )}
+
         {/* 實際步行時間比對：改為緊湊俐落的水平卡片，不再鬆散佔位 */}
         {locationContext.stationWalks.length > 0 && (
           <div className="border border-[#DDE3DF] bg-white p-4">

@@ -274,4 +274,27 @@ assert.notEqual(naiveWalks.length, pairedStations.length,
   "filter(Boolean) 後長度與站數不等，這正是不可用 index 配對的原因");
 
 console.log("TransitLeg serialization invariants passed.");
+
+// 圖紙文字層是唯一不受 AI 判讀影響的基準。analyze-listing 用「徒歩X分」的
+// 出現次數回頭校驗 AI 有沒有漏抄整列——這是 listingAudit 抓不到的情況
+// （AI 只抄一列時 station 與 legs 同時為 1，看起來一致，稽核完全靜默）。
+{
+  const countLegs = (layout: string) =>
+    (layout.normalize("NFKC").match(/徒歩\s*\d+\s*分/g) || []).length;
+
+  // 真實案例：メインステージ両国駅前（同一站兩條路線）
+  const ryogoku = "交通 都営大江戸線 両国 徒歩1分\n  中央・総武線各停 両国 徒歩6分";
+  assert.equal(countLegs(ryogoku), 2, "圖紙兩列動線必須數出 2");
+
+  // AI 只抄第一列時 2 > 1，會觸發提醒
+  assert.ok(countLegs(ryogoku) > 1, "AI 漏抄第二列時必須能被偵測");
+
+  // 全形數字：NFKC 正規化後才數得到
+  assert.equal(countLegs("ＪＲ山手線 五反田 徒歩１４分"), 1, "全形數字須經 NFKC 後命中");
+
+  // 「徒歩」與分鐘之間有空白的排版
+  assert.equal(countLegs("東急目黒線 不動前 徒歩 7 分"), 1, "含空白排版須命中");
+
+  console.log("Layout-text leg count guard passed.");
+}
 console.log("All transit format regression tests passed successfully! ✓");

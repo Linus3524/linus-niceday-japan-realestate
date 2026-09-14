@@ -775,6 +775,30 @@ export default async function handler(req: any, res: any) {
       .map(leg => stripStationOperatorPrefix(leg.stationName))
       .filter((s): s is string => Boolean(s));
     const walkTimes = transitLegs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
+
+    // 交通動線漏抄的最後一道防線。
+    //
+    // listingAudit 的 transit-legs-shortfall 比對的是 station 欄位數與 legs 數，
+    // 抓得到「解析階段漏條」；但如果是 Gemini 自己只抄了第一列，station 與 legs
+    // 會同時是 1、看起來一致，那條稽核完全靜默——2026-09 的漏失就是這樣潛伏的。
+    //
+    // 圖紙文字層是唯一不受 AI 判讀影響的基準：它直接來自 PDF 文字層座標還原，
+    // 上面有幾個「徒歩X分」就是幾條動線。這裡用它回頭校驗 AI 的輸出。
+    if (layoutText) {
+      const advertisedLegCount = (layoutText.normalize("NFKC").match(/徒歩\s*\d+\s*分/g) || []).length;
+      if (advertisedLegCount > transitLegs.length) {
+        console.warn("analyze-listing: 交通動線疑似漏抄", {
+          layoutLegCount: advertisedLegCount,
+          parsedLegCount: transitLegs.length,
+          transitAccess: extracted.transitAccess,
+          station: extracted.station,
+        });
+        extracted.transitShortfallNotice =
+          `圖紙文字層可見 ${advertisedLegCount} 條交通動線，本次僅讀出 ${transitLegs.length} 條；`
+          + `可能有路線未被完整讀取，請以圖紙原文為準。`;
+      }
+    }
+
     const area = parseArea(extracted.area);
 
     // 判斷是買賣圖紙還是租屋圖紙。
