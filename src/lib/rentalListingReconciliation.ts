@@ -1,4 +1,5 @@
 import { reconcileListingLayout } from "./listingLayoutReconciliation.js";
+import { BULLET, LINE_STATION_WALK, isPlausibleStationToken } from "./transitPatterns.js";
 
 type RentalListingFields = {
   dealType?: string;
@@ -99,11 +100,15 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   fill(result, "totalUnits", totalUnits as T["totalUnits"]);
   fill(result, "direction", direction as T["direction"]);
 
-  const transitMatches = [...normalized.matchAll(/([^\s\n]{2,20}線)\s+([^\s\n]+?)(?:駅)?(?=\s*徒歩)\s*徒歩\s*(\d{1,3})分/gu)];
+  // 路線／站名樣式取自 transitPatterns.ts，與 transitParser.ts 共用同一份定義，
+  // 避免兩邊各自維護造成「只改一邊」的漏失。
+  const transitMatches = [...normalized.matchAll(new RegExp(`${BULLET}${LINE_STATION_WALK}`, "gu"))]
+    .filter((match) => isPlausibleStationToken(match[2]));
   if (transitMatches.length) {
-    const transit = transitMatches.map(([, line, station, minutes]) => `${line} ${station.replace(/駅$/u, "")}駅 徒歩${minutes}分`);
+    const cleanStation = (value: string) => value.replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
+    const transit = transitMatches.map(([, line, station, minutes]) => `${line.trim()} ${cleanStation(station)}駅 徒歩${minutes}分`);
     fill(result, "transitAccess", transit.join("\n") as T["transitAccess"]);
-    fill(result, "station", transitMatches.map((match) => match[2].replace(/駅$/u, "")).join(",") as T["station"]);
+    fill(result, "station", transitMatches.map((match) => cleanStation(match[2])).join(",") as T["station"]);
     fill(result, "walkTime", transitMatches.map((match) => match[3]).join(",") as T["walkTime"]);
   }
 

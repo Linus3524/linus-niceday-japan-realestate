@@ -19,6 +19,7 @@ import {
   stripStationOperatorPrefix
 } from "../src/lib/listingExtraction.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
+import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
 import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
@@ -318,14 +319,30 @@ function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedLis
   const raw = (extracted.transitAccess || "").normalize("NFKC");
   if (!raw.trim()) return extracted;
   const pairs: Array<{ station: string; minutes: string }> = [];
-  const pattern = /([^\s、,，;；\n]{1,50}?)駅\s*(?:より)?\s*徒歩\s*(\d{1,3})\s*分/g;
-  for (const match of raw.matchAll(pattern)) {
-    const stationPart = match[1].split(/[／/]/).at(-1) || "";
-    const station = stripStationOperatorPrefix(stationPart);
-    const minutes = Number(match[2]);
-    if (!station || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
-    if (!pairs.some(pair => pair.station === station)) pairs.push({ station, minutes: String(minutes) });
+  const lines = raw.split(/[\r\n；;]+/).map(s => s.trim()).filter(Boolean);
+  // 必須用 g flag 逐行掃出「所有」符合項：同一車站的多條路線常被排版在同一行
+  // （如「東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分」），
+  // 每行只取第一筆會讓第二站之後全部消失。
+  const pattern = /([^\s、,，;；\n]{1,50}?)(?:駅)?\s*(?:より|から)?\s*徒歩\s*(\d{1,3})\s*分/gu;
+
+  for (const line of lines) {
+    for (const match of line.matchAll(pattern)) {
+      const rawPart = match[1];
+      const stationPart = rawPart.split(/[／/\s]+/).at(-1) || "";
+      const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
+      const minutes = Number(match[2]);
+      if (!station || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
+      // 「駅」字改為可選後，バス停・コンビニ・学校等距離描述也會命中，必須擋掉，
+      // 否則 station 欄位會混入非車站文字並破壞後續行情與地圖定位。
+      if (!isPlausibleStationToken(station)) continue;
+      // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
+      // 必須完整輸出成 station="両国,両国" walkTime="1,6"。
+      // 但完全相同的「站名＋分鐘」組合屬於重複刊載，應收斂。
+      if (pairs.some(pair => pair.station === station && pair.minutes === String(minutes))) continue;
+      pairs.push({ station, minutes: String(minutes) });
+    }
   }
+
   if (!pairs.length) return extracted;
   return {
     ...extracted,
@@ -358,11 +375,14 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - 掃描整份文件，找出所有標示的車站與各自的徒步分鐘數。
     - station 只填車站名稱本身，不要包含「JR」「東京メトロ」「都営」「東急」這類營運商前綴，
       也不要包含路線名稱或結尾的「駅」字，例如文件寫「JR新宿駅」時 station 只填「新宿」。
-    - 多個車站時，station 與 walkTime 用逗號分隔，且順序要對應
+    - 多個車站或多條路線時，station 與 walkTime 用逗號分隔，且順序要對應
       （例如 station="新宿,代々木上原" walkTime="8,12"）。
+    - 若同一車站載有多條不同鐵道路線（例如「都営大江戸線 両国 徒歩1分」與「中央・総武線各停 両国 徒歩6分」），
+      此為不同交通動線，station 與 walkTime 必須每一列都分別列出（例如 station="両国,両国" walkTime="1,6"），
+      絕不可因站名相同而只填一列！
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
-    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。
-    - 輸出前逐列點算交通欄：transitAccess 的車站數、station 的車站數、walkTime 的數字數量必須一致。
+    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站或多條路線，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。
+    - 輸出前逐列點算交通欄：transitAccess 的路線數、station 的車站數、walkTime 的數字數量必須一致。
 
     租金與各項租約費用（若為租賃圖紙）：
     - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。

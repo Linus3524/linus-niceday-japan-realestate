@@ -192,14 +192,15 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     if (activeCategory === "all" || activeCategory === "station") {
       stationWalks.forEach((walk, idx) => {
         const [lat, lon] = getStationPoint(walk, coordinate, idx);
-        const stationKey = `station-${idx}-${walk.station}`;
+        const stationKey = `station-${idx}-${walk.station}-${walk.lineName || ""}`;
+        const displayName = walk.lineName ? `${walk.lineName} ${walk.station}駅` : `${walk.station}駅`;
 
         const stationIcon = L.divIcon({
           className: "custom-pin-container",
           html: `
             <div class="custom-capsule-badge station-capsule">
               <span class="pin-icon">🚉</span>
-              <span class="pin-text">${walk.station}駅</span>
+              <span class="pin-text">${displayName}</span>
             </div>
           `,
           iconSize: [0, 0],
@@ -211,13 +212,13 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           .addTo(layerGroup)
           .bindPopup(
             `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
-              <strong style="font-size: 13px; color: #1A2A22;">🚉 ${walk.station}駅</strong><br/>
-              <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : "圖紙刊載車站"}</span><br/>
+              <strong style="font-size: 13px; color: #1A2A22;">🚉 ${displayName}</strong><br/>
+              <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : (walk.lineName ? `圖紙刊載路線（${walk.lineName}）` : "圖紙刊載車站")}</span><br/>
               <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
               <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
                 常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
               </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(walk.station + "駅 " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
+              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(displayName + " " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
                 在 Google 地圖查看 ↗
               </a>
             </div>`
@@ -379,8 +380,8 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   const STATION_CONF = { label: "車站", icon: "🚉", bg: "#E6F6F1", text: "#007D5A", border: "#9EE2CF" };
 
   const stationItems = stationWalks.map((walk, idx) => ({
-    key: `station-${idx}-${walk.station}`,
-    name: `${walk.station}駅`,
+    key: `station-${idx}-${walk.station}-${walk.lineName || ""}`,
+    name: walk.lineName ? `${walk.lineName} ${walk.station}駅` : `${walk.station}駅`,
     distanceMeters: walk.distanceMeters,
     walkMinutes: walk.normalMinutes,
     conf: STATION_CONF,
@@ -448,7 +449,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           font-size: 11px;
           font-weight: 700;
           white-space: nowrap;
-          max-width: 220px;
+          max-width: 280px;
           width: max-content;
           pointer-events: auto;
           cursor: pointer;
@@ -459,7 +460,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          max-width: 170px;
+          max-width: 240px;
         }
         .station-capsule {
           background: #1A2A22;

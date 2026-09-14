@@ -217,3 +217,32 @@ assert.equal(detectUnitFeatures({ specialNotes: "バルコニー南向き日当�
 const dirCase = reconcileRentalListingText({ dealType: "rent" }, "向き 南\n賃料120,000円");
 assert.equal(dirCase.direction, "南");
 console.log("Direction formatting and reconciliation tests passed.");
+
+// 交通路線與多站點全面防漏測試
+import { parseTransitStations } from "../src/lib/transitParser.js";
+
+const multiRouteTransit = "都営大江戸線 両国 徒歩1分\n中央・総武線各停 両国 徒歩6分";
+const parsedStations = parseTransitStations(multiRouteTransit, "両国,両国", "1,6");
+assert.equal(parsedStations.length, 2, "同一車站不同路線必須保留為 2 個獨立卡片");
+assert.equal(parsedStations[0].stationName, "両国");
+assert.equal(parsedStations[0].lineName, "都営大江戸線");
+assert.equal(parsedStations[0].walkMin, 1);
+assert.equal(parsedStations[1].stationName, "両国");
+assert.equal(parsedStations[1].lineName, "中央・総武線各停");
+assert.equal(parsedStations[1].walkMin, 6);
+
+const bracketTransit = "中央・総武線各停「両国」駅 徒歩6分\n都営大江戸線「両国」駅徒歩1分";
+const parsedBracket = parseTransitStations(bracketTransit);
+assert.equal(parsedBracket.length, 2);
+assert.equal(parsedBracket[0].lineName, "中央・総武線各停");
+assert.equal(parsedBracket[0].walkMin, 6);
+assert.equal(parsedBracket[1].lineName, "都営大江戸線");
+assert.equal(parsedBracket[1].walkMin, 1);
+
+const reconciledTransitCase = reconcileRentalListingText({ dealType: "rent" }, "交通 都営大江戸線 両国 徒歩1分\n中央・総武線各停 両国 徒歩6分\n賃料 172,000円");
+assert.equal(reconciledTransitCase.station, "両国,両国");
+assert.equal(reconciledTransitCase.walkTime, "1,6");
+assert.match(reconciledTransitCase.transitAccess!, /都営大江戸線 両国駅 徒歩1分/);
+assert.match(reconciledTransitCase.transitAccess!, /中央・総武線各停 両国駅 徒歩6分/);
+console.log("Multi-route transit parsing and reconciliation tests passed.");
+

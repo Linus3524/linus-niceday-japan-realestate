@@ -2,6 +2,13 @@ import { districtStations as dsHousing } from "../data/housingMarket.js";
 import { districtStations as dsStation } from "../data/stationData.js";
 import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
 import { toJapaneseStationName, toJapanesePlaceName } from "./transit.js";
+import {
+  BULLET,
+  LINE_STATION_WALK,
+  STATION_WALK,
+  isPlausibleStationToken,
+  normalizeLineKey,
+} from "./transitPatterns.js";
 
 export interface ParsedStationItem {
   stationName: string;
@@ -105,7 +112,7 @@ export function parseTransitStations(
       const station = cleanStationName(rawStation);
       if (!station) return;
 
-      // 統一以日文正規站名作為去重鍵（防止「桜台(東京)」與「桜台」、或中日漢字差異導致重複）
+      // 統一以日文正規站名作為標準名稱
       const normKey = toJapaneseStationName(station);
       const officialLines = lookupStationLines(station);
 
@@ -113,46 +120,73 @@ export function parseTransitStations(
       const cleanLinePart = linePart ? linePart.replace(/^[◎●◆■※・\s]+|[／/「」『』《》〈〉【】\[\]［］〔〕〖〗〘〙]/gu, "").trim() : "";
       const mergedLine = cleanLinePart || officialLines;
 
-      const existing = seenMap.get(normKey);
-      if (existing) {
-        // 既有車站：進行智慧合併，不重複生成卡片
-        if (walk !== null && walk !== undefined && !isNaN(walk) && (existing.walkMin === null || walk < existing.walkMin)) {
-          existing.walkMin = walk;
-        }
-        if (!existing.lineName && (cleanLinePart || officialLines)) {
-          existing.lineName = cleanLinePart || officialLines;
-        } else if (cleanLinePart && !existing.lineName.includes(cleanLinePart)) {
-          existing.lineName = existing.lineName ? `${existing.lineName}・${cleanLinePart}` : cleanLinePart;
+      const walkValue = walk !== null && walk !== undefined && !isNaN(walk) ? walk : null;
+
+      // 若有明確路線名稱，以「正規化路線_站名」作為唯一鍵，避免將同一車站不同路線
+      // （如都営大江戸線 vs 中央・総武線各停）誤判為重複。
+      // 路線名必須先正規化，否則同一條線的不同寫法（「JR中央・総武線各停」／「中央・総武線各停」
+      // ／「総武線各停」）會產生三張內容相同的重複卡片。
+      const routeKey = cleanLinePart ? `${normalizeLineKey(cleanLinePart)}_${normKey}` : null;
+
+      if (routeKey && seenMap.has(routeKey)) {
+        const existing = seenMap.get(routeKey)!;
+        if (walkValue !== null && (existing.walkMin === null || walkValue < existing.walkMin)) {
+          existing.walkMin = walkValue;
         }
         return;
+      }
+
+      // 無路線名稱時（step 2 由 station/walkTime 補位），僅在「步行時間相同或未知」時才合併。
+      // 圖紙寫 station="両国,両国" walkTime="1,6" 代表兩條不同動線（地鐵 1 分、JR 6 分），
+      // 若無條件依站名折疊，會把第二條動線連同它的步行時間一起吞掉。
+      if (!cleanLinePart) {
+        const sameStation = items.filter(it => toJapaneseStationName(it.stationName) === normKey);
+        if (sameStation.length) {
+          const mergeable = walkValue === null
+            ? sameStation[0]
+            : sameStation.find(it => it.walkMin === null || it.walkMin === walkValue);
+          if (mergeable) {
+            if (walkValue !== null && (mergeable.walkMin === null || walkValue < mergeable.walkMin)) {
+              mergeable.walkMin = walkValue;
+            }
+            return;
+          }
+          // 同站名但步行時間不同 → 視為另一條動線，繼續往下新增卡片。
+        }
       }
 
       const newItem: ParsedStationItem = {
         stationName: station,
         lineName: mergedLine || officialLines,
-        walkMin: walk !== null && walk !== undefined && !isNaN(walk) ? walk : null,
+        walkMin: walkValue,
         rawText: rawClause,
       };
-      seenMap.set(normKey, newItem);
+      if (routeKey) {
+        seenMap.set(routeKey, newItem);
+      } else {
+        seenMap.set(normKey, newItem);
+      }
       items.push(newItem);
     };
 
     // 1. 若圖紙有抓出完整交通欄文字（transitAccess），優先精準切分行與子句
     if (transitAccess && transitAccess.trim()) {
       const normalized = transitAccess.normalize("NFKC");
-      // 切分各車站條目：支援換行、分號、逗號，以及條目間的斜線（如 '徒歩6分 / 東京メトロ...'）或以空格隔開的後續路線，支援項目符號
+      // 切分各車站條目：支援換行、分號、逗號，以及條目間的斜線或空格隔開的後續路線，支援項目符號
       const splitRegex = /(?:[\r\n；;]+|(?:、|(?<!\d)[,，](?!\d))|(?<=[分秒歩])\s*[／/]\s*|\s+[／/]\s*|(?<=[分秒])\s+(?=(?:[◎●◆■※・\s]*(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい|[^\s／/「」駅]+(?:線|駅))))|[／/](?=\s*(?:JR|東京メトロ|都営|東急|京王|小田急|西武|東武|京急|京成|相鉄|つくば|ゆりかもめ|りんかい))|(?<=[分秒])\s*(?=[◎●◆■※]))/gu;
       const clauses = normalized
         .split(splitRegex)
         .map(s => s.trim())
         .filter(Boolean);
 
+      // 路線／站名樣式一律取自 transitPatterns.ts，與 rentalListingReconciliation.ts 共用同一份定義。
+      const lineRegex = new RegExp(`^${BULLET}${LINE_STATION_WALK}`, "u");
+      const stationOnlyRegex = new RegExp(`^${BULLET}${STATION_WALK}`, "u");
+
       for (const clause of clauses) {
         // 句型 A：[路線名] [車站名] 徒歩[分鐘]分
-        // 例："西武池袋線 桜台(東京)駅 徒歩3分"、"西武池袋線／桜台駅 徒歩3分"、"◎東京メトロ有楽町線[要町] 徒歩9分"
-        const matchWithLine = clause.match(
-          /^([◎●◆■※・\s]*.+?(?:線|ライン|トラム|電車|地下鉄|メトロ|JR|[A-Za-z0-9]+))[\s／/「『【\[［]+([^\s／/「」『』【】\[\]［］駅徒歩]+)[」』】\]］]?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/u
-        );
+        // 例："中央・総武線各停 両国 徒歩6分"、"都営大江戸線「両国」駅徒歩1分"、"西武池袋線 桜台(東京)駅 徒歩3分"
+        const matchWithLine = clause.match(lineRegex);
         if (matchWithLine) {
           const linePart = matchWithLine[1];
           const station = matchWithLine[2];
@@ -162,13 +196,14 @@ export function parseTransitStations(
         }
 
         // 句型 B：[車站名] 徒歩[分鐘]分（無前置路線名）
-        // 例："大塚駅 徒歩6分"、"練馬 徒歩7分"、"[大山] 徒歩17分"
-        const matchStationOnly = clause.match(
-          /^[◎●◆■※・\s]*[「『【\[［]?([^\s／/「」『』【】\[\]［］駅徒歩]+)[」』】\]］]?(?:駅)?\s*(?:より)?\s*(?:徒歩|歩)\s*(\d{1,3})\s*分/u
-        );
+        // 例："大塚駅 徒歩6分"、"両国 徒歩1分"、"[大山] 徒歩17分"
+        const matchStationOnly = clause.match(stationOnlyRegex);
         if (matchStationOnly) {
           const station = matchStationOnly[1];
           const walk = Number(matchStationOnly[2]);
+          // 「駅」字可選，因此必須擋掉バス停・コンビニ・小学校等非車站文字，
+          // 否則生活機能距離會被誤登錄成交通動線。
+          if (!isPlausibleStationToken(station)) continue;
           registerStation(station, null, isNaN(walk) ? null : walk, clause);
           continue;
         }
@@ -240,7 +275,8 @@ export function evaluateTransitHub(
   const primaryMajor = majorCandidates[0] || null;
 
   const validWalkStations = parsed.filter(p => p.walkMin !== null && p.walkMin <= 20);
-  const totalStations = validWalkStations.length > 0 ? validWalkStations.length : parsed.length;
+  const uniqueStationCount = new Set(validWalkStations.map(p => p.jp)).size || new Set(parsed.map(p => p.jp)).size;
+  const totalStations = uniqueStationCount;
   const allLines = Array.from(new Set(parsed.flatMap(p => p.lines)));
 
   if (primaryMajor) {
@@ -268,6 +304,16 @@ export function evaluateTransitHub(
       totalLinesCount: allLines.length,
       ratePercent: 3,
       note: `可利用 ${totalStations} 座車站（${allLines.length} 條路線），具備多路線通勤彈性與替代動線優勢`,
+    };
+  } else if (allLines.length >= 2 && validWalkStations.some(p => p.walkMin !== null && p.walkMin <= 10)) {
+    return {
+      hasMajorTerminal: false,
+      majorStation: null,
+      majorWalkMinutes: null,
+      totalStations,
+      totalLinesCount: allLines.length,
+      ratePercent: 2,
+      note: `徒步圈可利用 ${allLines.join("・")} 等 ${allLines.length} 條鐵道路線，具備雙鐵路通勤動線優勢`,
     };
   }
 

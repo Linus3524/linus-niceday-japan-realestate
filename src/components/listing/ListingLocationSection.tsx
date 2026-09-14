@@ -109,14 +109,19 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
             </div>
 
             <div className="space-y-2.5">
-              {locationContext.stationWalks.map(walk => (
+              {locationContext.stationWalks.map((walk, idx) => (
                 <div
-                  key={walk.station}
+                  key={`${walk.station}-${walk.lineName || idx}`}
                   className="flex flex-col justify-between gap-3 border border-[#DDE3DF] bg-white p-3 transition-colors sm:flex-row sm:items-center"
                 >
                   {/* 車站與距離 */}
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {walk.lineName && (
+                        <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-bold text-[#1A2A22]">
+                          {walk.lineName}
+                        </span>
+                      )}
                       <span className="text-sm font-black text-[#1A2A22]">{walk.station}駅</span>
                       <span className={`border px-2 py-0.5 text-[10px] font-semibold ${walk.source === "nearby"
                           ? "border-[#C9D2CD] bg-[#F5F8F6] text-[#66736C]"

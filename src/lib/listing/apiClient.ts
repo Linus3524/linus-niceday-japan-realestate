@@ -7,7 +7,7 @@ export interface AnalyzeListingRequest {
   layoutText: string;
 }
 export type ListingLocationRequest =
-  | { mode: 'context'; address: string; stations: string[]; advertisedWalkMinutes: Array<number | null> }
+  | { mode: 'context'; address: string; stations: string[]; advertisedWalkMinutes: Array<number | null>; stationLines?: string[] }
   | { mode: 'crime'; address: string }
   | { mode: 'commute'; originStation: string; originWalkMinutes: number | undefined; originAdvertisedMinutes: number | null | undefined; addressContext: string; destination: string };
 

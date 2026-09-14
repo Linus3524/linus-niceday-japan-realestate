@@ -5,6 +5,7 @@ import {
 } from '../lib/listing/apiClient';
 import type { AnalyzeListingResult, ListingCommuteResult } from '../lib/listing/types';
 import type { ListingLocationContext } from "../lib/listingLocation";
+import { parseTransitStations } from "../lib/transitParser";
 import type { ListingState } from './useListingState';
 
 type Context = Pick<ListingState,
@@ -59,16 +60,26 @@ export function createListingLocationActions(context: Context) {
       setLocationError("圖紙上未載明完整地址，因此無法進行精確步行與生活機能定位。");
       return;
     }
-    const stations = (analysis?.extracted?.station || "").split(/[,，]/).map(v => v.trim()).filter(Boolean);
-    const advertisedWalkMinutes = (analysis?.extracted?.walkTime || "")
-      .split(/[,，]/)
-      .map(v => Number(v.match(/\d+/)?.[0]))
-      .map(v => Number.isFinite(v) ? v : null);
+    const stationItems = parseTransitStations(
+      analysis?.extracted?.transitAccess,
+      analysis?.extracted?.station,
+      analysis?.extracted?.walkTime
+    );
+    const stations = stationItems.length > 0
+      ? stationItems.map(item => item.stationName)
+      : (analysis?.extracted?.station || "").split(/[,，]/).map(v => v.trim()).filter(Boolean);
+    const advertisedWalkMinutes = stationItems.length > 0
+      ? stationItems.map(item => item.walkMin)
+      : (analysis?.extracted?.walkTime || "")
+          .split(/[,，]/)
+          .map(v => Number(v.match(/\d+/)?.[0]))
+          .map(v => Number.isFinite(v) ? v : null);
+    const stationLines = stationItems.map(item => item.lineName);
 
     setLocationLoading(true);
     setLocationError(null);
     try {
-      const response = await requestListingLocation({ mode: "context", address, stations, advertisedWalkMinutes });
+      const response = await requestListingLocation({ mode: "context", address, stations, advertisedWalkMinutes, stationLines });
       const body = await response.json().catch(() => null);
       if (!task.current()) return;
       if (!response.ok) throw new Error(body?.error || "位置資料暫時無法取得。");

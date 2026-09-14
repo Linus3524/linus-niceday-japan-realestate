@@ -1,0 +1,195 @@
+{
+  "description": "日本不動產圖紙「交通」欄的真實排版格式清單。每次改動 transitPatterns.ts / transitParser.ts 都必須全綠。expect 以出現順序列出應解析出的動線；lineName 為 null 代表圖紙未載明路線、允許由圖資補足。",
+  "cases": [
+    {
+      "label": "同一車站兩條不同路線（原始漏失案例：JR総武線整條消失）",
+      "transitAccess": "都営大江戸線「両国」駅 徒歩1分\n中央・総武線各停「両国」駅 徒歩6分",
+      "expect": [
+        { "lineName": "都営大江戸線", "stationName": "両国", "walkMin": 1 },
+        { "lineName": "中央・総武線各停", "stationName": "両国", "walkMin": 6 }
+      ]
+    },
+    {
+      "label": "同一車站三條路線（各停與快速屬不同月台，不可合併）",
+      "transitAccess": "都営大江戸線「両国」駅 徒歩1分\n中央・総武線各停「両国」駅 徒歩6分\n総武快速線「錦糸町」駅 徒歩12分",
+      "expect": [
+        { "lineName": "都営大江戸線", "stationName": "両国", "walkMin": 1 },
+        { "lineName": "中央・総武線各停", "stationName": "両国", "walkMin": 6 },
+        { "lineName": "総武快速線", "stationName": "錦糸町", "walkMin": 12 }
+      ]
+    },
+    {
+      "label": "含「徒」字的正式站名：御徒町（字元類別誤排除會整列消失）",
+      "transitAccess": "JR山手線「御徒町」駅 徒歩3分",
+      "expect": [{ "lineName": "JR山手線", "stationName": "御徒町", "walkMin": 3 }]
+    },
+    {
+      "label": "含「徒」字站名：新御徒町",
+      "transitAccess": "都営大江戸線「新御徒町」駅 徒歩2分",
+      "expect": [{ "lineName": "都営大江戸線", "stationName": "新御徒町", "walkMin": 2 }]
+    },
+    {
+      "label": "含「徒」字站名：仲御徒町",
+      "transitAccess": "東京メトロ日比谷線「仲御徒町」駅 徒歩4分",
+      "expect": [{ "lineName": "東京メトロ日比谷線", "stationName": "仲御徒町", "walkMin": 4 }]
+    },
+    {
+      "label": "含「徒」字站名且無路線前綴（句型 B）",
+      "transitAccess": "御徒町駅 徒歩3分",
+      "expect": [{ "lineName": null, "stationName": "御徒町", "walkMin": 3 }]
+    },
+    {
+      "label": "愛稱即完整路線名、後面不接「線」：ゆりかもめ",
+      "transitAccess": "ゆりかもめ「お台場海浜公園」駅 徒歩4分",
+      "expect": [{ "lineName": "ゆりかもめ", "stationName": "お台場海浜公園", "walkMin": 4 }]
+    },
+    {
+      "label": "愛稱即完整路線名：つくばエクスプレス",
+      "transitAccess": "つくばエクスプレス「新御徒町」駅 徒歩3分",
+      "expect": [{ "lineName": "つくばエクスプレス", "stationName": "新御徒町", "walkMin": 3 }]
+    },
+    {
+      "label": "愛稱即完整路線名：江ノ電",
+      "transitAccess": "江ノ電「鎌倉高校前」駅 徒歩5分",
+      "expect": [{ "lineName": "江ノ電", "stationName": "鎌倉高校前", "walkMin": 5 }]
+    },
+    {
+      "label": "同一條路線的不同寫法必須收斂為一張卡",
+      "transitAccess": "JR中央・総武線各停「両国」駅 徒歩6分\n中央・総武線各停「両国」駅 徒歩6分\n総武線各停「両国」駅 徒歩6分",
+      "expect": [{ "lineName": "JR中央・総武線各停", "stationName": "両国", "walkMin": 6 }]
+    },
+    {
+      "label": "相互直通線：相鉄・JR直通線",
+      "transitAccess": "相鉄・JR直通線「羽沢横浜国大」駅 徒歩8分",
+      "expect": [{ "lineName": "相鉄・JR直通線", "stationName": "羽沢横浜国大", "walkMin": 8 }]
+    },
+    {
+      "label": "斜線分隔的多站排版",
+      "transitAccess": "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分",
+      "expect": [
+        { "lineName": "東急目黒線", "stationName": "不動前", "walkMin": 7 },
+        { "lineName": "JR山手線", "stationName": "五反田", "walkMin": 14 }
+      ]
+    },
+    {
+      "label": "四站以空格與斜線混排（グランドメゾン大塚台實際圖紙）",
+      "transitAccess": "ＪＲ山手線 大塚駅 徒歩6分 / 東京メトロ丸ノ内線 新大塚駅 徒歩7分 / 東京メトロ有楽町線 東池袋駅 徒歩10分 / 都電荒川線 向原駅 徒歩1分",
+      "expect": [
+        { "lineName": "JR山手線", "stationName": "大塚", "walkMin": 6 },
+        { "lineName": "東京メトロ丸ノ内線", "stationName": "新大塚", "walkMin": 7 },
+        { "lineName": "東京メトロ有楽町線", "stationName": "東池袋", "walkMin": 10 },
+        { "lineName": "都電荒川線", "stationName": "向原", "walkMin": 1 }
+      ]
+    },
+    {
+      "label": "軌道系統：都電荒川線",
+      "transitAccess": "都電荒川線「向原」駅 徒歩2分",
+      "expect": [{ "lineName": "都電荒川線", "stationName": "向原", "walkMin": 2 }]
+    },
+    {
+      "label": "新交通：日暮里・舎人ライナー",
+      "transitAccess": "日暮里・舎人ライナー「扇大橋」駅 徒歩9分",
+      "expect": [{ "lineName": "日暮里・舎人ライナー", "stationName": "扇大橋", "walkMin": 9 }]
+    },
+    {
+      "label": "モノレール",
+      "transitAccess": "東京モノレール「天王洲アイル」駅 徒歩6分",
+      "expect": [{ "lineName": "東京モノレール", "stationName": "天王洲アイル", "walkMin": 6 }]
+    },
+    {
+      "label": "私鐵愛稱：東武スカイツリーライン",
+      "transitAccess": "東武スカイツリーライン「曳舟」駅 徒歩6分",
+      "expect": [{ "lineName": "東武スカイツリーライン", "stationName": "曳舟", "walkMin": 6 }]
+    },
+    {
+      "label": "列車種別緊接線名：JR埼京線快速",
+      "transitAccess": "JR埼京線快速「戸田公園」駅 徒歩11分",
+      "expect": [{ "lineName": "JR埼京線快速", "stationName": "戸田公園", "walkMin": 11 }]
+    },
+    {
+      "label": "列車種別：小田急小田原線各停",
+      "transitAccess": "小田急小田原線各停「東北沢」駅 徒歩4分",
+      "expect": [{ "lineName": "小田急小田原線各停", "stationName": "東北沢", "walkMin": 4 }]
+    },
+    {
+      "label": "橫濱市營地下鐵ブルーライン",
+      "transitAccess": "横浜市営地下鉄ブルーライン「新羽」駅 徒歩12分",
+      "expect": [{ "lineName": "横浜市営地下鉄ブルーライン", "stationName": "新羽", "walkMin": 12 }]
+    },
+    {
+      "label": "站名帶括號都道府縣註記（全角括號）",
+      "transitAccess": "JR中央線「吉祥寺（東京）」駅 徒歩10分",
+      "expect": [{ "lineName": "JR中央線", "stationName": "吉祥寺", "walkMin": 10 }]
+    },
+    {
+      "label": "站名帶括號都道府縣註記（半角括號、無引號）",
+      "transitAccess": "西武池袋線 桜台(東京)駅 徒歩3分",
+      "expect": [{ "lineName": "西武池袋線", "stationName": "桜台", "walkMin": 3 }]
+    },
+    {
+      "label": "路線與站名之間完全無空格",
+      "transitAccess": "都営大江戸線「両国」駅徒歩1分",
+      "expect": [{ "lineName": "都営大江戸線", "stationName": "両国", "walkMin": 1 }]
+    },
+    {
+      "label": "全角數字徒步時間",
+      "transitAccess": "都営大江戸線「両国」駅 徒歩１分",
+      "expect": [{ "lineName": "都営大江戸線", "stationName": "両国", "walkMin": 1 }]
+    },
+    {
+      "label": "「より徒歩」表記",
+      "transitAccess": "JR山手線「五反田」駅より徒歩14分",
+      "expect": [{ "lineName": "JR山手線", "stationName": "五反田", "walkMin": 14 }]
+    },
+    {
+      "label": "項目符號前綴與方括號站名",
+      "transitAccess": "◎東京メトロ有楽町線[要町] 徒歩9分",
+      "expect": [{ "lineName": "東京メトロ有楽町線", "stationName": "要町", "walkMin": 9 }]
+    },
+    {
+      "label": "巴士站不可被誤登錄為車站動線",
+      "transitAccess": "JR山手線「目黒」駅 徒歩14分\nバス停「目黒車庫」まで徒歩2分",
+      "expect": [{ "lineName": "JR山手線", "stationName": "目黒", "walkMin": 14 }]
+    },
+    {
+      "label": "生活機能距離不可被誤登錄為車站動線",
+      "transitAccess": "コンビニまで徒歩3分",
+      "expect": []
+    },
+    {
+      "label": "完全無路線文字時仍須由圖資補足路線",
+      "transitAccess": "大塚駅 徒歩6分 / 新大塚駅 徒歩7分 / 東池袋駅 徒歩10分",
+      "expect": [
+        { "lineName": null, "stationName": "大塚", "walkMin": 6 },
+        { "lineName": null, "stationName": "新大塚", "walkMin": 7 },
+        { "lineName": null, "stationName": "東池袋", "walkMin": 10 }
+      ]
+    }
+  ],
+  "fallbackCases": [
+    {
+      "label": "無 transitAccess，station/walkTime 載明同站兩條動線",
+      "station": "両国,両国",
+      "walkTime": "1,6",
+      "expect": [
+        { "stationName": "両国", "walkMin": 1 },
+        { "stationName": "両国", "walkMin": 6 }
+      ]
+    },
+    {
+      "label": "無 transitAccess，同站同步行時間屬重複刊載應收斂",
+      "station": "両国,両国",
+      "walkTime": "1,1",
+      "expect": [{ "stationName": "両国", "walkMin": 1 }]
+    },
+    {
+      "label": "無 transitAccess，兩個不同車站",
+      "station": "五反田,不動前",
+      "walkTime": "14,7",
+      "expect": [
+        { "stationName": "五反田", "walkMin": 14 },
+        { "stationName": "不動前", "walkMin": 7 }
+      ]
+    }
+  ]
+}

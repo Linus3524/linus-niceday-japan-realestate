@@ -59,8 +59,11 @@ export default async function handler(req: any, res: any) {
     if (mode === "context") {
       const address = cleanString(req.body?.address);
       const stations = stationList(req.body?.stations);
+      const stationLines = Array.isArray(req.body?.stationLines)
+        ? req.body.stationLines.map((l: any) => cleanString(l, 50)).slice(0, 5)
+        : [];
       if (!address) return res.status(400).json({ error: "圖紙上沒有可定位的地址。" });
-      const context = await getListingLocationContext(address, stations, walkMinutes(req.body?.advertisedWalkMinutes));
+      const context = await getListingLocationContext(address, stations, walkMinutes(req.body?.advertisedWalkMinutes), stationLines);
       if (!context) return res.status(200).json({ found: false, message: "目前無法把圖紙地址定位到地圖，第一階段價格分析不受影響。" });
       return res.status(200).json({ found: true, context });
     }

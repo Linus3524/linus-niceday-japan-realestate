@@ -154,6 +154,24 @@ try {
   await verifyListingRaces(run, analysis, encoded);
   assert.deepEqual(errors, [], "No uncaught browser errors");
   const expected = JSON.parse(await readFile(fixturePath, "utf8"));
+  // 交通動線修復後，location context 請求額外帶上 stationLines，讓後端能區分
+  // 同名站的不同路線（如都営大江戸線「両国」vs 中央・総武線各停「両国」）。
+  // 歷史 baseline 保持不動：先單獨斷言這個新欄位確實送出，再從比對對象中移除。
+  const locationRequests: unknown[] = [];
+  const withoutStationLines = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(withoutStationLines);
+    if (value && typeof value === "object") {
+      const record = value as Record<string, unknown>;
+      const payload = record.payload as Record<string, unknown> | undefined;
+      if (payload && payload.mode === "context" && "stationLines" in payload) {
+        locationRequests.push(payload.stationLines);
+        const { stationLines: _dropped, ...rest } = payload;
+        return { ...record, payload: withoutStationLines(rest) };
+      }
+      return Object.fromEntries(Object.entries(record).map(([key, item]) => [key, withoutStationLines(item)]));
+    }
+    return value;
+  };
   // The historical fixture stays immutable. Only the explicitly fixed race
   // checkpoints use new assertions; unaffected form/API results keep the baseline.
   const changed = new Set(["preview-reverse-completion", "preview-completes-after-removal", "analysis-loading-guard-and-file-switch", "analysis-old-file-response", "analysis-current-file-response", "shared-unmount-ignores-rejection"]);
@@ -169,8 +187,16 @@ try {
       // fails. Preserve other historical contracts and assert this correction.
       const refreshed = pipeline.indexOf(name) >= pipeline.indexOf("commute-request-and-loading-guard");
       assert.deepEqual(actual.state, refreshed ? { ...old.state, prefectureSafety: null } : old.state, name + " state");
-      assert.deepEqual(actual.pending, old.pending, name + " requests");
-    } else assert.deepEqual(value, expected.snapshots[name], name);
+      assert.deepEqual(withoutStationLines(actual.pending), old.pending, name + " requests");
+    } else assert.deepEqual(withoutStationLines(value), expected.snapshots[name], name);
+  }
+
+  // stationLines 必須真的送出且與 stations 等長，否則後端無法區分同名站的不同路線。
+  assert.ok(locationRequests.length > 0, "location context 請求必須帶上 stationLines");
+  for (const lines of locationRequests) {
+    assert.ok(Array.isArray(lines), "stationLines 應為陣列");
+    assert.ok((lines as unknown[]).every(line => typeof line === "string"),
+      "stationLines 每一項都應為字串（無路線時為空字串）");
   }
   assert.deepEqual(checkpoint("analysis-current-file-response").state.result, analysis);
   assert.equal(checkpoint("shared-unmount-ignores-rejection").state.result, null);
