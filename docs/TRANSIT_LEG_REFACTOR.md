@@ -116,16 +116,36 @@ npm run build
 **額外要驗**：
 - 舊分享連結（無 `transitLegs` 欄位）仍能正確渲染交通區塊。
 - `両国` 雙路線案例在 UI、PDF、地圖三處都顯示 2 條動線。
-- 售價多因子的「交通樞紐」`ratePercent` 與重構前完全一致
-  （目前 `applied: false`，僅顯示不參與計算——若要讓它生效是另一個決策，不屬本次範圍）。
+- 售價多因子的「交通樞紐」`ratePercent` 與重構前完全一致。
+  （注意：該因子目前不參與最終估價計算，詳見第 6 節——所以此項只需驗
+  `ratePercent` 顯示值不變，不必驗估價金額。）
 
 ---
 
 ## 6. 本次未處理、留給後續的項目
 
-- **交通樞紐因子未生效**：`salePrice.ts` 的「交通樞紐」`factors.push({ applied: false })`，
-  代表 `ratePercent` 只顯示不計算。新增的「雙鐵路優勢 `ratePercent: 2`」分支因此
-  不會改變任何估價數字。要讓它生效需要產品決策 + 回歸估價 baseline。
+- **區位類因子整組不參與估價計算**（正確路徑為
+  `src/lib/requirementVerdicts/salePrice.ts`）。這不只是交通樞紐一項，而是既有設計：
+
+  ```js
+  // 屋齡／車站距離各自算了 rate，但最終價格沒有用到它們
+  appliedRate      = (1 + occupancyRate) * (1 + incomeRate) - 1;
+  expectedPriceYen = areaBaseline * (1 + appliedRate);
+  ```
+
+  `ageRate`、`walkRate` 有被計算卻未進入 `appliedRate`；`factors` 裡的
+  `applied: false` 是**給 UI 的標記**（該因子是否真的計入），屋齡、車站距離、
+  樓層、交通樞紐全為 `false`，僅「現況／收益還原」為 `true`。
+
+  因此新增的「雙鐵路優勢 `ratePercent: 2`」確實不會改變估價金額——原因是整組
+  區位因子都不計價，而非該項被單獨關閉。
+
+  **這是本次未觸碰的既有行為。** 可能是刻意（面積基準已隱含區位，避免重複計價），
+  也可能是遺留。要讓它生效會直接變動所有物件的估價數字，屬產品決策，
+  需先確認意圖並重跑估價 baseline。
+
+  ⚠️ 使用者感知風險：報告顯示「交通樞紐 +2%」但估價數字不動，容易誤解。
+  若短期不打算讓它計價，建議 UI 明確區分「參考指標」與「計價因子」。
 - **通勤路由重複呼叫**：同站多路線時會對同一站體重複呼叫路由 API，
   結果正確但浪費配額。可在 `getListingLocationContext` 依站體座標做 memo。
 - **`SUBWAY_LINE_KEYWORDS` / `SURFACE_LINE_KEYWORDS` 仍是硬編碼**。
