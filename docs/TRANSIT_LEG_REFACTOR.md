@@ -107,14 +107,43 @@ export interface TransitLeg {
 `filter(Boolean)` 濾掉後再用 index 配對，導致後續動線全部位移。
 與 2026-09 的漏失 bug 同源。
 
-**階段 4 的評估**：目前 legs 已是事實來源、舊欄位由 `serializeTransitLegs`
-產生，**錯位風險已經消除**。真正刪掉 `station`/`walkTime` 需要：
-1. 分享連結格式升版與舊連結遷移；
-2. 兩個 immutable baseline fixture 重新產生；
-3. `listingAudit` 的 `auditKeys` 移除這兩個 key（會影響稽核報表欄位）。
+## 階段 4：查證後結論為「不該做」
 
-成本高而收益低（風險已消除），建議**維持現狀**，除非日後要改分享格式時
-順手一起做。
+原先寫「成本高收益低」，查證後發現理由不對——真正的原因更根本：
+
+### `station` / `walkTime` 不是衍生資料，是原始輸入
+
+```
+api/analyze-listing.ts L560-561（Gemini 輸出 schema）
+  station:  { type: STRING, description: "所有車站名稱，逗號分隔" }
+  walkTime: { type: STRING, description: "對應車站的徒步分鐘數…" }
+```
+
+AI 直接從圖紙讀出這兩個字串，`transitLegs` 是**從它們解析出來的**。
+方向與我原先的假設相反：不是「legs → 序列化成舊欄位」，而是
+「AI 原文 → 解析成 legs」。刪掉它們等於刪掉 AI 的原始輸出。
+
+### 稽核層刻意保留原文對照
+
+`listingAudit` L54：`entry("station", "車站")` 會比對
+`sourceValues.station`（AI 原文）與現值，不同時把 `status` 標為
+`calculated`，讓使用者看到「這個值被程式修正過」。
+`sourceValues` 的整個用途就是保存 AI 原始輸出供人工核對。
+
+移除這兩個 key 會讓交通欄位失去原文對照，是**降低透明度**而非清理技術債。
+
+### 分享連結其實不是阻礙
+
+`SHARE_TTL_SECONDS = 14 天`（`src/lib/listingShare.ts` L16），
+Redis 自動過期，不需要遷移。這項原先被我列為阻礙，是錯的。
+
+### 結論
+
+階段 1-3 已經拿到全部收益：legs 是交通動線的事實來源、所有做 index
+配對的消費者都已切換、錯位風險結構性消除。
+
+階段 4 **不執行**。`station`/`walkTime` 保留為
+「AI 原始輸出＋對外相容欄位」，這是正確的架構位置，不是殘留。
 
 ---
 

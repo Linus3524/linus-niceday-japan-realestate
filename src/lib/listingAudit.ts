@@ -6,9 +6,12 @@ import type { TransitLeg } from "./transitParser.js";
 export interface AuditFields extends SpecialSaleFields, RentalConditionFields {
   rent?: string; managementFee?: string; deposit?: string; keyMoney?: string;
   /**
-   * 交通動線的唯一事實來源（路線×車站×步行時間綁在一起）。
-   * `station` / `walkTime` 是由此序列化而來的相容欄位——舊分享連結沒有
-   * `transitLegs`，此時才反過來以那兩個字串為準。
+   * 交通動線結構化結果（路線×車站×步行時間綁在一起），下游一律以此為準。
+   *
+   * 注意資料方向：`station` / `walkTime` 是 **Gemini 的原始輸出**
+   * （見 analyze-listing 的 schema），legs 是從它們解析出來的，
+   * 不是反過來。兩個舊欄位因此必須保留——它們同時是 AI 原文（供
+   * `sourceValues` 稽核對照）與對外相容欄位。
    */
   transitLegs?: TransitLeg[];
   station?: string; walkTime?: string; address?: string; landRights?: string;
@@ -53,6 +56,24 @@ export function buildListingAudit(fields: AuditFields, mode: "sale" | "rent"): L
   if (area === null) add("missing-area", "missing", "適用面積缺漏，不能計算單價或判定面積條件。", true);
   entry("station", "車站"); entry("walkTime", "圖紙徒步時間");
   require("address", "物件地址"); require("station", "最寄車站"); require("walkTime", "徒步時間");
+
+  // 交通動線解析漏條的防線。
+  //
+  // 2026-09 曾發生「同一車站的多條路線只顯示一條」，而且在 5 個環節連鎖靜默
+  // 失敗——沒有任何一層察覺數量不對。這裡比對 AI 原文的站數與解析出的動線數，
+  // 不一致就出聲，避免同類問題再度潛伏。
+  //
+  // 注意只比對「站數」而非逐欄相等：解析會正規化站名（去「駅」、剝路線前綴）
+  // 並刻意收斂完全重複的刊載，值本來就會不同，數量才是可靠的訊號。
+  if (fields.transitLegs && present(fields.station)) {
+    const advertisedCount = String(fields.station).split(/[,，、]/).map(s => s.trim()).filter(Boolean).length;
+    const parsedCount = fields.transitLegs.length;
+    if (parsedCount < advertisedCount) {
+      add("transit-legs-shortfall", "notice",
+        `圖紙標示 ${advertisedCount} 個車站，但只解析出 ${parsedCount} 條交通動線。` +
+        `同名站的不同路線可能未完整列出，請對照圖紙原文確認。`);
+    }
+  }
 
   const areaText = (fields.buildingArea || "").normalize("NFKC");
   const floors = [...areaText.matchAll(/(?:([1-9]\d*)\s*(?:F|階|樓))\s*[:：]?\s*(\d+(?:\.\d+)?)\s*(?:m2|m²|㎡)/gi)];
