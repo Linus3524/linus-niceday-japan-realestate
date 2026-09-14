@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
+import { lookupStationLines } from "./transitParser.js";
 import { MLIT_API_CREDIT } from "../data/marketDataSources.js";
 import { analyzeNeighborhood, type NeighborhoodActivity } from "./neighborhoodActivity.js";
 import railLineModes from "../data/railLineModes.json" with { type: "json" };
@@ -518,6 +519,9 @@ function mergeNearbyStationPoints(...groups: StationPoint[][]) {
   return [...byName.values()].sort((left, right) => left.distance - right.distance);
 }
 
+/** 附近補充站的一般步速上限（分）。 */
+const NEARBY_STATION_MAX_MINUTES = 20;
+
 export function selectStationWalkSeeds(
   stations: string[],
   advertisedMinutes: Array<number | null>,
@@ -603,8 +607,8 @@ export function selectStationWalkSeeds(
     const key = normalizeStation(match.name);
     const nodeKey = `${match.point.lat.toFixed(5)},${match.point.lon.toFixed(5)}`;
     if (!key || seededStationNames.has(key) || seededNodeKeys.has(nodeKey)) continue;
-    // 一般步速 15 分鐘的理論上限為 1,125m；直線已超過者不必再呼叫道路路由。
-    if (match.distance > 1_125) continue;
+    // 一般步速 20 分鐘的理論上限為 1,500m；直線已超過者不必再呼叫道路路由。
+    if (match.distance > NEARBY_STATION_MAX_MINUTES * 75) continue;
     seededStationNames.add(key);
     seededNodeKeys.add(nodeKey);
     seeds.push({ station: toJapaneseStationName(match.name), advertisedMinutes: null, source: "nearby", match });
@@ -767,7 +771,9 @@ export async function getListingLocationContext(
         distance = Math.round(seed.match.distance * 1.25);
       }
       const times = walkingTimes(distance);
-      if (seed.source === "nearby" && times.normalMinutes > 15) continue;
+      // 附近補充站放寬到一般步速 20 分：圖紙常只寫最近的一兩站，
+      // 15～20 分內的第二選擇（另一條線、快車停靠站）對通勤判斷仍有價值。
+      if (seed.source === "nearby" && times.normalMinutes > NEARBY_STATION_MAX_MINUTES) continue;
       const advertised = seed.advertisedMinutes;
       const difference = advertised === null ? null : times.normalMinutes - advertised;
       stationWalks.push({
@@ -780,7 +786,9 @@ export async function getListingLocationContext(
         needsAttention: difference !== null && difference >= 3,
         lat: seed.match.point.lat,
         lon: seed.match.point.lon,
-        lineName: seed.lineName || undefined,
+        // 附近補充站圖紙當然沒寫路線，圖紙刊載站也可能漏寫；用鐵道圖資補上，
+        // 否則使用者看到「森下駅」不知道是都営新宿線還是大江戸線。
+        lineName: seed.lineName || lookupStationLines(seed.station) || undefined,
       });
   }
 

@@ -31,6 +31,19 @@ export interface TransitLeg {
   walkMin: number | null;
   /** 原文子句，供稽核與人工比對。 */
   rawText?: string;
+  /**
+   * 巴士接駁：圖紙寫「三鷹駅 バス15分 バス停「野崎」徒歩3分」時，
+   * walkMin 是走到巴士站的時間、busMin 是車程、busStop 是巴士站名。
+   * 沒有 busMin 就是一般徒步可達的站。
+   */
+  busMin?: number | null;
+  busStop?: string;
+}
+
+/** 到車站的總分鐘（巴士接駁＝走到巴士站＋車程），行情判斷與序列化都用這個口徑。 */
+export function transitLegTotalMinutes(leg: Pick<TransitLeg, "walkMin" | "busMin">): number | null {
+  if (leg.walkMin === null) return null;
+  return leg.walkMin + (leg.busMin ?? 0);
 }
 
 /**
@@ -61,12 +74,13 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
   // 先前用一個不含空白的 capture group 去抓站名，「都営大江戸線 両国 徒歩1分」這種
   // 以空白分隔線名與站名的寫法（圖紙最常見）會只抓到「両国」、路線名整個丟掉，
   // 於是同名站的兩條路線（都営 vs JR 両国）在下游被當成同一條動線去重，JR 那條就消失。
-  const anchor = /徒歩\s*(\d{1,3})\s*分/gu;
+  // 「停歩」是圖紙對「バス停から徒歩」的慣用縮寫，也是錨點。
+  const anchor = /(?:徒歩|停歩)\s*(\d{1,3})\s*分/gu;
 
   for (const line of lines) {
     let cursor = 0;
     for (const match of line.matchAll(anchor)) {
-      const descriptor = line
+      let descriptor = line
         .slice(cursor, match.index)
         .replace(/^[\s／/・、,，;；:：]+/u, "")
         .replace(/\s*(?:より|から|まで)\s*$/u, "")
@@ -74,6 +88,25 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
       cursor = (match.index ?? 0) + match[0].length;
       const minutes = Number(match[1]);
       if (!descriptor || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
+
+      // 巴士接駁：「JR中央線 三鷹駅 バス15分 バス停「野崎」徒歩3分」
+      // 「バス N 分」之前是路線＋車站，之後是巴士站；徒歩分鐘是走到巴士站的時間。
+      let busMin: number | null = null;
+      let busStop = "";
+      const bus = descriptor.match(/バス\s*(?:乗車\s*)?(\d{1,3})\s*分/u);
+      if (bus) {
+        busMin = Number(bus[1]);
+        const after = descriptor.slice((bus.index ?? 0) + bus[0].length);
+        const stopBracket = after.match(/[「『【\[［]([^」』】\]］]+)[」』】\]］]/u);
+        busStop = (stopBracket ? stopBracket[1] : after.replace(/バス停|停留所|バスのりば|バス乗り場|[\s／/・、,，]/gu, ""))
+          .replace(/(?:バス停|停留所)$/u, "").trim();
+        descriptor = descriptor.slice(0, bus.index).replace(/[\s／/・、,，]+$/u, "").trim();
+        if (!descriptor) continue;
+      }
+
+      // 「バス停「目黒車庫」まで徒歩2分」這種只有巴士站沒有車程的句子不是車站動線；
+      // 括號站名會繞過 isPlausibleStationToken，所以要先擋整句。
+      if (!bus && /バス停|停留所|バスのりば|バス乗り場|コンビニ|スーパー|薬局|学校|公園/u.test(descriptor)) continue;
 
       // 「都営大江戸線「両国」駅」：括號內是站名、括號前是路線。
       // 「東急目黒線／不動前駅」「都営大江戸線 両国」：最後一段是站名、其餘是路線。
@@ -99,8 +132,11 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
       // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
       // 必須保留成兩個 leg。但「路線＋站名＋分鐘」全等屬重複刊載，應收斂。
       if (legs.some(leg =>
-        leg.stationName === station && leg.walkMin === minutes && leg.lineName === lineName)) continue;
-      legs.push({ lineName, stationName: station, walkMin: minutes, rawText: `${descriptor} ${match[0]}` });
+        leg.stationName === station && leg.walkMin === minutes && leg.lineName === lineName && (leg.busMin ?? null) === busMin)) continue;
+      legs.push({
+        lineName, stationName: station, walkMin: minutes, rawText: `${descriptor} ${bus ? bus[0] + " " : ""}${match[0]}`,
+        ...(busMin !== null ? { busMin, busStop: busStop || undefined } : {}),
+      });
     }
   }
 
@@ -108,9 +144,11 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
 }
 
 export function serializeTransitLegs(legs: TransitLeg[]): { station: string; walkTime: string } {
+  // 巴士接駁的站用「走到巴士站＋車程」的總分鐘序列化：下游把 walkTime 當成到站時間
+  // 在算車站距離加減分，只給走到巴士站的 3 分會被誤判成「極近站 +10%」。
   return {
     station: legs.map(leg => leg.stationName).join(","),
-    walkTime: legs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin)).join(","),
+    walkTime: legs.map(leg => { const total = transitLegTotalMinutes(leg); return total === null ? "" : String(total); }).join(","),
   };
 }
 

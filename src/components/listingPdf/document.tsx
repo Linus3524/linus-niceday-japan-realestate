@@ -25,7 +25,9 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
     ? e.transitLegs
     : parseTransitStations(e.transitAccess, e.station, e.walkTime);
   const stationText = transitLegs
-    .map(leg => `${leg.stationName}${leg.walkMin !== null ? ` 徒步 ${leg.walkMin} 分` : ""}`)
+    .map(leg => leg.busMin
+      ? `${leg.stationName} バス ${leg.busMin} 分＋徒步 ${leg.walkMin ?? "?"} 分${leg.busStop ? `（${leg.busStop}）` : ""}`
+      : `${leg.stationName}${leg.walkMin !== null ? ` 徒步 ${leg.walkMin} 分` : ""}`)
     .join("／");
   const dateText = generatedAt.toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric" });
   const buildingLine = [e.buildingName, e.roomNumber].filter(Boolean).join(" ");

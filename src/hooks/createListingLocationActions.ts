@@ -71,8 +71,9 @@ export function createListingLocationActions(context: Context) {
     const stations = stationItems.length > 0
       ? stationItems.map(item => item.stationName)
       : (analysis?.extracted?.station || "").split(/[,，]/).map(v => v.trim()).filter(Boolean);
+    // 巴士接駁的站：圖紙分鐘是「走到巴士站」，不能拿去跟走到車站的實際路徑比，送 null。
     const advertisedWalkMinutes = stationItems.length > 0
-      ? stationItems.map(item => item.walkMin)
+      ? stationItems.map(item => (item.busMin ? null : item.walkMin))
       : (analysis?.extracted?.walkTime || "")
           .split(/[,，]/)
           .map(v => Number(v.match(/\d+/)?.[0]))

@@ -316,6 +316,14 @@ console.log("TransitLeg serialization invariants passed.");
   const yori = parseTransitAccessLegs("両国駅より徒歩1分");
   assert.deepEqual(yori.map(l => [l.lineName, l.stationName, l.walkMin]), [["", "両国", 1]], "「より」要剝掉、沒寫路線就留空");
 
+  // 巴士接駁：走到巴士站的分鐘不是到站時間，序列化的 walkTime 要用「車程＋徒步」總分鐘，
+  // 否則下游的車站距離加減分會把「バス15分 徒歩3分」判成極近站。
+  const bus = parseTransitAccessLegs("JR中央線 三鷹駅 バス15分 バス停「野崎」徒歩3分\n小田急線 町田駅 バス12分 停歩2分");
+  assert.deepEqual(bus.map(l => [l.lineName, l.stationName, l.walkMin, l.busMin, l.busStop ?? ""]),
+    [["JR中央線", "三鷹", 3, 15, "野崎"], ["小田急線", "町田", 2, 12, ""]], "巴士接駁要拆出車程、巴士站與走到巴士站的分鐘");
+  assert.deepEqual(serializeTransitLegs(bus), { station: "三鷹,町田", walkTime: "18,14" }, "walkTime 序列化用總分鐘");
+  const busStopOnly = parseTransitAccessLegs("JR山手線「目黒」駅 徒歩14分\nバス停「目黒車庫」まで徒歩2分");
+  assert.deepEqual(busStopOnly.map(l => l.stationName), ["目黒"], "只有巴士站沒有車程的句子不是車站動線");
   console.log("parseTransitAccessLegs line-name extraction passed.");
 }
 

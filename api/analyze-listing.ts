@@ -354,7 +354,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
       此為不同交通動線，station 與 walkTime 必須每一列都分別列出（例如 station="両国,両国" walkTime="1,6"），
       絕不可因站名相同而只填一列！
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
-    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站或多條路線，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。
+    - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站或多條路線，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。巴士接駁也要照抄，含「バス○分」與巴士站名，例如 "JR中央線 三鷹駅 バス15分 バス停「野崎」徒歩3分"。
     - 輸出前逐列點算交通欄：transitAccess 的路線數、station 的車站數、walkTime 的數字數量必須一致。
 
     租金與各項租約費用（若為租賃圖紙）：
@@ -526,7 +526,7 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
           roomNumber: { type: Type.STRING, description: "部屋番号／号室，例如 602号室 或 1103，找不到或未標示則留空" },
           station: { type: Type.STRING, description: "所有車站名稱，逗號分隔" },
           walkTime: { type: Type.STRING, description: "對應車站的徒步分鐘數，逗號分隔，順序需與 station 一致" },
-          transitAccess: { type: Type.STRING, description: "交通欄全部列的原文，每列保留路線、車站及徒歩分鐘" },
+          transitAccess: { type: Type.STRING, description: "交通欄全部列的原文，每列保留路線、車站、徒歩分鐘；有巴士接駁時連バス分鐘與巴士站名一起保留" },
           layout: { type: Type.STRING, description: "間取り，例如 1LDK、2DK、1K" },
           rent: { type: Type.STRING, description: "賃料／家賃，原文格式" },
           managementFee: { type: Type.STRING, description: "管理費／共益費，原文格式" },

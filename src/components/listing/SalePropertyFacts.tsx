@@ -3,6 +3,7 @@ AlertCircle,
 FileSpreadsheet
 } from "lucide-react";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
+import { TransitStationChips } from './TransitStationChips';
 import {
 translateOccupancyStatus
 } from "../../lib/equipmentParser";
@@ -18,6 +19,7 @@ interface SalePropertyFactsProps {
     | "displayStructure"
     | "displayDirection"
     | "stationItems"
+    | "locationContext"
     | "equipmentList"
   >;
 }
@@ -32,6 +34,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
     displayStructure,
     displayDirection,
     stationItems,
+    locationContext,
     equipmentList,
   } = model;
   return (<div className="space-y-3">
@@ -154,38 +157,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
           </div>
         </div>
       )}
-      {stationItems.length > 0 && (
-        <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-bold text-[#1A2A22]">最近車站與各路線徒步時間</span>
-            <span className="text-[10px] text-[#66736C]">
-              共確認 {stationItems.length} 個利用車站
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {stationItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="inline-flex flex-wrap items-center gap-2 border border-[#DDE3DF] bg-white px-3 py-1.5 text-xs shadow-2xs"
-              >
-                {item.lineName && (
-                  <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-bold text-[#1A2A22]">
-                    {item.lineName}
-                  </span>
-                )}
-                <span className="font-bold text-[#1A2A22]">{item.stationName} 駅</span>
-                {item.walkMin !== null ? (
-                  <span className="text-xs text-[#3F5147]">
-                    徒歩 <span className="font-bold text-[#007D5A]">{item.walkMin}</span> 分
-                  </span>
-                ) : (
-                  <span className="text-xs text-[#66736C]">徒步時間未標註</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <TransitStationChips stationItems={stationItems} locationContext={locationContext} />
 
       {/* 圖紙確認設備與公設規格 */}
       {equipmentList.length > 0 && (
