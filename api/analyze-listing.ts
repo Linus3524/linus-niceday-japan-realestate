@@ -20,7 +20,7 @@ import {
 } from "../src/lib/listingExtraction.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
-import { serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
+import { parseTransitStations, serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
@@ -766,11 +766,15 @@ export default async function handler(req: any, res: any) {
     const managementFee = parseYenAmount(extracted.managementFee);
     const salePrice = parseSalePrice(extracted.salePrice);
     const roomType = normalizeRoomType(extracted.layout);
-    const stations = extracted.station
-      .split(/[,，]/)
-      .map(s => stripStationOperatorPrefix(s))
+    // 交通動線以 transitLegs 為事實來源，避免 station 與 walkTime 各自
+    // 過濾後 index 錯位（未刊載步行時間的動線會讓 walkTime 少一格）。
+    const transitLegs = extracted.transitLegs?.length
+      ? extracted.transitLegs
+      : parseTransitStations(extracted.transitAccess, extracted.station, extracted.walkTime);
+    const stations = transitLegs
+      .map(leg => stripStationOperatorPrefix(leg.stationName))
       .filter((s): s is string => Boolean(s));
-    const walkTimes = extracted.walkTime.split(/[,，]/).map(w => w.trim());
+    const walkTimes = transitLegs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
     const area = parseArea(extracted.area);
 
     // 判斷是買賣圖紙還是租屋圖紙。

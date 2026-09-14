@@ -256,5 +256,22 @@ assert.equal(serialized.walkTime, "1,6", "各路線的步行時間必須各自�
 assert.equal(serializeTransitLegs(legSets[3]).walkTime, "7,14,",
   "walkMin 為 null 時須留空佔位，不可省略而讓後續 index 位移");
 
+// ── 缺漏步行時間不可造成 index 錯位 ──
+// 舊寫法把 station 與 walkTime 各自 split 後 filter(Boolean)，再用
+// stationFacts[i] / walkFacts[i] 配對。只要有動線未刊載時間，walkTime 就少一格，
+// 後續全部往前位移：station="両国,両国,錦糸町" walkTime="1,,8" 會把錦糸町的
+// 8 分錯配給第二個両国。legs 把三維綁在一起，結構上不可能錯位。
+const gapLegs = parseTransitStations(null, "両国,両国,錦糸町", "1,,8");
+const pairedStations = gapLegs.map(leg => leg.stationName);
+const pairedWalks = gapLegs.map(leg => leg.walkMin);
+assert.deepEqual(pairedStations, ["両国", "両国", "錦糸町"], "三條動線都必須保留");
+assert.equal(pairedWalks[2], 8, "錦糸町 的步行時間必須是 8 分，不可被前面的缺漏往前擠");
+assert.notEqual(pairedWalks[1], 8, "第二個両国不可吃到錦糸町 的 8 分");
+
+// 舊的 filter(Boolean) 寫法確實會錯位——這裡示範它為何不可再用。
+const naiveWalks = "1,,8".split(",").map(v => v.trim()).filter(Boolean);
+assert.notEqual(naiveWalks.length, pairedStations.length,
+  "filter(Boolean) 後長度與站數不等，這正是不可用 index 配對的原因");
+
 console.log("TransitLeg serialization invariants passed.");
 console.log("All transit format regression tests passed successfully! ✓");

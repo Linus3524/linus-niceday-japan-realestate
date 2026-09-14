@@ -176,8 +176,12 @@ export function parseTransitStations(
       if (!cleanLinePart) {
         const sameStation = items.filter(it => toJapaneseStationName(it.stationName) === normKey);
         if (sameStation.length) {
+          // walkValue 為 null 只能併進「同樣沒有時間」的既有項。
+          // 併進已有時間的項會讓那條動線消失：station="両国,両国,錦糸町"
+          // walkTime="1,,8" 的第二個両国是未刊載時間的獨立動線，
+          // 若併進第一個両国（1 分），錦糸町 就會往前位移吃到錯誤的時間。
           const mergeable = walkValue === null
-            ? sameStation[0]
+            ? sameStation.find(it => it.walkMin === null)
             : sameStation.find(it => it.walkMin === null || it.walkMin === walkValue);
           if (mergeable) {
             if (walkValue !== null && (mergeable.walkMin === null || walkValue < mergeable.walkMin)) {
@@ -247,13 +251,19 @@ export function parseTransitStations(
     // 2. 若缺少 transitAccess 或未完整，補足 station 與 walkTime
     if (stationStr) {
       const stations = stationStr.split(/[,，、]/).map(s => cleanStationName(s)).filter(Boolean);
-      const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim()).filter(Boolean);
+      // walkTimes 刻意不 filter：空格代表「這條動線未刊載步行時間」，
+      // 必須保留佔位才能與 stations 以 index 對齊。
+      // 過濾掉空值會讓後續全部往前位移——實測 station="両国,両国,錦糸町"
+      // walkTime="1,,8" 會把錦糸町的 8 分錯配給第二個両国。
+      const walkTimes = (walkTimeStr || "").split(/[,，、]/).map(s => s.trim());
 
       for (let i = 0; i < stations.length; i++) {
         const station = stations[i];
         if (!station) continue;
 
-        const rawWalk = walkTimes[i] || (walkTimes.length === 1 ? walkTimes[0] : null);
+        // 只刊一個時間卻有多站時（「両国,錦糸町 徒歩5分」），該時間套用到全部站；
+        // 但若刊了多個時間，缺漏的那格就是「未刊載」，不可拿別站的時間頂替。
+        const rawWalk = walkTimes[i] || (walkTimes.filter(Boolean).length === 1 ? walkTimes.find(Boolean) : null);
         const walkNum = rawWalk ? Number(rawWalk.replace(/\D/g, "")) : null;
 
         registerStation(station, null, walkNum !== null && !isNaN(walkNum) ? walkNum : null);
