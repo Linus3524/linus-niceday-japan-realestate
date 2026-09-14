@@ -19,10 +19,6 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-1.5 bg-[#8A9590]" />市場推估
                   </span>
-                  <span className="inline-flex items-center gap-1">
-                    <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1 text-[9px] font-bold text-[#8A9590]">參考</span>
-                    未計入預期價
-                  </span>
                   <span>·　影響強度以 ±{FACTOR_SCALE}% 為五格滿格</span>
                 </span>
               </div>
@@ -51,13 +47,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                     const Icon = factorIcon(f.label);
                     const up = f.ratePercent > 0;
                     const down = f.ratePercent < 0;
-                    // applied === false 代表這項只是參考指標，沒有計入預期價。
-                    // 預期價只乘「會改變比較口徑」的修正（現況／租約收益）；
-                    // 徒步、樓層、翻新等係數是業界經驗值，且比較基準本身已混合
-                    // 各種條件，再乘一次是重複計價（見 requirementVerdicts/salePrice.ts）。
-                    // PDF 版一直有標示，網頁版先前漏了，兩邊呈現必須一致。
-                    const reference = f.applied === false;
-                    const tone = reference ? "#8A9590" : up ? "#007D5A" : down ? "#B13818" : "#8A9590";
+                    const tone = up ? "#007D5A" : down ? "#B13818" : "#8A9590";
                     // 每格 = FACTOR_SCALE / 5；有幅度就至少點亮一格，滿格封頂。
                     const level = f.ratePercent === 0
                       ? 0
@@ -75,14 +65,6 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                             <Icon className="h-3.5 w-3.5" />
                           </span>
                           <span className="min-w-0 text-xs font-bold text-[#1A2A22]">{f.label}</span>
-                          {reference && (
-                            <span
-                              className="shrink-0 border border-[#DDE3DF] bg-[#F5F8F6] px-1 py-0.5 text-[9px] font-bold text-[#8A9590]"
-                              title="此條件為市場參考指標，未計入上方的預期價計算（預期價已採用同區同條件的實際成交單價，該基準本身已反映這類條件）"
-                            >
-                              參考・未計入
-                            </span>
-                          )}
                         </dt>
                         {/* 使用者要能分辨哪些數字有成交資料撐、哪些只是推估 */}
                         <span
@@ -118,12 +100,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                           className="col-start-3 row-start-1 justify-self-end font-mono text-xs font-bold tabular-nums sm:col-start-5 sm:row-start-1 sm:text-right"
                           style={{ color: tone }}
                         >
-                          {f.ratePercent === 0
-                            ? "等同基準"
-                            // 與 PDF 版一致：未計入者加括號，視覺上與計入項區隔。
-                            : reference
-                              ? `(${up ? "+" : "−"}${Math.abs(f.ratePercent).toFixed(1)}%)`
-                              : `${up ? "+" : "−"}${Math.abs(f.ratePercent).toFixed(1)}%`}
+                          {f.ratePercent === 0 ? "等同基準" : `${up ? "+" : "−"}${Math.abs(f.ratePercent).toFixed(1)}%`}
                         </span>
                       </div>
                     );
