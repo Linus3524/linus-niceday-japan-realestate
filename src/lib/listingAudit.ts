@@ -1,9 +1,16 @@
 import { parseArea, parseSalePrice, parseYenAmount, isFreeOrZero } from "./listingExtraction.js";
 import { buildSpecialSaleDetails, type SpecialSaleFields } from "./specialSaleAnalysis.js";
 import type { RentalConditionFields } from "./rentalConditions.js";
+import type { TransitLeg } from "./transitParser.js";
 
 export interface AuditFields extends SpecialSaleFields, RentalConditionFields {
   rent?: string; managementFee?: string; deposit?: string; keyMoney?: string;
+  /**
+   * 交通動線的唯一事實來源（路線×車站×步行時間綁在一起）。
+   * `station` / `walkTime` 是由此序列化而來的相容欄位——舊分享連結沒有
+   * `transitLegs`，此時才反過來以那兩個字串為準。
+   */
+  transitLegs?: TransitLeg[];
   station?: string; walkTime?: string; address?: string; landRights?: string;
   layout?: string; repairReserve?: string; insuranceFee?: string; cleaningFee?: string;
   buildingFloors?: string;

@@ -10,11 +10,45 @@ import {
   normalizeLineKey,
 } from "./transitPatterns.js";
 
-export interface ParsedStationItem {
-  stationName: string;
+/**
+ * 一條獨立的交通動線：路線 × 車站 × 步行時間，三者綁在一起不可分離。
+ *
+ * 這是交通資訊的唯一事實來源。歷史上交通資訊靠 `station` / `walkTime`
+ * 兩個逗號分隔字串「以 index 對齊」傳遞，有三個結構性問題：
+ *   1. 路線維度無處可放（`lineName` 解析完就丟失）。
+ *   2. 任何一層對其中一個陣列去重，就會與另一個錯位，而且完全靜默。
+ *   3. 無法表達「同站不同線」——`"両国,両国"` 這種寫法本身就在誘導別人去重。
+ *
+ * 2026-09 的同站多路線漏失 bug 正是問題 2 造成的。
+ */
+export interface TransitLeg {
+  /** 原文路線名，顯示用（如「中央・総武線各停」）。 */
   lineName: string;
+  /** 正規化站名，不含「駅」。 */
+  stationName: string;
+  /** 圖紙刊載的步行分鐘；未刊載時為 null。 */
   walkMin: number | null;
+  /** 原文子句，供稽核與人工比對。 */
   rawText?: string;
+}
+
+/**
+ * @deprecated 改用 `TransitLeg`。保留別名讓既有引用不必一次全改。
+ */
+export type ParsedStationItem = TransitLeg;
+
+/**
+ * 把 legs 序列化回 `station` / `walkTime` 兩個對外相容欄位。
+ *
+ * 分享連結與既有 baseline fixture 仍讀這兩個欄位，因此 legs 成為事實來源後，
+ * 這兩個欄位降級為「由 legs 產生的結果」而非各自維護的狀態。
+ * 兩個陣列**必定等長**，這是此函式存在的主要理由。
+ */
+export function serializeTransitLegs(legs: TransitLeg[]): { station: string; walkTime: string } {
+  return {
+    station: legs.map(leg => leg.stationName).join(","),
+    walkTime: legs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin)).join(","),
+  };
 }
 
 const allCuratedStations = [...Object.values(dsHousing).flat(), ...Object.values(dsStation).flat()];

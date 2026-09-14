@@ -16,6 +16,7 @@ import { parseTransitStations } from "../src/lib/transitParser.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { normalizeLineKey, isPlausibleStationToken } from "../src/lib/transitPatterns.js";
 import { osmStationPoints, nearestOfficialStation } from "../src/lib/listingLocation.js";
+import { serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 
 type ExpectedLeg = { lineName?: string | null; stationName: string; walkMin: number | null };
 type FormatCase = { label: string; transitAccess: string; expect: ExpectedLeg[] };
@@ -216,4 +217,44 @@ for (const fragment of ["線", "駅", "の"]) {
 }
 
 console.log("Rail-line mode table (derived from transit graph) passed.");
+
+// ── TransitLeg 作為事實來源：序列化不變量 ──
+// legs → station/walkTime 兩個相容欄位必定等長。歷史上這兩個字串各自維護，
+// 任一層對其中一個去重就會靜默錯位（2026-09 同站多路線漏失的成因）。
+const legSets: TransitLeg[][] = [
+  [
+    { lineName: "都営大江戸線", stationName: "両国", walkMin: 1 },
+    { lineName: "中央・総武線各停", stationName: "両国", walkMin: 6 },
+  ],
+  [{ lineName: "", stationName: "御徒町", walkMin: null }],
+  [],
+  [
+    { lineName: "東急目黒線", stationName: "不動前", walkMin: 7 },
+    { lineName: "JR山手線", stationName: "五反田", walkMin: 14 },
+    { lineName: "", stationName: "大崎", walkMin: null },
+  ],
+];
+for (const legs of legSets) {
+  const { station, walkTime } = serializeTransitLegs(legs);
+  // 空 legs 會序列化成空字串；非空時逗號分隔的欄位數必定等於 legs 數。
+  // 注意不能用 `value ? split : []` 判斷——單一 leg 且 walkMin 為 null 時
+  // walkTime 正好是空字串，但它代表「1 個未刊載時間」而非「0 筆」。
+  const countOf = (value: string) => legs.length === 0 ? 0 : value.split(",").length;
+  assert.equal(countOf(station), legs.length, "station 欄位數必須等於 legs 數");
+  assert.equal(countOf(walkTime), legs.length, "walkTime 欄位數必須等於 legs 數");
+  assert.equal(countOf(station), countOf(walkTime),
+    "station 與 walkTime 必定等長——這是 legs 作為事實來源的核心不變量");
+}
+
+// 同站不同線必須完整保留成兩筆，且序列化後仍是「両国,両国」與「1,6」。
+const ryogokuLegs = legSets[0];
+const serialized = serializeTransitLegs(ryogokuLegs);
+assert.equal(serialized.station, "両国,両国", "同名站的不同路線不可被折疊");
+assert.equal(serialized.walkTime, "1,6", "各路線的步行時間必須各自保留");
+
+// 未刊載步行時間者序列化為空字串，仍佔一個位置以維持 index 對齊。
+assert.equal(serializeTransitLegs(legSets[3]).walkTime, "7,14,",
+  "walkMin 為 null 時須留空佔位，不可省略而讓後續 index 位移");
+
+console.log("TransitLeg serialization invariants passed.");
 console.log("All transit format regression tests passed successfully! ✓");

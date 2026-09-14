@@ -20,6 +20,7 @@ import {
 } from "../src/lib/listingExtraction.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
+import { serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
@@ -318,7 +319,7 @@ function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListin
 function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedListingFields {
   const raw = (extracted.transitAccess || "").normalize("NFKC");
   if (!raw.trim()) return extracted;
-  const pairs: Array<{ station: string; minutes: string }> = [];
+  const legs: TransitLeg[] = [];
   const lines = raw.split(/[\r\n；;]+/).map(s => s.trim()).filter(Boolean);
   // 必須用 g flag 逐行掃出「所有」符合項：同一車站的多條路線常被排版在同一行
   // （如「東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分」），
@@ -328,27 +329,32 @@ function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedLis
   for (const line of lines) {
     for (const match of line.matchAll(pattern)) {
       const rawPart = match[1];
-      const stationPart = rawPart.split(/[／/\s]+/).at(-1) || "";
+      const segments = rawPart.split(/[／/\s]+/);
+      const stationPart = segments.at(-1) || "";
       const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
       const minutes = Number(match[2]);
       if (!station || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
       // 「駅」字改為可選後，バス停・コンビニ・学校等距離描述也會命中，必須擋掉，
       // 否則 station 欄位會混入非車站文字並破壞後續行情與地圖定位。
       if (!isPlausibleStationToken(station)) continue;
+      // 路線名：站名前的區段（「東急目黒線／不動前駅」→「東急目黒線」）。
+      // 取不到時留空字串，不可猜測——空字串代表「圖紙沒寫」，與「寫了但解析失敗」
+      // 在下游是不同處理。
+      const lineName = segments.length > 1
+        ? segments.slice(0, -1).join(" ").replace(/[「」『』【】\[\]［］]/gu, "").trim()
+        : "";
       // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
-      // 必須完整輸出成 station="両国,両国" walkTime="1,6"。
-      // 但完全相同的「站名＋分鐘」組合屬於重複刊載，應收斂。
-      if (pairs.some(pair => pair.station === station && pair.minutes === String(minutes))) continue;
-      pairs.push({ station, minutes: String(minutes) });
+      // 必須保留成兩個 leg。但「路線＋站名＋分鐘」全等屬重複刊載，應收斂。
+      if (legs.some(leg =>
+        leg.stationName === station && leg.walkMin === minutes && leg.lineName === lineName)) continue;
+      legs.push({ lineName, stationName: station, walkMin: minutes, rawText: match[0] });
     }
   }
 
-  if (!pairs.length) return extracted;
-  return {
-    ...extracted,
-    station: pairs.map(pair => pair.station).join(","),
-    walkTime: pairs.map(pair => pair.minutes).join(","),
-  };
+  if (!legs.length) return extracted;
+  // legs 是事實來源；station／walkTime 由它序列化而來，因此兩者必定等長。
+  // 先前這兩個欄位各自維護，某一層對其中一個去重就會靜默錯位（2026-09 的漏失 bug）。
+  return { ...extracted, transitLegs: legs, ...serializeTransitLegs(legs) };
 }
 
 async function extractListingFields(files: UploadedFile[], layoutText = ""): Promise<ExtractedListingFields> {
