@@ -518,7 +518,7 @@ function mergeNearbyStationPoints(...groups: StationPoint[][]) {
   return [...byName.values()].sort((left, right) => left.distance - right.distance);
 }
 
-function selectStationWalkSeeds(
+export function selectStationWalkSeeds(
   stations: string[],
   advertisedMinutes: Array<number | null>,
   osmStations: StationPoint[],
@@ -530,21 +530,44 @@ function selectStationWalkSeeds(
   const used = new Set<string>();
 
   // 圖紙刊載站優先保留；支援同一車站的不同路線（如都營地下鐵 vs JR 在來線）各自獨立成站點條目
+  const bodyKeyOf = (point: GeoPoint) => `${point.lat.toFixed(5)},${point.lon.toFixed(5)}`;
   for (let index = 0; index < stations.length && seeds.length < maximum; index++) {
     const rawStation = stations[index];
     const station = toJapaneseStationName(rawStation);
     const line = stationLines[index] || "";
-    const key = line ? `${line}_${normalizeStation(station)}` : normalizeStation(station);
+    const advertised = advertisedMinutes[index] ?? null;
+    // 路線名缺失時用刊載分鐘數區分：「両国 徒歩1分」與「両国 徒歩6分」是兩個站體，
+    // 只用站名當 key 會把第二條整個吃掉。
+    const key = line
+      ? `${line}_${normalizeStation(station)}`
+      : `${normalizeStation(station)}${advertised === null ? "" : `_${advertised}`}`;
     if (!key || used.has(key)) continue;
 
-    const match = nearestOfficialStation(osmStations, station, line) || nearestOfficialStation(officialStations, station, line);
+    // 同名站的不同站體（都営大江戸線両国 vs JR両国相距約 500m）：
+    // 已經被前一條動線佔走的站體先排除，讓第二條去對另一個站體；
+    // 路線名缺失時，再用「刊載分鐘 × 80m」挑直線距離最接近的那個。
+    const takenBodies = new Set(seeds
+      .filter(seed => normalizeStation(seed.station) === normalizeStation(station))
+      .map(seed => bodyKeyOf(seed.match.point)));
+    const untaken = (list: StationPoint[]) => list.filter(candidate => !takenBodies.has(bodyKeyOf(candidate.point)));
+    let match: StationPoint | null = null;
+    if (!line && advertised !== null && takenBodies.size > 0) {
+      const sameName = [...untaken(osmStations), ...untaken(officialStations)]
+        .filter(candidate => normalizeStation(candidate.name) === normalizeStation(station));
+      match = sameName.sort((a, b) =>
+        Math.abs(a.distance / 80 - advertised) - Math.abs(b.distance / 80 - advertised))[0] || null;
+    }
+    match = match
+      || nearestOfficialStation(untaken(osmStations), station, line)
+      || nearestOfficialStation(untaken(officialStations), station, line)
+      || nearestOfficialStation(osmStations, station, line)
+      || nearestOfficialStation(officialStations, station, line);
     if (!match) continue;
 
     // 同一實體站體（osmStationPoints 已依 250m 聚類）若已被其他路線佔用，
     // 只在「刊載步行時間也相同」時才視為重複刊載而略過。
     // 圖紙對同一站體給出不同分鐘數時，代表走不同出口／改札，兩者都該保留給使用者比對。
-    const nodeKey = `${match.point.lat.toFixed(5)},${match.point.lon.toFixed(5)}`;
-    const advertised = advertisedMinutes[index] ?? null;
+    const nodeKey = bodyKeyOf(match.point);
     const duplicate = seeds.find(seed =>
       `${seed.match.point.lat.toFixed(5)},${seed.match.point.lon.toFixed(5)}` === nodeKey
       && seed.advertisedMinutes === advertised);

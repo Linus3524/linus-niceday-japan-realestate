@@ -2,6 +2,7 @@ import { districtStations as dsHousing } from "../data/housingMarket.js";
 import { districtStations as dsStation } from "../data/stationData.js";
 import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
 import { toJapaneseStationName, toJapanesePlaceName } from "./transit.js";
+import { stripStationOperatorPrefix } from "./listingExtraction.js";
 import {
   BULLET,
   LINE_STATION_WALK,
@@ -44,6 +45,68 @@ export type ParsedStationItem = TransitLeg;
  * 這兩個欄位降級為「由 legs 產生的結果」而非各自維護的狀態。
  * 兩個陣列**必定等長**，這是此函式存在的主要理由。
  */
+/**
+ * 把圖紙「交通」欄的原文拆成 TransitLeg 清單，是 transitLegs 的事實來源。
+ * 同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，刻意不依站名去重。
+ */
+export function parseTransitAccessLegs(transitAccess: string | null | undefined): TransitLeg[] {
+  const raw = (transitAccess || "").normalize("NFKC");
+  if (!raw.trim()) return [];
+  const legs: TransitLeg[] = [];
+  const lines = raw.split(/[\r\n；;]+/).map(s => s.trim()).filter(Boolean);
+  // 必須用 g flag 逐行掃出「所有」符合項：同一車站的多條路線常被排版在同一行
+  // （如「東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分」），
+  // 每行只取第一筆會讓第二站之後全部消失。
+  // 只用「徒歩 N 分」當錨點，站名與路線名從「上一個錨點結束 → 這個錨點」之間的描述取。
+  // 先前用一個不含空白的 capture group 去抓站名，「都営大江戸線 両国 徒歩1分」這種
+  // 以空白分隔線名與站名的寫法（圖紙最常見）會只抓到「両国」、路線名整個丟掉，
+  // 於是同名站的兩條路線（都営 vs JR 両国）在下游被當成同一條動線去重，JR 那條就消失。
+  const anchor = /徒歩\s*(\d{1,3})\s*分/gu;
+
+  for (const line of lines) {
+    let cursor = 0;
+    for (const match of line.matchAll(anchor)) {
+      const descriptor = line
+        .slice(cursor, match.index)
+        .replace(/^[\s／/・、,，;；:：]+/u, "")
+        .replace(/\s*(?:より|から|まで)\s*$/u, "")
+        .trim();
+      cursor = (match.index ?? 0) + match[0].length;
+      const minutes = Number(match[1]);
+      if (!descriptor || !Number.isInteger(minutes) || minutes < 1 || minutes > 120) continue;
+
+      // 「都営大江戸線「両国」駅」：括號內是站名、括號前是路線。
+      // 「東急目黒線／不動前駅」「都営大江戸線 両国」：最後一段是站名、其餘是路線。
+      const bracket = descriptor.match(/[「『【\[［]([^」』】\]］]+)[」』】\]］]/u);
+      let stationPart: string;
+      let linePart: string;
+      if (bracket) {
+        stationPart = bracket[1];
+        linePart = descriptor.slice(0, bracket.index);
+      } else {
+        const segments = descriptor.split(/[／/\s]+/u).filter(Boolean);
+        stationPart = segments.at(-1) || "";
+        linePart = segments.slice(0, -1).join(" ");
+      }
+      const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
+      if (!station) continue;
+      // 「駅」字改為可選後，バス停・コンビニ・学校等距離描述也會命中，必須擋掉，
+      // 否則 station 欄位會混入非車站文字並破壞後續行情與地圖定位。
+      if (!isPlausibleStationToken(station)) continue;
+      // 路線名取不到時留空字串，不可猜測——空字串代表「圖紙沒寫」，與「寫了但解析失敗」
+      // 在下游是不同處理。
+      const lineName = linePart.replace(/[「」『』【】\[\]［］]/gu, "").replace(/[／/\s]+$/u, "").trim();
+      // 刻意不依站名去重：同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，
+      // 必須保留成兩個 leg。但「路線＋站名＋分鐘」全等屬重複刊載，應收斂。
+      if (legs.some(leg =>
+        leg.stationName === station && leg.walkMin === minutes && leg.lineName === lineName)) continue;
+      legs.push({ lineName, stationName: station, walkMin: minutes, rawText: `${descriptor} ${match[0]}` });
+    }
+  }
+
+  return legs;
+}
+
 export function serializeTransitLegs(legs: TransitLeg[]): { station: string; walkTime: string } {
   return {
     station: legs.map(leg => leg.stationName).join(","),

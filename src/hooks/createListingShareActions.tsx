@@ -20,6 +20,8 @@ type Context = Pick<ListingState,
   | "setPdfError"
   | "sharedTitle"
   | "locationContext"
+  | "crimeData"
+  | "prefectureSafety"
   | "commute"> & Pick<ListingHealthCheckProps,
     "sharedId"> & {
       sharedMode: boolean;
@@ -46,6 +48,8 @@ export function createListingShareActions(context: Context) {
     reportHeading,
     sharedId,
     locationContext,
+    crimeData,
+    prefectureSafety,
     commute,
   } = context;
 
@@ -116,6 +120,12 @@ export function createListingShareActions(context: Context) {
           // 給站根絕對路徑最不會受目前 hash 路由影響。
           assetBase={window.location.origin}
           locationContext={locationContext}
+          // 治安卡與網站同一份資料：東京町丁目級優先，其餘道府縣用市區町村／縣級
+          safety={crimeData
+            ? { precision: "chome", chome: crimeData }
+            : prefectureSafety
+              ? { precision: "prefecture", prefecture: prefectureSafety }
+              : null}
           commute={commute ? {
             destination: commute.destinationInput || commute.destinationAddress,
             totalMinutes: commute.totalMinutes,

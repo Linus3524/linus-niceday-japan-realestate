@@ -5,6 +5,7 @@ import { formatDirection } from "../../lib/listing/formatters.js";
 import { parseTransitStations } from "../../lib/transitParser.js";
 import { splitList } from './formatters.js';
 import { LocationCard } from './location.js';
+import { SafetyCard } from './safety.js';
 import { ContactPage, PageChrome } from './pageChrome.js';
 import { Card, Cell, EquipmentCard, SpecialNotesCard } from './primitives.js';
 import { RentKpis, RentSections } from './rental.js';
@@ -14,7 +15,7 @@ import type { ListingReportPdfProps } from './types.js';
 
 
 /* ───────────── 主文件 ───────────── */
-export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBase = "", locationContext, commute }: ListingReportPdfProps) {
+export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBase = "", locationContext, commute, safety }: ListingReportPdfProps) {
   const e: Partial<AnalyzeListingResult["extracted"]> = result?.extracted ?? {};
   const isSale = result?.dealType === "sale" || Boolean(result?.saleAnalysis);
   // 交通動線以 transitLegs 為事實來源。splitList 會 filter 掉空值，
@@ -101,6 +102,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
           <EquipmentCard items={equipment} />
           {isSale ? <SpecialNotesCard notes={e.specialNotes} /> : null}
           <LocationCard locationContext={locationContext} commute={commute} />
+          <SafetyCard safety={safety} />
 
           <View style={styles.disclaimer} wrap={false}>
             <Text style={styles.disclaimerText}>

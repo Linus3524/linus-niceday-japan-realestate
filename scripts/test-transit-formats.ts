@@ -15,8 +15,8 @@ import { dirname, join } from "node:path";
 import { parseTransitStations } from "../src/lib/transitParser.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { normalizeLineKey, isPlausibleStationToken } from "../src/lib/transitPatterns.js";
-import { osmStationPoints, nearestOfficialStation } from "../src/lib/listingLocation.js";
-import { serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
+import { osmStationPoints, nearestOfficialStation, selectStationWalkSeeds } from "../src/lib/listingLocation.js";
+import { parseTransitAccessLegs, serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
 
 type ExpectedLeg = { lineName?: string | null; stationName: string; walkMin: number | null };
 type FormatCase = { label: string; transitAccess: string; expect: ExpectedLeg[] };
@@ -296,5 +296,50 @@ console.log("TransitLeg serialization invariants passed.");
   assert.equal(countLegs("東急目黒線 不動前 徒歩 7 分"), 1, "含空白排版須命中");
 
   console.log("Layout-text leg count guard passed.");
+}
+// ── 7. transitLegs 事實來源：parseTransitAccessLegs ──
+// 真實案例：メインステージ両国駅前。線名與站名用空白分隔（圖紙最常見的寫法），
+// 舊版只抓「両国」、路線名丟掉，下游依站名去重時 JR 那條整個消失。
+{
+  const legs = parseTransitAccessLegs("都営大江戸線 両国 徒歩1分\n中央・総武線各停 両国 徒歩6分");
+  assert.deepEqual(legs.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["都営大江戸線", "両国", 1], ["中央・総武線各停", "両国", 6]], "同名站兩條路線都要保留且各帶路線名");
+
+  const slash = parseTransitAccessLegs("東急目黒線／不動前駅 徒歩7分 / JR山手線／五反田駅 徒歩14分");
+  assert.deepEqual(slash.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["東急目黒線", "不動前", 7], ["JR山手線", "五反田", 14]], "同一行兩條動線、斜線分隔");
+
+  const bracket = parseTransitAccessLegs("都営浅草線「蔵前」駅徒歩2分、都営大江戸線「蔵前」駅徒歩6分");
+  assert.deepEqual(bracket.map(l => [l.lineName, l.stationName, l.walkMin]),
+    [["都営浅草線", "蔵前", 2], ["都営大江戸線", "蔵前", 6]], "括號站名、無空白排版");
+
+  const yori = parseTransitAccessLegs("両国駅より徒歩1分");
+  assert.deepEqual(yori.map(l => [l.lineName, l.stationName, l.walkMin]), [["", "両国", 1]], "「より」要剝掉、沒寫路線就留空");
+
+  console.log("parseTransitAccessLegs line-name extraction passed.");
+}
+
+// ── 8. 同名不同站體：路線名缺失時也要對到兩個站體 ──
+// 都営大江戸線両国與 JR両国相距約 500m，是兩個站體；圖紙寫「両国 徒歩1分」「両国 徒歩6分」
+// 而路線名沒抄到時，第二條不能被站名去重吃掉，也不能對到同一個站體。
+{
+  const home = { lat: 35.6960, lon: 139.7930 };
+  const body = (name: string, lat: number, lon: number, subway: boolean) => ({
+    name, point: { lat, lon }, hasSubway: subway, hasSurfaceRail: !subway,
+    distance: Math.round(Math.hypot((lat - home.lat) * 111_000, (lon - home.lon) * 91_000)),
+  });
+  const oedo = body("両国", 35.6969, 139.7974, true);     // 約 400m
+  const jr = body("両国", 35.6958, 139.7930, false);      // 約 30m（測試用，只求兩個站體不同）
+  const seeds = selectStationWalkSeeds(["両国", "両国"], [1, 6], [jr, oedo], [], ["", ""]);
+  const flyer = seeds.filter(seed => seed.source === "flyer");
+  assert.equal(flyer.length, 2, "兩條同名動線都要保留");
+  assert.notEqual(`${flyer[0].match.point.lat}`, `${flyer[1].match.point.lat}`, "兩條要對到不同站體");
+
+  const withLines = selectStationWalkSeeds(["両国", "両国"], [1, 6], [jr, oedo], [], ["都営大江戸線", "中央・総武線"]);
+  const named = withLines.filter(seed => seed.source === "flyer");
+  assert.equal(named.length, 2);
+  assert.equal(named[0].match.hasSubway, true, "都営那條要對到地下鐵站體");
+  assert.equal(named[1].match.hasSurfaceRail, true, "総武線那條要對到在來線站體");
+  console.log("Same-name distinct-body station seeding passed.");
 }
 console.log("All transit format regression tests passed successfully! ✓");
