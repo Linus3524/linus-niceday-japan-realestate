@@ -42,6 +42,7 @@ jobs:
           npm run test:buy-market
           npm run test:special-market
           npm run test:market-sources
+          npm run test:market-location
 
       - name: Build production bundle
         run: npm run build

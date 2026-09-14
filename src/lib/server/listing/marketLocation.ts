@@ -21,6 +21,11 @@ export const normalizeAddressText = (value?: string | null) => (value || "")
   .replace(/覇|霸/g, "霸")
   .replace(/姫|姬/g, "姬")
   .replace(/浜|濱/g, "濱")
+  // 以下是實測對不上 At Home 快照名稱的字：横浜市青葉区、豊橋市、鶴ヶ島市、さいたま市
+  .replace(/横|橫/g, "橫")
+  .replace(/豊|豐/g, "豐")
+  .replace(/[ヶケ]/g, "ケ")
+  .replace(/さいたま市/g, "埼玉市")
   .replace(/稲|稻/g, "稻")
   .replace(/芸|藝/g, "藝")
   .replace(/桜|櫻/g, "櫻")
@@ -39,10 +44,13 @@ export const normalizeAddressText = (value?: string | null) => (value || "")
   .replace(/[\s・･（）()\-]/g, "");
 
 
+// 依「去掉（市平均）後的名稱長度」排序：名古屋市千種区（7 字）必須排在
+// 名古屋市（市平均）（4 字）前面，否則名古屋市所有區的地址都會被市平均搶走。
+const marketNameLength = (district: string) => district.replace("（市平均）", "").length;
 export const nationwideListingMarkets = [...new Map(
   [...mlitBuySnapshots, ...atHomeNationwideRentSnapshots]
     .map(row => [`${row.region}|${row.district}`, { district: row.district, region: row.region }])
-).values()].sort((a, b) => b.district.length - a.district.length);
+).values()].sort((a, b) => marketNameLength(b.district) - marketNameLength(a.district));
 
 
 export function resolveDistrictAndRegion(address: string, station: string): { district: string; region: string } | null {
@@ -58,10 +66,16 @@ export function resolveDistrictAndRegion(address: string, station: string): { di
       return district.length >= 2 && normAddr.includes(district);
     });
     if (matches.length) {
-      const addressRegion = [...new Set(nationwideListingMarkets.map(market => market.region))].find(regionName => {
-        const region = normalizeAddressText(regionName).replace(/[都道府県]$/, "");
-        return region.length >= 2 && normAddr.includes(region);
-      });
+      // 都道府縣一定在地址最前面。用 includes 找會被「大阪市福島区」的「福島」、
+      // 「滋賀県愛知郡」的「愛知」騙走，改取出現位置最前面的那個。
+      const regionNames = [...new Set(nationwideListingMarkets.map(market => market.region))];
+      const addressRegion = regionNames
+        .map(regionName => {
+          const region = normalizeAddressText(regionName).replace(/[都道府県]$/, "");
+          return { regionName, index: region.length >= 2 ? normAddr.indexOf(region) : -1 };
+        })
+        .filter(item => item.index >= 0)
+        .sort((a, b) => a.index - b.index)[0]?.regionName;
       if (addressRegion) {
         // 同名市が他県にしかない（例如広島県府中市但快照只有東京都府中市）時，
         // 寧可回傳無資料，也不能把它錯配到另一個都道府縣。

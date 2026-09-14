@@ -15,6 +15,7 @@
     "test:athome-rent": "tsx scripts/test-athome-rent-snapshot.ts",
     "test:buy-market": "tsx scripts/test-buy-market.ts",
     "test:market-sources": "tsx scripts/test-market-data-sources.ts",
+    "test:market-location": "tsx scripts/test-market-location.ts",
     "test:equipment": "tsx scripts/test-equipment-parser.ts",
     "test:transit": "tsx scripts/test-transit-parser.ts",
     "test:transit-formats": "tsx scripts/test-transit-formats.ts",

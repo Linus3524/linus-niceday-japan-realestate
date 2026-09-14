@@ -20,7 +20,7 @@ import {
 } from "../src/lib/listingExtraction.js";
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
-import { parseTransitAccessLegs, parseTransitStations, serializeTransitLegs, type TransitLeg } from "../src/lib/transitParser.js";
+import { parseTransitAccessLegs, parseTransitStations, serializeTransitLegs, transitLegTotalMinutes, type TransitLeg } from "../src/lib/transitParser.js";
 import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
 import {
@@ -741,7 +741,8 @@ export default async function handler(req: any, res: any) {
     const stations = transitLegs
       .map(leg => stripStationOperatorPrefix(leg.stationName))
       .filter((s): s is string => Boolean(s));
-    const walkTimes = transitLegs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
+    // 巴士接駁的站用「車程＋走到巴士站」的總分鐘，否則行情校準會把走到巴士站的 4 分當近站加分。
+    const walkTimes = transitLegs.map(leg => { const total = transitLegTotalMinutes(leg); return total === null ? "" : String(total); });
 
     // 交通動線漏抄的最後一道防線。
     //

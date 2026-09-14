@@ -16,12 +16,12 @@ export interface NationwideRentBenchmark {
   capturedAt: string;
 }
 
-const normalizeMarketName = (value: string) => value
-  .replace(/廣|広/g, "広").replace(/德|徳/g, "徳").replace(/靜|静/g, "静")
-  .replace(/繩|縄/g, "縄").replace(/兒|児/g, "児").replace(/覇|霸/g, "霸")
-  .replace(/姫|姬/g, "姬").replace(/浜|濱/g, "濱").replace(/区/g, "區")
-  .replace(/沢/g, "澤").replace(/戸/g, "戶").replace(/島/g, "嶋")
-  .replace(/[\s・･（）()\-]/g, "");
+// 市區町村名的正規化必須跟 resolveDistrictAndRegion 用同一套字元對照表。
+// 先前這裡自己維護一份、少了「稲／稻」等字，resolveDistrictAndRegion 回傳的
+// 「千葉市稲毛区」（來自國交省快照）對不上 At Home 快照的「千葉市稻毛區」，
+// 稲毛區的租金明明有資料卻判成「查無行情」。
+import { normalizeAddressText } from "../lib/server/listing/marketLocation.js";
+const normalizeMarketName = (value: string) => normalizeAddressText(value.replace("（市平均）", ""));
 
 export function getNationwideRentBenchmark(
   region: string,
@@ -30,9 +30,15 @@ export function getNationwideRentBenchmark(
 ): NationwideRentBenchmark | null {
   const normalizedRegion = normalizeMarketName(region);
   const normalizedDistrict = normalizeMarketName(district);
-  const row = atHomeNationwideRentSnapshots.find(item =>
-    normalizeMarketName(item.region) === normalizedRegion && normalizeMarketName(item.district) === normalizedDistrict
-  );
+  const sameRegion = atHomeNationwideRentSnapshots.filter(item => normalizeMarketName(item.region) === normalizedRegion);
+  // 完整同名優先；國交省快照的町村帶郡名（「川辺郡猪名川町」）而 At Home 只寫「猪名川町」，
+  // 找不到時退回「以町村名結尾」的比對。
+  const row = sameRegion.find(item => normalizeMarketName(item.district) === normalizedDistrict)
+    ?? sameRegion.find(item => {
+      const name = normalizeMarketName(item.district);
+      return name.length >= 3 && normalizedDistrict.endsWith(name) && /[郡]/.test(normalizedDistrict);
+    })
+    ?? null;
   const medianRentYen = row?.rents[layout] ?? null;
   if (!row || !medianRentYen || medianRentYen <= 0) return null;
   return {
