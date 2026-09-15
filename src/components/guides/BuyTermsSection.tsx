@@ -15,7 +15,7 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                     <section className="space-y-4">
                       <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>圖紙與物件術語</span>
-                        <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.drawing.length} 項</span>
+                        <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.drawing.length} 項</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.drawing.map((term, idx) => (
@@ -27,19 +27,19 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                               <div className="flex justify-between items-start gap-2 mb-2">
                                 <h4 className="font-bold text-sm md:text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={term.name} /></h4>
                                 {term.jpName && (
-                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
+                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{term.jpName}</span>
                                 )}
                               </div>
-                              <p className="text-xs md:text-sm text-zinc-700 leading-relaxed line-clamp-3">
+                              <p className="text-xs md:text-sm text-[#3F5147] leading-relaxed line-clamp-3">
                                 {term.description}
                               </p>
                             </div>
-                            <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
+                            <div className="mt-4 flex items-center justify-between text-[10px] text-[#8A9590] font-sans border-t border-[#ECEFEC] pt-2">
                               <span>圖紙／物件</span>
                               <button
                                 type="button"
                                 onClick={() => setSelectedFee(term)}
-                                className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                                className="text-[#3F5147] flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
                               >
                                 查看說明 →
                               </button>
@@ -55,7 +55,7 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                     <section className="space-y-4">
                       <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>交易與費用術語</span>
-                        <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.fee.length} 項</span>
+                        <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.fee.length} 項</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {buyFiltered.fee.map((term, idx) => (
@@ -67,19 +67,19 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                               <div className="flex justify-between items-start gap-2 mb-2">
                                 <h4 className="font-bold text-sm md:text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={term.name} /></h4>
                                 {term.jpName && (
-                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{term.jpName}</span>
+                                  <span className="text-[10px] md:text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{term.jpName}</span>
                                 )}
                               </div>
-                              <p className="text-xs md:text-sm text-zinc-700 leading-relaxed line-clamp-3">
+                              <p className="text-xs md:text-sm text-[#3F5147] leading-relaxed line-clamp-3">
                                 {term.description}
                               </p>
                             </div>
-                            <div className="mt-4 flex items-center justify-between text-[10px] text-zinc-400 font-sans border-t border-zinc-100 pt-2">
+                            <div className="mt-4 flex items-center justify-between text-[10px] text-[#8A9590] font-sans border-t border-[#ECEFEC] pt-2">
                               <span>交易／費用</span>
                               <button
                                 type="button"
                                 onClick={() => setSelectedFee(term)}
-                                className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                                className="text-[#3F5147] flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
                               >
                                 查看說明 →
                               </button>

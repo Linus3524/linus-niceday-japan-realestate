@@ -67,7 +67,7 @@ export function ListingContactCta() {
             <h3 className="mt-1 text-base font-bold text-[#1A2A22] sm:text-lg">
               看完分析有疑問？直接找 Linus 聊聊
             </h3>
-            <p className="mt-1 text-xs leading-relaxed text-[#526159] sm:text-sm">
+            <p className="mt-1 text-xs leading-relaxed text-[#3F5147] sm:text-sm">
               想確認物件細節、安排實地看房，或需要日本買房與租屋的全程諮詢，用你最習慣的方式聯繫即可。全程中文溝通、日本現地專業服務。
             </p>
           </div>
@@ -88,7 +88,7 @@ export function ListingContactCta() {
         <button
           type="button"
           onClick={copyWechat}
-          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#FAFCFB] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
         >
           {copiedWechat ? (
             <Check className="h-4 w-4 text-[#07C160]" />
@@ -100,7 +100,7 @@ export function ListingContactCta() {
         <button
           type="button"
           onClick={() => { setShowWechatQr(v => !v); if (!showWechatQr) trackAction("wechat-qr"); }}
-          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#F8FAF9] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
+          className="flex min-h-11 items-center justify-center gap-2 border border-[#DDE3DF] bg-[#FAFCFB] px-4 text-xs font-bold text-[#1A2A22] transition-colors hover:border-[#07C160] hover:bg-white hover:text-[#07C160] sm:text-sm cursor-pointer"
         >
           <QrCode className="h-4 w-4 text-[#07C160]" />
           <span>{showWechatQr ? "收合 WeChat QR" : "WeChat QR"}</span>
@@ -109,8 +109,8 @@ export function ListingContactCta() {
 
       {/* WeChat QR 展開面板 */}
       {showWechatQr && (
-        <div className="mt-3 flex items-center gap-4 border border-[#DDE3DF] bg-[#F8FAF9] p-4 animate-in fade-in duration-200">
-          <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR code" className="h-24 w-24 shrink-0 bg-white border border-[#E2E8E4] p-1" />
+        <div className="mt-3 flex items-center gap-4 border border-[#DDE3DF] bg-[#FAFCFB] p-4 animate-in fade-in duration-200">
+          <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR code" className="h-24 w-24 shrink-0 bg-white border border-[#DDE3DF] p-1" />
           <div className="text-xs leading-relaxed text-[#3F5147]">
             <div className="flex items-center gap-2">
               <img src="/wechat-logo.png" alt="WeChat" className="h-4 w-auto object-contain" />
@@ -134,12 +134,12 @@ export function ListingContactCta() {
 
       {/* 社群與其他管道（簡約膠囊標籤，移除多餘分隔線） */}
       <div className="mt-3.5 flex flex-wrap items-center gap-2">
-        <span className="font-sans text-[11px] font-semibold text-[#879089]">其他管道：</span>
+        <span className="font-sans text-[11px] font-semibold text-[#8A9590]">其他管道：</span>
         <a
           href={linusContact.threads}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1A2A22] hover:bg-white hover:text-[#1A2A22]"
+          className="inline-flex items-center gap-1.5 border border-[#DDE3DF] bg-[#FAFCFB] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1A2A22] hover:bg-white hover:text-[#1A2A22]"
         >
           {THREADS_ICON}
           <span>Threads</span>
@@ -148,7 +148,7 @@ export function ListingContactCta() {
           href="https://www.instagram.com/linus3524"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#E1306C] hover:bg-white hover:text-[#E1306C]"
+          className="inline-flex items-center gap-1.5 border border-[#DDE3DF] bg-[#FAFCFB] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#E1306C] hover:bg-white hover:text-[#E1306C]"
         >
           <Instagram className="h-3.5 w-3.5" />
           <span>Instagram</span>
@@ -157,7 +157,7 @@ export function ListingContactCta() {
           href={linusContact.facebook}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1877F2] hover:bg-white hover:text-[#1877F2]"
+          className="inline-flex items-center gap-1.5 border border-[#DDE3DF] bg-[#FAFCFB] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#1877F2] hover:bg-white hover:text-[#1877F2]"
         >
           <Facebook className="h-3.5 w-3.5" />
           <span>Facebook</span>
@@ -165,7 +165,7 @@ export function ListingContactCta() {
         <button
           type="button"
           onClick={copyEmail}
-          className="inline-flex items-center gap-1.5 border border-[#E2E8E4] bg-[#F8FAF9] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#007D5A] hover:bg-white hover:text-[#007D5A] cursor-pointer"
+          className="inline-flex items-center gap-1.5 border border-[#DDE3DF] bg-[#FAFCFB] px-2.5 py-1 text-xs text-[#3F5147] transition-colors hover:border-[#007D5A] hover:bg-white hover:text-[#007D5A] cursor-pointer"
           title="點擊複製 Email"
         >
           {copiedEmail ? <Check className="h-3.5 w-3.5 text-[#007D5A]" /> : <Mail className="h-3.5 w-3.5" />}

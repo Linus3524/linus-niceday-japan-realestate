@@ -37,12 +37,12 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
                         <span>✈ {overseasSop.title}</span>
                       </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
+                      <p className="text-[#3F5147] leading-relaxed text-justify mb-3">
                         {overseasSop.description}
                       </p>
-                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
-                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
+                      <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF]">
+                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
+                        <div className="space-y-2 text-xs text-[#3F5147] font-sans leading-relaxed">
                           {overseasSop.steps.map((step, idx) => (
                             <div key={idx} className="flex items-start gap-2">
                               <span className="bg-[#1A2A22] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
@@ -60,12 +60,12 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       <h4 className="font-bold text-sm text-[#00a174] mb-2 flex items-center gap-1.5">
                         <span>🇯🇵 {domesticSop.title}</span>
                       </h4>
-                      <p className="text-zinc-600 leading-relaxed text-justify mb-3">
+                      <p className="text-[#3F5147] leading-relaxed text-justify mb-3">
                         {domesticSop.description}
                       </p>
-                      <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
-                        <span className="font-bold text-[#1A2A22] block border-b border-zinc-300 pb-1.5 mb-2.5 font-sans">📋 入境審査 SOP 完整步驟：</span>
-                        <div className="space-y-2 text-xs text-zinc-700 font-sans leading-relaxed">
+                      <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF]">
+                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 入境審査 SOP 完整步驟：</span>
+                        <div className="space-y-2 text-xs text-[#3F5147] font-sans leading-relaxed">
                           {domesticSop.steps.map((step, idx) => (
                             <div key={idx} className="flex items-start gap-2">
                               <span className="bg-[#00a174] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold font-mono shrink-0 mt-0.5">
@@ -89,7 +89,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       disabled={isDocumentSearchResult}
                       aria-expanded={isDocumentsOpen}
                       aria-controls="screening-document-matrix"
-                      className={`flex w-full items-center justify-between gap-4 text-left ${isDocumentsOpen ? "border-b border-zinc-300 pb-3 mb-4" : ""}`}
+                      className={`flex w-full items-center justify-between gap-4 text-left ${isDocumentsOpen ? "border-b border-[#C9D2CD] pb-3 mb-4" : ""}`}
                     >
                       <span className="flex min-w-0 items-start gap-3">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
@@ -112,11 +112,11 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       </div>
                     )}
                     <div className="hidden" aria-hidden="true">
-                      <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
+                      <div className="bg-white p-5 border border-[#C9D2CD] space-y-3">
+                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-[#ECEFEC] pb-1 flex items-center gap-1.5">
                           <span>✈ 海外審査需要資料</span>
                         </h5>
-                        <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
+                        <ul className="space-y-2 text-xs text-[#3F5147] leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>護照影本：</strong>個人照片頁、簽證貼紙頁（若已核發）。</span>
@@ -140,11 +140,11 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                         </ul>
                       </div>
 
-                      <div className="bg-white p-5 border border-zinc-300 space-y-3">
-                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-zinc-100 pb-1 flex items-center gap-1.5">
+                      <div className="bg-white p-5 border border-[#C9D2CD] space-y-3">
+                        <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-[#ECEFEC] pb-1 flex items-center gap-1.5">
                           <span>🇯🇵 境內審査需要資料</span>
                         </h5>
-                        <ul className="space-y-2 text-xs text-zinc-700 leading-normal font-sans">
+                        <ul className="space-y-2 text-xs text-[#3F5147] leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
                             <span><strong>護照影本：</strong>個人照片頁、日本入境章戳頁。</span>
@@ -178,10 +178,10 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                   {/* Application route comparison */}
                   {showRoutes && (
                   <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
-                    <div className="mb-4 flex flex-col gap-1 border-b border-zinc-200 pb-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="mb-4 flex flex-col gap-1 border-b border-[#DDE3DF] pb-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
-                        <p className="mt-1 text-xs leading-relaxed text-zinc-600 font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
+                        <p className="mt-1 text-xs leading-relaxed text-[#3F5147] font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
                       </div>
                       <span className="text-xs font-bold text-[#00a174] font-sans">三種申請方式</span>
                     </div>
@@ -190,10 +190,10 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                         <div key={route.title} className="border border-[#DDE3DF] p-4">
                           <div className="mb-3 flex items-start justify-between gap-2">
                             <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
-                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#e6f6f1] text-[#007d5a]"}`}>{route.condition}</span>
+                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#e6f6f1] text-[#007d5a]"}`}>{route.condition}</span>
                           </div>
-                          <p className="text-xs leading-relaxed text-zinc-700">{route.body}</p>
-                          <p className={`mt-3 border-t border-zinc-100 pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
+                          <p className="text-xs leading-relaxed text-[#3F5147]">{route.body}</p>
+                          <p className={`mt-3 border-t border-[#ECEFEC] pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
                         </div>
                       ))}
                     </div>
@@ -206,9 +206,9 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                     <div className="absolute top-0 right-6 bg-[#00a174] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
                       租屋申請9步驟
                     </div>
-                    <h4 className="text-base font-bold text-[#1A2A22] border-b border-zinc-200 pb-3 mb-6">
+                    <h4 className="text-base font-bold text-[#1A2A22] border-b border-[#DDE3DF] pb-3 mb-6">
                       租屋審查、付款與入住步驟全解析
-                      <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
+                      <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C] font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
                     </h4>
 
                     <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
@@ -223,16 +223,16 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                             <h5 className="font-bold text-sm text-[#1A2A22]">
                               {step.name.replace(/^[①②③④⑤⑥⑦⑧⑨]\s*/, "")}
                             </h5>
-                            <span className="text-xs bg-[#F5F8F6] border border-zinc-300 text-zinc-600 px-2 py-0.5 font-sans shrink-0">
+                            <span className="text-xs bg-[#F5F8F6] border border-[#C9D2CD] text-[#3F5147] px-2 py-0.5 font-sans shrink-0">
                               作業天數：{step.duration}
                             </span>
                           </div>
-                          <div className="border-l-2 border-[#9ee2cf] pl-3 text-xs text-zinc-700 leading-relaxed text-justify font-sans">
+                          <div className="border-l-2 border-[#9ee2cf] pl-3 text-xs text-[#3F5147] leading-relaxed text-justify font-sans">
                             <span className="mr-2 text-[10px] font-bold tracking-wide text-[#00a174]">作業重點</span>
                             {renderFormattedText(step.description)}
                           </div>
                           {step.details && step.details.length > 0 && (
-                            <ul className="mt-3 space-y-1.5 pl-3 text-xs leading-relaxed text-zinc-600 font-sans">
+                            <ul className="mt-3 space-y-1.5 pl-3 text-xs leading-relaxed text-[#3F5147] font-sans">
                               {step.details.map((detail, detailIndex) => (
                                 <li key={detailIndex} className="flex gap-2">
                                   <span className="shrink-0 text-[#00a174]">•</span>
@@ -248,7 +248,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                   )}
 
                   {showReminders && (
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 text-xs text-zinc-600 leading-relaxed font-sans space-y-2">
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] text-xs text-[#3F5147] leading-relaxed font-sans space-y-2">
                       <span className="font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
                       <ul className="space-y-1.5">
                         {processReminders.map(reminder => (

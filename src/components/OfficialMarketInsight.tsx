@@ -259,17 +259,17 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
   );
 
   return (
-    <div className={`border border-[#DDE3DF] bg-white text-zinc-700 font-sans transition-all ${className}`}>
+    <div className={`border border-[#DDE3DF] bg-white text-[#3F5147] font-sans transition-all ${className}`}>
       {/* 頂部主卡片 */}
-      <div className="p-4 sm:p-5 bg-gradient-to-br from-white to-[#F9FBFA]">
-        <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#EEF2F0] pb-3">
+      <div className="p-4 sm:p-5 bg-gradient-to-br from-white to-[#FAFCFB]">
+        <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#ECEFEC] pb-3">
           <div>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded bg-[#EAF5F0] px-2 py-0.5 text-[11px] font-bold text-[#007D5A]">
                 <TrendingUp className="w-3 h-3" />
                 國土交通省成約行情
               </span>
-              <span className="text-[11px] text-zinc-400 font-normal">
+              <span className="text-[11px] text-[#8A9590] font-normal">
                 {isOfficial
                   ? `統計區間：${currentEstimate.periodStart}～${currentEstimate.periodEnd}`
                   : "收益率模型推估"}
@@ -277,9 +277,9 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
             </div>
             <h4 className="mt-1.5 text-sm sm:text-base font-bold text-[#1A2A22] flex items-center gap-1.5">
               <span lang="ja" className="font-jp">{jpDistrict}</span>
-              <span className="text-zinc-400 font-normal">·</span>
+              <span className="text-[#8A9590] font-normal">·</span>
               <span className="text-[#007D5A]">{LAYOUT_NAMES[currentLayout]}</span>
-              <span className="font-normal text-xs text-zinc-500">中古公寓實價成約指標</span>
+              <span className="font-normal text-xs text-[#66736C]">中古公寓實價成約指標</span>
             </h4>
           </div>
 
@@ -296,10 +296,10 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
         {/* 雙指標對比：成交中位數 vs 表面利回 */}
         <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* 卡片 1：成約價中位數 */}
-          <div className="bg-[#F5F8F6] p-3.5 border border-[#E3ECE7] flex flex-col justify-between">
+          <div className="bg-[#F5F8F6] p-3.5 border border-[#DDE3DF] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-semibold text-zinc-700">成約價中位數</span>
+                <span className="text-xs font-semibold text-[#3F5147]">成約價中位數</span>
                 {isOfficial && (
                   <span className="text-[10px] bg-white border border-[#DDE3DF] px-1.5 py-0.5 rounded-xs text-[#007D5A] font-medium font-mono shrink-0">
                     {currentEstimate.sampleCount.toLocaleString()} 筆樣本
@@ -310,20 +310,20 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                 <span className="font-jost text-2xl sm:text-3xl font-bold text-[#1A2A22]">
                   {Math.round(currentEstimate.basePriceYen / 10000).toLocaleString()}
                 </span>
-                <span className="text-xs font-bold text-zinc-600">萬日圓</span>
+                <span className="text-xs font-bold text-[#3F5147]">萬日圓</span>
               </div>
             </div>
-            <div className="mt-2 text-[11px] text-zinc-400 pt-1.5 border-t border-[#E8EFEA]">
+            <div className="mt-2 text-[11px] text-[#8A9590] pt-1.5 border-t border-[#ECEFEC]">
               {isOfficial ? "國交省近 4 季實價登記統計" : "參考租金模型反推估算"}
             </div>
           </div>
 
           {/* 卡片 2：表面投報率 */}
-          <div className="bg-[#F5F8F6] p-3.5 border border-[#E3ECE7] flex flex-col justify-between">
+          <div className="bg-[#F5F8F6] p-3.5 border border-[#DDE3DF] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-semibold text-zinc-700">表面投報率 (利回り)</span>
-                <span className="text-[10px] text-zinc-400 font-mono">年租金 ÷ 房價</span>
+                <span className="text-xs font-semibold text-[#3F5147]">表面投報率 (利回り)</span>
+                <span className="text-[10px] text-[#8A9590] font-mono">年租金 ÷ 房價</span>
               </div>
               <div className="mt-1.5 flex items-baseline gap-1">
                 <span className="font-jost text-2xl sm:text-3xl font-bold text-[#007D5A]">
@@ -332,15 +332,15 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                 <span className="text-sm font-bold text-[#007D5A]">%</span>
               </div>
             </div>
-            <div className="mt-2 text-[11px] text-zinc-400 pt-1.5 border-t border-[#E8EFEA] flex items-center justify-between">
+            <div className="mt-2 text-[11px] text-[#8A9590] pt-1.5 border-t border-[#ECEFEC] flex items-center justify-between">
               <span>月租相場約 {((currentRentYen || 0) / 10000).toFixed(1)} 萬円</span>
-              <span className="text-[10px] text-zinc-400">At Home 統計</span>
+              <span className="text-[10px] text-[#8A9590]">At Home 統計</span>
             </div>
           </div>
         </div>
 
         {/* 底部數據說明 */}
-        <p className="mt-2.5 text-[10px] leading-normal text-zinc-400">
+        <p className="mt-2.5 text-[10px] leading-normal text-[#8A9590]">
           ※ 數據取自國土交通省不動產資訊資料庫（ReinfoLib）中古公寓實價成約去識別化紀錄，反映該區市場定價基準。
         </p>
       </div>
@@ -355,7 +355,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                 <BarChart3 className="w-3.5 h-3.5 text-[#007D5A]" />
                 <span>{jpDistrict} 各格局成交行情與投報率階梯表</span>
               </h5>
-              <span className="text-[10px] text-zinc-400">點擊格局可直接套入計算機</span>
+              <span className="text-[10px] text-[#8A9590]">點擊格局可直接套入計算機</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
@@ -372,25 +372,25 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                     } ${
                       isSelected
                         ? "border-[#007D5A] bg-[#EAF5F0] ring-1 ring-[#007D5A]/30 shadow-xs"
-                        : "border-[#DDE3DF] bg-[#FAFCFB] hover:border-zinc-400 hover:bg-white"
+                        : "border-[#DDE3DF] bg-[#FAFCFB] hover:border-[#AEB8B2] hover:bg-white"
                     }`}
                   >
                     <div className="flex items-center justify-between text-[11px] font-bold">
-                      <span className={isSelected ? "text-[#007D5A]" : "text-zinc-700"}>{item.name}</span>
+                      <span className={isSelected ? "text-[#007D5A]" : "text-[#3F5147]"}>{item.name}</span>
                       {isSelected && (
                         <span className="text-[9px] bg-[#007D5A] text-white px-1 py-0.2 rounded-xs">當前</span>
                       )}
                     </div>
                     <div className="mt-1.5 font-jost text-base font-bold text-[#1A2A22]">
                       {item.priceMan.toLocaleString()}
-                      <span className="ml-0.5 text-[10px] font-normal text-zinc-500">萬円</span>
+                      <span className="ml-0.5 text-[10px] font-normal text-[#66736C]">萬円</span>
                     </div>
-                    <div className="mt-1 flex items-center justify-between text-[10px] text-zinc-500 pt-1 border-t border-[#EEF2F0]">
+                    <div className="mt-1 flex items-center justify-between text-[10px] text-[#66736C] pt-1 border-t border-[#ECEFEC]">
                       <span>表面利回</span>
                       <span className="font-bold text-[#007D5A]">{item.yieldRate}%</span>
                     </div>
                     {item.source === "official_transaction" && item.sampleCount > 0 && (
-                      <div className="mt-0.5 text-[9px] text-zinc-400">
+                      <div className="mt-0.5 text-[9px] text-[#8A9590]">
                         {item.sampleCount} 筆樣本
                       </div>
                     )}
@@ -401,21 +401,21 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
           </div>
 
           {/* 車站徒步距離 vs 房價衰減階梯矩陣（100% 對齊 calcRules 數據） */}
-          <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-4 space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-2.5">
+          <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-2.5">
               <div>
                 <h5 className="text-xs sm:text-sm font-bold text-[#1A2A22] flex items-center gap-1.5">
                   <Footprints className="w-4 h-4 text-[#007D5A]" />
                   <span>{insight.stationWalkTitle}</span>
-                  <span className="text-xs font-normal text-zinc-500">
+                  <span className="text-xs font-normal text-[#66736C]">
                     （依 {LAYOUT_NAMES[currentLayout]} 實價計算）
                   </span>
                 </h5>
-                <p className="text-[11px] text-zinc-500 mt-0.5">
+                <p className="text-[11px] text-[#66736C] mt-0.5">
                   國交省實價 × 在地溢價模型：點擊卡片可直接勾選下方買房折溢價條件
                 </p>
               </div>
-              <span className="text-[10px] text-zinc-400 font-mono">
+              <span className="text-[10px] text-[#8A9590] font-mono">
                 專有約 {LAYOUT_ESTIMATED_PING[currentLayout]} 坪 (約 {(LAYOUT_ESTIMATED_PING[currentLayout] / 0.3025).toFixed(0)}㎡)
               </span>
             </div>
@@ -441,7 +441,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                   ? "text-[#007D5A] bg-[#EAF5F0]"
                   : tier.diffPercent < 0
                   ? "text-[#B13818] bg-[#FFF0ED]"
-                  : "text-zinc-700 bg-zinc-100";
+                  : "text-[#3F5147] bg-[#F5F8F6]";
 
                 const handleClick = () => {
                   if (tier.id === "6_10") {
@@ -459,12 +459,12 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                     className={`p-3 text-left border transition-all cursor-pointer flex flex-col justify-between ${
                       isSelected
                         ? "border-[#007D5A] bg-white ring-2 ring-[#007D5A]/40 shadow-xs"
-                        : "bg-white border-[#DDE3DF] hover:border-zinc-400 hover:bg-[#FAFCFB]"
+                        : "bg-white border-[#DDE3DF] hover:border-[#AEB8B2] hover:bg-[#FAFCFB]"
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className={`font-bold ${isSelected ? "text-[#007D5A]" : "text-zinc-800"}`}>
+                        <span className={`font-bold ${isSelected ? "text-[#007D5A]" : "text-[#1A2A22]"}`}>
                           {tier.label}
                         </span>
                         <span className={`text-[9px] px-1.5 py-0.2 rounded-xs font-medium ${diffColor}`}>
@@ -473,14 +473,14 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                       </div>
                       <div className="mt-2 font-jost text-xl sm:text-2xl font-bold text-[#1A2A22]">
                         {tierPriceMan.toLocaleString()}
-                        <span className="ml-0.5 text-xs font-normal text-zinc-500">萬円</span>
+                        <span className="ml-0.5 text-xs font-normal text-[#66736C]">萬円</span>
                       </div>
-                      <div className="mt-0.5 text-[10px] text-zinc-500 font-mono">
+                      <div className="mt-0.5 text-[10px] text-[#66736C] font-mono">
                         約 {pingPriceMan.toLocaleString()} 萬円/坪
                       </div>
                     </div>
-                    <div className="mt-2 text-[10px] pt-1.5 border-t border-zinc-100 flex items-center justify-between">
-                      <span className="text-zinc-400 truncate">{tier.tag}</span>
+                    <div className="mt-2 text-[10px] pt-1.5 border-t border-[#ECEFEC] flex items-center justify-between">
+                      <span className="text-[#8A9590] truncate">{tier.tag}</span>
                       {isSelected && (
                         <span className="inline-flex items-center gap-0.5 text-[9px] font-bold text-[#007D5A] shrink-0 ml-1">
                           <Check className="w-3 h-3" />
@@ -494,18 +494,18 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
             </div>
 
             {/* 深入在地解讀文字 */}
-            <p className="text-[11px] leading-relaxed text-zinc-600 pt-1">
+            <p className="text-[11px] leading-relaxed text-[#3F5147] pt-1">
               {insight.stationWalkText}
             </p>
           </div>
 
           {/* 屋齡折舊與耐震基準 */}
-          <div className="border border-[#E3ECE7] bg-[#F9FBFA] p-3.5 space-y-1.5">
+          <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-3.5 space-y-1.5">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
               <Building2 className="w-3.5 h-3.5 text-[#007D5A]" />
               <span>{insight.buildingAgeTitle}</span>
             </div>
-            <p className="text-[11px] leading-relaxed text-zinc-600">
+            <p className="text-[11px] leading-relaxed text-[#3F5147]">
               {insight.buildingAgeText}
             </p>
           </div>
@@ -516,7 +516,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               <span>{insight.consultantTitle}</span>
             </div>
-            <p className="text-[11px] text-zinc-600 leading-relaxed">
+            <p className="text-[11px] text-[#3F5147] leading-relaxed">
               {insight.consultantText}
             </p>
           </div>

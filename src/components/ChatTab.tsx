@@ -114,7 +114,7 @@ export function ChatTab(props: ChatTabProps) {
                       {/* Avatar placeholder */}
                       <div className={`w-8 h-8 flex items-center justify-center shrink-0 font-sans text-xs border ${
                         msg.role === "user" 
-                          ? "bg-zinc-800 text-[#F5F8F6] border-zinc-800" 
+                          ? "bg-[#1A2A22] text-white border-[#1A2A22]" 
                           : "bg-[#00a174] text-white border-[#00a174]"
                       }`}>
                         {msg.role === "user" ? "客" : "L"}
@@ -122,7 +122,7 @@ export function ChatTab(props: ChatTabProps) {
                       
                       <div className="space-y-1.5">
                         {/* Meta sender info */}
-                        <div className={`text-[10px] text-zinc-400 font-sans ${
+                        <div className={`text-[10px] text-[#8A9590] font-sans ${
                           msg.role === "user" ? "text-right" : "text-left"
                         }`}>
                           {msg.role === "user" ? "您的提問" : "Linus"}
@@ -131,8 +131,8 @@ export function ChatTab(props: ChatTabProps) {
                         {/* Message content text */}
                         <div className={`p-4 text-xs md:text-sm leading-relaxed text-justify whitespace-pre-wrap border ${
                           msg.role === "user" 
-                            ? "bg-white border-zinc-300 text-zinc-800" 
-                            : "bg-[#fffdfa] border-[#DDE3DF] text-zinc-900 shadow-sm transition-colors"
+                            ? "bg-white border-[#C9D2CD] text-[#1A2A22]" 
+                            : "bg-[#FFFFFF] border-[#DDE3DF] text-[#1A2A22] shadow-sm transition-colors"
                         }`}>
                           {msg.role === "model" && msg.relatedThreads && msg.relatedThreads.length > 0 && (
                             <div className="mb-4 flex items-center justify-between gap-3 border border-[#B8D8CB] bg-[#EFF8F4] px-3 py-2.5 font-sans text-left text-[11px] leading-5 text-[#075E46]" role="status">
@@ -149,7 +149,7 @@ export function ChatTab(props: ChatTabProps) {
                               {/* 由問題數觸發的邀請，AI 的回覆本身沒提到 LINE，
                                   所以補一句話說明，不然按鈕會很突兀 */}
                               {ctaTargets.byQuestionCount.has(index) && (
-                                <p className="mt-4 border-t border-dashed border-[#DDE3DF] pt-3 font-sans text-xs text-zinc-600">
+                                <p className="mt-4 border-t border-dashed border-[#DDE3DF] pt-3 font-sans text-xs text-[#3F5147]">
                                   想更貼近您的狀況給建議嗎？加 LINE 由 Linus 本人為您解答，房源配對與個案諮詢都可以聊 ❀
                                 </p>
                               )}
@@ -178,8 +178,8 @@ export function ChatTab(props: ChatTabProps) {
                         L
                       </div>
                       <div className="space-y-1">
-                        <div className="text-[10px] text-zinc-400 font-sans">Linus 正在調閱日本不動產知識庫...</div>
-                        <div className="p-3 bg-white border border-[#DDE3DF] text-xs text-zinc-500 font-sans italic animate-pulse">
+                        <div className="text-[10px] text-[#8A9590] font-sans">Linus 正在調閱日本不動產知識庫...</div>
+                        <div className="p-3 bg-white border border-[#DDE3DF] text-xs text-[#66736C] font-sans italic animate-pulse">
                           正在整理租屋與買房資訊，請稍候片刻...
                         </div>
                       </div>
@@ -188,14 +188,14 @@ export function ChatTab(props: ChatTabProps) {
 
                   {/* Error Notification */}
                   {chatError && (
-                    <div className="p-4 border border-amber-200 bg-amber-50 text-amber-950 text-xs font-sans leading-relaxed" role="alert">
+                    <div className="border border-[#FCA5A5] bg-[#FEF2F2] p-4 text-xs font-sans leading-relaxed text-[#B13818]" role="alert">
                       <span>AI 顧問目前暫時無法回覆，請稍後再試，或</span>
                       <a
                         href={lineFriendUrl}
-                              onClick={() => trackAction("line-add")}
+                        onClick={() => trackAction("line-add")}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-1 inline-flex items-center font-bold text-[#087154] underline underline-offset-2 hover:text-[#05A847]"
+                        className="ml-1 inline-flex items-center font-bold text-[#007D5A] underline underline-offset-2 hover:text-[#00A174]"
                       >
                         透過 LINE 聯絡 Linus
                       </a>
@@ -205,8 +205,8 @@ export function ChatTab(props: ChatTabProps) {
                 </div>
 
                 {/* Quick Recommended Prompt Suggests */}
-                <div className="bg-[#F5F8F6] border-t border-zinc-200 p-3 flex flex-wrap items-center gap-1.5 select-none" id="chat-quick-suggestions">
-                  <span className="text-[10px] text-zinc-500 font-bold self-center mr-1 font-sans">熱門諮詢：</span>
+                <div className="bg-[#F5F8F6] border-t border-[#DDE3DF] p-3 flex flex-wrap items-center gap-1.5 select-none" id="chat-quick-suggestions">
+                  <span className="text-[10px] text-[#66736C] font-bold self-center mr-1 font-sans">熱門諮詢：</span>
                   {[
                     "打工度假存款需要準備多少？",
                     "什麼是敷金跟禮金？",
@@ -220,7 +220,7 @@ export function ChatTab(props: ChatTabProps) {
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(undefined, p)}
-                      className="bg-white hover:bg-[#fffdfb] border border-zinc-300 hover:border-[#00a174] text-[11px] text-zinc-700 hover:text-[#00a174] px-2.5 py-1 transition-colors cursor-pointer font-sans"
+                      className="bg-white hover:bg-[#FFFFFF] border border-[#C9D2CD] hover:border-[#00a174] text-[11px] text-[#3F5147] hover:text-[#00a174] px-2.5 py-1 transition-colors cursor-pointer font-sans"
                     >
                       {p}
                     </button>
@@ -239,12 +239,12 @@ export function ChatTab(props: ChatTabProps) {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     disabled={chatLoading}
-                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#00a174] disabled:bg-zinc-100 disabled:text-zinc-400"
+                    className="flex-grow px-4 py-2 text-sm bg-white border border-[#DDE3DF] focus:outline-none focus:border-[#00a174] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
                   />
                   <button
                     type="submit"
                     disabled={chatLoading || !chatInput.trim()}
-                    className="bg-[#00a174] hover:bg-[#007d5a] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-zinc-300 disabled:text-zinc-500 flex items-center gap-1 cursor-pointer shrink-0"
+                    className="bg-[#00a174] hover:bg-[#007d5a] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-[#DDE3DF] disabled:text-[#8A9590] flex items-center gap-1 cursor-pointer shrink-0"
                     id="chat-submit-btn"
                   >
                     <span>發送</span>

@@ -94,26 +94,26 @@ export function SaleInitialCostsSection({ model }: SaleInitialCostsSectionProps)
 
       <div className={`mt-4 ${informationStyle.caution}`}>
         <div className={`mb-2 ${informationStyle.cautionTitle}`}>
-          <Info className="h-4 w-4 text-[#7A5A1F]" />
+          <Info className="h-4 w-4 text-[#854D0E]" />
           <span>買方交屋初期費用試算說明與資金準備：</span>
         </div>
-        <ul className="space-y-1.5 text-xs leading-relaxed text-[#3F5147]">
+        <ul className="space-y-1.5 text-xs leading-relaxed text-[#854D0E]">
           <li className="flex items-start gap-1.5">
-            <span className="font-bold text-[#7A5A1F]">•</span>
+            <span className="font-bold text-[#854D0E]">•</span>
             <span>
               <strong className="text-[#1A2A22]">固都稅日割計算標準：</strong>
               因現行圖紙分析階段尚未簽約約定交屋日，系統預設以「<strong>本日分析日起至年底之剩餘日數</strong>」進行日割概算；正式成交時將由司法書士以合約約定的<strong>實際交屋日（引渡日）</strong>為準按日精算。
             </span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="font-bold text-[#7A5A1F]">•</span>
+            <span className="font-bold text-[#854D0E]">•</span>
             <span>
               <strong className="text-[#1A2A22]">{isSpecialSale ? "建物維護與營業預備金：" : "管修費用預繳慣例："}</strong>
               {specialSale.kind === "land" ? "土地需另外確認拆除、整地及建築預算，未套用公寓管修費預繳。" : isSpecialSale ? "整棟或透天需自行編列屋頂、外牆、設備更新及營運周轉金，未套用公寓管修費預繳。" : "日本大樓集合住宅交屋時，管理費與修繕積立金暫按預繳 3 個月估算，實際依管理組合請款確認。"}
             </span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="font-bold text-[#7A5A1F]">•</span>
+            <span className="font-bold text-[#854D0E]">•</span>
             <span>
               <strong className="text-[#1A2A22]">法定稅費依據：</strong>
               登記免許稅、不動產取得稅與固都稅屬於地方稅務局核定稅額，AI 係依圖紙條件與法定稅率推估；實際金額以賣方提供的固定資產評價證明書及都道府縣稅務通知為準。

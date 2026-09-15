@@ -28,7 +28,7 @@ export function PrefectureCrimeBreakdownCard({ data, prefecture }: { data: Prefe
           <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-180" />
         </summary>
         <div className="mt-3 grid grid-cols-1 gap-x-5 gap-y-1.5 border-t border-dashed border-[#DDE3DF] pt-2 sm:grid-cols-2">
-          {group.items.map(item => <div key={item.code} className="flex items-baseline justify-between gap-3 text-[11px] leading-relaxed text-[#55635B]">
+          {group.items.map(item => <div key={item.code} className="flex items-baseline justify-between gap-3 text-[11px] leading-relaxed text-[#3F5147]">
             <span className="min-w-0 break-words" title={`官方分類：${item.original}`}>{item.label}</span>
             <span className="shrink-0 font-bold tabular-nums">{item.count.toLocaleString()} 件</span>
           </div>)}

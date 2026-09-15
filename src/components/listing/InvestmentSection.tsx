@@ -112,7 +112,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
               </div>
             </div>
 
-            <p className="border-l-[3px] border-[#D95D39] bg-[#FBDFD2] px-4 py-3 text-[11px] leading-relaxed text-[#B13818]"><strong>帶租約物件注意事項：</strong>本物件為帶租約買賣（出租中），現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
+            <p className="border-l-[3px] border-[#DC2626] bg-[#FEE2E2] px-4 py-3 text-[11px] leading-relaxed text-[#B13818]"><strong>帶租約物件注意事項：</strong>本物件為帶租約買賣（出租中），現有租客居住中，買方無法立即交屋自住。交屋時將全面承受現有普通賃貸借契約與押金返還義務。
             </p>
           </div>
         ) : (
@@ -150,7 +150,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
           {/* 住宅貸款減稅檢核 */}
           <div className={`px-4 py-3 ${saleAnalysis?.occupancyAssessment?.mortgageTaxEligible
               ? "border-l-[3px] border-[#00A174] bg-[#F5F8F6]"
-              : "border border-[#EAB879] bg-[#FEF3C7]"
+              : "border border-[#FDBA74] bg-[#FFF7ED]"
             }`}>
             <div className="flex items-start gap-2 font-bold">
               {saleAnalysis?.occupancyAssessment?.mortgageTaxEligible ? (
@@ -176,7 +176,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
             </p>
           </div>
 
-          <dl className="mt-3 divide-y divide-[#E8ECE9]">
+          <dl className="mt-3 divide-y divide-[#ECEFEC]">
             {/* 土地權利 */}
             <div className="grid grid-cols-[120px_minmax(0,1fr)] items-start gap-4 py-2.5">
               <dt className="text-[#66736C]">土地權利形式</dt>

@@ -113,7 +113,7 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
 
               {/* 價格區間軸 ＋ 基準備註（共同構成底部區塊，高度飽滿無大塊死白） */}
               {hasFairRange && (
-                <div className="mt-5 border-t border-[#E8ECE9] pt-4">
+                <div className="mt-5 border-t border-[#ECEFEC] pt-4">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                     <p className="text-sm font-black text-[#1A2A22]">該區域同類物件合理價格區間</p>
                     <p className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-1 text-xs font-black tabular-nums text-[#1A2A22]">
@@ -122,14 +122,14 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
                   </div>
 
                   <div className="mt-4 px-4 pt-12 sm:px-6">
-                    <div className="relative h-3 w-full bg-[#E1E7E4]">
+                    <div className="relative h-3 w-full bg-[#EEF2F0]">
                       <div
                         className="absolute inset-y-0 bg-[#CFEFE5]"
                         style={{ left: `${pos(fairLow as number)}%`, width: `${pos(fairHigh as number) - pos(fairLow as number)}%` }}
                       />
                       {/* 上下限刻度、數字標籤與本案指標全部共用同一個 X 座標。 */}
                       {[fairLow as number, fairHigh as number].map(v => (
-                        <div key={v} className="absolute -top-2 h-7 w-[3px] -translate-x-1/2 bg-[#9AA69F]" style={{ left: `${pos(v)}%` }} />
+                        <div key={v} className="absolute -top-2 h-7 w-[3px] -translate-x-1/2 bg-[#AEB8B2]" style={{ left: `${pos(v)}%` }} />
                       ))}
                       {benchmarks.map(b => (
                         <div

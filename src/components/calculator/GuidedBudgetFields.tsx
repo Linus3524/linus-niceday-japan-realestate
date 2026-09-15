@@ -10,7 +10,7 @@ import { guidedSelectChevronClass } from './fieldStyles';
 type Props = Pick<CalculatorViewModel, "rentMonthlyBudgetMin" | "setRentMonthlyBudgetMin" | "rentMonthlyBudget" | "setRentMonthlyBudget">;
 export function GuidedBudgetFields({ rentMonthlyBudgetMin, setRentMonthlyBudgetMin, rentMonthlyBudget, setRentMonthlyBudget }: Props) {
   return (<><fieldset>
-          <legend className="text-xs font-bold text-zinc-700">每月總預算（含管理費）</legend>
+          <legend className="text-xs font-bold text-[#3F5147]">每月總預算（含管理費）</legend>
           <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
             <div className="relative flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
               <select
@@ -28,7 +28,7 @@ export function GuidedBudgetFields({ rentMonthlyBudgetMin, setRentMonthlyBudgetM
                   <option key={`minimum-${value}`} value={value}>{value / 10000}</option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-10 text-xs font-bold text-zinc-500">萬円</span>
+              <span className="pointer-events-none absolute right-10 text-xs font-bold text-[#66736C]">萬円</span>
               <ChevronDown className={guidedSelectChevronClass} />
             </div>
             <span aria-hidden="true" className="font-mono text-base font-bold text-[#66736C]">～</span>
@@ -47,7 +47,7 @@ export function GuidedBudgetFields({ rentMonthlyBudgetMin, setRentMonthlyBudgetM
                   <option key={`maximum-${value}`} value={value}>{value / 10000}</option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-10 text-xs font-bold text-zinc-500">萬円</span>
+              <span className="pointer-events-none absolute right-10 text-xs font-bold text-[#66736C]">萬円</span>
               <ChevronDown className={guidedSelectChevronClass} />
             </div>
           </div>

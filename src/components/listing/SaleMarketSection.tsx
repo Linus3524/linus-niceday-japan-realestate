@@ -185,7 +185,7 @@ export function SaleMarketSection({ model }: SaleMarketSectionProps) {
 
         {/* ── 注意事項 ── */}
         {c.priceCautions && c.priceCautions.length > 0 && (
-          <div className="space-y-2 border border-[#EAB879] bg-[#FEF3C7] p-4">
+          <div className="space-y-2 border border-[#FDBA74] bg-[#FFF7ED] p-4">
             {c.priceCautions.map((caution, i) => (
               <div key={i} className="flex items-start gap-2.5">
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#D97706]" />

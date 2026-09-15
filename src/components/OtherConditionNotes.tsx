@@ -66,7 +66,7 @@ export function OtherConditionNotes({
           {items.map((item) => (
             <article key={`${item.category}-${item.title}`} className="h-full border border-[#DDE3DF] bg-[#F5F8F6] p-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="border border-[#BFCAC4] bg-white px-2 py-0.5 text-[10px] font-bold text-[#55635B]">
+                <span className="border border-[#C9D2CD] bg-white px-2 py-0.5 text-[10px] font-bold text-[#3F5147]">
                   {item.category}
                 </span>
                 <h5 className="text-xs font-bold text-[#1A2A22]">{item.title}</h5>

@@ -28,18 +28,18 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       description="180 天營業上限與區域天條！看懂東京都 23 區民泊新法規範，避開限制地雷區。"
                     />
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 border border-zinc-200 font-sans text-xs">
-                      <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-zinc-200">
-                        <p className="text-zinc-500">全國共同上限</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 border border-[#DDE3DF] font-sans text-xs">
+                      <div className="p-4 bg-[#F5F8F6] border-b sm:border-b-0 sm:border-r border-[#DDE3DF]">
+                        <p className="text-[#66736C]">全國共同上限</p>
                         <p className="mt-1 text-lg font-bold text-[#00a174]">180 天／年</p>
                       </div>
-                      <div className="p-4 border-b sm:border-b-0 sm:border-r border-zinc-200">
-                        <p className="text-zinc-500">本表怎麼看</p>
-                        <p className="mt-1 font-medium text-zinc-800 leading-relaxed">先看「營業限制」，再確認受限區域與管理／周知要求。</p>
+                      <div className="p-4 border-b sm:border-b-0 sm:border-r border-[#DDE3DF]">
+                        <p className="text-[#66736C]">本表怎麼看</p>
+                        <p className="mt-1 font-medium text-[#1A2A22] leading-relaxed">先看「營業限制」，再確認受限區域與管理／周知要求。</p>
                       </div>
-                      <div className="p-4 bg-amber-50">
-                        <p className="text-amber-700">重要提醒</p>
-                        <p className="mt-1 font-medium text-amber-900 leading-relaxed">家主居住型與不在型，適用規則可能不同。</p>
+                      <div className="border-b border-[#FDE047] bg-[#FEF9C3] p-4 sm:border-b-0 sm:border-r">
+                        <p className="font-bold text-[#854D0E]">重要提醒</p>
+                        <p className="mt-1 font-medium leading-relaxed text-[#854D0E]">家主居住型與不在型，適用規則可能不同。</p>
                       </div>
                     </div>
 
@@ -56,24 +56,24 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                             <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#DDF3EA] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#087154]">
                               {getMinpakuLimitLabel(item.daysLimit)}
                             </span>
-                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500">
+                            <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#66736C]">
                               <span>{expandedMinpakuWards.has(item.district) ? "收合" : "詳情"}</span>
-                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform text-zinc-500 ${expandedMinpakuWards.has(item.district) ? "rotate-180" : ""}`} />
+                              <ChevronDown className={`h-4 w-4 shrink-0 transition-transform text-[#66736C] ${expandedMinpakuWards.has(item.district) ? "rotate-180" : ""}`} />
                             </span>
                           </button>
                           {expandedMinpakuWards.has(item.district) && (
-                          <dl className="divide-y divide-zinc-200 border-t border-[#DDE3DF] text-xs leading-relaxed">
-                            <div className="grid grid-cols-[76px_1fr] gap-3 bg-[#F2F8F5] px-4 py-3">
+                          <dl className="divide-y divide-[#DDE3DF] border-t border-[#DDE3DF] text-xs leading-relaxed">
+                            <div className="grid grid-cols-[76px_1fr] gap-3 bg-[#F5F8F6] px-4 py-3">
                               <dt className="font-bold text-[#087154]">營業天數</dt>
-                              <dd className="font-medium text-zinc-700">{item.daysLimit}</dd>
+                              <dd className="font-medium text-[#3F5147]">{item.daysLimit}</dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
                               <dt className="font-bold text-[#00a174]">營業限制</dt>
-                              <dd className="text-zinc-700">{item.rules}</dd>
+                              <dd className="text-[#3F5147]">{item.rules}</dd>
                             </div>
-                            <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#F9FBFA]">
-                              <dt className="font-bold text-zinc-600">受限區域</dt>
-                              <dd className="min-w-0 text-zinc-600">
+                            <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#FAFCFB]">
+                              <dt className="font-bold text-[#3F5147]">受限區域</dt>
+                              <dd className="min-w-0 text-[#3F5147]">
                                 <span className="inline-flex bg-[#E9F3EE] px-2 py-1 font-bold leading-none text-[#315E50]">
                                   {getMinpakuAreaLabel(item.areaLimit)}
                                 </span>
@@ -81,8 +81,8 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                               </dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
-                              <dt className="font-bold text-zinc-600">管理／周知</dt>
-                              <dd className="text-zinc-600">{item.managerReq}</dd>
+                              <dt className="font-bold text-[#3F5147]">管理／周知</dt>
+                              <dd className="text-[#3F5147]">{item.managerReq}</dd>
                             </div>
                           </dl>
                           )}
@@ -90,8 +90,8 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       ))}
                     </div>
 
-                    <div className="bg-amber-50 p-4 border-l-4 border-amber-500 text-xs text-amber-950 leading-relaxed font-sans">
-                      <strong>投資前必查：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
+                    <div className="border border-[#FDBA74] bg-[#FFF7ED] p-4 text-xs leading-relaxed text-[#1A2A22] font-sans">
+                      <strong className="text-[#D97706]">投資前必查：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
                     </div>
                   </section>
 
@@ -101,13 +101,13 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       type="button"
                       onClick={() => setRyokanExpanded(current => !current)}
                       aria-expanded={ryokanExpanded}
-                      className={`flex w-full items-start justify-between gap-4 text-left ${ryokanExpanded ? "border-b border-zinc-200 pb-3" : ""}`}
+                      className={`flex w-full items-start justify-between gap-4 text-left ${ryokanExpanded ? "border-b border-[#DDE3DF] pb-3" : ""}`}
                     >
                       <span className="flex items-start gap-2">
                         <Building className="mt-0.5 h-5 w-5 shrink-0 text-[#00a174]" />
                         <span>
                           <span className="block text-xl font-bold text-[#1A2A22]">{ryokanRules.title}</span>
-                          <span className="mt-1 block text-xs font-normal leading-relaxed text-zinc-500 font-sans">全年經營所需的用途、建築、消防與許可確認重點</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C] font-sans">全年經營所需的用途、建築、消防與許可確認重點</span>
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#00a174] font-sans">
@@ -117,7 +117,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                     </button>
 
                     {ryokanExpanded && (<>
-                    <p className="text-xs text-zinc-500 font-sans leading-relaxed">
+                    <p className="text-xs text-[#66736C] font-sans leading-relaxed">
                       如果您希望合法全年經營、且不受住宅宿泊事業 180 天上限限制，可評估向保健所申請「簡易宿所」等旅館業營業許可；但須先完成用途、建築、消防與所在地自治體的個案確認：
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 font-sans">
@@ -126,11 +126,11 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                         <span className="font-bold text-sm text-[#1A2A22] block">◎ 旅館業許可申請 5 個核心階段：</span>
                         <div className="space-y-3 text-xs">
                           {ryokanRules.steps.map((step, sIdx) => (
-                            <div key={sIdx} className="bg-[#F5F8F6] p-3 border border-zinc-200 flex gap-3">
+                            <div key={sIdx} className="bg-[#F5F8F6] p-3 border border-[#DDE3DF] flex gap-3">
                               <span className="font-bold text-[#00a174] shrink-0 text-sm font-sans">0{sIdx+1}</span>
                               <div className="space-y-0.5">
-                                <strong className="text-zinc-800 text-[13px]">{step.name}</strong>
-                                <div className="text-zinc-500 leading-relaxed text-justify">{renderFormattedText(step.desc)}</div>
+                                <strong className="text-[#1A2A22] text-[13px]">{step.name}</strong>
+                                <div className="text-[#66736C] leading-relaxed text-justify">{renderFormattedText(step.desc)}</div>
                               </div>
                             </div>
                           ))}
@@ -140,9 +140,9 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       {/* Right side requirements */}
                       <div className="md:col-span-5 space-y-4">
                         <span className="font-bold text-sm text-[#1A2A22] block">◎ 簡易宿所硬體與消防規範：</span>
-                        <div className="bg-[#F5F8F6] p-5 border border-zinc-200 space-y-4 text-xs">
+                        <div className="bg-[#F5F8F6] p-5 border border-[#DDE3DF] space-y-4 text-xs">
                           {ryokanRules.requirements.map((req, rIdx) => (
-                            <div key={rIdx} className="flex items-start gap-2 text-zinc-700 leading-relaxed text-justify">
+                            <div key={rIdx} className="flex items-start gap-2 text-[#3F5147] leading-relaxed text-justify">
                               <span className="text-[#00a174] font-bold">✓</span>
                               <span>{req}</span>
                             </div>
@@ -153,7 +153,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
 
                     <div className="space-y-2 pt-2">
                       {ryokanRules.warnings.map((warn, wIdx) => (
-                        <div key={wIdx} className="bg-yellow-50 border-l-4 border-yellow-600 p-3 text-xs text-yellow-800 font-sans leading-relaxed text-justify">
+                        <div key={wIdx} className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-xs leading-relaxed text-[#854D0E] font-sans text-justify">
                           {warn}
                         </div>
                       ))}

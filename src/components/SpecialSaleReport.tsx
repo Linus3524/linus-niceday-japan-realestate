@@ -62,7 +62,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
             <span>{d.kindLabel}・物件條件</span>
           </div>
           {d.marketNote && (
-            <p className="border-[#D6DDD9] text-xs leading-relaxed text-[#3F5147] sm:border-l sm:pl-4">
+            <p className="border-[#DDE3DF] text-xs leading-relaxed text-[#3F5147] sm:border-l sm:pl-4">
               {d.marketNote}
             </p>
           )}
@@ -77,7 +77,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   index === 1 ? "border-t sm:border-l sm:border-t-0" : index >= 2 ? "border-t" : ""
                 } ${index > 1 && index % 2 === 1 ? "sm:border-l" : ""}`}
               >
-                <dt className="bg-[#F5F8F6] px-3 py-2.5 text-[11px] leading-relaxed text-[#58685F]">
+                <dt className="bg-[#F5F8F6] px-3 py-2.5 text-[11px] leading-relaxed text-[#3F5147]">
                   {label}
                 </dt>
                 <dd className="whitespace-pre-line break-words px-3 py-2.5 text-xs font-semibold leading-relaxed text-[#1A2A22]">
@@ -94,7 +94,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                 舊版另外給 0.36fr / 1.64fr，換算後比上方的標題欄寬，看起來就像表頭凸出去。
                 改成直接沿用同一組軌道（複製兩次），值欄再跨 3 格。 */}
             <div className="grid min-w-0 border-t border-[#DDE3DF] sm:col-span-2 sm:grid-cols-[minmax(8rem,0.72fr)_minmax(0,1.55fr)_minmax(8rem,0.72fr)_minmax(0,1.55fr)]">
-              <dt className="bg-[#F5F8F6] px-3 py-2.5 text-[11px] leading-relaxed text-[#58685F]">
+              <dt className="bg-[#F5F8F6] px-3 py-2.5 text-[11px] leading-relaxed text-[#3F5147]">
                 年度稅額
               </dt>
               <dd className="whitespace-pre-line break-words px-3 py-2.5 text-xs font-semibold leading-relaxed text-[#1A2A22] sm:col-span-3">
@@ -104,7 +104,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
           </dl>
 
           {(d.illustrativePhotos || d.renovationExtra) && (
-            <div className="space-y-1.5 border-t border-[#EAB879] bg-[#FFF8E9] px-4 py-3 text-xs leading-relaxed text-[#76511F]">
+            <div className="space-y-1.5 border-t border-[#FDE047] bg-[#FEF9C3] px-4 py-3 text-xs leading-relaxed text-[#854D0E]">
               {d.illustrativePhotos && <p className="font-bold">室內照片為翻新後示意圖，不能作為已完工現況。</p>}
               {d.renovationExtra && (
                 <p className="font-bold">刊載售價為翻新前／現況價格；另估翻新費未含在售價及交屋費用小計。投報率是否包含翻新成本，需另核對計算分母。</p>
@@ -119,7 +119,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
               <CircleAlert className="h-4 w-4 shrink-0" />
               注意事項
             </div>
-            <ul className="list-disc space-y-1.5 px-3 py-3 pl-7 text-[11px] leading-relaxed text-[#58685F] sm:col-span-3">
+            <ul className="list-disc space-y-1.5 px-3 py-3 pl-7 text-[11px] leading-relaxed text-[#3F5147] sm:col-span-3">
               {propertyCautions.map((item) => <li key={item}>{item}</li>)}
               {/客室/.test(fields.unitBreakdown || "") && (
                 <li className="text-[#76511F]">客室數、管理室／備品室與總戶數的計數方式可能不同，需逐室核對。</li>
@@ -162,7 +162,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 {/リフォーム中|改装中|工事中|翻[新修]中|裝修|内装中/.test(fields.occupancyStatus || "") && (
-                  <span className="border border-[#EAB879] bg-[#FEF3C7] px-2 py-0.5 text-xs font-bold text-[#D97706]">
+                  <span className="border border-[#FDE047] bg-[#FEF9C3] px-2 py-0.5 text-xs font-bold text-[#854D0E]">
                     裝修進行中
                   </span>
                 )}
@@ -227,7 +227,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                 {otherConditions.map((condition) => (
                   <li
                     key={condition.raw}
-                    className="flex items-start gap-2 border border-[#E8ECE9] bg-white p-2.5"
+                    className="flex items-start gap-2 border border-[#ECEFEC] bg-white p-2.5"
                     title={condition.translated ? `圖面原文：${condition.raw}` : undefined}
                   >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#007D5A]" />
@@ -244,7 +244,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
               <CircleAlert className="mt-0.5 h-4 w-4 shrink-0 text-[#007D5A]" />
               <div className="space-y-1">
                 <p className="font-bold text-[#007D5A]">買賣契約核對重點：</p>
-                <ul className="list-disc space-y-1 pl-4 text-[11px] text-[#58685F]">
+                <ul className="list-disc space-y-1 pl-4 text-[11px] text-[#3F5147]">
                   <li>預定完工、退去或交付日期仍需核對現場目前進度與實際交屋協議。</li>
                   <li>買方用途與登記資料尚未確認，不能僅以建物總面積判定自住減稅適用。</li>
                   {d.handoverConflict && (
@@ -292,7 +292,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                     d.permitStatus === "approved_claim"
                       ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
                       : d.permitStatus === "pending"
-                        ? "border-[#EAB879] bg-[#FFFBEB] text-[#D97706]"
+                        ? "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"
                         : "border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]"
                   }`}>
                     {d.permitLabel}
@@ -317,13 +317,13 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   營運條件與規模
                 </p>
                 <dl className="mt-2.5 space-y-2 text-xs">
-                  <div className="flex items-baseline justify-between border-b border-[#E8ECE9] pb-1.5">
+                  <div className="flex items-baseline justify-between border-b border-[#ECEFEC] pb-1.5">
                     <dt className="text-[#66736C]">最大容納人數</dt>
                     <dd className="font-black tabular-nums text-[#1A2A22]">
                       {hospitalityInfo.capacity ? `${hospitalityInfo.capacity} 名` : "圖面未標明"}
                     </dd>
                   </div>
-                  <div className="flex items-baseline justify-between border-b border-[#E8ECE9] pb-1.5">
+                  <div className="flex items-baseline justify-between border-b border-[#ECEFEC] pb-1.5">
                     <dt className="text-[#66736C]">許可形式記載</dt>
                     <dd className="font-bold text-[#1A2A22]">
                       {hospitalityInfo.licenseType || "民泊／旅館業"}
@@ -338,7 +338,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1 text-xs leading-relaxed text-[#3F5147]">
                   <p className="font-bold text-[#007D5A]">買方接手核對清單：</p>
-                  <ul className="list-disc space-y-0.5 pl-4 text-[11px] text-[#58685F]">
+                  <ul className="list-disc space-y-0.5 pl-4 text-[11px] text-[#3F5147]">
                     <li>索取「住宅宿泊事業屆出番號」或「旅館業許可書」正本影本，核對所有人名義與登記地址。</li>
                     <li>確認管轄消防署核發之「消防法令適合通知書」，檢視火警自動警報設備與避難指示燈。</li>
                     <li>確認所在行政區之條例限制（如東京都豊島區對於住居專用地域平日營運、管理業者常駐等特別規定）。</li>
@@ -428,7 +428,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                     {d.partialIncome && <span className="ml-1 text-xs text-[#D97706]">（部分房號／樓層）</span>}
                   </p>
                   <div className="mt-1.5">
-                    <span className="inline-block border border-[#EAB879] bg-[#FFFBEB] px-2 py-0.5 text-[11px] font-bold text-[#D97706]">
+                    <span className="inline-block border border-[#FDE047] bg-[#FEF9C3] px-2 py-0.5 text-[11px] font-bold text-[#854D0E]">
                       {d.revenueBasisLabel}
                     </span>
                   </div>
@@ -461,7 +461,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   </div>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {breakdownItems.map((detail) => (
-                      <div key={`${detail.label}-${detail.value}`} className="border border-[#E8ECE9] bg-[#F9FBFA] p-3">
+                      <div key={`${detail.label}-${detail.value}`} className="border border-[#ECEFEC] bg-[#FAFCFB] p-3">
                         <div className="flex items-baseline justify-between gap-2">
                           <span className="text-xs font-bold text-[#007D5A]">{detail.label}</span>
                           {detail.formula && <span className="font-mono text-[11px] text-[#66736C]">{detail.formula}</span>}
@@ -490,7 +490,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   <CircleAlert className="mt-0.5 h-4 w-4 shrink-0 text-[#007D5A]" />
                   <div className="space-y-1">
                     <p className="font-bold text-[#007D5A]">實質收益核算要點：</p>
-                    <ul className="list-disc space-y-1 pl-4 text-[11px] text-[#58685F]">
+                    <ul className="list-disc space-y-1 pl-4 text-[11px] text-[#3F5147]">
                       <li>以上為營收與售價之表面比例（表面投報率），尚未扣除清掃費、訂房平台佣金（約 15%~18%）、代管營運費（約 20%）、水電瓦斯、固都稅、火災保險與修繕預備金。</li>
                       <li>這不是扣除各項持有營運成本後的實質淨投報率（NOI 淨收益率）。</li>
                       <li>以房價×天數或假設稼動率計算者屬情境推估；即使標示「實績」，仍須核對過往 1~2 年之報稅帳務與月度報表。</li>

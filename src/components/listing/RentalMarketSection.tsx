@@ -140,7 +140,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                           </span>
                         </div>
                         {result.range && (
-                          <div className="flex items-center gap-1.5 border-l border-zinc-300 pl-3">
+                          <div className="flex items-center gap-1.5 border-l border-[#C9D2CD] pl-3">
                             <span className="text-[#66736C]">相對區域中位數：</span>
                             <span className="font-mono font-bold text-[#1A2A22]">
                               {nominalDiff > 0 ? `+${nominalDiff.toFixed(1)}%` : nominalDiff < 0 ? `−${Math.abs(nominalDiff).toFixed(1)}%` : "0.0%"}
@@ -155,7 +155,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                       </div>
                       <span className={`inline-flex shrink-0 items-center gap-1 border px-2 py-0.5 text-[11px] font-bold ${netFactorsSum >= nominalDiff
                           ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
-                          : "border-[#E8C4A8] bg-[#FFF9ED] text-[#7A5A1F]"
+                          : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"
                         }`}>
                         <CheckCircle2 className="h-3 w-3" />
                         <span>{netFactorsSum >= nominalDiff ? "條件與規格充分支撐" : "部分條件加成支撐"}</span>
@@ -173,13 +173,13 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         <span className="text-center">影響強度</span>
                         <span className="text-right">預估影響幅度</span>
                       </div>
-                      <div className="divide-y divide-[#E8ECE9]">
+                      <div className="divide-y divide-[#ECEFEC]">
                         {rentalFactors.map((f, i) => {
                           const isPlus = f.ratePercent >= 0;
                           return (
                             <div
                               key={i}
-                              className="grid grid-cols-1 sm:grid-cols-[1.5rem_8.5rem_1fr_4.5rem_5rem] items-center gap-x-3 gap-y-1 p-2.5 sm:px-3 sm:py-2 text-xs hover:bg-[#F9FBFA] transition-colors"
+                              className="grid grid-cols-1 sm:grid-cols-[1.5rem_8.5rem_1fr_4.5rem_5rem] items-center gap-x-3 gap-y-1 p-2.5 sm:px-3 sm:py-2 text-xs hover:bg-[#FAFCFB] transition-colors"
                             >
                               <span className="hidden sm:inline font-mono text-[11px] tabular-nums text-[#8A9590]">
                                 {i + 1}

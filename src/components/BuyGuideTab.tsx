@@ -149,7 +149,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                         <span>需要為您評估買房方案或試算嗎？</span>
                       </h4>
-                      <p className="text-xs text-zinc-600 mt-1">
+                      <p className="text-xs text-[#3F5147] mt-1">
                         AI 會優先參考本站整理資料，並在貸款、稅務與住宿法規問題中提示適用條件及確認單位。
                       </p>
                       <button 
@@ -165,7 +165,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         <Smile className="w-4 h-4 text-[#00a174]" />
                         <span>需要直接進行日本物件配對？</span>
                       </h4>
-                      <p className="text-xs text-zinc-600 mt-1">
+                      <p className="text-xs text-[#3F5147] mt-1">
                         直接聯絡 Linus，協助您尋找網上公開或未公開的優質房源。
                       </p>
                       <button 
@@ -208,7 +208,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         buyCategory === cat.id 
                           ? "bg-[#00a174] text-white border-[#00a174]" 
-                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#00a174]"
+                          : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#00a174]"
                       }`}
                     >
                       {cat.label}
@@ -218,7 +218,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
  
                 {/* Filter Search Field */}
                 <div className="relative w-full md:w-72 font-sans">
-                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
+                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#8A9590]" />
                   <input
                     type="text"
                     placeholder="搜尋買房知識（如：貸款）..."
@@ -235,7 +235,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {buySearchQuery && (
                     <button 
                       onClick={() => setBuySearchQuery("")}
-                      className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
+                      className="absolute right-2.5 top-2.5 text-[#8A9590] hover:text-[#3F5147]"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -244,7 +244,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               </div>
 
               {buySearchQuery.trim() && !isBuySearchActive && (
-                <div className="border-l-4 border-[#DCC8A1] bg-[#FFF9ED] px-4 py-3 text-sm text-[#66583D] font-sans">
+                <div className="border-l-4 border-[#FDE047] bg-[#FEF9C3] px-4 py-3 text-sm text-[#854D0E] font-sans">
                   請輸入至少 2 個字的完整詞，例如「取得稅」或「住宅貸款」。
                 </div>
               )}
@@ -269,8 +269,8 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {isStepOpen("concepts") && (
                   <div className="space-y-4">
                     {taiwanJapanComparisons.map((item) => (
-                      <article key={item.id} className="border border-zinc-200 bg-[#F5F8F6] p-5">
-                        <h4 className="mb-4 flex items-center gap-2 border-b border-zinc-300 pb-3 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
+                      <article key={item.id} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5">
+                        <h4 className="mb-4 flex items-center gap-2 border-b border-[#C9D2CD] pb-3 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
                           <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
                             {item.number.replace(/^0/, "")}
                           </span>
@@ -278,19 +278,19 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </h4>
 
                         <div className="grid grid-cols-1 gap-4 font-sans md:grid-cols-2">
-                          <div className="border border-zinc-200 bg-white p-4">
-                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#66736C]">
+                          <div className="border border-[#DDE3DF] bg-white p-4">
+                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-[#C9D2CD] pb-2 text-sm font-bold text-[#66736C]">
                               <span className="h-2 w-2 bg-[#8A9590]" />
                               <span>台灣常見理解</span>
                             </h5>
-                            <p className="text-xs leading-relaxed text-zinc-700 md:text-sm">{item.taiwan}</p>
+                            <p className="text-xs leading-relaxed text-[#3F5147] md:text-sm">{item.taiwan}</p>
                           </div>
-                          <div className="border border-zinc-200 bg-white p-4">
-                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#00a174]">
+                          <div className="border border-[#DDE3DF] bg-white p-4">
+                            <h5 className="mb-3 flex items-center gap-1.5 border-b border-[#C9D2CD] pb-2 text-sm font-bold text-[#00a174]">
                               <span className="h-2 w-2 bg-[#00a174]" />
                               <span>日本實務</span>
                             </h5>
-                            <p className="text-xs leading-relaxed text-zinc-700 md:text-sm">{item.japan}</p>
+                            <p className="text-xs leading-relaxed text-[#3F5147] md:text-sm">{item.japan}</p>
                           </div>
                         </div>
 
@@ -323,25 +323,25 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   {/* 與上面「五個觀念」比較表同一套卡片語彙 */}
                   <div className="space-y-4">
                     {taxLifecycle.map((item, index) => (
-                      <article key={item.stage} className="border border-zinc-200 bg-[#F5F8F6] p-5">
-                        <div className="mb-4 border-b border-zinc-300 pb-3">
+                      <article key={item.stage} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5">
+                        <div className="mb-4 border-b border-[#C9D2CD] pb-3">
                           <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
                             <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
                               {index + 1}
                             </span>
                             <span>{item.stage}</span>
                           </h4>
-                          <p className="mt-2 font-sans text-xs leading-relaxed text-zinc-600 md:text-sm">{item.summary}</p>
+                          <p className="mt-2 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">{item.summary}</p>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 font-sans md:grid-cols-3">
                           {item.details.map(detail => (
-                            <div key={detail.title} className="border border-zinc-200 bg-white p-4">
-                              <h5 className="mb-3 flex items-center gap-1.5 border-b border-zinc-300 pb-2 text-sm font-bold text-[#00a174]">
+                            <div key={detail.title} className="border border-[#DDE3DF] bg-white p-4">
+                              <h5 className="mb-3 flex items-center gap-1.5 border-b border-[#C9D2CD] pb-2 text-sm font-bold text-[#00a174]">
                                 <span className="h-2 w-2 shrink-0 bg-[#00a174]" />
                                 <span>{detail.title}</span>
                               </h5>
-                              <ul className="space-y-2 text-xs leading-relaxed text-zinc-700 md:text-sm">
+                              <ul className="space-y-2 text-xs leading-relaxed text-[#3F5147] md:text-sm">
                                 {detail.points.map(point => (
                                   <li key={point} className="flex items-start gap-2">
                                     <span className="font-bold text-[#00a174]">✓</span>
@@ -361,7 +361,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     ))}
                   </div>
 
-                  <p className="mt-4 font-sans text-[10px] leading-relaxed text-zinc-400">
+                  <p className="mt-4 font-sans text-[10px] leading-relaxed text-[#8A9590]">
                     制度基準：2026年7月。上方先以現行一般稅率與常見住宅特例說明；正式精算時，再以物件的固定資產稅評價證明、用途、面積、屋齡及買方稅務身分計算。
                   </p>
                   </>
@@ -380,11 +380,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見日本買房與投資問題 Q&A</span>
-                    <span className="text-xs text-zinc-500 font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
+                    <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
                   </h3>
                   
                   {buyFiltered.qa.length === 0 ? (
-                    <div className="border border-dashed border-zinc-300 bg-white py-12 text-center text-zinc-500 text-xs font-sans">
+                    <div className="border border-dashed border-[#C9D2CD] bg-white py-12 text-center text-[#66736C] text-xs font-sans">
                       找不到符合「{buySearchQuery}」的 Q&A 內容。請更換關鍵字重新搜尋。
                     </div>
                   ) : (

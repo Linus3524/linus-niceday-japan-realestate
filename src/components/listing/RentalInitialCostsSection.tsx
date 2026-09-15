@@ -37,7 +37,7 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
       <CostSummary action={<DetailsToggle expanded={showInitialCostDetails} onToggle={() => setShowInitialCostDetails(!showInitialCostDetails)} />}>
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-xs font-bold text-[#007D5A]">簽約入住預估總費用</p>
-            <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] font-bold ${initialCost.level === "low" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : initialCost.level === "high" ? "border-[#E94E2B] bg-[#FBDFD2] text-[#B13818]" : "border-[#DDE3DF] bg-white text-[#3F5147]"}`}>
+            <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] font-bold ${initialCost.level === "low" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : initialCost.level === "high" ? "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]" : "border-[#DDE3DF] bg-white text-[#3F5147]"}`}>
               行情對照：{initialCost.levelText}
             </span>
           </div>
@@ -99,10 +99,10 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
       {initialCostTips.length > 0 && (
         <div className={informationStyle.caution}>
           <div className={`mb-1.5 ${informationStyle.cautionTitle}`}>
-            <Info className="h-4 w-4 text-[#7A5A1F]" />
+            <Info className="h-4 w-4 text-[#854D0E]" />
             <span>簽約與初期費用提醒：</span>
           </div>
-          <ul className="space-y-1.5 pl-5 list-disc text-[#1A2A22]">
+          <ul className="space-y-1.5 pl-5 list-disc text-[#854D0E]">
             {initialCostTips.map((tip, idx) => (
               <li key={idx}>{tip}</li>
             ))}

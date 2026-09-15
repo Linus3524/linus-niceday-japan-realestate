@@ -85,14 +85,14 @@ export function TermModal(props: TermModalProps) {
             >
               <button 
                 onClick={() => setSelectedFee(null)}
-                className="absolute top-4 right-4 text-zinc-500 hover:text-[#00a174] cursor-pointer"
+                className="absolute top-4 right-4 text-[#66736C] hover:text-[#00a174] cursor-pointer"
                 id="term-modal-close"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-4">
-                <div className={`${stackHeader ? "flex flex-col items-stretch gap-2" : "flex items-start justify-between gap-3"} pr-9 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:pr-10 border-b border-zinc-200 pb-3`}>
+                <div className={`${stackHeader ? "flex flex-col items-stretch gap-2" : "flex items-start justify-between gap-3"} pr-9 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:pr-10 border-b border-[#DDE3DF] pb-3`}>
                   <h4 className={`min-w-0 ${stackHeader ? "w-full" : "flex-1"} flex flex-wrap items-baseline gap-x-0 gap-y-1 text-[clamp(1.1rem,5vw,1.25rem)] leading-[1.45] font-bold text-[#1A2A22]`}>
                     {(() => {
                       const term = splitTermName(selectedFee.name);
@@ -116,20 +116,20 @@ export function TermModal(props: TermModalProps) {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="text-sm text-zinc-800 leading-relaxed text-justify">{renderFormattedText(selectedFee.description)}</div>
+                  <div className="text-sm text-[#1A2A22] leading-relaxed text-justify">{renderFormattedText(selectedFee.description)}</div>
 
                   {selectedFee.warning && (
                     <div className="bg-[#e6f6f1] border-l-4 border-[#00a174] p-3.5 text-xs text-[#007d5a] leading-relaxed font-sans space-y-1 rounded-r">
                       <strong className="block font-bold text-[#007d5a]">實務重點與風險提醒：</strong>
-                      <div className="text-zinc-700 leading-relaxed text-justify">{renderFormattedText(selectedFee.warning.replace(/^💡\s*/, ""))}</div>
+                      <div className="text-[#3F5147] leading-relaxed text-justify">{renderFormattedText(selectedFee.warning.replace(/^💡\s*/, ""))}</div>
                     </div>
                   )}
 
                   {selectedFee.keyPoints && selectedFee.keyPoints.length > 0 && (
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2">
-                      <span className="font-bold text-xs text-zinc-800 block font-sans">🔍 實務精要細節：</span>
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] space-y-2">
+                      <span className="font-bold text-xs text-[#1A2A22] block font-sans">🔍 實務精要細節：</span>
                       {selectedFee.keyPoints.map((point: string, pIdx: number) => (
-                        <div key={pIdx} className="text-xs text-zinc-700 leading-relaxed flex items-start gap-1.5 font-sans">
+                        <div key={pIdx} className="text-xs text-[#3F5147] leading-relaxed flex items-start gap-1.5 font-sans">
                           <span className="text-[#00a174] font-bold">•</span>
                           <span>{point}</span>
                         </div>
@@ -140,13 +140,13 @@ export function TermModal(props: TermModalProps) {
                   {/* SpecialTermItem 用 details 存條列內容（搜尋結果也會把這類項目送進來），
                       少了這段就會出現「卡片有十條、彈窗只剩一句」的空殼狀況。 */}
                   {selectedFee.details && selectedFee.details.length > 0 && (
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200">
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF]">
                       <TermDetailList termName={selectedFee.name} details={selectedFee.details} />
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-zinc-100 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3 font-sans">
+                <div className="pt-4 border-t border-[#ECEFEC] flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3 font-sans">
                   <button
                     onClick={() => {
                       const textToAsk = `想深入了解關於「${selectedFee.name}」這個${itemTypeLabel}的內容與實務細節`;
@@ -154,7 +154,7 @@ export function TermModal(props: TermModalProps) {
                       handleTabChange("chat");
                       handleSendMessage(undefined, textToAsk);
                     }}
-                    className="w-full px-4 py-2 border border-[#DDE3DF] hover:border-[#00a174] text-zinc-800 hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
+                    className="w-full px-4 py-2 border border-[#DDE3DF] hover:border-[#00a174] text-[#1A2A22] hover:bg-[#F5F8F6] text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
                   >
                     向 AI 顧問諮詢此{itemTypeLabel}
                   </button>

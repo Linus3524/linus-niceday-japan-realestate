@@ -104,7 +104,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">calculate</span>
                         <span>需要估算理想房租預算嗎？</span>
                       </h4>
-                      <p className="text-xs text-zinc-600 mt-1">
+                      <p className="text-xs text-[#3F5147] mt-1">
                         根據東京 23 區實務數據，自動套用免治馬桶、步行時間、屋齡等增減價公式。
                       </p>
                       <button 
@@ -120,7 +120,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                         <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
                         <span>有特定的疑難雜症想直接問 AI 嗎？</span>
                       </h4>
-                      <p className="text-xs text-zinc-600 mt-1">
+                      <p className="text-xs text-[#3F5147] mt-1">
                         本系統已將完整大補帖融入 AI 顧問，支援多輪對話，能快速精準解答。
                       </p>
                       <button 
@@ -158,7 +158,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
                         kbCategory === cat.id 
                           ? "bg-[#00a174] text-white border-[#00a174]" 
-                          : "bg-white text-zinc-700 border-zinc-300 hover:border-[#00a174]"
+                          : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#00a174]"
                       }`}
                     >
                       {cat.label}
@@ -168,7 +168,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
                 {/* Filter Search Field */}
                 <div className="relative w-full md:w-72 font-sans">
-                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
+                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#8A9590]" />
                   <input
                     type="text"
                     placeholder="搜尋租屋知識（如：敷金）..."
@@ -180,7 +180,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   {searchQuery && (
                     <button 
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
+                      className="absolute right-2.5 top-2.5 text-[#8A9590] hover:text-[#3F5147]"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -190,7 +190,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
 
               {/* Search results message */}
               {searchQuery.trim() && !isSearchActive && (
-                <div className="border-l-4 border-[#DCC8A1] bg-[#FFF9ED] px-4 py-3 text-sm text-[#66583D] font-sans">
+                <div className="border-l-4 border-[#FDE047] bg-[#FEF9C3] px-4 py-3 text-sm text-[#854D0E] font-sans">
                   請輸入至少 2 個字的完整詞，例如「先行契約」或「保證公司」。
                 </div>
               )}
@@ -201,7 +201,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 <section className="space-y-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>初期費用與契約術語</span>
-                    <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.fees.length} 項</span>
+                    <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.fees.length} 項</span>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filtered.fees.map((fee, idx) => (
@@ -213,25 +213,25 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           <div className="flex justify-between items-start gap-2 mb-2">
                             <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={fee.name} /></h4>
                             {fee.jpName && (
-                              <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">{fee.jpName}</span>
+                              <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{fee.jpName}</span>
                             )}
                           </div>
-                          <p className="text-sm text-zinc-700 leading-relaxed line-clamp-3">
+                          <p className="text-sm text-[#3F5147] leading-relaxed line-clamp-3">
                             {fee.description}
                           </p>
                         </div>
 
                         {fee.warning && (
-                          <div className="mt-3 pt-2.5 border-t border-dashed border-zinc-200 text-xs text-[#00a174] line-clamp-1 font-sans">
+                          <div className="mt-3 pt-2.5 border-t border-dashed border-[#DDE3DF] text-xs text-[#00a174] line-clamp-1 font-sans">
                             {fee.warning}
                           </div>
                         )}
-                        <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans">
+                        <div className="mt-4 flex items-center justify-between text-xs text-[#8A9590] font-sans">
                           <span>初期費用／契約</span>
                           <button
                             type="button"
                             onClick={() => setSelectedFee(fee)}
-                            className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+                            className="text-[#3F5147] flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
                           >
                             查看說明 →
                           </button>
@@ -247,7 +247,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>房屋與設備術語</span>
-                    <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.terms.length} 項</span>
+                    <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.terms.length} 項</span>
                   </h3>
                   <div className="space-y-4">
                     {filtered.terms.map((term, idx) => (
@@ -272,7 +272,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見租屋問題 Q&A</span>
-                    <span className="text-xs text-zinc-500 font-normal font-sans">共 {filtered.qa.length} 問</span>
+                    <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>
                   <div className="space-y-4">
                     {filtered.qa.map((qa, idx) => <QACard key={qa.id} question={qa.question} summary={qa.summary} answer={qa.answer} number={idx + 1} />)}

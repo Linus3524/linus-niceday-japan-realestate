@@ -6,7 +6,7 @@ import { guidedChoiceClass } from './fieldStyles';
 type Props = Pick<CalculatorViewModel, "guidedFloorMin" | "selectGuidedFloor" | "rentSearchFilters" | "toggleRentSearchFilter" | "washbasinSelected" | "toggleBathroomFacility" | "bidetSelected" | "guidedAutoLock" | "toggleBuildingSecurity" | "guidedElevator" | "calcModifiers" | "toggleModifier">;
 export function GuidedEquipmentFields({ guidedFloorMin, selectGuidedFloor, rentSearchFilters, toggleRentSearchFilter, washbasinSelected, toggleBathroomFacility, bidetSelected, guidedAutoLock, toggleBuildingSecurity, guidedElevator, calcModifiers, toggleModifier }: Props) {
   return (<><fieldset className="border-t border-dashed border-[#C9D2CD] pt-4">
-          <legend className="px-1 text-xs font-bold text-zinc-700">樓層與常用設備</legend>
+          <legend className="px-1 text-xs font-bold text-[#3F5147]">樓層與常用設備</legend>
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"

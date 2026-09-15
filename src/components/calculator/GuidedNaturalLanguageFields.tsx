@@ -31,7 +31,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
             type="button"
             onClick={analyzeNaturalLanguageRent}
             disabled={!aiPrompt.trim() || aiInputLoading}
-            className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:cursor-not-allowed disabled:opacity-45 font-sans"
+            className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45 font-sans"
           >
             {aiInputLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
             {aiInputLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
@@ -45,7 +45,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
           </button>
         </div>
         <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 3 分鐘最多分析 3 次。</p>
-        {aiInputError && <p className="mt-3 bg-[#FBDFD2] p-3 text-xs text-[#B13818] font-sans">{aiInputError}</p>}
+        {aiInputError && <p className="mt-3 border border-[#FCA5A5] bg-[#FEE2E2] p-3 text-xs text-[#B13818] font-sans">{aiInputError}</p>}
         {aiResult && <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />}
       </div></>);
 }

@@ -30,7 +30,7 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
         : { bg: "#F2FAF7", border: "#CDEBE0" };
   const badgeBorder = !level ? "#DDE3DF" : level === 5 ? "#DED4F2" : level >= 3 ? "#B9DCFF" : "#9EE2CF";
   const badgeText = !level ? "#66736C" : accent;
-  return <div style={{ backgroundColor: palette.bg, borderColor: palette.border }} className={`${alignRows ? "prefecture-safety-card" : "flex flex-col justify-between"} border border-[#CFE0D8] bg-[#F5F8F6] p-3.5`}>
+  return <div style={{ backgroundColor: palette.bg, borderColor: palette.border }} className={`${alignRows ? "prefecture-safety-card" : "flex flex-col justify-between"} border border-[#DDE3DF] bg-[#F5F8F6] p-3.5`}>
     <div className={alignRows ? "prefecture-safety-top" : undefined}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]"><Footprints className="h-4 w-4" />街區活動程度</span>
@@ -72,8 +72,8 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
           </div>;
         })}
       </div>
-      <p className={`${alignRows ? "prefecture-safety-description " : ""}mt-3 text-[11px] leading-relaxed text-[#55635B]`}>{explanation}</p>
-      {annualStreetCrime && !alignRows && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#CFE0D8] pt-2 text-[10px] leading-relaxed text-[#66736C]">
+      <p className={`${alignRows ? "prefecture-safety-description " : ""}mt-3 text-[11px] leading-relaxed text-[#3F5147]`}>{explanation}</p>
+      {annualStreetCrime && !alignRows && <div className="mt-2 space-y-0.5 border-t border-dashed border-[#DDE3DF] pt-2 text-[10px] leading-relaxed text-[#66736C]">
         {annualStreetCrime && <p className="break-words">環境：{address || "物件位置待確認"}・周邊 500m</p>}
         <p className="break-words">街頭案件：{annualStreetCrime.area}・{annualStreetCrime.period}（警視廳）</p>
       </div>}
@@ -138,10 +138,10 @@ function ActivityCounts({ activity, standalone = false }: { activity?: Neighborh
 
 function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
   const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
-  return <div className="mt-3 space-y-1 border-t border-dashed border-[#CFE0D8] pt-2">
+  return <div className="mt-3 space-y-1 border-t border-dashed border-[#DDE3DF] pt-2">
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><Moon className="h-3.5 w-3.5 shrink-0" />夜間環境與資料說明</div>
-      <div className="space-y-1.5 text-[11px] leading-relaxed text-[#55635B]">
-        <ul className="space-y-1.5 text-[#55635B]">
+      <div className="space-y-1.5 text-[11px] leading-relaxed text-[#3F5147]">
+        <ul className="space-y-1.5 text-[#3F5147]">
           <li className="flex items-start gap-1.5">
             <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#8A9590]" />
             <span>{!unavailable && activity.aroundTheClock > 0 ? `地圖標註 ${activity.aroundTheClock} 處全天營業；` : "深夜營業資訊尚不足；"}照明、人流及返家路線需要實地確認。</span>

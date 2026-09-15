@@ -43,7 +43,7 @@ export function TermDetailList({
     return (
       <div className="space-y-2.5">
         {details.map((detail, idx) => (
-          <div key={idx} className="text-xs text-zinc-800 leading-relaxed flex items-start gap-2 font-sans">
+          <div key={idx} className="text-xs text-[#1A2A22] leading-relaxed flex items-start gap-2 font-sans">
             <span className="text-[#00a174] font-bold shrink-0">✦</span>
             <span className="text-justify">{renderInlineLabels(detail)}</span>
           </div>
@@ -79,7 +79,7 @@ export function TermDetailList({
                 </span>
               )}
             </span>
-            <span className="text-xs leading-relaxed text-zinc-800 text-justify">
+            <span className="text-xs leading-relaxed text-[#1A2A22] text-justify">
               {label && <strong className="mr-1.5 font-semibold text-[#1A2A22]">{label}</strong>}
               {body}
             </span>

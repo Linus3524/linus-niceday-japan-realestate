@@ -100,9 +100,9 @@ export default function HeaderInfoBar({ variant = "header" }: { variant?: "heade
   }
 
   return (
-    <div className="hidden sm:flex font-sans text-[11px] tracking-[0.08em] text-zinc-500 items-center gap-3 tabular-nums">
+    <div className="hidden sm:flex font-sans text-[11px] tracking-[0.08em] text-[#66736C] items-center gap-3 tabular-nums">
       <span>{dateTime}</span>
-      <span className="text-zinc-300">|</span>
+      <span className="text-[#8A9590]">|</span>
       <span>{weather}</span>
     </div>
   );

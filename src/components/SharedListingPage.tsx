@@ -10,12 +10,12 @@ import { ListingHealthCheck } from "./ListingHealthCheck";
 export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack: () => void }) {
   return (
     <div className="min-h-screen bg-[#F5F8F6] text-[#1A2A22]">
-      <header className="border-b border-[#D4DDD8] bg-white">
+      <header className="border-b border-[#DDE3DF] bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-5 px-5 py-5 sm:px-8">
           <button
             type="button"
             onClick={onBack}
-            className="font-sans text-sm font-semibold text-[#31443A] transition-colors hover:text-[#009670]"
+            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#009670]"
           >
             <span aria-hidden="true">←</span> 前往 LINUS 住好日
           </button>
@@ -32,12 +32,12 @@ export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack
         </p>
       </main>
 
-      <footer className="mt-12 border-t border-[#D4DDD8] bg-white">
+      <footer className="mt-12 border-t border-[#DDE3DF] bg-white">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-5 py-7 text-center sm:flex-row sm:px-8 sm:text-left">
-          <p className="font-jost text-[10px] tracking-[0.08em] text-[#7A847E]">
+          <p className="font-jost text-[10px] tracking-[0.08em] text-[#8A9590]">
             © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#526159]" aria-label="政策頁面">
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#3F5147]" aria-label="政策頁面">
             <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
             <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
             <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>

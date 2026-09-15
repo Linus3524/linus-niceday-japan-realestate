@@ -824,7 +824,7 @@ export default function App() {
             </h2>
 
             {/* 限制寬度讓長句提早換行，避免文字延伸過去壓到人物 */}
-            <div className="max-w-[30rem] text-xs md:text-sm text-zinc-500 font-sans tracking-wide leading-relaxed space-y-1 mt-4">
+            <div className="max-w-[30rem] text-xs md:text-sm text-[#66736C] font-sans tracking-wide leading-relaxed space-y-1 mt-4">
               <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
               <p>分享日本租屋、買房、貸款規劃與在日生活的經驗實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
               <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
@@ -835,7 +835,7 @@ export default function App() {
             <div className="w-fit">
               <div className="border-t border-[#DDE3DF] my-6"></div>
 
-              <div className="flex items-center gap-x-2 sm:gap-x-3 flex-wrap gap-y-1 text-[9px] sm:text-[10px] text-zinc-400 font-jost tracking-wider uppercase font-semibold">
+              <div className="flex items-center gap-x-2 sm:gap-x-3 flex-wrap gap-y-1 text-[9px] sm:text-[10px] text-[#8A9590] font-jost tracking-wider uppercase font-semibold">
                 <span>SINCE 2024</span>
                 <span>•</span>
                 <span className="hidden min-[380px]:inline">REAL ESTATE GUIDE</span>
@@ -904,12 +904,12 @@ export default function App() {
                     type="text"
                     readOnly
                     value={linusContact.lineId}
-                    className="flex-1 bg-white border border-[#DDE3DF] px-2 py-1 font-mono text-zinc-700 focus:outline-none text-[10px] min-w-0"
+                    className="flex-1 bg-white border border-[#DDE3DF] px-2 py-1 font-mono text-[#3F5147] focus:outline-none text-[10px] min-w-0"
                     aria-label="LINE ID"
                   />
                   <button
                     onClick={handleCopyLine}
-                    className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-zinc-700 text-[10px] px-2.5 py-1 cursor-pointer font-bold transition-colors select-none shrink-0"
+                    className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-[#3F5147] text-[10px] px-2.5 py-1 cursor-pointer font-bold transition-colors select-none shrink-0"
                   >
                     {copiedLine ? "已複製" : "複製"}
                   </button>
@@ -941,7 +941,7 @@ export default function App() {
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
                 className={`primary-nav-tab relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
-                  activeTab === tab.id ? "is-active text-[#007d5a]" : "text-[#1a2a22] hover:text-[#007d5a]"
+                  activeTab === tab.id ? "is-active text-[#007d5a]" : "text-[#1A2A22] hover:text-[#007d5a]"
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >
@@ -1041,12 +1041,12 @@ export default function App() {
           <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div>
               <strong className="font-serif text-base font-semibold tracking-[0.04em] text-[#1A2A22]">LINUS 住好日</strong>
-              <p className="mt-1 font-sans text-xs text-[#68756E]">
+              <p className="mt-1 font-sans text-xs text-[#66736C]">
                 日本租屋・買房與在日生活的實務整理
               </p>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#31443A]">
+              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#1A2A22]">
                 <a
                   href="https://www.threads.com/@linus3524"
                   target="_blank"
@@ -1056,7 +1056,7 @@ export default function App() {
                   Threads
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </a>
-                <span className="h-3 w-px bg-[#C8D1CC]" aria-hidden="true" />
+                <span className="h-3 w-px bg-[#C9D2CD]" aria-hidden="true" />
                 <a
                   href={`mailto:${linusContact.email}`}
                   className="transition-colors hover:text-[#009670]"
@@ -1064,7 +1064,7 @@ export default function App() {
                   聯絡信箱
                 </a>
               </div>
-              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#68756E]" aria-label="網站政策">
+              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#66736C]" aria-label="網站政策">
                 <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
                 <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
                 <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
@@ -1073,7 +1073,7 @@ export default function App() {
             </div>
           </div>
 
-          <p className="mt-6 border-t border-[#D4DDD8] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#879089] md:text-left">
+          <p className="mt-6 border-t border-[#DDE3DF] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#8A9590] md:text-left">
             © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
         </div>

@@ -30,6 +30,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
   const axes = buildAxisVerdicts(criteria, recommendations);
   const overall = buildOverallVerdict(axes);
   const OverallIcon = overall.level === "可行" ? CheckCircle2 : overall.level === "資料不足" ? HelpCircle : AlertTriangle;
+  const overallIconColor = overall.level === "可行" ? "text-[#007D5A]" : overall.level === "難度高" ? "text-[#B13818]" : overall.level === "有條件可行" ? "text-[#D97706]" : "text-[#3F5147]";
 
   return (
     <div className="mt-6 space-y-4">
@@ -47,25 +48,25 @@ export function RequirementAssessment({ criteria, recommendations }: {
 
         <div className="mt-4 font-sans">
           <div className="flex items-start gap-2.5">
-            <OverallIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#7A5A1F]" />
+            <OverallIcon className={`mt-0.5 h-4 w-4 shrink-0 ${overallIconColor}`} />
             <p className="text-[11px] font-bold leading-relaxed text-[#1A2A22]">{overall.headline}</p>
           </div>
           {overall.reasons.length > 0 && (
             <ul className="mt-2 space-y-1 pl-6">
               {overall.reasons.map(reason => (
-                <li key={reason} className="list-disc text-[10px] leading-relaxed text-[#52635A]">
+                <li key={reason} className="list-disc text-[10px] leading-relaxed text-[#3F5147]">
                   {reason}
                 </li>
               ))}
             </ul>
           )}
           {overall.loosenFirst && (
-            <p className="mt-3 border-t border-[#E1E7E3] pt-3 text-[10px] font-bold leading-relaxed text-[#007D5A]">
+            <p className="mt-3 border-t border-[#DDE3DF] pt-3 text-[10px] font-bold leading-relaxed text-[#007D5A]">
               建議先調整：{overall.loosenFirst}
             </p>
           )}
           {overall.pendingLabels && overall.pendingLabels.length > 0 && (
-            <p className="mt-2 text-[10px] leading-relaxed text-[#52635A]">
+            <p className="mt-2 text-[10px] leading-relaxed text-[#3F5147]">
               待補資料：{overall.pendingLabels.join("、")}
             </p>
           )}
@@ -87,7 +88,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
             {axis.drivers.length > 0 && (
               <ul className="mt-1.5 space-y-1 border-l-2 border-[#9ee2cf] py-0.5 pl-2.5">
                 {axis.drivers.map(driver => (
-                  <li key={driver} className="text-[11px] leading-normal text-[#52635A]">{driver}</li>
+                  <li key={driver} className="text-[11px] leading-normal text-[#3F5147]">{driver}</li>
                 ))}
               </ul>
             )}

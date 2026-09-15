@@ -53,7 +53,9 @@
     "test:refactor-contracts": "tsx scripts/test-refactor-contracts.ts",
     "test:listing-upload": "tsx scripts/test-listing-upload.ts",
     "test:pdf-layout": "tsx scripts/test-pdf-layout-text.ts",
-    "test:controller-flows": "tsx scripts/test-controller-flows.ts"
+    "test:controller-flows": "tsx scripts/test-controller-flows.ts",
+    "test:ink-colors": "tsx scripts/test-ink-color-convergence.ts",
+    "test:flyer-transit-count": "tsx scripts/test-flyer-transit-count.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

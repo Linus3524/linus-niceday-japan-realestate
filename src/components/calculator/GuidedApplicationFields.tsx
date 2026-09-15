@@ -3,18 +3,18 @@ import type { CalculatorViewModel } from "../../hooks/useCalculatorController";
 type Props = Pick<CalculatorViewModel, "setGuidedApplicationChannel" | "guidedApplicationChannel" | "guidedVisaType">;
 export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApplicationChannel, guidedVisaType }: Props) {
   return (<><fieldset>
-          <legend className="text-xs font-bold text-zinc-700">希望審查方式</legend>
+          <legend className="text-xs font-bold text-[#3F5147]">希望審查方式</legend>
           <div className="mt-1.5 grid grid-cols-2 gap-2 font-sans">
             <button
               type="button"
               onClick={() => setGuidedApplicationChannel("domestic")}
               className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
                   ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
-                  : "border-[#D4DDD8] bg-white text-zinc-700 hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
                 }`}
             >
               <span className="text-xs font-bold">日本境內審查</span>
-              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "domestic" ? "text-white/80" : "text-zinc-400"}`}>
+              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "domestic" ? "text-white/80" : "text-[#8A9590]"}`}>
                 已在日 · 可看房／房源選擇較多
               </span>
             </button>
@@ -23,11 +23,11 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
               onClick={() => setGuidedApplicationChannel("overseas")}
               className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
                   ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
-                  : "border-[#D4DDD8] bg-white text-zinc-700 hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
                 }`}
             >
               <span className="text-xs font-bold">海外跨國審查</span>
-              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "overseas" ? "text-white/80" : "text-zinc-400"}`}>
+              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "overseas" ? "text-white/80" : "text-[#8A9590]"}`}>
                 人在海外 · 限支援海審／遠端簽約
               </span>
             </button>

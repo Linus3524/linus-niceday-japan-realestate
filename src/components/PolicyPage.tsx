@@ -277,12 +277,12 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
 
   return (
     <div className="min-h-screen bg-[#F5F8F6] text-[#1A2A22]">
-      <header className="border-b border-[#D4DDD8] bg-white">
+      <header className="border-b border-[#DDE3DF] bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-5 px-5 py-5 sm:px-8">
           <button
             type="button"
             onClick={onBack}
-            className="font-sans text-sm font-semibold text-[#31443A] transition-colors hover:text-[#009670]"
+            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#009670]"
           >
             <span aria-hidden="true">←</span> 返回網站
           </button>
@@ -294,19 +294,19 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
 
       <main className="mx-auto max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="border-l-2 border-[#009670] pl-5 sm:pl-7">
-          <p className="font-jost text-[11px] font-semibold tracking-[0.18em] text-[#68756E]">
+          <p className="font-jost text-[11px] font-semibold tracking-[0.18em] text-[#66736C]">
             {content.eyebrow}
           </p>
           <h1 className="mt-3 font-serif text-3xl font-semibold tracking-[0.03em] sm:text-5xl">
             {content.title}
           </h1>
-          <p className="mt-5 max-w-3xl font-sans text-[15px] leading-8 text-[#526159] sm:text-base">
+          <p className="mt-5 max-w-3xl font-sans text-[15px] leading-8 text-[#3F5147] sm:text-base">
             {content.introduction}
           </p>
         </div>
 
         {/* 政策快速切換 Tabs */}
-        <div className="mt-8 flex flex-wrap gap-2 border-b border-[#D4DDD8] pb-3">
+        <div className="mt-8 flex flex-wrap gap-2 border-b border-[#DDE3DF] pb-3">
           {POLICY_LINKS.map(link => {
             const isActive = page === link.id;
             return (
@@ -316,7 +316,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
                 className={`px-3.5 py-1.5 font-sans text-xs font-semibold transition-colors ${
                   isActive
                     ? "bg-[#1A2A22] text-white shadow-sm"
-                    : "border border-[#D4DDD8] bg-white text-[#526159] hover:border-[#009670] hover:text-[#009670]"
+                    : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#009670] hover:text-[#009670]"
                 }`}
               >
                 {link.label}
@@ -325,11 +325,11 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
           })}
         </div>
 
-        <div className="mt-8 border border-[#D4DDD8] bg-white px-5 sm:px-9">
+        <div className="mt-8 border border-[#DDE3DF] bg-white px-5 sm:px-9">
           {content.sections.map((section, index) => (
             <section
               key={section.title}
-              className={`py-7 sm:py-9 ${index > 0 ? "border-t border-[#E1E6E3]" : ""}`}
+              className={`py-7 sm:py-9 ${index > 0 ? "border-t border-[#DDE3DF]" : ""}`}
             >
               <div className="grid gap-4 sm:grid-cols-[3rem_1fr] sm:gap-5">
                 <span className="font-jost text-xs font-semibold tracking-[0.12em] text-[#009670]">
@@ -340,12 +340,12 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
                     {section.title}
                   </h2>
                   {section.paragraphs?.map(paragraph => (
-                    <p key={paragraph} className="mt-3 font-sans text-[14px] leading-7 text-[#536159] sm:text-[15px]">
+                    <p key={paragraph} className="mt-3 font-sans text-[14px] leading-7 text-[#3F5147] sm:text-[15px]">
                       {paragraph}
                     </p>
                   ))}
                   {section.items && (
-                    <ul className="mt-3 space-y-2.5 font-sans text-[14px] leading-7 text-[#536159] sm:text-[15px]">
+                    <ul className="mt-3 space-y-2.5 font-sans text-[14px] leading-7 text-[#3F5147] sm:text-[15px]">
                       {section.items.map(item => (
                         <li key={item} className="grid grid-cols-[0.7rem_1fr] gap-2">
                           <span className="mt-[0.68rem] h-1.5 w-1.5 bg-[#D7A64A]" aria-hidden="true" />
@@ -360,15 +360,15 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
           ))}
         </div>
 
-        <p className="mt-5 text-right font-sans text-xs text-[#7A847E]">最後更新：{content.updatedAt}</p>
+        <p className="mt-5 text-right font-sans text-xs text-[#8A9590]">最後更新：{content.updatedAt}</p>
       </main>
 
       <footer className="border-t border-[#1A2A22] bg-white">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-5 px-5 py-7 text-center sm:flex-row sm:px-8 sm:text-left">
-          <p className="font-jost text-[10px] tracking-[0.08em] text-[#7A847E]">
+          <p className="font-jost text-[10px] tracking-[0.08em] text-[#8A9590]">
             © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#526159]" aria-label="政策頁面">
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#3F5147]" aria-label="政策頁面">
             {POLICY_LINKS.map(link => (
               <a
                 key={link.id}

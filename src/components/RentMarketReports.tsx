@@ -69,7 +69,7 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
             <span className={`z-10 h-4 w-4 rotate-45 border-2 border-white transition-colors duration-200 cursor-pointer ${colors[index]}`} />
             <div className="flex items-center justify-between gap-2 border-b border-dashed border-[#ECEFEC] py-2">
               <span className="font-mono text-xs font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#e6f6f1] text-[#007d5a]" : difference < 0 ? "bg-[#FBDFD2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#e6f6f1] text-[#007d5a]" : difference < 0 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
             </div>
           </div>
         );
@@ -140,7 +140,7 @@ function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; 
   return (
     <div className="font-sans">
       <div className="mb-3 flex items-center justify-between gap-2 text-[9px] font-bold">
-        <span className="bg-[#FBDFD2] px-2 py-1 text-[#B13818]">近站溢價 +8%</span>
+        <span className="bg-[#FEE2E2] px-2 py-1 text-[#B13818]">近站溢價 +8%</span>
         <span className="text-[#8A9590]">距離增加，租金逐階下降 →</span>
         <span className="bg-[#e6f6f1] px-2 py-1 text-[#007d5a]">遠站折讓 −8%</span>
       </div>
@@ -201,10 +201,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-mono text-[#8A9590]">AREA {String(index + 1).padStart(2, "0")}</span>
               <span className="border border-[#D6EAF0] bg-[#F2F8FA] px-2 py-0.5 text-[10px] font-bold text-[#3F626D]">{item.recommendationType || "市場推薦"}</span>
-              <span className={`text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "bg-[#e6f6f1] text-[#007d5a]" : item.fit === "接近預算" ? "bg-[#D6EAF0]" : "bg-[#FBDFD2] text-[#B13818]"}`}>{item.fit}</span>
-              {criteria.commuteStation && <span className={`text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "bg-[#e6f6f1] text-[#007d5a]" : "bg-[#FFF9ED] text-[#7A5A1F]"}`}>{item.commuteFit}</span>}
+              <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : item.fit === "接近預算" ? "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]" : "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]"}`}>{item.fit}</span>
+              {criteria.commuteStation && <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"}`}>{item.commuteFit}</span>}
               {item.commuteRoute ? (
-                <span className={`px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "bg-[#e6f6f1] text-[#007d5a]" : "bg-[#F2F8FA] text-[#3F626D]"}`}>
+                <span className={`border px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"}`}>
                   {item.commuteRoute.totalDurationMinutes} 分・轉乘 {item.commuteRoute.transfers} 次
                 </span>
               ) : null}
@@ -224,7 +224,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
           <section className="border border-[#DDE3DF] bg-white p-4">
             <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#00a174]" /> 預算 vs. 推估租金區間</div>
             <div className="relative h-12 mx-3">
-              <div className="absolute left-0 right-0 top-5 h-2 bg-[#ECEFEC]" />
+              <div className="absolute left-0 right-0 top-5 h-2 bg-[#EEF2F0]" />
               <div className="absolute top-5 h-2 bg-[#9ee2cf]" style={{ left: `${pos(item.rangeLow)}%`, width: `${pos(item.rangeHigh) - pos(item.rangeLow)}%` }} />
               <div className="absolute top-1 bottom-1 w-0.5 bg-[#E94E2B]" style={{ left: `${pos(budget)}%` }}><span className="absolute -top-1 -translate-x-1/2 -translate-y-full whitespace-nowrap text-[9px] text-[#B13818] font-bold">預算 {yen(budget)}</span></div>
               <span className="absolute top-8 -translate-x-1/2 text-[9px] text-[#3F5147]" style={{ left: `${pos(item.rangeLow)}%` }}>{yen(item.rangeLow)}</span>
@@ -340,7 +340,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
           找到 {recommendations.length} 個合適車站・分布於 {groups.length} 個行政區
         </p>
         <div className="inline-flex items-center border border-[#DDE3DF] bg-[#F5F8F6] p-1">
-          <span className="px-2 text-[9px] font-bold text-[#7A8580]">排序</span>
+          <span className="px-2 text-[9px] font-bold text-[#8A9590]">排序</span>
           {(Object.keys(SORT_LABEL) as SortMode[]).map(mode => (
             <button
               key={mode}
@@ -352,7 +352,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
               aria-pressed={sortMode === mode}
               aria-label={mode === "rent" ? "依租金由低至高排序" : mode === "commute" ? "依通勤時間排序" : "依推薦度排序"}
               className={`cursor-pointer px-3 py-1.5 text-[10px] font-bold transition-colors ${
-                sortMode === mode ? "bg-[#18181B] text-white" : "bg-white text-zinc-700 hover:text-[#007D5A]"
+                sortMode === mode ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:text-[#007D5A]"
               }`}
             >
               {SORT_LABEL[mode]}
@@ -369,7 +369,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
             <button
               type="button"
               onClick={() => toggleDistrict(district)}
-              className="flex w-full items-center justify-between gap-4 border-l-4 border-[#00A174] bg-[#F3F8F5] px-4 py-3 text-left transition-colors hover:bg-[#EAF4EF]"
+              className="flex w-full items-center justify-between gap-4 border-l-4 border-[#00A174] bg-[#F5F8F6] px-4 py-3 text-left transition-colors hover:bg-[#EAF4EF]"
               aria-expanded={districtExpanded}
             >
               <span>

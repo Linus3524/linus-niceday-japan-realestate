@@ -15,8 +15,8 @@ import { TermDetailList } from "../TermDetailList";
 
 export const availabilityStyle = {
   "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
-  "一般": "bg-[#FFF9ED] text-[#7A5A1F] border-[#DCC8A1]",
-  "最少": "bg-[#FBDFD2] text-[#B13818] border-[#E94E2B]",
+  "一般": "bg-[#FEF9C3] text-[#854D0E] border-[#FDE047]",
+  "最少": "bg-[#FEE2E2] text-[#B13818] border-[#FCA5A5]",
   "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
 };
 
@@ -86,7 +86,7 @@ export function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string 
           </article>
         ))}
       </div>
-      <div className="border border-[#DCC8A1] bg-[#FFF9ED] p-4 text-xs leading-6 text-[#66583D] md:text-sm">{screeningDocumentDisclaimer}</div>
+      <div className="border border-[#FDE047] bg-[#FEF9C3] p-4 text-xs leading-6 text-[#854D0E] md:text-sm">{screeningDocumentDisclaimer}</div>
     </div>
   );
 }
@@ -113,22 +113,22 @@ export function SpecialTermCard({ term, onAskAI }: { key?: string | number; term
           <JapaneseRuby text={term.name} />
         </h4>
         {term.jpName && (
-          <span className="shrink-0 text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-zinc-200 text-zinc-600 font-sans font-medium">
+          <span className="shrink-0 text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">
             {term.jpName}
           </span>
         )}
       </div>
-      <div className="text-sm text-zinc-700 leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
+      <div className="text-sm text-[#3F5147] leading-relaxed mb-4">{renderFormattedText(term.description)}</div>
 
       {details.length > 0 && (
-        <div className={isFloorPlanTerm ? "" : "bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2.5"}>
+        <div className={isFloorPlanTerm ? "" : "bg-[#F5F8F6] p-4 border border-[#DDE3DF] space-y-2.5"}>
           <TermDetailList termName={term.name} details={visibleDetails} allDetails={details} />
           {isCollapsible && (
             <button
               type="button"
               onClick={() => setExpanded(prev => !prev)}
               aria-expanded={expanded}
-              className="flex w-full items-center justify-center gap-1 border-t border-zinc-200 pt-2.5 font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174] cursor-pointer"
+              className="flex w-full items-center justify-center gap-1 border-t border-[#DDE3DF] pt-2.5 font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174] cursor-pointer"
             >
               {expanded ? "收合" : `展開其餘 ${hiddenCount} 項`}
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
@@ -137,12 +137,12 @@ export function SpecialTermCard({ term, onAskAI }: { key?: string | number; term
         </div>
       )}
 
-      <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 font-sans border-t border-zinc-100 pt-2.5">
+      <div className="mt-4 flex items-center justify-between text-xs text-[#8A9590] font-sans border-t border-[#ECEFEC] pt-2.5">
         <span>房屋／設備</span>
         <button
           type="button"
           onClick={onAskAI}
-          className="text-zinc-600 flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
+          className="text-[#3F5147] flex items-center gap-0.5 hover:text-[#00a174] cursor-pointer"
         >
           向 AI 顧問諮詢 →
         </button>

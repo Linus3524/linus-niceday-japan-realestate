@@ -243,7 +243,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <button
                 type="button" onClick={removeFile}
                 disabled={loading}
-                aria-label="移除圖紙" className="flex items-center gap-1.5 border border-[#E94E2B] bg-white px-3 py-2 text-xs font-bold text-[#B13818] transition-colors hover:bg-[#FBDFD2] disabled:opacity-45">
+                aria-label="移除圖紙" className="flex items-center gap-1.5 border border-[#FCA5A5] bg-white px-3 py-2 text-xs font-bold text-[#B13818] transition-colors hover:bg-[#FEE2E2] disabled:opacity-45">
                 <Trash2 className="h-3.5 w-3.5" /> 移除
               </button>
             </div>
@@ -474,9 +474,9 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   <span className="text-[10px] text-[#66736C]">需有販売価格才能進行行情比對</span>
                 </div>
 
-                <div className="border border-[#EAB879] bg-[#FEF3C7] p-4 sm:p-5">
+                <div className="border border-[#FDE047] bg-[#FEF9C3] p-4 sm:p-5">
                   <div className="flex items-start gap-2.5">
-                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#D97706]" />
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#854D0E]" />
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-[#1A2A22]">這份買賣圖紙未載明販売価格，無法進行行情比對</p>
                       <p className="mt-1.5 text-xs leading-relaxed text-[#3F5147]">
@@ -487,7 +487,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   </div>
 
                   {/* 已讀到的物件基本資料：讓這份報告即使缺價格也仍有可核對的內容 */}
-                  <dl className="mt-4 grid gap-x-4 gap-y-2 border-t border-[#EAB879] pt-3 text-xs sm:grid-cols-2">
+                  <dl className="mt-4 grid gap-x-4 gap-y-2 border-t border-[#FDE047] pt-3 text-xs sm:grid-cols-2">
                     {[
                       { label: "間取り", value: extracted?.layout },
                       { label: "專有面積", value: extracted?.area },

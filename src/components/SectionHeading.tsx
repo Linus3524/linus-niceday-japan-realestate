@@ -37,7 +37,7 @@ export function SectionHeading({ icon: Icon, title, description, action, open, o
         <span>{title}</span>
       </h3>
       {description && (
-        <p className="mt-1.5 font-sans text-xs leading-6 text-zinc-500">
+        <p className="mt-1.5 font-sans text-xs leading-6 text-[#66736C]">
           {description}
         </p>
       )}

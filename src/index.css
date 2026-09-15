@@ -84,23 +84,47 @@
   --color-primary-deep: #007d5a;
   --color-primary-soft: #9ee2cf;
   
-  --color-orange: #E94E2B;
+  --color-orange: #D97706;
   --color-orange-deep: #B13818;
-  --color-orange-soft: #FBDFD2;
+  --color-orange-soft: #FFF7ED;
   
-  --color-pale-blue: #D6EAF0;
-  --color-sand: #DCC8A1;
+  --color-pale-blue: #E0F2FE;
+  --color-sand: #FEF9C3;
   
+  /* 墨色四階（與 scripts/cis/styles.ts 的 COLOR.INK* 一致，是全站唯一的黑灰字來源）
+     ink      主文、標題、數值
+     ink-soft 次級說明、表格內文
+     ink-note 註解、單位、頁尾（原本缺這一階，手調灰大多其實是想要它）
+     ink-mute 停用、佔位、空值符號 */
   --color-ink: #1A2A22;
   --color-ink-soft: #3F5147;
+  --color-ink-note: #66736C;
   --color-ink-mute: #8A9590;
   
-  --color-line: #DDE3DF;
+  /* 分隔線三階：線條需要的對比與背景不同，因此獨立成一組
+     line-soft 極淡分隔（表格列、清單內部）
+     line      標準邊框（卡片、輸入框）— 全站預設
+     line-strong 強調邊框（選中、聚焦、需要明確界線處） */
   --color-line-soft: #ECEFEC;
+  --color-line: #DDE3DF;
+  --color-line-strong: #C9D2CD;
 
+  /* 表面四階：由白往下的中性底色
+     bg-pure  純白卡片
+     bg-subtle 極淡底（區塊交替、唯讀欄位）
+     bg-off   標準淺底 — 全站預設
+     bg-sunken 下沉底（巢狀區塊、關閉狀態）
+     bg-tint  品牌綠強調底（非中性，屬語意色） */
   --color-bg-pure: #FFFFFF;
+  --color-bg-subtle: #FAFCFB;
   --color-bg-off: #F5F8F6;
+  --color-bg-sunken: #EEF2F0;
   --color-bg-tint: #e6f6f1;
+
+  /* 深色表面：實心按鈕與 tooltip。一律用暖墨，不可用 Tailwind 的冷黑 zinc-900/#18181B */
+  --color-surface-dark: #1A2A22;
+  --color-surface-dark-hover: #3F5147;
+  --color-surface-disabled: #AEB8B2;
 
   /* Custom Transitions & Shadows */
   --shadow-colored-soft: 0 1px 0 rgba(15, 143, 109, 0.04), 0 20px 40px -24px rgba(15, 143, 109, 0.18);

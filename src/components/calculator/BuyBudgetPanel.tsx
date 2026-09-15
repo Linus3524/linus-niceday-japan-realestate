@@ -43,7 +43,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
   } = model;
   return (<div className="grid grid-cols-1 lg:grid-cols-12">
     <div className="space-y-5 border-b border-[#DDE3DF] bg-[#F5F8F6] p-5 lg:col-span-5 lg:border-b-0 lg:border-r md:p-6">
-      <label className="block text-xs font-bold text-zinc-700">
+      <label className="block text-xs font-bold text-[#3F5147]">
         可準備的購屋現金
         <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
           <input
@@ -54,11 +54,11 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
             onChange={event => setBuyAvailableCash(Math.max(0, (Number(event.target.value) || 0) * 10000))}
             className="w-full bg-transparent font-mono text-base font-bold outline-none"
           />
-          <span className="ml-2 shrink-0 text-sm font-bold text-zinc-500">萬円</span>
+          <span className="ml-2 shrink-0 text-sm font-bold text-[#66736C]">萬円</span>
         </div>
-        <span className="mt-1 block text-[9px] font-normal leading-relaxed text-zinc-400">包含頭期款與購屋初期諸費用</span>
+        <span className="mt-1 block text-[9px] font-normal leading-relaxed text-[#8A9590]">包含頭期款與購屋初期諸費用</span>
       </label>
-      <label className="block text-xs font-bold text-zinc-700">
+      <label className="block text-xs font-bold text-[#3F5147]">
         每月可接受的本息還款
         <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
           <input
@@ -69,21 +69,21 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
             onChange={event => setBuyMonthlyPaymentBudget(Math.max(0, (Number(event.target.value) || 0) * 10000))}
             className="w-full bg-transparent font-mono text-base font-bold outline-none"
           />
-          <span className="ml-2 shrink-0 text-sm font-bold text-zinc-500">萬円</span>
+          <span className="ml-2 shrink-0 text-sm font-bold text-[#66736C]">萬円</span>
         </div>
       </label>
 
       <details className="border border-[#DDE3DF] bg-white">
-        <summary className="cursor-pointer px-3 py-2.5 text-xs font-bold text-[#31443A]">調整貸款假設</summary>
+        <summary className="cursor-pointer px-3 py-2.5 text-xs font-bold text-[#1A2A22]">調整貸款假設</summary>
         <div className="grid grid-cols-3 gap-2 border-t border-[#DDE3DF] p-3">
-          <label className="text-[9px] text-zinc-500">貸款成數
-            <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={event => setLoanRatio(Math.min(100, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-zinc-300 px-2 py-1.5 font-mono text-xs" />
+          <label className="text-[9px] text-[#66736C]">貸款成數
+            <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={event => setLoanRatio(Math.min(100, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
-          <label className="text-[9px] text-zinc-500">年利率
-            <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={event => setAnnualRate(Math.min(20, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-zinc-300 px-2 py-1.5 font-mono text-xs" />
+          <label className="text-[9px] text-[#66736C]">年利率
+            <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={event => setAnnualRate(Math.min(20, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
-          <label className="text-[9px] text-zinc-500">貸款年限
-            <input type="number" min="1" max="50" step="1" value={loanYears} onChange={event => setLoanYears(Math.min(50, Math.max(1, Number(event.target.value))))} className="mt-1 w-full border border-zinc-300 px-2 py-1.5 font-mono text-xs" />
+          <label className="text-[9px] text-[#66736C]">貸款年限
+            <input type="number" min="1" max="50" step="1" value={loanYears} onChange={event => setLoanYears(Math.min(50, Math.max(1, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
         </div>
       </details>

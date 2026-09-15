@@ -30,7 +30,7 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                           className={`flex-1 px-4 py-2 font-bold cursor-pointer transition-all md:flex-none ${
                             selectedFlowType === "cash"
                               ? "bg-[#00a174] text-white"
-                              : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                              : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                           }`}
                         >
                           現金全款交易流程
@@ -40,7 +40,7 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                           className={`flex-1 px-4 py-2 font-bold cursor-pointer transition-all md:flex-none ${
                             selectedFlowType === "loan"
                               ? "bg-[#00a174] text-white"
-                              : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                              : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                           }`}
                         >
                           銀行貸款交易流程
@@ -55,21 +55,21 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                       {selectedFlowType === "cash" ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                           {buyHouseCashSteps.map((step, sIdx) => (
-                            <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
+                            <div key={sIdx} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
                               <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
                                 <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">{step.step}</span>
                                 <span>{step.title}</span>
                               </h4>
-                              <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
+                              <p className="text-xs md:text-sm text-[#3F5147] leading-relaxed text-justify font-sans">
                                 {step.description}
                               </p>
-                              <div className="mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-3 font-sans text-[11px] leading-relaxed">
+                              <div className="mt-4 grid gap-2 border-t border-dashed border-[#C9D2CD] pt-3 font-sans text-[11px] leading-relaxed">
                                 {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
                                 {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
                                 {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
                               </div>
                               {step.warning && (
-                                <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
+                                <p className="mt-2 border border-[#FDE047] bg-[#FEF9C3] p-2 text-[11px] leading-normal font-sans text-[#854D0E]">
                                   {step.warning}
                                 </p>
                               )}
@@ -80,21 +80,21 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {buyHouseLoanSteps.map((step, sIdx) => (
-                              <div key={sIdx} className="border border-zinc-200 bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
+                              <div key={sIdx} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5 relative hover:border-[#1A2A22] transition-colors">
                                 <h4 className="font-bold text-sm md:text-base text-[#1A2A22] mb-2 flex items-center gap-1.5 font-serif">
                                   <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">{step.step}</span>
                                   <span>{step.title}</span>
                                 </h4>
-                                <p className="text-xs md:text-sm text-zinc-600 leading-relaxed text-justify font-sans">
+                                <p className="text-xs md:text-sm text-[#3F5147] leading-relaxed text-justify font-sans">
                                   {step.description}
                                 </p>
-                                <div className="mt-4 grid gap-2 border-t border-dashed border-zinc-300 pt-3 font-sans text-[11px] leading-relaxed">
+                                <div className="mt-4 grid gap-2 border-t border-dashed border-[#C9D2CD] pt-3 font-sans text-[11px] leading-relaxed">
                                   {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
                                   {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
                                   {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
                                 </div>
                                 {step.warning && (
-                                  <p className="mt-2 text-[11px] text-[#00a174] bg-red-50 p-2 border-l-2 border-[#00a174] leading-normal font-sans">
+                                  <p className="mt-2 border border-[#FDE047] bg-[#FEF9C3] p-2 text-[11px] leading-normal font-sans text-[#854D0E]">
                                     {step.warning}
                                   </p>
                                 )}
@@ -119,12 +119,12 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
 
                     {isStepOpen("documents") && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans">
-                      <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#00a174] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                      <div className="bg-[#F5F8F6] p-5 border border-[#DDE3DF]">
+                        <h4 className="font-bold text-sm text-[#00a174] border-b border-[#C9D2CD] pb-2 mb-3 flex items-center gap-1.5">
                           <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.residenceGroup.title}</span>
                         </h4>
-                        <ul className="space-y-2 text-xs text-zinc-700">
+                        <ul className="space-y-2 text-xs text-[#3F5147]">
                           {signingDocuments.residenceGroup.items.map((item, idx) => (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
                               <span className="text-[#00a174] font-bold">✓</span>
@@ -134,12 +134,12 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                         </ul>
                       </div>
 
-                      <div className="bg-[#F5F8F6] p-5 border border-zinc-200">
-                        <h4 className="font-bold text-sm text-[#00a174] border-b border-zinc-300 pb-2 mb-3 flex items-center gap-1.5">
+                      <div className="bg-[#F5F8F6] p-5 border border-[#DDE3DF]">
+                        <h4 className="font-bold text-sm text-[#00a174] border-b border-[#C9D2CD] pb-2 mb-3 flex items-center gap-1.5">
                           <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.nonResidenceGroup.title}</span>
                         </h4>
-                        <ul className="space-y-2 text-xs text-zinc-700">
+                        <ul className="space-y-2 text-xs text-[#3F5147]">
                           {signingDocuments.nonResidenceGroup.items.map((item, idx) => (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
                               <span className="text-[#00a174] font-bold">✓</span>

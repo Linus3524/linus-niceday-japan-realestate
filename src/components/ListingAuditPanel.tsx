@@ -14,7 +14,7 @@ export function ListingAuditPanel({ audit }: { audit: ListingAudit }) {
     "missing-kind": "物件類型尚未確認，暫不套用公寓行情。",
   };
   const messages = [...new Set(audit.issues.map(i => reasons[i.code]).filter(Boolean))];
-  return <section aria-label="影響試算的事項" className="border border-[#EAB879] bg-[#FFF8E9] px-4 py-3 text-xs leading-relaxed text-[#76511F]">
+  return <section aria-label="影響試算的事項" className="border border-[#FDE047] bg-[#FEF9C3] px-4 py-3 text-xs leading-relaxed text-[#854D0E]">
     {messages.length ? messages.map(message => <p key={message}>{message}</p>) : <p>關鍵資料尚未確認，暫不比較行情。</p>}
   </section>;
 }

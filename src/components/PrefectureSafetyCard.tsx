@@ -147,12 +147,12 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
         </div>
 
         {/* 精度說明 */}
-        <div className="flex items-start gap-2.5 border border-zinc-200 bg-zinc-50 px-3.5 py-2.5">
-          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500" />
-          <p className="text-[11px] leading-relaxed text-zinc-600">
+        <div className="flex items-start gap-2.5 border border-[#DDE3DF] bg-[#FAFCFB] px-3.5 py-2.5">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#66736C]" />
+          <p className="text-[11px] leading-relaxed text-[#3F5147]">
             {local
-              ? <>本區採用<strong className="font-bold text-zinc-800">官方市區町村全罪種統計</strong>；右側街區活動依物件周邊 500m 環境推估。兩者範圍不同，會分開標示。</>
-              : <>目前未接入可同年度比較的市區町村全罪種表，本區採<strong className="font-bold text-zinc-800">都道府県統計備援</strong>；右側街區活動依物件周邊 500m 環境推估。</>}
+              ? <>本區採用<strong className="font-bold text-[#1A2A22]">官方市區町村全罪種統計</strong>；右側街區活動依物件周邊 500m 環境推估。兩者範圍不同，會分開標示。</>
+              : <>目前未接入可同年度比較的市區町村全罪種表，本區採<strong className="font-bold text-[#1A2A22]">都道府県統計備援</strong>；右側街區活動依物件周邊 500m 環境推估。</>}
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
               <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]">
                 <FileText className="h-3.5 w-3.5 shrink-0" />{local ? "市區町村統計摘要" : "都道府縣統計摘要"}
               </div>
-              <p className="text-[11px] leading-relaxed text-[#55635B]">{local
+              <p className="text-[11px] leading-relaxed text-[#3F5147]">{local
                 ? `${local.municipality}全年共 ${local.total.toLocaleString()} 件，每千人 ${local.crimeRatePerThousand} 件；在${prefecture.prefecture} ${local.totalAreas} 個可比較市區町村中排第 ${local.rank} 名。`
                 : prefecture.summary}</p>
             </div>
@@ -283,7 +283,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
               {shares.map((item) => (
                 <div key={item.label} className="flex items-center justify-between gap-3 text-xs">
                   <span className="w-20 font-medium text-[#1A2A22] text-[11px]">{item.label}</span>
-                  <div className="h-1.5 flex-1 bg-[#E5E7EB]">
+                  <div className="h-1.5 flex-1 bg-[#EEF2F0]">
                     <div
                       className="h-full transition-all duration-300"
                       style={{

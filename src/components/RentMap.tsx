@@ -210,9 +210,9 @@ export const RentMap: React.FC<RentMapProps> = ({
   // Helper to get rent/buy level color
   const getHeatmapStyle = (val: number, isSelected: boolean) => {
     const limits = mode === "buy" ? buyThresholdsConfig[roomType] : thresholdsConfig[roomType];
-    let bg = "bg-white hover:bg-zinc-50";
-    let border = "border-zinc-200";
-    let text = "text-zinc-500";
+    let bg = "bg-white hover:bg-[#FAFCFB]";
+    let border = "border-[#DDE3DF]";
+    let text = "text-[#66736C]";
 
     if (val >= limits.high) {
       bg = "bg-[#fee2e2] hover:bg-[#fca5a5]";
@@ -260,7 +260,7 @@ export const RentMap: React.FC<RentMapProps> = ({
   return (
     <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
       {/* Map Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-zinc-200 pb-3">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#DDE3DF] pb-3">
         <div className="space-y-1">
           <h4 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5 font-sans">
             <MapPin className="w-4 h-4 text-[#00a174]" />
@@ -270,7 +270,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                 : `${latestSourceDate || "最新"} 日本主要租屋市場家賃行情地圖`}
             </span>
           </h4>
-          <p className="text-[10px] text-zinc-500">
+          <p className="text-[10px] text-[#66736C]">
             {mode === "buy"
               ? "點擊下方地圖的區塊，可自動將該區房價行情代入左側置產預算計算機中！"
               : "點擊下方地圖的區塊，可自動將該區租金行情代入左側租屋預算計算機中！"}
@@ -280,7 +280,7 @@ export const RentMap: React.FC<RentMapProps> = ({
         {/* Room Type Switcher inside Map Component */}
         {/* 按鈕只放代表性格局（寫全名會讓五顆鈕在手機上擠爆），
             實際涵蓋範圍以下方說明與 title 補齊，不讓使用者誤以為只查得到 1K 與 1LDK。 */}
-        <div className="flex shrink-0 bg-zinc-100 p-0.5 border border-zinc-300">
+        <div className="flex shrink-0 bg-[#F5F8F6] p-0.5 border border-[#C9D2CD]">
           {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((type) => {
             const includesText = ROOM_TYPE_INCLUDES_LABEL[type];
             return (
@@ -290,16 +290,16 @@ export const RentMap: React.FC<RentMapProps> = ({
                   title={ROOM_TYPE_DETAIL_LABEL[type]}
                   className={`px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
                     roomType === type
-                      ? "bg-white text-[#00a174] font-semibold border-b border-zinc-200"
-                      : "text-zinc-500 hover:text-zinc-800"
+                      ? "bg-white text-[#00a174] font-semibold border-b border-[#DDE3DF]"
+                      : "text-[#66736C] hover:text-[#1A2A22]"
                   }`}
                 >
                   {ROOM_TYPE_LABEL[type]}
                 </button>
                 {includesText && (
-                  <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-zinc-900 text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                  <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-[#1A2A22] text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
                     {includesText}
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900" />
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1A2A22]" />
                   </div>
                 )}
               </div>
@@ -327,7 +327,7 @@ export const RentMap: React.FC<RentMapProps> = ({
           </button>
         ))}
       </div>
-      <div className="flex flex-wrap gap-1 border-b border-dashed border-zinc-200 pb-3">
+      <div className="flex flex-wrap gap-1 border-b border-dashed border-[#DDE3DF] pb-3">
         {visibleRegions.map((reg) => {
           const displayName = regionDisplayName(reg);
           const isActive = activeRegion === reg;
@@ -346,7 +346,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               className={`font-jp px-2.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
                 isActive
                   ? "bg-[#00a174] text-white border-[#00a174]"
-                  : "bg-white text-zinc-700 border-zinc-300 hover:border-zinc-400 hover:text-zinc-900"
+                  : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#AEB8B2] hover:text-[#1A2A22]"
               }`}
             >
               {displayName}
@@ -398,13 +398,13 @@ export const RentMap: React.FC<RentMapProps> = ({
       </div>
 
       {/* Map Legend & Interactive Tooltip Info Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 border-t border-dashed border-zinc-200 pt-4 font-sans text-xs">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 border-t border-dashed border-[#DDE3DF] pt-4 font-sans text-xs">
         {/* Color Legend */}
         <div className="md:col-span-5 space-y-2">
-              <span className="font-bold text-zinc-700 block text-[11px] tracking-wider">
+              <span className="font-bold text-[#3F5147] block text-[11px] tracking-wider">
             {mode === "buy" ? "房價（預估總價）熱力圖例：" : "房租熱力圖例："}
           </span>
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-zinc-600">
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-[#3F5147]">
             <div className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 bg-[#fee2e2] border border-[#f87171]" />
               <span>
@@ -441,7 +441,7 @@ export const RentMap: React.FC<RentMapProps> = ({
         </div>
 
         {/* Dynamic Details (Hover or Selected Ward) */}
-        <div className="md:col-span-7 bg-[#F5F8F6] p-3 border border-zinc-200 flex flex-col justify-between min-h-[60px]">
+        <div className="md:col-span-7 bg-[#F5F8F6] p-3 border border-[#DDE3DF] flex flex-col justify-between min-h-[60px]">
           {hoveredWard || rentRates.find(r => r.district === selectedDistrict) ? (
             (() => {
               const activeWard = hoveredWard || rentRates.find(r => r.district === selectedDistrict)!;
@@ -457,17 +457,17 @@ export const RentMap: React.FC<RentMapProps> = ({
                 : null;
               return (
                 <div className="space-y-1.5">
-                  <div className="flex justify-between items-center border-b border-zinc-300 pb-1">
+                  <div className="flex justify-between items-center border-b border-[#C9D2CD] pb-1">
                     <span className="font-bold text-[#00a174] flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-[#00a174] shrink-0" />
                       <span lang="ja" className="font-jp">{toJapanesePlaceName(activeWard.district)}</span>
                       {hoveredWard ? (
-                        <span className="text-[9px] bg-zinc-800 text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
+                        <span className="text-[9px] bg-[#1A2A22] text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
                       ) : (
                         <span className="text-[9px] bg-[#00a174] text-white px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
                       )}
                     </span>
-                    <span className="text-[10px] text-zinc-500 font-bold flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#66736C] font-bold flex items-center gap-1.5">
                       {mode === "buy" ? (
                         <>
                           {activeYield && (
@@ -475,7 +475,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                               表面利回約 {activeYield}%
                             </span>
                           )}
-                          <span className="text-zinc-300">·</span>
+                          <span className="text-[#8A9590]">·</span>
                           <span>{activeBuyEstimate?.source === "official_transaction" ? "國交省成約" : "租金模型"}</span>
                         </>
                       ) : (
@@ -497,23 +497,23 @@ export const RentMap: React.FC<RentMapProps> = ({
                           title={ROOM_TYPE_DETAIL_LABEL[type]}
                           className={`group relative bg-white py-1.5 px-1 border cursor-pointer transition-all ${
                             isActive
-                              ? "border-[#00a174] ring-1 ring-[#00a174]/20 bg-[#F1F6F3]"
-                              : "border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50"
+                              ? "border-[#00a174] ring-1 ring-[#00a174]/20 bg-[#F5F8F6]"
+                              : "border-[#DDE3DF] hover:border-[#AEB8B2] hover:bg-[#FAFCFB]"
                           }`}
                         >
-                          <div className={`text-[11px] font-medium font-sans leading-tight ${isActive ? "text-[#00a174] font-semibold" : "text-zinc-500"}`}>
+                          <div className={`text-[11px] font-medium font-sans leading-tight ${isActive ? "text-[#00a174] font-semibold" : "text-[#66736C]"}`}>
                             {ROOM_TYPE_LABEL[type]}
                           </div>
-                          <div className={`text-xs font-semibold leading-tight ${isActive ? "text-[#00a174]" : "text-zinc-800"}`}>
+                          <div className={`text-xs font-semibold leading-tight ${isActive ? "text-[#00a174]" : "text-[#1A2A22]"}`}>
                             {priceVal}
-                            <span className={`mt-0.5 block text-[10px] font-normal ${isActive ? "text-[#00a174]" : "text-zinc-500"}`}>萬円</span>
+                            <span className={`mt-0.5 block text-[10px] font-normal ${isActive ? "text-[#00a174]" : "text-[#66736C]"}`}>萬円</span>
                           </div>
 
                           {/* Hover 浮動提示標籤 */}
                           {includesText && (
-                            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-zinc-900 text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-[#1A2A22] text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
                               {includesText}
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-900" />
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1A2A22]" />
                             </div>
                           )}
                         </button>
@@ -521,7 +521,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                     })}
                   </div>
                   {activeBuyEstimate && (
-                    <div className="text-[9px] leading-relaxed text-zinc-500">
+                    <div className="text-[9px] leading-relaxed text-[#66736C]">
                       {activeBuyEstimate.source === "official_transaction"
                         ? `資料來源：國土交通省 不動產資訊資料庫｜近${activeBuyEstimate.windowQuarters === 4 ? "四" : "八"}季 ${activeBuyEstimate.periodStart}～${activeBuyEstimate.periodEnd}｜樣本 ${activeBuyEstimate.sampleCount.toLocaleString()} 筆`
                         : "資料來源：租金收益率模型｜目前選定格局沒有足夠成交樣本"}
@@ -531,7 +531,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               );
             })()
           ) : (
-            <div className="flex items-center gap-2 text-zinc-400 h-full justify-center">
+            <div className="flex items-center gap-2 text-[#8A9590] h-full justify-center">
               <Info className="w-4 h-4" />
               <span className="text-[11px]">將滑鼠游標移到地圖上，可在此看該區 5 種格局群組行情！</span>
             </div>

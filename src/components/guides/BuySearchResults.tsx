@@ -18,7 +18,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
                   <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#DDE3DF] pb-4">
                     <div>
                       <h3 className="border-l-4 border-[#00a174] pl-3 text-xl font-bold text-[#1A2A22]">買房知識搜尋結果</h3>
-                      <p className="mt-2 pl-4 font-sans text-xs text-zinc-500">
+                      <p className="mt-2 pl-4 font-sans text-xs text-[#66736C]">
                         「{buySearchQuery.trim()}」找到 {searchResultCount} 筆站內知識
                         {threadMatches.total > 0 && `，另有 ${threadMatches.total} 篇實務分享`}
                       </p>
@@ -35,7 +35,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
                   {searchResultCount === 0 && threadMatches.total === 0 ? (
                     <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
                       <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
-                      <p className="mt-2 text-xs text-zinc-500">可改用較短的關鍵字，例如「取得稅」、「貸款」、「非居住者」或「修繕」。</p>
+                      <p className="mt-2 text-xs text-[#66736C]">可改用較短的關鍵字，例如「取得稅」、「貸款」、「非居住者」或「修繕」。</p>
                     </div>
                   ) : (
                     <div className="space-y-7">
@@ -55,11 +55,11 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
                                 key={`${term.category}-${term.name}`}
                                 type="button"
                                 onClick={() => setSelectedFee(term)}
-                                className="border border-[#DDE3DF] bg-[#F8FAF9] p-4 text-left transition-colors hover:border-[#00a174]"
+                                className="border border-[#DDE3DF] bg-[#FAFCFB] p-4 text-left transition-colors hover:border-[#00a174]"
                               >
                                 <strong className="font-serif text-sm text-[#1A2A22]">{term.name}</strong>
-                                {term.jpName && <span className="ml-2 font-sans text-[10px] text-zinc-500">{term.jpName}</span>}
-                                <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-zinc-600">{term.description}</p>
+                                {term.jpName && <span className="ml-2 font-sans text-[10px] text-[#66736C]">{term.jpName}</span>}
+                                <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-[#3F5147]">{term.description}</p>
                               </button>
                             ))}
                           </div>
@@ -74,7 +74,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
                               <article key={`${item.category}-${item.title}-${index}`} className="border border-[#DDE3DF] bg-white p-4">
                                 <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
                                 <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
-                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-zinc-600">{item.text}</p>
+                                <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-[#3F5147]">{item.text}</p>
                               </article>
                             ))}
                           </div>

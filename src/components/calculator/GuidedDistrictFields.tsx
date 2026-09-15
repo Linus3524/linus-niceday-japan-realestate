@@ -11,7 +11,7 @@ type Props = Pick<CalculatorViewModel, "addGuidedDistrict" | "guidedDistrictSele
 export function GuidedDistrictFields({ addGuidedDistrict, guidedDistrictSelections, removeGuidedDistrict }: Props) {
   return (<><div className="space-y-2">
           <div className="flex items-end justify-between gap-3">
-            <label className="text-xs font-bold text-zinc-700" htmlFor="guided-district-add">希望地區</label>
+            <label className="text-xs font-bold text-[#3F5147]" htmlFor="guided-district-add">希望地區</label>
             <span className="text-[9px] text-[#66736C]">可複選，最多 4 個同生活圈地區</span>
           </div>
           <div className="relative">

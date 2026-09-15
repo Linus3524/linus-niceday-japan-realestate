@@ -45,8 +45,8 @@ const FEATURE_LABEL: Record<string, string> = {
 
 const FEATURE_COLORS: Record<string, { bg: string; text: string; bar: string; border: string }> = {
   "listing-check": { bg: "#EBF8F4", text: "#007D5A", bar: "#00a174", border: "#B4E6D5" },
-  "chat": { bg: "#EEF2FF", text: "#4338CA", bar: "#6366F1", border: "#C7D2FE" },
-  "rent-analysis": { bg: "#F0F9FF", text: "#0369A1", bar: "#0284C7", border: "#BAE6FD" },
+  "chat": { bg: "#FAF5FF", text: "#7E22CE", bar: "#9333EA", border: "#D8B4FE" },
+  "rent-analysis": { bg: "#F0F9FF", text: "#0284C7", bar: "#0284C7", border: "#7DD3FC" },
 };
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -90,9 +90,9 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
   {
     id: "wechat",
     name: "WeChat 管道",
-    badgeBg: "#EEF2FF",
-    badgeText: "#4338CA",
-    badgeBorder: "#C7D2FE",
+    badgeBg: "#FAF5FF",
+    badgeText: "#7E22CE",
+    badgeBorder: "#D8B4FE",
     actions: [
       { key: "wechat-copy", label: "複製 WeChat ID", note: "聯絡分頁 ＋ 物件分析 CTA" },
       { key: "wechat-qr", label: "展開 WeChat QR 掃碼", note: "聯絡分頁展開 ＋ 物件分析 CTA" },
@@ -102,8 +102,8 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
     id: "email",
     name: "Email 管道",
     badgeBg: "#F0F9FF",
-    badgeText: "#0369A1",
-    badgeBorder: "#BAE6FD",
+    badgeText: "#0284C7",
+    badgeBorder: "#7DD3FC",
     actions: [
       { key: "email-copy", label: "點擊複製 Email", note: "物件分析 CTA 聯絡區" },
     ],
@@ -385,14 +385,14 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <span className="font-jost text-xs font-bold tracking-wider">LINUS NICEDAY · ADMIN</span>
           </div>
           <h1 className="mt-3 font-serif text-2xl font-bold text-[#1A2A22]">後台使用量儀表板</h1>
-          <p className="mt-1.5 text-xs text-[#526159]">請輸入管理權杖密碼以查閱即時數據分析。</p>
+          <p className="mt-1.5 text-xs text-[#3F5147]">請輸入管理權杖密碼以查閱即時數據分析。</p>
           <input
             type="password"
             value={tokenInput}
             onChange={e => setTokenInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && tokenInput.trim()) { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); } }}
             placeholder="貼上管理密碼後按 Enter"
-            className="mt-6 h-11 w-full border border-[#C9D8D1] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#007D5A] focus:bg-white focus:outline-none"
+            className="mt-6 h-11 w-full border border-[#C9D2CD] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#007D5A] focus:bg-white focus:outline-none"
           />
           <button
             type="button"
@@ -405,7 +405,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <button
             type="button"
             onClick={onBack}
-            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-[#68756E] hover:text-[#007D5A] cursor-pointer"
+            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-[#66736C] hover:text-[#007D5A] cursor-pointer"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> 回到公開網站
           </button>
@@ -426,7 +426,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <button
               type="button"
               onClick={onBack}
-              className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#526159] transition-colors hover:text-[#007D5A] cursor-pointer"
+              className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3F5147] transition-colors hover:text-[#007D5A] cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> 返回 LINUS 住好日
             </button>
@@ -447,7 +447,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <select
                 value={month}
                 onChange={e => { setMonth(e.target.value); setSelectedDay(null); }}
-                className="h-9.5 appearance-none border border-[#C9D8D1] bg-white pl-3.5 pr-8 text-xs font-bold text-[#1A2A22] shadow-sm focus:border-[#007D5A] focus:outline-none cursor-pointer"
+                className="h-9.5 appearance-none border border-[#C9D2CD] bg-white pl-3.5 pr-8 text-xs font-bold text-[#1A2A22] shadow-sm focus:border-[#007D5A] focus:outline-none cursor-pointer"
               >
                 {monthOptions().map(m => (
                   <option key={m} value={m}>
@@ -455,14 +455,14 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#8A9590]" />
             </div>
 
             <button
               type="button"
               onClick={() => load(token, month)}
               disabled={loading}
-              className="flex h-9.5 items-center gap-1.5 border border-[#C9D8D1] bg-white px-3 text-xs font-semibold text-[#1A2A22] shadow-sm hover:border-[#007D5A] hover:text-[#007D5A] cursor-pointer disabled:opacity-50"
+              className="flex h-9.5 items-center gap-1.5 border border-[#C9D2CD] bg-white px-3 text-xs font-semibold text-[#1A2A22] shadow-sm hover:border-[#007D5A] hover:text-[#007D5A] cursor-pointer disabled:opacity-50"
               title="重新整理數據"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#007D5A]" : ""}`} />
@@ -478,7 +478,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 setData(null);
                 setTraffic(null);
               }}
-              className="h-9.5 border border-[#DDE3DF] bg-white px-3 text-xs text-[#68756E] hover:border-red-300 hover:text-red-600 cursor-pointer"
+              className="h-9.5 border border-[#DDE3DF] bg-white px-3 text-xs text-[#66736C] hover:border-red-300 hover:text-red-600 cursor-pointer"
             >
               登出
             </button>
@@ -486,7 +486,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         </div>
 
         {error && (
-          <div className="mb-6 flex items-center gap-2 border border-[#FED7AA] bg-[#FFFBEB] p-4 text-xs font-medium text-[#9A3412]">
+          <div className="mb-6 flex items-center gap-2 border border-[#FDE047] bg-[#FEF9C3] p-4 text-xs font-medium text-[#854D0E]">
             <Info className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -497,7 +497,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <section className="mb-8">
             <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
               {/* 卡片 1: 本月不重複訪客 */}
-              <div className="relative overflow-hidden border border-[#B4E6D5] bg-gradient-to-br from-white to-[#F2FAF6] p-4.5 shadow-sm">
+              <div className="relative overflow-hidden border border-[#B4E6D5] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
                   <span>本月不重複訪客</span>
                   <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#EBF8F4] text-[#007D5A]">
@@ -507,7 +507,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {data.monthlyVisitors === null ? "—" : data.monthlyVisitors.toLocaleString()}
                 </div>
-                <div className="mt-1 flex items-center gap-1 text-[11px] text-[#526159]">
+                <div className="mt-1 flex items-center gap-1 text-[11px] text-[#3F5147]">
                   <span className="inline-block h-1.5 w-1.5 bg-[#00a174]" />
                   <span>第一方 Cookie 匿名去重</span>
                 </div>
@@ -515,16 +515,16 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
               {/* 卡片 2: 本月總瀏覽量 */}
               <div className="border border-[#DDE3DF] bg-white p-4.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-semibold text-[#526159]">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#3F5147]">
                   <span>本月全站瀏覽量</span>
-                  <div className="flex h-7 w-7 items-center justify-center border border-[#DDE3DF] bg-[#F0F3F1] text-[#526159]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]">
                     <Eye className="h-4 w-4" />
                   </div>
                 </div>
                 <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {totalPageviews.toLocaleString()}
                 </div>
-                <div className="mt-1 text-[11px] text-zinc-400">
+                <div className="mt-1 text-[11px] text-[#8A9590]">
                   各分頁與手機首頁累計
                 </div>
               </div>
@@ -546,7 +546,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {/* 卡片 4: 潛在客戶轉化意圖 */}
-              <div className="border border-[#B4E6D5] bg-gradient-to-br from-white to-[#F0FAF4] p-4.5 shadow-sm">
+              <div className="border border-[#B4E6D5] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
                   <span>客源轉化動作</span>
                   <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#E8F9F0] text-[#007D5A]">
@@ -578,7 +578,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
             {data.monthlyVisitors === null && (
-              <p className="mt-3 text-[11px] leading-5 text-zinc-400">
+              <p className="mt-3 text-[11px] leading-5 text-[#8A9590]">
                 訪客計數器沒有設定（缺少 Upstash 環境變數），以上訪客數顯示「—」不代表沒有流量。
               </p>
             )}
@@ -594,7 +594,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <BarChart3 className="h-4 w-4 text-[#007D5A]" />
                   {month} 每日功能呼叫趨勢
                 </h2>
-                <p className="mt-0.5 text-xs text-[#68756E]">
+                <p className="mt-0.5 text-xs text-[#66736C]">
                   當月每日功能呼叫分佈，點選長條可快速篩選下方明細。
                 </p>
               </div>
@@ -603,21 +603,21 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 bg-[#00a174]" />
-                  <span className="text-[#526159]">圖紙健檢</span>
+                  <span className="text-[#3F5147]">圖紙健檢</span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 bg-[#6366F1]" />
-                  <span className="text-[#526159]">AI 顧問</span>
+                  <span className="text-[#3F5147]">AI 顧問</span>
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 bg-[#0284C7]" />
-                  <span className="text-[#526159]">需求分析</span>
+                  <span className="text-[#3F5147]">需求分析</span>
                 </span>
                 {selectedDay && (
                   <button
                     type="button"
                     onClick={() => setSelectedDay(null)}
-                    className="ml-2 border border-[#C9D8D1] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
+                    className="ml-2 border border-[#C9D2CD] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
                   >
                     清除篩選 ({selectedDay} 號)
                   </button>
@@ -627,7 +627,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             {/* 互動長條圖區域 */}
             <div className="mt-6">
-              <div className="relative flex h-36 items-end gap-1 border-b border-[#EEF2F0] pb-1 sm:gap-1.5">
+              <div className="relative flex h-36 items-end gap-1 border-b border-[#ECEFEC] pb-1 sm:gap-1.5">
                 {dailyChartData.days.map(d => {
                   const isSelected = selectedDay === d.day;
                   const isHovered = hoveredDay === d.day;
@@ -649,7 +649,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       {(isHovered || isSelected) && (
                         <div className="absolute -top-14 z-20 whitespace-nowrap border border-[#DDE3DF] bg-[#1A2A22] px-2.5 py-1.5 text-[11px] text-white shadow-lg pointer-events-none">
                           <div className="font-bold font-jost">{month}-{d.day}：{d.total} 次</div>
-                          <div className="flex gap-2 text-[10px] text-zinc-300">
+                          {/* 深色 tooltip 底上的次要說明：用白字降透明度，不可套用深墨階。 */}
+                          <div className="flex gap-2 text-[10px] text-white/70">
                             <span>健檢: {d.listingCheck}</span>
                             <span>顧問: {d.chat}</span>
                             <span>需求: {d.rentAnalysis}</span>
@@ -682,7 +683,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {/* 日期刻度 */}
-              <div className="flex justify-between pt-1.5 text-[10px] font-jost tabular-nums text-zinc-400">
+              <div className="flex justify-between pt-1.5 text-[10px] font-jost tabular-nums text-[#8A9590]">
                 <span>01 日</span>
                 <span>10 日</span>
                 <span>20 日</span>
@@ -695,11 +696,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         {/* 1. 物件圖紙健檢深度診斷與轉化漏斗 */}
         {data && (
           <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-3">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-3">
               <div className="flex items-center gap-2">
                 <FileCheck2 className="h-4 w-4 text-[#007D5A]" />
                 <h2 className="font-serif text-base font-bold text-[#1A2A22]">物件圖紙健檢深度漏斗</h2>
-                <span className="text-xs text-zinc-400">{data.month}</span>
+                <span className="text-xs text-[#8A9590]">{data.month}</span>
               </div>
               <button
                 type="button"
@@ -716,13 +717,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
                   <div className="flex items-center justify-between text-xs font-bold text-[#1A2A22] mb-2">
                     <span>圖紙類型分佈（買賣 vs 租賃）</span>
-                    <span className="font-jost tabular-nums text-zinc-500">共 {listingMetrics.total.toLocaleString()} 份健檢</span>
+                    <span className="font-jost tabular-nums text-[#66736C]">共 {listingMetrics.total.toLocaleString()} 份健檢</span>
                   </div>
                   <div className="flex h-3 w-full overflow-hidden bg-[#EEF2F0]">
                     <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }} title={`買賣: ${listingMetrics.sale} 份`} />
                     <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }} title={`租賃: ${listingMetrics.rent} 份`} />
                   </div>
-                  <div className="mt-2 flex items-center justify-between text-xs text-[#526159]">
+                  <div className="mt-2 flex items-center justify-between text-xs text-[#3F5147]">
                     <span className="flex items-center gap-1.5 font-medium">
                       <span className="h-2 w-2 bg-[#007D5A]" />
                       🏠 買賣：{listingMetrics.sale.toLocaleString()} 份
@@ -738,15 +739,15 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
                 <div className="grid gap-2.5 sm:grid-cols-4">
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#66736C]">
                       <span>1. 產生健檢</span>
                       <FileCheck2 className="h-3.5 w-3.5 text-[#007D5A]" />
                     </div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.total.toLocaleString()}</div>
-                    <div className="mt-0.5 text-[10px] text-zinc-400">基準 100%</div>
+                    <div className="mt-0.5 text-[10px] text-[#8A9590]">基準 100%</div>
                   </div>
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#66736C]">
                       <span>2. 建立分享</span>
                       <Share2 className="h-3.5 w-3.5 text-[#6366F1]" />
                     </div>
@@ -754,7 +755,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <div className="mt-0.5 text-[10px] text-[#6366F1]">轉化率 {listingMetrics.total > 0 ? Math.round((listingMetrics.shareCreate / listingMetrics.total) * 100) : 0}%</div>
                   </div>
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#66736C]">
                       <span>3. 分享頁瀏覽</span>
                       <Eye className="h-3.5 w-3.5 text-[#0284C7]" />
                     </div>
@@ -762,7 +763,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <div className="mt-0.5 text-[10px] text-[#0284C7]">開啟 {listingMetrics.shareView.toLocaleString()} 次</div>
                   </div>
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#66736C]">
                       <span>4. 下載 PDF</span>
                       <Download className="h-3.5 w-3.5 text-[#0284C7]" />
                     </div>
@@ -785,7 +786,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <h2 className="text-sm font-bold text-[#1A2A22]">
                     聯絡意圖與轉化
                   </h2>
-                  <span className="font-normal text-xs text-zinc-400">{data.month}</span>
+                  <span className="font-normal text-xs text-[#8A9590]">{data.month}</span>
                 </div>
                 <button
                   type="button"
@@ -800,12 +801,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="mb-3 border border-[#DDE3DF] bg-white p-4 sm:p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <div className="text-xs text-zinc-500">本月潛在客戶聯絡總意圖</div>
+                    <div className="text-xs text-[#66736C]">本月潛在客戶聯絡總意圖</div>
                     <div className="mt-1 flex items-baseline gap-2">
                       <span className="font-jost text-3xl font-bold text-[#1A2A22]">
                         {contactTotals.total.toLocaleString()}
                       </span>
-                      <span className="text-xs font-medium text-zinc-400">次動作</span>
+                      <span className="text-xs font-medium text-[#8A9590]">次動作</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -828,7 +829,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 </div>
 
                 {contactTotals.total > 0 && (
-                  <div className="mt-3.5 flex h-2 w-full overflow-hidden bg-[#F0F3F1]">
+                  <div className="mt-3.5 flex h-2 w-full overflow-hidden bg-[#F5F8F6]">
                     {CONTACT_CHANNELS.map(ch => {
                       const count = contactTotals.byChannel[ch.id] ?? 0;
                       const widthPercent = (count / contactTotals.total) * 100;
@@ -857,7 +858,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       <button
                         type="button"
                         onClick={() => toggleChannel(channel.id)}
-                        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#F8FAF9] cursor-pointer"
+                        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-[#FAFCFB] cursor-pointer"
                       >
                         <div className="flex items-center gap-2.5">
                           <span
@@ -866,23 +867,23 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                           >
                             {channel.name}
                           </span>
-                          <span className="text-xs text-zinc-400">
+                          <span className="text-xs text-[#8A9590]">
                             共 {channel.actions.length} 項動作入口
                           </span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-jost font-bold text-sm text-[#1A2A22]">
                             {channelCount.toLocaleString()}
-                            <span className="ml-1 text-[11px] font-normal text-zinc-400">次 ({channelShare}%)</span>
+                            <span className="ml-1 text-[11px] font-normal text-[#8A9590]">次 ({channelShare}%)</span>
                           </span>
-                          {isOpen ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
+                          {isOpen ? <ChevronUp className="h-4 w-4 text-[#8A9590]" /> : <ChevronDown className="h-4 w-4 text-[#8A9590]" />}
                         </div>
                       </button>
 
                       {/* 展開之細項動作進度列表 */}
                       {isOpen && (
-                        <div className="border-t border-[#EEF2F0] px-4 py-2 bg-[#FBFDFB]">
-                          <ul className="divide-y divide-[#F0F3F1]">
+                        <div className="border-t border-[#ECEFEC] px-4 py-2 bg-[#FFFFFF]">
+                          <ul className="divide-y divide-[#ECEFEC]">
                             {channel.actions.map(action => {
                               const count = data.actions?.[action.key] ?? 0;
                               const shareOfChannel = channelCount > 0 ? Math.round((count / channelCount) * 100) : 0;
@@ -890,7 +891,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                                 <li key={action.key} className="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:justify-between">
                                   <div className="min-w-0 flex-1 pr-4">
                                     <div className="text-xs font-bold text-[#1A2A22]">{action.label}</div>
-                                    <div className="text-[11px] text-zinc-400">{action.note}</div>
+                                    <div className="text-[11px] text-[#8A9590]">{action.note}</div>
                                   </div>
                                   <div className="flex items-center gap-3 shrink-0 pt-1 sm:pt-0">
                                     <span className="h-1.5 w-24 overflow-hidden bg-[#EEF2F0]">
@@ -901,7 +902,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                                     </span>
                                     <span className="w-20 text-right font-jost font-bold text-sm text-[#1A2A22]">
                                       {count.toLocaleString()}
-                                      <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
+                                      <span className="ml-1 font-sans text-[11px] font-normal text-[#8A9590]">
                                         {shareOfChannel}%
                                       </span>
                                     </span>
@@ -917,7 +918,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 })}
               </div>
 
-              <p className="mt-2 text-[11px] leading-5 text-zinc-400">
+              <p className="mt-2 text-[11px] leading-5 text-[#8A9590]">
                 以按下的次數計算，同一個人按兩次算兩次。手機上多數人習慣複製 ID 直接搜尋，建議加好友與複製數字一起評估。
               </p>
             </section>
@@ -926,13 +927,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             {/* 3. AI 需求分析偏好 */}
             <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between border-b border-[#EEF2F0] pb-3">
+              <div className="mb-4 flex items-center justify-between border-b border-[#ECEFEC] pb-3">
                 <div className="flex items-center gap-2">
                   <Bot className="h-4 w-4 text-[#6366F1]" />
                   <h2 className="font-serif text-base font-bold text-[#1A2A22]">
                     AI 需求分析偏好
                   </h2>
-                  <span className="text-xs text-zinc-400">{data.month}・租屋分析模式</span>
+                  <span className="text-xs text-[#8A9590]">{data.month}・租屋分析模式</span>
                 </div>
                 <button
                   type="button"
@@ -950,7 +951,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <div className="text-xs font-bold text-[#1A2A22]">
                       快速條件選單 vs 自然語言文字描述
                     </div>
-                    <div className="text-xs font-jost text-zinc-500">
+                    <div className="text-xs font-jost text-[#66736C]">
                       合計 {aiAnalysisMetrics.total.toLocaleString()} 次送出
                     </div>
                   </div>
@@ -964,7 +965,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       title={`自然語言描述: ${aiAnalysisMetrics.natural} 次`}
                     />
                   </div>
-                  <div className="mt-2.5 flex items-center justify-between text-xs text-[#526159]">
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-[#3F5147]">
                     <span className="flex items-center gap-1.5 font-medium">
                       <span className="h-2 w-2 bg-[#00a174]" />
                       快速選單勾選：{aiAnalysisMetrics.structured.toLocaleString()} 次
@@ -983,17 +984,17 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="mb-8 grid gap-4 lg:grid-cols-2">
               {/* 各分頁瀏覽次數 */}
               <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
-                <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                   <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
                     <Eye className="h-4 w-4 text-[#007D5A]" /> 各分頁瀏覽排行
                   </h3>
-                  <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
+                  <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
                 </div>
                 {viewRows.length ? (
                   <ul className="divide-y divide-[#F5F8F6]">
                     {viewRows.map((row, idx) => (
                       <li key={row.view} className="flex items-center gap-3 py-2 text-xs">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center bg-[#F0F3F1] font-jost text-[10px] font-bold text-[#526159]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center bg-[#F5F8F6] font-jost text-[10px] font-bold text-[#3F5147]">
                           #{idx + 1}
                         </span>
                         <span className="w-28 shrink-0 font-medium text-[#1A2A22]">
@@ -1007,23 +1008,23 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         </span>
                         <span className="w-20 shrink-0 text-right font-jost font-bold tabular-nums text-[#1A2A22]">
                           {row.count.toLocaleString()}
-                          <span className="ml-1 font-sans text-[10px] font-normal text-zinc-400">{row.share}%</span>
+                          <span className="ml-1 font-sans text-[10px] font-normal text-[#8A9590]">{row.share}%</span>
                         </span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="py-8 text-center text-xs text-zinc-400">這個月還沒有分頁瀏覽資料</p>
+                  <p className="py-8 text-center text-xs text-[#8A9590]">這個月還沒有分頁瀏覽資料</p>
                 )}
               </div>
 
               {/* 自訂宣傳來源 */}
               <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
-                <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                   <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
                     <TrendingUp className="h-4 w-4 text-[#0284C7]" /> 自訂推廣來源標記
                   </h3>
-                  <span className="text-[11px] font-jost text-zinc-400">?from=...</span>
+                  <span className="text-[11px] font-jost text-[#8A9590]">?from=...</span>
                 </div>
                 {sourceRows.length ? (
                   <ul className="divide-y divide-[#F5F8F6]">
@@ -1031,19 +1032,19 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       <li key={row.source} className="flex items-center justify-between gap-3 py-2 text-xs">
                         <span className="font-medium text-[#3F5147]">
                           {SOURCE_LABEL[row.source] ?? row.source}
-                          <span className="ml-1.5 font-mono text-[10px] text-zinc-400">?from={row.source}</span>
+                          <span className="ml-1.5 font-mono text-[10px] text-[#8A9590]">?from={row.source}</span>
                         </span>
                         <span className="font-jost font-bold tabular-nums text-[#1A2A22]">
-                          {row.count.toLocaleString()} <span className="font-sans font-normal text-[10px] text-zinc-400">次點擊</span>
+                          {row.count.toLocaleString()} <span className="font-sans font-normal text-[10px] text-[#8A9590]">次點擊</span>
                         </span>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="py-8 text-center text-xs text-zinc-400">這個月還沒有自訂推廣來源標記點擊</p>
+                  <p className="py-8 text-center text-xs text-[#8A9590]">這個月還沒有自訂推廣來源標記點擊</p>
                 )}
-                <p className="mt-3 text-[10px] leading-relaxed text-zinc-400">
-                  可於行銷連結加上 <code className="bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=threads</code> 或 <code className="bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=ig</code> 以追蹤各社群引流。
+                <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+                  可於行銷連結加上 <code className="bg-[#F5F8F6] px-1 py-0.5 font-mono text-[10px] text-[#3F5147]">?from=threads</code> 或 <code className="bg-[#F5F8F6] px-1 py-0.5 font-mono text-[10px] text-[#3F5147]">?from=ig</code> 以追蹤各社群引流。
                 </p>
               </div>
             </section>
@@ -1056,7 +1057,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <Sparkles className="h-4 w-4 text-[#007D5A]" />
                   核心功能完成次數
                 </h2>
-                <span className="text-xs text-zinc-400">{data.month}・伺服器端完成呼叫</span>
+                <span className="text-xs text-[#8A9590]">{data.month}・伺服器端完成呼叫</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {features.map(feature => {
@@ -1086,18 +1087,18 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </section>
 
-            <p className="mb-6 text-xs text-zinc-500">
+            <p className="mb-6 text-xs text-[#66736C]">
               上方卡片與下方兩張表皆為 {data.month} 這個月的資料。
               這一區只計算真的送出並得到回覆的次數。
             </p>
 
             {/* 7. 每日功能明細次數表 */}
             <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+              <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                 <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
                   <SlidersHorizontal className="h-4 w-4 text-[#007D5A]" /> 每日功能完成明細表
                 </h3>
-                <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
+                <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] table-fixed text-xs">
@@ -1107,7 +1108,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <col className="w-[14%]" />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-[#EEF2F0] text-left text-xs font-semibold text-zinc-500">
+                    <tr className="border-b border-[#ECEFEC] text-left text-xs font-semibold text-[#66736C]">
                       <th className="px-4 py-2">日期</th>
                       {features.map(f => <th key={f} className="px-3 py-2 text-center">{FEATURE_LABEL[f] ?? f}</th>)}
                       <th className="px-4 py-2 text-right">當日合計</th>
@@ -1132,7 +1133,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                           </td>
                           {row.counts.map((count, index) => (
                             <td key={index} className="px-3 py-2.5 text-center font-jost tabular-nums text-[#3F5147]">
-                              {count > 0 ? count.toLocaleString() : <span className="text-zinc-300">—</span>}
+                              {count > 0 ? count.toLocaleString() : <span className="text-[#8A9590]">—</span>}
                             </td>
                           ))}
                           <td className="px-4 py-2.5 text-right font-jost tabular-nums font-bold text-[#1A2A22]">
@@ -1142,7 +1143,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       );
                     })}
                     {!Object.keys(data.daily).length && (
-                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-zinc-400">這個月還沒有每日紀錄</td></tr>
+                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-[#8A9590]">這個月還沒有每日紀錄</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -1151,11 +1152,11 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             {/* 6. 來源國家分佈 */}
             <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+              <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                 <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
                   <Globe className="h-4 w-4 text-[#007D5A]" /> 使用者地理來源國家分佈
                 </h3>
-                <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
+                <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] table-fixed text-xs">
@@ -1165,7 +1166,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <col className="w-[14%]" />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-[#EEF2F0] text-left text-xs font-semibold text-zinc-500">
+                    <tr className="border-b border-[#ECEFEC] text-left text-xs font-semibold text-[#66736C]">
                       <th className="px-4 py-2">國家／地區</th>
                       {features.map(f => <th key={f} className="px-3 py-2 text-center">{FEATURE_LABEL[f] ?? f}</th>)}
                       <th className="px-4 py-2 text-right">合計次數</th>
@@ -1180,12 +1181,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                             <span className="mr-1.5 text-base leading-none">{flag}</span>
                             <span>{COUNTRY_LABEL[row.country] ?? row.country}</span>
                             {row.country !== "unknown" && (
-                              <span className="ml-1.5 font-jost text-[11px] text-zinc-400 font-normal">({row.country})</span>
+                              <span className="ml-1.5 font-jost text-[11px] text-[#8A9590] font-normal">({row.country})</span>
                             )}
                           </td>
                           {row.counts.map((count, index) => (
                             <td key={index} className="px-3 py-2.5 text-center font-jost tabular-nums text-[#3F5147]">
-                              {count > 0 ? count.toLocaleString() : <span className="text-zinc-300">—</span>}
+                              {count > 0 ? count.toLocaleString() : <span className="text-[#8A9590]">—</span>}
                             </td>
                           ))}
                           <td className="px-4 py-2.5 text-right font-jost tabular-nums font-bold text-[#1A2A22]">
@@ -1195,7 +1196,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       );
                     })}
                     {!geoRows.length && (
-                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-zinc-400">這個月還沒有國家來源資料</td></tr>
+                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-[#8A9590]">這個月還沒有國家來源資料</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -1205,21 +1206,21 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             {/* 8. 次要外部對照：Vercel Web Analytics */}
             {traffic && (
               <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-2.5">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-2.5">
                   <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                    <Globe className="h-4 w-4 text-zinc-500" /> 次要外部對照（Vercel Web Analytics）
+                    <Globe className="h-4 w-4 text-[#66736C]" /> 次要外部對照（Vercel Web Analytics）
                   </h3>
-                  <span className="text-[11px] font-normal text-zinc-400">
+                  <span className="text-[11px] font-normal text-[#8A9590]">
                     {traffic.month}・前端腳本統計（易受廣告封鎖器影響，供交叉參考）
                   </span>
                 </div>
                 <div className="mb-4 grid gap-3 sm:grid-cols-2">
-                  <div className="border border-[#EEF2F0] bg-[#FAFCFB] p-3.5">
-                    <div className="text-[11px] text-zinc-500">每日不重複訪客合計</div>
+                  <div className="border border-[#ECEFEC] bg-[#FAFCFB] p-3.5">
+                    <div className="text-[11px] text-[#66736C]">每日不重複訪客合計</div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
                   </div>
-                  <div className="border border-[#EEF2F0] bg-[#FAFCFB] p-3.5">
-                    <div className="text-[11px] text-zinc-500">總瀏覽次數</div>
+                  <div className="border border-[#ECEFEC] bg-[#FAFCFB] p-3.5">
+                    <div className="text-[11px] text-[#66736C]">總瀏覽次數</div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{traffic.pageviews.toLocaleString()}</div>
                   </div>
                 </div>
@@ -1228,21 +1229,21 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     ["來源國家", traffic.countries, (l: string) => COUNTRY_LABEL[l] ?? l],
                     ["外部連結來源", traffic.referrers, (l: string) => l || "直接進入"],
                   ] as [string, AggregateRow[], (l: string) => string][]).map(([title, rows, format]) => (
-                    <div key={title} className="border border-[#EEF2F0] bg-white">
-                      <h4 className="border-b border-[#EEF2F0] px-3.5 py-2 text-xs font-bold text-[#1A2A22]">{title}</h4>
+                    <div key={title} className="border border-[#ECEFEC] bg-white">
+                      <h4 className="border-b border-[#ECEFEC] px-3.5 py-2 text-xs font-bold text-[#1A2A22]">{title}</h4>
                       <ul className="divide-y divide-[#F5F8F6]">
                         {rows.length ? rows.map(row => (
                           <li key={row.label} className="flex items-center justify-between gap-3 px-3.5 py-2 text-xs">
                             <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
                             <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
                               {row.visitors.toLocaleString()}
-                              <span className="ml-1 font-sans text-[10px] font-normal text-zinc-400">
+                              <span className="ml-1 font-sans text-[10px] font-normal text-[#8A9590]">
                                 人／{row.count.toLocaleString()} 次
                               </span>
                             </span>
                           </li>
                         )) : (
-                          <li className="px-3.5 py-4 text-center text-xs text-zinc-400">尚無資料</li>
+                          <li className="px-3.5 py-4 text-center text-xs text-[#8A9590]">尚無資料</li>
                         )}
                       </ul>
                     </div>
@@ -1252,13 +1253,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             )}
 
             {trafficNote && (
-              <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-zinc-500">
+              <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-[#66736C]">
                 外部對照（Vercel Analytics）：{trafficNote}
               </div>
             )}
 
             <div className="border-t border-[#DDE3DF] pt-4 text-right">
-              <p className="text-[11px] leading-relaxed text-zinc-400">
+              <p className="text-[11px] leading-relaxed text-[#8A9590]">
                 全站歷史累計呼叫 {grandTotal.toLocaleString()} 次 · 伺服器端 IP 匿名國碼解析 · LINUS 住好日
               </p>
             </div>

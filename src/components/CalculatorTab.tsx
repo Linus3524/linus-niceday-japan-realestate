@@ -54,7 +54,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "rent"
                       ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                   }`}
                 >
                   <Calculator className="w-4 h-4 shrink-0" />
@@ -65,7 +65,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "buy"
                       ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                   }`}
                 >
                   <Landmark className="w-4 h-4 shrink-0" />
@@ -76,7 +76,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
                     calcMode === "listing"
                       ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                   }`}
                 >
                   <FileSearch className="w-4 h-4 shrink-0" />

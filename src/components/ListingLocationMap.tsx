@@ -488,7 +488,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             className={`px-3 py-1.5 text-xs font-bold transition-all ${
               mapMode === "interactive"
                 ? "bg-[#1A2A22] text-white shadow-sm"
-                : "bg-white text-[#66736C] hover:bg-[#F2F5F3]"
+                : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
             📍 周邊設施地圖
@@ -499,7 +499,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             className={`px-3 py-1.5 text-xs font-bold transition-all ${
               mapMode === "google"
                 ? "bg-[#1A2A22] text-white shadow-sm"
-                : "bg-white text-[#66736C] hover:bg-[#F2F5F3]"
+                : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
             🗺️ Google Maps 實景
@@ -528,7 +528,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       </div>
 
       {/* 地圖主體容器 */}
-      <div className="relative h-72 w-full overflow-hidden border border-[#1A2A22] bg-[#E8ECE9] md:h-[400px]">
+      <div className="relative h-72 w-full overflow-hidden border border-[#1A2A22] bg-[#EEF2F0] md:h-[400px]">
         {mapMode === "interactive" ? (
           <div ref={mapContainerRef} className="h-full w-full" style={{ zIndex: 1 }} />
         ) : (

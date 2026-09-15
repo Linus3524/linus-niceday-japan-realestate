@@ -112,7 +112,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
 
       {calcMode === "rent" ? (
         <>
-          <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
+          <h4 className="text-sm font-bold text-[#66736C] uppercase tracking-wider mb-2 font-sans">
             {getSelectedDistrictData().sourceDate || "最新"} 市場推估房租預算：
           </h4>
 
@@ -124,7 +124,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
               </span>
               <span className="text-base font-bold text-[#1A2A22]">日圓 / 月</span>
             </div>
-            <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
+            <div className="text-xs text-[#66736C] mt-1.5 font-sans leading-relaxed">
               約合 <strong>{(getCalculatedRent() / 10000).toFixed(1)}</strong> 萬日圓／月
             </div>
           </div>
@@ -132,15 +132,15 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           {/* Breakdown details */}
           <div className="space-y-3.5 text-xs font-sans">
             <div>
-              <span className="text-zinc-500 block">所選基本平均租金 (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：</span>
-              <span className="font-bold text-zinc-800 font-mono">
+              <span className="text-[#66736C] block">所選基本平均租金 (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：</span>
+              <span className="font-bold text-[#1A2A22] font-mono">
                 {(parseFloat(getSelectedDistrictData()[calcRoomType as keyof typeof getSelectedDistrictData] as string) * 10000).toLocaleString()} 円
               </span>
             </div>
 
             {calcStation !== "none" && (
-              <div className="flex justify-between items-baseline border-t border-[#E1E6E3] pt-3 font-sans">
-                <span className="text-zinc-500">周邊站點溢折價 (<span lang="ja" className="font-jp">{stationDisplayName}駅</span>)：</span>
+              <div className="flex justify-between items-baseline border-t border-[#DDE3DF] pt-3 font-sans">
+                <span className="text-[#66736C]">周邊站點溢折價 (<span lang="ja" className="font-jp">{stationDisplayName}駅</span>)：</span>
                 {(() => {
                   const currentStation = (districtStations[calcDistrict] || []).find(s => s.name === calcStation);
                   if (!currentStation) return null;
@@ -166,9 +166,9 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 0
               );
               return (
-                <div className="space-y-2 border-t border-[#E1E6E3] pt-3">
+                <div className="space-y-2 border-t border-[#DDE3DF] pt-3">
                   <div className="flex justify-between items-baseline font-sans">
-                    <span className="text-zinc-500">條件調整小計：</span>
+                    <span className="text-[#66736C]">條件調整小計：</span>
                     <span className={`font-bold font-mono ${modifierSubtotal >= 0
                         ? "text-[#00a174]"
                         : "text-[#B13818]"
@@ -177,7 +177,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       {Math.abs(modifierSubtotal).toLocaleString()} 円
                     </span>
                   </div>
-                  <div className="divide-y divide-[#E1E6E3] border-y border-[#E1E6E3] text-[11px] leading-relaxed">
+                  <div className="divide-y divide-[#DDE3DF] border-y border-[#DDE3DF] text-[11px] leading-relaxed">
                     {calcModifiers.map((id) => {
                       const mod = getBudgetModifier(id);
                       if (!mod) return null;
@@ -185,7 +185,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       const isPlus = mod.type === "plus";
                       return (
                         <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
-                          <span className="flex min-w-0 items-start gap-1.5 break-all text-zinc-700">
+                          <span className="flex min-w-0 items-start gap-1.5 break-all text-[#3F5147]">
                             <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
                               {isPlus ? "+" : "−"}
                             </span>
@@ -207,7 +207,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
             {(() => {
               const assessment = getAvailabilityAssessment();
               return (
-                <div className="border-t border-[#D4DDD8] pt-4">
+                <div className="border-t border-[#DDE3DF] pt-4">
                   <div className="mb-3 flex items-end justify-between gap-3">
                     <div>
                       <span className="block font-bold text-[#00a174]">房源供給與競爭評估</span>
@@ -221,7 +221,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                         <span className="text-[10px] font-bold text-[#66736C]">符合條件的房源量</span>
                         <span className={`text-xs font-bold ${assessment.supply.tone}`}>{assessment.supply.label}</span>
                       </div>
-                      <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
+                      <div className="mt-2 h-2 overflow-hidden bg-[#EEF2F0]">
                         <div className={`h-full bg-[#00a174] ${assessment.supply.width}`} />
                       </div>
                     </div>
@@ -230,7 +230,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                         <span className="text-[10px] font-bold text-[#66736C]">熱門物件競爭程度</span>
                         <span className={`text-xs font-bold ${assessment.competition.tone}`}>{assessment.competition.label}</span>
                       </div>
-                      <div className="mt-2 h-2 overflow-hidden bg-[#EDF1EE]">
+                      <div className="mt-2 h-2 overflow-hidden bg-[#EEF2F0]">
                         <div className={`h-full bg-[#E94E2B] ${assessment.competition.width}`} />
                       </div>
                     </div>
@@ -239,7 +239,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       <span className="mr-1 text-[10px] font-bold text-[#3F5147]">主要限縮條件</span>
                       {assessment.limitingConditions.map(condition => (
-                        <span key={condition} className="border border-[#DCC8A1] bg-[#FFF9ED] px-2 py-1 text-[9px] font-bold text-[#7A5A1F]">{condition}</span>
+                        <span key={condition} className="border border-[#FDE047] bg-[#FEF9C3] px-2 py-1 text-[9px] font-bold text-[#854D0E]">{condition}</span>
                       ))}
                     </div>
                   )}
@@ -257,7 +257,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
             })()}
 
             {/* Estimation of Initial Fees */}
-            <div className="border-t border-[#D4DDD8] pt-4">
+            <div className="border-t border-[#DDE3DF] pt-4">
               <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
                 <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
                 <span>建議準備的初期費用</span>
@@ -276,7 +276,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 });
 
                 return (
-                  <div className="border border-zinc-200 bg-[#FAFCFB] p-3 font-sans">
+                  <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-3 font-sans">
                     <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <p className="text-[10px] font-bold text-[#66736C]">
@@ -287,7 +287,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       <strong className="font-mono text-lg text-[#008C68]">¥{recommendedCash.toLocaleString()}</strong>
                     </div>
 
-                    <p className="mt-2 border-t border-zinc-200 pt-2 text-[10px] leading-relaxed text-[#52635A]">
+                    <p className="mt-2 border-t border-[#DDE3DF] pt-2 text-[10px] leading-relaxed text-[#3F5147]">
                       {reasons.length
                         ? reasons.join("；") + "。"
                         : "目前沒有明顯增加初期費用的特殊條件，先以一般物件的 5 倍準備較穩妥。"}
@@ -305,14 +305,14 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       type="button"
                       onClick={() => setShowInitialFeeDetails(current => !current)}
                       aria-expanded={showInitialFeeDetails}
-                      className="mt-3 flex w-full items-center justify-between border-t border-zinc-200 pt-2 text-left text-[10px] font-bold text-[#3F5147] hover:text-[#007D5A]"
+                      className="mt-3 flex w-full items-center justify-between border-t border-[#DDE3DF] pt-2 text-left text-[10px] font-bold text-[#3F5147] hover:text-[#007D5A]"
                     >
                       <span>4／5／6 倍分別代表什麼？</span>
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showInitialFeeDetails ? "rotate-180" : ""}`} />
                     </button>
 
                     {showInitialFeeDetails && (
-                      <div className="mt-2 divide-y divide-zinc-200 border-t border-zinc-200 text-[10px] leading-relaxed text-[#52635A]">
+                      <div className="mt-2 divide-y divide-[#DDE3DF] border-t border-[#DDE3DF] text-[10px] leading-relaxed text-[#3F5147]">
                         <div className="grid grid-cols-[52px_1fr_auto] gap-2 py-2">
                           <strong className="text-[#1A2A22]">4 倍</strong>
                           <span>優惠情境：熱門地區通常要同時遇到免禮金，並搭配免租、仲介費優惠或較低附帶費用，才較有機會接近。</span>
@@ -324,9 +324,9 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                           <span className="font-mono text-[#007D5A]">¥{(monthlyRent * 5).toLocaleString()}</span>
                         </div>
                         <div className="grid grid-cols-[52px_1fr_auto] gap-2 py-2">
-                          <strong className="text-[#7A5A1F]">6 倍</strong>
+                          <strong className="text-[#854D0E]">6 倍</strong>
                           <span>費用較多：熱門物件有禮金，或另有寵物敷金、清潔、換鎖及其他指定費用時較接近此範圍。</span>
-                          <span className="font-mono text-[#7A5A1F]">¥{(monthlyRent * 6).toLocaleString()}</span>
+                          <span className="font-mono text-[#854D0E]">¥{(monthlyRent * 6).toLocaleString()}</span>
                         </div>
                       </div>
                     )}
@@ -360,13 +360,13 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           </div>
 
           {/* Rent Disclaimer：全卡只保留這一段，房源供給、初期費用等估算的方法論限制都收在這裡，不再逐段重複。 */}
-          <div className="mt-4 border-t border-[#E1E6E3] pt-3 text-justify font-sans text-[10px] leading-relaxed text-zinc-400">
+          <div className="mt-4 border-t border-[#DDE3DF] pt-3 text-justify font-sans text-[10px] leading-relaxed text-[#8A9590]">
             ※ 行情模型估算；實際租金、供給與初期費用依當期募集物件為準。
           </div>
         </>
       ) : (
         <>
-          <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2 font-sans">
+          <h4 className="text-sm font-bold text-[#66736C] uppercase tracking-wider mb-2 font-sans">
             條件式預算概算中心值：
           </h4>
 
@@ -378,7 +378,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
               </span>
               <span className="text-base font-bold text-[#1A2A22]">萬日圓</span>
             </div>
-            <div className="text-xs text-zinc-500 mt-1.5 font-sans leading-relaxed">
+            <div className="text-xs text-[#66736C] mt-1.5 font-sans leading-relaxed">
               （概算區間約 <strong>{(getCalculatedBuyPrice() * 0.85 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong>～<strong>{(getCalculatedBuyPrice() * 1.15 / 10000).toLocaleString(undefined, { maximumFractionDigits: 0 })}</strong> 萬日圓；中心值不是鑑價或成交保證。）
             </div>
           </div>
@@ -386,22 +386,22 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           {/* Breakdown buy details */}
           <div className="space-y-4 text-xs font-sans">
             <div>
-              <span className="text-zinc-500 block">
+              <span className="text-[#66736C] block">
                 {getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType)
                   ? "國交省交易資料基本總價"
                   : "租金收益率模型基本總價"} (<span lang="ja" className="font-jp">{districtDisplayName}</span>)：
               </span>
-              <span className="font-bold text-zinc-800 font-mono">
+              <span className="font-bold text-[#1A2A22] font-mono">
                 {(getDistrictBuyPrice(calcDistrict, calcRoomType) * 10000).toLocaleString()} 円 ({getDistrictBuyPrice(calcDistrict, calcRoomType)} 萬日圓)
               </span>
               {(() => {
                 const estimate = getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType);
                 return estimate ? (
-                  <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">
+                  <span className="mt-1 block text-[9px] leading-relaxed text-[#8A9590]">
                     近{estimate.windowQuarters === 4 ? "四" : "八"}季樣本 {estimate.sampleCount} 筆，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。
                   </span>
                 ) : (
-                  <span className="mt-1 block text-[9px] leading-relaxed text-zinc-400">
+                  <span className="mt-1 block text-[9px] leading-relaxed text-[#8A9590]">
                     此地區目前採用租金 ÷ 假設表面投報率的概算，不代表實際成交價格。
                   </span>
                 );
@@ -409,9 +409,9 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
             </div>
 
             {calcBuyModifiers.length > 0 && (
-              <div className="space-y-2 border-t border-[#E1E6E3] pt-3">
-                <span className="text-zinc-500 block">條件調整清單：</span>
-                <div className="divide-y divide-[#E1E6E3] border-y border-[#E1E6E3] text-[11px] leading-relaxed">
+              <div className="space-y-2 border-t border-[#DDE3DF] pt-3">
+                <span className="text-[#66736C] block">條件調整清單：</span>
+                <div className="divide-y divide-[#DDE3DF] border-y border-[#DDE3DF] text-[11px] leading-relaxed">
                   {calcBuyModifiers.map((id) => {
                     const mod = getBuyModifier(id);
                     if (!mod) return null;
@@ -419,7 +419,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     const dynamicMult = getDynamicBuyModifierMultiplier(id, calcDistrict);
                     return (
                       <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
-                        <span className="flex min-w-0 items-start gap-1.5 break-all font-sans text-zinc-700">
+                        <span className="flex min-w-0 items-start gap-1.5 break-all font-sans text-[#3F5147]">
                           <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
                             {isPlus ? "+" : "−"}
                           </span>
@@ -436,22 +436,22 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
             )}
 
             {/* Initial purchase fees section */}
-            <div className="border-t border-[#D4DDD8] pt-3">
+            <div className="border-t border-[#DDE3DF] pt-3">
               <span className="text-[#00a174] font-bold flex items-center gap-1.5 mb-2">
                 <Receipt className="w-4 h-4 text-[#00a174] shrink-0" />
                 <span>購屋初期諸費用概算（一次性過戶費用）：</span>
               </span>
-              <div className="bg-[#F5F8F6] border border-zinc-200">
+              <div className="bg-[#F5F8F6] border border-[#DDE3DF]">
                 <div className="space-y-1.5 p-3">
-                  <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
+                  <div className="flex justify-between font-bold text-[#1A2A22] text-[11px] md:text-xs">
                     <span>現金全款購置 (約總價 7%):</span>
-                    <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.07 / 10000).toFixed(0)} 萬日圓</span>
+                    <span className="font-mono text-[#1A2A22]">{(getCalculatedBuyPrice() * 0.07 / 10000).toFixed(0)} 萬日圓</span>
                   </div>
-                  <div className="flex justify-between font-bold text-zinc-800 text-[11px] md:text-xs">
+                  <div className="flex justify-between font-bold text-[#1A2A22] text-[11px] md:text-xs">
                     <span>申請貸款購置 (約總價 9%):</span>
-                    <span className="font-mono text-zinc-900">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
+                    <span className="font-mono text-[#1A2A22]">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
                   </div>
-                  <p className="mt-1 flex items-start gap-1 border-t border-zinc-200 pt-1.5 text-justify text-[10px] text-zinc-500">
+                  <p className="mt-1 flex items-start gap-1 border-t border-[#DDE3DF] pt-1.5 text-justify text-[10px] text-[#66736C]">
                     <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
                     <span>先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。</span>
                   </p>
@@ -460,13 +460,13 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                   type="button"
                   onClick={() => setShowBuyFeeDetails(current => !current)}
                   aria-expanded={showBuyFeeDetails}
-                  className="flex w-full items-center justify-between border-t border-zinc-200 bg-white px-3 py-2.5 text-left text-[11px] font-bold text-[#31443A] hover:text-[#00a174]"
+                  className="flex w-full items-center justify-between border-t border-[#DDE3DF] bg-white px-3 py-2.5 text-left text-[11px] font-bold text-[#1A2A22] hover:text-[#00a174]"
                 >
                   <span>{showBuyFeeDetails ? "收合費用組成" : "展開費用組成"}</span>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showBuyFeeDetails ? "rotate-180" : ""}`} />
                 </button>
                 {showBuyFeeDetails && (
-                  <div className="grid gap-px border-t border-zinc-200 bg-zinc-200 sm:grid-cols-2">
+                  <div className="grid gap-px border-t border-[#DDE3DF] bg-[#EEF2F0] sm:grid-cols-2">
                     {[
                       ["簽約時", "手付金、契約印紙稅；仲介費依媒介契約約定"],
                       ["交屋時", "尾款、仲介費、司法書士報酬、登錄免許稅及各項清算款"],
@@ -477,45 +477,45 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     ].map(([label, description]) => (
                       <div key={label} className="bg-white p-3">
                         <strong className="block text-[10px] tracking-wide text-[#007d5a]">{label}</strong>
-                        <p className="mt-1 text-[10px] leading-relaxed text-zinc-600">{description}</p>
+                        <p className="mt-1 text-[10px] leading-relaxed text-[#3F5147]">{description}</p>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-              <p className="mt-2 text-[9px] leading-relaxed text-zinc-400">
+              <p className="mt-2 text-[9px] leading-relaxed text-[#8A9590]">
                 7%／9%是整體準備預算的概算，不代表每項費用固定按房價比例計算；實際金額會依成交型態、評價額、貸款方案與特例資格改變。
               </p>
             </div>
 
             {/* Loan payments section */}
-            <div className="border-t border-[#D4DDD8] pt-3">
+            <div className="border-t border-[#DDE3DF] pt-3">
               <span className="text-[#00a174] font-bold block mb-1">銀行貸款與月還款額試算：</span>
-              <div className="bg-zinc-50 p-3 border border-zinc-200 space-y-1.5">
-                <div className="mb-2 grid grid-cols-3 gap-2 border-b border-zinc-200 pb-2">
-                  <label className="text-[10px] text-zinc-600">貸款成數 (%)
-                    <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={e => setLoanRatio(Math.min(100, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+              <div className="bg-[#FAFCFB] p-3 border border-[#DDE3DF] space-y-1.5">
+                <div className="mb-2 grid grid-cols-3 gap-2 border-b border-[#DDE3DF] pb-2">
+                  <label className="text-[10px] text-[#3F5147]">貸款成數 (%)
+                    <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={e => setLoanRatio(Math.min(100, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
-                  <label className="text-[10px] text-zinc-600">年利率 (%)
-                    <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={e => setAnnualRate(Math.min(20, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+                  <label className="text-[10px] text-[#3F5147]">年利率 (%)
+                    <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={e => setAnnualRate(Math.min(20, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
-                  <label className="text-[10px] text-zinc-600">貸款年限
-                    <input type="number" min="1" max="50" step="1" value={loanYears} onChange={e => setLoanYears(Math.min(50, Math.max(1, Number(e.target.value))))} className="mt-1 w-full border border-zinc-300 bg-white px-2 py-1 text-xs" />
+                  <label className="text-[10px] text-[#3F5147]">貸款年限
+                    <input type="number" min="1" max="50" step="1" value={loanYears} onChange={e => setLoanYears(Math.min(50, Math.max(1, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
                 </div>
-                <div className="flex justify-between font-medium text-zinc-600 text-[11px]">
+                <div className="flex justify-between font-medium text-[#3F5147] text-[11px]">
                   <span>首期自備款 ({100 - loanRatio}%):</span>
-                  <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * (1 - loanRatio / 100) / 10000).toFixed(0)} 萬日圓</span>
+                  <span className="font-mono font-bold text-[#1A2A22]">{(getCalculatedBuyPrice() * (1 - loanRatio / 100) / 10000).toFixed(0)} 萬日圓</span>
                 </div>
-                <div className="flex justify-between font-medium text-zinc-600 text-[11px]">
+                <div className="flex justify-between font-medium text-[#3F5147] text-[11px]">
                   <span>銀行貸款金額 ({loanRatio}%):</span>
-                  <span className="font-mono font-bold text-zinc-800">{(getCalculatedBuyPrice() * loanRatio / 100 / 10000).toFixed(0)} 萬日圓</span>
+                  <span className="font-mono font-bold text-[#1A2A22]">{(getCalculatedBuyPrice() * loanRatio / 100 / 10000).toFixed(0)} 萬日圓</span>
                 </div>
-                <div className="mt-1 flex justify-between border-t border-zinc-200 pt-1.5 text-[11px] font-bold text-[#00a174] md:text-xs">
+                <div className="mt-1 flex justify-between border-t border-[#DDE3DF] pt-1.5 text-[11px] font-bold text-[#00a174] md:text-xs">
                   <span>每月本息試算 ({annualRate}%／{loanYears}年):</span>
                   <span className="font-mono text-[#00a174]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                 </div>
-                <p className="text-[10px] text-zinc-500 mt-1 text-justify">
+                <p className="text-[10px] text-[#66736C] mt-1 text-justify">
                   本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審査。
                 </p>
               </div>
@@ -539,7 +539,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           </div>
 
           {/* Buy Disclaimer */}
-          <div className="mt-4 pt-3 border-t border-zinc-100 text-[10px] text-zinc-400 font-sans leading-relaxed text-justify">
+          <div className="mt-4 pt-3 border-t border-[#ECEFEC] text-[10px] text-[#8A9590] font-sans leading-relaxed text-justify">
             {getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType) ? (
               <>
                 * 方法與限制：中心值使用國交省交易資料的行政區／間取り中位數，再套用條件係數；不是銀行鑑價或成交保證。±15% 僅為閱讀概算的波動帶。<br />
@@ -563,7 +563,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           <span>Linus 實務置產提示</span>
         )}
       </h5>
-      <div className="text-xs text-zinc-600 space-y-2.5 font-sans leading-relaxed">
+      <div className="text-xs text-[#3F5147] space-y-2.5 font-sans leading-relaxed">
         {calcMode === "rent" ? (
           <div className="space-y-1 text-[11px] leading-relaxed text-[#3F5147]">
             {renderFormattedText(aiResult?.advisorAdvice || "")}

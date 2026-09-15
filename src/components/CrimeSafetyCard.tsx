@@ -387,7 +387,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                   );
                 })}
               </div>
-              <p className="prefecture-safety-description mt-3 text-[11px] leading-relaxed text-[#55635B]">{residentialCopy.description}</p>
+              <p className="prefecture-safety-description mt-3 text-[11px] leading-relaxed text-[#3F5147]">{residentialCopy.description}</p>
             </div>
             <div className="prefecture-safety-middle space-y-2">
               {crime.tokyoContext?.residentialRanking && <div className="grid grid-cols-2 gap-x-3 gap-y-1">
@@ -406,7 +406,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
             <div className="prefecture-safety-bottom space-y-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><FileText className="h-3.5 w-3.5 shrink-0" />區市町村統計摘要</div>
-                <p className="text-[11px] leading-relaxed text-[#55635B]">
+                <p className="text-[11px] leading-relaxed text-[#3F5147]">
                   {crime.tokyoContext?.residentialRanking ? <>{crime.tokyoContext.residentialRanking.area}全年住宅侵入 {crime.tokyoContext.residentialRanking.count} 件；都內 {crime.tokyoContext.residentialRanking.total} 個有官方合計的區市町村，平均 {crime.tokyoContext.residentialRanking.averageCount.toFixed(1)} 件。物件所在{crime.chocho}為 {homeCount} 件。</> : <>{crime.chocho}全年住宅侵入 {homeCount} 件；所屬區市町村排名資料不足。</>}
                 </p>
               </div>
@@ -753,7 +753,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
           <button
             type="button"
             onClick={() => setExpanded(!expanded)}
-            className="flex w-full items-center justify-between border border-[#DDE3DF] bg-[#FAFCFB] px-4 py-3 text-xs font-bold text-[#1A2A22] transition-colors hover:bg-[#F2F5F3]"
+            className="flex w-full items-center justify-between border border-[#DDE3DF] bg-[#FAFCFB] px-4 py-3 text-xs font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6]"
           >
             <div className="flex items-center gap-2">
               <ListOrdered className="h-4 w-4 text-[#007D5A]" />
@@ -806,7 +806,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                         </span>
                       </div>
 
-                      <div className="divide-y divide-[#EBF0ED]">
+                      <div className="divide-y divide-[#ECEFEC]">
                         {items.map((item) => {
                           const Icon = getCrimeIcon(item.label);
                           return (

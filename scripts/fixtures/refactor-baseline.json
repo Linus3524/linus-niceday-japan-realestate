@@ -1556,12 +1556,12 @@
         "availability": {
           "supply": {
             "label": "選擇較多",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[88%]"
           },
           "competition": {
             "label": "競爭較低",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[25%]"
           },
           "limitingConditions": [
@@ -1688,12 +1688,12 @@
         "availability": {
           "supply": {
             "label": "房源一般",
-            "tone": "text-[#7A5A1F]",
+            "tone": "text-[#854D0E]",
             "width": "w-[60%]"
           },
           "competition": {
             "label": "競爭一般",
-            "tone": "text-[#7A5A1F]",
+            "tone": "text-[#854D0E]",
             "width": "w-[48%]"
           },
           "limitingConditions": [
@@ -1821,12 +1821,12 @@
         "availability": {
           "supply": {
             "label": "選擇較多",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[88%]"
           },
           "competition": {
             "label": "競爭較低",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[25%]"
           },
           "limitingConditions": [
@@ -1891,7 +1891,7 @@
         "availability": {
           "supply": {
             "label": "房源一般",
-            "tone": "text-[#7A5A1F]",
+            "tone": "text-[#854D0E]",
             "width": "w-[60%]"
           },
           "competition": {
@@ -1962,7 +1962,7 @@
           },
           "competition": {
             "label": "競爭一般",
-            "tone": "text-[#7A5A1F]",
+            "tone": "text-[#854D0E]",
             "width": "w-[48%]"
           },
           "limitingConditions": [
@@ -2090,7 +2090,7 @@
         "availability": {
           "supply": {
             "label": "選擇較多",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[88%]"
           },
           "competition": {
@@ -2358,12 +2358,12 @@
         "availability": {
           "supply": {
             "label": "選擇較多",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[88%]"
           },
           "competition": {
             "label": "競爭較低",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[25%]"
           },
           "limitingConditions": [
@@ -2495,7 +2495,7 @@
           },
           "competition": {
             "label": "競爭一般",
-            "tone": "text-[#7A5A1F]",
+            "tone": "text-[#854D0E]",
             "width": "w-[48%]"
           },
           "limitingConditions": [
@@ -2623,12 +2623,12 @@
         "availability": {
           "supply": {
             "label": "選擇較多",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[88%]"
           },
           "competition": {
             "label": "競爭較低",
-            "tone": "text-[#007d5a]",
+            "tone": "text-[#007D5A]",
             "width": "w-[25%]"
           },
           "limitingConditions": [

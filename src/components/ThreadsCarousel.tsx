@@ -539,13 +539,13 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
             <h2 className="font-serif text-xl font-bold leading-snug text-[#1A2A22] sm:text-2xl">
               在 Threads，繼續住好日
             </h2>
-            <p className="mt-1 font-sans text-xs leading-relaxed text-zinc-500 sm:text-sm">
+            <p className="mt-1 font-sans text-xs leading-relaxed text-[#66736C] sm:text-sm">
               日本租屋、買房與生活實務，從第一線經驗說給你聽。
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <div className="relative flex-1 sm:w-60 sm:flex-none">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A9590]" />
               <input
                 type="search"
                 value={searchQuery}
@@ -554,7 +554,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                 onBlur={() => setSearchFocused(false)}
                 placeholder="搜尋貼文關鍵字"
                 aria-label="搜尋 Threads 貼文"
-                className="h-9 w-full border border-[#C9D8D1] bg-white pl-9 pr-9 font-sans text-sm text-[#1A2A22] placeholder:text-zinc-400 focus:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174] [&::-webkit-search-cancel-button]:hidden"
+                className="h-9 w-full border border-[#C9D2CD] bg-white pl-9 pr-9 font-sans text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:border-[#00a174] focus:outline-none focus:ring-1 focus:ring-[#00a174] [&::-webkit-search-cancel-button]:hidden"
               />
               {isSearching && (
                 <button
@@ -562,15 +562,15 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => setSearchQuery("")}
                   aria-label="清除搜尋"
-                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-zinc-400 hover:text-[#00a174]"
+                  className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center text-[#8A9590] hover:text-[#00a174]"
                 >
                   <X className="h-4 w-4" />
                 </button>
               )}
               {/* 聚焦時落下的熱門關鍵字下拉 */}
               {searchFocused && (
-                <div className="absolute left-0 right-0 top-full z-30 mt-1 border border-[#C9D8D1] bg-white p-2.5 shadow-[0_8px_24px_-12px_rgba(15,143,109,0.35)]">
-                  <div className="mb-2 px-0.5 font-jost text-[10px] font-semibold tracking-[0.14em] text-zinc-400">
+                <div className="absolute left-0 right-0 top-full z-30 mt-1 border border-[#C9D2CD] bg-white p-2.5 shadow-[0_8px_24px_-12px_rgba(15,143,109,0.35)]">
+                  <div className="mb-2 px-0.5 font-jost text-[10px] font-semibold tracking-[0.14em] text-[#8A9590]">
                     熱門關鍵字
                   </div>
                   <div className="flex flex-wrap gap-1.5">
@@ -583,7 +583,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                           setSearchQuery(keyword);
                           setSearchFocused(false);
                         }}
-                        className="shrink-0 border border-[#C9D8D1] bg-white px-2.5 py-1 font-sans text-xs text-[#3F5147] transition-colors hover:border-[#00a174] hover:bg-[#e6f6f1] hover:text-[#007d5a]"
+                        className="shrink-0 border border-[#C9D2CD] bg-white px-2.5 py-1 font-sans text-xs text-[#3F5147] transition-colors hover:border-[#00a174] hover:bg-[#e6f6f1] hover:text-[#007d5a]"
                       >
                         {keyword}
                       </button>
@@ -606,7 +606,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
               onClick={() => scrollByCard(-1)}
               disabled={currentThreads.length <= 1}
               aria-label="上一則"
-              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
+              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D2CD] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -615,7 +615,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
               onClick={() => scrollByCard(1)}
               disabled={currentThreads.length <= 1}
               aria-label="下一則"
-              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D8D1] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
+              className="hidden h-9 w-9 cursor-pointer items-center justify-center border border-[#C9D2CD] bg-white text-[#1A2A22] transition-colors hover:border-[#00a174] hover:text-[#00a174] disabled:cursor-not-allowed disabled:opacity-30 sm:flex"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -632,7 +632,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="font-sans text-xs text-zinc-500 underline underline-offset-2 hover:text-[#00a174]"
+              className="font-sans text-xs text-[#66736C] underline underline-offset-2 hover:text-[#00a174]"
             >
               清除，回到分類瀏覽
             </button>
@@ -656,11 +656,11 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                   className={`shrink-0 border px-3 py-1.5 font-sans text-xs font-bold transition-colors ${
                     isActive
                       ? "border-[#00a174] bg-[#00a174] text-white"
-                      : "border-[#C9D8D1] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
+                      : "border-[#C9D2CD] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
                   }`}
                 >
                   {category.label}
-                  <span className={`ml-1.5 font-jost text-[10px] ${isActive ? "text-white/75" : "text-zinc-400"}`}>
+                  <span className={`ml-1.5 font-jost text-[10px] ${isActive ? "text-white/75" : "text-[#8A9590]"}`}>
                     {category.threads.length}
                   </span>
                 </button>
@@ -670,11 +670,11 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
         )}
 
         {isSearching && currentThreads.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 border border-dashed border-[#C9D8D1] bg-white px-6 py-14 text-center">
+          <div className="flex flex-col items-center gap-2 border border-dashed border-[#C9D2CD] bg-white px-6 py-14 text-center">
             <p className="font-sans text-sm text-[#1A2A22]">
               找不到符合「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」的貼文
             </p>
-            <p className="font-sans text-xs text-zinc-500">換個關鍵字，或試試上方的熱門標籤。</p>
+            <p className="font-sans text-xs text-[#66736C]">換個關鍵字，或試試上方的熱門標籤。</p>
           </div>
         ) : (
           <>

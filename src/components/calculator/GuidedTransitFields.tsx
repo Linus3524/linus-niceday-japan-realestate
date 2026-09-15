@@ -16,7 +16,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
   return (<><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex items-end justify-between gap-2">
-              <label className="text-xs font-bold text-zinc-700" htmlFor="guided-line-add">希望線路</label>
+              <label className="text-xs font-bold text-[#3F5147]" htmlFor="guided-line-add">希望線路</label>
               <span className="text-[9px] text-[#66736C]">最多 4 條</span>
             </div>
             <div className="relative">
@@ -25,7 +25,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
                 value=""
                 onChange={event => addGuidedLine(event.target.value)}
                 disabled={!guidedDistrictSelections.length}
-                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
+                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
               >
                 <option value="">＋ 新增希望線路</option>
                 {guidedLineOptions.map(line => <option key={line} value={line} disabled={guidedLineSelections.some(selected => sameGuidedLine(selected, line))}>{toJapaneseLineName(line)}</option>)}
@@ -48,7 +48,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
 
           <div className="space-y-2">
             <div className="flex items-end justify-between gap-2">
-              <label className="text-xs font-bold text-zinc-700" htmlFor="guided-station-add">希望車站</label>
+              <label className="text-xs font-bold text-[#3F5147]" htmlFor="guided-station-add">希望車站</label>
               <span className="text-[9px] text-[#66736C]">可搜尋，最多 6 個</span>
             </div>
             <div className="flex">
@@ -66,7 +66,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
                   }}
                   disabled={!guidedDistrictSelections.length}
                   placeholder="輸入站名"
-                  className="h-11 w-full border border-r-0 border-[#1A2A22] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-inset focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2]"
+                  className="h-11 w-full border border-r-0 border-[#1A2A22] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-inset focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6]"
                 />
                 <datalist id="guided-station-options">
                   {guidedLocationStationOptions.map(station => <option key={station.name} value={station.name}>{toJapaneseStationName(station.name)}駅</option>)}
@@ -79,7 +79,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
             {guidedStationSelections.length > 0 && (
               <div className="flex flex-wrap gap-1.5" aria-label="已選希望車站">
                 {guidedStationSelections.map(station => (
-                  <span key={station} className="inline-flex items-center gap-1 border border-[#CBD7D1] bg-white px-2 py-1 text-[9px] font-bold text-[#35483E]">
+                  <span key={station} className="inline-flex items-center gap-1 border border-[#C9D2CD] bg-white px-2 py-1 text-[9px] font-bold text-[#1A2A22]">
                     <MapPin className="h-3 w-3 text-[#00A174]" />
                     {toJapaneseStationName(station)}駅
                     <button type="button" onClick={() => removeGuidedStation(station)} className="text-[#66736C] hover:text-[#1A2A22]" aria-label={`移除${toJapaneseStationName(station)}駅`}>

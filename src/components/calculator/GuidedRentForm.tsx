@@ -185,7 +185,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
 
         <fieldset>
           <div className="flex items-end justify-between gap-3">
-            <legend className="text-xs font-bold text-zinc-700">在日身分／簽證種類</legend>
+            <legend className="text-xs font-bold text-[#3F5147]">在日身分／簽證種類</legend>
             <span className="text-[9px] text-[#66736C]">影響房東審查與可承租房源</span>
           </div>
           <div className="relative mt-1.5 flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
@@ -210,8 +210,8 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         <GuidedTransitFields addGuidedLine={addGuidedLine} guidedDistrictSelections={guidedDistrictSelections} guidedLineOptions={guidedLineOptions} guidedLineSelections={guidedLineSelections} removeGuidedLine={removeGuidedLine} guidedStationDraft={guidedStationDraft} setGuidedStationDraft={setGuidedStationDraft} addGuidedStation={addGuidedStation} guidedLocationStationOptions={guidedLocationStationOptions} guidedStationSelections={guidedStationSelections} removeGuidedStation={removeGuidedStation} />
 
         {locationGuardNotice && (
-          <div className="flex items-start gap-2 border-l-4 border-[#D98A28] bg-[#FFF8E9] px-3 py-2 text-[10px] leading-relaxed text-[#76511F]" role="status">
-            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <div className="flex items-start gap-2 border border-[#FDE047] bg-[#FEF9C3] px-3 py-2 text-[10px] leading-relaxed text-[#854D0E]" role="status">
+            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#854D0E]" />
             {locationGuardNotice}
           </div>
         )}
@@ -219,14 +219,14 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         <GuidedCommuteFields guidedCommuteStation={guidedCommuteStation} setGuidedCommuteStation={setGuidedCommuteStation} setLocationGuardNotice={setLocationGuardNotice} validateCommuteCompatibility={validateCommuteCompatibility} commuteStationOptions={commuteStationOptions} guidedCommuteMinutes={guidedCommuteMinutes} setGuidedCommuteMinutes={setGuidedCommuteMinutes} />
 
         <fieldset>
-          <legend className="text-xs font-bold text-zinc-700">希望格局</legend>
+          <legend className="text-xs font-bold text-[#3F5147]">希望格局</legend>
           <div className="mt-1.5 grid h-11 grid-cols-5 border border-[#1A2A22] bg-white">
             {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((type, index) => (
               <button
                 key={type}
                 type="button"
                 onClick={() => selectGuidedRoomType(type)}
-                className={`${index > 0 ? "border-l border-[#1A2A22]" : ""} text-[11px] font-bold ${calcRoomType === type ? "bg-[#18181B] text-white" : "hover:bg-[#F5F8F6]"}`}
+                className={`${index > 0 ? "border-l border-[#1A2A22]" : ""} text-[11px] font-bold ${calcRoomType === type ? "bg-[#1A2A22] text-white" : "hover:bg-[#F5F8F6]"}`}
               >
                 {ROOM_TYPE_LABEL[type]}
               </button>
@@ -236,7 +236,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
 
         <GuidedBuildingFields guidedMinArea={guidedMinArea} selectGuidedArea={selectGuidedArea} areaOptions={areaOptions} guidedWalkMinutes={guidedWalkMinutes} selectGuidedWalk={selectGuidedWalk} guidedAgeMax={guidedAgeMax} selectGuidedAge={selectGuidedAge} />
 
-        <label className="block text-[11px] font-bold text-zinc-700">
+        <label className="block text-[11px] font-bold text-[#3F5147]">
           建築結構
           <div className="relative mt-1.5">
             <select value={guidedStructure} onChange={event => selectGuidedStructure(event.target.value)} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
@@ -256,7 +256,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
           type="button"
           onClick={analyzeStructuredRent}
           disabled={analysisLoading}
-          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:bg-[#9AA9A2] font-sans"
+          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#1A2A22] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3F5147] disabled:bg-[#AEB8B2] font-sans"
         >
           {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
           {analysisLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}
@@ -265,7 +265,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
           不必另外輸入需求；以上選項會直接用來判斷預算落差、供給難度與適合搜尋的車站。
         </p>
         {analysisNotice && (
-          <p className="border border-[#F1D59B] bg-[#FFF9ED] px-3 py-2 text-[10px] leading-relaxed text-[#7A5A1F]" role="status">{analysisNotice}</p>
+          <p className="border border-[#FDE047] bg-[#FEF9C3] px-3 py-2 text-[10px] leading-relaxed text-[#854D0E]" role="status">{analysisNotice}</p>
         )}
         {aiResult && <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />}
       </>

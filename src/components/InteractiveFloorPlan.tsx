@@ -182,15 +182,15 @@ export function InteractiveFloorPlan() {
 
   return (
     <div className="font-sans space-y-3 pt-1">
-      <div className="flex items-center justify-between text-xs text-zinc-500 font-sans pb-0.5">
-        <div className="flex items-center gap-1.5 font-medium text-zinc-700">
+      <div className="flex items-center justify-between text-xs text-[#66736C] font-sans pb-0.5">
+        <div className="flex items-center gap-1.5 font-medium text-[#3F5147]">
           <span className="inline-block h-2 w-2 rounded-full bg-[#00a174]" />
           <span className="font-semibold text-[#1A2A22]">標準 1LDK + S 互動平面圖解</span>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-12 md:items-stretch">
-        <div className="border border-zinc-200 bg-[#faf9f6] md:col-span-7 lg:col-span-8">
+        <div className="border border-[#DDE3DF] bg-[#FFFFFF] md:col-span-7 lg:col-span-8">
           <div className="relative aspect-[1070/965] w-full overflow-hidden">
             <svg
               viewBox="175 35 1070 965"
@@ -430,22 +430,22 @@ export function InteractiveFloorPlan() {
           </div>
         </div>
 
-        <div className="min-h-[220px] border border-zinc-200 bg-[#F8FAF9] p-4 font-sans md:col-span-5 lg:col-span-4 md:min-h-0 flex flex-col justify-between">
+        <div className="min-h-[220px] border border-[#DDE3DF] bg-[#FAFCFB] p-4 font-sans md:col-span-5 lg:col-span-4 md:min-h-0 flex flex-col justify-between">
           {currentItem ? (
             <div className="flex h-full flex-col space-y-3.5">
               <div>
-                <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200/80 pb-2.5">
+                <div className="flex flex-wrap items-center gap-2 border-b border-[#DDE3DF]/80 pb-2.5">
                   <span className="bg-[#00a174] text-white px-2 py-0.5 font-mono text-xs font-bold">
                     {currentItem.code}
                   </span>
                   <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.jpName || currentItem.nameZh}</h5>
-                  <span className="bg-white border border-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-700 font-sans">
+                  <span className="bg-white border border-[#DDE3DF] px-2 py-0.5 text-xs font-medium text-[#3F5147] font-sans">
                     {currentItem.nameZh}
                   </span>
                 </div>
                 <div className="mt-2.5 space-y-2">
-                  <p className="font-mono text-xs text-zinc-400 font-medium">{currentItem.nameEn}</p>
-                  <p className="text-xs leading-relaxed text-zinc-700 text-justify">
+                  <p className="font-mono text-xs text-[#8A9590] font-medium">{currentItem.nameEn}</p>
+                  <p className="text-xs leading-relaxed text-[#3F5147] text-justify">
                     {currentItem.desc}
                   </p>
                 </div>
@@ -453,7 +453,7 @@ export function InteractiveFloorPlan() {
 
               <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3.5 space-y-2 rounded-r shadow-xs">
                 <strong className="text-xs font-bold text-[#007d5a] block font-sans">Linus 實務說明：</strong>
-                <div className="text-xs text-zinc-600 leading-relaxed font-sans space-y-1.5">
+                <div className="text-xs text-[#3F5147] leading-relaxed font-sans space-y-1.5">
                   {currentItem.practicalNote.split("\n").map((line, idx) => {
                     const trimmed = line.trim();
                     if (trimmed.startsWith("✦")) {
@@ -467,7 +467,7 @@ export function InteractiveFloorPlan() {
                             <span className="mt-[0.45em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#00a174]" aria-hidden="true" />
                             <span>
                               <span className="font-semibold text-[#1A2A22]">{title}</span>
-                              <span className="text-zinc-600">{body}</span>
+                              <span className="text-[#3F5147]">{body}</span>
                             </span>
                           </div>
                         );
@@ -481,7 +481,7 @@ export function InteractiveFloorPlan() {
                     }
                     if (trimmed.startsWith("•")) {
                       return (
-                        <div key={idx} className="pl-3.5 text-zinc-600 text-justify leading-relaxed">
+                        <div key={idx} className="pl-3.5 text-[#3F5147] text-justify leading-relaxed">
                           {line}
                         </div>
                       );
@@ -496,9 +496,9 @@ export function InteractiveFloorPlan() {
               </div>
             </div>
           ) : (
-            <div className="flex h-full min-h-[188px] flex-col items-center justify-center text-center text-zinc-400 md:min-h-0 space-y-2 p-4">
+            <div className="flex h-full min-h-[188px] flex-col items-center justify-center text-center text-[#8A9590] md:min-h-0 space-y-2 p-4">
               <MousePointerClick className="w-6 h-6 text-[#00a174]/70" />
-              <p className="text-xs leading-relaxed text-zinc-500 font-sans">
+              <p className="text-xs leading-relaxed text-[#66736C] font-sans">
                 移動游標預覽左側 CAD 圖紙區劃<br />
                 或點擊區域固定解說面板
               </p>

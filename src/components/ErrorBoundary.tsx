@@ -35,7 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="border border-[#E94E2B] bg-[#FBDFD2] p-5 text-[#B13818]">
+        <div className="border border-[#FCA5A5] bg-[#FEE2E2] p-5 text-[#B13818]">
           <div className="flex items-start gap-3">
             <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#B13818]" />
             <div className="space-y-2">

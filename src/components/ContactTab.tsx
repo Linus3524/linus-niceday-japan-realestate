@@ -47,44 +47,44 @@ export function ContactTab(props: ContactTabProps) {
                   {/* Elegant Business Card Front */}
                   <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="meishi-card">
                     {/* Double linear inner accent border */}
-                    <div className="absolute inset-1.5 border border-dashed border-zinc-200 pointer-events-none" />
+                    <div className="absolute inset-1.5 border border-dashed border-[#DDE3DF] pointer-events-none" />
 
                     <div className="space-y-5 mt-2 relative z-10">
                       <div className="space-y-1">
-                        <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
+                        <div className="text-[10px] text-[#66736C] uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
                         <div className="flex items-baseline gap-2">
                           <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
                           <span className="text-xs font-bold text-[#00a174] font-sans">營業係長</span>
                         </div>
                       </div>
 
-                      <div className="space-y-3.5 text-xs text-zinc-700 font-sans border-t border-zinc-200 pt-4">
+                      <div className="space-y-3.5 text-xs text-[#3F5147] font-sans border-t border-[#DDE3DF] pt-4">
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">LINE ID</span>
-                          <span className="font-mono bg-zinc-100 px-2 py-0.5 border border-zinc-200 font-semibold">{linusContact.lineId}</span>
+                          <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.lineId}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">WECHAT</span>
-                          <span className="font-mono bg-zinc-100 px-2 py-0.5 border border-zinc-200 font-semibold">{linusContact.wechatId}</span>
+                          <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.wechatId}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">EMAIL</span>
-                          <span className="font-mono text-zinc-600">{linusContact.email}</span>
+                          <span className="font-mono text-[#3F5147]">{linusContact.email}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">PHONE</span>
-                          <span className="font-mono text-zinc-600">{linusContact.phone}</span>
+                          <span className="font-mono text-[#3F5147]">{linusContact.phone}</span>
                         </div>
                         
                         {/* Wireframe Social Icons */}
-                        <div className="flex items-center gap-3 pt-3.5 border-t border-dashed border-zinc-300">
+                        <div className="flex items-center gap-3 pt-3.5 border-t border-dashed border-[#C9D2CD]">
                           <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">SOCIALS</span>
                           <div className="flex items-center gap-4">
                             <a 
                               href="https://www.facebook.com/r352410/" 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-zinc-600 hover:text-[#00a174] hover:scale-110 transition-transform p-1"
+                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
                               title="Facebook"
                             >
                               <Facebook className="w-5 h-5" />
@@ -93,7 +93,7 @@ export function ContactTab(props: ContactTabProps) {
                               href="https://www.instagram.com/linus3524?igsh=ODVuNjRwMmtpdjJq&utm_source=qr" 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-zinc-600 hover:text-[#00a174] hover:scale-110 transition-transform p-1"
+                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
                               title="Instagram"
                             >
                               <Instagram className="w-5 h-5" />
@@ -102,7 +102,7 @@ export function ContactTab(props: ContactTabProps) {
                               href="https://www.threads.com/@linus3524" 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-zinc-600 hover:text-[#00a174] hover:scale-110 transition-transform p-1"
+                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
                               title="Threads"
                             >
                               <AtSign className="w-5 h-5" />
@@ -111,7 +111,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                       </div>
 
-                      <div className="text-[10px] text-zinc-600 font-sans pt-3 border-t border-dashed border-[#DDE3DF] leading-relaxed mt-4 space-y-1">
+                      <div className="text-[10px] text-[#3F5147] font-sans pt-3 border-t border-dashed border-[#DDE3DF] leading-relaxed mt-4 space-y-1">
                         <div className="font-bold text-[#00a174] mb-1">
                           在日台灣人仲介 ╳ 租屋買房一條龍 🇹🇼
                         </div>
@@ -133,7 +133,7 @@ export function ContactTab(props: ContactTabProps) {
 
                   {/* Copy Line block */}
                   <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 space-y-2 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
-                    <span className="font-bold text-zinc-800 block mb-1">直接添加 LINE 諮詢：</span>
+                    <span className="font-bold text-[#1A2A22] block mb-1">直接添加 LINE 諮詢：</span>
                     {/* 文字要對「整條按鈕」置中，不是對扣掉箭頭後的剩餘空間置中。
                         作法：主連結內再放一層與箭頭同寬的補償間距，把視覺中心推回整排中央。 */}
                     <div className="flex items-stretch">
@@ -169,7 +169,7 @@ export function ContactTab(props: ContactTabProps) {
                     {showLineQr && (
                       <div id="line-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
                         <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" className="h-40 w-40" />
-                        <span className="text-[10px] text-zinc-500">用 LINE 掃描這個 QR Code 加好友</span>
+                        <span className="text-[10px] text-[#66736C]">用 LINE 掃描這個 QR Code 加好友</span>
                       </div>
                     )}
                     <div className="flex items-stretch font-sans text-xs">
@@ -177,18 +177,18 @@ export function ContactTab(props: ContactTabProps) {
                         type="text"
                         readOnly
                         value={linusContact.lineId}
-                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-zinc-700 focus:outline-none text-[12px] text-center"
+                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-[#3F5147] focus:outline-none text-[12px] text-center"
                         aria-label="LINE ID"
                       />
                       <button
                         onClick={handleCopyLine}
-                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-zinc-700 text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
+                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-[#3F5147] text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
                         id="copy-line-btn-contact"
                       >
                         {copiedLine ? "已複製" : "複製"}
                       </button>
                     </div>
-                    <p className="text-[10px] text-zinc-500 leading-relaxed text-justify flex items-start gap-1">
+                    <p className="text-[10px] text-[#66736C] leading-relaxed text-justify flex items-start gap-1">
                       <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
                       <span>手機點擊上方綠色按鈕可直接開啟 LINE 添加好友；或複製 Line ID 後在 LINE 中搜尋添加。若加不到好友，可點按鈕右側的 QR 圖示展開掃碼加入。</span>
                     </p>
@@ -196,7 +196,7 @@ export function ContactTab(props: ContactTabProps) {
 
                   {/* Copy WeChat block */}
                   <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 space-y-2 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
-                    <span className="font-bold text-zinc-800 block mb-1">直接添加 WeChat 諮詢：</span>
+                    <span className="font-bold text-[#1A2A22] block mb-1">直接添加 WeChat 諮詢：</span>
                     {/* WeChat 沒有等同 LINE 的加好友連結，只能掃碼或搜尋 ID，
                         所以整條按鈕就是展開 QR，不做左右分割。 */}
                     <button
@@ -217,7 +217,7 @@ export function ContactTab(props: ContactTabProps) {
                     {showWechatQr && (
                       <div id="wechat-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
                         <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR Code" className="h-40 w-40" />
-                        <span className="text-[10px] text-zinc-500">用微信掃描這個 QR Code 加好友</span>
+                        <span className="text-[10px] text-[#66736C]">用微信掃描這個 QR Code 加好友</span>
                       </div>
                     )}
                     <div className="flex items-stretch font-sans text-xs">
@@ -225,18 +225,18 @@ export function ContactTab(props: ContactTabProps) {
                         type="text"
                         readOnly
                         value={linusContact.wechatId}
-                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-zinc-700 focus:outline-none text-[12px] text-center"
+                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-[#3F5147] focus:outline-none text-[12px] text-center"
                         aria-label="WeChat ID"
                       />
                       <button
                         onClick={handleCopyWechat}
-                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-zinc-700 text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
+                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-[#3F5147] text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
                         id="copy-wechat-btn-contact"
                       >
                         {copiedWechat ? "已複製" : "複製"}
                       </button>
                     </div>
-                    <p className="text-[10px] text-zinc-500 leading-relaxed text-justify flex items-start gap-1">
+                    <p className="text-[10px] text-[#66736C] leading-relaxed text-justify flex items-start gap-1">
                       <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
                       <span>點擊上方綠色按鈕可展開 QR Code，用微信掃碼加好友；或複製 WeChat ID 後在微信中搜尋並添加 Linus。</span>
                     </p>
@@ -251,7 +251,7 @@ export function ContactTab(props: ContactTabProps) {
                         className={`flex-1 py-2 cursor-pointer transition-colors text-center flex items-center justify-center gap-1.5 ${
                           contactFormType === "rent"
                             ? "bg-[#00a174] text-white"
-                            : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                            : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                         }`}
                       >
                         <Home className="w-3.5 h-3.5 shrink-0" />
@@ -262,7 +262,7 @@ export function ContactTab(props: ContactTabProps) {
                         className={`flex-1 py-2 cursor-pointer transition-colors text-center flex items-center justify-center gap-1.5 ${
                           contactFormType === "buy"
                             ? "bg-[#00a174] text-white"
-                            : "bg-transparent text-zinc-700 hover:bg-zinc-200"
+                            : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
                         }`}
                       >
                         <Building className="w-3.5 h-3.5 shrink-0" />
@@ -276,11 +276,11 @@ export function ContactTab(props: ContactTabProps) {
                           <ClipboardList className="w-4 h-4 text-[#00a174] shrink-0" />
                           <span>諮詢租屋時建議先準備好以下資料：</span>
                         </span>
-                        <p className="text-zinc-600 leading-normal text-justify">
+                        <p className="text-[#3F5147] leading-normal text-justify">
                           為了讓 Linus 能更快速地協助您評估篩選合適房源並確認管理公司審查條件，歡迎直接複製並填寫以下租屋問卷傳送給我喔！
                         </p>
                         
-                        <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
+                        <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
                           {`1. 期望入住日期：
 2. 入境日期（機票時間）或目前在日本何處：
 3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
@@ -296,11 +296,11 @@ export function ContactTab(props: ContactTabProps) {
                           <ClipboardList className="w-4 h-4 text-[#00a174] shrink-0" />
                           <span>諮詢買房時建議先準備好以下資料：</span>
                         </span>
-                        <p className="text-zinc-600 leading-normal text-justify">
+                        <p className="text-[#3F5147] leading-normal text-justify">
                           為了讓 Linus 能精準為您篩選優質日本房源並評估貸款與購屋規劃，歡迎直接複製並填寫以下買房問卷傳送給我喔！
                         </p>
                         
-                        <div className="bg-[#F5F8F6] text-zinc-800 p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
+                        <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
                           {`1. 全款現金或貸款：
 2. 在日本有簽證／無簽證在台灣的話，有預計什麼時候來日本看房，或是線上看直接決定：
 3. 目標什麼時候買房：
@@ -310,19 +310,19 @@ export function ContactTab(props: ContactTabProps) {
 7. 其他房子的要求／屋齡／大小／樓層：`}
                         </div>
 
-                        <div className="bg-red-50 p-3 border-l-2 border-[#00a174] space-y-1.5 text-[11px] leading-relaxed">
-                          <span className="font-bold text-[#00a174] flex items-center gap-1.5">
-                            <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                        <div className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-[11px] leading-relaxed space-y-1.5 text-[#854D0E]">
+                          <span className="font-bold flex items-center gap-1.5">
+                            <AlertCircle className="w-3.5 h-3.5 text-[#854D0E] shrink-0" />
                             <span>貸款注意事項</span>
                           </span>
-                          <p className="text-zinc-700 text-justify">
+                          <p className="text-justify text-[#854D0E]">
                             在日本貸款實務上條件比較嚴格，請先幫我確認以下問卷是否有達到：
                           </p>
-                          <ul className="list-disc pl-4 space-y-1.5 text-zinc-600">
+                          <ul className="list-disc pl-4 space-y-1.5 text-[#854D0E]">
                             <li>在日本是否有工作簽證，且同一份工作超過 3 年、年薪 300 萬日圓以上？或來日一年以上、年收 400 萬日圓以上，任職公司在日本登記超過 5 年。</li>
                             <li>如果沒有簽證，在台灣目前有沒有任何貸款？淨資產有無 3000 萬日圓以上？或去年年收入有沒有超過 1000 萬日圓？</li>
                           </ul>
-                          <p className="text-zinc-700 text-justify">
+                          <p className="text-justify text-[#854D0E]">
                             如果這兩者條件都沒有，依目前實際台日系銀行的審查條件，貸款難度很高。建議採取在台灣完成增貸的方式，以現金購買日本房產，會是比較方便、容易的選擇。
                           </p>
                         </div>
@@ -339,47 +339,47 @@ export function ContactTab(props: ContactTabProps) {
                       <span>公司基本資料</span>
                     </h4>
 
-                    <div className="overflow-hidden border border-zinc-300 font-sans text-xs leading-relaxed text-zinc-700">
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold tracking-wide text-[#315E50]">商号</span>
-                        <strong className="px-4 py-3 text-sm text-zinc-900">{linusContact.companyName}</strong>
+                    <div className="overflow-hidden border border-[#C9D2CD] font-sans text-xs leading-relaxed text-[#3F5147]">
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold tracking-wide text-[#315E50]">商号</span>
+                        <strong className="px-4 py-3 text-sm text-[#1A2A22]">{linusContact.companyName}</strong>
                       </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold tracking-wide text-zinc-600">免許番号</span>
-                        <strong className="px-4 py-3 text-zinc-900">{linusContact.licenseNo}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold tracking-wide text-[#3F5147]">免許番号</span>
+                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.licenseNo}</strong>
                       </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">営業時間</span>
-                        <strong className="px-4 py-3 text-zinc-900">{linusContact.workingHours}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">営業時間</span>
+                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.workingHours}</strong>
                       </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold text-zinc-600">定休日</span>
-                        <strong className="px-4 py-3 text-zinc-900">{linusContact.closedDays}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold text-[#3F5147]">定休日</span>
+                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.closedDays}</strong>
                       </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">電話／FAX</span>
-                        <strong className="px-4 py-3 font-mono text-zinc-900">{linusContact.companyPhone}／{linusContact.fax}</strong>
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">電話／FAX</span>
+                        <strong className="px-4 py-3 font-mono text-[#1A2A22]">{linusContact.companyPhone}／{linusContact.fax}</strong>
                       </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-zinc-200 md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F7F9F8] px-3 py-3 font-bold text-zinc-600">所属団体</span>
-                        <div className="space-y-1 px-4 py-3 font-semibold text-zinc-800">
+                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
+                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold text-[#3F5147]">所属団体</span>
+                        <div className="space-y-1 px-4 py-3 font-semibold text-[#1A2A22]">
                           {linusContact.memberships.map((membership) => <p key={membership}>{membership}</p>)}
                         </div>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F1F6F3] px-3 py-3 font-bold text-[#315E50]">保証協會</span>
-                        <strong className="px-4 py-3 text-zinc-900">{linusContact.guaranteeAssociation}</strong>
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">保証協會</span>
+                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.guaranteeAssociation}</strong>
                       </div>
                     </div>
                   </div>
 
-                  <div className="border-t border-zinc-200 pt-4 space-y-4">
+                  <div className="border-t border-[#DDE3DF] pt-4 space-y-4">
                     <div>
                       <h4 className="font-bold text-sm text-[#007d5a] mb-2 font-sans uppercase tracking-wider flex items-center gap-1.5">
                         <MapPin className="w-4 h-4 text-[#00a174] shrink-0" />
                         <span>公司地址：</span>
                       </h4>
-                      <p className="text-xs text-zinc-600 mb-3 font-sans">
+                      <p className="text-xs text-[#3F5147] mb-3 font-sans">
                         {linusContact.address}
                       </p>
                     </div>
@@ -395,11 +395,11 @@ export function ContactTab(props: ContactTabProps) {
                         allowFullScreen={true} 
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        className="grayscale-20 brightness-95 contrast-100 border border-zinc-200"
+                        className="grayscale-20 brightness-95 contrast-100 border border-[#DDE3DF]"
                         id="office-google-map"
                       ></iframe>
                       <div className="mt-2 flex justify-between items-center text-xs font-sans">
-                        <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+                        <span className="text-[10px] text-[#66736C] flex items-center gap-1">
                           <MapPin className="w-3 h-3 text-[#00a174] shrink-0" />
                           <span>株式會社世嘉 Seika・タカラビル 9 階</span>
                         </span>
@@ -407,7 +407,7 @@ export function ContactTab(props: ContactTabProps) {
                           href="https://maps.app.goo.gl/g8nHrYEdikTvvCLWA" 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="text-[#00a174] hover:text-[#1A2A22] font-bold flex items-center gap-1 hover:underline transition-colors py-1 px-2 border border-zinc-200 bg-white"
+                          className="text-[#00a174] hover:text-[#1A2A22] font-bold flex items-center gap-1 hover:underline transition-colors py-1 px-2 border border-[#DDE3DF] bg-white"
                           id="open-google-map-btn"
                         >
                           <span>在 Google Maps 開啟</span>
@@ -416,12 +416,12 @@ export function ContactTab(props: ContactTabProps) {
                       </div>
                     </div>
                     
-                    <div className="bg-[#F5F8F6] p-4 border border-zinc-200 space-y-2">
-                      <span className="font-bold text-xs text-zinc-800 flex items-center gap-1.5 font-sans">
+                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] space-y-2">
+                      <span className="font-bold text-xs text-[#1A2A22] flex items-center gap-1.5 font-sans">
                         <Train className="w-4 h-4 text-[#00a174] shrink-0" />
                         <span>周邊電車／地鐵站步行時間：</span>
                       </span>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1.5 font-sans text-[11px] text-zinc-600">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1.5 font-sans text-[11px] text-[#3F5147]">
                         {linusContact.stations.map((station, sIdx) => (
                           <div key={sIdx} className="flex items-center gap-1.5">
                             <span className="text-[#00a174] font-bold">●</span>

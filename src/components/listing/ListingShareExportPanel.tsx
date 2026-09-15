@@ -45,7 +45,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
     shareError,
     pdfError,
   } = model;
-  return (<div className="border border-dashed border-[#8A9590] bg-[#F9FBFA] p-5 md:p-6">
+  return (<div className="border border-dashed border-[#8A9590] bg-[#FAFCFB] p-5 md:p-6">
     <div className="mb-2 flex items-center gap-2 text-sm font-bold text-[#1A2A22]">
       <Link2 className="h-4 w-4 text-[#007D5A]" />
       分享與下載分析結果
@@ -106,7 +106,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           type="button"
           onClick={createShareLink}
           disabled={shareLoading || !shareTitle.trim()}
-          className="flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#18181B] px-5 text-sm font-bold text-white transition-colors hover:bg-[#303033] disabled:cursor-not-allowed disabled:opacity-45"
+          className="flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {shareLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Link2 className="h-4 w-4" />}
           {shareUrl ? "重新建立連結" : "建立連結"}

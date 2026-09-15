@@ -7,7 +7,7 @@ import { guidedSelectChevronClass } from './fieldStyles';
 type Props = Pick<CalculatorViewModel, "guidedMinArea" | "selectGuidedArea" | "areaOptions" | "guidedWalkMinutes" | "selectGuidedWalk" | "guidedAgeMax" | "selectGuidedAge">;
 export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOptions, guidedWalkMinutes, selectGuidedWalk, guidedAgeMax, selectGuidedAge }: Props) {
   return (<><div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <label className="text-[11px] font-bold text-zinc-700">
+          <label className="text-[11px] font-bold text-[#3F5147]">
             最低面積
             <div className="relative mt-1.5">
               <select value={guidedMinArea} onChange={event => selectGuidedArea(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
@@ -17,7 +17,7 @@ export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOpti
               <ChevronDown className={guidedSelectChevronClass} />
             </div>
           </label>
-          <label className="text-[11px] font-bold text-zinc-700">
+          <label className="text-[11px] font-bold text-[#3F5147]">
             徒步到車站
             <div className="relative mt-1.5">
               <select value={guidedWalkMinutes} onChange={event => selectGuidedWalk(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
@@ -29,7 +29,7 @@ export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOpti
               <ChevronDown className={guidedSelectChevronClass} />
             </div>
           </label>
-          <label className="text-[11px] font-bold text-zinc-700">
+          <label className="text-[11px] font-bold text-[#3F5147]">
             屋齡上限
             <div className="relative mt-1.5">
               <select value={guidedAgeMax} onChange={event => selectGuidedAge(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">

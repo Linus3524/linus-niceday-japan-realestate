@@ -79,10 +79,10 @@ export function PageIntroCard({
       </h3>
 
       {/* 內文區域：統一字級、字色、行高與多段落間距 */}
-      <div className="text-xs md:text-[13.5px] leading-relaxed md:leading-7 text-zinc-700 text-justify space-y-3">
+      <div className="text-xs md:text-[13.5px] leading-relaxed md:leading-7 text-[#3F5147] text-justify space-y-3">
         {children}
         {sourceNote && (
-          <p className="pt-1 text-[11px] leading-normal text-zinc-400">
+          <p className="pt-1 text-[11px] leading-normal text-[#8A9590]">
             {sourceNote}
           </p>
         )}

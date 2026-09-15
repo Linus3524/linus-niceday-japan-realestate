@@ -89,7 +89,7 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
             className={`border px-2 py-1 text-[11px] font-bold ${saleAnalysis.buildingHealth.reserveHealthLevel === "healthy"
                 ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
                 : saleAnalysis.buildingHealth.reserveHealthLevel === "inadequate"
-                  ? "border-[#EAB879] bg-[#FEF3C7] text-[#D97706]"
+                  ? "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"
                   : "border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]"}`}
           >
             {saleAnalysis.buildingHealth.reserveHealthText}
@@ -161,13 +161,13 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
 
           {/* 體質未爆彈與注意事項 */}
           {saleAnalysis.buildingHealth.specialCautions && saleAnalysis.buildingHealth.specialCautions.length > 0 && (
-            <div className="space-y-1.5 border border-[#EAB879] bg-[#FEF3C7] p-3">
+            <div className="space-y-1.5 border border-[#FDBA74] bg-[#FFF7ED] p-3">
               <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#D97706]">
                 <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
                 大樓體質留意事項
               </span>
               {saleAnalysis.buildingHealth.specialCautions.map((caution, i) => (
-                <p key={i} className="text-[11px] leading-relaxed text-[#78350F]">
+                <p key={i} className="text-[11px] leading-relaxed text-[#D97706]">
                   {caution}
                 </p>
               ))}

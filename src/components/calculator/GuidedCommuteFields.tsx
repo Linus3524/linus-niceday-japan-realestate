@@ -8,7 +8,7 @@ import { guidedSelectChevronClass } from './fieldStyles';
 type Props = Pick<CalculatorViewModel, "guidedCommuteStation" | "setGuidedCommuteStation" | "setLocationGuardNotice" | "validateCommuteCompatibility" | "commuteStationOptions" | "guidedCommuteMinutes" | "setGuidedCommuteMinutes">;
 export function GuidedCommuteFields({ guidedCommuteStation, setGuidedCommuteStation, setLocationGuardNotice, validateCommuteCompatibility, commuteStationOptions, guidedCommuteMinutes, setGuidedCommuteMinutes }: Props) {
   return (<><div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(120px,1fr)]">
-          <label className="block text-[11px] font-bold text-zinc-700">
+          <label className="block text-[11px] font-bold text-[#3F5147]">
             通勤目的車站（可輸入搜尋）
             <input
               list="commute-station-options"
@@ -25,14 +25,14 @@ export function GuidedCommuteFields({ guidedCommuteStation, setGuidedCommuteStat
               {commuteStationOptions.map(station => <option key={station} value={station}>{toJapaneseStationName(station)}駅</option>)}
             </datalist>
           </label>
-          <label className="block text-[11px] font-bold text-zinc-700">
+          <label className="block text-[11px] font-bold text-[#3F5147]">
             最長通勤時間
             <div className="relative mt-1.5">
               <select
                 value={guidedCommuteMinutes}
                 onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
                 disabled={!guidedCommuteStation}
-                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F1F4F2] disabled:text-zinc-400"
+                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
               >
                 <option value={15}>15 分內</option>
                 <option value={20}>20 分內</option>
