@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import { recommendThreadsForAnswer, sanitizeRelatedThreads, searchThreads } from "../src/lib/threadSearch";
+import { BUY_CATEGORY_LABEL, CROSS_CATEGORY_LABEL } from "../src/data/featuredThreads";
+
+// 買房情境允許出現的分類：買房專屬，加上租買通吃的知識系列。
+const BUY_CONTEXT_CATEGORIES = [BUY_CATEGORY_LABEL, CROSS_CATEGORY_LABEL];
 
 const checkout = searchThreads("退房", { context: "rent", limit: 3 });
 assert.equal(checkout.results.length, 3, "退房搜尋應顯示三篇高相關文章");
@@ -19,7 +23,7 @@ assert.equal(combined.results[0]?.id, "Dcz1JlXAWOX", "多關鍵字搜尋應把�
 
 const buy = searchThreads("貸款", { context: "buy", limit: 10 });
 assert.ok(buy.results.length > 0, "買房搜尋應能找到貸款文章");
-assert.ok(buy.results.every(result => ["日本買房", "日本租屋買房生活知識系列"].includes(result.category)));
+assert.ok(buy.results.every(result => BUY_CONTEXT_CATEGORIES.includes(result.category)));
 
 const aiCheckout = recommendThreadsForAnswer("退房時被扣清潔費合理嗎？", "請先確認契約與清潔費約定。", { limit: 2 });
 assert.equal(aiCheckout[0]?.id, "DLj01-nyFbR", "AI 問句應辨識自然語句中的退房與清潔費概念");
@@ -47,7 +51,7 @@ assert.equal(renewal[0]?.id, "DHxJwStynj7", "AI 應讓標題未寫更新料、�
 
 const foreignBuyer = recommendThreadsForAnswer("外國人買日本房需要簽證嗎？", "購屋與房貸的簽證條件不同。", { limit: 2 });
 assert.ok(foreignBuyer.length > 0, "外國人買房簽證問題應有相關文章");
-assert.ok(foreignBuyer.every(result => ["日本買房", "日本租屋買房生活知識系列"].includes(result.category)), "買房問題不可推薦租屋文章");
+assert.ok(foreignBuyer.every(result => BUY_CONTEXT_CATEGORIES.includes(result.category)), "買房問題不可推薦租屋文章");
 
 const negotiation = recommendThreadsForAnswer("日本買房可以殺價嗎？", "可用買付申込書提出議價，但幅度通常有限。", { limit: 2 });
 assert.ok(negotiation.some(result => ["DBsKR0ITnxk", "DUpxf86Ek5I"].includes(result.id)), "AI 應辨識殺價、議價等自然問法");
@@ -75,7 +79,7 @@ const rentBudgetHandoff = recommendThreadsForAnswer(
   { limit: 2 },
 );
 assert.ok(rentBudgetHandoff.length > 0, "租屋預算計算器帶入 AI 時應推薦相關文章");
-assert.ok(rentBudgetHandoff.every(result => result.category !== "日本買房"), "租屋預算不可推薦買房文章");
+assert.ok(rentBudgetHandoff.every(result => result.category !== BUY_CATEGORY_LABEL), "租屋預算不可推薦買房文章");
 
 const buyBudgetHandoff = recommendThreadsForAnswer(
   "您好，我剛才使用買房預算計算器，地區：世田谷區，物件總價：6000 萬日圓，預計貸款比例：70%，請分析買房可行性。",
@@ -83,7 +87,7 @@ const buyBudgetHandoff = recommendThreadsForAnswer(
   { limit: 2 },
 );
 assert.ok(buyBudgetHandoff.length > 0, "買房預算計算器帶入 AI 時應推薦相關文章");
-assert.ok(buyBudgetHandoff.every(result => ["日本買房", "日本租屋買房生活知識系列"].includes(result.category)), "買房預算只可推薦買房相關文章");
+assert.ok(buyBudgetHandoff.every(result => BUY_CONTEXT_CATEGORIES.includes(result.category)), "買房預算只可推薦買房相關文章");
 
 const unrelated = recommendThreadsForAnswer("日本有沒有推薦的美食？", "這與日本住宅無關。", { limit: 2 });
 assert.deepEqual(unrelated, [], "離題問題不應推薦 Threads 文章");

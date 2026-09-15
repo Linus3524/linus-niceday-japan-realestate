@@ -1,6 +1,11 @@
 // 這支模組同時由前端與 Vercel ESM function 使用；副檔名不可省略，否則
 // Vercel 編譯成 JS 後會在 function 啟動時找不到模組。
-import { threadCategories, type FeaturedThread } from "../data/featuredThreads.js";
+import {
+  BUY_CATEGORY_LABEL,
+  CROSS_CATEGORY_LABEL,
+  threadCategories,
+  type FeaturedThread,
+} from "../data/featuredThreads.js";
 import { threadsSearchIndex } from "../data/threadsSearchIndex.js";
 import { threadImageIndex } from "../data/threadImageIndex.js";
 import { expandToken, extractKnownSearchTokens, tokenizeQuery } from "./search.js";
@@ -94,9 +99,9 @@ const documents: ThreadDocument[] = threadCategories.flatMap(category =>
 function isContextMatch(document: ThreadDocument, context: ThreadSearchContext) {
   if (context === "all") return true;
   if (context === "buy") {
-    return document.category === "日本買房" || document.category === "日本租屋買房生活知識系列";
+    return document.category === BUY_CATEGORY_LABEL || document.category === CROSS_CATEGORY_LABEL;
   }
-  return document.category !== "日本買房";
+  return document.category !== BUY_CATEGORY_LABEL;
 }
 
 function occurrenceCount(text: string, aliases: string[]) {
