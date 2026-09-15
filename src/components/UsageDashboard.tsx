@@ -46,7 +46,7 @@ const FEATURE_LABEL: Record<string, string> = {
 const FEATURE_COLORS: Record<string, { bg: string; text: string; bar: string; border: string }> = {
   "listing-check": { bg: "#EBF8F4", text: "#007D5A", bar: "#00a174", border: "#B4E6D5" },
   "chat": { bg: "#EEF2FF", text: "#4338CA", bar: "#6366F1", border: "#C7D2FE" },
-  "rent-analysis": { bg: "#FFF9ED", text: "#B45309", bar: "#D7A64A", border: "#FDE68A" },
+  "rent-analysis": { bg: "#F0F9FF", text: "#0369A1", bar: "#0284C7", border: "#BAE6FD" },
 };
 
 const COUNTRY_LABEL: Record<string, string> = {
@@ -79,8 +79,8 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
     id: "line",
     name: "LINE 管道",
     badgeBg: "#E8F9F0",
-    badgeText: "#06C755",
-    badgeBorder: "#A3E9C1",
+    badgeText: "#007D5A",
+    badgeBorder: "#B4E6D5",
     actions: [
       { key: "line-add", label: "點擊加 LINE 好友", note: "首頁卡片 ＋ 聯絡分頁 ＋ 物件分析 CTA ＋ AI 顧問回覆" },
       { key: "line-copy", label: "複製 LINE ID", note: "首頁卡片 ＋ 聯絡分頁" },
@@ -90,9 +90,9 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
   {
     id: "wechat",
     name: "WeChat 管道",
-    badgeBg: "#E6F7ED",
-    badgeText: "#07C160",
-    badgeBorder: "#9DE4B8",
+    badgeBg: "#EEF2FF",
+    badgeText: "#4338CA",
+    badgeBorder: "#C7D2FE",
     actions: [
       { key: "wechat-copy", label: "複製 WeChat ID", note: "聯絡分頁 ＋ 物件分析 CTA" },
       { key: "wechat-qr", label: "展開 WeChat QR 掃碼", note: "聯絡分頁展開 ＋ 物件分析 CTA" },
@@ -101,9 +101,9 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
   {
     id: "email",
     name: "Email 管道",
-    badgeBg: "#F0F3F1",
-    badgeText: "#526159",
-    badgeBorder: "#D4DDD8",
+    badgeBg: "#F0F9FF",
+    badgeText: "#0369A1",
+    badgeBorder: "#BAE6FD",
     actions: [
       { key: "email-copy", label: "點擊複製 Email", note: "物件分析 CTA 聯絡區" },
     ],
@@ -434,8 +434,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <h1 className="font-serif text-2xl font-bold tracking-tight text-[#1A2A22] sm:text-3xl">
                 後台數據儀表板
               </h1>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B4E6D5] bg-[#EBF8F4] px-2.5 py-0.5 text-[11px] font-semibold text-[#007D5A]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#00a174] animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 border border-[#B4E6D5] bg-[#EBF8F4] px-2.5 py-0.5 text-[11px] font-semibold text-[#007D5A]">
+                <span className="h-1.5 w-1.5 bg-[#00a174] animate-pulse" />
                 即時在線
               </span>
             </div>
@@ -486,7 +486,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         </div>
 
         {error && (
-          <div className="mb-6 flex items-center gap-2 border border-[#E4C9A8] bg-[#FBF6EF] p-4 text-xs font-medium text-[#7A5B36]">
+          <div className="mb-6 flex items-center gap-2 border border-[#FED7AA] bg-[#FFFBEB] p-4 text-xs font-medium text-[#9A3412]">
             <Info className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -500,7 +500,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="relative overflow-hidden border border-[#B4E6D5] bg-gradient-to-br from-white to-[#F2FAF6] p-4.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
                   <span>本月不重複訪客</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#EBF8F4] text-[#007D5A]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#EBF8F4] text-[#007D5A]">
                     <Users className="h-4 w-4" />
                   </div>
                 </div>
@@ -508,7 +508,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   {data.monthlyVisitors === null ? "—" : data.monthlyVisitors.toLocaleString()}
                 </div>
                 <div className="mt-1 flex items-center gap-1 text-[11px] text-[#526159]">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#00a174]" />
+                  <span className="inline-block h-1.5 w-1.5 bg-[#00a174]" />
                   <span>第一方 Cookie 匿名去重</span>
                 </div>
               </div>
@@ -517,7 +517,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="border border-[#DDE3DF] bg-white p-4.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#526159]">
                   <span>本月全站瀏覽量</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F0F3F1] text-[#526159]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#DDE3DF] bg-[#F0F3F1] text-[#526159]">
                     <Eye className="h-4 w-4" />
                   </div>
                 </div>
@@ -533,7 +533,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="border border-[#C7D2FE] bg-gradient-to-br from-white to-[#F5F7FF] p-4.5 shadow-sm">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#4338CA]">
                   <span>核心功能完成次數</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#EEF2FF] text-[#4338CA]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#C7D2FE] bg-[#EEF2FF] text-[#4338CA]">
                     <Sparkles className="h-4 w-4" />
                   </div>
                 </div>
@@ -546,10 +546,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {/* 卡片 4: 潛在客戶轉化意圖 */}
-              <div className="border border-[#A3E9C1] bg-gradient-to-br from-white to-[#F0FAF4] p-4.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-semibold text-[#06C755]">
+              <div className="border border-[#B4E6D5] bg-gradient-to-br from-white to-[#F0FAF4] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
                   <span>客源轉化動作</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#E8F9F0] text-[#06C755]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#E8F9F0] text-[#007D5A]">
                     <MessageSquare className="h-4 w-4" />
                   </div>
                 </div>
@@ -562,17 +562,17 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {/* 卡片 5: 全站累計訪客 */}
-              <div className="border border-[#E4C9A8] bg-gradient-to-br from-white to-[#FBF8F2] p-4.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-semibold text-[#B45309]">
+              <div className="border border-[#BAE6FD] bg-gradient-to-br from-white to-[#F0F9FF] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#0369A1]">
                   <span>全站累計總訪客</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#FFF9ED] text-[#B45309]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#BAE6FD] bg-[#E0F2FE] text-[#0369A1]">
                     <Globe className="h-4 w-4" />
                   </div>
                 </div>
                 <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {data.cumulativeVisitors === null ? "—" : data.cumulativeVisitors.toLocaleString()}
                 </div>
-                <div className="mt-1 text-[11px] text-[#B45309]">
+                <div className="mt-1 text-[11px] text-[#0369A1]">
                   首頁 VISITORS 同步計數
                 </div>
               </div>
@@ -602,22 +602,22 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               {/* 圖例 */}
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-[#00a174]" />
+                  <span className="h-2.5 w-2.5 bg-[#00a174]" />
                   <span className="text-[#526159]">圖紙健檢</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-[#6366F1]" />
+                  <span className="h-2.5 w-2.5 bg-[#6366F1]" />
                   <span className="text-[#526159]">AI 顧問</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-sm bg-[#D7A64A]" />
+                  <span className="h-2.5 w-2.5 bg-[#0284C7]" />
                   <span className="text-[#526159]">需求分析</span>
                 </span>
                 {selectedDay && (
                   <button
                     type="button"
                     onClick={() => setSelectedDay(null)}
-                    className="ml-2 rounded border border-[#C9D8D1] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
+                    className="ml-2 border border-[#C9D8D1] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
                   >
                     清除篩選 ({selectedDay} 號)
                   </button>
@@ -647,7 +647,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     >
                       {/* Tooltip */}
                       {(isHovered || isSelected) && (
-                        <div className="absolute -top-14 z-20 whitespace-nowrap rounded border border-[#DDE3DF] bg-[#1A2A22] px-2.5 py-1.5 text-[11px] text-white shadow-lg pointer-events-none">
+                        <div className="absolute -top-14 z-20 whitespace-nowrap border border-[#DDE3DF] bg-[#1A2A22] px-2.5 py-1.5 text-[11px] text-white shadow-lg pointer-events-none">
                           <div className="font-bold font-jost">{month}-{d.day}：{d.total} 次</div>
                           <div className="flex gap-2 text-[10px] text-zinc-300">
                             <span>健檢: {d.listingCheck}</span>
@@ -672,7 +672,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                           <>
                             <div style={{ height: `${listingHeight}%` }} className="w-full bg-[#00a174]" title={`健檢: ${d.listingCheck}`} />
                             <div style={{ height: `${chatHeight}%` }} className="w-full bg-[#6366F1]" title={`顧問: ${d.chat}`} />
-                            <div style={{ height: `${rentHeight}%` }} className="w-full bg-[#D7A64A]" title={`需求: ${d.rentAnalysis}`} />
+                            <div style={{ height: `${rentHeight}%` }} className="w-full bg-[#0284C7]" title={`需求: ${d.rentAnalysis}`} />
                           </>
                         )}
                       </div>
@@ -713,23 +713,23 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
             {openListingSection && (
               <div className="space-y-4">
-                <div className="rounded-md border border-[#DDE3DF] bg-[#FAFCFB] p-4">
+                <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
                   <div className="flex items-center justify-between text-xs font-bold text-[#1A2A22] mb-2">
                     <span>圖紙類型分佈（買賣 vs 租賃）</span>
                     <span className="font-jost tabular-nums text-zinc-500">共 {listingMetrics.total.toLocaleString()} 份健檢</span>
                   </div>
-                  <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
+                  <div className="flex h-3 w-full overflow-hidden bg-[#EEF2F0]">
                     <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }} title={`買賣: ${listingMetrics.sale} 份`} />
                     <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }} title={`租賃: ${listingMetrics.rent} 份`} />
                   </div>
                   <div className="mt-2 flex items-center justify-between text-xs text-[#526159]">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 rounded-full bg-[#007D5A]" />
+                      <span className="h-2 w-2 bg-[#007D5A]" />
                       🏠 買賣：{listingMetrics.sale.toLocaleString()} 份
                       {listingMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%)</span>}
                     </span>
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
+                      <span className="h-2 w-2 bg-[#0284C7]" />
                       🔑 租賃：{listingMetrics.rent.toLocaleString()} 份
                       {listingMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%)</span>}
                     </span>
@@ -764,10 +764,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
                     <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
                       <span>4. 下載 PDF</span>
-                      <Download className="h-3.5 w-3.5 text-[#D7A64A]" />
+                      <Download className="h-3.5 w-3.5 text-[#0284C7]" />
                     </div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.pdfDownload.toLocaleString()}</div>
-                    <div className="mt-0.5 text-[10px] text-[#D7A64A]">存檔率 {listingMetrics.total > 0 ? Math.round((listingMetrics.pdfDownload / listingMetrics.total) * 100) : 0}%</div>
+                    <div className="mt-0.5 text-[10px] text-[#0284C7]">存檔率 {listingMetrics.total > 0 ? Math.round((listingMetrics.pdfDownload / listingMetrics.total) * 100) : 0}%</div>
                   </div>
                 </div>
               </div>
@@ -945,7 +945,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {openAiSection && (
-                <div className="rounded-md border border-[#DDE3DF] bg-[#FAFCFB] p-4">
+                <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-2">
                     <div className="text-xs font-bold text-[#1A2A22]">
                       快速條件選單 vs 自然語言文字描述
@@ -954,7 +954,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       合計 {aiAnalysisMetrics.total.toLocaleString()} 次送出
                     </div>
                   </div>
-                  <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
+                  <div className="flex h-3 w-full overflow-hidden bg-[#EEF2F0]">
                     <div
                       style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#00a174" }}
                       title={`快速條件選單: ${aiAnalysisMetrics.structured} 次`}
@@ -966,12 +966,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </div>
                   <div className="mt-2.5 flex items-center justify-between text-xs text-[#526159]">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 rounded-full bg-[#00a174]" />
+                      <span className="h-2 w-2 bg-[#00a174]" />
                       快速選單勾選：{aiAnalysisMetrics.structured.toLocaleString()} 次
                       {aiAnalysisMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100)}%)</span>}
                     </span>
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 rounded-full bg-[#6366F1]" />
+                      <span className="h-2 w-2 bg-[#6366F1]" />
                       自然語言描述：{aiAnalysisMetrics.natural.toLocaleString()} 次
                       {aiAnalysisMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((aiAnalysisMetrics.natural / aiAnalysisMetrics.total) * 100)}%)</span>}
                     </span>
@@ -993,13 +993,13 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <ul className="divide-y divide-[#F5F8F6]">
                     {viewRows.map((row, idx) => (
                       <li key={row.view} className="flex items-center gap-3 py-2 text-xs">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-[#F0F3F1] font-jost text-[10px] font-bold text-[#526159]">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center bg-[#F0F3F1] font-jost text-[10px] font-bold text-[#526159]">
                           #{idx + 1}
                         </span>
                         <span className="w-28 shrink-0 font-medium text-[#1A2A22]">
                           {VIEW_LABEL[row.view] ?? row.view}
                         </span>
-                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-[#EEF2F0]">
+                        <span className="h-2 flex-1 overflow-hidden bg-[#EEF2F0]">
                           <span
                             className="block h-full bg-[#00a174]"
                             style={{ width: `${row.share}%` }}
@@ -1021,7 +1021,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
                   <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                    <TrendingUp className="h-4 w-4 text-[#D7A64A]" /> 自訂推廣來源標記
+                    <TrendingUp className="h-4 w-4 text-[#0284C7]" /> 自訂推廣來源標記
                   </h3>
                   <span className="text-[11px] font-jost text-zinc-400">?from=...</span>
                 </div>
@@ -1043,7 +1043,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <p className="py-8 text-center text-xs text-zinc-400">這個月還沒有自訂推廣來源標記點擊</p>
                 )}
                 <p className="mt-3 text-[10px] leading-relaxed text-zinc-400">
-                  可於行銷連結加上 <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=threads</code> 或 <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=ig</code> 以追蹤各社群引流。
+                  可於行銷連結加上 <code className="bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=threads</code> 或 <code className="bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=ig</code> 以追蹤各社群引流。
                 </p>
               </div>
             </section>
@@ -1077,7 +1077,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                         {count.toLocaleString()}
                       </div>
-                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
+                      <div className="mt-2 h-1.5 w-full overflow-hidden bg-[#EEF2F0]">
                         <div style={{ width: `${share}%`, backgroundColor: style.bar }} className="h-full" />
                       </div>
                     </div>
@@ -1126,7 +1126,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         >
                           <td className="px-4 py-2.5 font-jost tabular-nums text-[#1A2A22]">
                             <span className="inline-flex items-center gap-1.5">
-                              {isHighlighted && <span className="h-1.5 w-1.5 rounded-full bg-[#007D5A]" />}
+                              {isHighlighted && <span className="h-1.5 w-1.5 bg-[#007D5A]" />}
                               {data.month}-{row.day}
                             </span>
                           </td>
