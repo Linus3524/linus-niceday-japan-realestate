@@ -1,10 +1,34 @@
-import { ArrowLeft, ChevronDown, ChevronUp, LoaderCircle, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  BarChart3,
+  Bot,
+  Building,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  ExternalLink,
+  Eye,
+  FileCheck2,
+  Globe,
+  Info,
+  KeyRound,
+  Layers,
+  LoaderCircle,
+  MessageSquare,
+  RefreshCw,
+  Share2,
+  SlidersHorizontal,
+  Sparkles,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dailyRows, monthlyFeatureTotals, monthOptions, type UsageSummary } from '../lib/analytics/usageSummary';
 export { ADMIN_METRICS_START_MONTH, monthlyFeatureTotals, monthOptions } from '../lib/analytics/usageSummary';
 
 /**
- * 後台使用量頁面（#admin）。
+ * 後台使用量數據儀表板（#admin）。
  *
  * 權限完全由伺服器端的 ANALYTICS_TOKEN 把關，這個頁面本身公開也沒關係——
  * 沒有 token 就什麼都拿不到。token 存在 sessionStorage 而不是 localStorage：
@@ -19,9 +43,22 @@ const FEATURE_LABEL: Record<string, string> = {
   "listing-check": "物件圖紙健檢",
 };
 
+const FEATURE_COLORS: Record<string, { bg: string; text: string; bar: string; border: string }> = {
+  "listing-check": { bg: "#EBF8F4", text: "#007D5A", bar: "#00a174", border: "#B4E6D5" },
+  "chat": { bg: "#EEF2FF", text: "#4338CA", bar: "#6366F1", border: "#C7D2FE" },
+  "rent-analysis": { bg: "#FFF9ED", text: "#B45309", bar: "#D7A64A", border: "#FDE68A" },
+};
+
 const COUNTRY_LABEL: Record<string, string> = {
   TW: "台灣", JP: "日本", HK: "香港", CN: "中國", US: "美國",
-  SG: "新加坡", MY: "馬來西亞", KR: "韓國", unknown: "未知",
+  SG: "新加坡", MY: "馬來西亞", KR: "韓國", UK: "英國", GB: "英國",
+  CA: "加拿大", AU: "澳洲", unknown: "未知國家",
+};
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  TW: "🇹🇼", JP: "🇯🇵", HK: "🇭🇰", CN: "🇨🇳", US: "🇺🇸",
+  SG: "🇸🇬", MY: "🇲🇾", KR: "🇰🇷", UK: "🇬🇧", GB: "🇬🇧",
+  CA: "🇨🇦", AU: "🇦🇺", unknown: "🌐",
 };
 
 interface ContactChannelGroup {
@@ -73,8 +110,6 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
   },
 ];
 
-// 常用管道的中文名。沒收錄的標記會直接顯示原字，不影響統計，
-// 想讓它顯示中文就在這裡加一行。
 const SOURCE_LABEL: Record<string, string> = {
   line: "LINE",
   ig: "Instagram",
@@ -82,13 +117,11 @@ const SOURCE_LABEL: Record<string, string> = {
   fb: "Facebook",
   facebook: "Facebook",
   threads: "Threads",
-  qr: "QR Code",
+  qr: "實體 QR Code",
   card: "名片／宣傳卡",
   other: "其他來源",
 };
 
-// 名稱必須與前端分頁列一致（App.tsx 的分頁 label），
-// 後台叫「預算計算機」而網站上寫「費用試算」的話，看報表時要自己在腦中換算。
 const VIEW_LABEL: Record<string, string> = {
   "rent-guide": "租屋指南",
   "buy-guide": "買房置產",
@@ -312,30 +345,69 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     };
   }, [data?.actions]);
 
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [hoveredDay, setHoveredDay] = useState<string | null>(null);
+
+  const dailyChartData = useMemo(() => {
+    if (!data?.daily) return { days: [], maxTotal: 1 };
+    const [yearStr, monthStr] = month.split("-");
+    const year = parseInt(yearStr, 10) || 2026;
+    const m = parseInt(monthStr, 10) || 9;
+    const daysInMonth = new Date(year, m, 0).getDate();
+
+    const days = [];
+    let maxTotal = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dayKey = String(d).padStart(2, "0");
+      const counts = data.daily[dayKey] || {};
+      const listingCheck = counts["listing-check"] || 0;
+      const chat = counts["chat"] || 0;
+      const rentAnalysis = counts["rent-analysis"] || 0;
+      const total = Object.values(counts).reduce((a, b) => a + (Number(b) || 0), 0);
+      if (total > maxTotal) maxTotal = total;
+      days.push({
+        day: dayKey,
+        listingCheck,
+        chat,
+        rentAnalysis,
+        total,
+      });
+    }
+    return { days, maxTotal: Math.max(maxTotal, 1) };
+  }, [data?.daily, month]);
+
   if (!token) {
     return (
-      <div className="min-h-screen bg-[#F5F8F6] px-4 py-16 font-sans">
-        <div className="mx-auto max-w-md border border-[#DDE3DF] bg-white p-8">
-          <h1 className="font-serif text-2xl font-bold text-[#1A2A22]">後台使用量</h1>
-          <p className="mt-2 text-sm text-zinc-500">請輸入後台密碼。</p>
+      <div className="flex min-h-screen items-center justify-center bg-[#F5F8F6] px-4 py-16 font-sans">
+        <div className="w-full max-w-md border border-[#DDE3DF] bg-white p-8 shadow-sm">
+          <div className="flex items-center gap-2 text-[#007D5A]">
+            <Layers className="h-5 w-5" />
+            <span className="font-jost text-xs font-bold tracking-wider">LINUS NICEDAY · ADMIN</span>
+          </div>
+          <h1 className="mt-3 font-serif text-2xl font-bold text-[#1A2A22]">後台使用量儀表板</h1>
+          <p className="mt-1.5 text-xs text-[#526159]">請輸入管理權杖密碼以查閱即時數據分析。</p>
           <input
             type="password"
             value={tokenInput}
             onChange={e => setTokenInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && tokenInput.trim()) { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); } }}
-            placeholder="貼上密碼後按 Enter"
-            className="mt-5 h-11 w-full border border-[#C9D8D1] px-3 text-sm focus:border-[#00a174] focus:outline-none"
+            placeholder="貼上管理密碼後按 Enter"
+            className="mt-6 h-11 w-full border border-[#C9D8D1] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#007D5A] focus:bg-white focus:outline-none"
           />
           <button
             type="button"
             disabled={!tokenInput.trim()}
             onClick={() => { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); }}
-            className="mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#00a174] disabled:opacity-40"
+            className="mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#007D5A] disabled:opacity-40 cursor-pointer"
           >
-            進入
+            驗證進入
           </button>
-          <button type="button" onClick={onBack} className="mt-4 w-full text-xs text-zinc-500 underline underline-offset-2">
-            回到網站
+          <button
+            type="button"
+            onClick={onBack}
+            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-[#68756E] hover:text-[#007D5A] cursor-pointer"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> 回到公開網站
           </button>
         </div>
       </div>
@@ -343,33 +415,60 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
   }
 
   const grandTotal = Object.values(data?.total ?? {}).reduce<number>((sum, value) => sum + Number(value || 0), 0);
+  const totalFeaturesThisMonth = Object.values(monthlyTotals).reduce<number>((sum, value) => sum + Number(value || 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#F5F8F6] px-4 py-10 font-sans sm:px-6">
-      <div className="mx-auto max-w-[1000px]">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div className="min-h-screen bg-[#F5F8F6] px-4 py-8 font-sans sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1080px]">
+        {/* 頂部導航與控制器 */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-[#DDE3DF] pb-5">
           <div>
-            <button type="button" onClick={onBack} className="mb-2 inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-[#00a174]">
-              <ArrowLeft className="h-3.5 w-3.5" /> 回到網站
-            </button>
-            <h1 className="font-serif text-2xl font-bold text-[#1A2A22]">後台使用量</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <select
-              value={month}
-              onChange={e => setMonth(e.target.value)}
-              className="h-9 border border-[#C9D8D1] bg-white px-2 text-sm focus:border-[#00a174] focus:outline-none"
+            <button
+              type="button"
+              onClick={onBack}
+              className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#526159] transition-colors hover:text-[#007D5A] cursor-pointer"
             >
-              {monthOptions().map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
+              <ArrowLeft className="h-3.5 w-3.5" /> 返回 LINUS 住好日
+            </button>
+            <div className="flex items-center gap-3">
+              <h1 className="font-serif text-2xl font-bold tracking-tight text-[#1A2A22] sm:text-3xl">
+                後台數據儀表板
+              </h1>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B4E6D5] bg-[#EBF8F4] px-2.5 py-0.5 text-[11px] font-semibold text-[#007D5A]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#00a174] animate-pulse" />
+                即時在線
+              </span>
+            </div>
+          </div>
+
+          {/* 月份選擇與操作 */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <select
+                value={month}
+                onChange={e => { setMonth(e.target.value); setSelectedDay(null); }}
+                className="h-9.5 appearance-none border border-[#C9D8D1] bg-white pl-3.5 pr-8 text-xs font-bold text-[#1A2A22] shadow-sm focus:border-[#007D5A] focus:outline-none cursor-pointer"
+              >
+                {monthOptions().map(m => (
+                  <option key={m} value={m}>
+                    {m} 統計數據
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+            </div>
+
             <button
               type="button"
               onClick={() => load(token, month)}
-              className="flex h-9 w-9 items-center justify-center border border-[#C9D8D1] bg-white hover:border-[#00a174] hover:text-[#00a174]"
-              aria-label="重新整理"
+              disabled={loading}
+              className="flex h-9.5 items-center gap-1.5 border border-[#C9D8D1] bg-white px-3 text-xs font-semibold text-[#1A2A22] shadow-sm hover:border-[#007D5A] hover:text-[#007D5A] cursor-pointer disabled:opacity-50"
+              title="重新整理數據"
             >
-              {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#007D5A]" : ""}`} />
+              <span className="hidden sm:inline">重新整理</span>
             </button>
+
             <button
               type="button"
               onClick={() => {
@@ -379,7 +478,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 setData(null);
                 setTraffic(null);
               }}
-              className="h-9 border border-[#C9D8D1] bg-white px-3 text-xs text-zinc-500 hover:border-[#00a174]"
+              className="h-9.5 border border-[#DDE3DF] bg-white px-3 text-xs text-[#68756E] hover:border-red-300 hover:text-red-600 cursor-pointer"
             >
               登出
             </button>
@@ -387,190 +486,297 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         </div>
 
         {error && (
-          <div className="mb-6 border border-[#E4C9A8] bg-[#FBF6EF] p-4 text-sm text-[#7A5B36]">{error}</div>
+          <div className="mb-6 flex items-center gap-2 border border-[#E4C9A8] bg-[#FBF6EF] p-4 text-xs font-medium text-[#7A5B36]">
+            <Info className="h-4 w-4 shrink-0" />
+            <span>{error}</span>
+          </div>
         )}
 
-        {/* 本站流量：與前台首頁「VISITORS」同一套 Redis 統計、同一個 visitorId
-            去重邏輯算出來的數字，是這個網站唯一「前後台保證同源」的流量數字。
-            放在 Vercel 那組之前，作為主要參考；Vercel 那組因為是前端腳本、
-            會被封鎖器擋掉，改列為次要對照。 */}
+        {/* 核心 KPI 總覽卡片（Bento Grid） */}
         {data && (
           <section className="mb-8">
-            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-              本站流量
-              <span className="ml-2 font-normal text-xs text-zinc-400">
-                {data.month}・伺服器端記錄，與首頁 VISITORS 同源
-              </span>
-            </h2>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">本月不重複訪客</div>
-                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
+              {/* 卡片 1: 本月不重複訪客 */}
+              <div className="relative overflow-hidden border border-[#B4E6D5] bg-gradient-to-br from-white to-[#F2FAF6] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
+                  <span>本月不重複訪客</span>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#EBF8F4] text-[#007D5A]">
+                    <Users className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {data.monthlyVisitors === null ? "—" : data.monthlyVisitors.toLocaleString()}
                 </div>
-                <div className="mt-1 text-[11px] leading-5 text-zinc-400">以造訪者的瀏覽器 cookie 去重</div>
+                <div className="mt-1 flex items-center gap-1 text-[11px] text-[#526159]">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#00a174]" />
+                  <span>第一方 Cookie 匿名去重</span>
+                </div>
               </div>
-              <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">本月瀏覽次數</div>
-                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{totalPageviews.toLocaleString()}</div>
-                <div className="mt-1 text-[11px] leading-5 text-zinc-400">各分頁瀏覽次數加總（含手機首頁）</div>
+
+              {/* 卡片 2: 本月總瀏覽量 */}
+              <div className="border border-[#DDE3DF] bg-white p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#526159]">
+                  <span>本月全站瀏覽量</span>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F0F3F1] text-[#526159]">
+                    <Eye className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
+                  {totalPageviews.toLocaleString()}
+                </div>
+                <div className="mt-1 text-[11px] text-zinc-400">
+                  各分頁與手機首頁累計
+                </div>
               </div>
-              <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">累計訪客（全站，不分月）</div>
-                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
+
+              {/* 卡片 3: 核心功能調用完成 */}
+              <div className="border border-[#C7D2FE] bg-gradient-to-br from-white to-[#F5F7FF] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#4338CA]">
+                  <span>核心功能完成次數</span>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#EEF2FF] text-[#4338CA]">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
+                  {totalFeaturesThisMonth.toLocaleString()}
+                </div>
+                <div className="mt-1 text-[11px] text-[#6366F1]">
+                  圖紙健檢 + AI 顧問 + 需求分析
+                </div>
+              </div>
+
+              {/* 卡片 4: 潛在客戶轉化意圖 */}
+              <div className="border border-[#A3E9C1] bg-gradient-to-br from-white to-[#F0FAF4] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#06C755]">
+                  <span>客源轉化動作</span>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#E8F9F0] text-[#06C755]">
+                    <MessageSquare className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
+                  {contactTotals.total.toLocaleString()}
+                </div>
+                <div className="mt-1 text-[11px] text-[#007D5A]">
+                  加好友／掃碼／複製聯絡
+                </div>
+              </div>
+
+              {/* 卡片 5: 全站累計訪客 */}
+              <div className="border border-[#E4C9A8] bg-gradient-to-br from-white to-[#FBF8F2] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#B45309]">
+                  <span>全站累計總訪客</span>
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#FFF9ED] text-[#B45309]">
+                    <Globe className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {data.cumulativeVisitors === null ? "—" : data.cumulativeVisitors.toLocaleString()}
                 </div>
-                <div className="mt-1 text-[11px] leading-5 text-zinc-400">首頁 VISITORS 顯示的就是這個數字</div>
+                <div className="mt-1 text-[11px] text-[#B45309]">
+                  首頁 VISITORS 同步計數
+                </div>
               </div>
             </div>
             {data.monthlyVisitors === null && (
               <p className="mt-3 text-[11px] leading-5 text-zinc-400">
-                訪客計數器沒有設定（缺少 Upstash 環境變數），以上三格顯示「—」不代表沒有流量。
+                訪客計數器沒有設定（缺少 Upstash 環境變數），以上訪客數顯示「—」不代表沒有流量。
               </p>
             )}
           </section>
         )}
 
-        {/* 次要對照：Vercel Web Analytics。前端腳本統計，會被廣告封鎖器與
-            部分隱私瀏覽模式擋掉，數字通常會比實際流量低，僅供交叉參考——
-            與上方「本站流量」出現落差是正常現象，不代表哪一邊算錯。 */}
-        {traffic && (
-          <section className="mb-8">
-            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-              外部對照（Vercel Analytics）
-              <span className="ml-2 font-normal text-xs text-zinc-400">
-                {traffic.month}・前端腳本統計，會被封鎖器擋掉
-              </span>
-            </h2>
-            <div className="mb-3 grid gap-3 sm:grid-cols-2">
-              <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">每日不重複訪客合計</div>
-                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
+        {/* 每日使用量視覺化趨勢圖 (Daily Trend Activity Sparkline/Chart) */}
+        {data && dailyChartData.days.length > 0 && (
+          <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
+                  <BarChart3 className="h-4 w-4 text-[#007D5A]" />
+                  {month} 每日功能呼叫趨勢
+                </h2>
+                <p className="mt-0.5 text-xs text-[#68756E]">
+                  當月每日功能呼叫分佈，點選長條可快速篩選下方明細。
+                </p>
               </div>
-              <div className="border border-[#DDE3DF] bg-white p-5">
-                <div className="text-xs text-zinc-500">總瀏覽次數</div>
-                <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">{traffic.pageviews.toLocaleString()}</div>
+
+              {/* 圖例 */}
+              <div className="flex flex-wrap items-center gap-3 text-xs">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-[#00a174]" />
+                  <span className="text-[#526159]">圖紙健檢</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-[#6366F1]" />
+                  <span className="text-[#526159]">AI 顧問</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-[#D7A64A]" />
+                  <span className="text-[#526159]">需求分析</span>
+                </span>
+                {selectedDay && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDay(null)}
+                    className="ml-2 rounded border border-[#C9D8D1] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
+                  >
+                    清除篩選 ({selectedDay} 號)
+                  </button>
+                )}
               </div>
             </div>
-            <div className="grid gap-3 lg:grid-cols-2">
-              {([
-                ["來源國家", traffic.countries, (l: string) => COUNTRY_LABEL[l] ?? l],
-                ["連結來源", traffic.referrers, (l: string) => l || "直接進入"],
-              ] as [string, AggregateRow[], (l: string) => string][]).map(([title, rows, format]) => (
-                <div key={title} className="border border-[#DDE3DF] bg-white">
-                  <h3 className="border-b border-[#DDE3DF] px-4 py-2.5 text-xs font-bold text-[#1A2A22]">{title}</h3>
-                  <ul className="divide-y divide-[#F5F8F6]">
-                    {rows.length ? rows.map(row => (
-                      <li key={row.label} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
-                        <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
-                        <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
-                          {row.visitors.toLocaleString()}
-                          {/* 這裡原本寫「人次」，但 row.visitors 是去重後的訪客數（同一人不論
-                              造訪幾次只算一個），「人次」在中文裡指的是累計造訪次數、允許重複——
-                              兩個詞義相反，容易讓人誤解這欄和旁邊的「次」算的是同一種東西。 */}
-                          <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">
-                            人／{row.count.toLocaleString()} 次
-                          </span>
-                        </span>
-                      </li>
-                    )) : (
-                      <li className="px-4 py-6 text-center text-xs text-zinc-400">還沒有資料</li>
-                    )}
-                  </ul>
+
+            {/* 互動長條圖區域 */}
+            <div className="mt-6">
+              <div className="relative flex h-36 items-end gap-1 border-b border-[#EEF2F0] pb-1 sm:gap-1.5">
+                {dailyChartData.days.map(d => {
+                  const isSelected = selectedDay === d.day;
+                  const isHovered = hoveredDay === d.day;
+                  const heightPercent = d.total > 0 ? Math.max((d.total / dailyChartData.maxTotal) * 100, 6) : 2;
+
+                  const listingHeight = d.total > 0 ? (d.listingCheck / d.total) * 100 : 0;
+                  const chatHeight = d.total > 0 ? (d.chat / d.total) * 100 : 0;
+                  const rentHeight = d.total > 0 ? (d.rentAnalysis / d.total) * 100 : 0;
+
+                  return (
+                    <div
+                      key={d.day}
+                      className="group relative flex flex-1 flex-col items-center justify-end h-full"
+                      onMouseEnter={() => setHoveredDay(d.day)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      onClick={() => setSelectedDay(prev => prev === d.day ? null : d.day)}
+                    >
+                      {/* Tooltip */}
+                      {(isHovered || isSelected) && (
+                        <div className="absolute -top-14 z-20 whitespace-nowrap rounded border border-[#DDE3DF] bg-[#1A2A22] px-2.5 py-1.5 text-[11px] text-white shadow-lg pointer-events-none">
+                          <div className="font-bold font-jost">{month}-{d.day}：{d.total} 次</div>
+                          <div className="flex gap-2 text-[10px] text-zinc-300">
+                            <span>健檢: {d.listingCheck}</span>
+                            <span>顧問: {d.chat}</span>
+                            <span>需求: {d.rentAnalysis}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bar Column */}
+                      <div
+                        style={{ height: `${heightPercent}%` }}
+                        className={`w-full overflow-hidden transition-all cursor-pointer ${
+                          isSelected
+                            ? "ring-2 ring-[#007D5A] ring-offset-1"
+                            : isHovered
+                            ? "opacity-100"
+                            : "opacity-90 hover:opacity-100"
+                        } ${d.total === 0 ? "bg-[#EEF2F0]" : "flex flex-col-reverse"}`}
+                      >
+                        {d.total > 0 && (
+                          <>
+                            <div style={{ height: `${listingHeight}%` }} className="w-full bg-[#00a174]" title={`健檢: ${d.listingCheck}`} />
+                            <div style={{ height: `${chatHeight}%` }} className="w-full bg-[#6366F1]" title={`顧問: ${d.chat}`} />
+                            <div style={{ height: `${rentHeight}%` }} className="w-full bg-[#D7A64A]" title={`需求: ${d.rentAnalysis}`} />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 日期刻度 */}
+              <div className="flex justify-between pt-1.5 text-[10px] font-jost tabular-nums text-zinc-400">
+                <span>01 日</span>
+                <span>10 日</span>
+                <span>20 日</span>
+                <span>{dailyChartData.days[dailyChartData.days.length - 1]?.day} 日</span>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 1. 物件圖紙健檢深度診斷與轉化漏斗 */}
+        {data && (
+          <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-3">
+              <div className="flex items-center gap-2">
+                <FileCheck2 className="h-4 w-4 text-[#007D5A]" />
+                <h2 className="font-serif text-base font-bold text-[#1A2A22]">物件圖紙健檢深度漏斗</h2>
+                <span className="text-xs text-zinc-400">{data.month}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpenListingSection(v => !v)}
+                className="flex items-center gap-1 text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
+              >
+                {openListingSection ? "收合" : "展開"}
+                {openListingSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+
+            {openListingSection && (
+              <div className="space-y-4">
+                <div className="rounded-md border border-[#DDE3DF] bg-[#FAFCFB] p-4">
+                  <div className="flex items-center justify-between text-xs font-bold text-[#1A2A22] mb-2">
+                    <span>圖紙類型分佈（買賣 vs 租賃）</span>
+                    <span className="font-jost tabular-nums text-zinc-500">共 {listingMetrics.total.toLocaleString()} 份健檢</span>
+                  </div>
+                  <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
+                    <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }} title={`買賣: ${listingMetrics.sale} 份`} />
+                    <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }} title={`租賃: ${listingMetrics.rent} 份`} />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs text-[#526159]">
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <span className="h-2 w-2 rounded-full bg-[#007D5A]" />
+                      🏠 買賣：{listingMetrics.sale.toLocaleString()} 份
+                      {listingMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%)</span>}
+                    </span>
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
+                      🔑 租賃：{listingMetrics.rent.toLocaleString()} 份
+                      {listingMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%)</span>}
+                    </span>
+                  </div>
                 </div>
-              ))}
-            </div>
-            {!traffic.eventsAvailable && (
-              <p className="mt-3 text-[11px] leading-5 text-zinc-400">
-                前端操作事件（把需求帶入計算機、送出 AI 需求分析）需要 Vercel Pro 方案才能查詢。
-                這兩個動作的實際次數，請看下方「功能使用次數」。
-              </p>
-            )}
-            {traffic.eventsAvailable && traffic.events.length > 0 && (
-              <div className="mt-3 border border-[#DDE3DF] bg-white">
-                <h3 className="border-b border-[#DDE3DF] px-4 py-2.5 text-xs font-bold text-[#1A2A22]">前端操作事件</h3>
-                <ul className="divide-y divide-[#F5F8F6]">
-                  {traffic.events.map(row => (
-                    <li key={row.label} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
-                      <span className="text-[#3F5147]">{EVENT_LABEL[row.label] ?? row.label}</span>
-                      <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()}</span>
-                    </li>
-                  ))}
-                </ul>
+
+                <div className="grid gap-2.5 sm:grid-cols-4">
+                  <div className="border border-[#DDE3DF] bg-white p-3.5">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                      <span>1. 產生健檢</span>
+                      <FileCheck2 className="h-3.5 w-3.5 text-[#007D5A]" />
+                    </div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.total.toLocaleString()}</div>
+                    <div className="mt-0.5 text-[10px] text-zinc-400">基準 100%</div>
+                  </div>
+                  <div className="border border-[#DDE3DF] bg-white p-3.5">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                      <span>2. 建立分享</span>
+                      <Share2 className="h-3.5 w-3.5 text-[#6366F1]" />
+                    </div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.shareCreate.toLocaleString()}</div>
+                    <div className="mt-0.5 text-[10px] text-[#6366F1]">轉化率 {listingMetrics.total > 0 ? Math.round((listingMetrics.shareCreate / listingMetrics.total) * 100) : 0}%</div>
+                  </div>
+                  <div className="border border-[#DDE3DF] bg-white p-3.5">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                      <span>3. 分享頁瀏覽</span>
+                      <Eye className="h-3.5 w-3.5 text-[#0284C7]" />
+                    </div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.shareView.toLocaleString()}</div>
+                    <div className="mt-0.5 text-[10px] text-[#0284C7]">開啟 {listingMetrics.shareView.toLocaleString()} 次</div>
+                  </div>
+                  <div className="border border-[#DDE3DF] bg-white p-3.5">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-500">
+                      <span>4. 下載 PDF</span>
+                      <Download className="h-3.5 w-3.5 text-[#D7A64A]" />
+                    </div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.pdfDownload.toLocaleString()}</div>
+                    <div className="mt-0.5 text-[10px] text-[#D7A64A]">存檔率 {listingMetrics.total > 0 ? Math.round((listingMetrics.pdfDownload / listingMetrics.total) * 100) : 0}%</div>
+                  </div>
+                </div>
               </div>
             )}
           </section>
         )}
-
-        {trafficNote && (
-          <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-zinc-500">
-            外部對照（Vercel Analytics）：{trafficNote}
-          </div>
-        )}
-
+        {/* 2. 聯絡意圖與轉化分析 */}
         {data && (
           <>
-            <section className="mb-8">
-              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-                自訂連結來源
-                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}・from／utm_source</span>
-              </h2>
-              <div className="border border-[#DDE3DF] bg-white">
-                {sourceRows.length ? (
-                  <ul className="divide-y divide-[#F5F8F6]">
-                    {sourceRows.map(row => (
-                      <li key={row.source} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
-                        {/* 每一列都用同樣的樣式：中文名（沒有對照就用標記本身）
-                            加上完整的 ?from= 寫法。先前有中文名的才顯示原標記，
-                            結果一行有兩個字、一行只有一個，看起來像壞掉。 */}
-                        <span className="text-[#3F5147]">
-                          {SOURCE_LABEL[row.source] ?? row.source}
-                          <span className="ml-2 font-jost text-[11px] text-zinc-400">?from={row.source}</span>
-                        </span>
-                        <span className="font-jost font-bold text-[#1A2A22]">{row.count.toLocaleString()} 次</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有人從帶標記的連結進來</p>
-                )}
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-zinc-400">
-                僅統計帶有自訂標記（如 <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[11px] text-zinc-600">?from=ig</code>）的推廣連結點擊，以追蹤各管道或留言的引流成效；未標記的一般造訪請參考上方「連結來源」。
-              </p>
-            </section>
-
-            {/* 分頁瀏覽：自己記的，因為整站只有一個路徑，Vercel 分不出各分頁 */}
-            <section className="mb-8">
-              <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-                各分頁瀏覽次數
-                <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}</span>
-              </h2>
-              <div className="border border-[#DDE3DF] bg-white">
-                {viewRows.length ? (
-                  <ul className="divide-y divide-[#F5F8F6]">
-                    {viewRows.map(row => (
-                      <li key={row.view} className="flex items-center gap-3 px-4 py-2.5 text-sm">
-                        <span className="w-28 shrink-0 text-[#1A2A22]">{VIEW_LABEL[row.view] ?? row.view}</span>
-                        {/* 長條讓比例一眼可見，不必自己心算百分比 */}
-                        <span className="h-2 flex-1 overflow-hidden bg-[#EEF2F0]">
-                          <span
-                            className="block h-full bg-[#00a174]"
-                            style={{ width: `${row.share}%` }}
-                          />
-                        </span>
-                        <span className="w-20 shrink-0 text-right font-jost font-bold text-[#1A2A22]">
-                          {row.count.toLocaleString()}
-                          <span className="ml-1 font-sans text-[11px] font-normal text-zinc-400">{row.share}%</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="px-4 py-8 text-center text-sm text-zinc-400">這個月還沒有資料</p>
-                )}
-              </div>
-            </section>
 
             {/* 聯絡意圖與轉化分析：站上核心成交入口，分組收納式閱讀 */}
             <section className="mb-8">
@@ -716,107 +922,22 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </p>
             </section>
 
-            {/* 物件圖紙健檢與報告互動：新功能深度分析 */}
-            <section className="mb-8">
-              <div className="mb-3 flex items-center justify-between">
+
+
+            {/* 3. AI 需求分析偏好 */}
+            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+              <div className="mb-4 flex items-center justify-between border-b border-[#EEF2F0] pb-3">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-bold text-[#1A2A22]">
-                    物件圖紙健檢與報告互動
-                  </h2>
-                  <span className="font-normal text-xs text-zinc-400">{data.month}・新功能統計</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setOpenListingSection(v => !v)}
-                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer flex items-center gap-1"
-                >
-                  {openListingSection ? "收合" : "展開"}
-                  {openListingSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                </button>
-              </div>
-
-              {openListingSection && (
-                <div className="space-y-3">
-                  {/* 四個核心 KPI 卡片 */}
-                  <div className="grid gap-3 sm:grid-cols-4">
-                    <div className="border border-[#DDE3DF] bg-white p-4">
-                      <div className="text-xs text-zinc-500">買賣物件分析</div>
-                      <div className="mt-1 font-jost text-2xl font-bold text-[#007D5A]">
-                        {listingMetrics.sale.toLocaleString()}
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-zinc-400">
-                        {listingMetrics.total > 0 ? `佔 ${Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%` : "本月分析"}
-                      </div>
-                    </div>
-                    <div className="border border-[#DDE3DF] bg-white p-4">
-                      <div className="text-xs text-zinc-500">租賃物件分析</div>
-                      <div className="mt-1 font-jost text-2xl font-bold text-[#0284C7]">
-                        {listingMetrics.rent.toLocaleString()}
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-zinc-400">
-                        {listingMetrics.total > 0 ? `佔 ${Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%` : "本月分析"}
-                      </div>
-                    </div>
-                    <div className="border border-[#DDE3DF] bg-white p-4">
-                      <div className="text-xs text-zinc-500">分享連結建立 / 瀏覽</div>
-                      <div className="mt-1 font-jost text-2xl font-bold text-[#D97706]">
-                        {listingMetrics.shareCreate.toLocaleString()}
-                        <span className="text-sm font-normal text-zinc-400 ml-1">/ {listingMetrics.shareView.toLocaleString()} 閱</span>
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-zinc-400">專屬 #listing 傳播</div>
-                    </div>
-                    <div className="border border-[#DDE3DF] bg-white p-4">
-                      <div className="text-xs text-zinc-500">完整 PDF 下載</div>
-                      <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">
-                        {listingMetrics.pdfDownload.toLocaleString()}
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-zinc-400">A4 印刷診斷書</div>
-                    </div>
-                  </div>
-
-                  {/* 健檢比重長條 */}
-                  <div className="border border-[#DDE3DF] bg-white p-4">
-                    <div className="text-xs font-bold text-[#1A2A22] mb-2.5">買賣 vs 租賃健檢佔比</div>
-                    <div className="flex h-2.5 w-full overflow-hidden bg-[#EEF2F0]">
-                      <div
-                        style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }}
-                        title={`買賣: ${listingMetrics.sale} 次`}
-                      />
-                      <div
-                        style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }}
-                        title={`租賃: ${listingMetrics.rent} 次`}
-                      />
-                    </div>
-                    <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
-                      <span className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-[#007D5A]" />
-                        買賣分析 {listingMetrics.sale.toLocaleString()} 次
-                        {listingMetrics.total > 0 && <span className="font-jost"> ({Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%)</span>}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
-                        租賃分析 {listingMetrics.rent.toLocaleString()} 次
-                        {listingMetrics.total > 0 && <span className="font-jost"> ({Math.round((listingMetrics.rent / listingMetrics.total) * 100)}%)</span>}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </section>
-
-            {/* AI 需求分析偏好 */}
-            <section className="mb-8">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-bold text-[#1A2A22]">
+                  <Bot className="h-4 w-4 text-[#6366F1]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
                     AI 需求分析偏好
                   </h2>
-                  <span className="font-normal text-xs text-zinc-400">{data.month}・租屋分析模式</span>
+                  <span className="text-xs text-zinc-400">{data.month}・租屋分析模式</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setOpenAiSection(v => !v)}
-                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer flex items-center gap-1"
+                  className="flex items-center gap-1 text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
                 >
                   {openAiSection ? "收合" : "展開"}
                   {openAiSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -824,16 +945,16 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {openAiSection && (
-                <div className="border border-[#DDE3DF] bg-white p-4">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
-                    <div className="text-xs text-zinc-500">
+                <div className="rounded-md border border-[#DDE3DF] bg-[#FAFCFB] p-4">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <div className="text-xs font-bold text-[#1A2A22]">
                       快速條件選單 vs 自然語言文字描述
                     </div>
-                    <div className="text-xs font-jost text-zinc-400">
-                      合計 {aiAnalysisMetrics.total.toLocaleString()} 次
+                    <div className="text-xs font-jost text-zinc-500">
+                      合計 {aiAnalysisMetrics.total.toLocaleString()} 次送出
                     </div>
                   </div>
-                  <div className="flex h-2 w-full overflow-hidden bg-[#EEF2F0]">
+                  <div className="flex h-3 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
                     <div
                       style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#00a174" }}
                       title={`快速條件選單: ${aiAnalysisMetrics.structured} 次`}
@@ -843,120 +964,304 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       title={`自然語言描述: ${aiAnalysisMetrics.natural} 次`}
                     />
                   </div>
-                  <div className="mt-2.5 flex items-center justify-between text-xs text-zinc-600">
-                    <span className="flex items-center gap-1.5">
+                  <div className="mt-2.5 flex items-center justify-between text-xs text-[#526159]">
+                    <span className="flex items-center gap-1.5 font-medium">
                       <span className="h-2 w-2 rounded-full bg-[#00a174]" />
                       快速選單勾選：{aiAnalysisMetrics.structured.toLocaleString()} 次
-                      {aiAnalysisMetrics.total > 0 && <span className="font-jost text-zinc-400"> ({Math.round((aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100)}%)</span>}
+                      {aiAnalysisMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100)}%)</span>}
                     </span>
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5 font-medium">
                       <span className="h-2 w-2 rounded-full bg-[#6366F1]" />
                       自然語言描述：{aiAnalysisMetrics.natural.toLocaleString()} 次
-                      {aiAnalysisMetrics.total > 0 && <span className="font-jost text-zinc-400"> ({Math.round((aiAnalysisMetrics.natural / aiAnalysisMetrics.total) * 100)}%)</span>}
+                      {aiAnalysisMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((aiAnalysisMetrics.natural / aiAnalysisMetrics.total) * 100)}%)</span>}
                     </span>
                   </div>
                 </div>
               )}
             </section>
-
-            <h2 className="mb-3 text-sm font-bold text-[#1A2A22]">
-              功能使用次數
-              <span className="ml-2 font-normal text-xs text-zinc-400">{data.month}・伺服器端實際呼叫</span>
-            </h2>
-            <div className="mb-6 grid gap-3 sm:grid-cols-2">
-              {features.map(feature => (
-                <div key={feature} className="border border-[#DDE3DF] bg-white p-5">
-                  <div className="text-xs text-zinc-500">{FEATURE_LABEL[feature] ?? feature}</div>
-                  <div className="mt-1 font-jost text-3xl font-bold text-[#1A2A22]">
-                    {(monthlyTotals[feature] ?? 0).toLocaleString()}
-                  </div>
-                  <div className="mt-1 text-[11px] leading-5 text-zinc-400">本月完成次數</div>
+            {/* 4. 分頁熱門度 & 引流來源 (2-Col Grid) */}
+            <section className="mb-8 grid gap-4 lg:grid-cols-2">
+              {/* 各分頁瀏覽次數 */}
+              <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                  <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                    <Eye className="h-4 w-4 text-[#007D5A]" /> 各分頁瀏覽排行
+                  </h3>
+                  <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
                 </div>
-              ))}
-            </div>
+                {viewRows.length ? (
+                  <ul className="divide-y divide-[#F5F8F6]">
+                    {viewRows.map((row, idx) => (
+                      <li key={row.view} className="flex items-center gap-3 py-2 text-xs">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-[#F0F3F1] font-jost text-[10px] font-bold text-[#526159]">
+                          #{idx + 1}
+                        </span>
+                        <span className="w-28 shrink-0 font-medium text-[#1A2A22]">
+                          {VIEW_LABEL[row.view] ?? row.view}
+                        </span>
+                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-[#EEF2F0]">
+                          <span
+                            className="block h-full bg-[#00a174]"
+                            style={{ width: `${row.share}%` }}
+                          />
+                        </span>
+                        <span className="w-20 shrink-0 text-right font-jost font-bold tabular-nums text-[#1A2A22]">
+                          {row.count.toLocaleString()}
+                          <span className="ml-1 font-sans text-[10px] font-normal text-zinc-400">{row.share}%</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="py-8 text-center text-xs text-zinc-400">這個月還沒有分頁瀏覽資料</p>
+                )}
+              </div>
+
+              {/* 自訂宣傳來源 */}
+              <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                  <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                    <TrendingUp className="h-4 w-4 text-[#D7A64A]" /> 自訂推廣來源標記
+                  </h3>
+                  <span className="text-[11px] font-jost text-zinc-400">?from=...</span>
+                </div>
+                {sourceRows.length ? (
+                  <ul className="divide-y divide-[#F5F8F6]">
+                    {sourceRows.map(row => (
+                      <li key={row.source} className="flex items-center justify-between gap-3 py-2 text-xs">
+                        <span className="font-medium text-[#3F5147]">
+                          {SOURCE_LABEL[row.source] ?? row.source}
+                          <span className="ml-1.5 font-mono text-[10px] text-zinc-400">?from={row.source}</span>
+                        </span>
+                        <span className="font-jost font-bold tabular-nums text-[#1A2A22]">
+                          {row.count.toLocaleString()} <span className="font-sans font-normal text-[10px] text-zinc-400">次點擊</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="py-8 text-center text-xs text-zinc-400">這個月還沒有自訂推廣來源標記點擊</p>
+                )}
+                <p className="mt-3 text-[10px] leading-relaxed text-zinc-400">
+                  可於行銷連結加上 <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=threads</code> 或 <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[10px] text-zinc-600">?from=ig</code> 以追蹤各社群引流。
+                </p>
+              </div>
+            </section>
+
+
+            {/* 5. 核心功能完成次數 */}
+            <section className="mb-8">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                  <Sparkles className="h-4 w-4 text-[#007D5A]" />
+                  核心功能完成次數
+                </h2>
+                <span className="text-xs text-zinc-400">{data.month}・伺服器端完成呼叫</span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {features.map(feature => {
+                  const style = FEATURE_COLORS[feature] || { bg: "#FAFCFB", text: "#1A2A22", bar: "#00a174", border: "#DDE3DF" };
+                  const count = monthlyTotals[feature] ?? 0;
+                  const grandFeatureTotal = Object.values(monthlyTotals).reduce((a, b) => a + b, 0);
+                  const share = grandFeatureTotal > 0 ? Math.round((count / grandFeatureTotal) * 100) : 0;
+                  return (
+                    <div
+                      key={feature}
+                      className="border bg-white p-4.5 shadow-sm transition-all hover:shadow"
+                      style={{ borderColor: style.border }}
+                    >
+                      <div className="flex items-center justify-between text-xs font-semibold" style={{ color: style.text }}>
+                        <span>{FEATURE_LABEL[feature] ?? feature}</span>
+                        <span className="font-jost text-[11px] opacity-75">{share}% 佔比</span>
+                      </div>
+                      <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
+                        {count.toLocaleString()}
+                      </div>
+                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#EEF2F0]">
+                        <div style={{ width: `${share}%`, backgroundColor: style.bar }} className="h-full" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
 
             <p className="mb-6 text-xs text-zinc-500">
               上方卡片與下方兩張表皆為 {data.month} 這個月的資料。
               這一區只計算真的送出並得到回覆的次數。
             </p>
 
-            <section className="mb-6 border border-[#DDE3DF] bg-white">
-              <h2 className="border-b border-[#DDE3DF] px-5 py-3 text-sm font-bold text-[#1A2A22]">每日次數</h2>
+            {/* 7. 每日功能明細次數表 */}
+            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+              <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                  <SlidersHorizontal className="h-4 w-4 text-[#007D5A]" /> 每日功能完成明細表
+                </h3>
+                <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
+              </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] table-fixed text-sm">
+                <table className="w-full min-w-[640px] table-fixed text-xs">
                   <colgroup>
-                    <col className="w-[38%]" />
+                    <col className="w-[34%]" />
                     {features.map(feature => <col key={feature} />)}
-                    <col className="w-[12%]" />
+                    <col className="w-[14%]" />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-[#EEF2F0] text-left text-xs text-zinc-500">
-                      <th className="px-5 py-2 font-medium">日期</th>
-                      {features.map(f => <th key={f} className="px-5 py-2 text-center font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
-                      <th className="px-5 py-2 text-right font-medium">合計</th>
+                    <tr className="border-b border-[#EEF2F0] text-left text-xs font-semibold text-zinc-500">
+                      <th className="px-4 py-2">日期</th>
+                      {features.map(f => <th key={f} className="px-3 py-2 text-center">{FEATURE_LABEL[f] ?? f}</th>)}
+                      <th className="px-4 py-2 text-right">當日合計</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {dailyRows(data.daily, features).map(row => (
-                      <tr key={row.day} className="border-b border-[#F5F8F6] last:border-0">
-                        <td className="px-5 py-2 font-jost tabular-nums text-[#1A2A22]">{data.month}-{row.day}</td>
-                        {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-center font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
-                        ))}
-                        <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-[#F5F8F6]">
+                    {dailyRows(data.daily, features).map(row => {
+                      const isHighlighted = selectedDay === row.day;
+                      return (
+                        <tr
+                          key={row.day}
+                          onClick={() => setSelectedDay(prev => prev === row.day ? null : row.day)}
+                          className={`transition-colors cursor-pointer ${
+                            isHighlighted ? "bg-[#EBF8F4] font-medium" : "hover:bg-[#FAFCFB]"
+                          }`}
+                        >
+                          <td className="px-4 py-2.5 font-jost tabular-nums text-[#1A2A22]">
+                            <span className="inline-flex items-center gap-1.5">
+                              {isHighlighted && <span className="h-1.5 w-1.5 rounded-full bg-[#007D5A]" />}
+                              {data.month}-{row.day}
+                            </span>
+                          </td>
+                          {row.counts.map((count, index) => (
+                            <td key={index} className="px-3 py-2.5 text-center font-jost tabular-nums text-[#3F5147]">
+                              {count > 0 ? count.toLocaleString() : <span className="text-zinc-300">—</span>}
+                            </td>
+                          ))}
+                          <td className="px-4 py-2.5 text-right font-jost tabular-nums font-bold text-[#1A2A22]">
+                            {row.sum.toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {!Object.keys(data.daily).length && (
-                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-sm text-zinc-400">這個月還沒有資料</td></tr>
+                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-zinc-400">這個月還沒有每日紀錄</td></tr>
                     )}
                   </tbody>
                 </table>
               </div>
             </section>
 
-            <section className="border border-[#DDE3DF] bg-white">
-              <h2 className="border-b border-[#DDE3DF] px-5 py-3 text-sm font-bold text-[#1A2A22]">來源國家</h2>
+            {/* 6. 來源國家分佈 */}
+            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+              <div className="mb-3 flex items-center justify-between border-b border-[#EEF2F0] pb-2.5">
+                <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                  <Globe className="h-4 w-4 text-[#007D5A]" /> 使用者地理來源國家分佈
+                </h3>
+                <span className="text-[11px] font-jost text-zinc-400">{data.month}</span>
+              </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] table-fixed text-sm">
+                <table className="w-full min-w-[640px] table-fixed text-xs">
                   <colgroup>
-                    <col className="w-[38%]" />
+                    <col className="w-[34%]" />
                     {features.map(feature => <col key={feature} />)}
-                    <col className="w-[12%]" />
+                    <col className="w-[14%]" />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-[#EEF2F0] text-left text-xs text-zinc-500">
-                      <th className="px-5 py-2 font-medium">國家</th>
-                      {features.map(f => <th key={f} className="px-5 py-2 text-center font-medium">{FEATURE_LABEL[f] ?? f}</th>)}
-                      <th className="px-5 py-2 text-right font-medium">合計</th>
+                    <tr className="border-b border-[#EEF2F0] text-left text-xs font-semibold text-zinc-500">
+                      <th className="px-4 py-2">國家／地區</th>
+                      {features.map(f => <th key={f} className="px-3 py-2 text-center">{FEATURE_LABEL[f] ?? f}</th>)}
+                      <th className="px-4 py-2 text-right">合計次數</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {geoRows.map(row => (
-                      <tr key={row.country} className="border-b border-[#F5F8F6] last:border-0">
-                        <td className="px-5 py-2 text-[#1A2A22]">
-                          {COUNTRY_LABEL[row.country] ?? row.country}
-                          {COUNTRY_LABEL[row.country] && row.country !== "unknown" && (
-                            <span className="ml-1.5 font-jost tabular-nums text-[11px] text-zinc-400">{row.country}</span>
-                          )}
-                        </td>
-                        {row.counts.map((count, index) => (
-                          <td key={index} className="px-5 py-2 text-center font-jost tabular-nums text-[#3F5147]">{count || "—"}</td>
-                        ))}
-                        <td className="px-5 py-2 text-right font-jost tabular-nums font-bold text-[#1A2A22]">{row.sum}</td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-[#F5F8F6]">
+                    {geoRows.map(row => {
+                      const flag = COUNTRY_FLAGS[row.country] || "🌐";
+                      return (
+                        <tr key={row.country} className="transition-colors hover:bg-[#FAFCFB]">
+                          <td className="px-4 py-2.5 text-[#1A2A22] font-medium">
+                            <span className="mr-1.5 text-base leading-none">{flag}</span>
+                            <span>{COUNTRY_LABEL[row.country] ?? row.country}</span>
+                            {row.country !== "unknown" && (
+                              <span className="ml-1.5 font-jost text-[11px] text-zinc-400 font-normal">({row.country})</span>
+                            )}
+                          </td>
+                          {row.counts.map((count, index) => (
+                            <td key={index} className="px-3 py-2.5 text-center font-jost tabular-nums text-[#3F5147]">
+                              {count > 0 ? count.toLocaleString() : <span className="text-zinc-300">—</span>}
+                            </td>
+                          ))}
+                          <td className="px-4 py-2.5 text-right font-jost tabular-nums font-bold text-[#1A2A22]">
+                            {row.sum.toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {!geoRows.length && (
-                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-sm text-zinc-400">這個月還沒有資料</td></tr>
+                      <tr><td colSpan={features.length + 2} className="px-5 py-8 text-center text-xs text-zinc-400">這個月還沒有國家來源資料</td></tr>
                     )}
                   </tbody>
                 </table>
               </div>
             </section>
 
-            <p className="mt-4 text-[11px] leading-5 text-zinc-400">
-              全站累計 {grandTotal.toLocaleString()} 次。國家依 Vercel 的 IP 國碼標頭判斷，
-              系統只保留國碼這一項資料。
-            </p>
+            {/* 8. 次要外部對照：Vercel Web Analytics */}
+            {traffic && (
+              <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#EEF2F0] pb-2.5">
+                  <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
+                    <Globe className="h-4 w-4 text-zinc-500" /> 次要外部對照（Vercel Web Analytics）
+                  </h3>
+                  <span className="text-[11px] font-normal text-zinc-400">
+                    {traffic.month}・前端腳本統計（易受廣告封鎖器影響，供交叉參考）
+                  </span>
+                </div>
+                <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                  <div className="border border-[#EEF2F0] bg-[#FAFCFB] p-3.5">
+                    <div className="text-[11px] text-zinc-500">每日不重複訪客合計</div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
+                  </div>
+                  <div className="border border-[#EEF2F0] bg-[#FAFCFB] p-3.5">
+                    <div className="text-[11px] text-zinc-500">總瀏覽次數</div>
+                    <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{traffic.pageviews.toLocaleString()}</div>
+                  </div>
+                </div>
+                <div className="grid gap-3 lg:grid-cols-2">
+                  {([
+                    ["來源國家", traffic.countries, (l: string) => COUNTRY_LABEL[l] ?? l],
+                    ["外部連結來源", traffic.referrers, (l: string) => l || "直接進入"],
+                  ] as [string, AggregateRow[], (l: string) => string][]).map(([title, rows, format]) => (
+                    <div key={title} className="border border-[#EEF2F0] bg-white">
+                      <h4 className="border-b border-[#EEF2F0] px-3.5 py-2 text-xs font-bold text-[#1A2A22]">{title}</h4>
+                      <ul className="divide-y divide-[#F5F8F6]">
+                        {rows.length ? rows.map(row => (
+                          <li key={row.label} className="flex items-center justify-between gap-3 px-3.5 py-2 text-xs">
+                            <span className="truncate text-[#3F5147]" title={row.label}>{format(row.label)}</span>
+                            <span className="shrink-0 font-jost font-bold text-[#1A2A22]">
+                              {row.visitors.toLocaleString()}
+                              <span className="ml-1 font-sans text-[10px] font-normal text-zinc-400">
+                                人／{row.count.toLocaleString()} 次
+                              </span>
+                            </span>
+                          </li>
+                        )) : (
+                          <li className="px-3.5 py-4 text-center text-xs text-zinc-400">尚無資料</li>
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {trafficNote && (
+              <div className="mb-8 border border-[#DDE3DF] bg-white p-4 text-xs text-zinc-500">
+                外部對照（Vercel Analytics）：{trafficNote}
+              </div>
+            )}
+
+            <div className="border-t border-[#DDE3DF] pt-4 text-right">
+              <p className="text-[11px] leading-relaxed text-zinc-400">
+                全站歷史累計呼叫 {grandTotal.toLocaleString()} 次 · 伺服器端 IP 匿名國碼解析 · LINUS 住好日
+              </p>
+            </div>
           </>
         )}
       </div>

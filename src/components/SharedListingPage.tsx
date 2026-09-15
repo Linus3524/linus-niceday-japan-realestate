@@ -41,6 +41,7 @@ export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack
             <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
             <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
             <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
+            <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
           </nav>
         </div>
       </footer>

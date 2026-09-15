@@ -69,7 +69,7 @@ const HERO_SETS = [
 ];
 const HERO_ROTATE_MS = 15000;
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
-const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer"];
+const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer", "cookie"];
 
 // 模組層級的 in-flight 請求快取，見下方 useEffect 內的說明：避免 StrictMode
 // 的重複掛載把同一個訪客算成兩個新訪客。
@@ -1068,6 +1068,7 @@ export default function App() {
                 <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
                 <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
                 <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
+                <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
               </nav>
             </div>
           </div>
