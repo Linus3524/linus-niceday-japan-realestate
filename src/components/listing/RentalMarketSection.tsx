@@ -330,9 +330,9 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                             </div>
                             <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
                               {isWellSupported
-                                ? `各項規格累計淨值（+${netFactorsSum.toFixed(1)}%）充分支撐開價差距（溢價 ${nominalDiff.toFixed(1)}%），屬高規格合理溢價。`
+                                ? `各項規格累計淨值（${netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}）充分支撐開價差距（溢價 ${nominalDiff >= 0 ? `+${nominalDiff.toFixed(1)}%` : `−${Math.abs(nominalDiff).toFixed(1)}%`}），屬高規格合理溢價。`
                                 : isOverpriced
-                                  ? `即使計入各項規格優勢，租金仍高於客觀支撐約 ${(nominalDiff - netFactorsSum).toFixed(1)}%，建議評估議價或爭取免禮金空間。`
+                                  ? `月租總額雖落在區域大盤區間內，但計入屋齡與站距等條件折減後，開價高於客觀規格支撐約 ${(nominalDiff - netFactorsSum).toFixed(1)}%，建議評估議價或爭取免禮金空間。`
                                   : isDiscounted
                                     ? `月額負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%，具備顯著讓利優勢。`
                                     : "租金開價與條件規格加權後之行情落點相符。"}

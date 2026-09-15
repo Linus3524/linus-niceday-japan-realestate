@@ -34,7 +34,8 @@ export function additionalRentalFees(text?: string) {
   const definitions = [
     { id: "antibacterialFee", name: "室內抗菌處理費", pattern: /(?:室内抗菌処理代|室內抗菌處理(?:費|代)|抗菌処理代)\s*[:：]?\s*([\d,]+(?:\.\d+)?\s*(?:万円|円|日圓))/ },
     { id: "disinfectionFee", name: "室內消毒費", pattern: /(?:消毒代|室內消毒(?:費|代))\s*[:：]?\s*([\d,]+(?:\.\d+)?\s*(?:万円|円|日圓))/ },
-    { id: "administrationFee", name: "簽約事務手續費", pattern: /(?:^|[。；;、,\s])(?:事務手数料|事務手續費|簽約事務費)\s*[:：]?\s*([\d,]+(?:\.\d+)?\s*(?:万円|円|日圓))/ },
+    // 前面允許任何非文字符號（◎★・、等），只擋「更新事務手数料」這種前綴黏著的字。
+    { id: "administrationFee", name: "簽約事務手續費", pattern: /(?:^|[^\p{L}\p{N}]|契約時?)(?:事務手数料|事務手續費|簽約事務費)\s*[:：]?\s*([\d,]+(?:\.\d+)?\s*(?:万円|円|日圓))/u },
   ];
   return definitions.flatMap(({ id, name, pattern }) => {
     const match = raw.match(pattern);
@@ -44,7 +45,8 @@ export function additionalRentalFees(text?: string) {
       if (/更新|退去|解約|任意|希望/.test(prefix) || /^\s*(?:[/／]\s*(?:月|年)|(?:毎月|毎年))/.test(suffix)) return [];
     }
     const amount = parseYenAmount(match?.[1]?.replace(/日圓/g, "円"));
-    return amount ? [{ id, name, amount, isFromFlyer: true, note: `圖紙標示：${match![0].trim()}` }] : [];
+    // 註記只留條文本身：pattern 為了定界會把前面的「、」「◎」一起吃進 match[0]，全部剝掉。
+    return amount ? [{ id, name, amount, isFromFlyer: true, note: `圖紙標示：${match![0].trim().replace(/^[^\p{L}\p{N}]+/u, "")}` }] : [];
   });
 }
 

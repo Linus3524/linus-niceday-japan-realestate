@@ -274,7 +274,7 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
     nw(around:500,${point.lat},${point.lon})[shop];
     nw(around:500,${point.lat},${point.lon})[amenity~"^(restaurant|cafe|fast_food|food_court|cinema|bar|pub|nightclub|karaoke)$"];
     nw(around:500,${point.lat},${point.lon})[leisure~"^(adult_gaming_centre|amusement_arcade)$"];
-    way(around:250,${point.lat},${point.lon})[building~"^(house|apartments|residential|detached|terrace)$"];` : "";
+    way(around:250,${point.lat},${point.lon})[building];` : "";
   // [timeout:N] 是 Overpass「伺服器端查詢預算」，不含排隊、序列化與跨國網路傳輸。
   // 把它和 fetch 的 AbortSignal 設成同一個數字，等於要求「查詢必須零傳輸時間完成」——
   // 實測東京都心密集區（千代田区東神田）回傳 658 筆，四個可用端點耗時 6.0～9.4 秒，

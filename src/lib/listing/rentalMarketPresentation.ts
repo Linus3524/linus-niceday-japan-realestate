@@ -161,6 +161,18 @@ export interface RentalConclusionPoint {
   text: string;
 }
 
+function formatSignedPercent(val: number): string {
+  if (val > 0) return `+${val.toFixed(1)}%`;
+  if (val < 0) return `−${Math.abs(val).toFixed(1)}%`;
+  return `0.0%`;
+}
+
+function formatSignedYen(val: number): string {
+  if (val > 0) return `+${formatYen(val)}`;
+  if (val < 0) return `−${formatYen(Math.abs(val))}`;
+  return `¥0`;
+}
+
 export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthlyCost, netFactorsSum, nominalDiff, conclusionText, cleanVerdictDetail }: { result: AnalyzeListingResult; rentalFactors: ReturnType<typeof buildRentalMarketFactors>['rentalFactors']; totalMonthlyCost: number | null; netFactorsSum: number; nominalDiff: number; conclusionText: string; cleanVerdictDetail: string }) {
   const posFactorsCount = rentalFactors.filter(f => f.ratePercent > 0).length;
   const negFactorsCount = rentalFactors.filter(f => f.ratePercent < 0).length;
@@ -197,20 +209,20 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
       return conclusionText || cleanVerdictDetail;
     }
     if (isWellSupported) {
-      return `本案規格條件累計淨加成（+${netFactorsSum.toFixed(1)}%，換算居住價值約 +${formatYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}）。考量硬體規格與生活便利性${featureNote}，當前租金溢價完全反映在更好的居住品質與實用機能上，開價具備充分條件支撐，定價具高度合理性（屬於物有所值的「合理溢價」）。`;
+      return `本案規格條件累計淨加成（${formatSignedPercent(netFactorsSum)}，換算居住價值約 ${formatSignedYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（${formatSignedPercent(nominalDiff)}，每月高出約 ${formatSignedYen(nominalDiffYen)}）。考量硬體規格與生活便利性${featureNote}，當前租金溢價完全反映在更好的居住品質與實用機能上，開價具備充分條件支撐，定價具高度合理性（屬於物有所值的「合理溢價」）。`;
     }
     if (isOverpriced) {
       const excessPercent = (nominalDiff - netFactorsSum).toFixed(1);
       const excessYen = Math.max(0, nominalDiffYen - netDiffYen);
-      return `當前每月租金相對區域中位數溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}），超出目前可量化之規格優勢加成（+${netFactorsSum.toFixed(1)}%，約 +${formatYen(netDiffYen)} / 月）約 +${excessPercent}%（約 +${formatYen(excessYen)} / 月）。若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），開價略有超額溢價，建議多比較周邊同級房源或爭取免禮金優惠。`;
+      return `月租總額雖落在同區大盤行情區間內，但考量屋齡折舊與站距等硬體條件，本案客觀規格條件淨值為 ${formatSignedPercent(netFactorsSum)}（約 ${formatSignedYen(netDiffYen)} / 月）。當前租金相對區域中位數溢價 ${formatSignedPercent(nominalDiff)}（每月高出約 ${formatSignedYen(nominalDiffYen)}），超出可量化之規格條件支撐約 +${excessPercent}%（約 +${formatYen(excessYen)} / 月）。若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），開價偏向同級房源高端區間，建議多比較周邊同級房源或爭取免禮金優惠。`;
     }
     if (isDiscounted) {
       return `本案每月總負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%（每月折讓約 ${formatYen(Math.abs(nominalDiffYen))}）。${netFactorsSum >= 0
-          ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢，整體相當超值。`
+          ? `在享有良好規格設備（條件加成 ${formatSignedPercent(netFactorsSum)}）的同時，月額仍具價格讓利優勢，整體相當超值。`
           : `租金已充分反映屋齡折舊或步程等折減，居住成本負擔合宜實惠。`
         }`;
     }
-    return `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${nominalDiff.toFixed(1)}% 貼近規格淨值 +${netFactorsSum.toFixed(1)}%）。考量硬體規格與生活便利性${featureNote}，定價合宜健康。`;
+    return `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${formatSignedPercent(nominalDiff)} 貼近規格淨值 ${formatSignedPercent(netFactorsSum)}）。考量硬體規格與生活便利性${featureNote}，定價合宜健康。`;
   })();
 
   const conclusionPoints: RentalConclusionPoint[] = (() => {
@@ -231,7 +243,7 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
       const points: RentalConclusionPoint[] = [
         {
           label: "價值對照",
-          text: `規格條件累計淨加成（+${netFactorsSum.toFixed(1)}%，換算居住價值約 +${formatYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（+${nominalDiff.toFixed(1)}%，每月高出約 +${formatYen(nominalDiffYen)}）。`,
+          text: `規格條件累計淨加成（${formatSignedPercent(netFactorsSum)}，換算居住價值約 ${formatSignedYen(netDiffYen)} / 月）充分涵蓋當前月租相對區域中位數之溢價（${formatSignedPercent(nominalDiff)}，每月高出約 ${formatSignedYen(nominalDiffYen)}）。`,
         },
       ];
       if (featureClause) {
@@ -252,15 +264,15 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
       return [
         {
           label: "價格落點",
-          text: `當前每月租金相對區域中位數溢價 +${nominalDiff.toFixed(1)}%（每月高出約 +${formatYen(nominalDiffYen)}）。`,
+          text: `當前每月租金落在同區行情區間內，但相對區域中位數溢價 ${formatSignedPercent(nominalDiff)}（每月高出約 ${formatSignedYen(nominalDiffYen)}）。`,
         },
         {
           label: "條件差距",
-          text: `超出目前可量化之規格優勢加成（+${netFactorsSum.toFixed(1)}%，約 +${formatYen(netDiffYen)} / 月）約 +${excessPercent}%。`,
+          text: `計入屋齡、站距等客觀規格後，條件淨值為 ${formatSignedPercent(netFactorsSum)}（約 ${formatSignedYen(netDiffYen)} / 月），開價超出目前可量化之規格支撐約 +${excessPercent}%。`,
         },
         {
           label: "顧問建議",
-          text: "若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），開價略有超額溢價，建議多比較周邊同級房源或爭取免禮金優惠。",
+          text: "租金開價偏向同級房源高端。若該物件無其他特殊不可替代優勢（如附全套精緻家具家電、特殊景觀或額外管理服務），建議多比較周邊同級房源或爭取免禮金優惠。",
         },
       ];
     }
@@ -274,7 +286,7 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
         {
           label: "規格優勢",
           text: netFactorsSum >= 0
-            ? `在享有良好規格設備（條件加成 +${netFactorsSum.toFixed(1)}%）的同時，月額仍具價格讓利優勢。`
+            ? `在享有良好規格設備（條件加成 ${formatSignedPercent(netFactorsSum)}）的同時，月額仍具價格讓利優勢。`
             : "租金已充分反映屋齡折舊或步程等折減，居住成本負擔合宜實惠。",
         },
         {
@@ -289,7 +301,7 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
     const points: RentalConclusionPoint[] = [
       {
         label: "價格落點",
-        text: `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${nominalDiff.toFixed(1)}% 貼近規格淨值 +${netFactorsSum.toFixed(1)}%）。`,
+        text: `本案每月總負擔與規格條件加權後之行情落點相符（溢價 ${formatSignedPercent(nominalDiff)} 貼近規格淨值 ${formatSignedPercent(netFactorsSum)}）。`,
       },
     ];
     if (featureClause) {

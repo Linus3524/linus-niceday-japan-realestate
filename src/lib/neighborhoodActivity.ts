@@ -22,6 +22,9 @@ export interface NeighborhoodActivity {
 
 export const ACTIVITY_LABELS = ["活動較少", "住宅為主", "住商混合", "熱鬧商圈", "娛樂集中"] as const;
 
+/** 一看就不是住家的建物用途；其餘（含 building=yes）都視為住宅建物密度的證據。 */
+const NON_RESIDENTIAL_BUILDING = /^(retail|commercial|industrial|office|warehouse|school|university|college|hospital|hotel|church|temple|shrine|public|civic|government|train_station|transportation|parking|garage|garages|shed|roof|greenhouse|barn|farm_auxiliary|service|kiosk|supermarket|stadium|sports_hall|grandstand|construction|ruins|no)$/;
+
 function distance(a: { lat: number; lon: number }, b: { lat: number; lon: number }) {
   const rad = Math.PI / 180;
   const x = (b.lon - a.lon) * rad * Math.cos((a.lat + b.lat) * rad / 2);
@@ -52,7 +55,10 @@ export function analyzeNeighborhood(
     const point = { lat: lat!, lon: lon! };
     const meters = distance(origin, point);
     if (meters > 500) continue;
-    if (/^(house|apartments|residential|detached|terrace)$/.test(t.building || "") && meters <= 250) result.residential++;
+    // 日本的 OSM 建物絕大多數是國土地理院匯入的 building=yes，不會細分 house／apartments。
+    // 實測川口市中青木 250m 內 705 棟，699 棟是 yes——只認 house／apartments 會數出 0 棟，
+    // 整張卡變「待確認」。改成「有建物、且不是明確非住宅用途」就算住宅建物。
+    if (t.building && !NON_RESIDENTIAL_BUILDING.test(t.building) && meters <= 250) result.residential++;
     const entertainment = /^(bar|pub|nightclub|karaoke)$/.test(t.amenity || "") || /^(adult_gaming_centre|amusement_arcade)$/.test(t.leisure || "");
     const commercial = (Boolean(t.shop) && !/^(no|vacant|disused)$/.test(t.shop)) || entertainment || /^(restaurant|cafe|fast_food|food_court|cinema)$/.test(t.amenity || "");
     if (!commercial || t.disused === "yes" || t.abandoned === "yes") continue;
