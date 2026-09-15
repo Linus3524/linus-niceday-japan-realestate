@@ -249,12 +249,23 @@ async function verifyLeaseCharges(
     1. 費用表格裡標示「敷金」的那一格，實際印的是什麼字？
     2. 費用表格裡標示「礼金」的那一格，實際印的是什麼字？
 
+    先判斷這張圖紙的表格是哪一種排版，再依該排版去找值：
+    (A) 橫向並排：「敷金｜值｜礼金｜值」，值在標籤的正右方。
+    (B) 直向欄位：標題列橫排（例如「号室｜家具｜家賃/共益費｜礼金｜専有面積」），
+        各筆資料排在標題的下方。此時值在標籤的正下方，而且與標籤左右對齊。
+        レオパレス 等連鎖品牌的図面常屬這種，標題與值可能相隔頗遠，中間還夾著其他文字。
+    兩種都要嘗試。找不到正右方的值時，務必再看正下方；不可因為右方沒有值就回空字串。
+
     判讀規則：
-    - 敷金與礼金通常在同一列並排：「敷金｜值｜礼金｜值」。請確認你讀的值就在該標籤的正右方。
-    - 緊接的下一列常是「敷引」「償却金」「保証金」「更新料」，這些是不同的項目；
-      它們的值（常是「-」或「1.5ヶ月(新賃料)」之類）絕對不能填進敷金或礼金。
-    - 格子印「無」「無し」「なし」「0」「0円」→ 回答「無」。
+    - 緊鄰的「敷引」「償却金」「保証金」「更新料」是不同項目；它們的值
+      （常是「-」或「1.5ヶ月(新賃料)」之類）絕對不能填進敷金或礼金。
+    - 格子印「無」「無し」「なし」「0」「0円」「-」→ 回答「無」。
     - 格子印月數或金額（如「1ヶ月」「115,000円」）→ 原樣回答。
+    - 格子只印一個沒有單位的數字（例如「1」「2」「1.5」）→ 回答「○ヶ月」。
+      日本賃貸図面的費用表常把「ヶ月」單位印在表頭或省略，格子內僅留數字；
+      這種數字是月數，不是日圓金額。例如礼金格印「1」就回答「1ヶ月」。
+      但若該數字明顯是金額（有位數分隔逗號或四位數以上，如「45,000」「10000」），
+      則照原文當金額回答。
     - 格子真的空白、或整份圖紙找不到這一格 → 回答空字串。不要猜。
   `;
 
@@ -324,7 +335,54 @@ function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedLis
   return { ...extracted, transitLegs: legs, ...serializeTransitLegs(legs) };
 }
 
-async function extractListingFields(files: UploadedFile[], layoutText = ""): Promise<ExtractedListingFields> {
+/**
+ * 圖片圖紙的費用表轉寫（PDF 以外的路徑專用）。
+ *
+ * layoutText 只有 PDF 有——它來自文字層座標還原。單張圖片（拍照、截圖、掃描）
+ * 沒有文字層，等於完全少掉「欄位對位」這層保護，而圖片上傳佔比並不低。
+ *
+ * 這裡先用一次窄呼叫把費用表逐列轉寫出來，當作後續抽取的對位提示。
+ *
+ * ⚠️ 轉寫結果**不可**併入 layoutText。layoutText 在 reconcileRentalListingText
+ * 與交通動線漏抄校驗中被當成「不受 AI 判讀影響的基準」使用；把 AI 轉寫的內容
+ * 灌進去，等於拿 AI 的輸出去校驗 AI 自己，幻覺會被當成事實回補進欄位。
+ * 因此它只以提示形式參與抽取，絕不進入任何校驗或回補路徑。
+ */
+async function transcribeImageLayout(files: UploadedFile[]): Promise<string> {
+  const imageFiles = files.filter(file => file.mimeType.startsWith("image/"));
+  if (!imageFiles.length) return "";
+
+  const prompt = `
+    這是一張日本不動產図面。請把圖上「費用・条件表格」的內容逐列轉寫成純文字，
+    保留表格的列結構，其他區域（照片、間取り図、公司資訊、廣告標語）一律略過。
+
+    轉寫規則：
+    - 一列輸出一行，同一列的欄位用全形空格分隔，例如：敷金　無　礼金　1ヶ月
+    - 直向表格（標題列在上、資料在下）請把標題與其正下方對齊的值配成一組輸出，
+      例如標題列是「号室　家具　家賃　礼金　専有面積」、資料列是「105　有　45,000円　1　20.28㎡」，
+      就輸出「号室 105」「家具 有」「家賃 45,000円」「礼金 1」「専有面積 20.28㎡」各一行。
+    - 只轉寫你在圖上**實際看得到**的字。看不清楚就寫「?」，絕對不要推測或補齊。
+    - 不要翻譯、不要換算單位、不要補上圖上沒印的「ヶ月」「円」。
+  `;
+
+  try {
+    const response = await getAiClient().models.generateContent({
+      model: "gemini-3.8-flash",
+      contents: { parts: [...imageFiles.map(file => ({ inlineData: file })), { text: prompt }] },
+      config: { temperature: 0 },
+    });
+    return (response.text || "").slice(0, MAX_LAYOUT_TEXT_CHARS);
+  } catch (error) {
+    console.warn("analyze-listing: 圖片費用表轉寫失敗，略過對位提示", error);
+    return "";
+  }
+}
+
+async function extractListingFields(
+  files: UploadedFile[],
+  layoutText = "",
+  visualLayoutText = "",
+): Promise<ExtractedListingFields> {
   const prompt = `
     分析這份日本不動產物件概要書／図面圖片或 PDF，精準抓出各欄位內容，原文照抄不要翻譯或換算單位。
 
@@ -361,10 +419,15 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。
     - managementFee（管理費／共益費）：照原文抓取，格式如 "○,○○○円"，若寫込み或無則寫 "0円"。
     - keyMoney（礼金）與 deposit（敷金／保証金）：只抄「礼金」「敷金」那一格裡實際印的字，
-      一個字都不要改。這兩格最常見的內容有三類，請依格子上實際看到的輸出：
+      一個字都不要改。這兩格最常見的內容有四類，請依格子上實際看到的輸出：
         (a) 格子印的是「無」「無し」「なし」「0」「0円」→ 原樣輸出那幾個字，代表免收。
         (b) 格子印的是月數或金額（格式如 "○ヶ月"、"○○,○○○円"）→ 原樣輸出。
-        (c) 格子空白或整份圖紙沒有這一格 → 輸出空字串。
+        (c) 格子只印一個沒有單位的數字（如 "1"、"2"、"1.5"）→ 輸出 "○ヶ月"。
+            日本賃貸図面常把「ヶ月」印在表頭或省略，格子僅留數字，這是月數不是日圓。
+            但有千分位逗號或四位數以上（如 "45,000"、"10000"）則屬金額，照原文輸出。
+        (d) 格子空白或整份圖紙沒有這一格 → 輸出空字串。
+      費用表可能是橫向（值在標籤右方）或直向（標題列在上、值在下方且左右對齊，
+      常見於レオパレス 等連鎖品牌図面）。右方找不到值時務必再找正下方對齊的值。
       嚴禁在格子印「無」時輸出任何月數：實測曾把「礼金 無」誤輸出成月數，讓客人多算出
       數十萬円的初期費用。免收（a）和未載明（c）也不能混用——前者是圖紙明確寫了不收，
       後者是圖紙沒說。
@@ -494,12 +557,18 @@ async function extractListingFields(files: UploadedFile[], layoutText = ""): Pro
     ? `\n\n以下是從這份圖紙的文字層依座標還原的版面文字，同一行代表圖紙上的同一列。\n欄位對位請以這份還原文字為準，它比自行判讀 PDF 內部順序可靠：\n---\n${layoutText}\n---`
     : "";
 
+  // 圖片沒有文字層，改用先前轉寫的費用表當對位參考。
+  // 語氣刻意弱於 layoutHint：轉寫本身也是 AI 判讀的結果，與圖片牴觸時以圖片為準。
+  const visualHint = !layoutText && visualLayoutText
+    ? `\n\n以下是先前針對這張圖紙費用表格的逐列轉寫，可作為欄位對位的參考。\n若與你在圖上實際看到的內容不一致，一律以圖片為準：\n---\n${visualLayoutText}\n---`
+    : "";
+
   const response = await getAiClient().models.generateContent({
     model: "gemini-3.8-flash",
     contents: {
       parts: [
         ...files.map(file => ({ inlineData: file })),
-        { text: prompt + layoutHint },
+        { text: prompt + layoutHint + visualHint },
       ],
     },
     config: {
@@ -692,7 +761,10 @@ export default async function handler(req: any, res: any) {
       ? req.body.layoutText.slice(0, MAX_LAYOUT_TEXT_CHARS)
       : "";
 
-    let extracted = await extractListingFields(files, layoutText);
+    // 圖片沒有文字層可還原，改先轉寫費用表補上對位資訊；PDF 已有 layoutText 就不必多付這次呼叫。
+    const visualLayoutText = layoutText ? "" : await transcribeImageLayout(files);
+
+    let extracted = await extractListingFields(files, layoutText, visualLayoutText);
     if (!hasCoreFields(extracted)) {
       // 部分圖紙（常見於特定不動產軟體輸出、內嵌字型有問題的 PDF）偶爾會讓 Gemini
       // 這次抽取剛好四個核心欄位都槓龜；同一份檔案重試一次，實測能救回相當比例，
@@ -701,7 +773,7 @@ export default async function handler(req: any, res: any) {
         fileCount: files.length,
         mimeTypes: files.map(file => file.mimeType),
       });
-      extracted = await extractListingFields(files, layoutText);
+      extracted = await extractListingFields(files, layoutText, visualLayoutText);
     }
 
     // 租賃與買賣核心欄位檢查

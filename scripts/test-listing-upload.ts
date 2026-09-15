@@ -46,10 +46,12 @@ try {
               state.documents.push(options);
               if (state.mode === "load-error") return { promise: Promise.reject(new Error("unreadable PDF")) };
               const page = {
+                // width／transform[3]（字高）是真實 pdf.js 一定會帶的欄位，
+                // 版面還原靠它們判斷欄位邊界，fixture 必須比照提供。
                 getTextContent: async () => ({ items: [
-                  { str: "無", transform: [1, 0, 0, 1, 100, 99] },
-                  { str: "礼金", transform: [1, 0, 0, 1, 0, 80] },
-                  { str: "敷金", transform: [1, 0, 0, 1, 0, 100] },
+                  { str: "無", width: 10, transform: [1, 0, 0, 10, 100, 99] },
+                  { str: "礼金", width: 20, transform: [1, 0, 0, 10, 0, 80] },
+                  { str: "敷金", width: 20, transform: [1, 0, 0, 10, 0, 100] },
                 ] }),
                 getViewport: ({ scale }) => ({ width: 200 * scale, height: 100 * scale }),
                 render: () => ({
@@ -122,7 +124,7 @@ try {
   const raw = { mimeType: "application/pdf", data: Buffer.from("raw-pdf").toString("base64") };
   let state = reset();
   assert.deepEqual(await pipeline.encodeForUpload(pdf), {
-    files: [{ mimeType: "image/jpeg", data: "anBlZw==" }, raw], layoutText: "敷金　無\n礼金",
+    files: [{ mimeType: "image/jpeg", data: "anBlZw==" }, raw], layoutText: "敷金　　無\n礼金",
   });
   assert.deepEqual(state.timeouts, [10000]);
   assert.equal(state.destroyed, 1);
@@ -137,11 +139,11 @@ try {
   const large = await pipeline.encodeForUpload(pdf);
   assert.equal(large.files.length, 1, "Combined size overflow retains the rendered image");
   assert.equal(large.files[0].mimeType, "image/jpeg");
-  assert.equal(large.layoutText, "敷金　無\n礼金");
+  assert.equal(large.layoutText, "敷金　　無\n礼金");
 
   for (const mode of ["blank", "timeout"] as const) {
     state = reset(mode);
-    assert.deepEqual(await pipeline.encodeForUpload(pdf), { files: [raw], layoutText: "敷金　無\n礼金" });
+    assert.deepEqual(await pipeline.encodeForUpload(pdf), { files: [raw], layoutText: "敷金　　無\n礼金" });
     assert.equal(state.cancelled, mode === "timeout" ? 1 : 0);
     assert.equal(state.destroyed, 1);
   }

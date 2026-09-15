@@ -18,30 +18,132 @@ import {
  *
  * 這一步只讀文字層、不需要 canvas 繪製，因此就算渲染失敗也拿得到。
  */
+type LayoutItem = { x: number; y: number; width: number; height: number; text: string };
+type LayoutRow = { anchorY: number; items: LayoutItem[] };
+/** 由字高集合取中位數，作為間距判斷的基準單位；空集合時回退到常見的 8pt 內文。 */
+function medianHeight(items: LayoutItem[]): number {
+  const heights = items.map(item => item.height).filter(height => height > 0).sort((a, b) => a - b);
+  return heights.length ? heights[Math.floor(heights.length / 2)] : 8;
+}
+
+/**
+ * 依 y 座標把文字項歸列。
+ *
+ * 容忍度以中位字高推導（夾在 1.5～4pt）：固定 4pt 對小字圖紙太寬鬆，
+ * レオパレス 版型實測會把跨 13pt 的 92 個文字項併成一列。
+ *
+ * 錨點 anchorY 一經建立就不再變動。先前寫成 (row.y + item.y) / 2，列中心會隨
+ * 新加入的項目往下漂，於是「剛好差 4pt」的下一列被吸進來、中心再往下移，
+ * 滾雪球般把整個表格串成一列。
+ */
+function groupIntoRows(items: LayoutItem[], unit: number): LayoutRow[] {
+  const tolerance = Math.min(4, Math.max(1.5, unit * 0.5));
+  const rows: LayoutRow[] = [];
+  for (const item of [...items].sort((a, b) => b.y - a.y)) {
+    const row = rows.find(candidate => Math.abs(candidate.anchorY - item.y) <= tolerance);
+    if (row) row.items.push(item);
+    else rows.push({ anchorY: item.y, items: [item] });
+  }
+  for (const row of rows) row.items.sort((a, b) => a.x - b.x);
+  return rows;
+}
+
+/**
+ * 把一列的文字項接成字串，分隔符依實際 x 間距決定。
+ *
+ * 先前一律用全形空格連接，但部分圖紙（レオパレス）每個字都是獨立文字項，
+ * 結果「■32型液晶テレビ」與「住所：」之間毫無邊界，地址整段黏死無法擷取。
+ * 改以間距還原：跨欄插全形雙空格、詞間插半形空格、緊鄰則直接相接。
+ */
+function renderRow(row: LayoutRow, unit: number): string {
+  let line = "";
+  row.items.forEach((item, index) => {
+    if (index > 0) {
+      const previous = row.items[index - 1];
+      const gap = item.x - (previous.x + previous.width);
+      if (gap > unit * 1.2) line += "　　";
+      else if (gap > unit * 0.35) line += " ";
+    }
+    line += item.text;
+  });
+  return line;
+}
+
+const VERTICAL_LABEL_PATTERN = /^(礼金|礼⾦|敷金|敷⾦|家賃|賃料|共益費|管理費|保証金|保証⾦|償却|敷引|更新料)/u;
+
+/** 把一列切成「以較大間距分隔」的欄位區塊，讓標題與值能以 x 範圍比對。 */
+function splitIntoBlocks(row: LayoutRow, unit: number) {
+  const blocks: Array<{ text: string; left: number; right: number }> = [];
+  for (const item of row.items) {
+    const last = blocks[blocks.length - 1];
+    if (last && item.x - last.right <= unit * 1.2) {
+      last.text += item.text;
+      last.right = item.x + item.width;
+    } else {
+      blocks.push({ text: item.text, left: item.x, right: item.x + item.width });
+    }
+  }
+  return blocks;
+}
+
+/**
+ * 直向表格的欄位對位：標題列在上、資料列在下，靠 x 範圍重疊配對。
+ *
+ * レオパレス 版型的「礼金」標題在 y=174.5，值「1」在 y=135，相隔 39pt，
+ * 中間還隔著其他基線——任何列合併門檻都併不到一起，唯一線索是 x 座標對齊。
+ * 而該圖紙只有「礼金」二字在文字層（其餘標題都是背景圖），所以也無法靠
+ * 整列文字推斷。這裡把明確配對出來的結果附在版面文字末尾供 AI 參考。
+ *
+ * 橫向表格（敷金｜值｜礼金｜值）不受影響：標題右方緊接著就有值，
+ * 迴圈只在同列找不到值時才往下找，不會產生錯誤配對。
+ */
+function buildVerticalPairs(rows: LayoutRow[], unit: number): string[] {
+  const rowBlocks = rows.map(row => ({ y: row.anchorY, blocks: splitIntoBlocks(row, unit) }));
+  const pairs: string[] = [];
+  for (let i = 0; i < rowBlocks.length; i += 1) {
+    for (const label of rowBlocks[i].blocks) {
+      const labelText = label.text.replace(/\s/gu, "");
+      if (!VERTICAL_LABEL_PATTERN.test(labelText)) continue;
+      // 標題右側「緊鄰」有值才算橫向表格，交給既有的逐列文字即可。
+      // 必須限定距離：レオパレス 版型的「礼金」右方雖然也有文字，但那是隔了
+      // 大半頁的設備欄（■TVモニター付インターホン），不是這一格的值。
+      if (rowBlocks[i].blocks.some(block =>
+        block.left > label.right && block.left - label.right <= unit * 4 && block.text.trim())) continue;
+      for (let j = i + 1; j < rowBlocks.length; j += 1) {
+        if (rowBlocks[i].y - rowBlocks[j].y > unit * 8) break;
+        const hit = rowBlocks[j].blocks.find(block =>
+          Math.min(label.right, block.right) - Math.max(label.left, block.left) > -unit * 0.5);
+        if (!hit || !hit.text.trim()) continue;
+        if (VERTICAL_LABEL_PATTERN.test(hit.text.replace(/\s/gu, ""))) break;
+        pairs.push(`${labelText}：${hit.text}`);
+        break;
+      }
+    }
+  }
+  return [...new Set(pairs)];
+}
+
 export async function extractPdfLayoutText(pdf: PDFDocumentProxy): Promise<string> {
   const page = await pdf.getPage(1);
   const content = await page.getTextContent();
   // getTextContent() defaults to includeMarkedContent: false.
-  const items = (content.items as TextItem[])
-    .map((item) => ({ x: item.transform[4], y: item.transform[5], text: String(item.str || "").trim() }))
-    .filter((item: { text: string }) => item.text);
+  const items: LayoutItem[] = (content.items as TextItem[])
+    .map((item) => ({
+      x: item.transform[4],
+      y: item.transform[5],
+      width: item.width ?? 0,
+      height: Math.abs(item.transform[3]) || 0,
+      text: String(item.str || "").trim(),
+    }))
+    .filter((item) => item.text);
+  if (!items.length) return "";
 
-  const rows: Array<{ y: number; items: Array<{ x: number; text: string }> }> = [];
-  for (const item of items.sort((a, b) => b.y - a.y)) {
-    // 同一列的字有輕微高低差（例如 586.2 與 584.5），4pt 內視為同列；
-    // 相鄰兩列間距約 7pt 以上，不會誤併。
-    const row = rows.find(candidate => Math.abs(candidate.y - item.y) <= 4);
-    if (row) {
-      row.items.push(item);
-      row.y = (row.y + item.y) / 2;
-    } else {
-      rows.push({ y: item.y, items: [item] });
-    }
-  }
-  return rows
-    .map(row => row.items.sort((a, b) => a.x - b.x).map(item => item.text).join("　"))
-    .join("\n")
-    .slice(0, MAX_LAYOUT_TEXT_CHARS);
+  const unit = medianHeight(items);
+  const rows = groupIntoRows(items, unit);
+  const layout = rows.map(row => renderRow(row, unit)).join("\n");
+  const pairs = buildVerticalPairs(rows, unit);
+  const supplement = pairs.length ? `\n\n［欄位垂直對位］\n${pairs.join("\n")}` : "";
+  return (layout + supplement).slice(0, MAX_LAYOUT_TEXT_CHARS);
 }
 
 

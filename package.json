@@ -52,6 +52,7 @@
     "test:consumer-listing": "tsx scripts/test-consumer-listing.ts",
     "test:refactor-contracts": "tsx scripts/test-refactor-contracts.ts",
     "test:listing-upload": "tsx scripts/test-listing-upload.ts",
+    "test:pdf-layout": "tsx scripts/test-pdf-layout-text.ts",
     "test:controller-flows": "tsx scripts/test-controller-flows.ts"
   },
   "dependencies": {
