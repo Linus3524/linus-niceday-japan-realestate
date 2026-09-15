@@ -464,6 +464,154 @@ function toInlinePart(file: UploadedFile) {
 }
 
 /**
+ * 從圖紙文字層取出「站名＋徒歩分鐘」的集合，作為 AI 漏抄的校驗基準。
+ *
+ * ⚠️ 這個函式刻意**不做去重、也不回傳數量**，理由見下。
+ *
+ * 不能直接數「徒歩X分」的出現次數——販売図面在交通欄以外還有很多地方寫徒歩：
+ * 周辺環境（スーパー 徒歩3分）、備考（最寄駅まで徒歩7分）、生活環境
+ * （小学校 徒歩8分、商店街 徒歩4分）。全部算進去會讓一份只有 2 條動線的
+ * 圖紙被判成 3～4 條，前端於是跳出「可能有路線未被完整讀取」的假警報，
+ * 反而讓使用者不信任真正的漏抄提醒。
+ *
+ * 行過濾（必須同時有車站標記與徒歩時間）能擋掉生活設施，但擋不掉重複刊載：
+ * 販売図面很常把最強的那條動線印兩次，頁首標題橫幅一次、交通欄一次
+ * （「the trias magome　都営浅草線「西馬込」徒歩4分」）。兩行條件全符合。
+ *
+ * 曾經試圖用「路線＋站名＋分鐘」去重再比數量，但那個方向本身是錯的：
+ * 數量比較要求去重 100% 精準，而去重恰恰是純 regex 最不擅長的語意判斷——
+ * 重複行常省略路線名（標語只寫「東武練馬駅徒歩6分」），識別碼就對不上。
+ * 實測兩份真實圖紙連錯兩次（trias magome 2→3、excelan 3→4）。
+ *
+ * 改為集合涵蓋比較後，去重精度變得完全不重要：
+ * 問的是「圖紙上有沒有哪個『站名＋分鐘』完全不在解析結果裡」，
+ * 同一條動線重複出現 N 次也只是同一個 key，只要被涵蓋就不觸發。
+ * 真正的漏抄（整條路線沒讀到）則必然留下一個未涵蓋的 key，照樣抓得到。
+ *
+ * 站名以「正規化後包含」比對，寬鬆一階：圖紙寫法與 AI 輸出常有
+ * 「駅」「ケ/ヶ」「全半形」等差異，寧可放過也不要誤報。
+ */
+export interface FlyerTransitStop {
+  /** 正規化後的站名，用於與解析結果比對。 */
+  station: string;
+  /** 徒歩分鐘數。 */
+  walkMin: number;
+  /** 原始行文字，供 console.warn 診斷用。 */
+  sourceLine: string;
+}
+
+export function extractFlyerTransitStops(layoutText: string): FlyerTransitStop[] {
+  const STATION_MARK = /(?:駅|站|線|ライン|エクスプレス|モノレール|新交通)/;
+  const WALK_MARK = /徒歩\s*\d+\s*分/;
+
+  /**
+   * 備考／宣傳文案行：雖然帶「駅」字，但講的是同一條動線而非新增動線。
+   * 例：「備考 最寄駅まで徒歩7分の好立地」「駅近徒歩5分の物件です」。
+   * 交通欄的動線是「站名＋時間」的條列，不會有這些敘述性語彙。
+   */
+  const PROSE_MARK = /(?:備考|特記|コメント|セールス|ポイント|最寄駅まで|まで徒歩|好立地|物件です|閑静)/;
+
+  const stops: FlyerTransitStop[] = [];
+
+  // 先做 NFKC 再折疊部首字元：PDF 文字層的「⻄」「⻝」等與一般漢字外觀相同
+  // 但碼位不同，不折疊的話站名永遠比不相等（見 normalizeStationKey）。
+  for (const rawLine of foldCjkRadicals(layoutText.normalize("NFKC")).split(/\r?\n/)) {
+    if (!WALK_MARK.test(rawLine)) continue;
+    if (!STATION_MARK.test(rawLine)) continue;
+    // 「バス停」「バス」屬接駁動線，仍算一條；但純設施行（小学校・スーパー）
+    // 沒有車站標記，上一個條件已擋掉。
+    if (PROSE_MARK.test(rawLine)) continue;
+
+    // 同一行可能寫了兩條動線（「A駅 徒歩5分／B駅 徒歩8分」），逐一取出。
+    for (const match of rawLine.matchAll(/徒歩\s*(\d+)\s*分/g)) {
+      const station = normalizeStationKey(identifyStation(rawLine.slice(0, match.index)));
+      // 取不出站名就不能拿來校驗——沒有比對依據時一律放過，不猜。
+      if (!station) continue;
+      stops.push({ station, walkMin: Number(match[1]), sourceLine: rawLine.trim() });
+    }
+  }
+
+  return stops;
+}
+
+/**
+ * 站名比對用的正規化。
+ *
+ * ⚠️ 絕不可在這裡剝除「東武」「京王」等營運商前綴：站名本身就可能以營運商名
+ * 開頭（東武練馬、京王八王子、東急多摩川），剝掉會把「東武練馬」變成「練馬」，
+ * 那是另一個真實存在的車站。實測 excelan 圖紙因此讓漏抄 2 條完全不報。
+ * 前綴差異改由 isStopCovered 的雙向包含比對吸收。
+ *
+ * 另需處理 PDF 文字層混入的部首字元：日文圖紙嵌入字型時，
+ * 「西」偶爾會被存成部首「⻄」(U+2EC4)。兩者外觀相同、碼位不同，
+ * 且 CJK Radicals Supplement 這一段 **NFKC 與 NFKD 都不會轉換**，
+ * 必須明確對照（實測 the trias magome 就是栽在這個字上而誤報）。
+ */
+function normalizeStationKey(station: string): string {
+  return foldCjkRadicals(station.normalize("NFKC"))
+    .replace(/[駅站]$/u, "")
+    .replace(/ヶ/gu, "ケ")
+    .replace(/\s/gu, "")
+    .toLowerCase();
+}
+
+/**
+ * 把 CJK 部首補充區（U+2E80–U+2EFF）的字元折回一般漢字。
+ *
+ * Kangxi Radicals（U+2F00–U+2FDF）NFKC 已能處理，這裡補的是 NFKC 覆蓋不到、
+ * 但在日文 PDF 文字層實際出現過的常見站名用字。
+ */
+const CJK_RADICAL_FOLD: Record<string, string> = {
+  "⻄": "西", "⺟": "母", "⻑": "長", "⻘": "青", "⻩": "黄",
+  "⻢": "馬", "⻱": "亀", "⺠": "民", "⻝": "食", "⻤": "鬼",
+};
+function foldCjkRadicals(text: string): string {
+  return text.replace(/[\u2E80-\u2EFF]/gu, char => CJK_RADICAL_FOLD[char] ?? char);
+}
+
+/**
+ * 圖紙上的某個「站名＋分鐘」是否已被解析結果涵蓋。
+ *
+ * 站名比對是**單向**包含：只容許 leg 比圖紙長（AI 輸出殘留「JR」前綴時
+ * 「JR両国」仍能對上圖紙的「両国」），但不容許 leg 比圖紙短。
+ * 雙向包含會讓「練馬」被判定為涵蓋了圖紙上的「東武練馬」——那是兩個不同車站，
+ * 真的抓錯站時反而靜默。分鐘數則允許 ±1 的排版誤差。
+ * 這裡的目標是「整條路線完全沒讀到」這種大事故，不是逐字校對。
+ */
+export function isStopCovered(stop: FlyerTransitStop, legs: TransitLeg[]): boolean {
+  return legs.some(leg => {
+    const legStation = normalizeStationKey(leg.stationName || "");
+    if (!legStation) return false;
+    if (!legStation.includes(stop.station)) return false;
+    const legMin = transitLegTotalMinutes(leg);
+    // 解析不出分鐘數時只認站名，避免因缺值誤報。
+    if (legMin === null) return true;
+    return Math.abs(legMin - stop.walkMin) <= 1;
+  });
+}
+
+/** 從「徒歩X分」左側文字取最靠近的站名，作為動線識別的一部分。 */
+function identifyStation(prefix: string): string {
+  // 圖紙站名幾乎都寫在括號內（「西馬込」）；取最後一個即為本段動線的站。
+  const quoted = [...prefix.matchAll(/[「『]([^」』]{1,12})[」』]/g)];
+  if (quoted.length) return quoted[quoted.length - 1][1].replace(/\s/gu, "");
+
+  // 無括號版型（「馬込駅 徒歩5分」）退而求其次，取「駅」前的連續字串。
+  const bare = [...prefix.matchAll(/([^\s、,／/｜|（(]{1,12})[駅站]/g)];
+  if (bare.length) return bare[bare.length - 1][1].replace(/\s/gu, "");
+
+  // 連「駅」都省略的版型（「都営三田線 西台 徒歩28分」）：
+  // 取路線名之後、徒歩之前的那一段文字當站名。excelan 圖紙的第 2、3 條動線
+  // 就是這種寫法，不支援的話整條漏抄都偵測不到。
+  const afterLine = prefix.match(
+    /(?:線|ライン|エクスプレス|モノレール|新交通)\s*([^\s、,／/｜|（(]{1,12})\s*$/u
+  );
+  if (afterLine) return afterLine[1].replace(/\s/gu, "");
+
+  return "";
+}
+
+/**
  * 圖片圖紙的費用表轉寫（PDF 以外的路徑專用）。
  *
  * layoutText 只有 PDF 有——它來自文字層座標還原。單張圖片（拍照、截圖、掃描）
@@ -548,7 +696,14 @@ async function extractListingFields(
       絕不可因站名相同而只填一列！
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
     - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站或多條路線，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。巴士接駁也要照抄，含「バス○分」與巴士站名，例如 "JR中央線 三鷹駅 バス15分 バス停「野崎」徒歩3分"。
+    - 只採計「交通」欄（或同等的アクセス／最寄駅欄）裡條列的動線。図面常把最強的那條動線
+      重複印在頁首標題橫幅或宣傳標語上（例如標題寫「○○マンション 都営浅草線「西馬込」徒歩4分」，
+      下方交通欄又正式列一次），那是同一條動線的重述，**不可**因此多輸出一條。
+      判斷依據是它在版面上的位置與角色：條列在交通欄內的才算，標題、標語、備考裡的不算。
+    - 反過來說，交通欄裡確實條列的每一列都必須輸出，即使字級較小、排在最下面、
+      或與前一列站名相同（同站不同路線是不同動線）。寧可完整也不要漏列。
     - 輸出前逐列點算交通欄：transitAccess 的路線數、transitLegs 的物件數、station 的車站數、walkTime 的數字數量必須一致。
+      點算的對象是交通欄的實際列數，不含標題與標語的重述。
 
     租金與各項租約費用（若為租賃圖紙）：
     - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。
@@ -1057,20 +1212,43 @@ export default async function handler(req: any, res: any) {
     // 抓得到「解析階段漏條」；但如果是 Gemini 自己只抄了第一列，station 與 legs
     // 會同時是 1、看起來一致，那條稽核完全靜默——2026-09 的漏失就是這樣潛伏的。
     //
-    // 圖紙文字層是唯一不受 AI 判讀影響的基準：它直接來自 PDF 文字層座標還原，
-    // 上面有幾個「徒歩X分」就是幾條動線。這裡用它回頭校驗 AI 的輸出。
+    // 交通動線漏抄的觀測指標——**只寫伺服器日誌，不對使用者顯示**。
+    //
+    // 這道校驗曾經會寫入 transitShortfallNotice 直接顯示在畫面上，後來降級，
+    // 原因值得完整記錄，避免日後又被「補強」回去：
+    //
+    // 1) 它和模型之間有無法消除的資訊落差。Gemini 讀的是圖——版面位置、字級、
+    //    框線、欄位角色都看得到；這裡讀的是 extractPdfLayoutText 抽平後的字串。
+    //    標題橫幅與交通欄在視覺上截然不同，在文字層裡卻長得一模一樣。
+    //    丟掉模型賴以判斷的全部資訊，卻要求判得比它準，本來就做不到。
+    //
+    // 2) 實績是誤報兩次、真陽性零次。trias magome（實際 2 條判成 3 條）與
+    //    excelan 東武練馬（實際 3 條判成 4 條）都是重複刊載造成的假警報。
+    //    而歷史上三起真實的動線漏失（2026-09 同名站漏失 d61dd61、
+    //    walkTime index 錯位 3daa5c1）肇因都在 transitParser，不是模型判讀；
+    //    那兩處都已在各自的 commit 修好，解析器才是第一道也是真正的防線。
+    //
+    // 3) 誤報與漏報的代價不對等。假警報會連帶稀釋價格異常、契約風險這些
+    //    真正要命的提醒的可信度；而漏報只是回到「沒有這層保險」的狀態。
+    //
+    // 判斷重複刊載需要版面語意，那是模型的守備範圍，已寫進 extractListingFields
+    // 的提示詞（交通欄以外的重述不得計入）。同一解讀者的內部一致性則由
+    // listingAudit 的 transit-legs-shortfall 比對 station 數與 legs 數負責。
+    // 這裡保留日誌是為了讓新版型浮現在 log 上，據以回頭修 transitParser 或提示詞。
+    //
+    // 比對方式是「集合涵蓋」而非「數量相等」：只問圖紙上的每個「站名＋徒歩分鐘」
+    // 有沒有落在解析結果裡。重複刊載因此自然無害，不需要精準去重。
     if (layoutText) {
-      const advertisedLegCount = (layoutText.normalize("NFKC").match(/徒歩\s*\d+\s*分/g) || []).length;
-      if (advertisedLegCount > transitLegs.length) {
-        console.warn("analyze-listing: 交通動線疑似漏抄", {
-          layoutLegCount: advertisedLegCount,
+      const uncovered = extractFlyerTransitStops(layoutText)
+        .filter(stop => !isStopCovered(stop, transitLegs));
+      const missing = [...new Map(uncovered.map(stop => [stop.station, stop])).values()];
+      if (missing.length) {
+        console.warn("analyze-listing: 交通動線疑似漏抄（僅記錄，不顯示給使用者）", {
+          missing: missing.map(stop => ({ station: stop.station, walkMin: stop.walkMin, line: stop.sourceLine })),
           parsedLegCount: transitLegs.length,
           transitAccess: extracted.transitAccess,
           station: extracted.station,
         });
-        extracted.transitShortfallNotice =
-          `圖紙文字層可見 ${advertisedLegCount} 條交通動線，本次僅讀出 ${transitLegs.length} 條；`
-          + `可能有路線未被完整讀取，請以圖紙原文為準。`;
       }
     }
 

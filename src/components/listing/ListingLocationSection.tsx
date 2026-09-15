@@ -83,7 +83,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
               type="button"
               onClick={() => void loadLocationContext(result)}
               disabled={locationLoading}
-              className="flex items-center gap-1 border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] hover:bg-[#E8ECE9] hover:text-[#1A2A22]"
+              className="flex items-center gap-1 border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] hover:bg-[#EEF2F0] hover:text-[#1A2A22]"
               title="重新整理周邊生活機能設施"
             >
               <RefreshCw className={`h-3 w-3 ${locationLoading ? "animate-spin" : ""}`} /> 重新整理
@@ -92,16 +92,14 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
         </div>
 
         {locationContext.notices?.map(notice => (
-          <p key={notice} className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">{notice}</p>
+          <p key={notice} className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-xs leading-relaxed text-[#854D0E]">{notice}</p>
         ))}
 
-        {/* 圖紙文字層顯示的動線比實際讀出的多，代表可能有路線沒被讀到。
-            這種情況使用者無從察覺，必須主動說。 */}
-        {result?.extracted?.transitShortfallNotice && (
-          <p className="bg-[#FFF9ED] p-3 text-xs leading-relaxed text-[#7A5A1F]">
-            {result.extracted.transitShortfallNotice}
-          </p>
-        )}
+        {/* 這裡原本顯示「圖紙文字層可見 N 條動線，僅讀出 M 條」的提醒，已移除。
+            該判斷由抽平後的文字層以 regex 推算，看不到版面角色，無法分辨
+            標題橫幅的重述與交通欄的條列，實測連續誤報兩份真實圖紙。
+            現降級為 analyze-listing 的伺服器日誌；動線完整性改由提示詞
+            （交通欄以外的重述不計入）與 listingAudit 的內部一致性檢查負責。 */}
 
         {/* 實際步行時間比對：改為緊湊俐落的水平卡片，不再鬆散佔位 */}
         {locationContext.stationWalks.length > 0 && (

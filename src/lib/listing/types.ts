@@ -138,8 +138,7 @@ export interface ExtractedFields extends SpecialSaleFields, RentalConditionField
   station: string;
   walkTime: string;
   transitAccess?: string;
-  /** 圖紙文字層顯示的動線數多於實際讀出時的提醒；正常情況為 undefined。 */
-  transitShortfallNotice?: string;
+
   layout: string;
   rent: string;
   managementFee: string;
