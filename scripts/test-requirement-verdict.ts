@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildRentRecommendations, computeStackedEstimate, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, type RentSearchCriteria } from "../src/lib/rentAnalysis";
+import { buildRentRecommendations, computeStackedEstimate, enrichRentCriteriaFromPrompt, getRentModifierIds, RECOMMENDATION_LIMIT, resolveUncoveredNeeds, type RentSearchCriteria } from "../src/lib/rentAnalysis";
 import { districtStations, rentRates } from "../src/data/housingMarket";
 import {
   axisImpactLevel,
@@ -57,6 +57,31 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       });
       assert.ok(result.axes.some(axis => axis.key === "pet" && axis.detail === "可養貓"));
       assert.equal(result.axes.some(axis => axis.key === "otherCoreNeeds"), false);
+    }
+  },
+  {
+    // 條件標籤（RentCriteriaSummary）先前自己串接 otherNeeds，沒有套用重複過濾，
+    // 於是 petsAllowed + otherNeeds:["可養貓"] 會讓「可養貓」在特殊條件出現兩次。
+    name: "已由專屬欄位呈現的條件不會重複列入其他需求",
+    run: () => {
+      const criteria: RentSearchCriteria = {
+        ...base,
+        petsAllowed: true,
+        petType: "貓",
+        balcony: true,
+        floorMin: 2,
+        gasBurnersMin: 2,
+        otherNeeds: ["可養貓", "2 樓以上", "陽台", "瓦斯爐2個以上"]
+      };
+      assert.deepEqual(resolveUncoveredNeeds(criteria, criteria.otherNeeds || []), []);
+    }
+  },
+  {
+    name: "沒有對應欄位的其他需求要保留並去重",
+    run: () => {
+      const criteria: RentSearchCriteria = { ...base, otherNeeds: ["可養貓", "採光良好", "採光良好"] };
+      // petsAllowed 未設定時不可過濾寵物條件，否則需求會整個消失。
+      assert.deepEqual(resolveUncoveredNeeds(criteria, criteria.otherNeeds || []), ["可養貓", "採光良好"]);
     }
   },
   {

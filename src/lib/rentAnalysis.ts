@@ -272,6 +272,64 @@ function conditionPriority(prompt: string, keyword: RegExp): "required" | "prefe
   return "required";
 }
 
+/**
+ * otherNeeds 與結構化欄位重複時的對照表。
+ *
+ * 模型很常「兩邊都填」：既回傳 petsAllowed / petType，又在 otherNeeds 放一則「可養貓」。
+ * 兩邊各自渲染的話，同一條需求會在畫面上出現兩次（條件標籤出現兩顆「可養貓」、
+ * 條件計數也跟著多算一項）。設備類條件同樣會發生（陽台、獨立洗面台、免禮金…）。
+ *
+ * 判斷準則：該欄位真的有值時，otherNeeds 裡講同一件事的短詞就交給欄位顯示。
+ * 欄位沒值時不過濾——那代表模型只填了 otherNeeds，濾掉會讓條件整個消失。
+ */
+const DEDICATED_NEED_PATTERNS: Array<[(criteria: RentSearchCriteria) => boolean, RegExp]> = [
+  [criteria => criteria.petsAllowed === true, /可養|能養|可养|能养|寵物|宠物|貓|猫|狗|犬|ペット/],
+  [criteria => criteria.furnished === true, /家具|家電|家电/],
+  [criteria => criteria.washbasin === true, /獨立洗面台|独立洗面台|洗面台|洗面所/],
+  [criteria => criteria.bidet === true, /免治馬桶|免治马桶|溫水洗淨|温水洗净|溫水清淨|温水清净|ウォシュレット/],
+  [criteria => criteria.separateBath === true, /乾濕分離|乾溼分離|衛浴分離|浴廁分離|浴室分離|バス・?トイレ別|風呂トイレ別|セパレート/],
+  [criteria => criteria.autoLock === true, /自動門|自动门|オートロック/],
+  [criteria => criteria.elevator === true, /電梯|电梯|エレベーター/],
+  [criteria => criteria.balcony === true, /陽台|阳台|ベランダ|バルコニー/],
+  [criteria => criteria.freeInternet === true, /免費網路|免费网络|網路免費|网络免费|ネット無料/],
+  [criteria => criteria.tower === true, /塔樓|塔楼|タワー/],
+  [criteria => criteria.noKeyMoney === true, /免禮金|免礼金|禮金\s*(?:0|零)|礼金\s*(?:0|ゼロ)/],
+  [criteria => criteria.noDeposit === true, /免押金|免敷金|押金\s*(?:0|零)|敷金\s*(?:0|ゼロ)/],
+  [criteria => criteria.cityGasRequired === true, /都市瓦斯|都市ガス/],
+  [criteria => criteria.gasBurnersMin != null, /爐具|炉具|瓦斯爐|瓦斯炉|ガスコンロ|コンロ/],
+  [criteria => criteria.floorMin != null, /樓以上|楼以上|階以上/]
+];
+
+/** 條件短詞比對用的正規化；地名專用的 normalize 會吃掉路線關鍵字，不適合拿來比條件。 */
+const normalizeNeed = (value?: string | null) => (value || "")
+  .toLowerCase()
+  .replace(/[\s・･（）()、,，]/g, "");
+
+/** 這個條件是否已由專屬結構化欄位負責呈現／評估。 */
+export function isNeedCoveredByDedicatedField(criteria: RentSearchCriteria, condition: string): boolean {
+  if (!condition?.trim()) return false;
+  return DEDICATED_NEED_PATTERNS.some(([hasField, pattern]) => hasField(criteria) && pattern.test(condition));
+}
+
+/**
+ * 取出「真的還沒被結構化欄位涵蓋」的其他需求，並去除重複短詞。
+ * 條件標籤與需求評估都吃這個結果，兩邊才不會各自算出不同的條件數。
+ */
+export function resolveUncoveredNeeds(criteria: RentSearchCriteria, needs: Array<string | null | undefined>): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const need of needs) {
+    const label = need?.trim();
+    if (!label) continue;
+    if (isNeedCoveredByDedicatedField(criteria, label)) continue;
+    const key = normalizeNeed(label);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    result.push(label);
+  }
+  return result;
+}
+
 /** 在留資格分類；文案分流以此為準，不再用零散的關鍵字判斷。 */
 export type VisaCategory = "work" | "student" | "workingHoliday" | "family" | "longTerm" | "other" | "unknown";
 

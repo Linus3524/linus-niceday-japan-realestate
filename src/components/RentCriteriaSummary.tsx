@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { RentSearchCriteria } from "../lib/rentAnalysis";
-import { ROOM_TYPE_LABEL } from "../lib/rentAnalysis";
+import { ROOM_TYPE_LABEL, resolveUncoveredNeeds } from "../lib/rentAnalysis";
 import { criteriaTagStyle } from "../lib/criteriaTagStyles";
 import { toJapaneseStationName } from "../lib/transit";
 
@@ -85,11 +85,15 @@ export function RentCriteriaSummary({ criteria }: { criteria: RentSearchCriteria
     criteria.tower && { label: "塔樓大廈", category: "equipment" as const }
   ].filter(Boolean) as SummaryItem[];
 
+  // otherNeeds 會與上面的結構化欄位重複（模型常同時回傳 petsAllowed 與 otherNeeds:["可養貓"]），
+  // 直接串接會讓同一條件出現兩顆標籤、條件總數也多算。與需求評估共用同一套過濾規則。
+  const otherNeeds = resolveUncoveredNeeds(criteria, criteria.otherNeeds || []);
+
   const specialItems: SummaryItem[] = [
     criteria.petsAllowed && { label: criteria.petType ? `可養${criteria.petType}` : "可養寵物", category: "special" as const },
     criteria.noKeyMoney && { label: "免禮金", category: "special" as const },
     criteria.noDeposit && { label: "免押金", category: "special" as const },
-    ...(criteria.otherNeeds || []).map(label => ({ label, category: "special" as const }))
+    ...otherNeeds.map(label => ({ label, category: "special" as const }))
   ].filter(Boolean) as SummaryItem[];
 
   const renderChip = (item: SummaryItem, index: number) => (
@@ -112,7 +116,7 @@ export function RentCriteriaSummary({ criteria }: { criteria: RentSearchCriteria
         type="button"
         onClick={() => setExpanded(current => !current)}
         aria-expanded={expanded}
-        className="flex w-full items-center justify-between border-y border-[#DDE3DF] py-2 text-left text-[10px] font-bold text-[#52635A] transition-colors hover:text-[#007D5A]"
+        className="flex w-full items-center justify-between border-y border-[#DDE3DF] py-2 text-left text-[10px] font-bold text-[#3F5147] transition-colors hover:text-[#007D5A]"
       >
         <span>搜尋條件・共 {allItems.length} 項</span>
         <span className="inline-flex items-center gap-1">
@@ -124,7 +128,7 @@ export function RentCriteriaSummary({ criteria }: { criteria: RentSearchCriteria
         <div className="space-y-2.5 pt-3">
           {groups.map(group => (
             <div key={group.label} className="grid grid-cols-1 gap-1.5 sm:grid-cols-[108px_minmax(0,1fr)] sm:gap-3">
-              <span className="pt-0.5 text-[9px] font-bold text-[#7A8580]">{group.label}</span>
+              <span className="pt-0.5 text-[9px] font-bold text-[#8A9590]">{group.label}</span>
               <div className="flex flex-wrap gap-1.5">{group.items.map(renderChip)}</div>
             </div>
           ))}

@@ -1,4 +1,5 @@
 import {
+resolveUncoveredNeeds,
 resolveVisaCategory,
 ROOM_TYPE_LABEL,
 type RentRecommendation,
@@ -492,12 +493,11 @@ export function otherCoreNeedsAxis(criteria: RentSearchCriteria): AxisVerdict | 
   // 已有專屬評估軸的結構化條件不能再落入「其他核心條件」。
   // AI 常會同時回傳 petsAllowed / petType 與 otherNeeds: ["可養貓"]；
   // 若不排除，同一條需求會在「特殊條件」與此處各顯示一次。
-  const handledByDedicatedAxis = (condition: string) =>
-    (criteria.petsAllowed === true && /可養|能養|寵物|宠物|貓|猫|狗|犬/.test(condition)) ||
-    (criteria.furnished === true && /家具|家電|家电/.test(condition));
-
-  const unverified = [...new Set([...(criteria.unverifiedConditions || []), ...(criteria.otherNeeds || [])])]
-    .filter(condition => !handledByDedicatedAxis(condition));
+  // 過濾規則與條件標籤共用 resolveUncoveredNeeds，兩邊才不會各自算出不同的條件集合。
+  const unverified = resolveUncoveredNeeds(criteria, [
+    ...(criteria.unverifiedConditions || []),
+    ...(criteria.otherNeeds || [])
+  ]);
   if (!unverified.length) return null;
 
   const priorityOf = (condition: string) => criteria.otherNeedPriorities?.[condition] || "required";
