@@ -2,6 +2,7 @@ import {
   formatShikibiki,
   hasExplicitZeroLeaseCharge,
   isFreeOrZero,
+  normalizeMonthUnit,
   parseGuaranteeFee,
   parseYenAmount
 } from "../../listingExtraction.js";
@@ -44,8 +45,9 @@ export function calculateInitialCostBreakdown(params: {
   const depositAmount = depositExplicitZero ? 0 : deposit ?? 0;
   let rawShikibiki = params.extractedShikibiki || "";
   if (!rawShikibiki || isFreeOrZero(rawShikibiki)) {
-    const fromDeposit = params.extractedDeposit?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0];
-    const fromNotes = params.specialNotes?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0];
+    // 先把「1ケ月」正規化成「1ヶ月」再比對，否則敷引月數整筆讀不到、初期費用少算。
+    const fromDeposit = normalizeMonthUnit(params.extractedDeposit || "").match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0];
+    const fromNotes = normalizeMonthUnit(params.specialNotes || "").match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0];
     if (fromDeposit) rawShikibiki = fromDeposit;
     else if (fromNotes) rawShikibiki = fromNotes;
   }

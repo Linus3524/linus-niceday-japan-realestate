@@ -1,10 +1,11 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, PartMediaResolutionLevel as MediaResolutionLevel, Type } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { districtStations, rentRates } from "../src/data/housingMarket.js";
 import { getNationwideRentBenchmark } from "../src/data/nationwideRentMarket.js";
 import { auditKeys, buildListingAudit } from "../src/lib/listingAudit.js";
 import {
+  normalizeMonthUnit,
   normalizeRoomType,
   normalizeStructure,
   parseAgeYears,
@@ -222,7 +223,9 @@ function validateFiles(files: unknown): UploadedFile[] {
 }
 
 function leaseTermValue(row: string, labels: string[]) {
-  const normalized = row.normalize("NFKC");
+  // normalizeMonthUnit：圖紙常把月數寫成「1ケ月」（正常大小的ケ），
+  // 統一成「ヶ月」後下面的比對只需要認一種寫法。
+  const normalized = normalizeMonthUnit(row.normalize("NFKC"));
   const labelPattern = labels.join("|");
   return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|無|不要)`, "i"))?.[1]?.trim() || null;
 }
@@ -278,7 +281,7 @@ async function verifyLeaseCharges(
   try {
     const response = await getAiClient().models.generateContent({
       model: "gemini-3.8-flash",
-      contents: { parts: [...inputs.map(file => ({ inlineData: file })), { text: prompt }] },
+      contents: { parts: [...inputs.map(toInlinePart), { text: prompt }] },
       config: {
         temperature: 0,
         responseMimeType: "application/json",
@@ -328,11 +331,46 @@ function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListin
 }
 
 function reconcileTransitAccess(extracted: ExtractedListingFields): ExtractedListingFields {
-  const legs = parseTransitAccessLegs(extracted.transitAccess);
+  let legs: TransitLeg[] = [];
+  if (Array.isArray(extracted.transitLegs) && extracted.transitLegs.length > 0) {
+    legs = extracted.transitLegs
+      .filter((leg: any) => leg && typeof leg.stationName === "string" && leg.stationName.trim())
+      .map((leg: any) => ({
+        lineName: String(leg.lineName || "").trim(),
+        stationName: stripStationOperatorPrefix(String(leg.stationName).replace(/[「」『』【】\[\]［］駅]/gu, "").trim()),
+        walkMin: typeof leg.walkMin === "number" && Number.isFinite(leg.walkMin) ? leg.walkMin : null,
+        busMin: typeof leg.busMin === "number" && Number.isFinite(leg.busMin) ? leg.busMin : undefined,
+        busStop: typeof leg.busStop === "string" && leg.busStop.trim() ? leg.busStop.trim() : undefined,
+      }))
+      .filter(leg => Boolean(leg.stationName) && isPlausibleStationToken(leg.stationName));
+  }
+  if (!legs.length) {
+    legs = parseTransitAccessLegs(extracted.transitAccess);
+  }
   if (!legs.length) return extracted;
   // legs 是事實來源；station／walkTime 由它序列化而來，因此兩者必定等長。
   // 先前這兩個欄位各自維護，某一層對其中一個去重就會靜默錯位（2026-09 的漏失 bug）。
   return { ...extracted, transitLegs: legs, ...serializeTransitLegs(legs) };
+}
+
+/**
+ * 圖紙一律以 medium 解析度送出。
+ *
+ * 官方對 PDF 的建議值即為 medium（「quality typically saturates at medium，
+ * 提高到 high 對標準文件的 OCR 結果幾乎沒有改善」），實測也支持：
+ * 以レオパレス図面（2200px JPEG 與原始 PDF）各跑 5 次，預設／medium／high
+ * 在礼金、家賃、専有面積、鍵交換費、退去清掃費、保証委託料、火災保険、
+ * 住所、築年數等欄位全部 5/5 相同，但 medium 的 prompt token 比預設少
+ * 約 43～47%（圖片 1307→747、1197→637）。
+ *
+ * 也就是說預設值對這類單頁図面等同 high，多付的 token 換不到準確度。
+ * 小格子判讀的瓶頸從來不是解析度，而是提示詞有沒有講清楚要去哪裡找值。
+ */
+function toInlinePart(file: UploadedFile) {
+  return {
+    inlineData: file,
+    mediaResolution: { level: MediaResolutionLevel.MEDIA_RESOLUTION_MEDIUM },
+  };
 }
 
 /**
@@ -368,7 +406,7 @@ async function transcribeImageLayout(files: UploadedFile[]): Promise<string> {
   try {
     const response = await getAiClient().models.generateContent({
       model: "gemini-3.8-flash",
-      contents: { parts: [...imageFiles.map(file => ({ inlineData: file })), { text: prompt }] },
+      contents: { parts: [...imageFiles.map(toInlinePart), { text: prompt }] },
       config: { temperature: 0 },
     });
     return (response.text || "").slice(0, MAX_LAYOUT_TEXT_CHARS);
@@ -404,6 +442,13 @@ async function extractListingFields(
 
     車站與徒步時間（重要）：
     - 掃描整份文件，找出所有標示的車站與各自的徒步分鐘數。
+    - transitLegs：把每一條交通動線結構化輸出為物件清單，包含：
+      * lineName：所屬鐵道路線名（如「JR山手線」「都営大江戸線」「中央・総武線各停」；若圖紙未載明路線則填空字串）。
+      * stationName：車站名稱本身，不含「JR」「東京メトロ」「都営」等前綴與結尾「駅」字（例如「新宿」「両国」）。
+      * walkMin：徒步分鐘數（純數字，例如 7；若未載明填 null）。
+      * busMin：若為巴士接駁，填巴士車程分鐘數（純數字，例如 15；無巴士填 null）。
+      * busStop：巴士站名（例如「野崎」；無巴士填空字串）。
+      * 每一條動線必須獨立為一個物件，同站不同線（例如都営両国 vs JR両国）必須分開列出，絕不可合併！
     - station 只填車站名稱本身，不要包含「JR」「東京メトロ」「都営」「東急」這類營運商前綴，
       也不要包含路線名稱或結尾的「駅」字，例如文件寫「JR新宿駅」時 station 只填「新宿」。
     - 多個車站或多條路線時，station 與 walkTime 用逗號分隔，且順序要對應
@@ -413,7 +458,7 @@ async function extractListingFields(
       絕不可因站名相同而只填一列！
     - 不要對不同車站填同一個徒步時間，除非文件上真的寫的是同一個數字。
     - transitAccess：把「交通」欄的每一列連同路線名、車站名、徒歩分鐘逐字抄下；即使第二列字較小也不可省略。例如 "東急目黒線／不動前駅 徒歩7分\nJR山手線／五反田駅 徒歩14分"。若圖紙載有多個利用車站或多條路線，每個車站均須連同其所屬鐵道路線名（如「JR山手線」、「東京メトロ丸ノ内線」、「都電荒川線」）完整抄錄，絕不可省略路線。巴士接駁也要照抄，含「バス○分」與巴士站名，例如 "JR中央線 三鷹駅 バス15分 バス停「野崎」徒歩3分"。
-    - 輸出前逐列點算交通欄：transitAccess 的路線數、station 的車站數、walkTime 的數字數量必須一致。
+    - 輸出前逐列點算交通欄：transitAccess 的路線數、transitLegs 的物件數、station 的車站數、walkTime 的數字數量必須一致。
 
     租金與各項租約費用（若為租賃圖紙）：
     - rent（賃料／家賃）：照原文抓取，格式如 "○○.○万円" 或 "○○,○○○円"。
@@ -431,6 +476,17 @@ async function extractListingFields(
       嚴禁在格子印「無」時輸出任何月數：實測曾把「礼金 無」誤輸出成月數，讓客人多算出
       數十萬円的初期費用。免收（a）和未載明（c）也不能混用——前者是圖紙明確寫了不收，
       後者是圖紙沒說。
+    - rentalConditionItems：把 rentalConditions 與特約條款裡的每一條約定拆分成獨立子句，輸出繁體中文翻譯與分類：
+      * category 限制為下列之一：
+        - lease：契約種類、租期、更新條件、更新料、調租約定（如「普通賃貸借2年契約」「更新料：新賃料1ヶ月」）。
+        - moveIn：入住日、免租期、促銷活動、敷禮減免優惠（如「入居日：2026年10月中旬」「敷礼0キャンペーン」）。
+        - pet：寵物飼養許可、限制與加收押金約定（如「ペット可：小型犬1匹迄、敷金1ヶ月増」）。
+        - guarantee：保證公司方案、初回保證料、年次保證費、火災保險（如「指定保証会社必須：総賃料50%」「火災保険別途要」）。
+        - fees：簽約一次性或月次／年次附加費用，如換鎖費、室內消毒費、抗菌費、事務手續費、生活支援費、會員費、扣款手續費（如「鍵交換代22,000円」「24Hサポート料2,200円/月」）。
+        - moveOut：退租清潔費、退租結算手續費、短期解約違約金、房屋個別結構提醒（如「退去時精算手数料5,500円」「短期解約違約金：1年未満1ヶ月」「地平面より下がる住居あり」）。
+        - optional：選配設施，如停車場、機車位、自行車位費用與空位狀態（如「駐輪場：登録料5,500円」）。
+      * ja：該條款的日文原文子句（例如 "退去時精算手数料5,500円"）。
+      * zh：繁體中文翻譯（台灣用語，金額、月數與條件完整保留，例如 "退租結算手續費：5,500 円（隨最後一期帳單請款）"、"退租鍍膜清潔費：55,000 円"）。常見日文租約名詞請翻為自然的台灣租屋用語：クリーンコート代 請翻為「退租鍍膜清潔費」或「室內鍍膜清潔費」（勿直譯為「被覆費」），エアコン内部洗浄代 請翻為「冷氣內部清洗費」。
     - rentalConditions：逐字保留租賃完整特殊條件：契約種類與期間、更新費次數及金額是否未載、調租百分比與第幾次、入居日、敷禮優惠期限、養寵物額外押金、年次保證費及適用公司、生活支援費週期、抗菌處理費、事務費、另計保險與退去清掃費。不得把更新型一年租約套為兩年，不得把AD業者獎勵當租客費用；地平面以下是部分住居警語，未指明本室時不得推定本室地下。
     - leaseTerms：把包含敷金、礼金、保証金、償却金或敷引的整列文字連同每個標籤逐字抄下
       （格式如 "敷金 ○　礼金 ○　償却金 ○"，○ 為格子上實際印的字：可能是月數、金額、「無」或「-」）。
@@ -544,6 +600,20 @@ async function extractListingFields(
     - shikibiki（敷引／償却／敷金償却）：表格或特約中是否有敷引或償却？照原文填入，例如 "1ヶ月"、"0円"；只有圖紙完全沒寫此欄時才填 "なし"。
     - cancellationPenalty（短期解約違約金）：違約金規定，無則寫 "なし"。
     - renewalFee（更新料）：契約更新費用，無則寫 "なし"。
+    - specialNoteItems：把 specialNotes 備考欄、特約事項、生活規約等條目拆分成獨立項目，輸出分類、繁體中文標題、詳細說明與原文：
+      * category 限制為下列之一：
+        - 契約特約：解約通知期、違約責任、免責條款、契約型態約定
+        - 費用約定：額外加收費用、押金扣抵、保證費、特定名目費用
+        - 生活規範：禁止吸菸、禁止樂器、垃圾處理、生活秩序
+        - 使用限制：禁止轉租、禁止民泊、限純住家、禁止辦公室/SOHO
+        - 入住條件：單身限定、禁止合租、外國籍條件、長者守護服務
+        - 設施設備：設備維護責任、專用附屬設施、冷氣殘留物說明
+        - 買賣特約：現況交付、瑕疵擔保免責、境界非明示、公簿交易
+        - 其他備考：其他一般備註事項
+      * title：簡短繁體中文標題（10 字以內，例如「全面禁止飼養寵物」「限純住宅用途」「退租清潔費約定」）。
+      * zh：繁體中文詳細說明（包含金額、條件與提醒，台灣用語，如「退租時須支付室內鍍膜清潔費 55,000 円」；「クリーンコート代」請翻為「室內鍍膜清潔費」，切勿直譯為「被覆費」）。
+      * ja：日文原文子句。
+      * tone：amber（限制/禁止/加收費用/違約金）、emerald（允許/優惠/可兩人住）、blue（可商量/需洽詢）、neutral（一般記載）。
     - specialNotes（其他特約・注意事項・生活限制・交易條件）：
       請完整掃描備考、特約欄、設備條件、取引態様（売主、媒介、手数料3%）、司法書士売主指定、ペット飼育可否等。
 
@@ -567,7 +637,7 @@ async function extractListingFields(
     model: "gemini-3.8-flash",
     contents: {
       parts: [
-        ...files.map(file => ({ inlineData: file })),
+        ...files.map(toInlinePart),
         { text: prompt + layoutHint + visualHint },
       ],
     },
@@ -596,12 +666,43 @@ async function extractListingFields(
           station: { type: Type.STRING, description: "所有車站名稱，逗號分隔" },
           walkTime: { type: Type.STRING, description: "對應車站的徒步分鐘數，逗號分隔，順序需與 station 一致" },
           transitAccess: { type: Type.STRING, description: "交通欄全部列的原文，每列保留路線、車站、徒歩分鐘；有巴士接駁時連バス分鐘與巴士站名一起保留" },
+          transitLegs: {
+            type: Type.ARRAY,
+            description: "交通動線結構化清單：每一條動線拆為路線名、車站名、徒步分鐘數（有巴士時另填巴士分鐘與巴士站）",
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                lineName: { type: Type.STRING, description: "鐵道路線名，例如「JR山手線」「都営大江戸線」「中央・総武線各停」；未載明路線時填空字串" },
+                stationName: { type: Type.STRING, description: "車站名稱，不含營運商前綴（JR/東京メトロ等）與結尾「駅」，例如「新宿」「両国」" },
+                walkMin: { type: Type.NUMBER, description: "徒步分鐘數（純數字，例如 7）；未刊載時填 0 或留空" },
+                busMin: { type: Type.NUMBER, description: "巴士接駁時的車程分鐘數（純數字，例如 15）；無巴士時填 0" },
+                busStop: { type: Type.STRING, description: "巴士站名（例如「野崎」）；無巴士時填空字串" },
+              },
+              required: ["lineName", "stationName", "walkMin"],
+            },
+          },
           layout: { type: Type.STRING, description: "間取り，例如 1LDK、2DK、1K" },
           rent: { type: Type.STRING, description: "賃料／家賃，原文格式" },
           managementFee: { type: Type.STRING, description: "管理費／共益費，原文格式" },
           keyMoney: { type: Type.STRING, description: "礼金，原文格式" },
           deposit: { type: Type.STRING, description: "敷金／保証金，原文格式" },
           rentalConditions: { type: Type.STRING },
+          rentalConditionItems: {
+            type: Type.ARRAY,
+            description: "租賃條件條目結構化與繁體中文翻譯清單。逐條拆分子句，分類並翻譯為繁體中文（台灣用語）",
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                category: {
+                  type: Type.STRING,
+                  description: "分類：lease（租期/契約/更新/定借）、moveIn（入住日/優惠/活動）、pet（寵物相關）、guarantee（保證公司/保險）、fees（一次性或月次附加費用如換鎖/清潔/支援費）、moveOut（退租清潔/違約金/房屋提醒）、optional（選配設施如停車/駐輪）",
+                },
+                ja: { type: Type.STRING, description: "該條款的日文原文子句" },
+                zh: { type: Type.STRING, description: "繁體中文翻譯說明，金額、月數與條件完整保留" },
+              },
+              required: ["category", "ja", "zh"],
+            },
+          },
           leaseTerms: { type: Type.STRING, description: "敷金、礼金、保証金、償却金、敷引所在整列的原文，必須保留各標籤" },
           age: { type: Type.STRING, description: "築年數／建築年月" },
           floor: { type: Type.STRING, description: "所在階" },
@@ -656,11 +757,29 @@ async function extractListingFields(
           landRightsRatio: { type: Type.STRING, description: "圖紙的敷地権割合，例如 1234/5678；無則留空" },
           taxEstimationBasis: { type: Type.STRING, description: "稅費辨識或推算所用依據摘要" },
           specialNotes: { type: Type.STRING, description: "備考與特約注意事項" },
+          specialNoteItems: {
+            type: Type.ARRAY,
+            description: "備考欄、特約事項、生活規約等條目的結構化與繁體中文翻譯清單",
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                category: {
+                  type: Type.STRING,
+                  description: "分類：契約特約、費用約定、生活規範、使用限制、入住條件、設施設備、買賣特約、其他備考",
+                },
+                title: { type: Type.STRING, description: "簡短繁體中文標題，10 字以內" },
+                zh: { type: Type.STRING, description: "繁體中文詳細說明，包含金額、條件與提醒" },
+                ja: { type: Type.STRING, description: "日文原文子句" },
+                tone: { type: Type.STRING, description: "警示等級：amber、emerald、blue、neutral" },
+              },
+              required: ["category", "title", "zh", "ja"],
+            },
+          },
         },
         required: [
           "propertyType", "priceDetails", "handoverDetails", "unitBreakdown", "optionalFacilities", "buildingCondition", "landArea", "buildingArea", "roadDetails", "hospitalityDetails", "revenueDetails", "revenueScope", "taxDetails",
-          "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "layout", "rent", "managementFee",
-          "keyMoney", "deposit", "leaseTerms", "rentalConditions", "age", "floor", "address",
+          "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "transitLegs", "layout", "rent", "managementFee",
+          "keyMoney", "deposit", "leaseTerms", "rentalConditions", "rentalConditionItems", "age", "floor", "address",
           "area", "structure", "direction", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",
           "renewalFee", "facilities", "balconyArea", "salePrice", "totalUnits", "buildingFloors", "repairReserve", "repairFund",
@@ -668,7 +787,7 @@ async function extractListingFields(
           "grossYield", "landRights", "zoning", "renovationDetails",
           "managementCompany", "managementStyle", "fixedAssetTax", "cityPlanningTax",
           "realEstateAcquisitionTax", "buildingAssessedValue", "landAcquisitionTaxAfterRelief",
-          "registrationFee", "landRightsRatio", "taxEstimationBasis", "specialNotes"
+          "registrationFee", "landRightsRatio", "taxEstimationBasis", "specialNotes", "specialNoteItems"
         ],
       },
     },

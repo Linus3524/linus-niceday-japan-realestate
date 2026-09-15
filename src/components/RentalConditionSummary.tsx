@@ -1,4 +1,5 @@
 import { buildRentalConditionSections } from "../lib/rentalConditionDisplay";
+import type { RentalConditionItem, SpecialNoteItem } from "../lib/rentalConditions";
 import { Car, CheckCircle2, Clock3, Coins, FileWarning, House, ShieldCheck, type LucideIcon } from "lucide-react";
 
 const sectionIcons: Record<string, LucideIcon> = {
@@ -26,8 +27,10 @@ const rowIcons: Record<string, LucideIcon> = {
 
 export function RentalConditionSummary({
   rentalConditions,
+  rentalConditionItems,
   optionalFacilities,
   specialNotes,
+  specialNoteItems,
   shikibiki,
   guaranteeFee,
   insuranceFee,
@@ -35,8 +38,10 @@ export function RentalConditionSummary({
   hasCancellationPenalty,
 }: {
   rentalConditions?: string | null;
+  rentalConditionItems?: RentalConditionItem[] | null;
   optionalFacilities?: string | null;
   specialNotes?: string | null;
+  specialNoteItems?: SpecialNoteItem[] | null;
   shikibiki?: string | null;
   guaranteeFee?: string | null;
   insuranceFee?: string | null;
@@ -45,8 +50,10 @@ export function RentalConditionSummary({
 }) {
   const sections = buildRentalConditionSections({
     rentalConditions,
+    rentalConditionItems,
     optionalFacilities,
     specialNotes,
+    specialNoteItems,
     shikibiki,
     guaranteeFee,
     insuranceFee,

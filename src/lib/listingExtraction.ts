@@ -16,9 +16,33 @@ import type { RoomType } from "./rentAnalysis.js";
 function toHalfWidth(value: string): string {
   // 一併轉全形加號「＋」：真實販売図面的間取常寫成 "1SLDK＋WIC"，
   // 漏了它會讓收納標記剝不掉，房型比對不到分桶而整塊行情消失。
-  return value.replace(/[０-９Ａ-Ｚａ-ｚ．，＋]/g, char =>
+  return normalizeMonthUnit(value).replace(/[０-９Ａ-Ｚａ-ｚ．，＋]/g, char =>
     String.fromCharCode(char.charCodeAt(0) - 0xfee0)
   );
+}
+
+/**
+ * 月數單位的各種寫法一律正規化成「ヶ月」。
+ *
+ * 日文的「1ヶ月」有多種寫法，字形相近但碼位不同：
+ *   ヶ U+30F6（小書片假名，最常見）
+ *   ヵ U+30F5（小書片假名）
+ *   ケ U+30B1（正常大小的片假名，圖紙與契約書上很常見）
+ *   カ U+30AB（正常大小的片假名）
+ *   か U+304B（平假名，「1か月」是日本官方公文與報紙的標準寫法）
+ *   ｹ U+FF79（半形變體）
+ *
+ * 若發現新的寫法，只需在正規表示式的字元類 `[…]` 裡加一個字元——
+ * 下游所有管線（parseMonthsOrYen、isFreeOrZero、rentalConditionDisplay、
+ * specialNotesParser、rentalInitialCost、reportModel、rental.tsx、
+ * rentalListingReconciliation）都只需要認得「ヶ月」一種寫法。
+ *
+ * 【規則限制】只改寫「字元 + 月」的組合——「ケーキ」「赤坂」「明かり」不受影響。
+ */
+export function normalizeMonthUnit(value: string): string {
+  // prettier-ignore
+  // 碼位清單維護於此：U+30B1 ケ / U+30F6 ヶ / U+30F5 ヵ / U+30AB カ / U+304B か / U+FF79 ｹ
+  return value.replace(/[ケヶヵカかｹ]\s*月/gu, "ヶ月");
 }
 
 /**

@@ -105,8 +105,8 @@ export function EquipmentCard({ items }: { items: ParsedEquipmentItem[] }) {
   );
 }
 
-export function SpecialNotesCard({ notes }: { notes: unknown }) {
-  const items = parseAndExplainSpecialNotes(typeof notes === "string" ? notes : "");
+export function SpecialNotesCard({ notes, preParsedItems }: { notes: unknown; preParsedItems?: any }) {
+  const items = parseAndExplainSpecialNotes(typeof notes === "string" ? notes : "", preParsedItems);
   if (!items.length) return null;
   return (
     <Card title="重要特約與法務事項" tag="依圖紙備考與特約整理">

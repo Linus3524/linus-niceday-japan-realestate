@@ -1,6 +1,6 @@
 import { Text, View } from "@react-pdf/renderer";
 import type { AnalyzeListingResult } from "../../lib/listing/types";
-import { formatShikibiki } from "../../lib/listingExtraction";
+import { formatShikibiki, normalizeMonthUnit } from "../../lib/listingExtraction";
 import { buildRentalConditionSections } from "../../lib/rentalConditionDisplay";
 import { yen } from './formatters.js';
 import { Bullets, Card, FactorTable, VerdictBox } from './primitives.js';
@@ -46,11 +46,17 @@ export function RentSections({ result }: { result: AnalyzeListingResult }) {
   const tone = verdict ? VERDICT_TONE[verdict.status] ?? TONE_BLUE : TONE_BLUE;
   const factors = verdict?.factors ?? [];
   const shikibikiPattern = /(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/;
-  const rawShikibiki = e.shikibiki || e.deposit?.match(shikibikiPattern)?.[0] || e.specialNotes?.match(shikibikiPattern)?.[0] || "";
+  // normalizeMonthUnit：先把「1ケ月」統一成「1ヶ月」，否則敷引月數配不到。
+  const rawShikibiki = e.shikibiki
+    || normalizeMonthUnit(e.deposit || "").match(shikibikiPattern)?.[0]
+    || normalizeMonthUnit(e.specialNotes || "").match(shikibikiPattern)?.[0]
+    || "";
   const sections = buildRentalConditionSections({
     rentalConditions: e.rentalConditions,
+    rentalConditionItems: e.rentalConditionItems,
     optionalFacilities: e.optionalFacilities,
     specialNotes: e.specialNotes,
+    specialNoteItems: e.specialNoteItems,
     shikibiki: formatShikibiki(rawShikibiki),
     guaranteeFee: e.guaranteeFee,
     insuranceFee: e.insuranceFee,

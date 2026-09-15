@@ -1,8 +1,28 @@
 import { parseYenAmount } from "./listingExtraction.js";
 
+/** AI 結構化輸出的租賃條件項目（Phase 2）。 */
+export interface RentalConditionItem {
+  category: "lease" | "moveIn" | "pet" | "guarantee" | "fees" | "moveOut" | "optional";
+  ja: string;
+  zh: string;
+}
+
+/** AI 結構化輸出的備考特約項目（Phase 3）。 */
+export interface SpecialNoteItem {
+  category: "契約特約" | "費用約定" | "生活規範" | "使用限制" | "入住條件" | "設施設備" | "買賣特約" | "其他備考";
+  title: string;
+  ja: string;
+  zh: string;
+  tone?: "amber" | "emerald" | "blue" | "neutral";
+}
+
 export interface RentalConditionFields {
   rentalConditions?: string;
+  /** AI 結構化的租賃條件（分類＋翻譯完成），有值時優先於 regex 管線。 */
+  rentalConditionItems?: RentalConditionItem[];
   specialNotes?: string;
+  /** AI 結構化的備考特約（分類＋翻譯完成），有值時優先於 regex 管線。 */
+  specialNoteItems?: SpecialNoteItem[];
   supportFee?: string;
   guaranteeFee?: string;
   optionalFacilities?: string;

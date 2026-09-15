@@ -4,6 +4,9 @@
  * 自動轉換為繁體中文分類卡片與條理化解說。
  */
 
+import { normalizeMonthUnit } from "./listingExtraction";
+import type { SpecialNoteItem } from "./rentalConditions";
+
 export interface ParsedSpecialNoteItem {
   category: "契約特約" | "合約特約" | "費用約定" | "生活規範" | "使用限制" | "入住條件" | "設施設備" | "買賣特約" | "其他備考";
   title: string;
@@ -214,6 +217,18 @@ const RULES: SpecialNoteRule[] = [
 
   // 7. 費用特約
   {
+    pattern: /クリーンコート/i,
+    category: "費用約定",
+    title: "退租鍍膜清潔費",
+    explanation: (text) => {
+      const fee = text.match(/[\d,]+円|\d+万(?:円)?/)?.[0];
+      return fee
+        ? `退租時需支付室內防污鍍膜及專業清潔費（約定金額：${fee}）。`
+        : `退租時需支付室內防污鍍膜及專業清潔費用。`;
+    },
+    badgeTone: "amber",
+  },
+  {
     pattern: /退去時(?:の)?(?:ハウス)?クリーニング|清掃費|クリーニング代/i,
     category: "費用約定",
     title: "退租清潔費由租客負擔",
@@ -407,16 +422,41 @@ function tokenizeSpecialNotes(raw: string): string[] {
 }
 
 /**
- * 將整段 specialNotes 轉換為格式化、條列、附翻譯說明的卡片資料
+ * 將整段 specialNotes 轉換為格式化、條列、附翻譯說明的卡片資料。
+ * 若已有 AI 結構化的 preParsedItems 則優先採用，無則退回 regex 管線。
  */
-export function parseAndExplainSpecialNotes(rawNotes?: string | null): ParsedSpecialNoteItem[] {
+export function parseAndExplainSpecialNotes(
+  rawNotes?: string | null,
+  preParsedItems?: SpecialNoteItem[] | null,
+): ParsedSpecialNoteItem[] {
+  if (Array.isArray(preParsedItems) && preParsedItems.length > 0) {
+    const results: ParsedSpecialNoteItem[] = [];
+    const seenTitles = new Set<string>();
+    for (const item of preParsedItems) {
+      if (!item || !item.title || !item.zh) continue;
+      const title = stripOrphanedBrackets(item.title.trim());
+      if (seenTitles.has(title)) continue;
+      seenTitles.add(title);
+      results.push({
+        category: (item.category as ParsedSpecialNoteItem["category"]) || "其他備考",
+        title,
+        explanation: stripOrphanedBrackets(item.zh.trim()),
+        rawJapanese: item.ja?.trim() || undefined,
+        badgeTone: item.tone || "neutral",
+      });
+    }
+    if (results.length > 0) return results;
+  }
+
   if (!rawNotes || typeof rawNotes !== "string") return [];
   const trimmed = rawNotes.trim();
   if (!trimmed || /^(?:なし|無|0|-|ー|特になし)$/i.test(trimmed)) {
     return [];
   }
 
-  const tokens = tokenizeSpecialNotes(trimmed);
+  // normalizeMonthUnit：備考欄常寫「ペット敷金1ケ月」（正常大小的ケ），
+  // 統一成「ヶ月」後，下面的 RULES 只需要認得一種寫法。
+  const tokens = tokenizeSpecialNotes(normalizeMonthUnit(trimmed));
   const results: ParsedSpecialNoteItem[] = [];
   const seenTitles = new Set<string>();
 

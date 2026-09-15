@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { normalizeRoomType, detectUnitFeatures } from "../src/lib/listingExtraction.js";
+import { normalizeRoomType, detectUnitFeatures, parseMonthsOrYen, isFreeOrZero, formatShikibiki, normalizeMonthUnit } from "../src/lib/listingExtraction.js";
+import { parseAndExplainSpecialNotes } from "../src/lib/specialNotesParser.js";
 import { formatDirection } from "../src/lib/listing/formatters.js";
 import { calculateInitialCostBreakdown } from "../api/analyze-listing.js";
 import { additionalRentalFees } from "../src/lib/rentalConditions.js";
@@ -137,7 +138,8 @@ assert.equal(excelan.renewalFee, "新賃料1.25ヶ月");
 assert.equal(excelan.lockReplacementFee, "27,500円");
 assert.equal(excelan.cleaningFee, "74,800円");
 assert.match(excelan.guaranteeFee || "", /初回80%/);
-assert.match(excelan.cancellationPenalty || "", /12ヵ月未満/);
+// 月數單位統一由 normalizeMonthUnit 正規化成「ヶ」，回補結果一律是 ヶ月（原圖寫 ヵ月）。
+assert.match(excelan.cancellationPenalty || "", /12ヶ月未満/);
 assert.match(excelan.optionalFacilities || "", /駐車場：施設なし・空きなし/);
 assert.doesNotMatch(excelan.optionalFacilities || "", /0円|無料/);
 assert.doesNotMatch(`${excelan.rentalConditions}\n${excelan.specialNotes}`, /取引態樣|取引態様|広告料/);
@@ -245,4 +247,102 @@ assert.equal(reconciledTransitCase.walkTime, "1,6");
 assert.match(reconciledTransitCase.transitAccess!, /都営大江戸線 両国駅 徒歩1分/);
 assert.match(reconciledTransitCase.transitAccess!, /中央・総武線各停 両国駅 徒歩6分/);
 console.log("Multi-route transit parsing and reconciliation tests passed.");
+
+// 月數單位回歸測試：ヶ(U+30F6)／ヵ(U+30F5)／ケ(U+30B1)／カ(U+30AB)／か(U+304B)／個。
+// 日本図面與契約書寫「一個月」的字形各家不同，碼位卻互不相等。先前各處的月數比對
+// 只列了 ヶ／ヵ／カ／個，導致 parseMonthsOrYen("1ケ月", 45000) 回 null——礼金整整
+// 一個月租金沒被算進初期費用。平假名「1か月」是官方公文與報紙的標準寫法，
+// 實測「アデニウム東神田」圖紙的備考欄就寫著「法人で保証会社加入無しの場合、敷金1か月」。
+for (const unit of ["ヶ", "ヵ", "カ", "個", "ケ", "か"]) {
+  assert.equal(parseMonthsOrYen(`1${unit}月`, 45000), 45000, `1${unit}月 應換算為一個月租金`);
+  assert.equal(parseMonthsOrYen(`0.5${unit}月`, 45000), 22500, `0.5${unit}月 應換算為半個月租金`);
+  assert.equal(isFreeOrZero(`0${unit}月`), true, `0${unit}月 應判為免收`);
+  assert.equal(isFreeOrZero(`1${unit}月`), false, `1${unit}月 不可判為免收`);
+  assert.match(formatShikibiki(`敷引1${unit}月`), /1 個月（退租固定扣抵）/, `敷引1${unit}月 應格式化為中文`);
+}
+// 單位字元不接「月」時不可被改寫，否則會傷到正常詞彙（ケーキ、ケア、赤坂、明かり）。
+assert.equal(normalizeMonthUnit("ケーキ工房"), "ケーキ工房", "非月數的ケ不可被改寫");
+assert.equal(normalizeMonthUnit("赤坂山王"), "赤坂山王", "非月數的カ不可被改寫");
+assert.equal(normalizeMonthUnit("明かり取り"), "明かり取り", "非月數的か不可被改寫");
+assert.equal(normalizeMonthUnit("1ケ月"), "1ヶ月");
+assert.equal(normalizeMonthUnit("1か月"), "1ヶ月");
+
+// 真實圖紙字串：「アデニウム東神田」備考欄的法人條件用的是平假名「か月」。
+assert.equal(
+  normalizeMonthUnit("法人で保証会社加入無しの場合、敷金1か月"),
+  "法人で保証会社加入無しの場合、敷金1ヶ月",
+  "圖紙實寫的「敷金1か月」須正規化後才能被下游月數比對讀到",
+);
+
+// 各種單位寫法在三條下游管線都要與「ヶ月」等價。
+for (const unit of ["ヶ", "ケ", "か"]) {
+  const shikibikiCost = calculateInitialCostBreakdown({
+    rent: 45000, managementFee: 3000, deposit: 45000, keyMoney: 0,
+    extractedDeposit: "45,000円", extractedKeyMoney: "", extractedShikibiki: `敷引1${unit}月`,
+  });
+  assert.match(shikibikiCost.items.find(i => i.id === "deposit")!.note, /1 個月（退租固定扣抵）/,
+    `初期費用應認得敷引1${unit}月`);
+
+  const translated = rentalConditionGroups(`更新料1${unit}月`).flatMap(g => g.items).join(" / ");
+  assert.match(translated, /個月/, `更新料1${unit}月 應翻成中文`);
+  assert.doesNotMatch(translated, new RegExp(`${unit}月`), `更新料1${unit}月 不應殘留日文單位`);
+
+  assert.ok(
+    parseAndExplainSpecialNotes(`ペット飼育時敷金1${unit}月`).some(i => i.title === "寵物加收押金約定"),
+    `備考特約應認得ペット敷金1${unit}月`,
+  );
+}
+console.log("Month-unit (ヶ/ヵ/ケ/カ/か/個 月) normalization tests passed.");
+
+// ── AI 結構化輸出支援測試（Phase 2: rentalConditionItems & Phase 3: specialNoteItems）──
+{
+  // Phase 2: rentalConditionItems 結構化條目優先採用
+  const structuredItems = [
+    { category: "fees" as const, ja: "鍵交換代33,000円", zh: "換鎖費：33,000 円" },
+    { category: "moveOut" as const, ja: "退去時精算手数料5,500円（最終請求時）", zh: "退租結算手續費：5,500 円（隨最後一期帳單請款）" },
+    { category: "guarantee" as const, ja: "GTN加入要（海外審査OK）", zh: "外國籍租客：須加入 GTN 保證（可接受海外審查）" },
+  ];
+  const groups = rentalConditionGroups(null, null, structuredItems);
+  const feeGroup = groups.find(g => g.id === "fees");
+  assert.ok(feeGroup, "應存在 fees 分組");
+  assert.ok(feeGroup.items.includes("換鎖費：33,000 円"), "應包含結構化換鎖費");
+
+  const moveOutGroup = groups.find(g => g.id === "moveOut");
+  assert.ok(moveOutGroup, "應存在 moveOut 分組");
+  assert.ok(moveOutGroup.items.includes("退租結算手續費：5,500 円（隨最後一期帳單請款）"));
+
+  // Phase 3: specialNoteItems 結構化條目優先採用
+  const structuredNotes = [
+    {
+      category: "生活規範" as const,
+      title: "全面禁止飼養寵物",
+      zh: "本大樓及室內嚴禁飼養任何寵物，違者可能面臨立即終止契約。",
+      ja: "ペット飼育不可",
+      tone: "amber" as const,
+    },
+    {
+      category: "費用約定" as const,
+      title: "退租鍍膜清潔費",
+      zh: "退租時須支付室內鍍膜清潔費 55,000 円。",
+      ja: "退去時クリーンコート代55,000円",
+      tone: "neutral" as const,
+    },
+  ];
+  const parsedNotes = parseAndExplainSpecialNotes(null, structuredNotes);
+  assert.equal(parsedNotes.length, 2, "應解析出 2 筆結構化特約");
+  assert.equal(parsedNotes[0].title, "全面禁止飼養寵物");
+  assert.equal(parsedNotes[0].badgeTone, "amber");
+  assert.equal(parsedNotes[1].title, "退租鍍膜清潔費");
+
+  // buildRentalConditionSections 端到端整合
+  const sections = buildRentalConditionSections({
+    rentalConditionItems: structuredItems,
+    specialNoteItems: structuredNotes,
+  });
+  assert.ok(sections.length > 0, "應產生四大區塊");
+  const guaranteeSection = sections.find(s => s.title === "保證、保險與附加費用");
+  assert.ok(guaranteeSection, "應包含保證與費用區塊");
+  console.log("Structured AI items (rentalConditionItems & specialNoteItems) tests passed.");
+}
+
 

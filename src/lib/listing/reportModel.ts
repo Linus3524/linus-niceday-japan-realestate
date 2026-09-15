@@ -9,6 +9,7 @@ import {
   calculateSaleInitialCosts,
   detectUnitFeatures,
   formatShikibiki,
+  normalizeMonthUnit,
   normalizeStructure,
   parseAgeYears,
   parseArea,
@@ -76,10 +77,11 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
     return "未於圖面載明";
   })();
 
+  // normalizeMonthUnit：先把「1ケ月」統一成「1ヶ月」，否則敷引月數配不到。
   const rawShikibiki =
     extracted?.shikibiki ||
-    extracted?.deposit?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
-    extracted?.specialNotes?.match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
+    normalizeMonthUnit(extracted?.deposit || "").match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
+    normalizeMonthUnit(extracted?.specialNotes || "").match(/(?:解約時)?(?:敷金)?(?:償却|敷引)\s*(\d+(?:\.\d+)?(?:ヶ月|ヵ月|カ月|個月)?)/)?.[0] ||
     "";
   const formattedShikibiki = formatShikibiki(rawShikibiki);
   const hasPenalty = Boolean(

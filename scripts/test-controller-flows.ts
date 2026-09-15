@@ -172,6 +172,19 @@ try {
     }
     return value;
   };
+  // 移除 payload 新增的 safety 欄位，讓歷史 fixture 仍可比對其餘內容。
+  // 只針對值為 null 的情形移除：有實際治安資料時應該要能看出差異，不該被靜默吃掉。
+  const withoutSafety = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(withoutSafety);
+    if (value && typeof value === "object") {
+      const record = value as Record<string, unknown>;
+      const entries = Object.entries(record)
+        .filter(([key, item]) => !(key === "safety" && item === null))
+        .map(([key, item]) => [key, withoutSafety(item)]);
+      return Object.fromEntries(entries);
+    }
+    return value;
+  };
   // The historical fixture stays immutable. Only the explicitly fixed race
   // checkpoints use new assertions; unaffected form/API results keep the baseline.
   const changed = new Set(["preview-reverse-completion", "preview-completes-after-removal", "analysis-loading-guard-and-file-switch", "analysis-old-file-response", "analysis-current-file-response", "shared-unmount-ignores-rejection"]);
@@ -187,7 +200,9 @@ try {
       // fails. Preserve other historical contracts and assert this correction.
       const refreshed = pipeline.indexOf(name) >= pipeline.indexOf("commute-request-and-loading-guard");
       assert.deepEqual(actual.state, refreshed ? { ...old.state, prefectureSafety: null } : old.state, name + " state");
-      assert.deepEqual(withoutStationLines(actual.pending), old.pending, name + " requests");
+      // 同一次修正也讓 PDF 匯出的 payload 帶上 safety；治安結果被清掉時它是 null。
+      // 歷史 fixture 產生於此欄位存在之前，因此比對前先移除，與上面 state 的處理一致。
+      assert.deepEqual(withoutSafety(withoutStationLines(actual.pending)), old.pending, name + " requests");
     } else assert.deepEqual(withoutStationLines(value), expected.snapshots[name], name);
   }
 

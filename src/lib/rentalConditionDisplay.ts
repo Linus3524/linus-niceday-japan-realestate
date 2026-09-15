@@ -1,4 +1,6 @@
+import { normalizeMonthUnit } from "./listingExtraction";
 import { parseAndExplainSpecialNotes } from "./specialNotesParser";
+import type { RentalConditionItem, SpecialNoteItem } from "./rentalConditions";
 
 export interface RentalConditionGroup {
   id: string;
@@ -33,24 +35,28 @@ function topicsOf(text: string) {
  */
 export function buildRentalConditionSections({
   rentalConditions,
+  rentalConditionItems,
   optionalFacilities,
   specialNotes,
+  specialNoteItems,
   shikibiki,
   guaranteeFee,
   insuranceFee,
   totalMonthlyCost,
 }: {
   rentalConditions?: string | null;
+  rentalConditionItems?: RentalConditionItem[] | null;
   optionalFacilities?: string | null;
   specialNotes?: string | null;
+  specialNoteItems?: SpecialNoteItem[] | null;
   shikibiki?: string | null;
   guaranteeFee?: string | null;
   insuranceFee?: string | null;
   totalMonthlyCost?: number | null;
 }): RentalConditionSection[] {
-  const groups = rentalConditionGroups(rentalConditions, optionalFacilities);
+  const groups = rentalConditionGroups(rentalConditions, optionalFacilities, rentalConditionItems);
   const coveredTopics = new Set(topicsOf(`${rentalConditions || ""} ${optionalFacilities || ""}`));
-  const extraNotes = parseAndExplainSpecialNotes(specialNotes).filter((item) => {
+  const extraNotes = parseAndExplainSpecialNotes(specialNotes, specialNoteItems).filter((item) => {
     const topics = topicsOf(`${item.title} ${item.explanation} ${item.rawJapanese || ""}`);
     return topics.length === 0 || topics.some((topic) => !coveredTopics.has(topic));
   });
@@ -208,23 +214,46 @@ const groupOrder = [
   ["optional", "選配設施"],
 ] as const;
 
-export function rentalConditionGroups(raw?: string | null, optionalFacilities?: string | null): RentalConditionGroup[] {
+export function rentalConditionGroups(
+  raw?: string | null,
+  optionalFacilities?: string | null,
+  conditionItems?: RentalConditionItem[] | null,
+): RentalConditionGroup[] {
   const grouped = new Map<string, string[]>();
-  const isTeishaku = /定期借家|定借/u.test(raw || "");
-  const clauses = (raw || "")
-    .normalize("NFKC")
-    .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヵ月|CATV|実入居者))/gu, "。")
-    .replace(/[,、]\s*(?=※?退去時)/gu, "。")
-    .split(/[。\n]+/u)
-    .map((clause) => stripOrphanedBrackets(clause.trim()))
-    .filter(Boolean);
 
-  for (const clause of clauses) {
-    const id = classifyClause(clause);
-    const translated = stripOrphanedBrackets(translateRentalClause(clause, isTeishaku));
-    const items = grouped.get(id) || [];
-    if (!items.includes(translated)) items.push(translated);
-    grouped.set(id, items);
+  if (Array.isArray(conditionItems) && conditionItems.length > 0) {
+    for (const item of conditionItems) {
+      if (!item || !item.zh || !item.category) continue;
+      const id = item.category;
+      const text = stripOrphanedBrackets(item.zh.trim());
+      if (!text) continue;
+      const items = grouped.get(id) || [];
+      if (!items.includes(text)) items.push(text);
+      grouped.set(id, items);
+    }
+  } else {
+    const isTeishaku = /定期借家|定借/u.test(raw || "");
+    // normalizeMonthUnit：契約條件常寫成「更新料1ケ月」（正常大小的ケ），
+    // 先統一成「ヶ月」，下面的翻譯規則才不會整條漏配而留著日文原文。
+    const clauses = normalizeMonthUnit((raw || "").normalize("NFKC"))
+      .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヶ月|CATV|実入居者))/gu, "。")
+      .replace(/[,、]\s*(?=※?退去時)/gu, "。")
+      // 項目符號本身就是分隔符。リブマックス 系圖紙把二十多條特約用「■」串成一行
+      // （「■鍵交換代33,000円■退去時精算手数料5,500円■…」），只切「。\n」會讓整串
+      // 變成單一子句：翻譯規則全部配不到，分類也只落進一個桶，前端於是顯示
+      // 「圖紙另有個別日文特約」這種等於沒說的話，5,500 円等費用全部看不到。
+      .replace(/[■◆●▲☆★]+/gu, "。")
+      .split(/[。\n]+/u)
+      .map((clause) => stripOrphanedBrackets(clause.trim()))
+      .filter(Boolean);
+
+    for (const clause of clauses) {
+      const id = classifyClause(clause);
+      const translated = stripOrphanedBrackets(translateRentalClause(clause, isTeishaku));
+      const items = grouped.get(id) || [];
+      if (!items.includes(translated)) items.push(translated);
+      grouped.set(id, items);
+    }
   }
 
   if (optionalFacilities?.trim()) {
@@ -235,7 +264,10 @@ export function rentalConditionGroups(raw?: string | null, optionalFacilities?: 
       .filter(Boolean)
       .map(translateOptionalFacility)
       .map(stripOrphanedBrackets);
-    if (items.length) grouped.set("optional", [...new Set(items)]);
+    if (items.length) {
+      const existing = grouped.get("optional") || [];
+      grouped.set("optional", [...new Set([...existing, ...items])]);
+    }
   }
 
   return groupOrder.flatMap(([id, title]) => {
@@ -276,6 +308,10 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/敷金\s*0(?:\.0+)?\s*(?:ヶ月|ヵ月|カ月|個月)?/gu, "免押金")
     .replace(/礼金\s*0(?:\.0+)?\s*(?:ヶ月|ヵ月|カ月|個月)?/gu, "免禮金")
     .replace(/敷金\s*(\d+)ヶ月\s*礼金\s*(\d+)ヶ月/gu, "押金 $1 個月、禮金 $2 個月")
+    // 必須排在下面那條泛用「敷金N ヶ月」之前：否則「敷金1ヶ月」會先被換成
+    // 「押金 1 個月」，本條的前提（法人且未加保證公司）就再也配不到，
+    // 整句因殘留假名而退化成「另有個別日文特約」，條件消失。
+    .replace(/法人で保証会社加入無しの場合[、,]\s*敷金(\d+(?:\.\d+)?)ヶ月/gu, "法人承租且不加入保證公司時，須付 $1 個月押金")
     .replace(/敷金\s*(\d+)ヶ月/gu, "押金 $1 個月")
     .replace(/礼金\s*(\d+)ヶ月/gu, "禮金 $1 個月")
     .replace(/普通賃貸借\s*(\d+)年契約\s*[（(]更新型[）)]/gu, "普通租賃契約，租期 $1 年（可更新契約）")
@@ -312,10 +348,32 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/当社指定賃貸入居者総合保険加入の事\s*[（(]別途費用[）)]/gu, "須加入指定租客綜合保險，費用另計")
     .replace(/退去時清掃費用、更新時更新費用等がございます/gu, "另有退租清潔費及契約更新相關費用，金額待確認")
     .replace(/地平面より下がる住居が一部ございます/gu, "部分住宅空間低於地面，須確認本戶位置、採光與通風")
-    .replace(/12ヵ月未満の解約時、?賃料1ヵ月分の違約金/gu, "租期未滿 12 個月解約時，須支付 1 個月租金作為違約金")
+    // 月數單位在上游已由 normalizeMonthUnit 統一成「ヶ」，此處比對 ヶ 即可涵蓋 ケ／ヵ／カ。
+    .replace(/12ヶ月未満の解約時、?賃料1ヶ月分の違約金/gu, "租期未滿 12 個月解約時，須支付 1 個月租金作為違約金")
     .replace(/CATV[・、]?BS・CS110°[・、]?インターネットは利用可否確認のうえ別途契約・費用/gu, "CATV、BS／CS 與網路須先確認能否使用，並另行簽約付費")
     .replace(/実入居者が61歳以上の場合、指定見守りサービス加入必須[（(]費用要確認[）)]/gu, "實際入住者年滿 61 歲時，須加入指定守護服務，費用待確認")
     .replace(/ペット飼育不可/gu, "不可飼養寵物")
+    // 以下為家具家電付き／短期解約系圖紙（リブマックス 等）的常見條目。
+    // 未翻譯的句子會整條被換成「另有個別日文特約」，等於把費用資訊丟掉，
+    // 因此凡是金額明確、對承租人有實質影響的條目都必須逐條譯出。
+    .replace(/(?:退去時)?クリーンコート(?:代|費用)?\s*([\d,]+円)/gu, "退租時鍍膜清潔費：$1")
+    .replace(/退去時精算手数料\s*([\d,]+円)\s*[（(]?最終請求時[）)]?/gu, "退租結算手續費：$1（隨最後一期帳單請款）")
+    .replace(/退去時精算手数料\s*([\d,]+円)/gu, "退租結算手續費：$1")
+    .replace(/短期解約違約金\s*[：:]\s*賃料(\d+(?:\.\d+)?)ヶ月分\s*[（(](\d+)年未満[）)]/gu, "短期解約違約金：未滿 $2 年解約時，須支付 $1 個月租金")
+    .replace(/家具家電撤去費用\s*([\d,]+円)\s*[（(]家具家電無し契約を希望の場合[）)]/gu, "家具家電撤除費：$1（希望簽訂不含家具家電之契約時）")
+    .replace(/賃料等引き落とし料\s*([\d,]+円)\s*[/／]\s*月/gu, "租金自動扣款手續費：$1／月")
+    .replace(/リブクラブ\s*([\d,]+円)\s*[/／]\s*月/gu, "LIV CLUB 會員費：$1／月（須加入）")
+    .replace(/SBI少額短期保険\s*([\d,]+円)\s*[/／]\s*月/gu, "SBI 少額短期保險：$1／月（須投保）")
+    .replace(/指定賃貸保証加入\s*[（(]総賃料\s*(\d+)%[）)]/gu, "須加入指定租賃保證公司：保證費為租金總額 $1%")
+    .replace(/モバイルwifi\s*[（(]?(\d+GB)[）)]?\s*付/giu, "附行動 Wi-Fi（$1）")
+    .replace(/民泊[・、]?簡易宿泊による利用及びそれに伴う広告等は一切禁止/gu, "禁止作為民宿或簡易住宿使用，亦禁止相關刊登行為")
+    .replace(/法人契約の場合[、,]\s*普通借家相談可能/gu, "法人承租時，可洽談改採普通租賃契約")
+    .replace(/海外審査相談可/gu, "可洽談海外審查（人在海外亦可申請）")
+    .replace(/全物件先行契約になります/gu, "全部物件皆採先行簽約（須先簽約再入住）")
+    .replace(/事務所[・、]?SOHO利用禁止/gu, "禁止作為辦公室或 SOHO 使用")
+    .replace(/外国籍の方\s*[：:]\s*GTN加入要\s*[（(]海外審査OK[）)]/gu, "外國籍租客：須加入 GTN 保證（可接受海外審查）")
+    .replace(/初回保証料\s*[：:]\s*賃料総額\s*(\d+)%/gu, "初回保證費：租金總額 $1%")
+    .replace(/月次手数料\s*([\d,]+円)\s*[（(]税込[）)]/gu, "月付手續費：$1（含稅）")
     .replace(/(\d+)ヶ月/gu, "$1 個月")
     .replace(/(\d+)万円/gu, "$1 萬円")
     .replace(/賃料/gu, "租金")

@@ -532,8 +532,10 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
 
                 <RentalConditionSummary
                   rentalConditions={extracted?.rentalConditions}
+                  rentalConditionItems={extracted?.rentalConditionItems}
                   optionalFacilities={extracted?.optionalFacilities}
                   specialNotes={extracted?.specialNotes}
+                  specialNoteItems={extracted?.specialNoteItems}
                   shikibiki={formattedShikibiki}
                   guaranteeFee={extracted?.guaranteeFee}
                   insuranceFee={extracted?.insuranceFee}

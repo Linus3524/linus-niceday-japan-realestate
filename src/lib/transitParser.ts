@@ -62,6 +62,33 @@ export type ParsedStationItem = TransitLeg;
  * 把圖紙「交通」欄的原文拆成 TransitLeg 清單，是 transitLegs 的事實來源。
  * 同名站的不同路線（両国的都営 vs JR）是兩條獨立動線，刻意不依站名去重。
  */
+/**
+ * 拆開沒有分隔符的「路線名＋站名」黏連寫法。
+ *
+ * 圖紙很常把兩者直接連寫：「総武本線馬喰町駅」「都営新宿線馬喰横山駅」「日比谷線小伝馬町駅」。
+ * 原本依賴空白或「／」切分，這種寫法會整串被當成站名、`lineName` 留空，
+ * 前端「最近車站」卡片於是只剩站名與分鐘，路線資訊全部消失。
+ *
+ * 切點取**最後一個**路線名後綴：「線」在日本路線名中可能出現多次
+ * （「都営新宿線」「東急東横線」），取最後一個才不會把「新宿」留給站名。
+ * 找不到後綴時回傳 null，由呼叫端維持「路線名留空」的既有行為——
+ * 不猜測，空字串代表「圖紙沒寫或無法判讀」。
+ */
+function splitGluedLineAndStation(value: string): { line: string; station: string } | null {
+  // ライン／エクスプレス／モノレール／新交通 等外來語與特殊路線名也要涵蓋，
+  // 它們不以「線」結尾（「ゆりかもめ」無後綴，屬於找不到切點的情況）。
+  const suffix = /(?:線|ライン|エクスプレス|モノレール|新交通|地下鉄)/gu;
+  let cut = -1;
+  for (const match of value.matchAll(suffix)) cut = (match.index ?? 0) + match[0].length;
+  if (cut <= 0 || cut >= value.length) return null;
+
+  const line = value.slice(0, cut);
+  const station = value.slice(cut);
+  // 站名至少要有一個字，且不能整段都是路線後綴殘留。
+  if (!station.replace(/[駅「」『』【】\[\]［］]/gu, "").trim()) return null;
+  return { line, station };
+}
+
 export function parseTransitAccessLegs(transitAccess: string | null | undefined): TransitLeg[] {
   const raw = (transitAccess || "").normalize("NFKC");
   if (!raw.trim()) return [];
@@ -122,6 +149,17 @@ export function parseTransitAccessLegs(transitAccess: string | null | undefined)
         const segments = descriptor.split(/[／/\s]+/u).filter(Boolean);
         stationPart = segments.at(-1) || "";
         linePart = segments.slice(0, -1).join(" ");
+        // 無分隔符的黏連寫法（「総武本線馬喰町駅」「日比谷線小伝馬町駅」）在上面
+        // 只會切出一段，於是整串被當成站名、路線名整個丟失。改用路線名後綴當切點：
+        // 日文路線名幾乎都以 線／ライン／エクスプレス／モノレール 等字樣收尾，
+        // 其後到「駅」為止的部分才是站名。
+        if (!linePart) {
+          const glued = splitGluedLineAndStation(stationPart);
+          if (glued) {
+            linePart = glued.line;
+            stationPart = glued.station;
+          }
+        }
       }
       const station = (stripStationOperatorPrefix(stationPart) || "").replace(/[「」『』【】\[\]［］駅]/gu, "").trim();
       if (!station) continue;

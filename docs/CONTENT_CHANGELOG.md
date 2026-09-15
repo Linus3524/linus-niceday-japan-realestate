@@ -2,6 +2,74 @@
 
 本紀錄用於追蹤網站知識內容的修改。每次涉及法規、金融、行情、民泊或 AI 知識的重要更新，都應新增一筆紀錄。
 
+## 2026-09-15｜圖紙解析架構升級：AI 結構化輸出（消除 2900 行 Regex 脆弱層）
+
+為從根本解決「每張新圖紙就因為版面、分隔符或漢字異體字差異而爆出新 bug」的脆弱性，將原本由手工 regex 執行的**切句、分類、翻譯**三項工作全面移交 Gemini 結構化輸出 schema 處理，既有 regex 降級為向下相容 fallback。
+
+- **Phase 1: 交通動線結構化**（`transitLegs`）：
+  - Gemini Schema 新增 `transitLegs` 物件陣列：`lineName`（鐵道路線名）、`stationName`（站名）、`walkMin`（步行分鐘）、`busMin`（巴士車程）、`busStop`（巴士站名）。
+  - `reconcileTransitAccess()` 優先採用 AI 結構化動線，自動消除線名站名黏連（如「総武本線馬喰町駅」）與多線去重錯位問題。
+- **Phase 2: 租賃條件條目結構化與直譯**（`rentalConditionItems`）：
+  - Gemini Schema 新增 `rentalConditionItems` 陣列：`category`（`lease`/`moveIn`/`pet`/`guarantee`/`fees`/`moveOut`/`optional`）、`ja`（原文）、`zh`（繁體中文翻譯）。
+  - AI 直接按圖面排版理解條目邊界，不再受制於 `split(/[。\n]+/)` 或特定符號（`■◆●▲`），且能精準翻譯帶有前提條件的子句。
+  - `rentalConditionGroups()` 優先採用結構化條目組裝前端分組，無結構化資料時自動退回既有 regex 管線。
+- **Phase 3: 備考特約結構化與直譯**（`specialNoteItems`）：
+  - Gemini Schema 新增 `specialNoteItems` 陣列：`category`（契約特約、費用約定、生活規範、使用限制、入住條件等）、`title`、`zh`、`ja`、`tone`（`amber`/`emerald`/`blue`/`neutral`）。
+  - `parseAndExplainSpecialNotes()` 優先採用結構化條目生成卡片，無結構化資料時自動退回規則字典比對。
+- **向下相容與防護**：
+  - 網頁端 `ListingHealthCheck`、`RentalConditionSummary`、`OtherConditionNotes` 與 PDF 端 `RentalSections`、`SpecialNotesCard` 全面支援雙軌輸入。
+  - 既有 25 支測試腳本與全量 golden fixture 100% 通過。
+
+## 2026-09-15｜アデニウム東神田端到端測試：路線名、退租特約、Overpass 超時
+
+- **路線名消失**（`transitParser.ts`）：圖紙寫「総武本線馬喰町駅 徒歩3分」——
+  線名與站名無分隔符，原本按空白或「／」切分只會切出一段，整串被當成站名，
+  `lineName` 留空。前端「最近車站」卡片只剩站名+分鐘。新增 `splitGluedLineAndStation()`
+  用路線名後綴（線/ライン/エクスプレス/モノレール/新交通/地下鉄）當切點，取最後一個
+  避免「都営新宿線」被誤切。12 種邊界案例全部正確，且不會影響無路線名的純站名寫法。
+- **退租特約全部丟失**（`rentalConditionDisplay.ts`）：リブマックス 系圖紙用「■」
+  串連二十多條特約，切句器只認「。\n」，整串變成一句、翻譯規則全部配不到——
+  退租結算手續費 5,500 円、鍍膜清潔費 55,000 円、短期解約違約金等對租客有實質
+  金額影響的費用條件，前端完全不顯示。修正切句器支持 `■◆●▲☆★` 項目符號，
+  並為このタイプ圖紙常見的 18 種日文特約逐條添加中文翻譯規則。
+- **周邊設施「資料待確認」**（`listingLocation.ts`）：Overpass 伺服器端 `[timeout:8]`
+  與客戶端 `AbortSignal.timeout(8000)` 設成同值，等於把網路傳輸與排隊時間預算設為零。
+  實測東京都心（千代田区東神田）四個端點回傳 658 筆、耗時 6.0～9.4 秒——資料存在
+  但臨界超時。伺服器預算放寬至 25 秒、客戶端 30 秒。
+
+## 2026-09-15｜圖紙分析改用 medium 解析度，並修復 controller-flows 測試
+
+- `analyze-listing` 的三處 Gemini 呼叫統一以 `toInlinePart()` 送出，指定
+  `mediaResolution: medium`。官方對 PDF 的建議值即為 medium，實測也支持：
+  以レオパレス図面（2200px JPEG 與原始 PDF）各跑 5 次，預設／medium／high 在礼金、
+  家賃、専有面積、鍵交換費、退去清掃費、保証委託料、火災保険、住所、築年數等欄位
+  **全部 5/5 相同**，但 medium 的 prompt token 比預設少約 43～47%（1307→747、1197→637）。
+  結論：預設值對單頁図面等同 high，多付的 token 換不到準確度；小格子判讀的瓶頸
+  是提示詞有沒有講清楚要去哪裡找值，不是解析度。
+- 同一組實測也驗證了前一筆「無單位數字＝月數」規則的實際價值：舊提示詞在預設與 high
+  解析度下都能看到那個數字，但輸出的是裸 `1`，而 `parseMonthsOrYen("1", 45000)` 會回
+  `null`（初期費用漏算一個月租金）；補上規則後輸出 `1ヶ月`，換算為 45,000 円。
+  亦即該欄位先前的失準來自單位缺失，與模型視力無關。
+- 修復月數單位全面失配：日文寫「一個月」的字形各家不同、碼位卻互不相等——
+  ヶ(U+30F6)、ヵ(U+30F5)、ケ(U+30B1)、カ(U+30AB)、か(U+304B)、ｹ(U+FF79)。原本 6 個檔案
+  共 19 處月數比對只列了 ヶ／ヵ／カ／個，於是 `parseMonthsOrYen("1ケ月", 45000)` 回
+  `null`，礼金整整一個月租金沒被算進初期費用；敷引月數、契約條件翻譯、備考特約比對
+  也同樣整筆失效。改採入口正規化：新增 `normalizeMonthUnit()` 把 `[ケヶヵカかｹ]月`
+  統一成 `ヶ月`，在 `toHalfWidth`、`leaseTermValue`、`rentalConditionGroups`、
+  `parseAndExplainSpecialNotes`、`reconcileRentalListingText` 等各管線入口套用，
+  下游只需認得一種寫法——比在十餘處規則運算式各自補字元更不容易漏，日後新增程式碼
+  也不會再犯同樣的錯。規則限定「後面接月」才改寫，「ケーキ」「赤坂」「明かり」不受影響。
+- 平假名「か月」是補測「アデニウム東神田」図面時才發現的第六種寫法：該圖備考欄寫著
+  「法人で保証会社加入無しの場合、敷金1か月」，實測 `parseMonthsOrYen("1か月", 219000)`
+  回 `null`。它同時也是日本官方公文與報紙的標準寫法，漏接的風險不低於「ケ月」。
+  一併補上第 7 個未正規化的入口 `rentalListingReconciliation.ts`——該檔另有兩處寫死
+  `ヵ月` 的比對，上游統一後會配不到，已改為 `ヶ月`（與 `rentalConditionDisplay.ts`
+  先前的修法一致，再次印證「每處各自列舉字元」這個模式的脆弱）。
+- 修復 `test:controller-flows`：PDF 匯出 payload 新增 `safety` 欄位後，歷史 fixture
+  比對失敗。既有程式碼已針對 `state` 補上 `prefectureSafety: null`，但 `pending`
+  未做對應處理。新增 `withoutSafety()`，僅在值為 `null` 時移除該鍵——有實際治安
+  資料時仍應能看出差異，不可靜默吃掉。
+
 ## 2026-09-15｜圖紙解析：修正版面還原，並讓圖片上傳也具備欄位對位
 
 レオパレス 版型圖紙（`29267_20260915.pdf`）讀不出「礼金 1」與完整地址，追查後發現三個獨立成因，

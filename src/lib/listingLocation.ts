@@ -275,7 +275,12 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
     nw(around:500,${point.lat},${point.lon})[amenity~"^(restaurant|cafe|fast_food|food_court|cinema|bar|pub|nightclub|karaoke)$"];
     nw(around:500,${point.lat},${point.lon})[leisure~"^(adult_gaming_centre|amusement_arcade)$"];
     way(around:250,${point.lat},${point.lon})[building~"^(house|apartments|residential|detached|terrace)$"];` : "";
-  const query = `[out:json][timeout:8];(${amenityQuery}
+  // [timeout:N] 是 Overpass「伺服器端查詢預算」，不含排隊、序列化與跨國網路傳輸。
+  // 把它和 fetch 的 AbortSignal 設成同一個數字，等於要求「查詢必須零傳輸時間完成」——
+  // 實測東京都心密集區（千代田区東神田）回傳 658 筆，四個可用端點耗時 6.0～9.4 秒，
+  // 舊值 8 秒剛好卡在中間：快取未命中時經常整批 abort，前端就顯示「資料待確認」，
+  // 但資料其實是存在的。伺服器預算放寬到 25 秒，客戶端再多留 5 秒給傳輸。
+  const query = `[out:json][timeout:25];(${amenityQuery}
     nw(around:4000,${point.lat},${point.lon})[railway~"^(station|halt)$"];
     nw(around:4000,${point.lat},${point.lon})[public_transport=station];
   );out center tags;`;
@@ -291,7 +296,7 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
             "User-Agent": APP_USER_AGENT,
           },
           body: new URLSearchParams({ data: query }),
-          signal: AbortSignal.timeout(8000),
+          signal: AbortSignal.timeout(30000),
         });
         if (!response.ok) throw new Error(`Overpass status ${response.status} from ${endpoint}`);
         const data = await response.json();

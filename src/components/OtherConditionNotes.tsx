@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, ClipboardList } from "lucide-react";
 import { parseAndExplainSpecialNotes } from "../lib/specialNotesParser";
+import type { SpecialNoteItem } from "../lib/rentalConditions";
 
 const semanticRules = [
   /抗菌/u,
@@ -22,14 +23,16 @@ function semanticKeys(text: string) {
 
 export function OtherConditionNotes({
   notes,
+  specialNoteItems,
   coveredConditions,
 }: {
   notes?: string | null;
+  specialNoteItems?: SpecialNoteItem[] | null;
   coveredConditions?: string | null;
 }) {
   const [expanded, setExpanded] = useState(false);
   const coveredKeys = new Set(semanticKeys(coveredConditions || ""));
-  const items = parseAndExplainSpecialNotes(notes).filter((item) => {
+  const items = parseAndExplainSpecialNotes(notes, specialNoteItems).filter((item) => {
     const text = `${item.title} ${item.explanation} ${item.rawJapanese || ""}`;
     const keys = semanticKeys(text);
     return keys.length === 0 || keys.some((key) => !coveredKeys.has(key));

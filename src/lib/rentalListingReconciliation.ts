@@ -1,4 +1,5 @@
 import { reconcileListingLayout } from "./listingLayoutReconciliation.js";
+import { normalizeMonthUnit } from "./listingExtraction.js";
 import { BULLET, LINE_STATION_WALK, isPlausibleStationToken } from "./transitPatterns.js";
 
 type RentalListingFields = {
@@ -59,7 +60,9 @@ function capture(text: string, pattern: RegExp, group = 1) {
  */
 export function reconcileRentalListingText<T extends RentalListingFields>(original: T, layoutText?: string | null): T & RentalListingFields {
   if (!layoutText?.trim()) return original;
-  const normalized = layoutText.normalize("NFKC");
+  // normalizeMonthUnit：版面文字的月數寫法有 ヶ／ヵ／ケ／カ／か 五種，下面的
+  // 敷金・礼金・更新料・解約予告比對全都只認「ヶ月」，不先統一會整條配不到而漏補。
+  const normalized = normalizeMonthUnit(layoutText.normalize("NFKC"));
   const compact = compactText(normalized);
   const looksRental = original.dealType === "rent" || /(?:賃料|LEASECONDITION|契約期間|敷金)/iu.test(compact);
   if (!looksRental) return original;
@@ -142,13 +145,14 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   add(lockFee ? `鍵交換代${lockFee}（税込）` : undefined);
   add(disinfectionFee ? `消毒代${disinfectionFee}（税込）` : undefined);
   add(cleaningFee ? `定額ルームクリーニング代${cleaningFee}（税込、契約時支払）` : undefined);
-  add(/12ヵ月未満の解約時、?賃料1ヵ月分の違約金/u.test(compact) ? "12ヵ月未満の解約時、賃料1ヵ月分の違約金" : undefined);
+  // 月數單位在上游已由 normalizeMonthUnit 統一成「ヶ」，此處比對 ヶ 即可涵蓋 ケ／ヵ／カ／か。
+  add(/12ヶ月未満の解約時、?賃料1ヶ月分の違約金/u.test(compact) ? "12ヶ月未満の解約時、賃料1ヶ月分の違約金" : undefined);
 
   if (conditions.length && (isWeak(result.rentalConditions) || String(result.rentalConditions || "").length < conditions.join("。").length / 2)) {
     result.rentalConditions = conditions.join("。");
   }
   fill(result, "renewalFee", renewalMonths ? `新賃料${renewalMonths}ヶ月` as T["renewalFee"] : undefined);
-  fill(result, "cancellationPenalty", /12ヵ月未満の解約時/u.test(compact) ? "12ヵ月未満の解約時、賃料1ヵ月分" as T["cancellationPenalty"] : undefined);
+  fill(result, "cancellationPenalty", /12ヶ月未満の解約時/u.test(compact) ? "12ヶ月未満の解約時、賃料1ヶ月分" as T["cancellationPenalty"] : undefined);
   fill(result, "lockReplacementFee", lockFee as T["lockReplacementFee"]);
   fill(result, "cleaningFee", cleaningFee as T["cleaningFee"]);
   fill(result, "supportFee", clubFee ? `木下の賃貸友の会費${clubFee}（税込）/月額` as T["supportFee"] : undefined);
