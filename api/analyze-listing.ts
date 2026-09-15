@@ -312,6 +312,96 @@ async function verifyLeaseCharges(
   }
 }
 
+/**
+ * 買賣圖紙售價、管理費、修繕積立金與土地權利之聚焦二次確認。
+ *
+ * 買賣圖紙（販売図面／マイソク）上的「販売価格」、「管理費」、「修繕積立金」、「土地権利」、「現況」
+ * 是買賣行情評估、持有成本計算、大樓健康度診斷與自住/投資收益判斷的最核心數字。
+ *
+ * 在密集的數值表格中，AI 有時會發生數字錯位（如把修繕積立金抓成管理費、漏讀價格改定、
+ * 漏掉億或萬字元、或將借地權誤判為所有權）。
+ *
+ * 針對買賣圖紙一律執行專注二次確認，確保關鍵財務與權利欄位的精確度。
+ */
+async function verifySaleCoreCharges(
+  files: UploadedFile[],
+  current: {
+    salePrice: string;
+    managementFee: string;
+    repairReserve: string;
+    landRights: string;
+    occupancyStatus: string;
+  },
+): Promise<{
+  salePrice: string;
+  managementFee: string;
+  repairReserve: string;
+  landRights: string;
+  occupancyStatus: string;
+}> {
+  const prompt = `
+    這是一份日本不動產買賣販売図面（マイソク／物件概要書／中古マンション図面）。
+    請專注於確認以下 5 個最關鍵的買賣核心欄位，逐字核對圖面上實際印出的字，不要猜測或推算：
+
+    1. salePrice（販売価格）：
+       - 請精準讀出總售價（例如 "7,280万円"、"3,480万円(税込)"、"1億2,800万円"、"4,990万" 等）。
+       - 特別注意：若有「新価格」「価格改定」等標籤，請以改定後的最新售價為準。
+       - 逐位核對數字的每一位，不可更動數字。
+    2. managementFee（管理費）：
+       - 大樓月額管理費（例如 "14,200円"、"14200"、"1.42万円"）。
+       - 若整棟透天/土地無管理費，填 "なし" 或 "0円"。若圖面未記載填空字串。
+    3. repairReserve（修繕積立金）：
+       - 大樓月額修繕積立金（例如 "8,500円"、"8500"、"8,500円(2026年改定後)"）。
+       - 若圖面同時列出目前與改定後金額，請優先保留改定後金額或完整原文。
+       - 若未記載或透天/土地無此項填空字串。
+    4. landRights（土地権利）：
+       - 土地權利種類（例如 "所有権"、"借地権"、"定期借地権"、"旧法賃借権"、"地上権" 等）。
+    5. occupancyStatus（現況／引渡）：
+       - 目前使用狀態（例如 "空室"、"賃貸中"、"オーナーチェンジ"、"居住中"、"即時引渡可" 等）。
+  `;
+
+  const imageFiles = files.filter(file => file.mimeType.startsWith("image/"));
+  const inputs = imageFiles.length ? imageFiles : files;
+
+  try {
+    const response = await getAiClient().models.generateContent({
+      model: "gemini-3.8-flash",
+      contents: { parts: [...inputs.map(toInlinePart), { text: prompt }] },
+      config: {
+        temperature: 0,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            salePrice: { type: Type.STRING, description: "販売価格實際印的字（含萬/億/税込/税抜），改定以新價格為準" },
+            managementFee: { type: Type.STRING, description: "月額管理費實際印的字" },
+            repairReserve: { type: Type.STRING, description: "月額修繕積立金實際印的字" },
+            landRights: { type: Type.STRING, description: "土地權利（所有権/借地権等）" },
+            occupancyStatus: { type: Type.STRING, description: "現況（空室/賃貸中/オーナーチェンジ/居住中等）" },
+          },
+          required: ["salePrice", "managementFee", "repairReserve", "landRights", "occupancyStatus"],
+        },
+      },
+    });
+    const parsed = JSON.parse(response.text || "{}");
+    const pick = (fresh: unknown, fallback: string) => {
+      const value = typeof fresh === "string" ? fresh.trim() : "";
+      if (!value) return fallback;
+      return value;
+    };
+    return {
+      salePrice: pick(parsed.salePrice, current.salePrice),
+      managementFee: pick(parsed.managementFee, current.managementFee),
+      repairReserve: pick(parsed.repairReserve, current.repairReserve),
+      landRights: pick(parsed.landRights, current.landRights),
+      occupancyStatus: pick(parsed.occupancyStatus, current.occupancyStatus),
+    };
+  } catch (error) {
+    console.warn("analyze-listing: 買賣核心欄位二次確認失敗，沿用第一次結果", error);
+    return current;
+  }
+}
+
 function reconcileLeaseTerms(extracted: ExtractedListingFields): ExtractedListingFields {
   const row = extracted.leaseTerms || "";
   if (!row.trim()) return extracted;
@@ -904,16 +994,42 @@ export default async function handler(req: any, res: any) {
       return res.status(422).json({ error: "無法從這張圖片讀出物件資訊，請確認上傳的是物件概要書或図面。" });
     }
 
-    // 租賃圖紙一律對敷金／礼金做一次聚焦的二次確認（見 verifyLeaseCharges）。
-    // 不能只在「看起來可疑」時才確認：第一次抽取最常見的錯法是把「無」幻覺成
-    // 「1ヶ月」，這個值和真實的 1ヶ月 在字串上無法區分，事後判斷攔不到。
-    // 這兩個數字直接決定初期費用試算的結果，多一次小呼叫值得。
-    // 只看 dealType 而不看 salePrice：買賣圖紙沒有這兩格，問了也是白問。
+    // 聚焦二次確認：
+    // - 租賃圖紙：一律對敷金／礼金做聚焦二次確認（見 verifyLeaseCharges），防止無幻覺成1個月。
+    // - 買賣圖紙：一律對售價、管理費、修繕積立金、土地權利與現況做聚焦二次確認（見 verifySaleCoreCharges），
+    //   防止表格數字串格、漏讀改定價格、或權利性質誤判。
     if (extracted.dealType !== "sale") {
       const verified = await verifyLeaseCharges(files, { deposit: extracted.deposit, keyMoney: extracted.keyMoney });
       if (verified.deposit !== extracted.deposit || verified.keyMoney !== extracted.keyMoney) {
         console.info("analyze-listing: 敷金／礼金經二次確認修正", {
           before: { deposit: extracted.deposit, keyMoney: extracted.keyMoney },
+          after: verified,
+        });
+      }
+      extracted = { ...extracted, ...verified };
+    } else {
+      const verified = await verifySaleCoreCharges(files, {
+        salePrice: extracted.salePrice,
+        managementFee: extracted.managementFee,
+        repairReserve: extracted.repairReserve,
+        landRights: extracted.landRights,
+        occupancyStatus: extracted.occupancyStatus,
+      });
+      if (
+        verified.salePrice !== extracted.salePrice ||
+        verified.managementFee !== extracted.managementFee ||
+        verified.repairReserve !== extracted.repairReserve ||
+        verified.landRights !== extracted.landRights ||
+        verified.occupancyStatus !== extracted.occupancyStatus
+      ) {
+        console.info("analyze-listing: 買賣核心欄位經二次確認修正", {
+          before: {
+            salePrice: extracted.salePrice,
+            managementFee: extracted.managementFee,
+            repairReserve: extracted.repairReserve,
+            landRights: extracted.landRights,
+            occupancyStatus: extracted.occupancyStatus,
+          },
           after: verified,
         });
       }
