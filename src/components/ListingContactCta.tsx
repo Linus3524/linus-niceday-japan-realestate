@@ -65,17 +65,17 @@ export function ListingContactCta() {
           />
         </div>
 
-        {/* 中間：標題與說明（精簡上下留白與高度，使兩側插畫等比縮小） */}
-        <div className="flex-1 flex flex-col justify-center py-2.5 sm:py-3 md:py-3 px-3 sm:px-4 md:px-5 space-y-1 sm:space-y-1.5 min-w-0">
+        {/* 中間：標題與說明（字體微幅加大、右側間距收斂，使右側插圖更貼近） */}
+        <div className="flex-1 flex flex-col justify-center py-2.5 sm:py-3.5 md:py-3.5 pl-3 sm:pl-4 md:pl-5 pr-1 sm:pr-2 md:pr-3 space-y-1 sm:space-y-1.5 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="inline-block bg-[#E6F6F1] px-2 py-0.5 font-sans text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] text-[#00A174] border border-[#9EE2CF]">
+            <span className="inline-block bg-[#E6F6F1] px-2 py-0.5 font-sans text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-[0.18em] text-[#00A174] border border-[#9EE2CF]">
               TALK TO LINUS
             </span>
           </div>
-          <h3 className="text-sm sm:text-base md:text-[17px] lg:text-lg font-bold text-[#1A2A22] tracking-tight leading-snug">
+          <h3 className="text-[15px] sm:text-[17px] md:text-lg lg:text-[19px] font-bold text-[#1A2A22] tracking-tight leading-snug">
             看完分析有疑問？直接找 Linus 聊聊
           </h3>
-          <p className="text-[11px] sm:text-xs lg:text-[12.5px] leading-relaxed text-[#526359] max-w-xl">
+          <p className="text-xs sm:text-[13px] md:text-[13.5px] lg:text-[14px] leading-relaxed text-[#526359] max-w-2xl">
             想確認物件細節、安排實地看房，或需要日本買房與租屋的全程諮詢，用你最習慣的方式聯繫即可。全程中文溝通、日本現地專業服務。
           </p>
         </div>
@@ -85,7 +85,7 @@ export function ListingContactCta() {
           <img
             src="/cta-right.webp"
             alt="在日本，也有家的可能"
-            className="h-full w-auto object-contain object-right-top max-w-[135px] sm:max-w-[155px] md:max-w-[175px] lg:max-w-[195px]"
+            className="h-full w-auto object-contain object-right-top max-w-[145px] sm:max-w-[165px] md:max-w-[190px] lg:max-w-[210px]"
           />
         </div>
       </div>
@@ -99,16 +99,16 @@ export function ListingContactCta() {
             className="h-full w-auto object-contain object-left-top max-w-[95px]"
           />
         </div>
-        <div className="flex-1 py-2.5 pr-3 pl-1.5 flex flex-col justify-center space-y-0.5 min-w-0">
+        <div className="flex-1 py-2.5 pr-2.5 pl-1.5 flex flex-col justify-center space-y-0.5 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="inline-block bg-[#E6F6F1] px-1.5 py-0.5 font-sans text-[9px] font-bold uppercase tracking-[0.18em] text-[#00A174] border border-[#9EE2CF]">
+            <span className="inline-block bg-[#E6F6F1] px-1.5 py-0.5 font-sans text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#00A174] border border-[#9EE2CF]">
               TALK TO LINUS
             </span>
           </div>
-          <h3 className="text-sm font-bold text-[#1A2A22] tracking-tight leading-snug">
+          <h3 className="text-[14.5px] font-bold text-[#1A2A22] tracking-tight leading-snug">
             看完分析有疑問？直接找 Linus 聊聊
           </h3>
-          <p className="text-[11px] leading-relaxed text-[#526359] line-clamp-2">
+          <p className="text-[11.5px] leading-relaxed text-[#526359] line-clamp-2">
             想確認物件細節、安排實地看房，或需要日本買房與租屋諮詢，用習慣方式聯繫即可。
           </p>
         </div>

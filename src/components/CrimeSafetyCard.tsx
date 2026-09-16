@@ -390,36 +390,112 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
               <p className="prefecture-safety-description mt-3 text-[11px] leading-relaxed text-[#3F5147]">{residentialCopy.description}</p>
             </div>
             <div className="prefecture-safety-middle space-y-2">
-              {crime.tokyoContext?.residentialRanking && <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                <div>
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]"><Trophy className="h-3 w-3 shrink-0" style={{ color: residentialStyle.accent }} /><span>{crime.tokyoContext.residentialRanking.area}住宅侵入案件數排名</span></div>
-                  <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">第 {crime.tokyoContext.residentialRanking.rank.toLocaleString()} <span className="text-[10px] font-medium text-[#66736C]">／{crime.tokyoContext.residentialRanking.total.toLocaleString()} 區市町村{crime.tokyoContext.residentialRanking.tied > 1 ? "（同名次）" : ""}</span></div>
+              {crime.tokyoContext?.residentialRanking && (
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <div>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
+                      <Trophy className="h-3 w-3 shrink-0" style={{ color: residentialStyle.accent }} />
+                      <span>{crime.tokyoContext.residentialRanking.area}住宅侵入案件數排名</span>
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">
+                      第 {crime.tokyoContext.residentialRanking.rank.toLocaleString()}{" "}
+                      <span className="text-[10px] font-medium text-[#66736C]">
+                        ／{crime.tokyoContext.residentialRanking.total.toLocaleString()} 區市町村{crime.tokyoContext.residentialRanking.tied > 1 ? "（同名次）" : ""}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
+                      <Home className="h-3 w-3 shrink-0" style={{ color: SAFETY_PALETTE.green }} />
+                      <span>{crime.tokyoContext.residentialRanking.area}住宅侵入全年</span>
+                    </div>
+                    <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">
+                      {crime.tokyoContext.residentialRanking.count.toLocaleString()}{" "}
+                      <span className="text-[10px] font-semibold text-[#8A9590]">件</span>
+                    </div>
+                  </div>
+                  <p className="col-span-2 text-[10px] leading-relaxed text-[#66736C]">
+                    第 1 名＝案件最少；未按戶數換算。
+                  </p>
                 </div>
-                <div>
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]"><Home className="h-3 w-3 shrink-0" style={{ color: SAFETY_PALETTE.green }} /><span>{crime.tokyoContext.residentialRanking.area}住宅侵入全年</span></div>
-                  <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">{crime.tokyoContext.residentialRanking.count.toLocaleString()} <span className="text-[10px]">件</span></div>
-                </div>
-                <p className="col-span-2 text-[10px] leading-relaxed text-[#66736C]">第 1 名＝案件最少；未按戶數換算。</p>
-              </div>}
-
+              )}
             </div>
-            <div className="prefecture-safety-bottom space-y-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><FileText className="h-3.5 w-3.5 shrink-0" />區市町村統計摘要</div>
-                <p className="text-[11px] leading-relaxed text-[#3F5147]">
-                  {crime.tokyoContext?.residentialRanking ? <>{crime.tokyoContext.residentialRanking.area}全年住宅侵入 {crime.tokyoContext.residentialRanking.count} 件；都內 {crime.tokyoContext.residentialRanking.total} 個有官方合計的區市町村，平均 {crime.tokyoContext.residentialRanking.averageCount.toFixed(1)} 件。物件所在{crime.chocho}為 {homeCount} 件。</> : <>{crime.chocho}全年住宅侵入 {homeCount} 件；所屬區市町村排名資料不足。</>}
-                </p>
-              </div>
-              {crime.tokyoContext?.residentialRanking && <div className="space-y-1.5 pt-1">
-                <div className="relative h-2 w-full border border-[#DDE3DF] bg-white" aria-label="所屬區市町村住宅侵入件數與都內區市町村平均比較">
-                  <div className="h-full" style={{ width: `${Math.min(100, crime.tokyoContext.residentialRanking.averageCount > 0 ? crime.tokyoContext.residentialRanking.count / crime.tokyoContext.residentialRanking.averageCount * 50 : 0)}%`, backgroundColor: residentialStyle.accent }} />
-                  <div className="absolute inset-y-0 left-1/2 w-0.5 bg-[#1A2A22]/50" />
+            <div className="prefecture-safety-bottom space-y-2.5">
+              {crime.tokyoContext?.residentialRanking ? (
+                <div className="space-y-2">
+                  {/* 標題 */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1A2A22]">
+                      <FileText className="h-3.5 w-3.5 shrink-0 text-[#66736C]" />
+                      <span>{crime.tokyoContext.residentialRanking.area}全區住宅侵入統計</span>
+                    </div>
+                  </div>
+
+                  {/* 標尺指標 (大田區 79 件) 與長條圖 */}
+                  <div className="space-y-1 pt-0.5">
+                    {/* 上方數值標籤 */}
+                    <div className="flex justify-between items-baseline text-[10px]">
+                      <span className="text-[#66736C]">0 件</span>
+                      <span className="font-bold flex items-center gap-1" style={{ color: residentialStyle.text }}>
+                        <span>◆</span>
+                        <span>{crime.tokyoContext.residentialRanking.area} {crime.tokyoContext.residentialRanking.count} 件</span>
+                      </span>
+                    </div>
+
+                    {/* 軌道與都內平均中線 */}
+                    <div
+                      className="relative h-2.5 w-full border border-[#DDE3DF] bg-[#F5F8F6]"
+                      aria-label={`${crime.tokyoContext.residentialRanking.area}住宅侵入件數與都內平均比較`}
+                    >
+                      <div
+                        className="h-full transition-all duration-300"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            Math.max(
+                              4,
+                              crime.tokyoContext.residentialRanking.averageCount > 0
+                                ? (crime.tokyoContext.residentialRanking.count / (crime.tokyoContext.residentialRanking.averageCount * 2)) * 100
+                                : 0
+                            )
+                          )}%`,
+                          backgroundColor: residentialStyle.accent,
+                        }}
+                      />
+                      {/* 都內各區平均基準線 (固定 50%) */}
+                      <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-[#1A2A22]/60" />
+                    </div>
+
+                    {/* 下方基準刻度 */}
+                    <div className="flex justify-between text-[10px] text-[#66736C]">
+                      <span className="invisible">0 件</span>
+                      <span className="font-medium text-[#1A2A22]">
+                        都內各區平均 {crime.tokyoContext.residentialRanking.averageCount.toFixed(1)} 件
+                      </span>
+                      <span>件數較多</span>
+                    </div>
+                  </div>
+
+                  {/* 微觀町丁目對照說明 */}
+                  <div className="flex items-start gap-1.5 pt-0.5 text-[11px] leading-relaxed text-[#3F5147]">
+                    <Info className="h-3.5 w-3.5 mt-0.5 shrink-0 text-[#00A174]" />
+                    <span>本物件所在之「{crime.chocho}」全年為 {homeCount} 件。</span>
+                  </div>
                 </div>
-                <div className="flex justify-between gap-1 text-[10px] font-medium text-[#66736C]"><span>件數較少</span><span className="font-bold text-[#1A2A22]">都內平均 {crime.tokyoContext.residentialRanking.averageCount.toFixed(1)} 件</span><span>件數較多</span></div>
-              </div>}
+              ) : (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]">
+                    <FileText className="h-3.5 w-3.5 shrink-0" />
+                    區市町村統計摘要
+                  </div>
+                  <p className="text-[11px] leading-relaxed text-[#3F5147]">
+                    {crime.chocho}全年住宅侵入 {homeCount} 件；所屬區市町村排名資料不足。
+                  </p>
+                </div>
+              )}
               {typeof crime.burglaryRate === "string" && (
                 <p
-                  className="border-t border-dashed pt-2 mt-1.5 text-[10px] leading-snug text-[#66736C]"
+                  className="mt-1.5 border-t border-dashed pt-2 text-[10px] leading-snug text-[#66736C]"
                   style={{ borderColor: residentialStyle.border }}
                 >
                   {RATE_UNAVAILABLE_COPY[crime.burglaryRate]}
