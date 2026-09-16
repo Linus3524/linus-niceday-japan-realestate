@@ -26,7 +26,7 @@ export function RelatedThreads({ threads, query, total, compact = false }: Relat
           <p className="mt-1 font-sans text-[11px] leading-relaxed text-[#66736C]">第一線租屋、買房經驗，補充指南之外的實際情況。</p>
         </div>
         {query && (total ?? 0) > threads.length && (
-          <a href={allThreadsHref} className="font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174]">
+          <a href={allThreadsHref} className="font-sans text-xs font-bold text-[#00a174] hover:underline">
             查看全部 {total} 篇 →
           </a>
         )}
@@ -43,13 +43,13 @@ export function RelatedThreads({ threads, query, total, compact = false }: Relat
             rel="noopener noreferrer"
             className="group flex min-w-0 flex-col border border-[#DDE3DF] bg-[#FFFFFF] p-4 text-left transition-all hover:border-[#00a174] hover:shadow-colored-soft"
           >
-            <div className="flex items-center justify-between gap-3 font-sans text-[10px] font-bold tracking-wide text-[#007d5a]">
+            <div className="flex items-center justify-between gap-3 font-sans text-[10px] font-bold tracking-wide text-[#00a174]">
               <span className="truncate">THREADS · {thread.category}</span>
               <ExternalLink className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
             </div>
             <h5 className="mt-2 font-serif text-sm font-bold leading-6 text-[#1A2A22]">{thread.title}</h5>
             <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-[#3F5147]">{thread.excerpt}</p>
-            <span className="mt-3 font-sans text-[11px] font-bold text-[#007d5a]">閱讀完整分享 ↗</span>
+            <span className="mt-3 font-sans text-[11px] font-bold text-[#00a174]">閱讀完整分享 ↗</span>
             {imageUrl && (
               <div className="-mx-4 -mb-4 mt-auto pt-4">
                 <div className="overflow-hidden border-t border-[#DDE3DF] bg-[#EEF2F0]">

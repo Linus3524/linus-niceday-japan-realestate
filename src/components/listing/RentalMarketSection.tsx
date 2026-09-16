@@ -33,8 +33,8 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
       <div className="space-y-3">
         {/* 區塊頂部標題列：與其他模組保持完全一致的層級 */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-            <TrendingUp className="h-4 w-4 text-[#007D5A]" />
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+            <TrendingUp className="h-4 w-4 text-[#00A174]" />
             <span>租金行情診斷</span>
           </div>
           <span className="text-[10px] text-[#66736C]">
@@ -67,7 +67,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[#66736C]">區域中位數：</span>
-                  <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-mono font-bold text-[#007D5A]">
+                  <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-mono font-bold text-[#00A174]">
                     {formatYen(result.range.median)}
                   </span>
                 </div>
@@ -80,7 +80,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                     href={result.range.sourceUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-[#007D5A] underline underline-offset-2 hover:text-[#00A174]"
+                    className="font-medium text-[#00A174] underline underline-offset-2 hover:text-[#00895D]"
                   >
                     {result.range.sourceLabel || "At Home 刊登物件直近 3 個月租金平均"}
                   </a>
@@ -111,7 +111,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
                         <div className="flex items-center gap-1.5">
                           <span className="text-[#66736C]">優勢加成合計：</span>
-                          <span className="font-mono font-black text-[#007D5A]">
+                          <span className="font-mono font-black text-[#00A174]">
                             +{positiveFactorsSum.toFixed(1)}%
                           </span>
                           {result.range && (
@@ -135,7 +135,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         )}
                         <div className="flex items-center gap-1.5">
                           <span className="text-[#66736C]">條件調整淨值：</span>
-                          <span className={`font-mono font-bold ${netFactorsSum >= 0 ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                          <span className={`font-mono font-bold ${netFactorsSum >= 0 ? "text-[#00A174]" : "text-[#B13818]"}`}>
                             {netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}
                           </span>
                         </div>
@@ -154,7 +154,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         )}
                       </div>
                       <span className={`inline-flex shrink-0 items-center gap-1 border px-2 py-0.5 text-[11px] font-bold ${netFactorsSum >= nominalDiff
-                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                           : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"
                         }`}>
                         <CheckCircle2 className="h-3 w-3" />
@@ -186,7 +186,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                               </span>
                               <div className="flex items-center gap-1.5 font-bold text-[#1A2A22]">
                                 {isPlus ? (
-                                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#007D5A]" />
+                                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[#00A174]" />
                                 ) : (
                                   <MinusCircle className="h-3.5 w-3.5 shrink-0 text-[#B13818]" />
                                 )}
@@ -201,13 +201,13 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                     key={n}
                                     className="h-2 w-2 border"
                                     style={{
-                                      borderColor: n < f.level ? (isPlus ? "#007D5A" : "#B13818") : "#DDE3DF",
-                                      backgroundColor: n < f.level ? (isPlus ? "#007D5A" : "#B13818") : "transparent"
+                                      borderColor: n < f.level ? (isPlus ? "#00A174" : "#B13818") : "#DDE3DF",
+                                      backgroundColor: n < f.level ? (isPlus ? "#00A174" : "#B13818") : "transparent"
                                     }}
                                   />
                                 ))}
                               </div>
-                              <div className={`font-mono text-xs font-bold tabular-nums text-left sm:text-right ${isPlus ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                              <div className={`font-mono text-xs font-bold tabular-nums text-left sm:text-right ${isPlus ? "text-[#00A174]" : "text-[#B13818]"}`}>
                                 {isPlus ? `+${f.ratePercent.toFixed(1)}%` : `−${Math.abs(f.ratePercent).toFixed(1)}%`}
                               </div>
                             </div>
@@ -234,7 +234,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-1.5">
                             <span className="text-xs font-bold text-[#1A2A22]">條件加總與租金對照</span>
-                            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#00A174]">
                               加總驗證
                             </span>
                           </div>
@@ -249,11 +249,11 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                             <div>
                               <div className="flex items-center justify-between gap-1">
                                 <span className="text-[10px] text-[#66736C]">本案條件加成淨值</span>
-                                <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                                <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#00A174]">
                                   規格加成
                                 </span>
                               </div>
-                              <span className={`block font-mono text-base font-black mt-1 ${netFactorsSum >= 0 ? "text-[#007D5A]" : "text-[#B13818]"}`}>
+                              <span className={`block font-mono text-base font-black mt-1 ${netFactorsSum >= 0 ? "text-[#00A174]" : "text-[#B13818]"}`}>
                                 {netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}
                               </span>
                             </div>
@@ -271,13 +271,13 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                 <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${nominalDiff > 0
                                     ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
                                     : nominalDiff < 0
-                                      ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                      ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                                       : "border-[#DDE3DF] bg-white text-[#8A9590]"
                                   }`}>
                                   {nominalDiff > 0 ? "溢價開價" : nominalDiff < 0 ? "讓利開價" : "符合行情"}
                                 </span>
                               </div>
-                              <span className={`block font-mono text-base font-black mt-1 ${nominalDiff > 0 ? "text-[#B13818]" : nominalDiff < 0 ? "text-[#007D5A]" : "text-[#8A9590]"
+                              <span className={`block font-mono text-base font-black mt-1 ${nominalDiff > 0 ? "text-[#B13818]" : nominalDiff < 0 ? "text-[#00A174]" : "text-[#8A9590]"
                                 }`}>
                                 {nominalDiff > 0 ? `▲ 溢價 ${nominalDiff.toFixed(1)}%` : nominalDiff < 0 ? `▼ 折讓 ${Math.abs(nominalDiff).toFixed(1)}%` : "符合市場基準"}
                               </span>
@@ -301,7 +301,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                               <div className="flex items-center justify-between gap-1">
                                 <span className="text-[10px] text-[#66736C]">租金定價合理性剖析</span>
                                 <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${isWellSupported
-                                    ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                    ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                                     : isOverpriced
                                       ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
                                       : isDiscounted
@@ -312,12 +312,12 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                 </span>
                               </div>
                               <span className={`block text-base font-black mt-1 tracking-tight ${isWellSupported
-                                  ? "text-[#007D5A]"
+                                  ? "text-[#00A174]"
                                   : isOverpriced
                                     ? "text-[#B13818]"
                                     : isDiscounted
                                       ? "text-[#0284C7]"
-                                      : "text-[#007D5A]"
+                                      : "text-[#00A174]"
                                 }`}>
                                 {isWellSupported
                                   ? "✓ 租金有充分條件支撐"
@@ -341,15 +341,15 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         </div>
 
                         {/* 評定解析（綜合加總與租金比對之結論） */}
-                        <div className="border border-[#DDE3DF] border-l-4 border-l-[#007D5A] bg-[#F5F8F6] p-3 text-xs text-[#1A2A22]">
-                          <div className="mb-2 flex items-center gap-1.5 font-bold text-[#007D5A]">
+                        <div className="border border-[#DDE3DF] border-l-4 border-l-[#00A174] bg-[#F5F8F6] p-3 text-xs text-[#1A2A22]">
+                          <div className="mb-2 flex items-center gap-1.5 font-bold text-[#00A174]">
                             <span>評定解析・重點摘要</span>
                           </div>
                           {conclusionPoints && conclusionPoints.length > 0 ? (
                             <ul className="space-y-2 leading-relaxed text-[#3F5147]">
                               {conclusionPoints.map((point, idx) => (
                                 <li key={idx} className="flex items-start gap-2">
-                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#007D5A]" />
+                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00A174]" />
                                   <div>
                                     <span className="font-bold text-[#1A2A22]">{point.label}：</span>
                                     <span>{point.text}</span>

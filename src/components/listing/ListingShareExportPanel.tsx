@@ -4,7 +4,8 @@ Copy,
 Download,
 ExternalLink,
 Link2,
-LoaderCircle
+LoaderCircle,
+Wand2
 } from "lucide-react";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 
@@ -47,7 +48,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
   } = model;
   return (<div className="border border-dashed border-[#8A9590] bg-[#FAFCFB] p-5 md:p-6">
     <div className="mb-2 flex items-center gap-2 text-sm font-bold text-[#1A2A22]">
-      <Link2 className="h-4 w-4 text-[#007D5A]" />
+      <Link2 className="h-4 w-4 text-[#00A174]" />
       分享與下載分析結果
     </div>
     <p className="mb-4 text-xs leading-relaxed text-[#66736C]">
@@ -61,14 +62,31 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
         <label className="mb-1 block text-xs font-bold text-[#1A2A22]">
           標題 <span className="text-[#B13818]">*</span>
         </label>
-        <input
-          type="text"
-          value={shareTitle}
-          onChange={event => { setShareTitle(event.target.value); setShareError(null); }}
-          placeholder={`例如：${reportHeading}`}
-          maxLength={60}
-          className="w-full border border-[#DDE3DF] bg-white px-3 py-2.5 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:border-[#00A174] focus:outline-none"
-        />
+        {/* 標題幾乎都是「物件名＋房號」，而這份資訊圖紙分析早就解析出來了（reportHeading）。
+            給一個一鍵帶入的按鈕省去重打，但仍是一般輸入框，使用者要改成自己的備註也可以。 */}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={shareTitle}
+            onChange={event => { setShareTitle(event.target.value); setShareError(null); }}
+            placeholder={`例如：${reportHeading}`}
+            maxLength={60}
+            className="min-w-0 flex-1 border border-[#DDE3DF] bg-white px-3 py-2.5 text-sm text-[#1A2A22] placeholder:text-[#8A9590] focus:border-[#00A174] focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => { setShareTitle(reportHeading.slice(0, 60)); setShareError(null); }}
+            disabled={!reportHeading || shareTitle.trim() === reportHeading.slice(0, 60)}
+            title={`帶入圖紙解析出的物件名稱與房號：${reportHeading}`}
+            className="flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3 py-2.5 text-xs font-bold text-[#00A174] transition-colors hover:bg-[#E6F6F1] disabled:cursor-not-allowed disabled:border-[#DDE3DF] disabled:text-[#8A9590] disabled:hover:bg-white"
+          >
+            <Wand2 className="h-3.5 w-3.5" />
+            帶入物件名稱
+          </button>
+        </div>
+        <p className="mt-1.5 text-[11px] leading-relaxed text-[#66736C]">
+          可直接帶入圖紙解析出的「{reportHeading}」，也可自行修改成看得懂的備註。
+        </p>
       </div>
     )}
 
@@ -78,12 +96,12 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           readOnly
           value={shareUrl}
           onFocus={event => event.currentTarget.select()}
-          className="min-w-0 flex-1 bg-transparent font-mono text-xs text-[#007D5A] focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent font-mono text-xs text-[#00A174] font-bold focus:outline-none"
         />
         <button
           type="button"
           onClick={copyShareUrl}
-          className="flex shrink-0 items-center gap-1 border border-[#007D5A] bg-white px-2.5 py-1.5 text-xs font-bold text-[#007D5A] hover:bg-[#F5F8F6]"
+          className="flex shrink-0 items-center gap-1 border border-[#00A174] bg-white px-2.5 py-1.5 text-xs font-bold text-[#00A174] hover:bg-[#E6F6F1]"
         >
           {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {shareCopied ? "已複製" : "複製"}
@@ -92,7 +110,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex shrink-0 items-center gap-1 bg-[#007D5A] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#006347]"
+          className="flex shrink-0 items-center gap-1 bg-[#00A174] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#00895D]"
         >
           <ExternalLink className="h-3.5 w-3.5" />
           前往

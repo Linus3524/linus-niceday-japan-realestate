@@ -119,8 +119,8 @@ export function TermModal(props: TermModalProps) {
                   <div className="text-sm text-[#1A2A22] leading-relaxed text-justify">{renderFormattedText(selectedFee.description)}</div>
 
                   {selectedFee.warning && (
-                    <div className="bg-[#e6f6f1] border-l-4 border-[#00a174] p-3.5 text-xs text-[#007d5a] leading-relaxed font-sans space-y-1 rounded-r">
-                      <strong className="block font-bold text-[#007d5a]">實務重點與風險提醒：</strong>
+                    <div className="bg-[#e6f6f1] border-l-4 border-[#00a174] p-3.5 text-xs text-[#00a174] leading-relaxed font-sans space-y-1 rounded-r">
+                      <strong className="block font-bold text-[#00a174]">實務重點與風險提醒：</strong>
                       <div className="text-[#3F5147] leading-relaxed text-justify">{renderFormattedText(selectedFee.warning.replace(/^💡\s*/, ""))}</div>
                     </div>
                   )}

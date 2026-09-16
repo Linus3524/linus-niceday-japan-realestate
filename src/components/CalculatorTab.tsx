@@ -181,7 +181,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               onApply={item => applyRecommendationToCalculator(item, aiResult.criteria)}
                             />
                             {appliedNotice && (
-                              <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#007d5a] font-sans" role="status">
+                              <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#00a174] font-sans" role="status">
                                 {appliedNotice}
                               </p>
                             )}
@@ -208,7 +208,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 onApply={item => applyRecommendationToCalculator(item, aiResult.criteria)}
                               />
                               {appliedNotice && (
-                                <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#007d5a]" role="status">{appliedNotice}</p>
+                                <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#00a174]" role="status">{appliedNotice}</p>
                               )}
                             </div>
                           )}

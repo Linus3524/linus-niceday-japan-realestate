@@ -22,7 +22,8 @@ type Context = Pick<ListingState,
   | "locationContext"
   | "crimeData"
   | "prefectureSafety"
-  | "commute"> & Pick<ListingHealthCheckProps,
+  | "commute"
+  | "commuteDestination"> & Pick<ListingHealthCheckProps,
     "sharedId"> & {
       sharedMode: boolean;
       reportHeading: string;
@@ -51,6 +52,7 @@ export function createListingShareActions(context: Context) {
     crimeData,
     prefectureSafety,
     commute,
+    commuteDestination,
   } = context;
 
   // 分享連結：只送分析結果，不送圖紙（見 api/listing-share.ts 的說明）。
@@ -65,7 +67,14 @@ export function createListingShareActions(context: Context) {
     setShareLoading(true);
     setShareError(null);
     try {
-      const response = await createListingShare({ title, result });
+      // 已算好的通勤結果一起帶上：收件人打開連結就能看到同一份門到門試算，
+      // 不必自己重輸目的地再算一次（重算也不保證拿到同樣的路線）。
+      const response = await createListingShare({
+        title,
+        result,
+        commute: commute ?? null,
+        commuteDestination: commute?.destinationInput || commuteDestination.trim(),
+      });
       const body = await response.json().catch(() => null);
       if (!task.current()) return;
       if (!response.ok) throw new Error(body?.error || `建立連結失敗（HTTP ${response.status}）。`);

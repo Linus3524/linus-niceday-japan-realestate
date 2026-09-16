@@ -6,7 +6,7 @@ export const informationStyle = {
   note: "font-sans text-xs leading-relaxed text-[#3F5147]",
   source: "font-sans text-[11px] leading-relaxed text-[#66736C]",
   sourceBadge: "inline-block whitespace-nowrap border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 font-sans text-[11px] font-medium text-[#1A2A22]",
-  estimateBadge: "inline-block whitespace-nowrap border border-[#007D5A] bg-[#007D5A] px-2 py-0.5 font-sans text-[11px] font-medium text-white",
+  estimateBadge: "inline-block whitespace-nowrap border border-[#00A174] bg-[#00A174] px-2 py-0.5 font-sans text-[11px] font-medium text-white",
   tableHead: "border-b border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]",
   tableBody: "divide-y divide-[#DDE3DF]",
   /* 提醒（黃）：需要留意但不影響判讀的補充說明。

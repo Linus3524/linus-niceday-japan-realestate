@@ -292,7 +292,7 @@ export function buildRentalMarketConclusion({ result, rentalFactors, totalMonthl
         {
           label: "定價結論",
           text: netFactorsSum >= 0
-            ? "居住品質與租金負擔兼顧，屬於市場上少見的高性價比房源。"
+            ? "居住品質與租金負擔兼顧，屬於市場上少見的高 CP 值物超所值房源。"
             : "適合注重實質每月支出、追求經濟實惠的承租需求。",
         },
       ];

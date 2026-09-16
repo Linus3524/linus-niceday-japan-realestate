@@ -9,7 +9,7 @@ export function PrefectureCrimeBreakdownCard({ data, prefecture }: { data: Prefe
   const isMunicipal = data.scopeKind === "municipality";
   return <div className="space-y-3 border border-[#DDE3DF] bg-[#FAFCFB] p-3.5">
     <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-[#1A2A22]">
-      <span className="flex items-center gap-1.5"><PieChart className="h-4 w-4 text-[#007D5A]" />犯罪類型與認知件數</span>
+      <span className="flex items-center gap-1.5"><PieChart className="h-4 w-4 text-[#00A174]" />犯罪類型與認知件數</span>
       <span className="flex flex-wrap items-center gap-2">
         <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] text-[#66736C]">{isMunicipal ? "市區町村資料" : "縣級備援"}</span>
         <span>{scopeLabel}・{data.year} 年・共 {data.total.toLocaleString()} 件</span>

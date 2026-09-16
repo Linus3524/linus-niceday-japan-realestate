@@ -8,7 +8,7 @@ const NOTICE_TONE_STYLES: Record<NoticeTone, string> = {
   caution: "border-[#FDBA74] bg-[#FFF7ED] text-[#D97706]",
   notice: "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]",
   info: "border-[#7DD3FC] bg-[#E0F2FE] text-[#0284C7]",
-  positive: "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]",
+  positive: "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]",
 };
 
 /** 保留呼叫端的實際錯誤與重試操作，不自行判斷錯誤原因。 */

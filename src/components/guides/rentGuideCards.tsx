@@ -14,7 +14,7 @@ import { TermDetailList } from "../TermDetailList";
 
 
 export const availabilityStyle = {
-  "多": "bg-[#e6f6f1] text-[#007d5a] border-[#9ee2cf]",
+  "多": "bg-[#e6f6f1] text-[#00a174] border-[#9ee2cf]",
   "一般": "bg-[#FEF9C3] text-[#854D0E] border-[#FDE047]",
   "最少": "bg-[#FEE2E2] text-[#B13818] border-[#FCA5A5]",
   "不一定": "bg-[#F2F8FA] text-[#3F626D] border-[#D6EAF0]"
@@ -27,7 +27,7 @@ export function renderDocumentLabel(document: string) {
   return (
     <>
       {text}
-      <sup className="ml-0.5 text-[10px] font-bold text-[#007d5a]">※{noteNum}</sup>
+      <sup className="ml-0.5 text-[10px] font-bold text-[#00a174]">※{noteNum}</sup>
     </>
   );
 }
@@ -128,7 +128,7 @@ export function SpecialTermCard({ term, onAskAI }: { key?: string | number; term
               type="button"
               onClick={() => setExpanded(prev => !prev)}
               aria-expanded={expanded}
-              className="flex w-full items-center justify-center gap-1 border-t border-[#DDE3DF] pt-2.5 font-sans text-xs font-bold text-[#007d5a] hover:text-[#00a174] cursor-pointer"
+              className="flex w-full items-center justify-center gap-1 border-t border-[#DDE3DF] pt-2.5 font-sans text-xs font-bold text-[#00a174] hover:underline cursor-pointer"
             >
               {expanded ? "收合" : `展開其餘 ${hiddenCount} 項`}
               <ChevronDown className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />

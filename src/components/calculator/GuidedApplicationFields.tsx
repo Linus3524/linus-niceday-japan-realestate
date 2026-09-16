@@ -9,7 +9,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
               type="button"
               onClick={() => setGuidedApplicationChannel("domestic")}
               className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
-                  ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
+                  ? "border-[#00A174] bg-[#00A174] text-white shadow-xs"
                   : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
                 }`}
             >
@@ -22,7 +22,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
               type="button"
               onClick={() => setGuidedApplicationChannel("overseas")}
               className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
-                  ? "border-[#007D5A] bg-[#00A174] text-white shadow-xs"
+                  ? "border-[#00A174] bg-[#00A174] text-white shadow-xs"
                   : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
                 }`}
             >
@@ -33,8 +33,8 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
             </button>
           </div>
           {guidedApplicationChannel === "overseas" && (
-            <div className="mt-2 border-l-4 border-[#007D5A] bg-[#F5F8F6] p-2.5 text-[10px] leading-relaxed text-[#1A2A22]">
-              <strong className="text-[#007D5A]">Linus 實務提醒：</strong>
+            <div className="mt-2 border-l-4 border-[#00A174] bg-[#F5F8F6] p-2.5 text-[10px] leading-relaxed text-[#1A2A22]">
+              <strong className="text-[#00A174]">Linus 實務提醒：</strong>
               {!guidedVisaType ? (
                 <span>人在海外申請租屋時，管理公司需先確認在留資格種類才能判定受理審查；建議先於上方選擇您的身分／簽證種類。</span>
               ) : guidedVisaType.includes("打工度假") ? (

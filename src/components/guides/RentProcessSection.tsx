@@ -190,7 +190,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                         <div key={route.title} className="border border-[#DDE3DF] p-4">
                           <div className="mb-3 flex items-start justify-between gap-2">
                             <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
-                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#e6f6f1] text-[#007d5a]"}`}>{route.condition}</span>
+                            <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#e6f6f1] text-[#00a174]"}`}>{route.condition}</span>
                           </div>
                           <p className="text-xs leading-relaxed text-[#3F5147]">{route.body}</p>
                           <p className={`mt-3 border-t border-[#ECEFEC] pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>

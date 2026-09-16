@@ -290,6 +290,12 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                 const isSelected = calcModifiers.includes(mod.id);
                 const isDisabled = isRentModifierDisabled(mod.id, calcModifiers, calcDistrict);
                 const isNoTower = mod.id === "tower" && !hasTowerMansionSupport(calcDistrict);
+                // 屋齡 10 年內的新成屋／次新屋幾乎不會再做全室翻新，兩者互斥時要講清楚原因，
+                // 否則使用者只看到「衝突鎖定」會不知道是跟哪一項打架。
+                const isNewBuildRenovationConflict = isDisabled && (
+                  (mod.id === "renovated" && (calcModifiers.includes("age_within_5y") || calcModifiers.includes("age_within_10y"))) ||
+                  ((mod.id === "age_within_5y" || mod.id === "age_within_10y") && calcModifiers.includes("renovated"))
+                );
                 return (
                   <label
                     key={mod.id}
@@ -299,7 +305,13 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                           ? "bg-[#FFFFFF] border-[#00a174] text-[#1A2A22] cursor-pointer"
                           : "bg-white border-[#DDE3DF] text-[#3F5147] hover:border-[#AEB8B2] cursor-pointer"
                       }`}
-                    title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
+                    title={isDisabled
+                      ? isNoTower
+                        ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選"
+                        : isNewBuildRenovationConflict
+                          ? "屋齡 10 年內的新成屋／次新屋本身就是新設備，市場上幾乎不會再做全室翻新 (リノベーション済み)，兩者不可同時計價，已自動鎖定防呆"
+                          : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆"
+                      : undefined}
                   >
                     <input
                       type="checkbox"
@@ -313,7 +325,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                         <span className={isDisabled ? "text-[#8A9590] line-through decoration-[#C9D2CD]" : "text-[#1A2A22]"}>{mod.text}</span>
                         {isDisabled && (
                           <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
-                            {isNoTower ? "此區無塔樓" : "衝突鎖定"}
+                            {isNoTower ? "此區無塔樓" : isNewBuildRenovationConflict ? "新屋免翻新" : "衝突鎖定"}
                           </span>
                         )}
                       </div>
@@ -384,7 +396,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                 {guidedAgeMax > 0 && <span className="border border-[#D6EAF0] bg-white px-2 py-0.5 text-[9px] font-bold text-[#3F626D]">屋齡 {guidedAgeMax} 年內</span>}
                 {guidedWalkMinutes > 0 && <span className="border border-[#D6EAF0] bg-white px-2 py-0.5 text-[9px] font-bold text-[#3F626D]">車站徒步 {guidedWalkMinutes} 分內</span>}
                 {guidedFloorMin >= 2 && <span className="border border-[#D6EAF0] bg-white px-2 py-0.5 text-[9px] font-bold text-[#3F626D]">2 樓以上</span>}
-                {guidedCommuteStation && <span className="border border-[#9ee2cf] bg-[#e6f6f1] px-2 py-0.5 text-[9px] font-bold text-[#007d5a]">通勤至 {toJapaneseStationName(guidedCommuteStation)}駅・{guidedCommuteMinutes} 分內</span>}
+                {guidedCommuteStation && <span className="border border-[#9ee2cf] bg-[#e6f6f1] px-2 py-0.5 text-[9px] font-bold text-[#00a174]">通勤至 {toJapaneseStationName(guidedCommuteStation)}駅・{guidedCommuteMinutes} 分內</span>}
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">

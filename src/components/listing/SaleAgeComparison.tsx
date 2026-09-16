@@ -30,7 +30,7 @@ export function SaleAgeComparison({ c }: Props) {
                   </div>
                   <dl className="divide-y divide-[#DDE3DF] border-b border-[#DDE3DF]">
                     {rows.map(r => {
-                      const tone = r.isCurrent ? "#8A9590" : r.diffPercent > 0 ? "#007D5A" : "#B13818";
+                      const tone = r.isCurrent ? "#8A9590" : r.diffPercent > 0 ? "#00A174" : "#B13818";
                       const level = priceLevel(r.medianSqmPriceYen);
                       return (
                         <div
@@ -43,7 +43,7 @@ export function SaleAgeComparison({ c }: Props) {
                               {ageBandLabel(r.ageBand)}
                             </span>
                             {r.isCurrent && (
-                              <span className="shrink-0 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                              <span className="shrink-0 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#00A174]">
                                 本案
                               </span>
                             )}

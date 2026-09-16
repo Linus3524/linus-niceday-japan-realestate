@@ -41,8 +41,8 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
   } = model;
   return (<div className="space-y-3">
     <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-        <MapPin className="h-4 w-4 text-[#007D5A]" />
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+        <MapPin className="h-4 w-4 text-[#00A174]" />
         <span>位置與生活機能</span>
       </div>
       <span className="text-[10px] text-[#66736C]">
@@ -61,7 +61,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
           <button
             type="button"
             onClick={() => void loadLocationContext(result)}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#007D5A] bg-[#007D5A] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#006548]"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#00895D]"
           >
             <RefreshCw className="h-3.5 w-3.5" /> 重新載入設施與地圖
           </button>
@@ -105,8 +105,8 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
         {locationContext.stationWalks.length > 0 && (
           <div className="border border-[#DDE3DF] bg-white p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-1">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#007D5A]">
-                <Footprints className="h-4 w-4 text-[#007D5A]" />
+              <div className="flex items-center gap-2 text-xs font-bold text-[#00A174]">
+                <Footprints className="h-4 w-4 text-[#00A174]" />
                 <span>步行時間比對</span>
               </div>
               <span className="text-[10px] text-[#66736C]">
@@ -136,7 +136,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                       <span className="text-sm font-black text-[#1A2A22]">{walk.station}駅</span>
                       <span className={`border px-2 py-0.5 text-[10px] font-semibold ${walk.source === "nearby"
                           ? "border-[#C9D2CD] bg-[#F5F8F6] text-[#66736C]"
-                          : "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                          : "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                         }`}>
                         {walk.source === "nearby" ? "附近補充" : "圖紙刊載"}
                       </span>
@@ -155,7 +155,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                         ) : walk.differenceMinutes && walk.differenceMinutes < 0 ? (
                           <>
                             ，實際步行約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘
-                            <strong className="ml-1 font-bold text-[#007D5A]">（比圖紙標示快約 {Math.abs(walk.differenceMinutes)} 分鐘）</strong>
+                            <strong className="ml-1 font-bold text-[#00A174]">（比圖紙標示快約 {Math.abs(walk.differenceMinutes)} 分鐘）</strong>
                           </>
                         ) : (
                           <>
@@ -185,9 +185,9 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                       <span className="mt-0.5 block font-mono text-xs font-bold text-[#1A2A22]">{walk.fastMinutes}分</span>
                     </div>
                     <div className="border border-[#00A174] bg-[#E6F6F1] px-2.5 py-1 text-center min-w-[62px]" title="日常常態步速：約 75m/分（含停等紅綠燈過路口餘裕）">
-                      <span className="block text-[9px] font-bold text-[#007D5A]">一般常態</span>
-                      <span className="block font-mono text-[8px] font-semibold text-[#007D5A]/80">75m/分</span>
-                      <span className="mt-0.5 block font-mono text-sm font-black text-[#007D5A]">{walk.normalMinutes}分</span>
+                      <span className="block text-[9px] font-bold text-[#00A174]">一般常態</span>
+                      <span className="block font-mono text-[8px] font-semibold text-[#00A174]/80">75m/分</span>
+                      <span className="mt-0.5 block font-mono text-sm font-black text-[#00A174]">{walk.normalMinutes}分</span>
                     </div>
                     <div className="border border-[#DDE3DF] bg-white px-2 py-1 text-center min-w-[56px]" title="雨天傘步或攜帶行李推車：約 55m/分">
                       <span className="block text-[9px] text-[#66736C]">雨天/行李</span>
@@ -204,8 +204,8 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
 
         {/* 互動地圖與周邊生活機能：將房屋與所有周邊設施直接標記在地圖上 */}
         <div className="border border-[#DDE3DF] bg-white p-4">
-          <div className="mb-3 flex items-center gap-2 text-xs font-bold text-[#007D5A]">
-            <Store className="h-4 w-4 text-[#007D5A]" />
+          <div className="mb-3 flex items-center gap-2 text-xs font-bold text-[#00A174]">
+            <Store className="h-4 w-4 text-[#00A174]" />
             <span>周邊 1.2 公里生活機能與互動地圖</span>
           </div>
 

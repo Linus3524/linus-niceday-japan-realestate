@@ -9,8 +9,8 @@ import {
 /**
  * 圖紙分析結果的分享連結。
  *
- * POST /api/listing-share        { title, dealType, result } → { id, url, expiresAt }
- * GET  /api/listing-share?id=X   → { title, dealType, result, createdAt, expiresAt }
+ * POST /api/listing-share        { title, dealType, result, commute, commuteDestination } → { id, url, expiresAt }
+ * GET  /api/listing-share?id=X   → { title, dealType, result, commute, commuteDestination, createdAt, expiresAt }
  *
  * 建立走限流：這是公開可寫的端點，不限制的話任何人都能把 Redis 塞滿。
  * 讀取不限流：分享出去就是要讓人打開的。
@@ -69,6 +69,9 @@ export default async function handler(req: any, res: any) {
         title: stored.title,
         dealType: stored.dealType,
         result: stored.result,
+        // 舊連結沒有存通勤試算，回 null／空字串讓前端一律走同一條還原路徑。
+        commute: stored.commute ?? null,
+        commuteDestination: stored.commuteDestination || "",
         createdAt: stored.createdAt,
         expiresAt: stored.expiresAt,
       });
@@ -99,9 +102,15 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: "沒有可分享的分析結果。" });
   }
 
+  // 通勤試算是選填：使用者沒算就不會有；有算才一起存，收件人才看得到同一份結果。
+  const commute = req.body?.commute && typeof req.body.commute === "object" ? req.body.commute : null;
+  const commuteDestination = typeof req.body?.commuteDestination === "string"
+    ? req.body.commuteDestination.replace(/[\u0000-\u001F\u007F]/g, "").trim().slice(0, 120)
+    : "";
+
   // 只收分析結果，不收圖紙：就算前端誤送了 base64 圖片，也在這裡擋下來，
   // 不落地儲存的承諾不能因為前端的一個 bug 就破功。
-  const serialized = JSON.stringify(result);
+  const serialized = JSON.stringify({ result, commute });
   if (/"data":"[A-Za-z0-9+/]{2000,}/.test(serialized)) {
     return res.status(400).json({ error: "分享內容不可包含圖片檔。" });
   }
@@ -112,7 +121,7 @@ export default async function handler(req: any, res: any) {
   const dealType = result?.dealType === "sale" || result?.dealType === "rent" ? result.dealType : null;
 
   try {
-    const { id, expiresAt } = await createListingShare({ title, dealType, result });
+    const { id, expiresAt } = await createListingShare({ title, dealType, result, commute, commuteDestination });
     return res.json({ id, expiresAt });
   } catch (error) {
     console.error("listing-share POST error:", error);

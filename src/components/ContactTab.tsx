@@ -60,25 +60,25 @@ export function ContactTab(props: ContactTabProps) {
 
                       <div className="space-y-3.5 text-xs text-[#3F5147] font-sans border-t border-[#DDE3DF] pt-4">
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">LINE ID</span>
+                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">LINE ID</span>
                           <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.lineId}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">WECHAT</span>
+                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">WECHAT</span>
                           <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.wechatId}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">EMAIL</span>
+                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">EMAIL</span>
                           <span className="font-mono text-[#3F5147]">{linusContact.email}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">PHONE</span>
+                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">PHONE</span>
                           <span className="font-mono text-[#3F5147]">{linusContact.phone}</span>
                         </div>
                         
                         {/* Wireframe Social Icons */}
                         <div className="flex items-center gap-3 pt-3.5 border-t border-dashed border-[#C9D2CD]">
-                          <span className="font-bold text-[#007d5a] w-20 shrink-0 tracking-wider">SOCIALS</span>
+                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">SOCIALS</span>
                           <div className="flex items-center gap-4">
                             <a 
                               href="https://www.facebook.com/r352410/" 
@@ -334,7 +334,7 @@ export function ContactTab(props: ContactTabProps) {
                 {/* Company Details (Right 7 Columns) */}
                 <div className="md:col-span-7 border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                   <div>
-                    <h4 className="mb-4 border-b border-[#DDE3DF] pb-2 text-base font-bold text-[#007d5a] flex items-center gap-2">
+                    <h4 className="mb-4 border-b border-[#DDE3DF] pb-2 text-base font-bold text-[#1A2A22] flex items-center gap-2">
                       <Building2 className="w-5 h-5 text-[#00a174] shrink-0" />
                       <span>公司基本資料</span>
                     </h4>
@@ -375,7 +375,7 @@ export function ContactTab(props: ContactTabProps) {
 
                   <div className="border-t border-[#DDE3DF] pt-4 space-y-4">
                     <div>
-                      <h4 className="font-bold text-sm text-[#007d5a] mb-2 font-sans uppercase tracking-wider flex items-center gap-1.5">
+                      <h4 className="font-bold text-sm text-[#1A2A22] mb-2 font-sans uppercase tracking-wider flex items-center gap-1.5">
                         <MapPin className="w-4 h-4 text-[#00a174] shrink-0" />
                         <span>公司地址：</span>
                       </h4>

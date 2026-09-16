@@ -24,8 +24,8 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
   return (<>{initialCost && (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-          <Wallet className="h-4 w-4 text-[#007D5A]" />
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <Wallet className="h-4 w-4 text-[#00A174]" />
           <span>初期費用試算與分析</span>
         </div>
         <span className={informationStyle.source}>
@@ -36,8 +36,8 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
       {/* 總額預估 Banner */}
       <CostSummary action={<DetailsToggle expanded={showInitialCostDetails} onToggle={() => setShowInitialCostDetails(!showInitialCostDetails)} />}>
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-xs font-bold text-[#007D5A]">簽約入住預估總費用</p>
-            <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] font-bold ${initialCost.level === "low" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : initialCost.level === "high" ? "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]" : "border-[#DDE3DF] bg-white text-[#3F5147]"}`}>
+            <p className="text-xs font-bold text-[#00A174]">簽約入住預估總費用</p>
+            <span className={`inline-flex items-center border px-2 py-0.5 text-[11px] font-bold ${initialCost.level === "low" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : initialCost.level === "high" ? "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]" : "border-[#DDE3DF] bg-white text-[#3F5147]"}`}>
               行情對照：{initialCost.levelText}
             </span>
           </div>
@@ -45,7 +45,7 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
             {formatYen(initialCost.totalMin)} ～ {formatYen(initialCost.totalMax)}
           </p>
           <p className="mt-2.5 text-xs leading-relaxed text-[#3F5147]">
-            約相當於月總租金的 <strong className="font-bold text-[#007D5A]">{initialCost.monthsMultipleMin} ～ {initialCost.monthsMultipleMax} 倍</strong>（取決於實際起租日與保證會社方案）
+            約相當於月總租金的 <strong className="font-bold text-[#00A174]">{initialCost.monthsMultipleMin} ～ {initialCost.monthsMultipleMax} 倍</strong>（取決於實際起租日與保證會社方案）
           </p>
       </CostSummary>
 

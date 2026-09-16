@@ -941,7 +941,7 @@ export default function App() {
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
                 className={`primary-nav-tab relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
-                  activeTab === tab.id ? "is-active text-[#007d5a]" : "text-[#1A2A22] hover:text-[#007d5a]"
+                  activeTab === tab.id ? "is-active text-[#00a174]" : "text-[#1A2A22] hover:text-[#00a174]"
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >

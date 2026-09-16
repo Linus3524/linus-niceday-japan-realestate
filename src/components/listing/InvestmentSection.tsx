@@ -19,8 +19,8 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
   const { saleAnalysis, extracted } = model;
   return (<div className="space-y-3">
     <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-        <ShieldCheck className="h-4 w-4 text-[#007D5A]" />
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+        <ShieldCheck className="h-4 w-4 text-[#00A174]" />
         <span>物件現況・投資回報率與自住法務要點</span>
       </div>
       <span className="text-[10px] text-[#66736C]">
@@ -39,9 +39,9 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
             <div className="border-l-[3px] border-[#00A174] bg-[#F5F8F6] px-4 py-3">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <div>
-                  <span className="text-xs font-bold text-[#007D5A]">表面租金報酬率</span>
+                  <span className="text-xs font-bold text-[#00A174]">表面租金報酬率</span>
                   <div className="mt-1 flex items-baseline gap-2">
-                    <span className="text-2xl font-black leading-none text-[#007D5A] tabular-nums">
+                    <span className="text-2xl font-black leading-none text-[#00A174] tabular-nums">
                       {typeof saleAnalysis.occupancyAssessment.investmentYield.grossYield === "number" && !isNaN(saleAnalysis.occupancyAssessment.investmentYield.grossYield)
                         ? `${saleAnalysis.occupancyAssessment.investmentYield.grossYield.toFixed(2)}%`
                         : "—"}
@@ -73,7 +73,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
                     <div
                       key={idx}
                       className={`flex items-baseline justify-between gap-2 py-0.5 ${item.type === "subtotal"
-                          ? "border-t border-[#DDE3DF] pt-1.5 font-bold text-[#007D5A]"
+                          ? "border-t border-[#DDE3DF] pt-1.5 font-bold text-[#00A174]"
                           : item.type === "deduction"
                             ? "text-[#3F5147]"
                             : "font-bold text-[#1A2A22]"
@@ -118,7 +118,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
         ) : (
           <div className="mt-3 space-y-2 text-xs">
             <div className=" border border-[#9EE2CF] bg-[#F5F8F6] p-3">
-              <p className="font-bold text-[#007D5A]">
+              <p className="font-bold text-[#00A174]">
                 {saleAnalysis?.occupancyAssessment?.status === "vacant"
                   ? (saleOccupancy(extracted || {}).renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對")
                   : saleAnalysis?.occupancyAssessment?.status === "occupied_owner" ? "現有屋主居住中（交屋期需協商）" : "現況未確認"}
@@ -155,8 +155,8 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
             <div className="flex items-start gap-2 font-bold">
               {saleAnalysis?.occupancyAssessment?.mortgageTaxEligible ? (
                 <>
-                  <CheckCircle2 className="mt-px h-4 w-4 shrink-0 text-[#007D5A]" />
-                  <span className="text-[#007D5A]">符合住宅貸款減稅主要面積門檻（50㎡）</span>
+                  <CheckCircle2 className="mt-px h-4 w-4 shrink-0 text-[#00A174]" />
+                  <span className="text-[#00A174]">符合住宅貸款減稅主要面積門檻（50㎡）</span>
                 </>
               ) : (
                 <>

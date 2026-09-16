@@ -49,7 +49,7 @@ export function TransitStationChips({ stationItems, locationContext }: TransitSt
               </span>
             ) : item.walkMin !== null ? (
               <span className="text-xs text-[#3F5147]">
-                徒歩 <span className="font-bold text-[#007D5A]">{item.walkMin}</span> 分
+                徒歩 <span className="font-bold text-[#00A174]">{item.walkMin}</span> 分
               </span>
             ) : (
               <span className="text-xs text-[#66736C]">徒步時間未標註</span>
@@ -71,7 +71,7 @@ export function TransitStationChips({ stationItems, locationContext }: TransitSt
               )}
               <span className="font-bold text-[#1A2A22]">{walk.station} 駅</span>
               <span className="text-xs text-[#3F5147]">
-                實際步行約 <span className="font-bold text-[#007D5A]">{walk.normalMinutes}</span> 分
+                實際步行約 <span className="font-bold text-[#00A174]">{walk.normalMinutes}</span> 分
               </span>
               <span className="border border-[#C9D2CD] bg-white px-1.5 py-0.5 text-[10px] font-semibold text-[#66736C]">
                 附近補充

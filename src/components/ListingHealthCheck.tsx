@@ -137,7 +137,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
             isDragging
               ? "border-[#00A174] bg-[#E6F6F1]": "border-[#8A9590] bg-[#F5F8F6] hover:border-[#00A174] hover:bg-[#F5F8F6]"}`}
         >
-          <div className="mb-3 flex h-14 w-14 items-center justify-center bg-[#E6F6F1] text-[#007D5A] transition-transform duration-200 group-hover:scale-110">
+          <div className="mb-3 flex h-14 w-14 items-center justify-center bg-[#E6F6F1] text-[#00A174] transition-transform duration-200 group-hover:scale-110">
             <UploadCloud className="h-7 w-7" />
           </div>
           <p className="text-base font-bold text-[#1A2A22]">
@@ -203,7 +203,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                       className="pointer-events-none h-full w-full border-0"
                     />
                   ) : (
-                    <div className="flex flex-col items-center justify-center gap-1 text-[#007D5A]">
+                    <div className="flex flex-col items-center justify-center gap-1 text-[#00A174]">
                       <LoaderCircle className="h-5 w-5 animate-spin" />
                       <span className="text-[10px] font-bold">縮圖生成中</span>
                     </div>
@@ -213,13 +213,13 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   </div>
                 </button>
               ) : (
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#007D5A]">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center border border-[#DDE3DF] bg-[#E6F6F1] text-[#00A174]">
                   <FileText className="h-8 w-8" />
                 </div>
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
+                  <span className="inline-flex items-center gap-1 bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#00A174]">
                     <CheckCircle2 className="h-3 w-3" /> 圖紙已就緒
                   </span>
                   <span className="text-[11px] text-[#66736C]">{formatFileSize(file.size)}</span>
@@ -347,8 +347,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           <div className="listing-analysis-report mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
           {/* 物件標題 */}
           <div className="border-b border-[#DDE3DF] pb-4">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-              <FileSearch className="h-4 w-4 text-[#007D5A]" />
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+              <FileSearch className="h-4 w-4 text-[#00A174]" />
               <span>LINUS {isSaleListing ? "買賣圖紙分析" : "租賃圖紙健檢"}</span>
             </div>
             <div className="mt-2">
@@ -363,7 +363,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           {(previewImageUrl || previewUrl) && (
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
                   <FileText className="h-4 w-4" />
                   <span>原始圖紙對照</span>
                   <span className="text-[11px] font-normal normal-case text-[#66736C]">
@@ -467,8 +467,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                   此時不能退回租賃版型硬算，直接說明缺什麼、已讀到什麼，避免整份報告空白。 */}
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-                    <Landmark className="h-4 w-4 text-[#007D5A]" />
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+                    <Landmark className="h-4 w-4 text-[#00A174]" />
                     <span>價格定位</span>
                   </div>
                   <span className="text-[10px] text-[#66736C]">需有販売価格才能進行行情比對</span>
@@ -521,8 +521,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               {/* 模組 4：重要特約與法務事項 */}
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-                    <ShieldAlert className="h-4 w-4 text-[#007D5A]" />
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+                    <ShieldAlert className="h-4 w-4 text-[#00A174]" />
                     <span>重要特約與法務事項</span>
                   </div>
                   <span className="text-[10px] text-[#66736C]">
@@ -554,8 +554,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           {/* 模組 5：個人自訂通勤試算 */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-                <TrainFront className="h-4 w-4 text-[#007D5A]" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+                <TrainFront className="h-4 w-4 text-[#00A174]" />
                 <span>我的實際通勤試算</span>
               </div>
               <span className="text-[10px] text-[#66736C]">
@@ -584,13 +584,13 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <div className="mt-3 border border-[#DDE3DF] bg-[#F5F8F6] p-4">
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
-                    <p className="text-[11px] font-bold text-[#007D5A]">全程門到門通勤時間</p>
+                    <p className="text-[11px] font-bold text-[#00A174]">全程門到門通勤時間</p>
                     <p className="mt-1 text-base font-bold text-[#1A2A22]">
                       {commute.route ? `${commute.route.originStation} → ${commute.route.destinationStation}` : commute.destinationStation}
                       ・轉乘 {commute.transfers} 次
                     </p>
                   </div>
-                  <p className="shrink-0 text-3xl font-black text-[#007D5A]">約 {commute.totalMinutes} 分</p>
+                  <p className="shrink-0 text-3xl font-black text-[#00A174]">約 {commute.totalMinutes} 分</p>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">
                   出門步行 {commute.originWalkMinutes} 分 ＋ 站間交通 {commute.transitMinutes} 分 ＋ 出站抵達 {commute.destinationWalkMinutes} 分

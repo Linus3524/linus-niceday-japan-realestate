@@ -195,7 +195,7 @@ export function ChatTab(props: ChatTabProps) {
                         onClick={() => trackAction("line-add")}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-1 inline-flex items-center font-bold text-[#007D5A] underline underline-offset-2 hover:text-[#00A174]"
+                        className="ml-1 inline-flex items-center font-bold text-[#00A174] underline underline-offset-2 hover:underline"
                       >
                         透過 LINE 聯絡 Linus
                       </a>

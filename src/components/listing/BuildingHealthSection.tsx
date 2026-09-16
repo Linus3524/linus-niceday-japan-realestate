@@ -18,8 +18,8 @@ interface BuildingHealthSectionProps {
 export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
   const { saleAnalysis } = model;
   return (<div className="space-y-3">
-    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-      <Wallet className="h-4 w-4 text-[#007D5A]" />
+    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+      <Wallet className="h-4 w-4 text-[#00A174]" />
       <span>持有成本與建物狀態</span>
     </div>
     <div className="grid gap-4 lg:grid-cols-2">
@@ -87,7 +87,7 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
           </p>
           <span
             className={`border px-2 py-1 text-[11px] font-bold ${saleAnalysis.buildingHealth.reserveHealthLevel === "healthy"
-                ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                 : saleAnalysis.buildingHealth.reserveHealthLevel === "inadequate"
                   ? "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"
                   : "border-[#DDE3DF] bg-[#F5F8F6] text-[#3F5147]"}`}
@@ -106,7 +106,7 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-[#1A2A22]">每平米每月修繕積立金</p>
-                  <p className="mt-0.5 text-[10px] leading-relaxed text-[#007D5A]">
+                  <p className="mt-0.5 text-[10px] leading-relaxed text-[#00A174]">
                     國土交通省長期修繕計畫提撥基準：{saleAnalysis.buildingHealth.guidelineRange || "200 〜 350 円/㎡/月"}
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
           {/* 維護亮點與優勢認證 */}
           {saleAnalysis.buildingHealth.specialStrengths.length > 0 && (
             <div className="space-y-1.5 border border-[#9EE2CF] bg-[#E6F6F1] p-3">
-              <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#007D5A]">
+              <span className="flex items-center gap-1.5 text-[11px] font-bold text-[#00A174]">
                 <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
                 大樓優勢認證
               </span>

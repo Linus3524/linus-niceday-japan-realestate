@@ -27,7 +27,7 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
                     <button
                       type="button"
                       onClick={() => setSearchQuery("")}
-                      className="shrink-0 font-sans text-xs font-bold text-[#007D5A] hover:text-[#00a174]"
+                      className="shrink-0 font-sans text-xs font-bold text-[#00A174] hover:underline"
                     >
                       清除搜尋
                     </button>
@@ -49,7 +49,7 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
 
                       {(filtered.fees.length > 0 || filtered.terms.length > 0) && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">相關術語</h4>
                           <div className="grid gap-3 md:grid-cols-2">
                             {[...filtered.fees, ...filtered.terms].map(term => (
                               <button
@@ -69,18 +69,18 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
 
                       {(filtered.steps.length > 0 || staticRentSearchItems.length > 0) && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">指南與流程</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">指南與流程</h4>
                           <div className="grid gap-3 md:grid-cols-2">
                             {filtered.steps.map(step => (
                               <article key={step.id} className="border border-[#DDE3DF] bg-white p-4">
-                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">租屋申請流程</span>
+                                <span className="font-sans text-[10px] font-bold text-[#00a174]">租屋申請流程</span>
                                 <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{step.name}</h5>
                                 <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-[#3F5147]">{step.description}</p>
                               </article>
                             ))}
                             {staticRentSearchItems.map(item => (
                               <article key={item.id} className="border border-[#DDE3DF] bg-white p-4">
-                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
+                                <span className="font-sans text-[10px] font-bold text-[#00a174]">{item.category}</span>
                                 <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
                                 <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-[#3F5147]">{item.text}</p>
                               </article>
@@ -91,7 +91,7 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
 
                       {filtered.qa.length > 0 && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關租屋問答</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">相關租屋問答</h4>
                           <div className="space-y-3">
                             {filtered.qa.map((qa, idx) => (
                               <QACard key={qa.id} question={qa.question} summary={qa.summary} answer={qa.answer} number={idx + 1} />

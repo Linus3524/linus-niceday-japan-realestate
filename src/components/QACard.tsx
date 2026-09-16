@@ -101,7 +101,7 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
         </summary>
         <div className="border-t border-dashed border-[#DDE3DF] bg-[#F5F8F6] px-4 pb-5 pt-4 md:px-5">
           <div className="mb-4 flex">
-            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#e6f6f1] border border-[#9ee2cf] text-[#007d5a] px-2.5 py-0.5 select-none">
+            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#e6f6f1] border border-[#9ee2cf] text-[#00a174] px-2.5 py-0.5 select-none">
               <Lightbulb className="h-3.5 w-3.5 shrink-0" /> LINUS 實務說明
             </span>
           </div>
@@ -158,7 +158,7 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
               <p className="text-[10px] font-bold tracking-wide text-[#66736C]">官方依據</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {sources.map(source => (
-                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#9ee2cf] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#007d5a] underline-offset-2 hover:underline">
+                  <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="border border-[#9ee2cf] bg-white px-2.5 py-1.5 text-[10px] font-bold text-[#00a174] underline-offset-2 hover:underline">
                     <span className="inline-flex items-center gap-1">
                       {source.label}
                       <NorthEastIcon className="h-3 w-3" />

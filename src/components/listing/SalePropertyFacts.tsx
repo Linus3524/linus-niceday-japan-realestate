@@ -39,8 +39,8 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
   } = model;
   return (<div className="space-y-3">
     <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-        <FileSpreadsheet className="h-4 w-4 text-[#007D5A]" />
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+        <FileSpreadsheet className="h-4 w-4 text-[#00A174]" />
         <span>物件基本規格・交通與設備</span>
       </div>
       <span className="text-[10px] text-[#66736C]">逐項對照圖紙載明內容</span>
@@ -145,9 +145,9 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
       {isSpecialSale && (
         <div className="mt-3.5 border-t border-[#DDE3DF] pt-3">
           <div className="flex items-start gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#007D5A]" />
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#00A174]" />
             <div className="space-y-1">
-              <p className="font-bold text-[#007D5A]">{specialSale.kindLabel}核對注意事項：</p>
+              <p className="font-bold text-[#00A174]">{specialSale.kindLabel}核對注意事項：</p>
               <ul className="list-disc space-y-0.5 pl-4 text-[11px] text-[#3F5147]">
                 <li>售價按建物面積換算的單價不等於建物單獨估值，需核對土地權利與價款分配。</li>
                 <li>修繕、保險與稅費需自行編列；未載管理費不代表持有成本為零。</li>
@@ -165,8 +165,8 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
           <div className="mb-2 flex flex-wrap items-center justify-between gap-1.5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-[#1A2A22]">圖紙設備與建物規格</span>
-              <span className="inline-flex items-center gap-1 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-medium text-[#007D5A]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#007D5A]" />
+              <span className="inline-flex items-center gap-1 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-medium text-[#00A174]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#00A174]" />
                 綠底：影響行情與生活品質的關鍵設備
               </span>
             </div>
@@ -182,12 +182,12 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
                 <span
                   key={idx}
                   className={`inline-flex items-center gap-1 border px-2 py-1 text-[11px] transition-colors ${item.highlight
-                      ? "border-[#9EE2CF] bg-[#E6F6F1] font-bold text-[#007D5A]"
+                      ? "border-[#9EE2CF] bg-[#E6F6F1] font-bold text-[#00A174]"
                       : "border-[#DDE3DF] bg-white text-[#3F5147]"
                     }`}
                   title={item.note ? `${item.nameZh}（${item.note}） 原文：${item.rawJa}` : `原文：${item.rawJa}`}
                 >
-                  <span className={item.highlight ? "font-bold text-[#007D5A]" : "text-[#8A9590]"}>✓</span>
+                  <span className={item.highlight ? "font-bold text-[#00A174]" : "text-[#8A9590]"}>✓</span>
                   <span>{item.nameZh}</span>
                 </span>
               ))}

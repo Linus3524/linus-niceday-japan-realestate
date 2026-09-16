@@ -71,7 +71,7 @@ export function RentalConditionSummary({
           const SectionIcon = sectionIcons[section.title] ?? House;
           return (
             <div key={section.title} className="border border-[#DDE3DF] bg-white px-4 py-3.5">
-              <div className="flex items-center gap-2 border-b border-[#ECEFEC] pb-2.5 font-sans text-sm font-bold text-[#007D5A] [font-family:var(--font-sans)]">
+              <div className="flex items-center gap-2 border-b border-[#ECEFEC] pb-2.5 font-sans text-sm font-bold text-[#00A174] [font-family:var(--font-sans)]">
                 <SectionIcon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
                 <p>{section.title}</p>
               </div>
@@ -81,10 +81,10 @@ export function RentalConditionSummary({
                   return (
                     <div key={row.title} className={`grid gap-2 py-3 font-sans [font-family:var(--font-sans)] sm:grid-cols-[9.5rem_1fr] ${index > 0 ? "border-t border-[#ECEFEC]" : ""}`}>
                       <div className="flex items-start gap-2 font-sans text-xs font-bold text-[#1A2A22] [font-family:var(--font-sans)]">
-                        <RowIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#007D5A]" strokeWidth={1.8} />
+                        <RowIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#00A174]" strokeWidth={1.8} />
                         <span>{row.title}</span>
                       </div>
-                      <ul className="list-disc space-y-1.5 pl-4 font-sans text-xs leading-relaxed text-[#3F5147] marker:text-[#007D5A] [font-family:var(--font-sans)]">
+                      <ul className="list-disc space-y-1.5 pl-4 font-sans text-xs leading-relaxed text-[#3F5147] marker:text-[#00A174] [font-family:var(--font-sans)]">
                         {row.items.map((item) => <li key={item} className="break-words pl-0.5">{item}</li>)}
                       </ul>
                     </div>

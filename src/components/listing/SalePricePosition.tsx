@@ -28,8 +28,8 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
   return (<><div className="space-y-3">
           {/* 區塊頂部標題列：與租賃圖紙各模組同一層級（卡片外 eyebrow，無圖示方塊） */}
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-              <TrendingUp className="h-4 w-4 text-[#007D5A]" />
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+              <TrendingUp className="h-4 w-4 text-[#00A174]" />
               <span>{isSpecialSale ? "同類物件價格定位" : "價格定位"}</span>
             </div>
             <span className="text-[10px] text-[#66736C]">
@@ -45,10 +45,10 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
             <div className="flex flex-col justify-between border border-[#DDE3DF] bg-white p-4 sm:p-5">
               {/* 三欄等高並排：本案開價 ＋ 兩個行情基準，各自帶色線。 */}
               <div className="grid items-stretch gap-4 sm:grid-cols-3">
-                <div className="min-w-0 self-stretch border-l-[3px] border-[#007D5A] pl-3">
+                <div className="min-w-0 self-stretch border-l-[3px] border-[#00A174] pl-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-base font-bold text-[#1A2A22]">本案開價</p>
-                    <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#007D5A]">
+                    <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#00A174]">
                       {isSpecialSale ? specialSale.kindLabel : "中古公寓"}
                     </span>
                   </div>
@@ -211,7 +211,7 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
 
                   {/* 行情區間軸說明備註（置於左卡底部寬版空間，充實留白並消除死白大塊） */}
                   {(hasFairRange || c.baselineNote) && (
-                    <div className="mt-4 border-l-2 border-[#007D5A] bg-[#F5F8F6] px-3.5 py-2 text-[11px] leading-relaxed text-[#3F5147]">
+                    <div className="mt-4 border-l-2 border-[#00A174] bg-[#F5F8F6] px-3.5 py-2 text-[11px] leading-relaxed text-[#3F5147]">
                       {hasFairRange && (
                         <span className="font-semibold text-[#1A2A22]">
                           以同區、同規模同條件換算本案專有面積後，價格落點{fairState.short}。
@@ -251,7 +251,7 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
                             }`}>
                             <span
                               className="text-2xl font-black leading-none tabular-nums flex items-baseline gap-1.5"
-                              style={{ color: (d ?? 0) > 0 ? "#B13818" : (d ?? 0) < 0 ? "#007D5A" : "#8A9590" }}
+                              style={{ color: (d ?? 0) > 0 ? "#B13818" : (d ?? 0) < 0 ? "#00A174" : "#8A9590" }}
                             >
                               <span className="text-base font-bold">{(d ?? 0) > 0 ? "▲" : (d ?? 0) < 0 ? "▼" : ""}</span>
                               <span>{Math.abs(d ?? 0).toFixed(1)}%</span>
@@ -275,14 +275,14 @@ export function SalePricePosition({ isSpecialSale, specialComparison, c, special
               </div>
 
               {/* 開價落點簡評 */}
-              <div className="mt-3 border-l-2 border-[#007D5A] bg-[#F5F8F6] p-2.5 text-[11px] leading-snug text-[#1A2A22]">
+              <div className="mt-3 border-l-2 border-[#00A174] bg-[#F5F8F6] p-2.5 text-[11px] leading-snug text-[#1A2A22]">
                 <p className="font-bold text-[#1A2A22]">開價相對落點判定：</p>
                 <p className="mt-1 text-[#3F5147]">
                   {officialDiffPercent != null && (
-                    <>{officialDiffPercent >= 0 ? "溢價高於" : "折讓低於"}{isSpecialSale ? "國交省基準" : "實價登錄"} <strong className={`font-bold ${officialDiffPercent > 0 ? "text-[#B13818]" : officialDiffPercent < 0 ? "text-[#007D5A]" : "text-[#1A2A22]"}`}>{Math.abs(officialDiffPercent).toFixed(1)}%</strong></>
+                    <>{officialDiffPercent >= 0 ? "溢價高於" : "折讓低於"}{isSpecialSale ? "國交省基準" : "實價登錄"} <strong className={`font-bold ${officialDiffPercent > 0 ? "text-[#B13818]" : officialDiffPercent < 0 ? "text-[#00A174]" : "text-[#1A2A22]"}`}>{Math.abs(officialDiffPercent).toFixed(1)}%</strong></>
                   )}
                   {c.listingDiffPercent != null && (
-                    <>，{c.listingDiffPercent >= 0 ? "高於" : "低於"}在售中位 <strong className={`font-bold ${c.listingDiffPercent > 0 ? "text-[#B13818]" : c.listingDiffPercent < 0 ? "text-[#007D5A]" : "text-[#1A2A22]"}`}>{Math.abs(c.listingDiffPercent).toFixed(1)}%</strong></>
+                    <>，{c.listingDiffPercent >= 0 ? "高於" : "低於"}在售中位 <strong className={`font-bold ${c.listingDiffPercent > 0 ? "text-[#B13818]" : c.listingDiffPercent < 0 ? "text-[#00A174]" : "text-[#1A2A22]"}`}>{Math.abs(c.listingDiffPercent).toFixed(1)}%</strong></>
                   )}
                   。
                 </p>

@@ -35,9 +35,9 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
             {guidedLineSelections.length > 0 && (
               <div className="flex flex-wrap gap-1.5" aria-label="已選希望線路">
                 {guidedLineSelections.map(line => (
-                  <span key={line} className="inline-flex items-center gap-1 border border-[#8BCDB8] bg-[#E6F6F1] px-2 py-1 text-[9px] font-bold text-[#007D5A]">
+                  <span key={line} className="inline-flex items-center gap-1 border border-[#8BCDB8] bg-[#E6F6F1] px-2 py-1 text-[9px] font-bold text-[#00A174]">
                     {toJapaneseLineName(line)}
-                    <button type="button" onClick={() => removeGuidedLine(line)} className="text-[#007D5A]/70 hover:text-[#007D5A]" aria-label={`移除${toJapaneseLineName(line)}`}>
+                    <button type="button" onClick={() => removeGuidedLine(line)} className="text-[#00A174]/70 hover:text-[#00A174]" aria-label={`移除${toJapaneseLineName(line)}`}>
                       <X className="h-3 w-3" />
                     </button>
                   </span>

@@ -56,12 +56,22 @@ export interface StoredListingShare {
   title: string;
   dealType: "sale" | "rent" | null;
   result: unknown;
+  /**
+   * 建立連結時已完成的「我的實際通勤試算」。
+   * 通勤結果是使用者自己輸入目的地才跑出來的，不存的話收件人打開連結會看到空白的通勤區塊，
+   * 等於分享出去的報告少了一段。舊連結沒有這個欄位，讀取端要能接受 undefined。
+   */
+  commute?: unknown;
+  /** 通勤試算當時輸入的目的地原文，讓收件人看得到是以什麼地點試算的。 */
+  commuteDestination?: string;
 }
 
 export async function createListingShare(input: {
   title: string;
   dealType: "sale" | "rent" | null;
   result: unknown;
+  commute?: unknown;
+  commuteDestination?: string;
 }): Promise<{ id: string; expiresAt: string }> {
   const stored: StoredListingShare = {
     version: 1,
@@ -69,6 +79,8 @@ export async function createListingShare(input: {
     title: input.title,
     dealType: input.dealType,
     result: input.result,
+    commute: input.commute ?? null,
+    commuteDestination: input.commuteDestination || "",
   };
 
   if (!redis) {

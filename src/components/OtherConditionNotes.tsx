@@ -44,7 +44,7 @@ export function OtherConditionNotes({
     <section aria-label="其他條件・生活規範與備考事項" className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <ClipboardList className="h-4 w-4 shrink-0 text-[#007D5A]" strokeWidth={1.8} />
+          <ClipboardList className="h-4 w-4 shrink-0 text-[#00A174]" strokeWidth={1.8} />
           <h4 className="font-sans text-xs font-bold text-[#1A2A22] [font-family:var(--font-sans)]">其他條件・生活規範與備考事項</h4>
           <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-0.5 text-[10px] font-bold text-[#66736C]">
             共 {items.length} 項條款
@@ -53,7 +53,7 @@ export function OtherConditionNotes({
         <button
           type="button"
           onClick={() => setExpanded((value) => !value)}
-          className="flex items-center gap-1.5 text-xs font-bold text-[#007D5A] hover:text-[#00A174]"
+          className="flex items-center gap-1.5 text-xs font-bold text-[#00A174] hover:underline"
           aria-expanded={expanded}
         >
           <span>{expanded ? "收合條款解析" : "展開條款解析"}</span>

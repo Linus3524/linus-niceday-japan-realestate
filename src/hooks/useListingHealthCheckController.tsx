@@ -135,7 +135,7 @@ export function useListingHealthCheckController({ sharedId }: ListingHealthCheck
     analysisMode,
     loadLocationContext,
   });
-  useSharedListing({ requests, resetReport, sharedId, setLoading, setError, setSharedTitle, setSharedExpiresAt, setResult, loadLocationContext });
+  useSharedListing({ requests, resetReport, sharedId, setLoading, setError, setSharedTitle, setSharedExpiresAt, setCommute, setCommuteDestination, setResult, loadLocationContext });
   const {
     handleFileSelect,
     handleDragOver,
@@ -219,6 +219,7 @@ export function useListingHealthCheckController({ sharedId }: ListingHealthCheck
     crimeData,
     prefectureSafety,
     commute,
+    commuteDestination,
   });
 
   return {

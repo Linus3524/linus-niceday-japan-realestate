@@ -471,7 +471,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                       {mode === "buy" ? (
                         <>
                           {activeYield && (
-                            <span className="text-[#007D5A] font-semibold">
+                            <span className="text-[#00a174] font-semibold">
                               表面利回約 {activeYield}%
                             </span>
                           )}

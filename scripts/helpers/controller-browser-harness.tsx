@@ -89,6 +89,9 @@ const harness = {
     });
   },
   clipboardFailure(value: boolean) { clipboardFails = value; },
+  // Reads a single model field. snapshot() only serializes the fixed key lists,
+  // so new assertions can inspect state without changing the historical fixture.
+  value(name: string) { return JSON.parse(JSON.stringify(model[name] ?? null)); },
   snapshot() {
     const keys = mode === "listing" ? listingKeys : calculatorKeys;
     return JSON.parse(JSON.stringify({

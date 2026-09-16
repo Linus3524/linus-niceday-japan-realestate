@@ -74,7 +74,7 @@ export function TermDetailList({
           <div key={idx} className="contents">
             <span className="pt-px">
               {code && (
-                <span className="block whitespace-nowrap border border-[#9ee2cf] bg-[#e6f6f1] px-1.5 py-0.5 text-center font-mono text-[11px] leading-tight text-[#007d5a]">
+                <span className="block whitespace-nowrap border border-[#9ee2cf] bg-[#e6f6f1] px-1.5 py-0.5 text-center font-mono text-[11px] leading-tight text-[#00a174]">
                   {code}
                 </span>
               )}

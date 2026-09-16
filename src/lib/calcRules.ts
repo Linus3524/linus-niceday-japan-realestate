@@ -23,6 +23,10 @@ export const rentConflictGroups: BudgetModifierId[][] = [
   ["autolock_elevator", "wooden"],                         // 自動門電梯大樓 vs 木造
   ["age_within_5y", "washitsu"],                           // 5 年內新房幾乎不會有和室
   ["age_within_10y", "washitsu"],                          // 5〜10 年次新房同理
+  // 10 年內的新成屋／次新屋本身就是新設備，市場上幾乎不會再做「リノベーション済み」；
+  // 兩者同時計價等於把同一份「屋況新」的價值重複加一次，故互斥防呆。
+  ["age_within_5y", "renovated"],                          // 5 年內新房 vs 全室翻新
+  ["age_within_10y", "renovated"],                         // 5〜10 年次新房 vs 全室翻新
   ["wooden", "tower"],                                     // 木造 vs 塔樓
   ["no_elevator_4f", "tower"],                             // 4 樓以上無電梯 vs 塔樓
 ];

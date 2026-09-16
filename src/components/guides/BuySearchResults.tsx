@@ -26,7 +26,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
                     <button
                       type="button"
                       onClick={() => setBuySearchQuery("")}
-                      className="shrink-0 font-sans text-xs font-bold text-[#007D5A] hover:text-[#00a174]"
+                      className="shrink-0 font-sans text-xs font-bold text-[#00A174] hover:underline"
                     >
                       清除搜尋
                     </button>
@@ -48,7 +48,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
 
                       {(buyFiltered.drawing.length > 0 || buyFiltered.fee.length > 0) && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關術語</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">相關術語</h4>
                           <div className="grid gap-3 md:grid-cols-2">
                             {[...buyFiltered.drawing, ...buyFiltered.fee].map(term => (
                               <button
@@ -68,11 +68,11 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
 
                       {staticBuySearchItems.length > 0 && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">指南與流程</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">指南與流程</h4>
                           <div className="grid gap-3 md:grid-cols-2">
                             {staticBuySearchItems.map((item, index) => (
                               <article key={`${item.category}-${item.title}-${index}`} className="border border-[#DDE3DF] bg-white p-4">
-                                <span className="font-sans text-[10px] font-bold text-[#007d5a]">{item.category}</span>
+                                <span className="font-sans text-[10px] font-bold text-[#00a174]">{item.category}</span>
                                 <h5 className="mt-1 font-serif text-base font-bold text-[#1A2A22]">{item.title}</h5>
                                 <p className="mt-2 line-clamp-5 font-sans text-xs leading-6 text-[#3F5147]">{item.text}</p>
                               </article>
@@ -83,7 +83,7 @@ export function BuySearchResults({ isBuySearchActive, buySearchQuery, searchResu
 
                       {buyFiltered.qa.length > 0 && (
                         <div>
-                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#007D5A]">相關買房問答</h4>
+                          <h4 className="mb-3 font-sans text-xs font-bold tracking-wider text-[#00A174]">相關買房問答</h4>
                           <div className="space-y-3">
                             {buyFiltered.qa.map((qa, idx) => (
                               <QACard key={idx} question={qa.question} summary={qa.summary} answer={qa.answer} sources={qa.sources} table={qa.table} number={idx + 1} />

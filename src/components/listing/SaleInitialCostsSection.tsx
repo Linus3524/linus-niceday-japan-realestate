@@ -34,8 +34,8 @@ export function SaleInitialCostsSection({ model }: SaleInitialCostsSectionProps)
   return (<>{saleInitialCosts && (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-          <Wallet className="h-4 w-4 text-[#007D5A]" />
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <Wallet className="h-4 w-4 text-[#00A174]" />
           <span>買方交屋諸費用試算</span>
         </div>
         <span className={informationStyle.source}>
@@ -45,13 +45,13 @@ export function SaleInitialCostsSection({ model }: SaleInitialCostsSectionProps)
 
       {/* 總額預估 Banner */}
       <CostSummary action={<DetailsToggle expanded={showSaleCostsDetails} onToggle={() => setShowSaleCostsDetails(!showSaleCostsDetails)} />}>
-          <p className="text-xs font-bold text-[#007D5A]">{isSpecialSale ? "已列交屋費用小計（不含待核對項目）" : "買方交屋諸費用預估總額"}</p>
+          <p className="text-xs font-bold text-[#00A174]">{isSpecialSale ? "已列交屋費用小計（不含待核對項目）" : "買方交屋諸費用預估總額"}</p>
           <div className="mt-2 flex flex-wrap items-center gap-2.5">
             <p className={`flex flex-wrap items-center gap-1.5 ${informationStyle.amount}`}>
               <span className="text-sm font-semibold leading-none text-[#66736C]">約</span>
               <span className="leading-none tabular-nums">{formatYen(saleInitialCosts.total)}</span>
             </p>
-            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-xs font-bold text-[#007D5A]">
+            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-xs font-bold text-[#00A174]">
               約佔物件總價 {typeof saleInitialCosts?.percentageOfPrice === "number" && !isNaN(saleInitialCosts.percentageOfPrice) ? saleInitialCosts.percentageOfPrice.toFixed(1) : "—"}%
             </span>
           </div>

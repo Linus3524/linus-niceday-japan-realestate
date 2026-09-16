@@ -30,7 +30,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
   const axes = buildAxisVerdicts(criteria, recommendations);
   const overall = buildOverallVerdict(axes);
   const OverallIcon = overall.level === "可行" ? CheckCircle2 : overall.level === "資料不足" ? HelpCircle : AlertTriangle;
-  const overallIconColor = overall.level === "可行" ? "text-[#007D5A]" : overall.level === "難度高" ? "text-[#B13818]" : overall.level === "有條件可行" ? "text-[#D97706]" : "text-[#3F5147]";
+  const overallIconColor = overall.level === "可行" ? "text-[#00A174]" : overall.level === "難度高" ? "text-[#B13818]" : overall.level === "有條件可行" ? "text-[#D97706]" : "text-[#3F5147]";
 
   return (
     <div className="mt-6 space-y-4">
@@ -38,7 +38,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-4 w-4 text-[#007D5A]" />
+              <ClipboardCheck className="h-4 w-4 text-[#00A174]" />
               <h4 id="requirement-assessment-title" className="ui-section-heading font-sans text-base font-bold text-[#1A2A22]">需求可行性評估</h4>
             </div>
             <p className="mt-1 font-sans text-[10px] text-[#66736C]">根據預算、地點與設備條件判斷</p>
@@ -61,7 +61,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
             </ul>
           )}
           {overall.loosenFirst && (
-            <p className="mt-3 border-t border-[#DDE3DF] pt-3 text-[10px] font-bold leading-relaxed text-[#007D5A]">
+            <p className="mt-3 border-t border-[#DDE3DF] pt-3 text-[10px] font-bold leading-relaxed text-[#00A174]">
               建議先調整：{overall.loosenFirst}
             </p>
           )}
@@ -93,7 +93,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
               </ul>
             )}
             {axis.nextStep && (
-              <p className="mt-1.5 text-[11px] leading-normal font-medium text-[#007d5a]">→ {axis.nextStep}</p>
+              <p className="mt-1.5 text-[11px] leading-normal font-medium text-[#00a174]">→ {axis.nextStep}</p>
             )}
           </div>;
         })}

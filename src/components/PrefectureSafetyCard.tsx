@@ -115,8 +115,8 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
     <div className="space-y-3 font-sans [font-family:var(--font-sans)]">
       {/* 模組統一標題列 (與全站模組一致) */}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-          <ShieldCheck className="h-4 w-4 text-[#007D5A]" />
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <ShieldCheck className="h-4 w-4 text-[#00A174]" />
           <span>周邊治安資料分析</span>
         </div>
         <span className="text-[10px] text-[#66736C]">
@@ -129,7 +129,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
         {/* 區域資訊列 */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-3 text-xs">
           <div className="flex items-center gap-1.5 text-[#66736C]">
-            <MapPin className="h-3.5 w-3.5 text-[#007D5A] shrink-0" />
+            <MapPin className="h-3.5 w-3.5 text-[#00A174] shrink-0" />
             <span className="font-bold text-[#66736C]">統計範圍：</span>
             <span className="font-bold text-[#1A2A22]">{local?.municipality ?? prefecture.prefecture}</span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-medium text-[#66736C]">
@@ -137,7 +137,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
+            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#00A174]">
               {local ? `${local.year} 年` : prefecture.fiscalYear}
             </span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
@@ -228,7 +228,7 @@ export function PrefectureSafetyCard({ prefecture, location }: PrefectureSafetyC
 
           <div className="min-w-0">
             <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
-              <CheckCircle2 className="h-3 w-3 text-[#007D5A]" />
+              <CheckCircle2 className="h-3 w-3 text-[#00A174]" />
               <span>{local ? "全年刑法犯認知件數" : "刑案破案率（檢舉率）"}</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">

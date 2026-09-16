@@ -452,7 +452,7 @@ export function InteractiveFloorPlan() {
               </div>
 
               <div className="mt-auto border-l-2 border-[#00a174] bg-white p-3.5 space-y-2 rounded-r shadow-xs">
-                <strong className="text-xs font-bold text-[#007d5a] block font-sans">Linus 實務說明：</strong>
+                <strong className="text-xs font-bold text-[#00a174] block font-sans">Linus 實務說明：</strong>
                 <div className="text-xs text-[#3F5147] leading-relaxed font-sans space-y-1.5">
                   {currentItem.practicalNote.split("\n").map((line, idx) => {
                     const trimmed = line.trim();

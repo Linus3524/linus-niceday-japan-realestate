@@ -19,19 +19,19 @@ export interface VerdictStatusTheme {
 
 export const STATUS_STYLE: Record<string, VerdictStatusTheme> = {
   "合理": {
-    borderLeft: "border-l-[#007D5A]",
+    borderLeft: "border-l-[#00A174]",
     badge: statusBadgeStyle.positive,
-    dot: "bg-[#007D5A]",
+    dot: "bg-[#00A174]",
     dataBg: "bg-[#F5F8F6]",
-    medianBadge: "border-[#9EE2CF] bg-white text-[#007D5A]",
+    medianBadge: "border-[#9EE2CF] bg-white text-[#00A174]",
     tagStyle: statusBadgeStyle.positive,
   },
   "超值": {
-    borderLeft: "border-l-[#007D5A]",
+    borderLeft: "border-l-[#00A174]",
     badge: statusBadgeStyle.positive,
-    dot: "bg-[#007D5A]",
+    dot: "bg-[#00A174]",
     dataBg: "bg-[#F5F8F6]",
-    medianBadge: "border-[#9EE2CF] bg-white text-[#007D5A]",
+    medianBadge: "border-[#9EE2CF] bg-white text-[#00A174]",
     tagStyle: statusBadgeStyle.positive,
   },
   "條件反映": {
@@ -67,11 +67,11 @@ export const STATUS_STYLE: Record<string, VerdictStatusTheme> = {
     tagStyle: statusBadgeStyle.negative,
   },
   "符合": {
-    borderLeft: "border-l-[#007D5A]",
+    borderLeft: "border-l-[#00A174]",
     badge: statusBadgeStyle.positive,
-    dot: "bg-[#007D5A]",
+    dot: "bg-[#00A174]",
     dataBg: "bg-[#F5F8F6]",
-    medianBadge: "border-[#9EE2CF] bg-white text-[#007D5A]",
+    medianBadge: "border-[#9EE2CF] bg-white text-[#00A174]",
     tagStyle: statusBadgeStyle.positive,
   },
   "部分符合": {

@@ -277,8 +277,8 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
     <div className="space-y-3 font-sans [font-family:var(--font-sans)]">
       {/* 模組統一標題列 (與全站模組一致) */}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-          <ShieldCheck className="h-4 w-4 text-[#007D5A]" />
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <ShieldCheck className="h-4 w-4 text-[#00A174]" />
           <span>周邊治安資料分析</span>
         </div>
         <span className="text-[10px] text-[#66736C]">
@@ -291,7 +291,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
         {/* 範圍與件數資訊列 */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-3 text-xs">
           <div className="flex items-center gap-1.5 text-[#66736C]">
-            <MapPin className="h-3.5 w-3.5 text-[#007D5A] shrink-0" />
+            <MapPin className="h-3.5 w-3.5 text-[#00A174] shrink-0" />
             <span className="font-bold text-[#66736C]">統計範圍：</span>
             <span className="font-bold text-[#1A2A22]">{crime.chocho}</span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-1.5 py-0.5 text-[10px] font-medium text-[#66736C]">
@@ -299,7 +299,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#007D5A]">
+            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-bold text-[#00A174]">
               {crime.periodLabel}
             </span>
             <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2.5 py-0.5 font-mono text-xs font-bold tabular-nums text-[#1A2A22]">
@@ -445,7 +445,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                 <div>
                   <div className="flex items-center justify-between pb-2 border-b border-[#DDE3DF]/60">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                      <Layers className="h-4 w-4 text-[#007D5A]" />
+                      <Layers className="h-4 w-4 text-[#00A174]" />
                       <span>對照全東京 {crime.tokyoContext.chomeCount.toLocaleString()} 個町丁目</span>
                     </div>
                     <span className="border border-[#DDE3DF] bg-white px-1.5 py-0.5 text-[9px] font-medium text-[#66736C]">
@@ -525,7 +525,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                 <div>
                   <div className="flex items-center justify-between pb-2 border-b border-[#DDE3DF]/60">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-                      <TrendingUp className="h-4 w-4 text-[#007D5A]" />
+                      <TrendingUp className="h-4 w-4 text-[#00A174]" />
                       <span>
                         年對年變化（
                         {trendLabels ? `${trendLabels.prev}→${trendLabels.curr}` : "前後年度對比"}
@@ -697,7 +697,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
         {/* 4. 治安專業診斷結論 */}
         <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-3 space-y-1">
           <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-[#007D5A]" />
+            <ShieldCheck className="h-4 w-4 shrink-0 text-[#00A174]" />
             <span>治安專業診斷結論</span>
           </div>
           <p className="text-xs leading-relaxed text-[#3F5147]">
@@ -711,8 +711,8 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#1A2A22]">案件結構佔比分析</span>
               {bikeCount > 0 && (
-                <span className="flex items-center gap-1 font-bold text-[#007D5A]">
-                  <Bike className="h-3.5 w-3.5 text-[#007D5A]" />
+                <span className="flex items-center gap-1 font-bold text-[#00A174]">
+                  <Bike className="h-3.5 w-3.5 text-[#00A174]" />
                   <span>自行車竊盜佔 {Math.round((bikeCount / total) * 100)}%（{bikeCount} 件）</span>
                 </span>
               )}
@@ -756,13 +756,13 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
             className="flex w-full items-center justify-between border border-[#DDE3DF] bg-[#FAFCFB] px-4 py-3 text-xs font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6]"
           >
             <div className="flex items-center gap-2">
-              <ListOrdered className="h-4 w-4 text-[#007D5A]" />
+              <ListOrdered className="h-4 w-4 text-[#00A174]" />
               <span>查看詳細犯罪種類明細</span>
               <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-bold tabular-nums text-[#66736C]">
                 共 {crime.totalCrimes} 件
               </span>
             </div>
-            <div className="flex items-center gap-1 text-xs font-bold text-[#007D5A]">
+            <div className="flex items-center gap-1 text-xs font-bold text-[#00A174]">
               <span>{expanded ? "收起明細" : "展開查看"}</span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
@@ -798,7 +798,7 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                         <span
                           className={`border px-2 py-0.5 text-[10px] font-bold tabular-nums ${
                             isZero
-                              ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                              ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                               : "border-[#DDE3DF] bg-[#F5F8F6] text-[#1A2A22]"
                           }`}
                         >
@@ -845,8 +845,8 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
                       </div>
 
                       {groupKey === "residential" && isZero && (
-                        <div className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-1 text-[10px] font-medium text-[#007D5A] flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3 text-[#007D5A] shrink-0" />
+                        <div className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-1 text-[10px] font-medium text-[#00A174] flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-[#00A174] shrink-0" />
                           <span>此町丁目 {crime.periodYear} 年全年無任何侵入竊盜報案紀錄</span>
                         </div>
                       )}

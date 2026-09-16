@@ -69,7 +69,7 @@ function AgeTimeline({ items, baseline }: { items: Array<{ label: string; value:
             <span className={`z-10 h-4 w-4 rotate-45 border-2 border-white transition-colors duration-200 cursor-pointer ${colors[index]}`} />
             <div className="flex items-center justify-between gap-2 border-b border-dashed border-[#ECEFEC] py-2">
               <span className="font-mono text-xs font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#e6f6f1] text-[#007d5a]" : difference < 0 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+              <span className={`px-1.5 py-0.5 text-[9px] font-bold ${difference > 0 ? "bg-[#e6f6f1] text-[#00a174]" : difference < 0 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#F5F8F6] text-[#3F5147]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
             </div>
           </div>
         );
@@ -115,7 +115,7 @@ function BuildingRange({ items, baseline }: { items: Array<{ label: string; valu
               <span className={`flex h-5 w-5 items-center justify-center text-[8px] font-mono font-bold transition-colors duration-200 cursor-pointer ${textColors[index]} ${colors[index]}`}>0{index + 1}</span>
               <span className="text-[9px] font-bold leading-tight text-[#3F5147]">{entry.label}</span>
               <span className="text-right font-mono text-[10px] font-bold text-[#1A2A22]">{yen(entry.value)}</span>
-              <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#007d5a]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
+              <span className={`text-right text-[9px] font-bold ${difference >= 0 ? "text-[#B13818]" : "text-[#00a174]"}`}>{difference > 0 ? "+" : ""}{difference}%</span>
             </div>
           );
         })}
@@ -142,7 +142,7 @@ function WalkDistanceSteps({ items, baseline }: { items: Array<{ label: string; 
       <div className="mb-3 flex items-center justify-between gap-2 text-[9px] font-bold">
         <span className="bg-[#FEE2E2] px-2 py-1 text-[#B13818]">近站溢價 +8%</span>
         <span className="text-[#8A9590]">距離增加，租金逐階下降 →</span>
-        <span className="bg-[#e6f6f1] px-2 py-1 text-[#007d5a]">遠站折讓 −8%</span>
+        <span className="bg-[#e6f6f1] px-2 py-1 text-[#00a174]">遠站折讓 −8%</span>
       </div>
       <div className="grid h-[210px] grid-cols-4 items-end gap-2 border-b border-[#DDE3DF] px-1" role="img" aria-label="不同車站步行距離的租金階梯比較">
         {items.map((entry, index) => {
@@ -201,10 +201,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-mono text-[#8A9590]">AREA {String(index + 1).padStart(2, "0")}</span>
               <span className="border border-[#D6EAF0] bg-[#F2F8FA] px-2 py-0.5 text-[10px] font-bold text-[#3F626D]">{item.recommendationType || "市場推薦"}</span>
-              <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : item.fit === "接近預算" ? "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]" : "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]"}`}>{item.fit}</span>
-              {criteria.commuteStation && <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"}`}>{item.commuteFit}</span>}
+              <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : item.fit === "接近預算" ? "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]" : "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]"}`}>{item.fit}</span>
+              {criteria.commuteStation && <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"}`}>{item.commuteFit}</span>}
               {item.commuteRoute ? (
-                <span className={`border px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]" : "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"}`}>
+                <span className={`border px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"}`}>
                   {item.commuteRoute.totalDurationMinutes} 分・轉乘 {item.commuteRoute.transfers} 次
                 </span>
               ) : null}
@@ -352,7 +352,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
               aria-pressed={sortMode === mode}
               aria-label={mode === "rent" ? "依租金由低至高排序" : mode === "commute" ? "依通勤時間排序" : "依推薦度排序"}
               className={`cursor-pointer px-3 py-1.5 text-[10px] font-bold transition-colors ${
-                sortMode === mode ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:text-[#007D5A]"
+                sortMode === mode ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:text-[#00A174]"
               }`}
             >
               {SORT_LABEL[mode]}

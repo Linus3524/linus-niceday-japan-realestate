@@ -109,7 +109,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       </p>
                       <button 
                         onClick={() => handleTabChange("calculator")}
-                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>前往預算計算機</span> <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -125,7 +125,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                       </p>
                       <button 
                         onClick={() => handleTabChange("chat")}
-                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>開始 AI 找房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                       </button>

@@ -65,11 +65,11 @@ export function SaleMarketSection({ model }: SaleMarketSectionProps) {
         : priceMan < (fairLow as number)
           ? {
             text: "低於價格區間下限", box: STATUS_STYLE["超值"].badge, dot: STATUS_STYLE["超值"].dot,
-            short: "低於區間下限", accent: "#007D5A"
+            short: "低於區間下限", accent: "#00A174"
           }
           : {
             text: "落在合理價格區間內", box: STATUS_STYLE["合理"].badge, dot: STATUS_STYLE["合理"].dot,
-            short: "落在合理價格區間內", accent: "#007D5A"
+            short: "落在合理價格區間內", accent: "#00A174"
           };
 
     const officialRangeText = fairLow && fairHigh && fairLow !== fairHigh
@@ -137,8 +137,8 @@ export function SaleMarketSection({ model }: SaleMarketSectionProps) {
         {c.priceFactors && c.priceFactors.length > 0 && (
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-                <Sparkles className="h-4 w-4 text-[#007D5A]" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+                <Sparkles className="h-4 w-4 text-[#00A174]" />
                 <span>影響價格的主要因素與評估依據</span>
               </div>
               <span className="text-[10px] text-[#66736C]">

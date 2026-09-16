@@ -70,8 +70,8 @@ export function SaleSummarySection({ model }: SaleSummarySectionProps) {
 
     return (
       <div className="space-y-3">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#007D5A]">
-          <Landmark className="h-4 w-4 text-[#007D5A]" />
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <Landmark className="h-4 w-4 text-[#00A174]" />
           <span>買賣核心指標與坪單價速覽</span>
         </div>
 
@@ -86,10 +86,10 @@ export function SaleSummarySection({ model }: SaleSummarySectionProps) {
                   : "border border-[#DDE3DF] bg-white"}`}
               >
                 <div className="flex items-center gap-2">
-                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center ${card.primary ? "bg-[#007D5A] text-white" : "bg-[#E6F6F1] text-[#007D5A]"}`}>
+                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center ${card.primary ? "bg-[#00A174] text-white" : "bg-[#E6F6F1] text-[#00A174]"}`}>
                     <Icon className="h-3.5 w-3.5" />
                   </span>
-                  <p className={`text-[11px] font-bold ${card.primary ? "text-[#007D5A]" : "text-[#66736C]"}`}>
+                  <p className={`text-[11px] font-bold ${card.primary ? "text-[#00A174]" : "text-[#66736C]"}`}>
                     {card.label}
                   </p>
                 </div>
@@ -103,7 +103,7 @@ export function SaleSummarySection({ model }: SaleSummarySectionProps) {
                     )}
                   </p>
                   {card.tag && (
-                    <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-bold text-[#007D5A]">
+                    <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-bold text-[#00A174]">
                       {card.tag}
                     </span>
                   )}

@@ -20,7 +20,7 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
               <div className="flex flex-col justify-between border border-[#DDE3DF] bg-[#F5F8F6] p-4">
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DDE3DF] pb-2">
-                    <span className="text-xs font-bold text-[#007D5A]">國土交通省 實價成交換算基準</span>
+                    <span className="text-xs font-bold text-[#00A174]">國土交通省 實價成交換算基準</span>
                     <SourceBadge>
                       {typeof c.sampleCount === "number" ? `${c.sampleCount.toLocaleString()} 筆成約` : "實際成交"}
                     </SourceBadge>
@@ -46,7 +46,7 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
                       : officialDiffPercent > 0
                         ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
                         : officialDiffPercent < 0
-                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                           : "border-[#DDE3DF] bg-[#F5F8F6] text-[#8A9590]"
                     }`}>
                     {typeof officialDiffPercent === "number" && !isNaN(officialDiffPercent)
@@ -93,7 +93,7 @@ export function SalePriceSources({ c, parsedArea, man, officialMan, officialDiff
                       : c.listingDiffPercent > 0
                         ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
                         : c.listingDiffPercent < 0
-                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                          ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                           : "border-[#DDE3DF] bg-[#F5F8F6] text-[#8A9590]"
                     }`}>
                     {typeof c.listingDiffPercent === "number" && !isNaN(c.listingDiffPercent)

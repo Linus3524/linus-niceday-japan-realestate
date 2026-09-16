@@ -116,7 +116,7 @@ export function RentCriteriaSummary({ criteria }: { criteria: RentSearchCriteria
         type="button"
         onClick={() => setExpanded(current => !current)}
         aria-expanded={expanded}
-        className="flex w-full items-center justify-between border-y border-[#DDE3DF] py-2 text-left text-[10px] font-bold text-[#3F5147] transition-colors hover:text-[#007D5A]"
+        className="flex w-full items-center justify-between border-y border-[#DDE3DF] py-2 text-left text-[10px] font-bold text-[#3F5147] transition-colors hover:text-[#00A174]"
       >
         <span>搜尋條件・共 {allItems.length} 項</span>
         <span className="inline-flex items-center gap-1">

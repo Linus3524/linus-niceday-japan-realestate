@@ -172,6 +172,22 @@ try {
     }
     return value;
   };
+  // 分享 payload 新增了 commute／commuteDestination（讓收件人看得到同一份通勤試算）。
+  // 歷史 baseline 產生於此之前，因此比對前先移除；新行為另外單獨斷言。
+  const sharedCommutePayloads: unknown[] = [];
+  const withoutSharedCommute = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(withoutSharedCommute);
+    if (value && typeof value === "object") {
+      const record = value as Record<string, unknown>;
+      if (record.kind === "share" && record.payload && typeof record.payload === "object") {
+        const { commute, commuteDestination, ...rest } = record.payload as Record<string, unknown>;
+        sharedCommutePayloads.push({ commute, commuteDestination });
+        return { ...record, payload: rest };
+      }
+      return Object.fromEntries(Object.entries(record).map(([key, item]) => [key, withoutSharedCommute(item)]));
+    }
+    return value;
+  };
   // 移除 payload 新增的 safety 欄位，讓歷史 fixture 仍可比對其餘內容。
   // 只針對值為 null 的情形移除：有實際治安資料時應該要能看出差異，不該被靜默吃掉。
   const withoutSafety = (value: unknown): unknown => {
@@ -202,8 +218,8 @@ try {
       assert.deepEqual(actual.state, refreshed ? { ...old.state, prefectureSafety: null } : old.state, name + " state");
       // 同一次修正也讓 PDF 匯出的 payload 帶上 safety；治安結果被清掉時它是 null。
       // 歷史 fixture 產生於此欄位存在之前，因此比對前先移除，與上面 state 的處理一致。
-      assert.deepEqual(withoutSafety(withoutStationLines(actual.pending)), old.pending, name + " requests");
-    } else assert.deepEqual(withoutStationLines(value), expected.snapshots[name], name);
+      assert.deepEqual(withoutSafety(withoutStationLines(withoutSharedCommute(actual.pending))), old.pending, name + " requests");
+    } else assert.deepEqual(withoutStationLines(withoutSharedCommute(value)), expected.snapshots[name], name);
   }
 
   // stationLines 必須真的送出且與 stations 等長，否則後端無法區分同名站的不同路線。
@@ -223,6 +239,36 @@ try {
   await run('await h.call("removeFile");');
   assert.equal(await run(`return h.events.some(e => e.revokeUrl === ${JSON.stringify(originalPdfUrl)});`), true, "Removed PDF is released");
   assert.equal(await run('return h.events.some(e => e.revokeUrl === "blob:lifecycle-thumbnail");'), true, "Removed thumbnail is released");
+
+  // 1. 分享連結必須帶上當前已計算出的門到門通勤結果
+  assert.ok(sharedCommutePayloads.length > 0, "分享請求必須包含通勤 payload");
+  const firstSharePayload = sharedCommutePayloads[0] as { commute: unknown; commuteDestination: string };
+  assert.deepEqual(firstSharePayload.commute, { totalMinutes: 25, transfers: 1 }, "分享時應帶上最新算出的通勤結果");
+  assert.equal(firstSharePayload.commuteDestination, "東京駅", "分享時應帶上通勤目的地原文");
+
+  // 2. 讀取分享連結時，若後端有存通勤資料，必須正確還原進 state
+  await run(`await h.mount("listing", "COMMUTESHARE"); await h.settle("readShare", {title:"測試",expiresAt:"2026-09-30",result:${JSON.stringify(analysis)},commute:{totalMinutes:18,transfers:0,destinationStation:"新宿"},commuteDestination:"新宿駅"});`);
+  assert.deepEqual(await run('return h.value("commute");'), { totalMinutes: 18, transfers: 0, destinationStation: "新宿" }, "分享頁掛載後應還原通勤試算結果");
+  assert.equal(await run('return h.value("commuteDestination");'), "新宿駅", "分享頁掛載後應還原通勤目的地輸入值");
+
+  // 3. 計算機：全室翻新 (renovated) 與 10 年內新成屋 (age_within_5y / age_within_10y) 防呆互斥
+  await run('await h.mount("calculator"); await h.call("toggleModifier", "renovated");');
+  assert.deepEqual(await run('return h.value("calcModifiers");'), ["renovated"], "可單獨勾選全室翻新");
+  // 勾選 5 年內新房 → 翻新應被自動互斥移除
+  await run('await h.call("toggleModifier", "age_within_5y");');
+  assert.deepEqual(await run('return h.value("calcModifiers");'), ["age_within_5y"], "勾選 5 年內新房應自動移除全室翻新");
+  // 勾選全室翻新 → 5 年內新房應被自動互斥移除
+  await run('await h.call("toggleModifier", "renovated");');
+  assert.deepEqual(await run('return h.value("calcModifiers");'), ["renovated"], "再次勾選全室翻新應自動移除新屋條件");
+  // 透過導引屋齡選單選「10 年內」→ 翻新應被自動清除
+  await run('await h.call("selectGuidedAge", 10);');
+  assert.deepEqual(await run('return h.value("calcModifiers");'), ["age_within_10y"], "導引屋齡選 10 年內應自動清除全室翻新");
+  assert.equal(await run('return h.value("guidedAgeMax");'), 10);
+  // 勾選全室翻新 → 屋齡選單的 10 年內上限應被還原（歸 0）
+  await run('await h.call("toggleModifier", "renovated");');
+  assert.deepEqual(await run('return h.value("calcModifiers");'), ["renovated"], "勾選全室翻新應清除 age_within_10y");
+  assert.equal(await run('return h.value("guidedAgeMax");'), 0, "勾選全室翻新應將導引屋齡重設為不限");
+
   console.log("Controller flows: historical non-race contracts and corrected stale-response assertions passed.");
 
 } finally {

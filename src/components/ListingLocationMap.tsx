@@ -16,7 +16,7 @@ const CATEGORY_CONFIG: Record<
   ListingAmenity["category"],
   { label: string; icon: string; bg: string; text: string; border: string }
 > = {
-  convenience: { label: "超商", icon: "🏪", bg: "#e6f6f1", text: "#007d5a", border: "#9ee2cf" },
+  convenience: { label: "超商", icon: "🏪", bg: "#e6f6f1", text: "#00a174", border: "#9ee2cf" },
   supermarket: { label: "超市", icon: "🛒", bg: "#FFF4E5", text: "#B76E00", border: "#FFD599" },
   pharmacy: { label: "藥妝", icon: "💊", bg: "#EBF5FF", text: "#1E65B8", border: "#B9DCFF" },
   medical: { label: "醫療", icon: "🏥", bg: "#FDE8E8", text: "#C81E1E", border: "#F8B4B4" },
@@ -150,7 +150,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           justify-content: center;
           width: 40px;
           height: 40px;
-          background: #007d5a;
+          background: #00a174;
           color: white;
           border-radius: 50%;
           border: 3px solid #ffffff;
@@ -169,7 +169,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             height: 0;
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
-            border-top: 7px solid #007d5a;
+            border-top: 7px solid #00a174;
           "></div>
         </div>
       `,
@@ -182,7 +182,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       .addTo(layerGroup)
       .bindPopup(
         `<div style="font-family: sans-serif; font-size: 12px; line-height: 1.4; padding: 4px 2px;">
-          <strong style="color: #007d5a; font-size: 13px;">📍 本物件所在地</strong><br/>
+          <strong style="color: #00a174; font-size: 13px;">📍 本物件所在地</strong><br/>
           <span style="color: #333; font-weight: 500;">${matchedAddress}</span>
         </div>`
       );
@@ -215,10 +215,10 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               <strong style="font-size: 13px; color: #1A2A22;">🚉 ${displayName}</strong><br/>
               <span style="color: #66736C;">${walk.source === "nearby" ? "附近車站補充" : (walk.lineName ? `圖紙刊載路線（${walk.lineName}）` : "圖紙刊載車站")}</span><br/>
               <span>步行路徑：約 ${walk.distanceMeters.toLocaleString("zh-TW")} 公尺</span><br/>
-              <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #007d5a; font-weight: bold;">
+              <div style="margin-top: 4px; padding: 3px 6px; background: #e6f6f1; border-radius: 4px; color: #00a174; font-weight: bold;">
                 常態步速約 ${walk.normalMinutes} 分鐘（快步 ${walk.fastMinutes} 分）
               </div>
-              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(displayName + " " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
+              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(displayName + " " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #00a174; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
                 在 Google 地圖查看 ↗
               </a>
             </div>`
@@ -272,7 +272,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             </span><br/>
             <strong style="font-size: 13px; color: #1A2A22;">${amenity.name}</strong><br/>
             <span style="color: #555;">距離物件約 <strong>${amenity.distanceMeters}</strong> 公尺（徒步約 ${Math.ceil(amenity.distanceMeters / 75)} 分）</span><br/>
-            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(amenity.name + " " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #007d5a; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(amenity.name + " " + matchedAddress)}" target="_blank" rel="noreferrer" style="color: #00a174; font-weight: bold; text-decoration: underline; font-size: 11px; display: inline-block; margin-top: 5px;">
               在 Google 地圖查看 ↗
             </a>
           </div>`
@@ -377,7 +377,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
   // 車站在地圖上有標記，卻沒出現在下方清單裡，等於少了最重要的一類機能。
   // 這裡把車站併進同一份清單（key 沿用地圖 marker 的 key，才能連動聚焦），
   // 並排在最前面。車站用實際道路步行時間，不像設施是用距離換算的。
-  const STATION_CONF = { label: "車站", icon: "🚉", bg: "#E6F6F1", text: "#007D5A", border: "#9EE2CF" };
+  const STATION_CONF = { label: "車站", icon: "🚉", bg: "#E6F6F1", text: "#00A174", border: "#9EE2CF" };
 
   const stationItems = stationWalks.map((walk, idx) => ({
     key: `station-${idx}-${walk.station}-${walk.lineName || ""}`,
@@ -468,8 +468,8 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           border-color: #ffffff;
         }
         .is-active-marker .custom-capsule-badge {
-          box-shadow: 0 0 0 3px #007d5a, 0 6px 16px rgba(0,0,0,0.3) !important;
-          border-color: #007d5a !important;
+          box-shadow: 0 0 0 3px #00a174, 0 6px 16px rgba(0,0,0,0.3) !important;
+          border-color: #00a174 !important;
           z-index: 99999 !important;
         }
         .leaflet-popup-content-wrapper {
@@ -510,7 +510,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               onClick={resetView}
               className="flex items-center gap-1 border border-[#DDE3DF] bg-white px-2.5 py-1.5 text-xs font-medium text-[#3F5147] hover:bg-[#F5F8F6]"
             >
-              <Compass className="h-3 w-3 text-[#007d5a]" />
+              <Compass className="h-3 w-3 text-[#00a174]" />
               <span>全覽居中</span>
             </button>
           )}
@@ -520,7 +520,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           href={`https://www.google.com/maps/search/?api=1&query=${coordinate.lat},${coordinate.lon}`}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-1 text-xs font-bold text-[#007d5a] underline underline-offset-2 hover:text-[#005a41]"
+          className="flex items-center gap-1 text-xs font-bold text-[#00a174] underline underline-offset-2 hover:text-[#00895d]"
         >
           <span>開啟 Google 地圖</span>
           <ExternalLink className="h-3.5 w-3.5" />
@@ -556,7 +556,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               onClick={() => setActiveCategory(cat.id)}
               className={`flex items-center gap-1 px-2.5 py-1 text-xs font-bold transition-all ${
                 activeCategory === cat.id
-                  ? "bg-[#007d5a] text-white"
+                  ? "bg-[#00a174] text-white"
                   : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
               }`}
             >
@@ -595,7 +595,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               onClick={() => handleCardClick(amenity.key)}
               className={`flex min-w-0 cursor-pointer items-center justify-between gap-2 border p-2.5 transition-all ${
                 isHovered
-                  ? "border-[#007d5a] bg-[#e6f6f1] shadow-md"
+                  ? "border-[#00a174] bg-[#e6f6f1] shadow-md"
                   : "border-[#DDE3DF] bg-white hover:border-[#9ee2cf] hover:bg-[#FAFCFB]"
               }`}
             >
@@ -614,7 +614,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
                     {amenity.name}
                   </p>
                   <div className="flex items-center gap-1.5 text-[10px] text-[#66736C]">
-                    <span className="font-semibold text-[#007d5a]">
+                    <span className="font-semibold text-[#00a174]">
                       {amenity.isStation && amenity.stationSource === "nearby" ? "附近補充" : conf.label}
                     </span>
                     <span>•</span>
@@ -624,7 +624,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               </div>
 
               <div className="shrink-0 text-right">
-                <span className="block text-xs font-black text-[#007d5a]">約 {amenity.distanceMeters}m</span>
+                <span className="block text-xs font-black text-[#00a174]">約 {amenity.distanceMeters}m</span>
                 <span className="block text-[9px] font-semibold text-[#66736C]">
                   {isHovered ? "已標記" : "點擊聚焦"}
                 </span>

@@ -186,7 +186,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       return (
                         <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
                           <span className="flex min-w-0 items-start gap-1.5 break-all text-[#3F5147]">
-                            <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
+                            <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#00A174]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
                               {isPlus ? "+" : "−"}
                             </span>
                             <span>{mod.text}</span>
@@ -247,7 +247,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       <span className="mr-1 text-[10px] font-bold text-[#3F5147]">擴大供給條件</span>
                       {assessment.expandingConditions.map(condition => (
-                        <span key={condition} className="border border-[#9ee2cf] bg-[#e6f6f1] px-2 py-1 text-[9px] font-bold text-[#007d5a]">{condition}</span>
+                        <span key={condition} className="border border-[#9ee2cf] bg-[#e6f6f1] px-2 py-1 text-[9px] font-bold text-[#00a174]">{condition}</span>
                       ))}
                     </div>
                   )}
@@ -294,7 +294,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     </p>
 
                     {rentUpfrontCash > 0 && (
-                      <p className={`mt-2 text-[10px] font-bold ${cashGap > 0 ? "text-[#B13818]" : "text-[#007D5A]"}`}>
+                      <p className={`mt-2 text-[10px] font-bold ${cashGap > 0 ? "text-[#B13818]" : "text-[#00A174]"}`}>
                         {cashGap > 0
                           ? `目前準備 ${formatManYen(rentUpfrontCash)}，距建議金額約差 ${formatManYen(cashGap)}。`
                           : `目前準備 ${formatManYen(rentUpfrontCash)}，可涵蓋這個建議金額。`}
@@ -305,7 +305,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       type="button"
                       onClick={() => setShowInitialFeeDetails(current => !current)}
                       aria-expanded={showInitialFeeDetails}
-                      className="mt-3 flex w-full items-center justify-between border-t border-[#DDE3DF] pt-2 text-left text-[10px] font-bold text-[#3F5147] hover:text-[#007D5A]"
+                      className="mt-3 flex w-full items-center justify-between border-t border-[#DDE3DF] pt-2 text-left text-[10px] font-bold text-[#3F5147] hover:text-[#00A174]"
                     >
                       <span>4／5／6 倍分別代表什麼？</span>
                       <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showInitialFeeDetails ? "rotate-180" : ""}`} />
@@ -319,9 +319,9 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                           <span className="font-mono text-[#1A2A22]">¥{(monthlyRent * 4).toLocaleString()}</span>
                         </div>
                         <div className="grid grid-cols-[52px_1fr_auto] gap-2 py-2">
-                          <strong className="text-[#007D5A]">5 倍</strong>
+                          <strong className="text-[#00A174]">5 倍</strong>
                           <span>一般情境：涵蓋起租租金、敷禮金、保證費、仲介費、保險與常見契約費用。</span>
-                          <span className="font-mono text-[#007D5A]">¥{(monthlyRent * 5).toLocaleString()}</span>
+                          <span className="font-mono text-[#00A174]">¥{(monthlyRent * 5).toLocaleString()}</span>
                         </div>
                         <div className="grid grid-cols-[52px_1fr_auto] gap-2 py-2">
                           <strong className="text-[#854D0E]">6 倍</strong>
@@ -420,7 +420,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     return (
                       <div key={id} className={`flex items-start justify-between gap-2 px-2 py-1.5 ${isPlus ? "bg-[#F1FAF7]" : "bg-[#FFF6F1]"}`}>
                         <span className="flex min-w-0 items-start gap-1.5 break-all font-sans text-[#3F5147]">
-                          <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#007D5A]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
+                          <span className={`mt-px inline-flex h-4 w-4 shrink-0 items-center justify-center text-[10px] font-bold ${isPlus ? "bg-[#DDF4EC] text-[#00A174]" : "bg-[#FBE4D9] text-[#B13818]"}`}>
                             {isPlus ? "+" : "−"}
                           </span>
                           <span>{mod.text}</span>
@@ -476,7 +476,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                       ["保險與個案費用", "火災／地震保險、估價、翻譯、海外送金等依案件發生"]
                     ].map(([label, description]) => (
                       <div key={label} className="bg-white p-3">
-                        <strong className="block text-[10px] tracking-wide text-[#007d5a]">{label}</strong>
+                        <strong className="block text-[10px] tracking-wide text-[#00a174]">{label}</strong>
                         <p className="mt-1 text-[10px] leading-relaxed text-[#3F5147]">{description}</p>
                       </div>
                     ))}

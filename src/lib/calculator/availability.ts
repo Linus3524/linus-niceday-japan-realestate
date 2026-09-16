@@ -76,7 +76,7 @@ export function createAvailabilityAssessment({ calcDistrict, calcRoomType, calcM
         ? { label: "房源偏少", tone: "text-[#B13818]", width: "w-[35%]" }
         : supplyPressure >= 2.5
           ? { label: "房源一般", tone: "text-[#854D0E]", width: "w-[60%]" }
-          : { label: "選擇較多", tone: "text-[#007D5A]", width: "w-[88%]" };
+          : { label: "選擇較多", tone: "text-[#00A174]", width: "w-[88%]" };
 
     const station = calcStation === "none" ? null : (districtStations[calcDistrict] || []).find(item => item.name === calcStation);
     const districtRent = parseFloat(getSelectedDistrictData().k1);
@@ -89,7 +89,7 @@ export function createAvailabilityAssessment({ calcDistrict, calcRoomType, calcM
         ? { label: "競爭偏高", tone: "text-[#B13818]", width: "w-[70%]" }
         : competitionScore >= 2.5
           ? { label: "競爭一般", tone: "text-[#854D0E]", width: "w-[48%]" }
-          : { label: "競爭較低", tone: "text-[#007D5A]", width: "w-[25%]" };
+          : { label: "競爭較低", tone: "text-[#00A174]", width: "w-[25%]" };
 
     const restrictiveModifiers = calcModifiers
       .filter(id => (modifierAvailabilityImpact[id]?.supply || 0) > 0)

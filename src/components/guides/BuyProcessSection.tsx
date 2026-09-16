@@ -64,9 +64,9 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                                 {step.description}
                               </p>
                               <div className="mt-4 grid gap-2 border-t border-dashed border-[#C9D2CD] pt-3 font-sans text-[11px] leading-relaxed">
-                                {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
-                                {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
-                                {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
+                                {step.timing && <p><strong className="text-[#00a174]">時間｜</strong>{step.timing}</p>}
+                                {step.payment && <p><strong className="text-[#00a174]">付款｜</strong>{step.payment}</p>}
+                                {step.documents && <p><strong className="text-[#00a174]">文件｜</strong>{step.documents}</p>}
                               </div>
                               {step.warning && (
                                 <p className="mt-2 border border-[#FDE047] bg-[#FEF9C3] p-2 text-[11px] leading-normal font-sans text-[#854D0E]">
@@ -89,9 +89,9 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                                   {step.description}
                                 </p>
                                 <div className="mt-4 grid gap-2 border-t border-dashed border-[#C9D2CD] pt-3 font-sans text-[11px] leading-relaxed">
-                                  {step.timing && <p><strong className="text-[#007d5a]">時間｜</strong>{step.timing}</p>}
-                                  {step.payment && <p><strong className="text-[#007d5a]">付款｜</strong>{step.payment}</p>}
-                                  {step.documents && <p><strong className="text-[#007d5a]">文件｜</strong>{step.documents}</p>}
+                                  {step.timing && <p><strong className="text-[#00a174]">時間｜</strong>{step.timing}</p>}
+                                  {step.payment && <p><strong className="text-[#00a174]">付款｜</strong>{step.payment}</p>}
+                                  {step.documents && <p><strong className="text-[#00a174]">文件｜</strong>{step.documents}</p>}
                                 </div>
                                 {step.warning && (
                                   <p className="mt-2 border border-[#FDE047] bg-[#FEF9C3] p-2 text-[11px] leading-normal font-sans text-[#854D0E]">

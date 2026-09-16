@@ -154,7 +154,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </p>
                       <button 
                         onClick={() => handleTabChange("chat")}
-                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>開始 AI 買房諮詢</span> <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -170,7 +170,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                       </p>
                       <button 
                         onClick={() => handleTabChange("contact")}
-                        className="mt-3 text-xs font-bold text-[#00a174] hover:text-[#007d5a] flex items-center gap-1 cursor-pointer"
+                        className="mt-3 text-xs font-bold text-[#00a174] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>取得 Linus 聯繫管道</span> <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -295,7 +295,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </div>
 
                         <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
-                          <strong className="mr-2 text-[#007d5a]">Linus 實務提醒</strong>
+                          <strong className="mr-2 text-[#00a174]">Linus 實務提醒</strong>
                           {item.advice}
                         </p>
                       </article>
@@ -354,7 +354,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         </div>
 
                         <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
-                          <strong className="mr-2 text-[#007d5a]">Linus 實務提醒</strong>
+                          <strong className="mr-2 text-[#00a174]">Linus 實務提醒</strong>
                           {item.note}
                         </p>
                       </article>

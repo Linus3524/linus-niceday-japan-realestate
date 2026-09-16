@@ -47,7 +47,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                     const Icon = factorIcon(f.label);
                     const up = f.ratePercent > 0;
                     const down = f.ratePercent < 0;
-                    const tone = up ? "#007D5A" : down ? "#B13818" : "#8A9590";
+                    const tone = up ? "#00A174" : down ? "#B13818" : "#8A9590";
                     // 每格 = FACTOR_SCALE / 5；有幅度就至少點亮一格，滿格封頂。
                     const level = f.ratePercent === 0
                       ? 0
@@ -135,7 +135,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold text-[#1A2A22]">優勢條件累計與開價合理性對照</span>
-                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                        <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#00A174]">
                           加總驗證
                         </span>
                       </div>
@@ -149,11 +149,11 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                         <div>
                           <div className="flex items-center justify-between gap-1">
                             <span className="text-[10px] text-[#66736C]">本案優勢條件加總</span>
-                            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#007D5A]">
+                            <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[9px] font-bold text-[#00A174]">
                               規格加成
                             </span>
                           </div>
-                          <span className="block font-mono text-base font-black text-[#007D5A] mt-1">
+                          <span className="block font-mono text-base font-black text-[#00A174] mt-1">
                             {posSum > 0 ? `+${posSum.toFixed(1)}%` : "0.0%"}
                           </span>
                         </div>
@@ -168,13 +168,13 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                             <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${askDiff > 0
                                 ? "border-[#FECDD3] bg-[#FFF1F0] text-[#B13818]"
                                 : askDiff < 0
-                                  ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#007D5A]"
+                                  ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
                                   : "border-[#DDE3DF] bg-white text-[#8A9590]"
                               }`}>
                               {askDiff > 0 ? "溢價開價" : askDiff < 0 ? "讓利開價" : "符合行情"}
                             </span>
                           </div>
-                          <span className={`block font-mono text-base font-black mt-1 ${askDiff > 0 ? "text-[#B13818]" : askDiff < 0 ? "text-[#007D5A]" : "text-[#8A9590]"}`}>
+                          <span className={`block font-mono text-base font-black mt-1 ${askDiff > 0 ? "text-[#B13818]" : askDiff < 0 ? "text-[#00A174]" : "text-[#8A9590]"}`}>
                             {askDiff > 0 ? `▲ 溢價 ${askDiff.toFixed(1)}%` : askDiff < 0 ? `▼ 折讓 ${Math.abs(askDiff).toFixed(1)}%` : "符合市場基準"}
                           </span>
                         </div>
@@ -192,7 +192,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                         }`}>
                         <div>
                           <span className="block text-[10px] font-bold text-[#1A2A22]">開價合理性剖析</span>
-                          <span className={`block text-xs font-bold mt-0.5 ${isWellSupported ? "text-[#007D5A]" : isOverpriced ? "text-[#B13818]" : "text-[#0284C7]"
+                          <span className={`block text-xs font-bold mt-0.5 ${isWellSupported ? "text-[#00A174]" : isOverpriced ? "text-[#B13818]" : "text-[#0284C7]"
                             }`}>
                             {isWellSupported
                               ? "✓ 開價有充分條件支撐"

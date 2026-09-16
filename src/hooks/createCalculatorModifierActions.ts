@@ -94,6 +94,16 @@ export function createCalculatorModifierActions(context: Context) {
         nextModifiers = nextModifiers.filter(other => other !== "floor_2f_plus");
         setRentSearchFilters(current => current.filter(filter => filter !== "secondFloor"));
       }
+      // 10 年內的新成屋／次新屋不會再做全室翻新；畫面上兩者互斥鎖定，
+      // 這裡處理程式化帶入的情形，順手把屋齡上限一起還原，避免表單與計算條件不一致。
+      if (id === "renovated") {
+        const hadNewAge = nextModifiers.some(other => other === "age_within_5y" || other === "age_within_10y");
+        nextModifiers = nextModifiers.filter(other => other !== "age_within_5y" && other !== "age_within_10y");
+        if (hadNewAge) setGuidedAgeMax(0);
+      }
+      if (id === "age_within_5y" || id === "age_within_10y") {
+        nextModifiers = nextModifiers.filter(other => other !== "renovated");
+      }
       if (nextArea !== undefined) setGuidedMinArea(nextArea);
       if (nextAge !== undefined) setGuidedAgeMax(nextAge);
       setCalcModifiers(nextModifiers);
@@ -217,7 +227,12 @@ export function createCalculatorModifierActions(context: Context) {
       : years > 0 && years <= 10
         ? "age_within_10y"
         : undefined;
-    replaceRentModifierGroup(["age_within_5y", "age_within_10y", "age_over_30y", "age_over_40y"], id);
+    // 屋齡上限收到 10 年內時，全室翻新不再成立（新成屋本來就不會再翻新），
+    // 一併清掉，否則會留下畫面已鎖定、計算卻仍在加價的隱形條件。
+    const group: BudgetModifierId[] = id === "age_within_5y" || id === "age_within_10y"
+      ? ["age_within_5y", "age_within_10y", "age_over_30y", "age_over_40y", "renovated"]
+      : ["age_within_5y", "age_within_10y", "age_over_30y", "age_over_40y"];
+    replaceRentModifierGroup(group, id);
   };
 
   const selectGuidedFloor = (floor: number) => {

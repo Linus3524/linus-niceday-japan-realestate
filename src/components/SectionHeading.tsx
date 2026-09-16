@@ -63,7 +63,7 @@ export function SectionHeading({ icon: Icon, title, description, action, open, o
           onClick={onToggle}
           aria-expanded={open}
           aria-label={open ? "收合這個區塊" : "展開這個區塊"}
-          className="-m-1 cursor-pointer justify-self-end p-2 text-[#00a174] transition-colors hover:text-[#007d5a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a174] md:order-last"
+          className="-m-1 cursor-pointer justify-self-end p-2 text-[#00a174] transition-colors hover:text-[#00895d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00a174] md:order-last"
         >
           <ChevronDown
             className={`h-5 w-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}

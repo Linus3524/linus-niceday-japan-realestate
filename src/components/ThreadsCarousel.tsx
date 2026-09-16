@@ -583,7 +583,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                           setSearchQuery(keyword);
                           setSearchFocused(false);
                         }}
-                        className="shrink-0 border border-[#C9D2CD] bg-white px-2.5 py-1 font-sans text-xs text-[#3F5147] transition-colors hover:border-[#00a174] hover:bg-[#e6f6f1] hover:text-[#007d5a]"
+                        className="shrink-0 border border-[#C9D2CD] bg-white px-2.5 py-1 font-sans text-xs text-[#3F5147] transition-colors hover:border-[#00a174] hover:bg-[#e6f6f1] hover:text-[#00a174]"
                       >
                         {keyword}
                       </button>
@@ -596,7 +596,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
               href="https://www.threads.com/@linus3524"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 border border-[#00a174] bg-white px-3.5 font-sans text-xs font-bold text-[#007d5a] transition-colors hover:bg-[#00a174] hover:text-white"
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 border border-[#00a174] bg-white px-3.5 font-sans text-xs font-bold text-[#00a174] transition-colors hover:bg-[#00a174] hover:text-white"
             >
               追蹤 <span className="hidden sm:inline">@linus3524</span>
               <NorthEastIcon className="h-3.5 w-3.5" />
@@ -626,7 +626,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
         {isSearching ? (
           <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 sm:mb-5">
             <span className="font-sans text-sm text-[#1A2A22]">
-              「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」找到{" "}
+              「<span className="font-bold text-[#00a174]">{searchQuery.trim()}</span>」找到{" "}
               <span className="font-bold">{currentThreads.length}</span> 篇
             </span>
             <button
@@ -656,7 +656,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
                   className={`shrink-0 border px-3 py-1.5 font-sans text-xs font-bold transition-colors ${
                     isActive
                       ? "border-[#00a174] bg-[#00a174] text-white"
-                      : "border-[#C9D2CD] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#007d5a]"
+                      : "border-[#C9D2CD] bg-white text-[#3F5147] hover:border-[#00a174] hover:text-[#00a174]"
                   }`}
                 >
                   {category.label}
@@ -672,7 +672,7 @@ export function ThreadsCarousel({ pageMode = false, initialSearchQuery = "" }: {
         {isSearching && currentThreads.length === 0 ? (
           <div className="flex flex-col items-center gap-2 border border-dashed border-[#C9D2CD] bg-white px-6 py-14 text-center">
             <p className="font-sans text-sm text-[#1A2A22]">
-              找不到符合「<span className="font-bold text-[#007d5a]">{searchQuery.trim()}</span>」的貼文
+              找不到符合「<span className="font-bold text-[#00a174]">{searchQuery.trim()}</span>」的貼文
             </p>
             <p className="font-sans text-xs text-[#66736C]">換個關鍵字，或試試上方的熱門標籤。</p>
           </div>
