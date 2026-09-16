@@ -230,27 +230,104 @@ function leaseTermValue(row: string, labels: string[]) {
   return normalized.match(new RegExp(`(?:${labelPattern})\\s*[:：]?\\s*((?:\\d+(?:\\.\\d+)?\\s*(?:ヶ月|ヵ月|カ月|個月|万円|円))|なし|無し|無|不要)`, "i"))?.[1]?.trim() || null;
 }
 
+export interface LeaseChargeFields {
+  deposit: string;
+  keyMoney: string;
+  renewalFee: string;
+  guaranteeFee: string;
+}
+
 /**
- * 敷金／礼金的聚焦二次確認。
+ * 決定二次確認的回答要不要採用。抽成獨立純函式以便回歸測試——
+ * 這裡的採納規則每一條都對應一種實際看過的錯法，不能只靠人工複查。
+ *
+ * 一律「不確定就沿用第一次結果」：二次確認的職責是修正明確的誤讀，
+ * 不是在沒有把握時另外製造一個新的錯誤答案。
+ */
+export function applyLeaseChargeVerification(parsed: unknown, current: LeaseChargeFields): LeaseChargeFields {
+  const raw = (parsed ?? {}) as Record<string, unknown>;
+  const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
+
+  // 敷金／礼金：讀到「新賃料」「更新」就是抓到隔壁的更新料格，不採用。
+  const pick = (fresh: unknown, fallback: string) => {
+    const value = text(fresh);
+    if (!value || /新賃料|更新/.test(value)) return fallback;
+    return value;
+  };
+  // 保証料不套用上面的過濾：它的值常含「月額賃料の30%」等字樣，
+  // 與敷金礼金的串格特徵無關，只檢查空值即可（可用性另由 guaranteeUsable 判斷）。
+  const pickRaw = (fresh: unknown, fallback: string) => text(fresh) || fallback;
+
+  const guarantee = text(raw.guaranteeFee);
+  // 只有保證公司名稱而沒有費用數字時不採用：「GTN」是公司名不是金額，
+  // 填進去會讓初期費用試算多出一筆無法計算的待確認費用。
+  const guaranteeUsable = /[0-9０-９]/.test(guarantee) || /^(なし|無|無し|不要)$/.test(guarantee);
+
+  // 更新料的串格防線。
+  //
+  // 刻意「不」比對「值是否與敷金／礼金相同」：敷1・礼1・更新1 是日本賃貸最常見的
+  // 組合之一，用值相同判定串格會把大量正確資料誤殺。改為與上面 pick 對稱的作法——
+  // 只擋帶有其他格子專屬標記、在更新料格內不可能出現的值。
+  const renewalFresh = text(raw.renewalFee);
+  const renewalUsable = (() => {
+    if (!renewalFresh) return false;
+    // 自己標了「更新」就是更新料格本身的內容（如「更新料1ヶ月」），一律採用。
+    // 「再契約料」是定期借家版的同一筆費用（XEBEC大手町 等圖紙寫「再契約料 新賃料の1ヶ月」），
+    // 同樣視為這一格自己的內容；不先放行的話，它會落到下面的標籤檢查，
+    // 一旦寫成「再契約料（礼金1ヶ月相当）」這種對照說明就會被整筆擋掉。
+    if (/更新|再契約/.test(renewalFresh)) return true;
+    // 讀到敷金／礼金／保証金／敷引／償却／保証料等其他費用項目的標籤，
+    // 代表抓到隔壁那一格，不是更新料。
+    if (/敷金|礼金|保証金|敷引|償却|保証会社|保証料/.test(renewalFresh)) return false;
+    // 與同一次回答的保証料完全相同且帶百分比：更新料慣例以月數或金額計，
+    // 比例是保証料的寫法，兩格同值幾乎必然是保証料那格污染過來的。
+    // （「家賃の50%」這種以租金為基準的更新料寫法不受影響——
+    //   它與保証料值不會剛好一字不差。）
+    if (/[%％]/.test(renewalFresh) && renewalFresh === guarantee) return false;
+    return true;
+  })();
+
+  return {
+    deposit: pick(raw.deposit, current.deposit),
+    keyMoney: pick(raw.keyMoney, current.keyMoney),
+    renewalFee: renewalUsable ? renewalFresh : current.renewalFee,
+    guaranteeFee: guaranteeUsable ? pickRaw(raw.guaranteeFee, current.guaranteeFee) : current.guaranteeFee,
+  };
+}
+
+/**
+ * 敷金／礼金／更新料／保証会社費用的聚焦二次確認。
  *
  * 40 個欄位的大表格抽取，在密集的日文費用表格上很容易對位錯——實測アクアリガーレ
  * 西日暮里（純掃描 PDF，沒有文字層可以靠座標對位）的「敷金｜無｜礼金｜無」這一列，
  * 五次抽取裡四次專屬格子回空字串、一次把下一格「更新料 1.5ヶ月(新賃料)」錯抓成礼金，
  * 對客人來說前者顯示「待確認」、後者憑空多算十幾萬円初期費用，都不能接受。
  *
- * 單獨只問「這兩格印什麼字」的窄問題，準確率遠高於一次抽 40 個欄位。租賃圖紙一律
+ * 單獨只問「這幾格印什麼字」的窄問題，準確率遠高於一次抽 40 個欄位。租賃圖紙一律
  * 執行，不做「可疑才確認」：最常見的錯法是把「無」幻覺成「1ヶ月」，和真實值無法
- * 區分。多一次小呼叫，換到的是初期費用試算最關鍵的兩個數字。
+ * 區分。多一次小呼叫，換到的是初期費用試算最關鍵的幾個數字。
+ *
+ * 更新料與保証会社費用一併在同一次呼叫確認，不另外發請求：
+ * - 兩者與敷金礼金同在一張費用表、彼此相鄰，是同一個對位錯高風險區。上面那起
+ *   「更新料被錯抓成礼金」的案例，反過來說明更新料自己那一格同樣可能被鄰格污染，
+ *   而目前只在礼金側用 `/新賃料|更新/` 擋，更新料本身抓錯沒有任何防線。
+ * - 更新料是租期內的未來支出、保証会社費用是簽約當下就要付的初期費用，
+ *   兩者都直接進試算；錯一格就是幾萬到十幾萬円的差距。
+ * - 保証会社費用另有「外国人プラン」比例更高的常見陷阱，窄問題才問得清楚。
  */
 async function verifyLeaseCharges(
   files: UploadedFile[],
-  current: { deposit: string; keyMoney: string },
-): Promise<{ deposit: string; keyMoney: string }> {
+  current: { deposit: string; keyMoney: string; renewalFee: string; guaranteeFee: string },
+): Promise<{ deposit: string; keyMoney: string; renewalFee: string; guaranteeFee: string }> {
   const prompt = `
-    這是一張日本賃貸物件的図面。只需要回答兩個問題，其他內容一律不要管：
+    這是一張日本賃貸物件的図面。只需要回答四個問題，其他內容一律不要管：
 
     1. 費用表格裡標示「敷金」的那一格，實際印的是什麼字？
     2. 費用表格裡標示「礼金」的那一格，實際印的是什麼字？
+    3. 圖紙上標示「更新料」（或「更新費」「契約更新料」「再契約料」「再契約手数料」）
+       的那一格，實際印的是什麼字？
+    4. 圖紙上標示保證公司費用（「保証会社」「保証料」「初回保証料」「保証委託料」
+       「家賃保証」等）的那一格，實際印的是什麼字？
 
     先判斷這張圖紙的表格是哪一種排版，再依該排版去找值：
     (A) 橫向並排：「敷金｜值｜礼金｜值」，值在標籤的正右方。
@@ -259,7 +336,7 @@ async function verifyLeaseCharges(
         レオパレス 等連鎖品牌的図面常屬這種，標題與值可能相隔頗遠，中間還夾著其他文字。
     兩種都要嘗試。找不到正右方的值時，務必再看正下方；不可因為右方沒有值就回空字串。
 
-    判讀規則：
+    判讀規則（敷金・礼金）：
     - 緊鄰的「敷引」「償却金」「保証金」「更新料」是不同項目；它們的值
       （常是「-」或「1.5ヶ月(新賃料)」之類）絕對不能填進敷金或礼金。
     - 格子印「無」「無し」「なし」「0」「0円」「-」→ 回答「無」。
@@ -270,6 +347,48 @@ async function verifyLeaseCharges(
       但若該數字明顯是金額（有位數分隔逗號或四位數以上，如「45,000」「10000」），
       則照原文當金額回答。
     - 格子真的空白、或整份圖紙找不到這一格 → 回答空字串。不要猜。
+
+    判讀規則（更新料 renewalFee）：
+    - 更新料是「契約更新時」才發生的費用，與簽約當下支付的敷金・礼金是不同項目，
+      絕對不可互相填入。敷金或礼金格子的值不得當成更新料。
+    - 定期借家的圖紙寫的是「再契約料」「再契約手数料」而不是「更新料」。
+      這是同一種「想繼續住就要付」的費用，一樣填進這一格，並保留原本的標籤
+      （例如「再契約料 新賃料の1ヶ月」）。不可因為欄名不同就回答「なし」。
+    - 常見寫法：「新賃料1ヶ月」「1ヶ月(新賃料)」「賃料1ヶ月分」「55,000円」「なし」。
+      括號內的「新賃料」「新家賃」是計算基準的說明，屬於這一格的內容，請連同抄下。
+    - 更新料常不在費用表格內，而寫在「契約期間」「取引条件」「備考」欄位裡
+      （例如「普通賃貸借2年　更新料 新賃料1ヶ月」）。表格找不到時務必到這些欄位找。
+    - 印「無」「なし」「0円」「不要」→ 回答「なし」。
+    - 只抄更新料那一格的值，不要把「敷金」「礼金」「保証金」「敷引」「償却」
+      或保證公司費用的值填進來；也不要把這些項目的標籤一起抄進答案。
+      敷金1ヶ月・礼金1ヶ月・更新料1ヶ月 這種三格同值是常見情形，
+      確實讀到 1ヶ月 就照實回答，不必因為與敷金相同而改答。
+    - 整份圖紙完全沒提到更新料 → 回答空字串。不可因為「一般慣例是1個月」就填 1ヶ月。
+
+    判讀規則（保証会社費用 guaranteeFee）：
+    - 這一格的值可能是「比例」也可能是「金額」，兩種都要照原文回答：
+      比例例如「50%」「総賃料50%」「月額賃料の30%」；金額例如「4.5万円」「45,000円」。
+    - 保證公司有三種收費結構，圖紙常同時列出兩種以上，**全部都要抄下並保留原本的
+      「初回」「月額」「年間」標記**，用「、」分隔。這些標記決定費用算在簽約當下
+      還是每月／每年，絕對不可省略：
+        初回保証料（簽約時一次性）→ 例如「初回50%」
+        月額保証料・月額利用料（按月與租金一起付）→ 例如「月額1%」「月額賃料の1%」
+        年間保証料・継続保証委託料（每年或每兩年）→ 例如「年間10,000円」
+      GTN、Casa、日本セーフティー 等常見「初回100%＋月額1%」這種組合，
+      正確寫法是「GTN 初回100%、月額1%」，不可只寫「100%」或只寫「1%」。
+    - 若圖紙只有月額而沒有初回，就只回答月額並保留標記（例如「月額1%」），
+      不可把月額的數字當成初回填上去。
+    - ⚠️「月額」有兩種相反用法，一律照圖紙原文抄寫，不要自行改寫：
+      「月額総賃料の30%」「月額賃料の50%」的「月額」是在講計算基準（以月租總額為基數）
+      的一次性初回保證料；「月額1%」「月額保証料」的「月額」才是每月支付。
+      原文怎麼寫就怎麼抄，不可把前者改寫成「月額30%」或替後者補上「初回」。
+    - 若圖紙另列「外国人プラン」「外国籍の方」等專用方案且比例不同，
+      優先回答外國人方案的值（例如「外国人プラン80%」），並連同方案名稱一起抄下。
+    - 保證公司名稱（如「GTN」「日本セーフティー」「Casa」）若與比例印在一起，
+      可一併抄下（例如「GTN100%」）；但只有公司名稱、沒有任何費用數字時，
+      回答空字串——公司名稱不是費用。
+    - 印「無」「なし」「不要」→ 回答「なし」。
+    - 整份圖紙找不到保證公司費用 → 回答空字串。不要用行情慣例推算。
   `;
 
   // 有圖就只送圖、不送 PDF。實測純掃描 PDF 跟 JPEG 一起送時，Gemini 對 PDF 內部
@@ -290,24 +409,17 @@ async function verifyLeaseCharges(
           properties: {
             deposit: { type: Type.STRING, description: "敷金格子內實際印的字；免收回「無」；空白回空字串" },
             keyMoney: { type: Type.STRING, description: "礼金格子內實際印的字；免收回「無」；空白回空字串" },
+            renewalFee: { type: Type.STRING, description: "更新料實際印的字，例如 新賃料1ヶ月；定期借家寫「再契約料」時亦填此欄並保留該標籤；免收回「なし」；未記載回空字串" },
+            guaranteeFee: { type: Type.STRING, description: "保證料實際印的字，保留初回／月額／年間標記並用「、」分隔（如 初回50%、月額1%）；免收回「なし」；未記載回空字串" },
           },
-          required: ["deposit", "keyMoney"],
+          required: ["deposit", "keyMoney", "renewalFee", "guaranteeFee"],
         },
       },
     });
     const parsed = JSON.parse(response.text || "{}");
-    const pick = (fresh: unknown, fallback: string) => {
-      const value = typeof fresh === "string" ? fresh.trim() : "";
-      // 二次確認也讀到串格特徵就不採用，寧可留原值讓下游顯示待確認。
-      if (!value || /新賃料|更新/.test(value)) return fallback;
-      return value;
-    };
-    return {
-      deposit: pick(parsed.deposit, current.deposit),
-      keyMoney: pick(parsed.keyMoney, current.keyMoney),
-    };
+    return applyLeaseChargeVerification(parsed, current);
   } catch (error) {
-    console.warn("analyze-listing: 敷金／礼金二次確認失敗，沿用第一次結果", error);
+    console.warn("analyze-listing: 敷金／礼金／更新料／保証料二次確認失敗，沿用第一次結果", error);
     return current;
   }
 }
@@ -737,7 +849,13 @@ async function extractListingFields(
       （格式如 "敷金 ○　礼金 ○　償却金 ○"，○ 為格子上實際印的字：可能是月數、金額、「無」或「-」）。
       不可只抄數值，也不可自行補上圖紙沒印的月數。
     - 「敷金／保証金」與「償却金／敷引」是不同欄位：deposit 只能讀取緊接敷金或保証金標籤的值，絕對不可把償却金或敷引的 0円 填入 deposit。
-    - guaranteeFee（保証会社費用／初回保証料）：照原文，例如 "50%"、"総賃料50%"、"4.5万円"、"外国人プラン80%"、"GTN100%"。若圖紙載有「外国人プラン」或外國籍專用保證料，請優先提取外國人方案之比例。
+    - guaranteeFee（保証会社費用）：照原文，例如 "50%"、"総賃料50%"、"4.5万円"、"外国人プラン80%"。
+      **必須保留「初回」「月額」「年間」標記並全部抄下**（用「、」分隔），因為這決定費用算在簽約當下還是每月／每年：
+      初回保証料（簽約時一次性，如 "初回50%"）、月額保証料／月額利用料（按月支付，如 "月額1%"）、
+      年間保証料／継続保証委託料（每年或每兩年，如 "年間10,000円"）。
+      GTN、Casa、日本セーフティー 常見「初回100%＋月額1%」組合，須寫成 "GTN 初回100%、月額1%"，不可只寫 "100%"。
+      若只有月額沒有初回，只寫 "月額1%"，不可把月額數字當成初回。
+      若圖紙載有「外国人プラン」或外國籍專用保證料，請優先提取外國人方案之比例。
     - lockReplacementFee（鍵交換代／シリンダー交換代）：照原文，格式如 "○○,○○○円"，或 "無償"、"なし"。
     - cleaningFee（退去時清掃費／室内クリーニング代／エアコン清掃代）：照原文，格式如 "○○,○○○円"。
     - insuranceFee（火災保険／家財保険料）：照原文，格式如 "○○,○○○円"。
@@ -845,6 +963,10 @@ async function extractListingFields(
     - shikibiki（敷引／償却／敷金償却）：表格或特約中是否有敷引或償却？照原文填入，例如 "1ヶ月"、"0円"；只有圖紙完全沒寫此欄時才填 "なし"。
     - cancellationPenalty（短期解約違約金）：違約金規定，無則寫 "なし"。
     - renewalFee（更新料）：契約更新費用，無則寫 "なし"。
+      * 定期借家（定期賃貸借）的圖紙不會寫「更新料」，而是寫「再契約料」「再契約手数料」
+        ——法律上期滿是重新簽約而非更新，但對租客是同一筆「想繼續住就要付」的錢。
+        看到這兩個標籤請填入本欄並保留原文標籤（例如 "再契約料 新賃料の1ヶ月"），
+        不可因為欄名不叫「更新料」就當成沒有而填 "なし"。
     - specialNoteItems：把 specialNotes 備考欄、特約事項、生活規約等條目拆分成獨立項目，輸出分類、繁體中文標題、詳細說明與原文：
       * category 限制為下列之一：
         - 契約特約：解約通知期、違約責任、免責條款、契約型態約定
@@ -955,7 +1077,7 @@ async function extractListingFields(
           area: { type: Type.STRING, description: "専有面積，例如 40.17㎡" },
           structure: { type: Type.STRING, description: "建物構造，例如 RC造" },
           direction: { type: Type.STRING, description: "主要採光面／朝向／向き，例如 南、東南、南向き、北；若圖面標示 - 則填 -，未標示則留空" },
-          guaranteeFee: { type: Type.STRING, description: "保證公司費用，照原文" },
+          guaranteeFee: { type: Type.STRING, description: "保證公司費用，照原文並保留初回／月額／年間標記，例如 初回50%、月額1%" },
           lockReplacementFee: { type: Type.STRING, description: "鍵交換費用，照原文" },
           cleaningFee: { type: Type.STRING, description: "退去清掃費／室内クリーニング代／エアコン清掃代，照原文；不可填入敷引或償却金" },
           insuranceFee: { type: Type.STRING, description: "火災保險費用，照原文" },
@@ -963,7 +1085,7 @@ async function extractListingFields(
           freeRent: { type: Type.STRING, description: "免租期優惠，例如 フリーレント30日 或 なし" },
           shikibiki: { type: Type.STRING, description: "敷引／償却約定，例如 敷引1ヶ月 或 なし" },
           cancellationPenalty: { type: Type.STRING, description: "短期解約違約金，例如 1年未満解約時1ヶ月 或 なし" },
-          renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし" },
+          renewalFee: { type: Type.STRING, description: "更新料，例如 新賃料1ヶ月 或 なし；定期借家的「再契約料」「再契約手数料」亦填此欄並保留原標籤" },
           facilities: { type: Type.STRING, description: "室內與建物設備清單（逗號分隔）。注意表格打圈式只有打圈標記的才算具備，未打圈者切勿填入" },
           facilityTranslations: {
             type: Type.ARRAY,
@@ -1150,16 +1272,20 @@ export default async function handler(req: any, res: any) {
     }
 
     // 聚焦二次確認：
-    // - 租賃圖紙：一律對敷金／礼金做聚焦二次確認（見 verifyLeaseCharges），防止無幻覺成1個月。
+    // - 租賃圖紙：一律對敷金／礼金／更新料／保証会社費用做聚焦二次確認（見 verifyLeaseCharges），
+    //   防止無幻覺成1個月，以及相鄰費用格互相串格。
     // - 買賣圖紙：一律對售價、管理費、修繕積立金、土地權利與現況做聚焦二次確認（見 verifySaleCoreCharges），
     //   防止表格數字串格、漏讀改定價格、或權利性質誤判。
     if (extracted.dealType !== "sale") {
-      const verified = await verifyLeaseCharges(files, { deposit: extracted.deposit, keyMoney: extracted.keyMoney });
-      if (verified.deposit !== extracted.deposit || verified.keyMoney !== extracted.keyMoney) {
-        console.info("analyze-listing: 敷金／礼金經二次確認修正", {
-          before: { deposit: extracted.deposit, keyMoney: extracted.keyMoney },
-          after: verified,
-        });
+      const before = {
+        deposit: extracted.deposit,
+        keyMoney: extracted.keyMoney,
+        renewalFee: extracted.renewalFee,
+        guaranteeFee: extracted.guaranteeFee,
+      };
+      const verified = await verifyLeaseCharges(files, before);
+      if ((Object.keys(before) as Array<keyof typeof before>).some(key => verified[key] !== before[key])) {
+        console.info("analyze-listing: 租賃費用欄位經二次確認修正", { before, after: verified });
       }
       extracted = { ...extracted, ...verified };
     } else {

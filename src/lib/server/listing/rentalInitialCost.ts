@@ -3,7 +3,7 @@ import {
   hasExplicitZeroLeaseCharge,
   isFreeOrZero,
   normalizeMonthUnit,
-  parseGuaranteeFee,
+  parseGuaranteeFeeBreakdown,
   parseYenAmount
 } from "../../listingExtraction.js";
 import { additionalRentalFees } from "../../rentalConditions.js";
@@ -98,18 +98,28 @@ export function calculateInitialCostBreakdown(params: {
   });
 
   // 5. 保證會社初回保證料
-  const customGuarantee = parseGuaranteeFee(params.extractedGuaranteeFee, totalMonthlyCost);
+  // 只計初回：月額（GTN、Casa 常見的「月額1%」）與年額（継続保証委託料）
+  // 不是簽約當下的支出，混進初期費用會讓總額失真；改在備註如實揭露。
+  const guaranteeBreakdown = parseGuaranteeFeeBreakdown(params.extractedGuaranteeFee, totalMonthlyCost);
+  const customGuarantee = guaranteeBreakdown.initial;
   const guaranteeAmount = customGuarantee ?? Math.round(totalMonthlyCost * 0.5);
+  const recurringGuaranteeNote = [
+    guaranteeBreakdown.monthly ? `另有月額保證料約 ¥${guaranteeBreakdown.monthly.toLocaleString()}／月（按月支付，不計入初期費用）` : "",
+    guaranteeBreakdown.annual ? `另有年度保證料約 ¥${guaranteeBreakdown.annual.toLocaleString()}／年（續約時支付，不計入初期費用）` : "",
+  ].filter(Boolean).join("；");
   items.push({
     id: "guaranteeFee",
     name: "保證會社初回保證料",
     amount: guaranteeAmount,
     isFromFlyer: Boolean(customGuarantee),
-    note: customGuarantee
-      ? `圖紙標示：${params.extractedGuaranteeFee}（以月總租金 ¥${totalMonthlyCost.toLocaleString()} 計）`
-      : params.extractedGuaranteeFee
-        ? `圖紙標示：${params.extractedGuaranteeFee}`
-        : "外國籍租客多需加入保證公司，一般常態為總月租之 50%～100%",
+    note: [
+      customGuarantee
+        ? `圖紙標示：${params.extractedGuaranteeFee}（以月總租金 ¥${totalMonthlyCost.toLocaleString()} 計）`
+        : params.extractedGuaranteeFee
+          ? `圖紙標示：${params.extractedGuaranteeFee}${guaranteeBreakdown.monthly || guaranteeBreakdown.annual ? "；初回保證料未載明，暫以總月租 50% 預估" : ""}`
+          : "外國籍租客多需加入保證公司，一般常態為總月租之 50%～100%",
+      recurringGuaranteeNote,
+    ].filter(Boolean).join("。"),
   });
 
   // 6. 仲介手續費

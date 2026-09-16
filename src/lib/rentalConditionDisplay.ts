@@ -1,4 +1,4 @@
-import { normalizeMonthUnit } from "./listingExtraction";
+import { normalizeMonthUnit, parseGuaranteeFeeBreakdown } from "./listingExtraction";
 import { parseAndExplainSpecialNotes } from "./specialNotesParser";
 import type { RentalConditionItem, SpecialNoteItem } from "./rentalConditions";
 
@@ -42,6 +42,7 @@ export function buildRentalConditionSections({
   shikibiki,
   guaranteeFee,
   insuranceFee,
+  renewalFee,
   totalMonthlyCost,
 }: {
   rentalConditions?: string | null;
@@ -52,6 +53,7 @@ export function buildRentalConditionSections({
   shikibiki?: string | null;
   guaranteeFee?: string | null;
   insuranceFee?: string | null;
+  renewalFee?: string | null;
   totalMonthlyCost?: number | null;
 }): RentalConditionSection[] {
   const groups = rentalConditionGroups(rentalConditions, optionalFacilities, rentalConditionItems);
@@ -60,12 +62,19 @@ export function buildRentalConditionSections({
     const topics = topicsOf(`${item.title} ${item.explanation} ${item.rawJapanese || ""}`);
     return topics.length === 0 || topics.some((topic) => !coveredTopics.has(topic));
   });
-  if (!groups.length && !extraNotes.length && !guaranteeFee && !insuranceFee) return [];
+  if (!groups.length && !extraNotes.length && !guaranteeFee && !insuranceFee && !renewalFee) return [];
 
   const getItems = (id: string) =>
     (groups.find((group) => group.id === id)?.items || []).map(stripOrphanedBrackets).filter(Boolean);
 
   const leaseItems = getItems("lease");
+  if (
+    renewalFee &&
+    renewalFee.trim() &&
+    !leaseItems.some((i) => i.includes("更新") || i.includes("再契約") || i.includes("再簽約"))
+  ) {
+    leaseItems.push(formatRenewalItem(renewalFee));
+  }
   const lease = leaseItems.length ? leaseItems : ["圖紙未載明租期與契約更新條件，待核對正式契約。"];
 
   const moveInItems = getItems("moveIn");
@@ -145,15 +154,24 @@ function formatGuaranteeItem(text: string, totalMonthlyCost?: number | null): st
     .replace(/[～~]+$/g, " 起")
     .replace(/\s+/gu, " ")
     .trim();
-  const rateMatch = text.match(/(\d+(?:\.\d+)?)\s*[%％]/);
-  let estStr = "";
-  if (rateMatch && totalMonthlyCost && totalMonthlyCost > 0) {
-    const rate = Number(rateMatch[1]) / 100;
-    const est = Math.round(totalMonthlyCost * rate);
-    estStr = `（約 ${est.toLocaleString()}円，已計入上方初期費用試算）`;
+  // 保證料要分初回／月額／年額。只有初回計入初期費用試算——
+  // 月額（GTN、Casa 常見的「月額1%」）按月支付、年額續約時支付，
+  // 若一律標成「已計入上方初期費用試算」等於對客人說了不實的話。
+  const breakdown = parseGuaranteeFeeBreakdown(text, totalMonthlyCost ?? 0);
+  const notes: string[] = [];
+  if (totalMonthlyCost && totalMonthlyCost > 0) {
+    if (breakdown.initial !== null) {
+      notes.push(`初回約 ${breakdown.initial.toLocaleString()}円，已計入上方初期費用試算`);
+    }
+    if (breakdown.monthly !== null) {
+      notes.push(`月額約 ${breakdown.monthly.toLocaleString()}円／月，按月支付、未計入初期費用`);
+    }
+    if (breakdown.annual !== null) {
+      notes.push(`年度約 ${breakdown.annual.toLocaleString()}円／年，續約時支付、未計入初期費用`);
+    }
   }
   const base = /保證|保証/u.test(s) ? s : `保證公司（初回保證料）：${s}`;
-  return estStr ? `${base} ${estStr}` : base;
+  return notes.length ? `${base}（${notes.join("；")}）` : base;
 }
 
 function formatInsuranceItem(text: string): string {
@@ -166,6 +184,29 @@ function formatInsuranceItem(text: string): string {
   return isYen
     ? `火災保險：須投保，${s}（已計入上方初期費用試算）`
     : `火災保險：${s}`;
+}
+
+function formatRenewalItem(text: string): string {
+  const trimmed = text.trim();
+  if (/^なし$|^無$/u.test(trimmed)) {
+    return "契約更新費：免收（圖紙載明無更新料）";
+  }
+  if (/^[-－—/／]$/.test(trimmed)) {
+    return "契約更新費：圖紙未明確載明金額（標示 -），簽約前請向管理公司確認是否免收或有更新手續費";
+  }
+  const isTeishaku = /再契約/.test(trimmed);
+  const translated = translateRentalClause(trimmed, isTeishaku);
+  if (/^圖紙另有個別日文特約/.test(translated)) {
+    if (isTeishaku) {
+      return `再簽約費（定期租約期滿續住）：${trimmed.replace(/^再契約(?:料|手数料)?\s*[:：]?\s*/gu, "")}`;
+    }
+    return `契約更新費：${trimmed.replace(/^(?:更新料|更新手数料)?\s*[:：]?\s*/gu, "")}`;
+  }
+  return translated.includes("契約更新費") || translated.includes("再簽約費")
+    ? translated
+    : isTeishaku
+      ? `再簽約費（定期租約期滿續住）：${translated}`
+      : `契約更新費：${translated}`;
 }
 
 export function stripOrphanedBrackets(str: string): string {
@@ -236,7 +277,7 @@ export function rentalConditionGroups(
     // normalizeMonthUnit：契約條件常寫成「更新料1ケ月」（正常大小的ケ），
     // 先統一成「ヶ月」，下面的翻譯規則才不會整條漏配而留著日文原文。
     const clauses = normalizeMonthUnit((raw || "").normalize("NFKC"))
-      .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヶ月|CATV|実入居者))/gu, "。")
+      .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|再契約料|再契約手数料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヶ月|CATV|実入居者))/gu, "。")
       .replace(/[,、]\s*(?=※?退去時)/gu, "。")
       // 項目符號本身就是分隔符。リブマックス 系圖紙把二十多條特約用「■」串成一行
       // （「■鍵交換代33,000円■退去時精算手数料5,500円■…」），只切「。\n」會讓整串
@@ -281,7 +322,9 @@ function classifyClause(clause: string) {
   if (/敷金|礼金|キャンペーン|入居日|入居時期/.test(clause)) return "moveIn";
   if (/ペット|小型犬|猫\d*匹/.test(clause)) return "pet";
   if (/保証|保険/.test(clause)) return "guarantee";
-  if (/賃貸借|契約|更新|賃料改定|定借/.test(clause)) return "lease";
+  if (/家具家電撤去|鍵交換|消毒|サポート|事務手数料|Wi-Fi|wifi/i.test(clause)) return "fees";
+  // 「再契約」已被「契約」涵蓋，列出僅為表明定期借家的續住費用同屬契約類。
+  if (/賃貸借|契約|更新|再契約|賃料改定|定借/.test(clause)) return "lease";
   return "fees";
 }
 
@@ -316,8 +359,17 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/礼金\s*(\d+)ヶ月/gu, "禮金 $1 個月")
     .replace(/普通賃貸借\s*(\d+)年契約\s*[（(]更新型[）)]/gu, "普通租賃契約，租期 $1 年（可更新契約）")
     .replace(/契約期間\s*(\d+)年/gu, "普通租賃契約，租期 $1 年")
-    .replace(/更新料\s*新賃料\s*(\d+(?:\.\d+)?)ヶ月/gu, "契約更新費：新租金 $1 個月")
+    // 「の」是可選的：図面兩種寫法都很常見（「更新料 新賃料1ヶ月」與
+    // 「更新料 新賃料の1ヶ月分相当額」）。少了它整條會配不到而退化成
+    // 「圖紙另有個別日文特約」，客人根本看不到續約要付一個月租金。
+    // 數字與「ヶ月」之間也要容許空白：木下系図面的表格欄位被還原成
+    // 「更新料 新賃料 1.25 ヶ月」（值與單位分屬不同儲存格）。
+    .replace(/更新料\s*(?:[:：]\s*)?新賃料\s*の?\s*(\d+(?:\.\d+)?)\s*ヶ月(?:分)?(?:相当額)?/gu, "契約更新費：新租金 $1 個月")
     .replace(/更新料\s*([\d,]+円)/gu, "契約更新費：$1")
+    // 定期借家的「再契約料」是同一筆「想繼續住就要付」的錢，只是法律上
+    // 期滿屬重新簽約而非更新。不翻的話同樣只會顯示那句等於沒說的提示。
+    .replace(/再契約(?:料|手数料)\s*(?:[:：]\s*)?新賃料\s*の?\s*(\d+(?:\.\d+)?)\s*ヶ月(?:分)?(?:相当額)?/gu, "再簽約費（定期租約期滿續住）：新租金 $1 個月")
+    .replace(/再契約(?:料|手数料)\s*(?:[:：]\s*)?([\d,]+円)/gu, "再簽約費（定期租約期滿續住）：$1")
     .replace(/解約予告\s*(\d+)\s*日前(?:に当社宛に通知)?/gu, "退租須於 $1 日前通知")
     .replace(/解約予告\s*(\d+)\s*(?:ヶ月|ヵ月|カ月)前(?:に当社宛に通知)?/gu, "退租須於 $1 個月前通知")
     .replace(/1、2回目の更新時\s*(\d+(?:\.\d+)?)%の賃料改定あり/gu, "第 1、2 次契約更新時，租金調整 $1%")
@@ -367,7 +419,7 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/指定賃貸保証加入\s*[（(]総賃料\s*(\d+)%[）)]/gu, "須加入指定租賃保證公司：保證費為租金總額 $1%")
     .replace(/モバイルwifi\s*[（(]?(\d+GB)[）)]?\s*付/giu, "附行動 Wi-Fi（$1）")
     .replace(/民泊[・、]?簡易宿泊による利用及びそれに伴う広告等は一切禁止/gu, "禁止作為民宿或簡易住宿使用，亦禁止相關刊登行為")
-    .replace(/法人契約の場合[、,]\s*普通借家相談可能/gu, "法人承租時，可洽談改採普通租賃契約")
+    .replace(/法人契約の場合[、,]\s*普通借(?:家)?相談可(?:能)?/gu, "法人承租時，可洽談改採普通租賃契約")
     .replace(/海外審査相談可/gu, "可洽談海外審查（人在海外亦可申請）")
     .replace(/全物件先行契約になります/gu, "全部物件皆採先行簽約（須先簽約再入住）")
     .replace(/事務所[・、]?SOHO利用禁止/gu, "禁止作為辦公室或 SOHO 使用")

@@ -8,16 +8,28 @@
 - 以節點座標／way 中心到物件定位點的直線距離篩選，不代表返家路線或沿街實況。住宅計算建物數，非戶數。
 - 商業包含 shop、餐飲、電影院及娛樂類；娛樂為 bar/pub/nightclub/karaoke、遊戲場類。店家同 ID 去重，另將 30m 內同名同類型 node/way 合併；匿名重複場所仍可能存在。
 - 娛樂至少 8 處且商業至少 20 處 → 娛樂集中；否則商業至少 35 處 → 熱鬧商圈；住宅至少 5 棟且商業至少 8 處 → 住商混合；住宅至少 20 棟且商業少於 8 處 → 住宅為主；其餘待確認。
+
+## 官方資料後援（2026-09-15）
+
+OSM 的建物與店家收錄率在地方都市參差不齊，上述門檻可能全數落空。改以國土交通省不動產資訊資料庫的官方圖層補上，這些資料不依賴地圖志工標記：
+
+- **用途地域（XKT002）**：市町村依都市計畫法告示的法定分區，另附建蔽率與容積率。一張 z=15 圖磚內常有多塊分區（實測川口市中青木有 4 種），以射線法逐塊判斷物件座標真正落在哪一塊，不取第一筆。
+- **人口集中地區 DID（XKT031）與 250m 網格推計人口（XKT013）**：出自國勢調查。PLATEAU 3D 都市模型雖有逐棟建物用途，但只以 CityGML／3D Tiles 批次下載散布，沒有逐座標查詢的公開 API，故以這兩份人口統計替代。網格欄位帶年份，取不早於當年的最近一欄，不寫死年份。
+- **保育園・幼稚園（XKT007）與福祉設施（XKT011）**：僅計 1.2km 內件數作為生活機能佐證，不列入生活設施清單。
+- 後援僅補「住宅為主」與「住商混合」：住居系用途地域且位於 DID 或網格人口至少 100 人 → 住宅為主（已收錄商業至少 8 處則為住商混合）；商業系或工業系用途地域且位於 DID 並已收錄至少 3 處商業場所 → 住商混合。熱鬧商圈與娛樂集中牽涉夜間人流，仍要求實際場所件數佐證，官方後援不覆蓋地圖實證的等級。
+- 粗定位（地址僅到區域）時照常回傳用途地域與人口供閱讀，但不據以推估等級——等級的空間精度依賴完整門牌。
+- 實測結果：川口市中青木 2-2-34 為準工業地域（建蔽 60%／容積 200%）、DID 10,750 人／km²、網格 1,544 人、托育福祉 33 處，判定住商混合；千代田區東神田 2-6-2 為商業地域（建蔽 80%／容積 700%），維持地圖實證的娛樂集中。
+- 用途地域名稱含「住居」一律歸住居系，避免「準住居地域」因「準」字被誤判為工業系。
 - 以上是未經全國校準的產品啟發式門檻，UI 一律標示「環境推估・資料有限」，不是官方分類、人流測量、治安或噪音分數。資料覆蓋率未知，不提供高可信度。
 - 「活動較少」保留在五段刻度中，但不從缺少商店或零犯罪自動推定。未接入實地觀察前，不產生第 1 級。明確住宅建物只能支持住宅性質，不能證明安靜。
 - 僅完整門牌定位結果採計；地址僅到區域時顯示待確認。空結果、請求失敗、Overpass remark（可能為部分結果）各自處理，不計為零風險。
 - 營業時間只陳述 `opening_hours=24/7` 的地圖標記；不以酒吧分類推定深夜營業、不以複雜時段字串推定營業狀態。照明、人流與路線尚未實地確認。
 
-來源定義：[OSM building](https://wiki.openstreetmap.org/wiki/Key:building)、[OSM opening_hours](https://wiki.openstreetmap.org/wiki/Key:opening_hours)。地圖資料需保留 © OpenStreetMap contributors attribution。
+來源定義：[OSM building](https://wiki.openstreetmap.org/wiki/Key:building)、[OSM opening_hours](https://wiki.openstreetmap.org/wiki/Key:opening_hours)、[國交省 XKT002 用途地域](https://www.reinfolib.mlit.go.jp/help/apiManual/xkt002/)、[XKT031 人口集中地區](https://www.reinfolib.mlit.go.jp/help/apiManual/xkt031/)、[XKT013 250m 網格將來推計人口](https://www.reinfolib.mlit.go.jp/help/apiManual/xkt013/)、[XKT007 保育園・幼稚園](https://www.reinfolib.mlit.go.jp/help/apiManual/xkt007/)、[XKT011 福祉施設](https://www.reinfolib.mlit.go.jp/help/apiManual/xkt011/)。地圖資料需保留 © OpenStreetMap contributors attribution；國交省 API 需併同顯示既有的 `MLIT_API_CREDIT`。
 
 ## 驗證
 
-`npx tsx scripts/test-neighborhood-activity.ts`：缺資料、粗定位、分類、重複場所、距離篩選及营业時間。
+`npx tsx scripts/test-neighborhood-activity.ts`：缺資料、粗定位、分類、重複場所、距離篩選、营业時間，以及用途地域系別判定與官方後援門檻（含「官方後援不得覆蓋地圖實證等級」的守護）。
 `npm run test:crime-safety`：既有犯罪快照、計算與趨勢回歸。
 
 ## 後續資料接入

@@ -2,7 +2,7 @@ import {
   formatShikibiki,
   hasExplicitZeroLeaseCharge,
   isFreeOrZero,
-  parseGuaranteeFee,
+  parseGuaranteeFeeBreakdown,
   parseYenAmount,
 } from '../listingExtraction.js';
 import { additionalRentalFees, rentalConditionText } from '../rentalConditions.js';
@@ -31,8 +31,16 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
   const formattedShikibiki = formatShikibiki(result.extracted.shikibiki);
   const hasShikibiki = Boolean(formattedShikibiki);
 
-  const customGuarantee = parseGuaranteeFee(result.extracted.guaranteeFee, totalMonthlyCost);
+  // 保證料要區分初回／月額／年額：只有初回屬於簽約當下的初期費用。
+  // GTN、Casa 這類常見「月額1%」按月收，混進初期費用會讓總額失真，
+  // 而且那筆持續支出若不另外說明，整份報告就完全看不到。
+  const guaranteeBreakdown = parseGuaranteeFeeBreakdown(result.extracted.guaranteeFee, totalMonthlyCost);
+  const customGuarantee = guaranteeBreakdown.initial;
   const guaranteeAmount = customGuarantee ?? Math.round(totalMonthlyCost * 0.5);
+  const recurringGuaranteeNote = [
+    guaranteeBreakdown.monthly ? `另有月額保證料約 ¥${guaranteeBreakdown.monthly.toLocaleString()}／月（按月支付，不計入初期費用）` : "",
+    guaranteeBreakdown.annual ? `另有年度保證料約 ¥${guaranteeBreakdown.annual.toLocaleString()}／年（續約時支付，不計入初期費用）` : "",
+  ].filter(Boolean).join("；");
 
   const items: InitialCostBreakdownItem[] = [
     {
@@ -72,9 +80,14 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
       name: "保證會社初回保證料",
       amount: guaranteeAmount,
       isFromFlyer: Boolean(customGuarantee),
-      note: customGuarantee
-        ? `圖紙載明：${result.extracted.guaranteeFee}（依月總租金 ¥${totalMonthlyCost.toLocaleString()} 計約 ¥${guaranteeAmount.toLocaleString()}）` : result.extracted.guaranteeFee
-          ? `圖紙標示：${result.extracted.guaranteeFee}` : "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%",
+      note: [
+        customGuarantee
+          ? `圖紙載明：${result.extracted.guaranteeFee}（依月總租金 ¥${totalMonthlyCost.toLocaleString()} 計約 ¥${guaranteeAmount.toLocaleString()}）`
+          : result.extracted.guaranteeFee
+            ? `圖紙標示：${result.extracted.guaranteeFee}${guaranteeBreakdown.monthly || guaranteeBreakdown.annual ? "；初回保證料未載明，暫以總租金 50% 預估" : ""}`
+            : "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%",
+        recurringGuaranteeNote,
+      ].filter(Boolean).join("。"),
     },
     {
       id: "brokerageFee",

@@ -2,7 +2,13 @@ import { GoogleGenAI } from "@google/genai";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 import { lookupStationLines } from "./transitParser.js";
 import { MLIT_API_CREDIT } from "../data/marketDataSources.js";
-import { analyzeNeighborhood, type NeighborhoodActivity } from "./neighborhoodActivity.js";
+import {
+  analyzeNeighborhood,
+  classifyLandUse,
+  type LandUseZone,
+  type NeighborhoodActivity,
+  type NeighborhoodPopulation,
+} from "./neighborhoodActivity.js";
 import railLineModes from "../data/railLineModes.json" with { type: "json" };
 
 export interface GeoPoint {
@@ -657,6 +663,134 @@ function tile(point: GeoPoint, zoom = 13) {
   };
 }
 
+/**
+ * 射線法判斷點是否落在單一環內。GeoJSON 座標順序是 [lon, lat]。
+ *
+ * 用途地域是多邊形圖層，一張 250m 見方的圖磚內常同時有住居、商業、工業好幾塊分區
+ * （實測川口市中青木一張 z=15 圖磚就有 4 種地域），只取第一筆會拿到隔壁街廓的地目。
+ * 必須逐塊檢查物件座標真正落在哪一塊裡面。
+ */
+function pointInRing(ring: number[][], point: GeoPoint) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if ((yi > point.lat) !== (yj > point.lat)
+      && point.lon < (xj - xi) * (point.lat - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+/** 支援 Polygon 與 MultiPolygon；只檢查外環，內環（中空）在用途地域資料中不適用。 */
+function geometryContains(geometry: any, point: GeoPoint) {
+  if (!geometry) return false;
+  const polygons = geometry.type === "MultiPolygon" ? geometry.coordinates
+    : geometry.type === "Polygon" ? [geometry.coordinates]
+      : [];
+  return polygons.some((polygon: any) => Array.isArray(polygon?.[0]) && pointInRing(polygon[0], point));
+}
+
+/** 呼叫不動產資訊資料庫的圖磚式 GeoJSON API，回傳 features 陣列。 */
+async function mlitTileFeatures(code: string, point: GeoPoint, zoom: number): Promise<any[]> {
+  const apiKey = process.env.MLIT_REINFOLIB_API_KEY;
+  if (!apiKey) return [];
+  const { z, x, y } = tile(point, zoom);
+  const key = `mlit-tile:${code}:${z}:${x}:${y}`;
+  const hit = cached<any[]>(key);
+  if (hit) return hit;
+  const url = new URL(`${MLIT_API}/${code}`);
+  Object.entries({ response_format: "geojson", z: String(z), x: String(x), y: String(y) })
+    .forEach(([name, value]) => url.searchParams.set(name, value));
+  const data = await fetchJson(url.toString(), { headers: { "Ocp-Apim-Subscription-Key": apiKey } });
+  return remember(key, Array.isArray(data?.features) ? data.features : []);
+}
+
+/**
+ * XKT002 都市計畫決定 GIS 資料（用途地域）。
+ *
+ * 這是市町村依都市計畫法告示的法定土地使用分區，與 OSM 的志工標記完全獨立，
+ * 因此在地圖收錄稀疏的地方都市仍然可靠——正是街區活動卡片長期顯示「待確認」的地區。
+ */
+async function mlitLandUse(point: GeoPoint): Promise<LandUseZone | null> {
+  // z=15 是官方允許的最詳細層級（可指定 11～15），分區邊界才不會被過度簡化。
+  const features = await mlitTileFeatures("XKT002", point, 15);
+  const match = features.find(feature => geometryContains(feature?.geometry, point));
+  const properties = match?.properties;
+  const zone = String(properties?.use_area_ja || "").trim();
+  if (!zone) return null;
+  const zoneId = Number(properties?.youto_id);
+  return {
+    zone,
+    zoneId: Number.isFinite(zoneId) ? zoneId : null,
+    floorAreaRatio: String(properties?.u_floor_area_ratio_ja || "").trim(),
+    buildingCoverageRatio: String(properties?.u_building_coverage_ratio_ja || "").trim(),
+    city: String(properties?.city_name || "").trim(),
+    ...classifyLandUse(zone),
+  };
+}
+
+/**
+ * XKT031 人口集中地區（DID）與 XKT013 將來推計人口 250m 網格。
+ *
+ * PLATEAU 3D 都市模型雖有逐棟建物用途，但只以 CityGML／3D Tiles 批次下載形式散布，
+ * 沒有逐座標查詢的公開 API，不適合即時分析；改用同為國交省官方、且有 API 的這兩份人口統計，
+ * 同樣能證明「這個座標周邊確實住了多少人」。
+ */
+async function mlitPopulation(point: GeoPoint): Promise<NeighborhoodPopulation | null> {
+  const [didResult, meshResult] = await Promise.allSettled([
+    // DID 是市區町村層級的大範圍多邊形，z=13 已足夠涵蓋且回應較小。
+    mlitTileFeatures("XKT031", point, 13),
+    mlitTileFeatures("XKT013", point, 15),
+  ]);
+  const did = didResult.status === "fulfilled"
+    ? didResult.value.find(feature => geometryContains(feature?.geometry, point))
+    : null;
+  const mesh = meshResult.status === "fulfilled"
+    ? meshResult.value.find(feature => geometryContains(feature?.geometry, point))
+    : null;
+  if (!did && !mesh) return null;
+  const didPopulation = Number(did?.properties?.A16_005);
+  const didAreaKm2 = Number(did?.properties?.A16_006);
+  // 網格資料是分年度推計，欄位名帶年份（PT00_2025…）。取最接近今年且不早於今年的一欄，
+  // 避免寫死年份在資料更新後抓不到值。
+  const meshProperties = mesh?.properties || {};
+  const currentYear = new Date().getFullYear();
+  const meshYear = Object.keys(meshProperties)
+    .map(name => Number(name.match(/^PT00_(\d{4})$/)?.[1]))
+    .filter(year => Number.isFinite(year) && year >= currentYear)
+    .sort((a, b) => a - b)[0];
+  const meshPopulation = Number(meshProperties[`PT00_${meshYear}`]);
+  return {
+    denselyInhabited: Boolean(did),
+    densityPerSquareKm: Number.isFinite(didPopulation) && Number.isFinite(didAreaKm2) && didAreaKm2 > 0
+      ? Math.round(didPopulation / didAreaKm2)
+      : null,
+    meshPopulation: Number.isFinite(meshPopulation) ? Math.round(meshPopulation) : null,
+  };
+}
+
+/**
+ * XKT007 保育園・幼稚園等與 XKT011 福祉設施的件數。
+ *
+ * 托育與福祉設施是依實際居住人口設置的，密集出現代表這裡是有生活機能的成熟住宅圈，
+ * 可與用途地域互相印證。只計件數，不列入生活設施清單（清單另有每類最多三筆的截斷規則）。
+ */
+async function mlitCareFacilityCount(point: GeoPoint): Promise<number> {
+  const results = await Promise.allSettled([
+    mlitTileFeatures("XKT007", point, 15),
+    mlitTileFeatures("XKT011", point, 15),
+  ]);
+  return results.reduce((total, result) => {
+    if (result.status !== "fulfilled") return total;
+    return total + result.value.filter(feature => {
+      const coordinates = feature?.geometry?.coordinates;
+      const facility = { lon: Number(coordinates?.[0]), lat: Number(coordinates?.[1]) };
+      if (!Number.isFinite(facility.lat) || !Number.isFinite(facility.lon)) return false;
+      return distanceMeters(point, facility) <= 1200;
+    }).length;
+  }, 0);
+}
+
 async function mlitFacilities(point: GeoPoint): Promise<ListingAmenity[]> {
   const apiKey = process.env.MLIT_REINFOLIB_API_KEY;
   if (!apiKey) return [];
@@ -745,10 +879,14 @@ export async function getListingLocationContext(
     notices.push("輸入內容缺少完整門牌或經過建物名稱搜尋，定位可能是附近街區中心；請先用「在地圖確認」核對位置。");
   }
 
-  // 並行查詢 OSM 圖資與 MLIT 設施
-  const [osmResult, mlit] = await Promise.all([
+  // 並行查詢 OSM 圖資與 MLIT 設施。用途地域、人口統計與托育福祉件數是街區活動卡片的官方後援，
+  // 任何一項失敗都只讓該項留空，不影響地址、車站與生活設施等既有結果。
+  const [osmResult, mlit, landUse, population, careFacilities] = await Promise.all([
     queryOsm(geocoded.point, true).catch(() => null),
     mlitFacilities(geocoded.point).catch(() => [] as ListingAmenity[]),
+    mlitLandUse(geocoded.point).catch(() => null),
+    mlitPopulation(geocoded.point).catch(() => null),
+    mlitCareFacilityCount(geocoded.point).catch(() => 0),
   ]);
   const elements = osmResult || [];
 
@@ -814,7 +952,13 @@ export async function getListingLocationContext(
 
   return {
     address,
-    neighborhoodActivity: analyzeNeighborhood(osmResult, geocoded.point, geocoded.confidence === "high"),
+    neighborhoodActivity: analyzeNeighborhood(
+      osmResult,
+      geocoded.point,
+      geocoded.confidence === "high",
+      new Date().toISOString(),
+      { landUse, population, careFacilities },
+    ),
     matchedAddress: geocoded.matchedAddress,
     coordinate: geocoded.point,
     stationWalks,
@@ -822,9 +966,13 @@ export async function getListingLocationContext(
     sources: [
       { label: "國土地理院地址搜尋", url: "https://maps.gsi.go.jp/" },
       ...(elements.length ? [{ label: "OpenStreetMap", url: "https://www.openstreetmap.org/copyright" }] : []),
-      ...(mlit.length || officialStations.length ? [{ label: "國土交通省 不動產資訊資料庫", url: "https://www.reinfolib.mlit.go.jp/" }] : []),
+      ...(mlit.length || officialStations.length || landUse || population || careFacilities
+        ? [{ label: "國土交通省 不動產資訊資料庫", url: "https://www.reinfolib.mlit.go.jp/" }]
+        : []),
     ],
-    credit: mlit.length || officialStations.length ? MLIT_API_CREDIT : null,
+    credit: mlit.length || officialStations.length || landUse || population || careFacilities
+      ? MLIT_API_CREDIT
+      : null,
     notices,
   };
 }

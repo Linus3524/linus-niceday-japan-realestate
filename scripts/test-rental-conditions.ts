@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { normalizeRoomType, detectUnitFeatures, parseMonthsOrYen, isFreeOrZero, formatShikibiki, normalizeMonthUnit } from "../src/lib/listingExtraction.js";
+import { normalizeRoomType, detectUnitFeatures, parseMonthsOrYen, isFreeOrZero, formatShikibiki, normalizeMonthUnit, parseYenAmount } from "../src/lib/listingExtraction.js";
 import { parseAndExplainSpecialNotes } from "../src/lib/specialNotesParser.js";
 import { formatDirection } from "../src/lib/listing/formatters.js";
 import { calculateInitialCostBreakdown } from "../api/analyze-listing.js";
@@ -294,6 +294,66 @@ for (const unit of ["ヶ", "ケ", "か"]) {
 }
 console.log("Month-unit (ヶ/ヵ/ケ/カ/か/個 月) normalization tests passed.");
 
+// 小數點金額回歸測試。
+//
+// 管理系統匯出的図面會把金額印成「92000.00円」——「武蔵台コーポ203」的礼金欄
+// 就是這樣（版面文字實測：「敷金/礼金　無 / 92000.00円」）。
+// 舊的 `(\d{2,10})\s*円` 會從小數點後重新配到「00」而算出 0，整筆被當成解析失敗：
+// 圖紙明明載明 92,000 円礼金，報告卻顯示「未載明」且完全不計入初期費用試算。
+assert.equal(parseYenAmount("92000.00円"), 92000, "小數點金額須完整解析");
+assert.equal(parseYenAmount("92000.00"), 92000, "無單位的小數點金額亦同");
+assert.equal(parseMonthsOrYen("92000.00円", 92000), 92000, "礼金欄的小數點金額須換算");
+// 既有行為不得退化：萬円、千分位、百分比與過小的數字。
+assert.equal(parseYenAmount("11.4万円"), 114000, "萬円的小數仍按萬計");
+assert.equal(parseYenAmount("92,000円"), 92000);
+assert.equal(parseYenAmount("50%"), null, "百分比不是金額");
+assert.equal(parseYenAmount("70"), null, "無單位的小額數字不可當成金額");
+assert.equal(parseYenAmount("0.00円"), null, "0 円視為未取得金額，交由 isFreeOrZero 判免收");
+{
+  // 端到端：礼金 92000.00円 必須計入初期費用，而不是標成待確認。
+  const cost = calculateInitialCostBreakdown({
+    rent: 92000, managementFee: 3000, deposit: 0, keyMoney: 92000,
+    extractedDeposit: "無", extractedKeyMoney: "92000.00円",
+  });
+  const keyMoney = cost.items.find(i => i.id === "keyMoney")!;
+  assert.equal(keyMoney.amount, 92000, "小數點寫法的礼金須計入初期費用");
+  assert.notEqual(keyMoney.isUnknown, true, "載明金額的礼金不可標成未確認");
+}
+console.log("Decimal yen amounts (92000.00円) parsing tests passed.");
+
+// 更新料／再契約料的實際寫法回歸測試。
+//
+// 這些字串全部取自真實圖紙的版面文字。翻譯規則配不到時，整條會退化成
+// 「圖紙另有個別日文特約…」這種等於沒說的提示——續約要付一個月租金這件事
+// 就完全不會出現在報告裡。更新料在系統內始終是字串、不進任何試算，
+// 因此顯示層配不到就是唯一的失效點，必須逐種寫法守住。
+{
+  const renderedOf = (text: string) => rentalConditionGroups(text).flatMap(g => g.items).join(" ｜ ");
+  const fallback = /圖紙另有個別日文特約/;
+
+  // ルージュ駒場401：更新料と更新事務手数料の併記。
+  assert.match(renderedOf("更新料 新賃料1ヶ月分 更新事務手数料10,000円(税別)"), /契約更新費：新租金 1 個月/);
+  // パークアクシス北千束206 / Ｃａｓａ－Ａｉｌｅ603（三井系）：「の」と「分相当額」付き。
+  // 「の」を許さない規則だったため、以前はこの書き方が丸ごとフォールバックしていた。
+  const mitsui = renderedOf("契約期間 2年 更新料 新賃料の1ヶ月分相当額");
+  assert.match(mitsui, /契約更新費：新租金 1 個月/);
+  assert.doesNotMatch(mitsui, fallback);
+  // プレール・ドゥーク下北沢211：表格のセル分割で数値と単位の間に空白が入る。
+  assert.match(renderedOf("更新料 新賃料 1.25 ヶ月"), /契約更新費：新租金 1\.25 個月/);
+  // 武蔵台コーポ203：金額表記。
+  assert.match(renderedOf("更新料 92000円"), /契約更新費：92000円/);
+
+  // 定期借家は「更新料」ではなく「再契約料」と書く（XEBEC大手町201 など）。
+  // 借主にとっては同じ「住み続けるなら払う金」なので、必ず訳して見せる。
+  for (const raw of ["再契約料 新賃料の1ヶ月", "定期借家 2年 再契約料 新賃料の1ヶ月"]) {
+    const rendered = renderedOf(raw);
+    assert.match(rendered, /再簽約費（定期租約期滿續住）：新租金 1 個月/, `${raw} 應翻成中文`);
+    assert.doesNotMatch(rendered, fallback, `${raw} 不可退化成泛用提示`);
+  }
+  assert.match(renderedOf("再契約手数料 55,000円"), /再簽約費（定期租約期滿續住）：55,000円/);
+}
+console.log("Renewal fee (更新料／再契約料) wording tests passed.");
+
 // ── AI 結構化輸出支援測試（Phase 2: rentalConditionItems & Phase 3: specialNoteItems）──
 {
   // Phase 2: rentalConditionItems 結構化條目優先採用
@@ -344,5 +404,53 @@ console.log("Month-unit (ヶ/ヵ/ケ/カ/か/個 月) normalization tests passed
   assert.ok(guaranteeSection, "應包含保證與費用區塊");
   console.log("Structured AI items (rentalConditionItems & specialNoteItems) tests passed.");
 }
+// ── 定期借家（再契約料＋法人相談＋家具家電撤去費）端到端與 Fallback 雙軌測試 ──
+{
+  const xebecExtracted = {
+    rentalConditions: "■鍵交換代33,000円■退去時クリーンコート代55,000円■事務手数料22,000円■退去時精算手数料5,500円（最終請求時）■リブクラブ2,200円/月■SBI少額短期保険800円/月■指定賃貸保証加入（総賃料100%）■賃料等引き落とし料330円/月■家具家電撤去費用27,500円（家具家電無し契約を希望の場合）■短期解約違約金：賃料1ヶ月分（1年未満）■モバイルwifi(50GB)付■民泊・簡易宿泊による利用及びそれに伴う広告等は一切禁止■法人契約の場合、普通借相談可■法人で保証会社加入無しの場合、敷金1か月■海外審査相談可■全物件先行契約になります■事務所・SOHO利用禁止■外国籍の方：GTN加入要（海外審査OK）初回保証料：賃料総額100％ 月次手数料2,330円（税込）",
+    guaranteeFee: "外国籍の方：初回保証料：賃料総額100%、月次手数料2,330円（税込）",
+    insuranceFee: "800円/月",
+    renewalFee: "再契約料 新賃料の1ヶ月",
+    rentalConditionItems: [
+      { category: "lease" as const, ja: "再契約料 新賃料の1ヶ月", zh: "再契約手續費：新租金的 1 個月" },
+      { category: "lease" as const, ja: "法人契約の場合、普通借相談可", zh: "法人簽約之情況，可協商改為普通租賃契約" },
+      { category: "fees" as const, ja: "家具家電撤去費用27,500円（家具家電無し契約を希望の場合）", zh: "家具家電撤除搬遷費：27,500 円（若希望以不附家具家電承租時）" },
+    ],
+  };
+
+  // Option B: Structured AI items
+  const sectionsB = buildRentalConditionSections({
+    rentalConditions: xebecExtracted.rentalConditions,
+    rentalConditionItems: xebecExtracted.rentalConditionItems,
+    guaranteeFee: xebecExtracted.guaranteeFee,
+    insuranceFee: xebecExtracted.insuranceFee,
+    renewalFee: xebecExtracted.renewalFee,
+  });
+  const leaseRowB = sectionsB.find(s => s.title === "契約與入住")?.rows.find(r => r.title === "租期與契約更新");
+  assert.ok(leaseRowB, "Option B 必須包含「租期與契約更新」");
+  assert.match(leaseRowB.items.join("\n"), /再契約手續費：新租金的 1 個月/);
+  assert.match(leaseRowB.items.join("\n"), /法人簽約之情況，可協商改為普通租賃契約/);
+
+  // Option A: Fallback regex parser (no structured items)
+  const sectionsA = buildRentalConditionSections({
+    rentalConditions: xebecExtracted.rentalConditions,
+    guaranteeFee: xebecExtracted.guaranteeFee,
+    insuranceFee: xebecExtracted.insuranceFee,
+    renewalFee: xebecExtracted.renewalFee,
+  });
+  const leaseRowA = sectionsA.find(s => s.title === "契約與入住")?.rows.find(r => r.title === "租期與契約更新");
+  assert.ok(leaseRowA, "Fallback 模式必須包含「租期與契約更新」");
+  const leaseTextA = leaseRowA.items.join("\n");
+  assert.match(leaseTextA, /再簽約費（定期租約期滿續住）：新租金 1 個月/, "Fallback 必須翻譯獨立欄位中的再契約料");
+  assert.match(leaseTextA, /法人承租時，可洽談改採普通租賃契約/, "Fallback 必須翻譯「法人契約の場合、普通借相談可」");
+  assert.doesNotMatch(leaseTextA, /家具家電撤除/, "家具家電撤除費不應被誤分入「租期與契約更新」");
+
+  const feesRowA = sectionsA.find(s => s.title === "保證、保險與附加費用")?.rows.find(r => r.title === "附加費用與服務");
+  assert.ok(feesRowA, "Fallback 模式必須包含「附加費用與服務」");
+  assert.match(feesRowA.items.join("\n"), /家具家電撤除費：27,500円/, "家具家電撤除費應正確歸入附加費用");
+
+  console.log("XEBEC 定期借家 (再契約料／法人普通借相談／家具家電撤去) 雙軌測試通過。");
+}
+
 
 

@@ -60,6 +60,7 @@ export function RentSections({ result }: { result: AnalyzeListingResult }) {
     shikibiki: formatShikibiki(rawShikibiki),
     guaranteeFee: e.guaranteeFee,
     insuranceFee: e.insuranceFee,
+    renewalFee: e.renewalFee,
     totalMonthlyCost: monthly,
   });
 

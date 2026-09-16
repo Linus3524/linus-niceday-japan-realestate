@@ -13,6 +13,10 @@ interface NeighborhoodActivityCardProps {
 
 export function NeighborhoodActivityCard({ activity, address, showCounts = false, showNightInfo = false, alignRows = false, annualStreetCrime }: NeighborhoodActivityCardProps) {
   const level = activity?.level ?? null;
+  const landUse = activity?.landUse ?? null;
+  // 圖資收錄不足時，官方用途地域是判定的主要依據，說明文字要如實改述依據來源，
+  // 不能還寫「地圖收錄多棟住宅建物」——那在這種情況下並不成立。
+  const mapDerived = (activity?.residential ?? 0) >= 5 || (activity?.commercial ?? 0) >= 8;
   const explanation = !activity || activity.status === "unavailable"
     ? "周邊環境資料暫時無法取得，尚不能判斷街區活動程度。"
     : activity.status === "imprecise"
@@ -21,8 +25,13 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
         ? "地圖收錄的住宅與商業資訊不足，尚不能判定繁華或安靜。"
         : level === 5 ? "地圖收錄較多酒吧、娛樂場所及商店，推估周邊娛樂活動較集中。"
           : level === 4 ? "地圖收錄較密集的商店與餐飲場所，推估周邊商業活動較熱絡。"
-            : level === 3 ? "附近同時有住宅建物與多處商店、餐飲場所，呈現住商混合特徵。"
-              : "近處有多棟明確標註的住宅建物，已收錄商店較少，暫估住宅為主。";
+            : level === 3
+              ? mapDerived
+                ? "附近同時有住宅建物與多處商店、餐飲場所，呈現住商混合特徵。"
+                : `官方用途地域為${landUse?.zone || "混合型分區"}，且位於人口集中地區，推估為住商混合的既成市街地。`
+              : mapDerived
+                ? "近處有多棟明確標註的住宅建物，已收錄商店較少，暫估住宅為主。"
+                : `官方用途地域為${landUse?.zone || "住居系分區"}，屬法定住宅環境，已收錄商店較少，暫估住宅為主。`;
   const accent = level === 5 ? SAFETY_PALETTE.purple : level && level >= 3 ? SAFETY_PALETTE.blue : SAFETY_PALETTE.green;
   const palette = !level ? { bg: "#F5F8F6", border: "#CFE0D8" }
     : level === 5 ? { bg: "#F7F5FC", border: "#DED4F2" }
@@ -113,12 +122,15 @@ function ActivityCounts({ activity, standalone = false }: { activity?: Neighborh
 
   if (standalone) {
     return (
-      <div className="mt-3 grid grid-cols-2 gap-x-2 gap-y-2 border-t border-[#DDE3DF] pt-2 text-[10px] leading-normal text-[#66736C]">
-        <span>商店／餐飲／娛樂 <strong className="text-[#1A2A22]">{activity.commercial} 處</strong></span>
-        <span>其中娛樂場所 <strong className="text-[#1A2A22]">{activity.entertainment} 處</strong></span>
-        <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
-        <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
-      </div>
+      <>
+        <div className="mt-3 grid grid-cols-2 gap-x-2 gap-y-2 border-t border-[#DDE3DF] pt-2 text-[10px] leading-normal text-[#66736C]">
+          <span>商店／餐飲／娛樂 <strong className="text-[#1A2A22]">{activity.commercial} 處</strong></span>
+          <span>其中娛樂場所 <strong className="text-[#1A2A22]">{activity.entertainment} 處</strong></span>
+          <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
+          <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
+        </div>
+        <OfficialContextRows activity={activity} />
+      </>
     );
   }
 
@@ -132,7 +144,41 @@ function ActivityCounts({ activity, standalone = false }: { activity?: Neighborh
         <span>近處 150m 商業場所 <strong className="text-[#1A2A22]">{activity.nearbyCommercial} 處</strong></span>
         <span>250m 住宅建物 <strong className="text-[#1A2A22]">{activity.residential} 棟</strong></span>
       </div>
+      <OfficialContextRows activity={activity} />
     </>
+  );
+}
+
+/**
+ * 國土交通省官方圖層的依據列。
+ *
+ * 用途地域是市町村告示的法定分區，人口集中地區與 250m 網格人口出自國勢調查，
+ * 三者都與地圖志工標記無關，因此即使 OSM 收錄稀疏也能如實說明街區性質。
+ */
+function OfficialContextRows({ activity }: { activity: NeighborhoodActivity }) {
+  const landUse = activity.landUse;
+  const population = activity.population;
+  const careFacilities = activity.careFacilities ?? 0;
+  if (!landUse && !population && !careFacilities) return null;
+  const ratios = landUse
+    ? [landUse.buildingCoverageRatio && `建蔽率 ${landUse.buildingCoverageRatio}`,
+      landUse.floorAreaRatio && `容積率 ${landUse.floorAreaRatio}`].filter(Boolean).join("・")
+    : "";
+  return (
+    <div className="mt-2 space-y-1 border-t border-dashed border-[#DDE3DF] pt-2 text-[10px] leading-normal text-[#66736C]">
+      {landUse && <div>
+        法定用途地域 <strong className="text-[#1A2A22]">{landUse.zone}</strong>
+        {ratios ? <span className="text-[#8A9590]">（{ratios}）</span> : null}
+      </div>}
+      {population && <div>
+        {population.denselyInhabited ? "位於人口集中地區（DID）" : "非人口集中地區"}
+        {population.densityPerSquareKm ? <>・約 <strong className="text-[#1A2A22]">{population.densityPerSquareKm.toLocaleString()}</strong> 人／km²</> : null}
+        {population.meshPopulation ? <>・所在 250m 網格推計 <strong className="text-[#1A2A22]">{population.meshPopulation.toLocaleString()}</strong> 人</> : null}
+      </div>}
+      {careFacilities > 0 && <div>
+        1.2km 內托育・福祉設施 <strong className="text-[#1A2A22]">{careFacilities} 處</strong>
+      </div>}
+    </div>
   );
 }
 
@@ -151,7 +197,13 @@ function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
             <span>依地圖收錄設施推估活動程度，可能漏登；不代表犯罪風險或隔音，實際環境需分時段現勘。</span>
           </li>
         </ul>
-        {activity && <p className="pt-0.5 text-[10px] text-[#66736C]">來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）</p>}
+        {activity && <p className="pt-0.5 text-[10px] text-[#66736C]">
+          來源：<a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>
+          {activity.landUse || activity.population || activity.careFacilities
+            ? <>・<a className="underline" href="https://www.reinfolib.mlit.go.jp/" target="_blank" rel="noreferrer">國土交通省 不動產資訊資料庫</a>（用途地域・國勢調查人口）</>
+            : null}
+          ・查詢 {activity.fetchedAt.slice(0, 10)}（非現場更新日期）
+        </p>}
       </div>
     </div>;
 }

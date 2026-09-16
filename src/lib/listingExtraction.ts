@@ -64,15 +64,21 @@ export function parseYenAmount(text: unknown): number | null {
     return Number.isFinite(value) && value > 0 ? value : null;
   }
 
-  // 若有明確的「円」單位，且非單一小額百分比數字
-  const yenMatch = cleaned.match(/(\d{2,10})\s*円/);
+  // 若有明確的「円」單位，且非單一小額百分比數字。
+  //
+  // 小數點要一起吃進來。管理系統匯出的図面會把金額印成「92000.00円」
+  // （武蔵台コーポ203 的礼金欄實例）；只抓整數部分的話，`\d{2,10}` 會從
+  // 小數點後重新配到「00」，算出 0 而被當成解析失敗——圖紙明明寫了
+  // 92,000 円的礼金，報告卻顯示「未載明」且完全不計入初期費用。
+  const yenMatch = cleaned.match(/(\d{2,10}(?:\.\d+)?)\s*円/);
   if (yenMatch) {
     const value = Math.round(Number(yenMatch[1]));
     return Number.isFinite(value) && value > 0 ? value : null;
   }
 
-  // 純數字格式且必須大於等於 1000 円，避免「70」或「1」被誤判為 70 円
-  const plainMatch = cleaned.match(/^(\d{4,10})$/);
+  // 純數字格式且必須大於等於 1000 円，避免「70」或「1」被誤判為 70 円。
+  // 同上，允許小數尾巴（「92000.00」這種無單位的匯出格式）。
+  const plainMatch = cleaned.match(/^(\d{4,10}(?:\.\d+)?)$/);
   if (plainMatch) {
     const value = Math.round(Number(plainMatch[1]));
     return Number.isFinite(value) && value >= 1000 ? value : null;
@@ -133,41 +139,167 @@ export function parseEffectiveRepairReserve(repairText: unknown, notes: unknown)
 }
 
 /**
- * 解析保證會社初回保證料：
- * 1. 百分比（例如 "初回保証料70％"、"70%"、"総賃料の50%"）：總租金（租金＋管理費）乘以比例
- * 2. 幾個月（例如 "0.5ヶ月"、"1ヶ月"）：總租金乘以月數
- * 3. 固定日圓金額（例如 "45,000円"、"5万円"）
+ * 保證會社費用的計費結構。日本的家賃保証会社（GTN、Casa、日本セーフティー、
+ * Casa、全保連等）常見三種收法，且經常併用：
+ *
+ * - `initial`  初回保証料：簽約時一次性支付，屬初期費用。常見為總月租的 30%～100%。
+ * - `monthly`  月額保証料／月額利用料：按月與租金一起支付，屬持續性支出。
+ *              GTN、Casa 這類常見「賃料の1%」「月額1%」，金額小但整個租期都要付。
+ * - `annual`   年間保証料／継続保証委託料：每年或每兩年支付一次的更新費用，
+ *              常見 10,000 円前後。
  */
-export function parseGuaranteeFee(text: unknown, totalMonthlyCost: number): number | null {
-  if (typeof text !== "string") return null;
-  const cleaned = toHalfWidth(text).trim();
-  if (!cleaned) return null;
+export interface GuaranteeFeeBreakdown {
+  /** 初回保證料（円）。未載明時為 null——不可當成 0，那代表免收。 */
+  initial: number | null;
+  /** 每月保證料（円）。未載明時為 null。 */
+  monthly: number | null;
+  /** 年額保證料（円）。未載明時為 null。 */
+  annual: number | null;
+}
 
-  // 1. 百分比格式（例如 "初回保証料70％"、"70%"）
-  const percentMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*[%％]/);
+/**
+ * 按月計費的標記。
+ *
+ * ⚠️「月額」有兩種完全相反的用法，必須分辨：
+ * - **付款頻率**：「月額1%」「月額保証料」→ 每個月都要付，不是初期費用。
+ * - **計算基準**：「月額総賃料の30%」「月額賃料の50%」→ 指「以月租總額為基數」
+ *   計算的一次性初回保證料，「月額」修飾的是後面的租金而不是付款頻率。
+ *
+ * 判別方式：「月額」後面若緊接「賃料」「家賃」「合計」等「租金基數」名詞，就是計算基準；
+ * 只有「月額」單獨出現、或接在「保証料」「利用料」前面時才是付款頻率。
+ *
+ * 「合計」也必須算進基數名詞。實測「初回保証委託料月額合計の60％」（日神パレス
+ * ステージ三軒茶屋）在漏了「合計」時被判成每月付 60%：初回少算 48,600 円，
+ * 同時虛構一筆 48,600 円／月的經常性支出——兩年累計誤差超過一百萬円。
+ * 「月額賃料等の合計の50%」剛好因為「賃料」先命中而正確，掩蓋了這個破口。
+ *
+ * 「月次」沒有這個歧義：「月次保証料」「月次手数料」一律是每月支付
+ * （リテラス南千住、XEBEC大手町 等圖紙實例），因此不需要後向否定。
+ */
+const MONTHLY_MARKER = /(?:月額(?!\s*(?:総?賃料|家賃|総額|合計))|月次|毎月|月々|月ごと|\/\s*月|月払|以降月)/;
+/** 「年間」「年額」「毎年」「/年」「○年毎」等按年計費的標記。 */
+const ANNUAL_MARKER = /(?:年間|年額|毎年|年ごと|\/\s*年|年払|年毎|継続保証)/;
+
+/**
+ * 費用項目的起頭詞。圖紙很常把多筆費用「只用空白」隔開，例如
+ * 「月額賃料等の60％ 月次保証料1％ 年間保証料なし」（リテラス南千住209）。
+ * 不在這裡切段，整串會被當成一段：`ANNUAL_MARKER` 先比對到末尾的「年間」，
+ * 於是開頭那個 60%（真正的初回保證料）被歸成年費——初期費用少算六萬多円，
+ * 同時謊報一筆不存在的年度支出。兩個方向都錯，是實測最嚴重的一種誤判。
+ */
+const FEE_SEGMENT_HEAD = /\s+(?=(?:初回|月額|月次|毎月|年間|年額|継続保証|更新時|契約時|\d+年目以降))/;
+
+/**
+ * 「○年毎」「○年ごと」這類多年期的續約保證料，換算成每年金額。
+ *
+ * 「継続保証委託料20,000円（2年毎）」（プレール・ドゥーク下北沢211）照抄成
+ * 「年度約 20,000円／年」會把實際負擔講成兩倍。`annual` 欄位的語意是「每年」，
+ * 因此在這裡除以年數；除不盡時取整數円。
+ */
+function annualPeriodYears(segment: string): number {
+  const match = segment.match(/(\d+)\s*年\s*(?:毎|ごと|に\s*[1１一]\s*回)/);
+  const years = match ? Number(match[1]) : 1;
+  return Number.isFinite(years) && years >= 1 && years <= 10 ? years : 1;
+}
+
+/**
+ * 把保證料原文切成「初回／月額／年額」三段。
+ *
+ * 圖紙常把三者寫在同一行（例如「初回50%、以降月額1%」「GTN 初回100%／月額1%」），
+ * 只抓第一個數字會把月額或年額誤當成初回，直接算進初期費用；反過來月額那筆
+ * 持續支出則完全消失。實測「月額保証料 賃料の1%」曾被算成初回 760 円——
+ * 初期費用憑空多一筆小錢，而真正每月要付的 760 円從頭到尾沒出現在報告裡。
+ *
+ * 切段方式：以「、」「／」「;」等分隔符拆開，逐段看有沒有月額或年額標記，
+ * 沒有標記的段落才視為初回。
+ *
+ * ⚠️ 半形逗號與斜線不能無條件當分隔符：
+ * - 逗號是日圓金額的千分位（`10,000円`），切下去會變成 `10` + `000円`，兩段都解析不出金額。
+ *   因此只切「非數字之間」的逗號。
+ * - 斜線常用於「10,000円/年」這種單位標記，切下去會讓「年」與金額分家。
+ *   因此「/年」「/月」後面直接結束或接標點時不切；「／月額1%」這種後面還有內容的才切。
+ */
+function splitGuaranteeSegments(cleaned: string) {
+  const segments = cleaned
+    // 數字兩側的逗號（千分位）與單位型的「/年」「/月」一律保留，其餘才視為分隔符。
+    .split(/(?<!\d)\s*[,，]\s*(?!\d)|[、;；]|\s*[/／]\s*(?![年月][)）\s]*$)|および|及び|\s*[+＋]\s*/)
+    // 標點切完再依費用項目的起頭詞切一次，處理只用空白分隔的併記寫法。
+    .flatMap(part => part.split(FEE_SEGMENT_HEAD))
+    .map(part => part.trim())
+    .filter(Boolean);
+  // 沒有分隔符時整串當一段處理。
+  return segments.length ? segments : [cleaned];
+}
+
+/** 從單一段落解析金額；依序嘗試百分比、月數、固定金額。 */
+function parseGuaranteeAmount(segment: string, totalMonthlyCost: number): number | null {
+  const percentMatch = segment.match(/(\d+(?:\.\d+)?)\s*[%％]/);
   if (percentMatch) {
     const rate = Number(percentMatch[1]) / 100;
     if (Number.isFinite(rate) && rate > 0 && rate <= 2.0 && totalMonthlyCost > 0) {
       return Math.round(totalMonthlyCost * rate);
     }
   }
-
-  // 2. 幾個月格式（例如 "0.5ヶ月"、"1ヶ月"）
-  const monthsMatch = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)/);
+  const monthsMatch = segment.match(/(\d+(?:\.\d+)?)\s*(?:ヶ月|ヵ月|カ月|個月)/);
   if (monthsMatch) {
     const months = Number(monthsMatch[1]);
     if (Number.isFinite(months) && months > 0 && months <= 3 && totalMonthlyCost > 0) {
       return Math.round(totalMonthlyCost * months);
     }
   }
-
-  // 3. 固定金額格式（例如 "45,000円"、"5万円"）
-  const yen = parseYenAmount(cleaned);
-  if (yen && yen >= 10000) {
-    return yen;
-  }
-
+  const yen = parseYenAmount(segment);
+  // 月額與年額常是 1,000～10,000 円的小額，不能沿用初回的 10,000 円下限，
+  // 否則「月額2,200円」會被整個丟掉。這裡放寬到 100 円，由呼叫端決定歸屬。
+  if (yen && yen >= 100) return yen;
   return null;
+}
+
+/**
+ * 解析保證會社費用，區分初回／月額／年額三種計費結構。
+ *
+ * 支援格式：
+ * - 百分比（"初回保証料70％"、"総賃料の50%"）：總租金（租金＋管理費）乘以比例
+ * - 幾個月（"0.5ヶ月"、"1ヶ月"）：總租金乘以月數
+ * - 固定日圓金額（"45,000円"、"5万円"）
+ * - 併記（"初回50%、月額1%"、"GTN 初回100%／月額1%"）：各自歸位
+ */
+export function parseGuaranteeFeeBreakdown(text: unknown, totalMonthlyCost: number): GuaranteeFeeBreakdown {
+  const empty: GuaranteeFeeBreakdown = { initial: null, monthly: null, annual: null };
+  if (typeof text !== "string") return empty;
+  const cleaned = toHalfWidth(text).trim();
+  if (!cleaned) return empty;
+
+  const result: GuaranteeFeeBreakdown = { ...empty };
+  for (const segment of splitGuaranteeSegments(cleaned)) {
+    const amount = parseGuaranteeAmount(segment, totalMonthlyCost);
+    if (amount === null) continue;
+    // 年額要先判：「継続保証委託料10,000円（2年毎）」同時含年標記，
+    // 而「月」字可能出現在「2年毎」以外的地方，先比對年可避免誤歸月額。
+    if (ANNUAL_MARKER.test(segment)) {
+      // 「2年毎20,000円」是每兩年一次，換算成每年 10,000 円才不會誇大負擔。
+      result.annual ??= Math.round(amount / annualPeriodYears(segment));
+    } else if (MONTHLY_MARKER.test(segment)) {
+      result.monthly ??= amount;
+    } else {
+      // 無標記的段落視為初回。初回的固定金額仍沿用 10,000 円下限，
+      // 避免把「更新料」之類的小額雜項誤當初回保證料。
+      const isSmallFlatAmount = !/[%％]/.test(segment)
+        && !/(?:ヶ月|ヵ月|カ月|個月)/.test(segment)
+        && amount < 10000;
+      if (!isSmallFlatAmount) result.initial ??= amount;
+    }
+  }
+  return result;
+}
+
+/**
+ * 解析保證會社「初回」保證料，供初期費用試算使用。
+ *
+ * 只回傳初回金額：月額與年額不是簽約當下的支出，混進初期費用會讓總額失真。
+ * 需要完整結構請改用 `parseGuaranteeFeeBreakdown`。
+ */
+export function parseGuaranteeFee(text: unknown, totalMonthlyCost: number): number | null {
+  return parseGuaranteeFeeBreakdown(text, totalMonthlyCost).initial;
 }
 
 /**

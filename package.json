@@ -55,7 +55,9 @@
     "test:pdf-layout": "tsx scripts/test-pdf-layout-text.ts",
     "test:controller-flows": "tsx scripts/test-controller-flows.ts",
     "test:ink-colors": "tsx scripts/test-ink-color-convergence.ts",
-    "test:flyer-transit-count": "tsx scripts/test-flyer-transit-count.ts"
+    "test:flyer-transit-count": "tsx scripts/test-flyer-transit-count.ts",
+    "test:lease-charges": "tsx scripts/test-lease-charge-verification.ts",
+    "test:guarantee-fee": "tsx scripts/test-guarantee-fee.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

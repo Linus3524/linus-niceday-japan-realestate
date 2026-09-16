@@ -34,6 +34,7 @@ export function RentalConditionSummary({
   shikibiki,
   guaranteeFee,
   insuranceFee,
+  renewalFee,
   totalMonthlyCost,
   hasCancellationPenalty,
 }: {
@@ -45,6 +46,7 @@ export function RentalConditionSummary({
   shikibiki?: string | null;
   guaranteeFee?: string | null;
   insuranceFee?: string | null;
+  renewalFee?: string | null;
   totalMonthlyCost?: number | null;
   hasCancellationPenalty?: boolean;
 }) {
@@ -57,6 +59,7 @@ export function RentalConditionSummary({
     shikibiki,
     guaranteeFee,
     insuranceFee,
+    renewalFee,
     totalMonthlyCost,
   });
   if (!sections.length) return null;
