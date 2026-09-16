@@ -1,6 +1,7 @@
 import { informationStyle } from "../../lib/ui/informationStyles";
 import type { CalculatorViewModel } from '../../hooks/useCalculatorController';
 import { formatManYen, formatManYenNumber } from '../../lib/calculator/formatters';
+import { NumericInput } from './NumericInput';
 
 interface BuyBudgetPanelProps {
   model: Pick<
@@ -46,12 +47,12 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
       <label className="block text-xs font-bold text-[#3F5147]">
         可準備的購屋現金
         <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
-          <input
-            type="number"
-            min="0"
-            step="100"
+          <NumericInput
+            min={0}
+            step={100}
             value={buyAvailableCash / 10000}
-            onChange={event => setBuyAvailableCash(Math.max(0, (Number(event.target.value) || 0) * 10000))}
+            onChange={val => setBuyAvailableCash(Math.max(0, val * 10000))}
+            placeholder="0"
             className="w-full bg-transparent font-mono text-base font-bold outline-none"
           />
           <span className="ml-2 shrink-0 text-sm font-bold text-[#66736C]">萬円</span>
@@ -61,12 +62,12 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
       <label className="block text-xs font-bold text-[#3F5147]">
         每月可接受的本息還款
         <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
-          <input
-            type="number"
-            min="0"
-            step="1"
+          <NumericInput
+            min={0}
+            step={1}
             value={buyMonthlyPaymentBudget / 10000}
-            onChange={event => setBuyMonthlyPaymentBudget(Math.max(0, (Number(event.target.value) || 0) * 10000))}
+            onChange={val => setBuyMonthlyPaymentBudget(Math.max(0, val * 10000))}
+            placeholder="0"
             className="w-full bg-transparent font-mono text-base font-bold outline-none"
           />
           <span className="ml-2 shrink-0 text-sm font-bold text-[#66736C]">萬円</span>
@@ -77,13 +78,13 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
         <summary className="cursor-pointer px-3 py-2.5 text-xs font-bold text-[#1A2A22]">調整貸款假設</summary>
         <div className="grid grid-cols-3 gap-2 border-t border-[#DDE3DF] p-3">
           <label className="text-[9px] text-[#66736C]">貸款成數
-            <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={event => setLoanRatio(Math.min(100, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
+            <NumericInput min={0} max={100} step={5} value={loanRatio} onChange={val => setLoanRatio(Math.min(100, Math.max(0, val)))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
           <label className="text-[9px] text-[#66736C]">年利率
-            <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={event => setAnnualRate(Math.min(20, Math.max(0, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
+            <NumericInput min={0} max={20} step={0.1} allowDecimal value={annualRate} onChange={val => setAnnualRate(Math.min(20, Math.max(0, val)))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
           <label className="text-[9px] text-[#66736C]">貸款年限
-            <input type="number" min="1" max="50" step="1" value={loanYears} onChange={event => setLoanYears(Math.min(50, Math.max(1, Number(event.target.value))))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
+            <NumericInput min={1} max={50} step={1} value={loanYears} fallbackOnBlur={20} onChange={val => setLoanYears(Math.min(50, Math.max(1, val)))} className="mt-1 w-full border border-[#C9D2CD] px-2 py-1.5 font-mono text-xs" />
           </label>
         </div>
       </details>

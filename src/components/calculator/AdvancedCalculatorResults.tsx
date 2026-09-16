@@ -24,6 +24,7 @@ import {
 ROOM_TYPE_LABEL
 } from "../../lib/rentAnalysis";
 import { toJapaneseStationName } from "../../lib/transit";
+import { NumericInput } from "./NumericInput";
 
 interface AdvancedCalculatorResultsProps {
   model: Pick<
@@ -494,13 +495,13 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
               <div className="bg-[#FAFCFB] p-3 border border-[#DDE3DF] space-y-1.5">
                 <div className="mb-2 grid grid-cols-3 gap-2 border-b border-[#DDE3DF] pb-2">
                   <label className="text-[10px] text-[#3F5147]">貸款成數 (%)
-                    <input type="number" min="0" max="100" step="5" value={loanRatio} onChange={e => setLoanRatio(Math.min(100, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
+                    <NumericInput min={0} max={100} step={5} value={loanRatio} onChange={val => setLoanRatio(Math.min(100, Math.max(0, val)))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
                   <label className="text-[10px] text-[#3F5147]">年利率 (%)
-                    <input type="number" min="0" max="20" step="0.1" value={annualRate} onChange={e => setAnnualRate(Math.min(20, Math.max(0, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
+                    <NumericInput min={0} max={20} step={0.1} allowDecimal value={annualRate} onChange={val => setAnnualRate(Math.min(20, Math.max(0, val)))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
                   <label className="text-[10px] text-[#3F5147]">貸款年限
-                    <input type="number" min="1" max="50" step="1" value={loanYears} onChange={e => setLoanYears(Math.min(50, Math.max(1, Number(e.target.value))))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
+                    <NumericInput min={1} max={50} step={1} value={loanYears} fallbackOnBlur={20} onChange={val => setLoanYears(Math.min(50, Math.max(1, val)))} className="mt-1 w-full border border-[#C9D2CD] bg-white px-2 py-1 text-xs" />
                   </label>
                 </div>
                 <div className="flex justify-between font-medium text-[#3F5147] text-[11px]">
