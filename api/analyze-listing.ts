@@ -126,7 +126,7 @@ function resolveClientIp(req: any): string {
  * 這個端點每次都會呼叫 Gemini，最壞情況是帳單被灌爆。
  * 這裡再加一道「所有人加總」的每小時上限當作費用保險絲。
  */
-const GLOBAL_HOURLY_CAP = Number(process.env.LISTING_CHECK_GLOBAL_HOURLY_CAP || 100);
+const GLOBAL_HOURLY_CAP = Number(process.env.LISTING_CHECK_GLOBAL_HOURLY_CAP || 120);
 let globalWindow = { startedAt: 0, count: 0 };
 
 function consumeGlobalQuota(): boolean {
