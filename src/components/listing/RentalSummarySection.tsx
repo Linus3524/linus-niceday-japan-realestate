@@ -129,8 +129,8 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
               displayDirection.includes("（依平面圖") ? (
                 <span>
                   <span>{displayDirection.split("（")[0]}</span>
-                  <span className="block text-[11px] font-normal text-[#00A174]">
-                    依平面圖方位記號推算
+                  <span className="ml-1 text-[11px] font-normal text-[#00A174]">
+                    （依平面圖方位記號推算）
                   </span>
                 </span>
               ) : (

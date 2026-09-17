@@ -933,10 +933,21 @@ async function extractListingFields(
     - direction（主要採光面／朝向／向き）：
       * 【優先一・文字載明】：請先在表格、間取り圖旁或建物概要中尋找「向き」「方角」「主要採光面」「バルコニー方向」等文字（例如 "南"、"南東"、"東南"、"南西"、"西南"、"東"、"西"、"北"、"南向き" 等）。若圖紙文字明確標示「-」或「無」等，請填 "-"。
       * 【優先二・備援視覺幾何推算（平面圖＋指北針）】：若表格文字未載明朝向，請務必檢視間取り圖（平面圖）：
-        1. 尋找平面圖旁的「指北針／方位記號」（通常為圓形帶有箭頭及大寫 N 字樣，N 箭頭所指即為正北方）。
-        2. 尋找居室開口部，即陽台（バルコニー／Balcony）或主要落地採光大窗的方向。
-        3. 依據指北針 N 箭頭方向推算陽台開口朝向（例如：指北針 N 箭頭指向右下約 140 度，陽台朝向下方 180 度時，採光面即為東北向／北東向；指北針朝上而陽台朝下即為南向）。
-        4. 若透過此方式推算出朝向，請輸出方位並附上備註，例如："北東（依間取り圖方位記號推算）" 或 "東北（依間取り圖方位記號推算）"。
+        1. 【定位指北針】：尋找平面圖旁的「指北針／方位記號」（圓形內帶有黑色指針，外面標有大寫字母 N）。指針尖端所指、帶有大寫 N 的方向【就是正北方 0°】！
+        2. 【嚴格警惕視覺陷阱】：切勿誤以為指針指著紙面右下方就叫東南！在平面圖中，【大寫 N 箭頭所指的方向就是正北基準 0°】：
+           - 以 N 箭頭為起點（正北 0°）：
+           - 順時針轉 45° ＝ 東北（北東向）
+           - 順時針轉 90° ＝ 正東
+           - 順時針轉 135° ＝ 東南（南東向）
+           - 順時針轉 180° ＝ 正南
+           - 逆時針轉 45° ＝ 西北（北西向）
+           - 逆時針轉 90° ＝ 正西
+           - 逆時針轉 135° ＝ 西南（南西向）
+        3. 【定位陽台開口】：尋找居室開口部，即標有「Balcony / バルコニー」或大片對外採光窗的開口朝向（例如陽台位於臥室下方，開口朝向畫面正下方）。
+        4. 【幾何角差判定】：
+           - 判斷陽台開口相對於 N 箭頭的角度差。
+           - 例如：N 箭頭指向畫面右下方（約 135°～140°），而陽台開口朝向畫面正下方（180°）；從 N 箭頭（正北）順時針轉約 40°～45° 即抵達陽台開口方向，因此陽台朝向是【東北向／北東向】（絕對不是東南向！東南向是順時針轉 135° 朝向左下方，切勿看錯）！
+        5. 若透過此方式推算出朝向，請輸出方位並附上備註，例如："北東（依間取り圖方位記號推算）" 或 "東北（依間取り圖方位記號推算）"。
       * 若整張圖紙既無文字記載，且平面圖亦無指北針／完全無法判讀朝向，才填 "-" 或留空字串。
     - age（築年數／建築年月，例如 "築4年"、"平成11年2月"、"2002年5月"、"2013年2月"）。
     - floor（所在階／總階數，例如 "4階部分 / 8階建"、"6階部分"）。
@@ -1080,7 +1091,7 @@ async function extractListingFields(
           address: { type: Type.STRING, description: "地址／所在地" },
           area: { type: Type.STRING, description: "専有面積，例如 40.17㎡" },
           structure: { type: Type.STRING, description: "建物構造，例如 RC造" },
-          direction: { type: Type.STRING, description: "主要採光面／朝向／向き。優先抓取表格文字（如 南、東南、南向き、北）。若表格未載明但間取り圖有指北針（N 箭頭）與陽台／採光窗，請依指北針推算朝向並註明，例如「北東（依間取り圖方位記號推算）」；若完全無方位資訊則填 -，未標示則留空" },
+          direction: { type: Type.STRING, description: "主要採光面／朝向／向き。優先抓取表格文字（如 南、東南、南向き、北）。若表格未載明但間取り圖有指北針（N 箭頭）與陽台／採光窗，請依指北針推算朝向並註明，例如「北東（依間取り圖方位記號推算）」；切記以 N 箭頭為正北，順時針 45° 為東北（例如 N 指向右下、陽台朝下即為東北向，切勿誤判為東南）。若完全無方位資訊則填 -，未標示則留空" },
           guaranteeFee: { type: Type.STRING, description: "保證公司費用，照原文並保留初回／月額／年間標記，例如 初回50%、月額1%" },
           lockReplacementFee: { type: Type.STRING, description: "鍵交換費用，照原文" },
           cleaningFee: { type: Type.STRING, description: "退去清掃費／室内クリーニング代／エアコン清掃代，照原文；不可填入敷引或償却金" },
@@ -1603,9 +1614,17 @@ export default async function handler(req: any, res: any) {
     }
     console.error("Gemini analyze-listing error:", error);
     const missingKey = String(error?.message || "").includes("GEMINI_API_KEY");
-    return res.status(500).json({
+    const isQuotaExceeded =
+      error?.status === 429 ||
+      String(error?.message || "").includes("RESOURCE_EXHAUSTED") ||
+      String(error?.message || "").includes("spending cap") ||
+      String(error?.message || "").includes("Quota exceeded");
+
+    return res.status(isQuotaExceeded ? 429 : 500).json({
       error: missingKey
         ? "圖紙健檢服務尚未設定 Gemini API 金鑰。"
+        : isQuotaExceeded
+        ? "Gemini API 呼叫配額或每月支出上限已達上限（429），請至 Google AI Studio (ai.studio/spend) 調整專案額度或更換金鑰。"
         : "AI 暫時無法讀取這張圖片，請稍後再試。",
     });
   }
