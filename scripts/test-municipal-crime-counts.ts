@@ -7,6 +7,8 @@ assert.ok(kashiwa);
 assert.equal(kashiwa.municipality, "柏市");
 assert.equal(kashiwa.total, 2778);
 assert.equal(kashiwa.totalAreas, 59);
+assert.equal(kashiwa.items.length, 59);
+assert.ok(kashiwa.items.every(i => Boolean(i.area) && typeof i.count === "number" && typeof i.ratePerThousand === "number" && typeof i.rank === "number"));
 assert.ok(kashiwa.breakdown);
 assert.equal(kashiwa.breakdown.groups.reduce((sum, group) => sum + group.count, 0), kashiwa.total);
 assert.equal(kashiwa.breakdown.scopeKind, "municipality");

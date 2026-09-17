@@ -42,7 +42,10 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
   return <div style={{ backgroundColor: palette.bg, borderColor: palette.border }} className={`${alignRows ? "prefecture-safety-card" : "flex flex-col justify-between"} border border-[#DDE3DF] bg-[#F5F8F6] p-3.5`}>
     <div className={alignRows ? "prefecture-safety-top" : undefined}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]"><Footprints className="h-4 w-4" />街區活動程度</span>
+        <span className="flex items-center gap-1.5 text-xs font-bold text-[#1A2A22]">
+          <Footprints className="h-4 w-4 shrink-0" style={{ color: accent }} />
+          <span>街區活動程度</span>
+        </span>
         <span
           className="border px-2 py-0.5 text-[10px] font-bold"
           style={{
@@ -184,8 +187,20 @@ function OfficialContextRows({ activity }: { activity: NeighborhoodActivity }) {
 
 function ActivityNightInfo({ activity }: { activity?: NeighborhoodActivity }) {
   const unavailable = !activity || activity.status === "unavailable" || activity.status === "imprecise";
+  const level = activity?.level;
+  const accent = !level
+    ? "#66736C"
+    : level === 5
+      ? SAFETY_PALETTE.purple
+      : level >= 3
+        ? SAFETY_PALETTE.blue
+        : SAFETY_PALETTE.green;
+
   return <div className="mt-3 space-y-1 border-t border-dashed border-[#DDE3DF] pt-2">
-      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#66736C]"><Moon className="h-3.5 w-3.5 shrink-0" />夜間環境與資料說明</div>
+      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1A2A22]">
+        <Moon className="h-3.5 w-3.5 shrink-0" style={{ color: accent }} />
+        <span>夜間環境與資料說明</span>
+      </div>
       <div className="space-y-1.5 text-[11px] leading-relaxed text-[#3F5147]">
         <ul className="space-y-1.5 text-[#3F5147]">
           <li className="flex items-start gap-1.5">

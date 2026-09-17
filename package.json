@@ -28,6 +28,7 @@
     "test:admin-metrics": "tsx scripts/test-admin-metrics.ts",
     "test:crime-safety": "tsx scripts/test-crime-safety.ts",
     "test:municipal-crime": "tsx scripts/test-municipal-crime-counts.ts",
+    "test:prefecture-bar-chart": "tsx scripts/test-prefecture-bar-chart.ts",
     "test:threads-search": "tsx scripts/test-threads-search.ts",
     "threads:sync-text": "node scripts/build-threads-search-index.mjs",
     "threads:sync-images": "tsx scripts/sync-thread-images.ts",

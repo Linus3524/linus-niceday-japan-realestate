@@ -20,6 +20,14 @@ interface RawPrefectureSnapshot {
   records: RawMunicipalRecord[];
 }
 
+export interface MunicipalCrimeItem {
+  area: string;
+  count: number;
+  ratePerThousand: number;
+  population: number;
+  rank: number;
+}
+
 export interface MunicipalCrimeResult {
   municipality: string;
   prefecture: string;
@@ -36,6 +44,7 @@ export interface MunicipalCrimeResult {
   tied: number;
   grade: SafetyGrade;
   breakdown: PrefectureCrimeBreakdown | null;
+  items: MunicipalCrimeItem[];
 }
 
 function gradeFromRatio(ratio: number): SafetyGrade {
@@ -70,6 +79,17 @@ export function getMunicipalCrimeResult(address: string, prefecture: string): Mu
   const rates = prefectureSnapshot.records.map(rateFor);
   const rank = rates.filter(value => value < rate).length + 1;
   const tied = rates.filter(value => Math.abs(value - rate) < 1e-10).length;
+  const items: MunicipalCrimeItem[] = prefectureSnapshot.records.map((item) => {
+    const itemRate = rateFor(item);
+    const itemRank = rates.filter((value) => value < itemRate).length + 1;
+    return {
+      area: item.municipality,
+      count: item.total,
+      ratePerThousand: Math.round(itemRate * 100) / 100,
+      population: item.population,
+      rank: itemRank,
+    };
+  });
 
   return {
     municipality: record.municipality,
@@ -86,6 +106,7 @@ export function getMunicipalCrimeResult(address: string, prefecture: string): Mu
     totalAreas: rates.length,
     tied,
     grade: gradeFromRatio(averageRate ? rate / averageRate : 1),
+    items,
     breakdown: record.groups.length ? {
       year: prefectureSnapshot.year,
       total: record.total,

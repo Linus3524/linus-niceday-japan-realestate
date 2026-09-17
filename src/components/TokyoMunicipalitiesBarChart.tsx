@@ -140,7 +140,7 @@ export function TokyoMunicipalitiesBarChart({
       {/* 標題與控制列 */}
       <div className="flex flex-wrap items-center justify-between gap-1.5">
         <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1A2A22]">
-          <FileText className="h-3.5 w-3.5 shrink-0 text-[#66736C]" />
+          <FileText className="h-3.5 w-3.5 shrink-0" style={{ color: residentialStyle.accent }} />
           <span>全東京 59 區市町村住宅侵入統計</span>
         </div>
 

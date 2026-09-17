@@ -4,7 +4,6 @@ import { TokyoMunicipalitiesBarChart } from "./TokyoMunicipalitiesBarChart";
 import type { ListingLocationContext } from "../lib/listingLocation";
 import {
   ShieldCheck,
-  Trophy,
   ChevronDown,
   Home,
   Footprints,
@@ -390,38 +389,8 @@ export function CrimeSafetyCard({ crime, location }: CrimeSafetyCardProps) {
               </div>
               <p className="prefecture-safety-description mt-3 text-[11px] leading-relaxed text-[#3F5147]">{residentialCopy.description}</p>
             </div>
-            <div className="prefecture-safety-middle space-y-2">
-              {crime.tokyoContext?.residentialRanking && (
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                  <div>
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
-                      <Trophy className="h-3 w-3 shrink-0" style={{ color: residentialStyle.accent }} />
-                      <span>{crime.tokyoContext.residentialRanking.area}住宅侵入案件數排名</span>
-                    </div>
-                    <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">
-                      第 {crime.tokyoContext.residentialRanking.rank.toLocaleString()}{" "}
-                      <span className="text-[10px] font-medium text-[#66736C]">
-                        ／{crime.tokyoContext.residentialRanking.total.toLocaleString()} 區市町村{crime.tokyoContext.residentialRanking.tied > 1 ? "（同名次）" : ""}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-[#66736C]">
-                      <Home className="h-3 w-3 shrink-0" style={{ color: SAFETY_PALETTE.green }} />
-                      <span>{crime.tokyoContext.residentialRanking.area}住宅侵入全年</span>
-                    </div>
-                    <div className="mt-1 text-xl font-black tabular-nums text-[#1A2A22]">
-                      {crime.tokyoContext.residentialRanking.count.toLocaleString()}{" "}
-                      <span className="text-[10px] font-semibold text-[#8A9590]">件</span>
-                    </div>
-                  </div>
-                  <p className="col-span-2 text-[10px] leading-relaxed text-[#66736C]">
-                    第 1 名＝案件最少；未按戶數換算。
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="prefecture-safety-bottom min-w-0 w-full max-w-full overflow-hidden space-y-2.5">
+
+            <div className="prefecture-safety-bottom min-w-0 w-full max-w-full overflow-hidden space-y-2.5 border-t border-[#DDE3DF] pt-3">
               {crime.tokyoContext?.residentialRanking ? (
                 <TokyoMunicipalitiesBarChart
                   area={crime.tokyoContext.residentialRanking.area}
