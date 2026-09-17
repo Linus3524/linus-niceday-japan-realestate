@@ -173,9 +173,22 @@ export interface CrimeTrend {
   direction: "up" | "down" | "flat";
 }
 
+export interface TokyoMunicipalityBurglaryItem {
+  area: string;
+  count: number;
+}
+
 /** 對照全東京所有町丁目的相對位置（僅單一町丁目命中時計算，合併多個町丁目時不可比）。 */
 export interface TokyoCrimeContext {
-  residentialRanking?: { rank: number; total: number; tied: number; area: string; count: number; averageCount: number };
+  residentialRanking?: {
+    rank: number;
+    total: number;
+    tied: number;
+    area: string;
+    count: number;
+    averageCount: number;
+    items?: TokyoMunicipalityBurglaryItem[];
+  };
   /** 全東京町丁目數。 */
   chomeCount: number;
   /** 住宅侵入件數低於全東京多少比例的町丁目（中位名次法，0～100）。 */
@@ -841,7 +854,19 @@ function buildResult(rows: RawCrimeRow[]): CrimeSafetyResult {
         const countFor = (row: (string | number)[]) => ["侵入窃盗空き巣", "侵入窃盗忍込み", "侵入窃盗居空き"].reduce((sum, col) => sum + Number(row[snapshot.columns.indexOf(col) + 1]), 0);
         const count = countFor(target);
         const values = totals.map(countFor);
-        return { rank: values.filter(v => v < count).length + 1, total: values.length, tied: values.filter(v => v === count).length, area: String(target[0]).slice(0, -1), count, averageCount: values.reduce((sum, value) => sum + value, 0) / values.length };
+        const items: TokyoMunicipalityBurglaryItem[] = totals.map(row => ({
+          area: String(row[0]).slice(0, -1),
+          count: countFor(row),
+        }));
+        return {
+          rank: values.filter(v => v < count).length + 1,
+          total: values.length,
+          tied: values.filter(v => v === count).length,
+          area: String(target[0]).slice(0, -1),
+          count,
+          averageCount: values.reduce((sum, value) => sum + value, 0) / values.length,
+          items,
+        };
       })(),
       chomeCount: dist.chomeCount,
       // 有率就用率的百分位，與等級同一把尺；否則退回件數百分位。

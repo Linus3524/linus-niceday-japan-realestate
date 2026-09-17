@@ -58,7 +58,8 @@
     "test:flyer-transit-count": "tsx scripts/test-flyer-transit-count.ts",
     "test:lease-charges": "tsx scripts/test-lease-charge-verification.ts",
     "test:guarantee-fee": "tsx scripts/test-guarantee-fee.ts",
-    "test:numeric-input": "tsx scripts/test-numeric-input.ts"
+    "test:numeric-input": "tsx scripts/test-numeric-input.ts",
+    "test:tokyo-bar-chart": "tsx scripts/test-tokyo-bar-chart.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
