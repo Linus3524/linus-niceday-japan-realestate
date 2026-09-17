@@ -52,7 +52,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
       {/* 每月總額（核心重點） */}
       <div className="border-2 border-[#1A2A22] bg-[#FFFFFF] p-4">
         <p className="text-[11px] font-bold text-[#1A2A22]">每月總負擔（總賃料）</p>
-        <p className="mt-1 text-2xl font-black text-[#1A2A22]">
+        <p className="mt-1 text-2xl font-black text-[#00A174]">
           {formatYen(totalMonthlyCost)}
           <span className="text-xs font-normal text-[#66736C]"> / 月</span>
         </p>

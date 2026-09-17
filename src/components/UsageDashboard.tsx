@@ -495,6 +495,15 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         {/* 核心 KPI 總覽卡片（Bento Grid） */}
         {data && (
           <section className="mb-8">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="h-4.5 w-4.5 text-[#00A174]" />
+                <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                  核心營運指標總覽
+                </h2>
+                <span className="text-xs text-[#8A9590]">{data.month}</span>
+              </div>
+            </div>
             <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
               {/* 卡片 1: 本月不重複訪客 */}
               <div className="relative overflow-hidden border border-[#9EE2CF] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
@@ -587,15 +596,18 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {/* 每日使用量視覺化趨勢圖 (Daily Trend Activity Sparkline/Chart) */}
         {data && dailyChartData.days.length > 0 && (
-          <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <section className="mb-8">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
-                  <BarChart3 className="h-4 w-4 text-[#00A174]" />
-                  {month} 每日功能呼叫趨勢
-                </h2>
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-4.5 w-4.5 text-[#00A174]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                    {month} 每日功能呼叫趨勢
+                  </h2>
+                  <span className="text-xs text-[#8A9590]">當月每日分佈</span>
+                </div>
                 <p className="mt-0.5 text-xs text-[#66736C]">
-                  當月每日功能呼叫分佈，點選長條可快速篩選下方明細。
+                  當月每日功能呼叫分佈，點選長條可快速篩選下方明細表對應日期。
                 </p>
               </div>
 
@@ -625,8 +637,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            {/* 互動長條圖區域 */}
-            <div className="mt-6">
+            {/* 互動長條圖卡片本體 */}
+            <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
               <div className="relative flex h-36 items-end gap-1 border-b border-[#ECEFEC] pb-1 sm:gap-1.5">
                 {dailyChartData.days.map(d => {
                   const isSelected = selectedDay === d.day;
@@ -695,10 +707,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
         {/* 1. 物件圖紙健檢深度診斷與轉化漏斗 */}
         {data && (
-          <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-3">
+          <section className="mb-8">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <FileCheck2 className="h-4 w-4 text-[#00A174]" />
+                <FileCheck2 className="h-4.5 w-4.5 text-[#00A174]" />
                 <h2 className="font-serif text-base font-bold text-[#1A2A22]">物件圖紙健檢深度漏斗</h2>
                 <span className="text-xs text-[#8A9590]">{data.month}</span>
               </div>
@@ -713,7 +725,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             </div>
 
             {openListingSection && (
-              <div className="space-y-4">
+              <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm space-y-4">
                 <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
                   <div className="flex items-center justify-between text-xs font-bold text-[#1A2A22] mb-2">
                     <span>圖紙類型分佈（買賣 vs 租賃）</span>
@@ -778,22 +790,23 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
         {/* 2. 聯絡意圖與轉化分析 */}
         {data && (
           <>
-
             {/* 聯絡意圖與轉化分析：站上核心成交入口，分組收納式閱讀 */}
             <section className="mb-8">
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-bold text-[#1A2A22]">
-                    聯絡意圖與轉化
+                  <MessageSquare className="h-4.5 w-4.5 text-[#00A174]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                    聯絡意圖與客源轉化
                   </h2>
-                  <span className="font-normal text-xs text-[#8A9590]">{data.month}</span>
+                  <span className="text-xs text-[#8A9590]">{data.month}</span>
                 </div>
                 <button
                   type="button"
                   onClick={toggleAllChannels}
-                  className="text-xs font-semibold text-[#00A174] hover:underline cursor-pointer"
+                  className="flex items-center gap-1 text-xs font-semibold text-[#00A174] hover:underline cursor-pointer"
                 >
                   {Object.values(openChannels).every(Boolean) ? "全部收合" : "全部展開"}
+                  {Object.values(openChannels).every(Boolean) ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                 </button>
               </div>
 
@@ -926,10 +939,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
 
 
             {/* 3. AI 需求分析偏好 */}
-            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between border-b border-[#ECEFEC] pb-3">
+            <section className="mb-8">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <Bot className="h-4 w-4 text-[#6366F1]" />
+                  <Bot className="h-4.5 w-4.5 text-[#00A174]" />
                   <h2 className="font-serif text-base font-bold text-[#1A2A22]">
                     AI 需求分析偏好
                   </h2>
@@ -946,7 +959,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {openAiSection && (
-                <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
+                <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                  <div className="border border-[#DDE3DF] bg-[#FAFCFB] p-4">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-2">
                     <div className="text-xs font-bold text-[#1A2A22]">
                       快速條件選單 vs 自然語言文字描述
@@ -978,10 +992,21 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     </span>
                   </div>
                 </div>
-              )}
-            </section>
-            {/* 4. 分頁熱門度 & 引流來源 (2-Col Grid) */}
-            <section className="mb-8 grid gap-4 lg:grid-cols-2">
+              </div>
+            )}
+          </section>
+          {/* 4. 分頁熱門度 & 引流來源 (2-Col Grid) */}
+          <section className="mb-8">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Eye className="h-4.5 w-4.5 text-[#00A174]" />
+                <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                  分頁熱門度與推廣來源
+                </h2>
+                <span className="text-xs text-[#8A9590]">{data.month}</span>
+              </div>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
               {/* 各分頁瀏覽次數 */}
               <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
@@ -1047,17 +1072,20 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   可於行銷連結加上 <code className="bg-[#F5F8F6] px-1 py-0.5 font-mono text-[10px] text-[#3F5147]">?from=threads</code> 或 <code className="bg-[#F5F8F6] px-1 py-0.5 font-mono text-[10px] text-[#3F5147]">?from=ig</code> 以追蹤各社群引流。
                 </p>
               </div>
-            </section>
+            </div>
+          </section>
 
 
             {/* 5. 核心功能完成次數 */}
             <section className="mb-8">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <Sparkles className="h-4 w-4 text-[#00A174]" />
-                  核心功能完成次數
-                </h2>
-                <span className="text-xs text-[#8A9590]">{data.month}・伺服器端完成呼叫</span>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4.5 w-4.5 text-[#00A174]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                    核心功能完成次數
+                  </h2>
+                  <span className="text-xs text-[#8A9590]">{data.month}・伺服器端完成呼叫</span>
+                </div>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {features.map(feature => {
@@ -1093,15 +1121,19 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             </p>
 
             {/* 7. 每日功能明細次數表 */}
-            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
-                <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <SlidersHorizontal className="h-4 w-4 text-[#00A174]" /> 每日功能完成明細表
-                </h3>
-                <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
+            <section className="mb-8">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="h-4.5 w-4.5 text-[#00A174]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                    每日功能完成明細表
+                  </h2>
+                  <span className="text-xs text-[#8A9590]">{data.month}</span>
+                </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] table-fixed text-xs">
+              <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[640px] table-fixed text-xs">
                   <colgroup>
                     <col className="w-[34%]" />
                     {features.map(feature => <col key={feature} />)}
@@ -1148,18 +1180,23 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </tbody>
                 </table>
               </div>
-            </section>
+            </div>
+          </section>
 
             {/* 6. 來源國家分佈 */}
-            <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
-                <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <Globe className="h-4 w-4 text-[#00A174]" /> 使用者地理來源國家分佈
-                </h3>
-                <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
+            <section className="mb-8">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4.5 w-4.5 text-[#00A174]" />
+                  <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                    使用者地理來源國家分佈
+                  </h2>
+                  <span className="text-xs text-[#8A9590]">{data.month}</span>
+                </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] table-fixed text-xs">
+              <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[640px] table-fixed text-xs">
                   <colgroup>
                     <col className="w-[34%]" />
                     {features.map(feature => <col key={feature} />)}
@@ -1201,20 +1238,25 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </tbody>
                 </table>
               </div>
-            </section>
+            </div>
+          </section>
 
             {/* 8. 次要外部對照：Vercel Web Analytics */}
             {traffic && (
-              <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-2.5">
-                  <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                    <Globe className="h-4 w-4 text-[#66736C]" /> 次要外部對照（Vercel Web Analytics）
-                  </h3>
-                  <span className="text-[11px] font-normal text-[#8A9590]">
-                    {traffic.month}・前端腳本統計（易受廣告封鎖器影響，供交叉參考）
-                  </span>
+              <section className="mb-8">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="h-4.5 w-4.5 text-[#00A174]" />
+                    <h2 className="font-serif text-base font-bold text-[#1A2A22]">
+                      次要外部對照（Vercel Web Analytics）
+                    </h2>
+                    <span className="text-xs text-[#8A9590]">
+                      {traffic.month}・前端腳本統計（供交叉參考）
+                    </span>
+                  </div>
                 </div>
-                <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
+                  <div className="mb-4 grid gap-3 sm:grid-cols-2">
                   <div className="border border-[#ECEFEC] bg-[#FAFCFB] p-3.5">
                     <div className="text-[11px] text-[#66736C]">每日不重複訪客合計</div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{traffic.visitors.toLocaleString()}</div>
@@ -1249,7 +1291,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     </div>
                   ))}
                 </div>
-              </section>
+              </div>
+            </section>
             )}
 
             {trafficNote && (
