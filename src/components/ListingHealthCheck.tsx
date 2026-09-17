@@ -563,14 +563,14 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-[#66736C]">
-              輸入公司或學校之完整地址或最近車站，精算從這間房子「出家門到抵達目的地」的全程門到門耗時與轉乘次數。
+              輸入公司、學校地址、知名地標或車站（繁體字、簡體字或俗稱均可自動優化辨識），精算從這間房子「出家門到抵達目的地」的全程門到門耗時與轉乘次數。
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 value={commuteDestination}
                 onChange={event => setCommuteDestination(event.target.value)}
                 onKeyDown={event => { if (event.key === "Enter") void analyzeCommute(); }}
-                placeholder="例如：東京都新宿区西新宿2-8-1 或 新宿駅" className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
+                placeholder="例如：新宿站、涩谷站、晴空塔、早稻田大學或完整地址" className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
               <button
                 type="button" onClick={analyzeCommute}
                 disabled={!commuteDestination.trim() || commuteLoading || locationLoading || (!locationContext?.stationWalks.length && !result.extracted.station)}

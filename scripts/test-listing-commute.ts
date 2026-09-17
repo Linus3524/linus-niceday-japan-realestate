@@ -26,6 +26,44 @@ for (const [input, expected] of [
   ["東京メトロ新宿駅", "新宿"],
 ]) assert.equal(stripStationOperatorPrefix(input), expected);
 
+import { resolveCommuteDestination } from "../src/lib/commuteDestination.js";
+
+// 車站名稱解析回歸驗證：支援繁體字、簡體字、日文漢字、「站」、「駅」、「車站」、「车站」、純站名、知名地標與營運商前綴
+for (const [input, expectedStation] of [
+  ["新宿站", "新宿"],
+  ["新宿駅", "新宿"],
+  ["新宿車站", "新宿"],
+  ["新宿车站", "新宿"],
+  ["新宿", "新宿"],
+  ["JR新宿站", "新宿"],
+  ["池袋站", "池袋"],
+  ["池袋駅", "池袋"],
+  ["池袋", "池袋"],
+  ["澀谷站", "渋谷"],
+  ["涉谷站", "渋谷"],
+  ["涩谷站", "渋谷"],
+  ["涩谷车站", "渋谷"],
+  ["渋谷", "渋谷"],
+  ["秋葉原", "秋葉原"],
+  ["秋葉原站", "秋葉原"],
+  ["秋叶原站", "秋葉原"],
+  ["秋叶原车站", "秋葉原"],
+  ["東京站", "東京"],
+  ["東京駅", "東京"],
+  ["东京站", "東京"],
+  ["东京车站", "東京"],
+  ["橫濱站", "横浜"],
+  ["横滨站", "横浜"],
+  ["晴空塔", "とうきょうスカイツリー"],
+  ["天空树", "とうきょうスカイツリー"],
+  ["六本木之丘", "六本木"],
+]) {
+  const resolved = await resolveCommuteDestination(input);
+  assert.ok(resolved, `應能辨識目的地：${input}`);
+  assert.equal(resolved.station, expectedStation, `${input} 應解析為 ${expectedStation}`);
+  assert.equal(resolved.normalMinutes, 0, `以車站或地標為目的地時步行時間應為 0 分鐘：${input}`);
+}
+
 const parsed = parseTransitStations("東武東上線 東武練馬駅 徒歩6分\n都営三田線 西台 徒歩28分\n東京メトロ副都心線 平和台 徒歩30分");
 assert.deepEqual(parsed.map(item => [stripStationOperatorPrefix(item.stationName), item.walkMin]), [
   ["東武練馬", 6], ["西台", 28], ["平和台", 30],
@@ -107,6 +145,28 @@ try {
   assert.equal(commute.route.destinationStation, "小川町");
   assert.match(commute.route.segments[0].lineName, /東上線/);
   assert.equal(commute.totalMinutes, commute.originWalkMinutes + commute.transitMinutes + commute.destinationWalkMinutes);
+  // 測試 API 處理「新宿站」：應能正確解析為新宿駅，且抵達後步行時間為 0
+  await listingLocationHandler({ method: "POST", headers: {}, body: {
+    mode: "commute", originStation: "中野", originWalkMinutes: 5,
+    addressContext: "東京都中野区", destination: "新宿站",
+  } }, res);
+  assert.equal(statusCode, 200);
+  assert.equal(responseBody.found, true);
+  assert.equal(responseBody.commute.destinationStation, "新宿");
+  assert.equal(responseBody.commute.destinationWalkMinutes, 0);
+  assert.equal(responseBody.commute.destinationAddress, "新宿駅");
+
+  // 測試 API 處理「池袋站」：應能正確解析為池袋駅，且抵達後步行時間為 0（非原先誤判的 14 分鐘）
+  await listingLocationHandler({ method: "POST", headers: {}, body: {
+    mode: "commute", originStation: "中野", originWalkMinutes: 5,
+    addressContext: "東京都中野区", destination: "池袋站",
+  } }, res);
+  assert.equal(statusCode, 200);
+  assert.equal(responseBody.found, true);
+  assert.equal(responseBody.commute.destinationStation, "池袋");
+  assert.equal(responseBody.commute.destinationWalkMinutes, 0);
+  assert.equal(responseBody.commute.destinationAddress, "池袋駅");
+
   for (const originWalkMinutes of [undefined, 0, 62]) {
     await listingLocationHandler({ method: "POST", headers: {}, body: {
       mode: "commute", originStation: "東武練馬", originWalkMinutes, originAdvertisedMinutes: 6,

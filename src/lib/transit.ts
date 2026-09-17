@@ -1,6 +1,11 @@
 import { districtStations } from "../data/housingMarket.js";
 import stationCodeOverrides from "../data/stationCodeOverrides.json" with { type: "json" };
 import type { RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
+import * as OpenCC from "opencc-js";
+
+const openccConverter = typeof OpenCC?.Converter === "function"
+  ? OpenCC.Converter({ from: "cn", to: "jp" })
+  : null;
 
 /** 駅ナンバリング的補充資料：由 scripts/fill-station-codes.mjs 以 Google Search 查證後產生，
  * 涵蓋 GTFS feed 沒有填 stop_code、但實際有官方編號的車站。索引鍵是 GTFS 原始路線名稱，
@@ -94,11 +99,21 @@ const STATION_CODES: Record<string, Record<string, string>> = {
   "tokyu-denentoshi": { "澀谷": "DT01", "渋谷": "DT01", "池尻大橋": "DT02", "三軒茶屋": "DT03", "櫻新町": "DT05", "二子玉川": "DT07" }
 };
 
-const JAPANESE_STATION_NAMES: Record<string, string> = {
+export const JAPANESE_STATION_NAMES: Record<string, string> = {
   "市谷": "市ケ谷", "四谷": "四ツ谷", "勝鬨": "勝どき", "虎之門之丘": "虎ノ門ヒルズ",
   "日出": "日の出", "寶町": "宝町", "幡谷": "幡ヶ谷", "參宮橋": "参宮橋",
-  "押上 (晴空塔前)": "押上", "東京晴空塔": "とうきょうスカイツリー",
-  "羽田機場第1・第2航廈": "羽田空港第1・第2ターミナル", "豪德寺": "豪徳寺",
+  "押上 (晴空塔前)": "押上", "東京晴空塔": "とうきょうスカイツリー", "东京晴空塔": "とうきょうスカイツリー",
+  "晴空塔": "とうきょうスカイツリー", "天空树": "とうきょうスカイツリー", "スカイツリー": "とうきょうスカイツリー",
+  "東京鐵塔": "赤羽橋", "东京铁塔": "赤羽橋",
+  "六本木之丘": "六本木", "六本木新城": "六本木", "六本木ヒルズ": "六本木", "六本木Hills": "六本木",
+  "環球影城": "ユニバーサルシティ", "环球影城": "ユニバーサルシティ", "日本環球影城": "ユニバーサルシティ",
+  "迪士尼": "舞浜", "迪士尼樂園": "舞浜", "迪士尼乐园": "舞浜",
+  "台場": "お台場海浜公園", "台场": "お台場海浜公園",
+  "羽田機場": "羽田空港第1・第2ターミナル", "羽田机场": "羽田空港第1・第2ターミナル",
+  "羽田機場第1・第2航廈": "羽田空港第1・第2ターミナル", "羽田机场第1・第2航站楼": "羽田空港第1・第2ターミナル",
+  "成田機場": "成田空港", "成田机场": "成田空港",
+  "關西機場": "関西空港", "关西机场": "関西空港",
+  "豪德寺": "豪徳寺",
   "千歲烏山": "千歳烏山", "宮之坂": "宮の坂", "鷺之宮": "鷺ノ宮",
   "三鷹 (北口)": "三鷹", "三鷹 (南口)": "三鷹", "多摩中心": "多摩センター",
   "港未來": "みなとみらい", "日本大通": "日本大通り", "市尾": "市が尾",
@@ -114,7 +129,7 @@ const JAPANESE_STATION_NAMES: Record<string, string> = {
   "八千代綠丘": "八千代緑が丘", "鰭崎": "鰭ヶ崎",
   "吹田 (JR)": "吹田", "八尾 (JR)": "八尾", "勾當台公園": "勾当台公園",
   "榮": "栄", "四條": "四条", "二條": "二条", "姪濱": "姪浜",
-  "御茶之水": "御茶ノ水", "澀谷": "渋谷", "惠比壽": "恵比寿", "代代木": "代々木",
+  "御茶之水": "御茶ノ水", "澀谷": "渋谷", "涉谷": "渋谷", "橫濱": "横浜", "惠比壽": "恵比寿", "代代木": "代々木",
   "代代木上原": "代々木上原", "代代木八幡": "代々木八幡", "千駄谷": "千駄ケ谷",
   "廣尾": "広尾", "自由之丘": "自由が丘", "綠丘": "緑が丘", "井之頭公園": "井の頭公園",
   "池之上": "池ノ上", "下北澤": "下北沢", "濱田山": "浜田山", "富士見丘": "富士見ヶ丘",
@@ -142,30 +157,118 @@ const normalize = (value: string) => value
 export function toJapaneseStationName(value: string) {
   const cleaned = value
     .replace(/[『』「」《》〈〉【】]/g, "")
-    .replace(/\s*(?:車站|站|駅)\s*$/, "")
+    .replace(/\s*(?:車站|车站|站|駅)\s*$/, "")
     .trim();
   if (JAPANESE_STATION_NAMES[cleaned]) return JAPANESE_STATION_NAMES[cleaned];
-  return toJapanesePlaceName(cleaned);
+  const converted = toJapanesePlaceName(cleaned);
+  if (JAPANESE_STATION_NAMES[converted]) return JAPANESE_STATION_NAMES[converted];
+  return converted;
 }
 
-/** Convert Traditional Chinese place-name glyphs to the official Japanese forms used on maps and railway signage. */
+/**
+ * 將中文地名、站名、門牌（全面支援繁體字、簡體字）轉換為日本官方地圖與鐵道所使用的日文漢字（新字體）。
+ * 涵蓋全日本 47 都道府縣、1,700+ 市町村與所有鐵道線路常用之偏旁部首與異體字。
+ */
 export function toJapanesePlaceName(value: string) {
-  return value
-    .replace(/澀/g, "渋").replace(/惠/g, "恵").replace(/壽/g, "寿").replace(/廣/g, "広")
-    .replace(/濱/g, "浜").replace(/橫/g, "横").replace(/樂/g, "楽").replace(/國/g, "国")
-    .replace(/龜/g, "亀").replace(/兩/g, "両").replace(/戶/g, "戸").replace(/稻/g, "稲")
-    .replace(/藥/g, "薬").replace(/櫻/g, "桜").replace(/澤/g, "沢").replace(/邊/g, "辺")
-    .replace(/淺/g, "浅").replace(/藏/g, "蔵").replace(/雜/g, "雑").replace(/綠/g, "緑").replace(/黑/g, "黒")
-    .replace(/學/g, "学").replace(/藝/g, "芸").replace(/體/g, "体").replace(/萬/g, "万")
-    .replace(/關/g, "関").replace(/鐵/g, "鉄").replace(/總/g, "総").replace(/檢/g, "検")
-    .replace(/瀨/g, "瀬").replace(/德/g, "徳").replace(/豐/g, "豊").replace(/靜/g, "静")
-    .replace(/姬/g, "姫").replace(/縣/g, "県").replace(/廳/g, "庁").replace(/兒/g, "児")
-    .replace(/榮/g, "栄").replace(/號/g, "号").replace(/臺/g, "台")
-    .replace(/圓/g, "円").replace(/增/g, "増").replace(/與/g, "与").replace(/鄉/g, "郷")
-    .replace(/實/g, "実").replace(/螢/g, "蛍").replace(/國/g, "国").replace(/內/g, "内")
-    .replace(/攝/g, "摂").replace(/寶/g, "宝").replace(/氣/g, "気").replace(/譽/g, "誉")
-    .replace(/區/g, "区").replace(/繩/g, "縄").replace(/穗/g, "穂").replace(/鷗/g, "鴎")
-    .replace(/營/g, "営").replace(/狀/g, "状");
+  const base = openccConverter ? openccConverter(value) : value;
+  return base
+    .replace(/[澀涉涩渉]/g, "渋")
+    // 車部、車字旁
+    .replace(/[車车]/g, "車").replace(/[軒轩]/g, "軒").replace(/[軽轻]/g, "軽")
+    .replace(/[輪轮]/g, "輪").replace(/[輛辆]/g, "両").replace(/[軸轴]/g, "軸")
+    .replace(/[載载]/g, "載").replace(/[輻辐]/g, "輻").replace(/[輸输]/g, "輸")
+    // 金部、金字旁
+    .replace(/[鐵铁]/g, "鉄").replace(/[銀银]/g, "銀").replace(/[鋼钢]/g, "鋼")
+    .replace(/[錦锦]/g, "錦").replace(/[釧钏]/g, "釧").replace(/[銭钱]/g, "銭")
+    .replace(/[鈴铃]/g, "鈴").replace(/[銅铜]/g, "銅").replace(/[鋁铝]/g, "鋁")
+    .replace(/[鉛铅]/g, "鉛").replace(/[鍋锅]/g, "鍋").replace(/[鎖锁]/g, "鎖")
+    .replace(/[鍵钥]/g, "鍵").replace(/[錨锚]/g, "錨").replace(/[鏡镜]/g, "鏡")
+    .replace(/[鐘钟]/g, "鐘").replace(/[鋳铸]/g, "鋳").replace(/[針针]/g, "針")
+    .replace(/[釘钉]/g, "釘").replace(/[釣钓]/g, "釣").replace(/[鈍钝]/g, "鈍")
+    .replace(/[鋒锋]/g, "鋒").replace(/[鎮镇]/g, "鎮").replace(/[鉤钩]/g, "鉤")
+    .replace(/[鎌镰]/g, "鎌").replace(/[錯错]/g, "錯").replace(/[鍛锻]/g, "鍛")
+    // 糸部、絞絲旁
+    .replace(/[線线]/g, "線").replace(/[経经]/g, "経").replace(/[縄绳]/g, "縄")
+    .replace(/[緑绿]/g, "緑").replace(/[網纲]/g, "綱").replace(/[綾绫]/g, "綾")
+    .replace(/[編编]/g, "編").replace(/[続续]/g, "続").replace(/[織织]/g, "織")
+    .replace(/[総总]/g, "総").replace(/[統统]/g, "統").replace(/[練练]/g, "練")
+    .replace(/[縮缩]/g, "縮").replace(/[縦纵]/g, "縦").replace(/[緒绪]/g, "緒")
+    .replace(/[継继]/g, "継").replace(/[績绩]/g, "績").replace(/[緩缓]/g, "緩")
+    .replace(/[締缔]/g, "締").replace(/[縁缘]/g, "縁").replace(/[縛缚]/g, "縛")
+    .replace(/[縫缝]/g, "縫").replace(/[純纯]/g, "純").replace(/[納纳]/g, "納")
+    .replace(/[級级]/g, "級").replace(/[紀纪]/g, "紀").replace(/[紅红]/g, "紅")
+    .replace(/[紐纽]/g, "紐").replace(/[結结]/g, "結").replace(/[給给]/g, "給")
+    .replace(/[絶绝]/g, "絶").replace(/[維维]/g, "維").replace(/[綿绵]/g, "綿")
+    // 門部、門字旁
+    .replace(/[門门]/g, "門").replace(/[間间]/g, "間").replace(/[開开]/g, "開")
+    .replace(/[関關关]/g, "関").replace(/[閉闭]/g, "閉").replace(/[問问]/g, "問")
+    .replace(/[閑闲]/g, "閑").replace(/[閘闸]/g, "閘").replace(/[閣阁]/g, "閣")
+    .replace(/[閲阅]/g, "閲").replace(/[闊阔]/g, "闊").replace(/[閃闪]/g, "閃")
+    // 鳥部、鳥字旁
+    .replace(/[鳥鸟]/g, "鳥").replace(/[鷹鹰]/g, "鷹").replace(/[鶴鹤]/g, "鶴")
+    .replace(/[鴨鸭]/g, "鴨").replace(/[鴻鸿]/g, "鴻").replace(/[鳩鸠]/g, "鳩")
+    .replace(/[鵠鹄]/g, "鵠").replace(/[鶯莺]/g, "鶯").replace(/[鷺鹭]/g, "鷺")
+    .replace(/[鷲鹫]/g, "鷲").replace(/[鳴鸣]/g, "鳴").replace(/[鴎鷗鸥]/g, "鴎")
+    .replace(/[烏乌]/g, "烏").replace(/[鳶鸢]/g, "鳶").replace(/[鶏鸡]/g, "鶏")
+    .replace(/[鵜鹈]/g, "鵜")
+    // 頁部、頁字旁
+    .replace(/[須须]/g, "須").replace(/[頂顶]/g, "頂").replace(/[順顺]/g, "順")
+    .replace(/[領领]/g, "領").replace(/[頭头]/g, "頭").replace(/[額额]/g, "額")
+    .replace(/[顔颜]/g, "顔").replace(/[題题]/g, "題").replace(/[顯显]/g, "顕")
+    .replace(/[類类]/g, "類").replace(/[顧顾]/g, "顧").replace(/[預预]/g, "預")
+    .replace(/[項项]/g, "項").replace(/[頼赖]/g, "頼").replace(/[頗颇]/g, "頗")
+    // 地理・水・山・火・土・木
+    .replace(/[澀涉涩]/g, "渋").replace(/[橫横]/g, "横").replace(/[濱滨]/g, "浜")
+    .replace(/[澤泽沢]/g, "沢").replace(/[瀨瀬濑]/g, "瀬").replace(/[島岛]/g, "島")
+    .replace(/[瀧滝泷]/g, "滝").replace(/[灘滩]/g, "灘").replace(/[磯矶]/g, "磯")
+    .replace(/[灣湾]/g, "湾").replace(/[淺浅]/g, "浅").replace(/[淵渊]/g, "淵")
+    .replace(/[湯汤]/g, "湯").replace(/[塩盐]/g, "塩").replace(/[溫温]/g, "温")
+    .replace(/[熱热]/g, "熱").replace(/[窪洼]/g, "窪").replace(/[岡冈]/g, "岡")
+    .replace(/[嶺岭]/g, "嶺").replace(/[峽峡]/g, "峡").replace(/[岩岩]/g, "岩")
+    .replace(/[橋桥]/g, "橋").replace(/[葉叶]/g, "葉").replace(/[櫻樱桜]/g, "桜")
+    .replace(/[松松]/g, "松").replace(/[柏柏]/g, "柏").replace(/[桐桐]/g, "桐")
+    .replace(/[楓枫]/g, "楓").replace(/[柳柳]/g, "柳").replace(/[桂桂]/g, "桂")
+    .replace(/[稻稲]/g, "稲").replace(/[蘆芦]/g, "芦").replace(/[莊庄]/g, "庄")
+    .replace(/[樓楼]/g, "楼").replace(/[層层]/g, "層").replace(/[園园]/g, "園")
+    // 建築・設施・行政
+    .replace(/[縣県县]/g, "県").replace(/[區区]/g, "区").replace(/[廳庁厅]/g, "庁")
+    .replace(/[處处]/g, "処").replace(/[館馆]/g, "館").replace(/[舖铺]/g, "舗")
+    .replace(/[庫库]/g, "庫").replace(/[倉仓]/g, "倉").replace(/[場场]/g, "場")
+    .replace(/[署署]/g, "署").replace(/[學学]/g, "学").replace(/[藝艺芸]/g, "芸")
+    .replace(/[體体]/g, "体").replace(/[醫医]/g, "医").replace(/[檢检]/g, "検")
+    .replace(/[郵邮]/g, "郵").replace(/[電电]/g, "電").replace(/[聯联]/g, "連")
+    .replace(/[會会]/g, "会").replace(/[社社]/g, "社").replace(/[驛駅站]/g, "駅")
+    .replace(/[國国]/g, "国").replace(/[內内]/g, "内").replace(/[市市]/g, "市")
+    .replace(/[町町]/g, "町").replace(/[村村]/g, "村").replace(/[都都]/g, "都")
+    .replace(/[府府]/g, "府").replace(/[街街]/g, "街").replace(/[道道]/g, "道")
+    .replace(/[路路]/g, "路").replace(/[巷巷]/g, "巷").replace(/[弄弄]/g, "弄")
+    // 方位・數目・狀態・人事
+    .replace(/[東东]/g, "東").replace(/[西西]/g, "西").replace(/[南南]/g, "南")
+    .replace(/[北北]/g, "北").replace(/[中中]/g, "中").replace(/[上上]/g, "上")
+    .replace(/[下下]/g, "下").replace(/[陽阳]/g, "陽").replace(/[陰阴]/g, "陰")
+    .replace(/[萬万]/g, "万").replace(/[兩两両]/g, "両").replace(/[圓圆円]/g, "円")
+    .replace(/[雙双]/g, "双").replace(/[號号]/g, "号").replace(/[臺台]/g, "台")
+    .replace(/[條条]/g, "条").replace(/[狀状]/g, "状").replace(/[壓压]/g, "圧")
+    .replace(/[衛卫]/g, "衛").replace(/[興兴]/g, "興").replace(/[嚴严]/g, "厳")
+    .replace(/[禮礼]/g, "礼").replace(/[實实]/g, "実").replace(/[寶宝]/g, "宝")
+    .replace(/[氣气]/g, "気").replace(/[譽誉]/g, "誉").replace(/[穗穂]/g, "穂")
+    .replace(/[營营]/g, "営").replace(/[權权]/g, "権").replace(/[觀观]/g, "観")
+    .replace(/[機机]/g, "機").replace(/[飛飞]/g, "飛").replace(/[飯饭]/g, "飯")
+    .replace(/[沖冲]/g, "沖").replace(/[愛爱]/g, "愛").replace(/[賀贺]/g, "賀")
+    .replace(/[惠恵]/g, "恵").replace(/[壽寿]/g, "寿").replace(/[樂乐]/g, "楽")
+    .replace(/[勝胜]/g, "勝").replace(/[馬马]/g, "馬").replace(/[龍龙竜]/g, "竜")
+    .replace(/[龜龟亀]/g, "亀").replace(/[貝贝]/g, "貝").replace(/[魚鱼]/g, "魚")
+    .replace(/[齒齿]/g, "歯").replace(/[齡龄]/g, "齢").replace(/[麥麦]/g, "麦")
+    .replace(/[黃黄]/g, "黄").replace(/[齊齐]/g, "斉").replace(/[黑黒]/g, "黒")
+    .replace(/[藥药]/g, "薬").replace(/[邊边]/g, "辺").replace(/[藏蔵]/g, "蔵")
+    .replace(/[雜杂]/g, "雑").replace(/[德徳]/g, "徳").replace(/[豐丰]/g, "豊")
+    .replace(/[靜静]/g, "静").replace(/[兒儿]/g, "児").replace(/[榮荣]/g, "栄")
+    .replace(/[鄉乡]/g, "郷").replace(/[螢萤]/g, "蛍").replace(/[攝摄]/g, "摂")
+    .replace(/[宮宫]/g, "宮").replace(/[塚冢]/g, "塚").replace(/[巣巢窝]/g, "巣")
+    .replace(/[薩萨]/g, "薩").replace(/[霸霸]/g, "覇").replace(/[諫谏]/g, "諫")
+    .replace(/[護护]/g, "護").replace(/[霧雾]/g, "霧").replace(/[脇胁]/g, "脇")
+    .replace(/[戶户]/g, "戸").replace(/[埼琦]/g, "埼").replace(/[栃枥]/g, "栃")
+    .replace(/[麴麯]/g, "麹").replace(/[別别]/g, "別");
 }
 
 export function toJapanesePrefectureName(value: string) {

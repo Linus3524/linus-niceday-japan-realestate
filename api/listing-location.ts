@@ -1,4 +1,5 @@
 import { getListingLocationContext, nearestStationForAddress } from "../src/lib/listingLocation.js";
+import { resolveCommuteDestination } from "../src/lib/commuteDestination.js";
 import { resolveListingCommuteRoute } from "../src/lib/transitRouteApi.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 import { originWalkIssue } from "../src/lib/commuteValidation.js";
@@ -92,13 +93,10 @@ export default async function handler(req: any, res: any) {
       const walkIssue = originWalkIssue(originWalkMinutes, req.body?.originAdvertisedMinutes);
       if (walkIssue) return res.status(422).json({ error: walkIssue });
 
-      const stationOnly = destination.match(/^(.+?)駅$/);
-      const destinationInfo = stationOnly
-        ? { station: toJapaneseStationName(stationOnly[1]), matchedAddress: destination, distanceMeters: 0, fastMinutes: 0, normalMinutes: 0, slowMinutes: 0 }
-        : await nearestStationForAddress(destination);
-      if (!destinationInfo) return res.status(200).json({ found: false, message: "找不到目的地附近的車站，請改填完整地址或最近車站（例如「新宿駅」）。" });
+      const destinationInfo = await resolveCommuteDestination(destination);
+      if (!destinationInfo) return res.status(200).json({ found: false, message: "找不到目的地附近的車站，請改填完整地址或最近車站（例如「新宿站」或「西新宿2-8-1」）。" });
       if (destinationInfo.normalMinutes > 30) {
-        return res.status(422).json({ error: "目的地附近車站的步行估算超過 30 分鐘，可能有定位偏差或車站資料缺漏。請核對目的地地址，或改填確定的目的車站（例如「新宿駅」）。" });
+        return res.status(422).json({ error: "目的地附近車站的步行估算超過 30 分鐘，可能有定位偏差或車站資料缺漏。請核對目的地地址，或改填確定的目的車站（例如「新宿站」）。" });
       }
 
       const route = await resolveListingCommuteRoute(originStation, destinationInfo.station, addressContext);

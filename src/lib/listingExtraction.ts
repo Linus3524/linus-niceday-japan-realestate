@@ -411,7 +411,7 @@ export function stripStationOperatorPrefix(text: unknown): string | null {
     .replace(/^(?:東急|京王|小田急|西武|東武|京急|京成|相鉄|つくばエクスプレス)[\s・･]+/, "")
     // "○○線 ○○駅" 這種前面還帶路線名的寫法，取最後一段當站名。
     .replace(/^.*線[\s・･]*/, "")
-    .replace(/\s*(?:車站|站|駅)\s*$/, "")
+    .replace(/\s*(?:車站|车站|站|駅)\s*$/, "")
     .trim();
   return cleaned || null;
 }

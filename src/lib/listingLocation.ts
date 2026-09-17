@@ -191,7 +191,14 @@ async function geocodeCandidate(candidate: AddressCandidate): Promise<GeocodedAd
   const url = new URL(GSI_GEOCODER);
   url.searchParams.set("q", candidate.value);
   const results = await fetchJson(url.toString());
-  const item = Array.isArray(results) ? results[0] : null;
+  const items = Array.isArray(results) ? results : [];
+  const exact = items.find((it: any) => it?.properties?.title === candidate.value);
+  const startsWith = items.find((it: any) => String(it?.properties?.title || "").startsWith(candidate.value));
+  const containing = items.find((it: any) => {
+    const t = String(it?.properties?.title || "");
+    return t && (t.includes(candidate.value) || candidate.value.includes(t));
+  });
+  const item = exact || startsWith || containing || items[0] || null;
   const coordinates = item?.geometry?.coordinates;
   const lon = Number(coordinates?.[0]);
   const lat = Number(coordinates?.[1]);
@@ -946,8 +953,23 @@ export async function getListingLocationContext(
     );
   }
 
-  const amenities = [...osmAmenities(elements, geocoded.point), ...mlit]
-    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+  const rawAmenities = [...osmAmenities(elements, geocoded.point), ...mlit]
+    .sort((a, b) => a.distanceMeters - b.distanceMeters);
+
+  // 跨來源去重：OSM 與國土交通省（MLIT）常收錄同一設施（如學校、醫院），
+  // 但名稱常差空格（如「北区立 東十条小学校」vs「北区立東十条小学校」），
+  // 且座標一在大門、一在地籍中心點，距離有微小差距。以正規化名稱＋同類別去重，保留距離最近之項目。
+  const seenAmenities = new Set<string>();
+  const deduplicatedAmenities: ListingAmenity[] = [];
+  for (const item of rawAmenities) {
+    const norm = item.name.normalize("NFKC").replace(/[\s・･（）()「」『』]/g, "");
+    const key = `${item.category}:${norm}`;
+    if (seenAmenities.has(key)) continue;
+    seenAmenities.add(key);
+    deduplicatedAmenities.push(item);
+  }
+
+  const amenities = deduplicatedAmenities
     .filter((item, index, all) => all.filter(other => other.category === item.category).indexOf(item) < 3);
 
   return {
