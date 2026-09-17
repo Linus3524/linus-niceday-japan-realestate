@@ -68,7 +68,7 @@ const ALLOWED_MIME_TYPES = new Set([
 
 // 頻率限制的唯一來源：改這兩個常數即可，視窗字串與錯誤訊息都由此推導，
 // 避免像先前那樣改了視窗卻忘了改文案（訊息仍寫「每 5 分鐘」）。
-const LISTING_CHECK_RATE_LIMIT = 5;
+const LISTING_CHECK_RATE_LIMIT = 3;
 const LISTING_CHECK_RATE_WINDOW_MINUTES = 10;
 const LISTING_CHECK_RATE_WINDOW_MS = LISTING_CHECK_RATE_WINDOW_MINUTES * 60_000;
 const LISTING_CHECK_RATE_MESSAGE =
@@ -126,7 +126,7 @@ function resolveClientIp(req: any): string {
  * 這個端點每次都會呼叫 Gemini，最壞情況是帳單被灌爆。
  * 這裡再加一道「所有人加總」的每小時上限當作費用保險絲。
  */
-const GLOBAL_HOURLY_CAP = Number(process.env.LISTING_CHECK_GLOBAL_HOURLY_CAP || 300);
+const GLOBAL_HOURLY_CAP = Number(process.env.LISTING_CHECK_GLOBAL_HOURLY_CAP || 100);
 let globalWindow = { startedAt: 0, count: 0 };
 
 function consumeGlobalQuota(): boolean {

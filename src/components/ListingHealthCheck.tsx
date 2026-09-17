@@ -19,6 +19,7 @@ import {
   X
 } from "lucide-react";
 import { useListingHealthCheckController } from '../hooks/useListingHealthCheckController';
+import { useDebouncedCallback } from '../hooks/useDebouncedCallback';
 import type { ListingHealthCheckProps } from '../lib/listing/types';
 import { BuildingHealthSection } from './listing/BuildingHealthSection';
 import { InvestmentSection } from './listing/InvestmentSection';
@@ -95,6 +96,10 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
     commuteError,
     commute,
   } = model;
+
+  // Debounce the analyze and analyzeCommute functions to prevent rapid clicks
+  const debouncedAnalyze = useDebouncedCallback(analyze, 500);
+  const debouncedAnalyzeCommute = useDebouncedCallback(analyzeCommute, 500);
   return (
     <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
       {/* 區塊頂部標題 */}
@@ -252,7 +257,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           {/* 開始分析按鈕 */}
           <div className="mt-4 border-t border-[#DDE3DF] pt-4">
             <button
-              type="button" onClick={analyze}
+              type="button" onClick={debouncedAnalyze}
               disabled={loading}
               className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#1A2A22] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
               {loading ? (
@@ -267,6 +272,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                 </>
               )}
             </button>
+            <p className="mt-2 text-center text-[10px] text-[#66736C] font-sans">為維護服務品質與防範濫用，同一使用者每 10 分鐘最多健檢 3 次。</p>
           </div>
         </div>
       )}
@@ -572,7 +578,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                 onKeyDown={event => { if (event.key === "Enter") void analyzeCommute(); }}
                 placeholder="例如：新宿站、涩谷站、晴空塔、早稻田大學或完整地址" className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
               <button
-                type="button" onClick={analyzeCommute}
+                type="button" onClick={debouncedAnalyzeCommute}
                 disabled={!commuteDestination.trim() || commuteLoading || locationLoading || (!locationContext?.stationWalks.length && !result.extracted.station)}
                 className="flex min-h-11 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-xs font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45">
                 {commuteLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}

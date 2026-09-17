@@ -135,7 +135,7 @@ ${knowledgeBaseContext}
 7. 結尾記得保持你的代表性房仲微笑，展現日本仲介的高質感服務！
 `;
 
-const RATE_LIMIT = 10; // requests per window
+const RATE_LIMIT = 8; // requests per window (8 requests per 5 minutes)
 const RATE_WINDOW_MS = 300_000;
 const MAX_MESSAGE_CHARS = 1000;
 const MAX_HISTORY_TURNS = 20;
@@ -265,7 +265,7 @@ export default async function handler(req: any, res: any) {
   try {
     const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket?.remoteAddress || "unknown";
     if (await isRateLimited(ip)) {
-      return res.status(429).json({ error: "訊息傳送太頻繁囉!五分鐘內最多只能詢問 10 次，請稍候再試，或直接加 Linus 的 Line (linus0922) 聊聊 ❀" });
+      return res.status(429).json({ error: "訊息傳送太頻繁囉！5 分鐘內最多只能詢問 8 次，請稍候再試，或直接加 Linus 的 LINE (linus0922) 聊聊 ❀" });
     }
 
     const { message, history } = req.body;

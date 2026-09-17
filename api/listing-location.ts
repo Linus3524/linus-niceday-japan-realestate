@@ -5,7 +5,7 @@ import { toJapaneseStationName } from "../src/lib/transit.js";
 import { originWalkIssue } from "../src/lib/commuteValidation.js";
 import { lookupCrimeSafety } from "../src/lib/crimeSafety.js";
 
-const RATE_LIMIT = 15;
+const RATE_LIMIT = 8;
 const RATE_WINDOW_MS = 300_000;
 const buckets = new Map<string, { count: number; resetAt: number }>();
 

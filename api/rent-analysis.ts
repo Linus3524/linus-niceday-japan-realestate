@@ -10,7 +10,8 @@ import { recordUsage, requestCountry } from "../src/lib/usageMetrics.js";
 
 const MAX_PROMPT_CHARS = 1000;
 const ANALYSIS_RATE_LIMIT = 3;
-const ANALYSIS_RATE_WINDOW_MS = 180_000;
+const ANALYSIS_RATE_WINDOW_MINUTES = 10;
+const ANALYSIS_RATE_WINDOW_MS = ANALYSIS_RATE_WINDOW_MINUTES * 60_000;
 const analysisRateBuckets = new Map<string, { count: number; resetAt: number }>();
 
 // 與 /api/chat 一致：優先用 Upstash，所有 serverless instance 共用同一組計數。
@@ -20,7 +21,7 @@ const upstashAnalysisLimiter =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Ratelimit({
         redis: Redis.fromEnv(),
-        limiter: Ratelimit.slidingWindow(ANALYSIS_RATE_LIMIT, "180 s"),
+        limiter: Ratelimit.slidingWindow(ANALYSIS_RATE_LIMIT, `${ANALYSIS_RATE_WINDOW_MINUTES * 60} s`),
         prefix: "linus-rent-analysis",
       })
     : null;
@@ -170,7 +171,7 @@ export default async function handler(req: any, res: any) {
     res.setHeader("X-RateLimit-Remaining", String(limit.remaining));
     if (limit.limited) {
       res.setHeader("Retry-After", String(limit.retryAfter));
-      return res.status(429).json({ error: "AI 分析每 3 分鐘最多使用 3 次，請稍候再試。", retryAfter: limit.retryAfter });
+      return res.status(429).json({ error: `AI 分析每 ${ANALYSIS_RATE_WINDOW_MINUTES} 分鐘最多使用 ${ANALYSIS_RATE_LIMIT} 次，請稍候再試。`, retryAfter: limit.retryAfter });
     }
     let criteria: RentSearchCriteria;
     if (hasValidStructuredCriteria && submittedCriteria) {

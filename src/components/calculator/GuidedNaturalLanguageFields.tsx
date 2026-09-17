@@ -44,7 +44,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
             套用範例
           </button>
         </div>
-        <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 3 分鐘最多分析 3 次。</p>
+        <p className="mt-2 text-[9px] text-[#66736C] font-sans">為保護分析服務額度，同一使用者每 10 分鐘最多分析 3 次。</p>
         {aiInputError && <p className="mt-3 border border-[#FCA5A5] bg-[#FEE2E2] p-3 text-xs text-[#B13818] font-sans">{aiInputError}</p>}
         {aiResult && <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />}
       </div></>);
