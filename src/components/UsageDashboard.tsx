@@ -44,7 +44,7 @@ const FEATURE_LABEL: Record<string, string> = {
 };
 
 const FEATURE_COLORS: Record<string, { bg: string; text: string; bar: string; border: string }> = {
-  "listing-check": { bg: "#EBF8F4", text: "#007D5A", bar: "#00a174", border: "#B4E6D5" },
+  "listing-check": { bg: "#E6F6F1", text: "#00A174", bar: "#00A174", border: "#9EE2CF" },
   "chat": { bg: "#FAF5FF", text: "#7E22CE", bar: "#9333EA", border: "#D8B4FE" },
   "rent-analysis": { bg: "#F0F9FF", text: "#0284C7", bar: "#0284C7", border: "#7DD3FC" },
 };
@@ -78,9 +78,9 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
   {
     id: "line",
     name: "LINE 管道",
-    badgeBg: "#E8F9F0",
-    badgeText: "#007D5A",
-    badgeBorder: "#B4E6D5",
+    badgeBg: "#E6F6F1",
+    badgeText: "#00A174",
+    badgeBorder: "#9EE2CF",
     actions: [
       { key: "line-add", label: "點擊加 LINE 好友", note: "首頁卡片 ＋ 聯絡分頁 ＋ 物件分析 CTA ＋ AI 顧問回覆" },
       { key: "line-copy", label: "複製 LINE ID", note: "首頁卡片 ＋ 聯絡分頁" },
@@ -380,7 +380,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F5F8F6] px-4 py-16 font-sans">
         <div className="w-full max-w-md border border-[#DDE3DF] bg-white p-8 shadow-sm">
-          <div className="flex items-center gap-2 text-[#007D5A]">
+          <div className="flex items-center gap-2 text-[#00A174]">
             <Layers className="h-5 w-5" />
             <span className="font-jost text-xs font-bold tracking-wider">LINUS NICEDAY · ADMIN</span>
           </div>
@@ -392,20 +392,20 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             onChange={e => setTokenInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && tokenInput.trim()) { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); } }}
             placeholder="貼上管理密碼後按 Enter"
-            className="mt-6 h-11 w-full border border-[#C9D2CD] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#007D5A] focus:bg-white focus:outline-none"
+            className="mt-6 h-11 w-full border border-[#C9D2CD] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#00A174] focus:bg-white focus:outline-none"
           />
           <button
             type="button"
             disabled={!tokenInput.trim()}
             onClick={() => { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); }}
-            className="mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#007D5A] disabled:opacity-40 cursor-pointer"
+            className="mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#00A174] disabled:opacity-40 cursor-pointer"
           >
             驗證進入
           </button>
           <button
             type="button"
             onClick={onBack}
-            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-[#66736C] hover:text-[#007D5A] cursor-pointer"
+            className="mt-4 flex w-full items-center justify-center gap-1 text-xs text-[#66736C] hover:text-[#00A174] cursor-pointer"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> 回到公開網站
           </button>
@@ -426,7 +426,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <button
               type="button"
               onClick={onBack}
-              className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3F5147] transition-colors hover:text-[#007D5A] cursor-pointer"
+              className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3F5147] transition-colors hover:text-[#00A174] cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> 返回 LINUS 住好日
             </button>
@@ -434,8 +434,8 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <h1 className="font-serif text-2xl font-bold tracking-tight text-[#1A2A22] sm:text-3xl">
                 後台數據儀表板
               </h1>
-              <span className="inline-flex items-center gap-1.5 border border-[#B4E6D5] bg-[#EBF8F4] px-2.5 py-0.5 text-[11px] font-semibold text-[#007D5A]">
-                <span className="h-1.5 w-1.5 bg-[#00a174] animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 border border-[#9EE2CF] bg-[#E6F6F1] px-2.5 py-0.5 text-[11px] font-semibold text-[#00A174]">
+                <span className="h-1.5 w-1.5 bg-[#00A174] animate-pulse" />
                 即時在線
               </span>
             </div>
@@ -447,7 +447,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <select
                 value={month}
                 onChange={e => { setMonth(e.target.value); setSelectedDay(null); }}
-                className="h-9.5 appearance-none border border-[#C9D2CD] bg-white pl-3.5 pr-8 text-xs font-bold text-[#1A2A22] shadow-sm focus:border-[#007D5A] focus:outline-none cursor-pointer"
+                className="h-9.5 appearance-none border border-[#C9D2CD] bg-white pl-3.5 pr-8 text-xs font-bold text-[#1A2A22] shadow-sm focus:border-[#00A174] focus:outline-none cursor-pointer"
               >
                 {monthOptions().map(m => (
                   <option key={m} value={m}>
@@ -462,10 +462,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               type="button"
               onClick={() => load(token, month)}
               disabled={loading}
-              className="flex h-9.5 items-center gap-1.5 border border-[#C9D2CD] bg-white px-3 text-xs font-semibold text-[#1A2A22] shadow-sm hover:border-[#007D5A] hover:text-[#007D5A] cursor-pointer disabled:opacity-50"
+              className="flex h-9.5 items-center gap-1.5 border border-[#C9D2CD] bg-white px-3 text-xs font-semibold text-[#1A2A22] shadow-sm hover:border-[#00A174] hover:text-[#00A174] cursor-pointer disabled:opacity-50"
               title="重新整理數據"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#007D5A]" : ""}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#00A174]" : ""}`} />
               <span className="hidden sm:inline">重新整理</span>
             </button>
 
@@ -497,10 +497,10 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <section className="mb-8">
             <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
               {/* 卡片 1: 本月不重複訪客 */}
-              <div className="relative overflow-hidden border border-[#B4E6D5] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
+              <div className="relative overflow-hidden border border-[#9EE2CF] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#00A174]">
                   <span>本月不重複訪客</span>
-                  <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#EBF8F4] text-[#007D5A]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]">
                     <Users className="h-4 w-4" />
                   </div>
                 </div>
@@ -508,7 +508,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   {data.monthlyVisitors === null ? "—" : data.monthlyVisitors.toLocaleString()}
                 </div>
                 <div className="mt-1 flex items-center gap-1 text-[11px] text-[#3F5147]">
-                  <span className="inline-block h-1.5 w-1.5 bg-[#00a174]" />
+                  <span className="inline-block h-1.5 w-1.5 bg-[#00A174]" />
                   <span>第一方 Cookie 匿名去重</span>
                 </div>
               </div>
@@ -546,17 +546,17 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
 
               {/* 卡片 4: 潛在客戶轉化意圖 */}
-              <div className="border border-[#B4E6D5] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-semibold text-[#007D5A]">
+              <div className="border border-[#9EE2CF] bg-gradient-to-br from-white to-[#E6F6F1] p-4.5 shadow-sm">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#00A174]">
                   <span>客源轉化動作</span>
-                  <div className="flex h-7 w-7 items-center justify-center border border-[#B4E6D5] bg-[#E8F9F0] text-[#007D5A]">
+                  <div className="flex h-7 w-7 items-center justify-center border border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]">
                     <MessageSquare className="h-4 w-4" />
                   </div>
                 </div>
                 <div className="mt-2 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">
                   {contactTotals.total.toLocaleString()}
                 </div>
-                <div className="mt-1 text-[11px] text-[#007D5A]">
+                <div className="mt-1 text-[11px] text-[#00A174]">
                   加好友／掃碼／複製聯絡
                 </div>
               </div>
@@ -591,7 +591,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]">
-                  <BarChart3 className="h-4 w-4 text-[#007D5A]" />
+                  <BarChart3 className="h-4 w-4 text-[#00A174]" />
                   {month} 每日功能呼叫趨勢
                 </h2>
                 <p className="mt-0.5 text-xs text-[#66736C]">
@@ -602,7 +602,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               {/* 圖例 */}
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 bg-[#00a174]" />
+                  <span className="h-2.5 w-2.5 bg-[#00A174]" />
                   <span className="text-[#3F5147]">圖紙健檢</span>
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -617,7 +617,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <button
                     type="button"
                     onClick={() => setSelectedDay(null)}
-                    className="ml-2 border border-[#C9D2CD] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#007D5A] hover:bg-white cursor-pointer"
+                    className="ml-2 border border-[#C9D2CD] bg-[#F5F8F6] px-2 py-0.5 text-[11px] font-semibold text-[#00A174] hover:bg-white cursor-pointer"
                   >
                     清除篩選 ({selectedDay} 號)
                   </button>
@@ -663,7 +663,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         style={{ height: `${heightPercent}%` }}
                         className={`w-full overflow-hidden transition-all cursor-pointer ${
                           isSelected
-                            ? "ring-2 ring-[#007D5A] ring-offset-1"
+                            ? "ring-2 ring-[#00A174] ring-offset-1"
                             : isHovered
                             ? "opacity-100"
                             : "opacity-90 hover:opacity-100"
@@ -671,7 +671,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                       >
                         {d.total > 0 && (
                           <>
-                            <div style={{ height: `${listingHeight}%` }} className="w-full bg-[#00a174]" title={`健檢: ${d.listingCheck}`} />
+                            <div style={{ height: `${listingHeight}%` }} className="w-full bg-[#00A174]" title={`健檢: ${d.listingCheck}`} />
                             <div style={{ height: `${chatHeight}%` }} className="w-full bg-[#6366F1]" title={`顧問: ${d.chat}`} />
                             <div style={{ height: `${rentHeight}%` }} className="w-full bg-[#0284C7]" title={`需求: ${d.rentAnalysis}`} />
                           </>
@@ -698,14 +698,14 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
           <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-3">
               <div className="flex items-center gap-2">
-                <FileCheck2 className="h-4 w-4 text-[#007D5A]" />
+                <FileCheck2 className="h-4 w-4 text-[#00A174]" />
                 <h2 className="font-serif text-base font-bold text-[#1A2A22]">物件圖紙健檢深度漏斗</h2>
                 <span className="text-xs text-[#8A9590]">{data.month}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setOpenListingSection(v => !v)}
-                className="flex items-center gap-1 text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
+                className="flex items-center gap-1 text-xs font-semibold text-[#00A174] hover:underline cursor-pointer"
               >
                 {openListingSection ? "收合" : "展開"}
                 {openListingSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -720,12 +720,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                     <span className="font-jost tabular-nums text-[#66736C]">共 {listingMetrics.total.toLocaleString()} 份健檢</span>
                   </div>
                   <div className="flex h-3 w-full overflow-hidden bg-[#EEF2F0]">
-                    <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#007D5A" }} title={`買賣: ${listingMetrics.sale} 份`} />
+                    <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.sale / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#00A174" }} title={`買賣: ${listingMetrics.sale} 份`} />
                     <div style={{ width: `${listingMetrics.total > 0 ? (listingMetrics.rent / listingMetrics.total) * 100 : 50}%`, backgroundColor: "#0284C7" }} title={`租賃: ${listingMetrics.rent} 份`} />
                   </div>
                   <div className="mt-2 flex items-center justify-between text-xs text-[#3F5147]">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 bg-[#007D5A]" />
+                      <span className="h-2 w-2 bg-[#00A174]" />
                       🏠 買賣：{listingMetrics.sale.toLocaleString()} 份
                       {listingMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((listingMetrics.sale / listingMetrics.total) * 100)}%)</span>}
                     </span>
@@ -741,7 +741,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   <div className="border border-[#DDE3DF] bg-white p-3.5">
                     <div className="flex items-center justify-between text-[11px] font-semibold text-[#66736C]">
                       <span>1. 產生健檢</span>
-                      <FileCheck2 className="h-3.5 w-3.5 text-[#007D5A]" />
+                      <FileCheck2 className="h-3.5 w-3.5 text-[#00A174]" />
                     </div>
                     <div className="mt-1 font-jost text-2xl font-bold text-[#1A2A22]">{listingMetrics.total.toLocaleString()}</div>
                     <div className="mt-0.5 text-[10px] text-[#8A9590]">基準 100%</div>
@@ -791,7 +791,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 <button
                   type="button"
                   onClick={toggleAllChannels}
-                  className="text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-[#00A174] hover:underline cursor-pointer"
                 >
                   {Object.values(openChannels).every(Boolean) ? "全部收合" : "全部展開"}
                 </button>
@@ -938,7 +938,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                 <button
                   type="button"
                   onClick={() => setOpenAiSection(v => !v)}
-                  className="flex items-center gap-1 text-xs font-semibold text-[#007D5A] hover:underline cursor-pointer"
+                  className="flex items-center gap-1 text-xs font-semibold text-[#00A174] hover:underline cursor-pointer"
                 >
                   {openAiSection ? "收合" : "展開"}
                   {openAiSection ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -957,7 +957,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </div>
                   <div className="flex h-3 w-full overflow-hidden bg-[#EEF2F0]">
                     <div
-                      style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#00a174" }}
+                      style={{ width: `${aiAnalysisMetrics.total > 0 ? (aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100 : 50}%`, backgroundColor: "#00A174" }}
                       title={`快速條件選單: ${aiAnalysisMetrics.structured} 次`}
                     />
                     <div
@@ -967,7 +967,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   </div>
                   <div className="mt-2.5 flex items-center justify-between text-xs text-[#3F5147]">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <span className="h-2 w-2 bg-[#00a174]" />
+                      <span className="h-2 w-2 bg-[#00A174]" />
                       快速選單勾選：{aiAnalysisMetrics.structured.toLocaleString()} 次
                       {aiAnalysisMetrics.total > 0 && <span className="font-jost font-bold text-[#1A2A22]"> ({Math.round((aiAnalysisMetrics.structured / aiAnalysisMetrics.total) * 100)}%)</span>}
                     </span>
@@ -986,7 +986,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                   <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                    <Eye className="h-4 w-4 text-[#007D5A]" /> 各分頁瀏覽排行
+                    <Eye className="h-4 w-4 text-[#00A174]" /> 各分頁瀏覽排行
                   </h3>
                   <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
                 </div>
@@ -1002,7 +1002,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                         </span>
                         <span className="h-2 flex-1 overflow-hidden bg-[#EEF2F0]">
                           <span
-                            className="block h-full bg-[#00a174]"
+                            className="block h-full bg-[#00A174]"
                             style={{ width: `${row.share}%` }}
                           />
                         </span>
@@ -1054,14 +1054,14 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="mb-8">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <Sparkles className="h-4 w-4 text-[#007D5A]" />
+                  <Sparkles className="h-4 w-4 text-[#00A174]" />
                   核心功能完成次數
                 </h2>
                 <span className="text-xs text-[#8A9590]">{data.month}・伺服器端完成呼叫</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {features.map(feature => {
-                  const style = FEATURE_COLORS[feature] || { bg: "#FAFCFB", text: "#1A2A22", bar: "#00a174", border: "#DDE3DF" };
+                  const style = FEATURE_COLORS[feature] || { bg: "#FAFCFB", text: "#1A2A22", bar: "#00A174", border: "#DDE3DF" };
                   const count = monthlyTotals[feature] ?? 0;
                   const grandFeatureTotal = Object.values(monthlyTotals).reduce((a, b) => a + b, 0);
                   const share = grandFeatureTotal > 0 ? Math.round((count / grandFeatureTotal) * 100) : 0;
@@ -1096,7 +1096,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
               <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                 <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <SlidersHorizontal className="h-4 w-4 text-[#007D5A]" /> 每日功能完成明細表
+                  <SlidersHorizontal className="h-4 w-4 text-[#00A174]" /> 每日功能完成明細表
                 </h3>
                 <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
               </div>
@@ -1122,12 +1122,12 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                           key={row.day}
                           onClick={() => setSelectedDay(prev => prev === row.day ? null : row.day)}
                           className={`transition-colors cursor-pointer ${
-                            isHighlighted ? "bg-[#EBF8F4] font-medium" : "hover:bg-[#FAFCFB]"
+                            isHighlighted ? "bg-[#E6F6F1] font-medium" : "hover:bg-[#FAFCFB]"
                           }`}
                         >
                           <td className="px-4 py-2.5 font-jost tabular-nums text-[#1A2A22]">
                             <span className="inline-flex items-center gap-1.5">
-                              {isHighlighted && <span className="h-1.5 w-1.5 bg-[#007D5A]" />}
+                              {isHighlighted && <span className="h-1.5 w-1.5 bg-[#00A174]" />}
                               {data.month}-{row.day}
                             </span>
                           </td>
@@ -1154,7 +1154,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             <section className="mb-8 border border-[#DDE3DF] bg-white p-5 shadow-sm">
               <div className="mb-3 flex items-center justify-between border-b border-[#ECEFEC] pb-2.5">
                 <h3 className="flex items-center gap-1.5 font-serif text-sm font-bold text-[#1A2A22]">
-                  <Globe className="h-4 w-4 text-[#007D5A]" /> 使用者地理來源國家分佈
+                  <Globe className="h-4 w-4 text-[#00A174]" /> 使用者地理來源國家分佈
                 </h3>
                 <span className="text-[11px] font-jost text-[#8A9590]">{data.month}</span>
               </div>

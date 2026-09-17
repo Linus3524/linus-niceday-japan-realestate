@@ -175,7 +175,7 @@ export function TokyoMunicipalitiesBarChart({
       </div>
 
       {/* 直條圖卡片本體：嚴格限制在卡片寬度內 (max-w-full overflow-hidden) */}
-      <div className="relative w-full min-w-0 max-w-full overflow-hidden border border-[#DDE3DF] bg-[#FAFBFA] p-2 pt-3 pb-1">
+      <div className="relative w-full min-w-0 max-w-full overflow-hidden border border-[#DDE3DF] bg-[#FAFCFB] p-2 pt-3 pb-1">
         {/* 滑動與定位提示 */}
         <div className="flex items-center justify-between pb-1.5 text-[9px] text-[#8A9590]">
           <span>左右滑動可對照全東京 59 區市町村</span>

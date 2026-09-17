@@ -26,7 +26,7 @@ export const Page4: React.FC = () => (
 
       <View style={s.tableRow}>
         <Text style={[s.tableCell, { width: "24%", fontWeight: 700, color: COLOR.BRAND_GREEN }]}>物件圖紙健檢 (listing-check)</Text>
-        <Text style={[s.tableCellMuted, { width: "26%" }]}>#EBF8F4 / #B4E6D5 / #00A174 / #007D5A</Text>
+        <Text style={[s.tableCellMuted, { width: "26%" }]}>#E6F6F1 / #9EE2CF / #00A174 / #00A174</Text>
         <Text style={[s.tableCell, { width: "50%" }]}>核心健檢業務量、每日趨勢長條圖、物件成功分析總數</Text>
       </View>
 
