@@ -258,12 +258,12 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               {loading ? (
                 <>
                   <LoaderCircle className="h-4 w-4 animate-spin" />
-                  <span>正在由 AI 深度解讀圖紙各項數值、條款與特約…</span>
+                  <span>正在深度分析圖紙中…</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 text-[#00A174]" />
-                  <span>開始物件圖紙全面健檢與數值分析</span>
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <span>開始圖紙健檢</span>
                 </>
               )}
             </button>
