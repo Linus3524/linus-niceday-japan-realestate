@@ -211,9 +211,13 @@ assert.equal(formatDirection("-"), "圖面標示 -（未載明）");
 assert.equal(formatDirection("ー"), "圖面標示 -（未載明）");
 assert.equal(formatDirection("なし"), "圖面標示 -（未載明）");
 assert.equal(formatDirection(""), "");
+assert.equal(formatDirection("北東（依間取り圖方位記號推算）"), "東北向（依平面圖方位記號推算）");
+assert.equal(formatDirection("東北（依平面圖推算）"), "東北向（依平面圖方位記號推算）");
+assert.equal(formatDirection("南（依間取り図方位記号推算）"), "南向（依平面圖方位記號推算）");
 
 assert.equal(detectUnitFeatures({ direction: "南" }).facingDirectionZh, "南向");
 assert.equal(detectUnitFeatures({ direction: "南東向き" }).facingDirectionZh, "東南向");
+assert.equal(detectUnitFeatures({ direction: "北東（依間取り圖方位記號推算）" }).facingDirectionZh, "東北向");
 assert.equal(detectUnitFeatures({ specialNotes: "バルコニー南向き日当たり良好" }).facingDirectionZh, "南向");
 
 const dirCase = reconcileRentalListingText({ dealType: "rent" }, "向き 南\n賃料120,000円");

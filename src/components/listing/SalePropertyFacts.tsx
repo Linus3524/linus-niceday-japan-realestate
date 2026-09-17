@@ -112,7 +112,22 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
         </div>
         <div>
           <dt className="text-[#66736C]">主要採光面（朝向）</dt>
-          <dd className="font-bold text-[#1A2A22]">{displayDirection || "未於圖面載明"}</dd>
+          <dd className="font-bold text-[#1A2A22]">
+            {displayDirection ? (
+              displayDirection.includes("（依平面圖") ? (
+                <span>
+                  <span>{displayDirection.split("（")[0]}</span>
+                  <span className="block text-[11px] font-normal text-[#00A174]">
+                    依平面圖方位記號推算
+                  </span>
+                </span>
+              ) : (
+                displayDirection
+              )
+            ) : (
+              "未於圖面載明"
+            )}
+          </dd>
         </div>
         {isSpecialSale && extracted?.buildingArea && (
           <div className="col-span-2 border-t border-[#DDE3DF] pt-2">

@@ -59,14 +59,17 @@ export function formatDirection(direction?: string | null): string {
     return "未於圖面載明";
   }
   const normalized = trimmed.normalize("NFKC");
-  if (/東南|南東/i.test(normalized)) return "東南向";
-  if (/西南|南西/i.test(normalized)) return "西南向";
-  if (/東北|北東/i.test(normalized)) return "東北向";
-  if (/西北|北西/i.test(normalized)) return "西北向";
-  if (/南/i.test(normalized)) return "南向";
-  if (/東/i.test(normalized)) return "東向";
-  if (/西/i.test(normalized)) return "西向";
-  if (/北/i.test(normalized)) return "北向";
+  const isEstimated = /平面圖|平面図|間取|間取り|推算|推定|推測|方位記號|方位記号|指北針|指南針/i.test(normalized);
+  const noteSuffix = isEstimated ? "（依平面圖方位記號推算）" : "";
+
+  if (/東南|南東/i.test(normalized)) return `東南向${noteSuffix}`;
+  if (/西南|南西/i.test(normalized)) return `西南向${noteSuffix}`;
+  if (/東北|北東/i.test(normalized)) return `東北向${noteSuffix}`;
+  if (/西北|北西/i.test(normalized)) return `西北向${noteSuffix}`;
+  if (/南/i.test(normalized)) return `南向${noteSuffix}`;
+  if (/東/i.test(normalized)) return `東向${noteSuffix}`;
+  if (/西/i.test(normalized)) return `西向${noteSuffix}`;
+  if (/北/i.test(normalized)) return `北向${noteSuffix}`;
   return trimmed;
 }
 
