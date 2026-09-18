@@ -54,7 +54,7 @@ export function NeighborhoodActivityCard({ activity, address, showCounts = false
             backgroundColor: "#FFFFFF",
           }}
         >
-          {level ? "環境推估・資料有限" : "資料待確認"}
+          {level ? "環境推估" : "資料待確認"}
         </span>
       </div>
       {annualStreetCrime ? <div className="grid grid-cols-2 gap-4 pt-3 pb-2">

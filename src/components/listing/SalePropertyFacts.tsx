@@ -182,7 +182,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
               <span className="text-xs font-bold text-[#1A2A22]">圖紙設備與建物規格</span>
               <span className="inline-flex items-center gap-1 border border-[#9EE2CF] bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-medium text-[#00A174]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00A174]" />
-                綠底：影響行情與生活品質的關鍵設備
+                綠底：關鍵加分設備
               </span>
             </div>
             <span className="text-[10px] text-[#66736C]">
