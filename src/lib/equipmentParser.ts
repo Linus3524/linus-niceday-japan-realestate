@@ -569,7 +569,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
 
   // 6. 通訊與網路
   {
-    pattern: /BBM-NET|インターネット無料|ネット無料|Wi-Fi無料|インターネット光/i,
+    pattern: /BBM-NET|インターネット無料|ネット無料|Wi-Fi無料|wifi無料|無料wifi|無料Wi-?Fi|インターネット光|インターネット使い放題|ネット使い放題|Wi-Fi使い放題|高速ネット無料|高速インターネット無料|光インターネット無料|光ネット無料|光回線無料|インターネット常時接続無料|シーファイブ|UCOM光|iのぞみネット/i,
     category: "通訊網路",
     nameZh: "免費高速光纖網路",
     highlight: true,
@@ -593,7 +593,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
 
   // 7. 其他綜合
   {
-    pattern: /ペット\s*[（(]?\s*(?:犬|猫|小型犬)?[^)）]*[)）]?\s*(?:可|相談|飼育可)|ペット\s*[（(][^)）]*可[)）]/i,
+    pattern: /ペット\s*(?:飼育)?(?:可|相談)|ペット\s*[（(][^)）]*(?:可|相談)[)）]/i,
     category: "其他設備",
     nameZh: "可飼養寵物",
     highlight: true,
@@ -768,7 +768,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     nameZh: "室內拖鞋",
   },
   {
-    pattern: /無料\s*Wi-?Fi|Wi-?Fi/i,
+    pattern: /無料\s*Wi-?Fi|Wi-?Fi完備|Wi-?Fi付|Wi-?Fi無料/i,
     category: "通訊網路",
     nameZh: "免費 Wi-Fi",
     highlight: true,
@@ -780,7 +780,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     highlight: true,
   },
   {
-    pattern: /^インターネット$|インターネット対応|ネット対応/i,
+    pattern: /^インターネット$|インターネット対応|ネット対応|Wi-Fi対応|光ファイバー対応/i,
     category: "通訊網路",
     nameZh: "網路設備",
   },
@@ -997,6 +997,10 @@ export function parseEquipmentList(
         continue;
       }
       if (/^(?:電動|自動|新規|交換|更新|設置|新設|無料|専用|付き|あり|済|込|式|型|中|各|全)$/i.test(token)) {
+        continue;
+      }
+      // 濾除禁止與生活限制條款（這些屬於重要特約與法務事項卡片，非室內與建物設備）
+      if (/(?:不可|禁止|厳禁)$/i.test(token) || /事務所不可|楽器不可|ペット不可|禁煙/i.test(token)) {
         continue;
       }
       const aiZh = aiMap.get(normalizeKey(token));

@@ -1,6 +1,6 @@
 import React from "react";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
-import { getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
 
 const StationSign: React.FC<{ name: string; number: string; color: string; type: CommuteRouteSegment["type"] }> = ({ name, number, color, type }) => {
   const cleanedName = toJapaneseStationName(name.replace(/\(.*\)/, "").trim());
@@ -75,26 +75,48 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
       <div className="w-full overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-1">
         <div className="flex items-start w-full min-w-max sm:min-w-0 justify-between py-2">
           {route.segments.map((segment, index) => {
+            const prevSegment = index > 0 ? route.segments[index - 1] : null;
+            const nextSegment = route.segments[index + 1];
+
+            // 候車節點已經畫過自己所在的車站，接在它後面的乘車段不能再畫一次，
+            // 否則同一個站名會連續出現兩格。
+            const skipStationSign = prevSegment?.type === "wait";
+
             let stationName = segment.departureStop;
             let stationNumber = segment.startStationNumber || getStationCodeForLine(segment.lineName, segment.departureStop);
-            let stationColor = segment.lineColor;
+            let stationColor = getLineColors(segment.lineName, segment.lineColor).color;
             let stationType = segment.type;
 
-            if (segment.type === "walk" && index > 0) {
-              const prevSegment = route.segments[index - 1];
+            if (segment.type === "wait") {
+              // 候車發生在「即將搭乘的那條線」的月台，站牌顏色沿用下一段路線。
+              const boarding = nextSegment;
+              stationNumber = segment.startStationNumber
+                || (boarding ? getStationCodeForLine(boarding.lineName, segment.departureStop) : null);
+              stationColor = boarding ? getLineColors(boarding.lineName, boarding.lineColor).color : segment.lineColor;
+              stationType = boarding ? boarding.type : "rail";
+            } else if (segment.type === "walk" && prevSegment) {
               stationNumber = prevSegment.endStationNumber || getStationCodeForLine(prevSegment.lineName, prevSegment.arrivalStop);
-              stationColor = prevSegment.lineColor;
+              stationColor = getLineColors(prevSegment.lineName, prevSegment.lineColor).color;
               stationType = prevSegment.type;
             }
 
+            // 最後一道防線：路線快取（transitRouteCache）裡還躺著舊版寫入的
+            // lineTextColor: "#FFFFFF"，那些路線在淺底色上依然會是白字看不見。
+            // 這裡不信任 segment 帶來的文字色，一律依底色重算。
+            const badgeColors = segment.type === "walk" || segment.type === "wait"
+              ? { color: segment.lineColor, textColor: "#FFFFFF" }
+              : getLineColors(segment.lineName, segment.lineColor);
+
             return (
               <React.Fragment key={index}>
-                <StationSign
-                  name={stationName}
-                  number={stationNumber || ""}
-                  color={stationColor}
-                  type={stationType}
-                />
+                {!skipStationSign && (
+                  <StationSign
+                    name={stationName}
+                    number={stationNumber || ""}
+                    color={stationColor}
+                    type={stationType}
+                  />
+                )}
 
                 {/* Overlapped Centered Line & Line Name Badge, aligned in height with station box */}
                 <div className="flex flex-col flex-1 min-w-[3.5rem] sm:min-w-[5rem] px-1">
@@ -103,15 +125,15 @@ export function CommuteRouteCard({ route }: { route: CommuteRouteDetails }) {
                     <div
                       className="absolute -left-3 -right-3 h-[2px] my-auto"
                       style={{
-                        background: segment.type === "walk"
+                        background: segment.type === "walk" || segment.type === "wait"
                           ? "repeating-linear-gradient(90deg, #94a3b8, #94a3b8 4px, transparent 4px, transparent 8px)"
                           : segment.lineColor
                       }}
                     />
                     {/* Line Name Badge superimposed on line */}
                     <div
-                      className="relative z-10 px-2 py-0.5 text-[11px] font-bold text-white whitespace-nowrap shadow-2xs max-w-[130px] truncate"
-                      style={{ backgroundColor: segment.lineColor }}
+                      className="relative z-10 px-2 py-0.5 text-[11px] font-bold whitespace-nowrap shadow-2xs max-w-[130px] truncate"
+                      style={{ backgroundColor: badgeColors.color, color: badgeColors.textColor }}
                     >
                       <span lang="ja" className="font-jp truncate">{toJapaneseLineName(segment.lineName)}</span>
                     </div>

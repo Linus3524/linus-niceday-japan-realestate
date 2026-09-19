@@ -140,7 +140,12 @@ export interface RentRecommendation {
 }
 
 export interface CommuteRouteSegment {
-  type: "train" | "subway" | "rail" | "bus" | "walk";
+  /**
+   * "wait" 是呈現用的節點（候車、轉乘等待），只由 buildDoorToDoorRoute 產生，
+   * 不會出現在任何路線提供者的輸出裡。它存在的理由是：totalDurationMinutes 量的是
+   * 牆鐘時間，若只畫乘車段，徽章加總永遠對不上卡片總時間。
+   */
+  type: "train" | "subway" | "rail" | "bus" | "walk" | "wait";
   lineName: string;
   lineShortName: string | null;
   lineColor: string;

@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { LoadingNotice } from "./ui/LoadingNotice";
 import { ErrorNotice } from "./ui/ErrorNotice";
 import {
@@ -20,7 +21,7 @@ import {
 } from "lucide-react";
 import { useListingHealthCheckController } from '../hooks/useListingHealthCheckController';
 import { useDebouncedCallback } from '../hooks/useDebouncedCallback';
-import type { ListingHealthCheckProps } from '../lib/listing/types';
+import type { ListingHealthCheckProps, CommuteRouteOption, ListingCommuteResult } from '../lib/listing/types';
 import { BuildingHealthSection } from './listing/BuildingHealthSection';
 import { InvestmentSection } from './listing/InvestmentSection';
 import { ListingLocationSection } from './listing/ListingLocationSection';
@@ -40,6 +41,7 @@ import { ACCEPTED_MIME_TYPES } from '../lib/listing/browser/uploadConfig';
 import { formatFileSize } from '../lib/listing/formatters';
 
 import { CommuteRouteCard } from "./CommuteRouteCard";
+import { buildDoorToDoorRoute, isRidingSegment } from "../lib/commuteRouteDisplay";
 
 import { ErrorBoundary } from "./ErrorBoundary";
 
@@ -586,35 +588,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               </button>
             </div>
             {commuteError && <p className="mt-2 bg-[#FEF3C7] p-3 text-xs text-[#D97706]">{commuteError}</p>}
-            {commute && (
-              <div className="mt-3 border border-[#DDE3DF] bg-[#F5F8F6] p-4">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    <p className="text-[11px] font-bold text-[#00A174]">全程門到門通勤時間</p>
-                    <p className="mt-1 text-base font-bold text-[#1A2A22]">
-                      {commute.route ? `${commute.route.originStation} → ${commute.route.destinationStation}` : commute.destinationStation}
-                      ・轉乘 {commute.transfers} 次
-                    </p>
-                  </div>
-                  <p className="shrink-0 text-3xl font-black text-[#00A174]">約 {commute.totalMinutes} 分</p>
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">
-                  出門步行 {commute.originWalkMinutes} 分 ＋ 站間交通 {commute.transitMinutes} 分 ＋ 出站抵達 {commute.destinationWalkMinutes} 分
-                </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">目的地定位：{commute.destinationAddress}</p>
-                {commute.destinationResolutionNote && (
-                  <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#D97706]">{commute.destinationResolutionNote}</p>
-                )}
-                {commute.route ? (
-                  <div className="mt-4 min-w-0">
-                    <p className="mb-2 text-[11px] text-[#66736C]">站間交通路線（下方時間不含出門與抵達目的地的步行）</p>
-                    <CommuteRouteCard route={commute.route} />
-                  </div>
-                ) : (
-                  <p className="mt-3 text-xs text-[#66736C]">目前未取得詳細線路與上下車站資料，請重新計算通勤。</p>
-                )}
-              </div>
-            )}
+            {commute && <ListingCommuteResultSection commute={commute} />}
           </div>
 
           {/* ── 分享與下載 ── 放在報告最後：使用者看完整份分析才會想轉給別人或留存。 */}
@@ -624,5 +598,150 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
         </ErrorBoundary>
       )}
     </section>
+  );
+}
+
+function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResult }) {
+  const [selectedRouteIndex, setSelectedRouteIndex] = useState(0);
+
+  useEffect(() => {
+    setSelectedRouteIndex(0);
+  }, [commute.destinationInput, commute.destinationStation]);
+
+  const routeOptions: CommuteRouteOption[] = useMemo(() => {
+    if (commute.routes && commute.routes.length > 0) {
+      return commute.routes;
+    }
+    if (commute.route) {
+      return [{
+        id: "route-1",
+        route: commute.route,
+        transitMinutes: commute.transitMinutes,
+        totalMinutes: commute.totalMinutes,
+        transfers: commute.transfers,
+      }];
+    }
+    return [];
+  }, [commute]);
+
+  const activeOption = routeOptions[selectedRouteIndex] ?? routeOptions[0] ?? (commute.route ? {
+    route: commute.route,
+    transitMinutes: commute.transitMinutes,
+    totalMinutes: commute.totalMinutes,
+    transfers: commute.transfers,
+  } : null);
+
+  return (
+    <div className="mt-3 border border-[#DDE3DF] bg-[#F5F8F6] p-4">
+      {/* 若有多條路線（2～3 條），顯示路線比較切換 Tabs；若只有 1 條路線，直接展示不硬湊 Tabs */}
+      {routeOptions.length > 1 && (() => {
+        const minTransfers = Math.min(...routeOptions.map(o => o.transfers));
+        const maxTransfers = Math.max(...routeOptions.map(o => o.transfers));
+        const hasDifferentTransfers = minTransfers !== maxTransfers;
+
+        return (
+          <div className="mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <p className="text-[11px] font-bold text-[#3F5147]">
+                系統推薦路線（共 {routeOptions.length} 條・轉乘最少優先）
+              </p>
+              <span className="text-[10px] text-[#66736C]">可點選切換不同路線方案</span>
+            </div>
+            <div className={`grid gap-2 ${
+              routeOptions.length === 2
+                ? "grid-cols-1 sm:grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+            }`}>
+              {routeOptions.map((opt, idx) => {
+                const isSelected = idx === selectedRouteIndex;
+                const isDirect = opt.transfers === 0;
+                const isLeastTransfers = hasDifferentTransfers && opt.transfers === minTransfers;
+                return (
+                  <button
+                    key={opt.id || `route-tab-${idx}`}
+                    type="button"
+                    onClick={() => setSelectedRouteIndex(idx)}
+                    className={`text-left p-3 transition-all border ${
+                      isSelected
+                        ? "border-[#00A174] bg-[#EAF6F0] shadow-sm ring-1 ring-[#00A174]"
+                        : "border-[#DDE3DF] bg-white hover:border-[#B2C4BC] hover:bg-[#F9FAF9]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className={`text-xs font-bold ${isSelected ? "text-[#00A174]" : "text-[#1A2A22]"}`}>
+                        路線 {idx + 1}
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${
+                        isDirect
+                          ? "bg-[#D1FAE5] text-[#065F46]"
+                          : isLeastTransfers
+                          ? "bg-[#EAF6F0] text-[#00A174]"
+                          : "bg-[#F3F4F6] text-[#4B5563]"
+                      }`}>
+                        {isDirect ? "直達・免轉車" : isLeastTransfers ? `轉乘最少 (${opt.transfers}次)` : `轉乘 ${opt.transfers} 次`}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-baseline justify-between gap-2">
+                      <span className="text-lg font-black text-[#1A2A22]">約 {opt.totalMinutes} 分</span>
+                      <span className="text-[10px] text-[#66736C]">站間 {opt.transitMinutes} 分</span>
+                    </div>
+                    <div className="mt-1 text-[10px] text-[#66736C] truncate">
+                      {opt.route.segments.filter(isRidingSegment).map(s => s.lineName).join(" → ")}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 主路線概要資訊 */}
+      <div className={`flex flex-wrap items-end justify-between gap-3 ${routeOptions.length > 1 ? "border-t border-[#DDE3DF] pt-3.5" : ""}`}>
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="text-[11px] font-bold text-[#00A174]">全程門到門通勤時間</p>
+            {routeOptions.length > 1 && (
+              <span className="text-[10px] font-bold text-[#00A174] bg-[#EAF6F0] px-1.5 py-0.5 rounded-sm">
+                目前檢視：路線 {selectedRouteIndex + 1}
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-base font-bold text-[#1A2A22]">
+            {activeOption?.route ? `${activeOption.route.originStation} → ${activeOption.route.destinationStation}` : commute.destinationStation}
+            ・{activeOption ? (activeOption.transfers === 0 ? "直達線路（免轉乘）" : `轉乘 ${activeOption.transfers} 次`) : `轉乘 ${commute.transfers} 次`}
+          </p>
+        </div>
+        <p className="shrink-0 text-3xl font-black text-[#00A174]">
+          約 {activeOption ? activeOption.totalMinutes : commute.totalMinutes} 分
+        </p>
+      </div>
+
+      <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">
+        出門步行 {commute.originWalkMinutes} 分 ＋ 站間交通 {activeOption ? activeOption.transitMinutes : commute.transitMinutes} 分（含候車與轉乘等待）＋ 出站抵達 {commute.destinationWalkMinutes} 分
+      </p>
+      <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">目的地定位：{commute.destinationAddress}</p>
+      {commute.destinationResolutionNote && (
+        <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#D97706]">{commute.destinationResolutionNote}</p>
+      )}
+
+      {activeOption?.route ? (
+        <div className="mt-4 min-w-0">
+          <p className="mb-2 text-[11px] text-[#66736C]">
+            門到門路線{routeOptions.length > 1 ? `（路線 ${selectedRouteIndex + 1}）` : ""}（含出門步行、候車與轉乘等待）
+          </p>
+          <CommuteRouteCard
+            route={buildDoorToDoorRoute(activeOption.route, {
+              originWalkMinutes: commute.originWalkMinutes,
+              destinationWalkMinutes: commute.destinationWalkMinutes,
+              originLabel: "自宅",
+              destinationLabel: commute.destinationInput || "目的地",
+            })}
+          />
+        </div>
+      ) : (
+        <p className="mt-3 text-xs text-[#66736C]">目前未取得詳細線路與上下車站資料，請重新計算通勤。</p>
+      )}
+    </div>
   );
 }

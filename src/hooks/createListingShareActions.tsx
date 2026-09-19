@@ -139,7 +139,9 @@ export function createListingShareActions(context: Context) {
             destination: commute.destinationInput || commute.destinationAddress,
             totalMinutes: commute.totalMinutes,
             transfers: commute.transfers,
-            summary: `出門到 ${commute.destinationStation ? `${commute.destinationStation}駅` : "目的地"}：步行 ${commute.originWalkMinutes} 分＋電車 ${commute.transitMinutes} 分＋步行 ${commute.destinationWalkMinutes} 分`,
+            summary: commute.routes && commute.routes.length > 1
+              ? `共推薦 ${commute.routes.length} 條路線（首選轉乘最少：步行 ${commute.originWalkMinutes} 分＋電車 ${commute.transitMinutes} 分＋步行 ${commute.destinationWalkMinutes} 分）`
+              : `出門到 ${commute.destinationStation ? `${commute.destinationStation}駅` : "目的地"}：步行 ${commute.originWalkMinutes} 分＋電車 ${commute.transitMinutes} 分＋步行 ${commute.destinationWalkMinutes} 分`,
           } : null}
         />,
       ).toBlob();

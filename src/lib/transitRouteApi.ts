@@ -1,8 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
-import { getStationCodeForLine, getTransitLineIdentity, toJapaneseLineName, toJapaneseStationName } from "./transit.js";
+import { getLineColors, getStationCodeForLine, getTransitLineIdentity, toJapaneseLineName, toJapaneseStationName } from "./transit.js";
 import { readTransitRoute, writeTransitRoute } from "./transitRouteCache.js";
-import { findLocalTransitRoute } from "./localTransitRoute.js";
+import { findLocalTransitRoute, findLocalTransitRoutes, graphStationCode, identifyGraphLine, isGraphStation } from "./localTransitRoute.js";
 
 type GroundedSegment = {
   type?: string;
@@ -47,9 +47,39 @@ function transitousStationName(value: string, fallback?: string) {
   return toJapaneseStationName(TRANSITOUS_STATION_NAMES[value] || fallback || value);
 }
 
-function transitousLineName(leg: any) {
+/** 班次編號，不是路線名。jp-japan-rail 圖資把它塞在 route_short_name／displayName，
+ *  照著顯示畫面上就會出現「10650744」這種數字徽章。 */
+const TRAIN_NUMBER_PATTERN = /^[0-9]{3,}[A-Za-z]?$/;
+
+function isTrainNumber(value: unknown) {
+  return typeof value === "string" && TRAIN_NUMBER_PATTERN.test(value.trim());
+}
+
+/**
+ * Transitous leg → 路線名。
+ *
+ * 查表順序是刻意的，而且每一層都必須擋掉班次編號：
+ *   1. routeId／routeLongName 的已知對照（羅馬字路線代號）。
+ *   2. 停靠站序列回查本地圖資——jp-japan-rail 唯一可用的線索。
+ *   3. routeLongName／displayName／routeShortName，但只在不是純數字時採用。
+ * 全部落空回 null，由呼叫端丟掉這條路線，不顯示假路線名。
+ */
+function transitousLineName(leg: any): string | null {
   const identityText = `${leg.routeId || ""} ${leg.routeLongName || ""}`;
-  return TRANSITOUS_LINE_NAMES.find(([pattern]) => pattern.test(identityText))?.[1] || leg.routeLongName || leg.displayName || leg.routeShortName || "公共交通";
+  const mapped = TRANSITOUS_LINE_NAMES.find(([pattern]) => pattern.test(identityText))?.[1];
+  if (mapped) return mapped;
+
+  const stops = [
+    leg.from?.name,
+    ...(Array.isArray(leg.intermediateStops) ? leg.intermediateStops.map((stop: any) => stop?.name) : []),
+    leg.to?.name
+  ].filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
+  const identified = identifyGraphLine(stops, leg.agencyName);
+  if (identified) return identified;
+
+  const label = [leg.routeLongName, leg.displayName, leg.routeShortName]
+    .find(value => typeof value === "string" && value.trim() && !isTrainNumber(value));
+  return label ? String(label).trim() : null;
 }
 
 async function transitousFetch(path: string, params: Record<string, string>) {
@@ -60,59 +90,134 @@ async function transitousFetch(path: string, params: Record<string, string>) {
   return response.json() as Promise<any>;
 }
 
+/**
+ * 起訖站本來就是圖資上的車站，不該讓外部地理編碼的結果凌駕這個事實。
+ *
+ * 舊版只比對「站名相等 + 國家為日本」，但日本同名車站很多：白山在都營三田線
+ * （文京區）也在香川縣，橋本在京王線也在神奈川，青葉台在東急也在橫濱。
+ * 這些回答名稱完全相等、country 也都是 JP，單看名稱一個都擋不掉，
+ * 結果就是拿外縣市的站去規劃首都圈的通勤路線。
+ *
+ * 圖資只收首都圈，所以「站在圖資裡」就等於「站在首都圈」——據此要求
+ * geocode 的答案必須落在首都圈，對不上就當作查無此站，交給本地圖資去算。
+ */
+const METRO_AREA_PREFECTURES = ["東京都", "神奈川県", "埼玉県", "千葉県"];
+
+function stopAreaNames(item: any): string[] {
+  return Array.isArray(item?.areas) ? item.areas.map((area: any) => String(area?.name || "")) : [];
+}
+
+/**
+ * geocode 的某筆結果能不能代表這個站。
+ *
+ * 抽成純函式是為了能直接測：整條路線規劃會被本地圖資的正確結果蓋過去，
+ * 就算選錯站也看不出來，必須針對這層驗。
+ */
+export function isAcceptableStopMatch(item: any, wanted: string, mustBeInMetroArea: boolean): boolean {
+  if (normalizedStation(item?.name) !== wanted || item?.country !== "JP") return false;
+  if (!mustBeInMetroArea) return true;
+  const areas = stopAreaNames(item);
+  return METRO_AREA_PREFECTURES.some(prefecture => areas.includes(prefecture));
+}
+
 async function transitousStop(station: string, context = "") {
   const wanted = normalizedStation(station);
   const cacheKey = `${normalizedStation(context)}:${wanted}`;
   if (geocodeCache.has(cacheKey)) return geocodeCache.get(cacheKey) || null;
   const results = await transitousFetch("/v1/geocode", { text: `${context} ${toJapaneseStationName(station)}駅`.trim(), language: "ja", type: "STOP", numResults: "8" });
-  const exact = Array.isArray(results) ? results.find(item => normalizedStation(item.name) === wanted && item.country === "JP") : null;
+
+  // 圖資認得這個站，就代表它在首都圈；外縣市的同名站一律不接受。
+  const mustBeInMetroArea = isGraphStation(station);
+  const exact = Array.isArray(results)
+    ? results.find(item => isAcceptableStopMatch(item, wanted, mustBeInMetroArea))
+    : null;
+
   const stop = exact?.id ? { id: String(exact.id), name: toJapaneseStationName(station) } : null;
   geocodeCache.set(cacheKey, stop);
   return stop;
 }
 
-async function fetchTransitousRoute(origin: string, destination: string, context = ""): Promise<CommuteRouteDetails | null> {
+async function fetchTransitousRoutes(origin: string, destination: string, context = ""): Promise<CommuteRouteDetails[]> {
   const [from, to] = await Promise.all([transitousStop(origin, context), transitousStop(destination, context)]);
-  if (!from || !to) return null;
+  if (!from || !to) return [];
   const reference = routeReference();
-  const data = await transitousFetch("/v6/plan", { fromPlace: from.id, toPlace: to.id, time: reference.iso, numItineraries: "3" });
+  let data: any;
+  try {
+    data = await transitousFetch("/v6/plan", { fromPlace: from.id, toPlace: to.id, time: reference.iso, numItineraries: "5" });
+  } catch (error) {
+    console.warn(`Transitous plan fetch error for ${origin} → ${destination}:`, String(error));
+    return [];
+  }
   const itineraries = Array.isArray(data?.itineraries) ? data.itineraries : [];
-  const itinerary = itineraries.find((item: any) => Array.isArray(item.legs) && item.legs.some((leg: any) => leg.mode !== "WALK"));
-  if (!itinerary) return null;
-  const rawLegs = itinerary.legs.filter((leg: any) => Number(leg.duration) >= 0);
-  const transitLegs = rawLegs.filter((leg: any) => leg.mode !== "WALK");
-  if (!transitLegs.length) return null;
-  const segments: CommuteRouteSegment[] = rawLegs.map((leg: any, index: number) => {
-    const type = leg.mode === "WALK" ? "walk" : leg.mode === "SUBWAY" ? "subway" : leg.mode === "BUS" ? "bus" : "rail";
-    const lineName = type === "walk" ? "徒歩" : transitousLineName(leg);
-    const identity = getTransitLineIdentity(lineName);
-    const departureStop = index === 0 ? toJapaneseStationName(origin) : transitousStationName(String(leg.from?.name || ""));
-    const arrivalStop = index === rawLegs.length - 1 ? toJapaneseStationName(destination) : transitousStationName(String(leg.to?.name || ""));
-    const color = identity?.color || (leg.routeColor ? `#${String(leg.routeColor).replace(/^#/, "")}` : type === "walk" ? "#8A9590" : "#3F626D");
-    return {
-      type, lineName: identity?.name || lineName, lineShortName: leg.routeShortName || identity?.shortCode || null,
-      lineColor: color, lineTextColor: identity?.textColor || (leg.routeTextColor ? `#${String(leg.routeTextColor).replace(/^#/, "")}` : "#FFFFFF"),
-      operator: leg.agencyName || identity?.operator || null, departureStop, arrivalStop,
-      startStationNumber: leg.from?.stopCode || getStationCodeForLine(lineName, departureStop),
-      endStationNumber: leg.to?.stopCode || getStationCodeForLine(lineName, arrivalStop),
-      departureTime: leg.startTime ? String(leg.startTime).slice(11, 16) : null,
-      arrivalTime: leg.endTime ? String(leg.endTime).slice(11, 16) : null,
-      durationMinutes: Math.max(0, Math.round(Number(leg.duration) / 60)),
-      stopCount: Array.isArray(leg.intermediateStops) ? leg.intermediateStops.length + 1 : null,
-      headsign: leg.headsign || null
-    };
-  });
-  if (segments.some(segment => !isOfficialJapaneseStationText(segment.departureStop) || !isOfficialJapaneseStationText(segment.arrivalStop))) return null;
-  const total = Math.round(Number(itinerary.duration) / 60);
-  if (!Number.isInteger(total) || total < 1 || total > 240) return null;
-  return {
-    source: "transitous", originStation: toJapaneseStationName(origin), destinationStation: toJapaneseStationName(destination),
-    totalDurationMinutes: total, transfers: Number.isInteger(itinerary.transfers) ? itinerary.transfers : Math.max(0, transitLegs.length - 1),
-    departureTime: segments[0]?.departureTime || null, arrivalTime: segments.at(-1)?.arrivalTime || null,
-    referenceLabel: `Transitous 標準班表・${reference.label}`,
-    sourceLinks: [{ title: "Transitous 路線資料", url: "https://transitous.org/" }, { title: "Transitous 資料來源", url: "https://transitous.org/sources/" }],
-    segments
-  };
+  const results: CommuteRouteDetails[] = [];
+  const seenSignatures = new Set<string>();
+
+  for (const itinerary of itineraries) {
+    if (!Array.isArray(itinerary.legs)) continue;
+    const rawLegs = itinerary.legs.filter((leg: any) => Number(leg.duration) >= 0);
+    const transitLegs = rawLegs.filter((leg: any) => leg.mode !== "WALK");
+    if (!transitLegs.length) continue;
+
+    // 有任何一段查不出真實路線名就整條丟掉。缺一段路線名的路線圖，使用者看到的是
+    // 一個數字或「公共交通」，既不知道該搭哪班車、也無從判斷這筆結果可不可信。
+    // 本地 GTFS 與 AI 來源仍會補上路線，寧可少一條候選也不要送出假路線名。
+    if (transitLegs.some((leg: any) => !transitousLineName(leg))) continue;
+
+    const segments: CommuteRouteSegment[] = rawLegs.map((leg: any, index: number) => {
+      const type = leg.mode === "WALK" ? "walk" : leg.mode === "SUBWAY" ? "subway" : leg.mode === "BUS" ? "bus" : "rail";
+      const lineName = type === "walk" ? "徒歩" : transitousLineName(leg)!;
+      const identity = getTransitLineIdentity(lineName);
+      const departureStop = index === 0 ? toJapaneseStationName(origin) : transitousStationName(String(leg.from?.name || ""));
+      const arrivalStop = index === rawLegs.length - 1 ? toJapaneseStationName(destination) : transitousStationName(String(leg.to?.name || ""));
+      // Transitous 的 routeTextColor 與 GTFS 同源，同樣不可信（幾乎全是白字），
+      // 一律由 getLineColors 依底色重算，避免淺色路線名整段看不見。
+      const gtfsColor = leg.routeColor ? `#${String(leg.routeColor).replace(/^#/, "")}` : null;
+      const colors = type === "walk"
+        ? { color: "#8A9590", textColor: "#FFFFFF" as const }
+        : getLineColors(lineName, gtfsColor);
+      return {
+        // routeShortName 在 jp-japan-rail 是班次編號，不能當路線代號（會變成 TJ 位置上的一串數字）。
+        type, lineName: identity?.name || lineName,
+        lineShortName: (!isTrainNumber(leg.routeShortName) && leg.routeShortName) || identity?.shortCode || null,
+        lineColor: colors.color, lineTextColor: colors.textColor,
+        operator: leg.agencyName || identity?.operator || null, departureStop, arrivalStop,
+        // 站編號三層：Transitous 自帶 → 人工表（首都圈主線）→ 圖資 fromCode/toCode。
+        // 少了第三層，經由停靠站序列還原出來的路線會查不到編號，站牌圖示就變空白。
+        startStationNumber: leg.from?.stopCode || getStationCodeForLine(lineName, departureStop) || graphStationCode(lineName, departureStop),
+        endStationNumber: leg.to?.stopCode || getStationCodeForLine(lineName, arrivalStop) || graphStationCode(lineName, arrivalStop),
+        departureTime: leg.startTime ? String(leg.startTime).slice(11, 16) : null,
+        arrivalTime: leg.endTime ? String(leg.endTime).slice(11, 16) : null,
+        durationMinutes: Math.max(0, Math.round(Number(leg.duration) / 60)),
+        stopCount: Array.isArray(leg.intermediateStops) ? leg.intermediateStops.length + 1 : null,
+        headsign: leg.headsign || null
+      };
+    });
+
+    if (segments.some(segment => !isOfficialJapaneseStationText(segment.departureStop) || !isOfficialJapaneseStationText(segment.arrivalStop))) continue;
+    const total = Math.round(Number(itinerary.duration) / 60);
+    if (!Number.isInteger(total) || total < 1 || total > 240) continue;
+
+    const transfers = Number.isInteger(itinerary.transfers) ? itinerary.transfers : Math.max(0, transitLegs.length - 1);
+    const signature = segments.filter(s => s.type !== "walk").map(s => `${s.lineName}:${s.departureStop}->${s.arrivalStop}`).join("|");
+    if (seenSignatures.has(signature)) continue;
+    seenSignatures.add(signature);
+
+    results.push({
+      source: "transitous", originStation: toJapaneseStationName(origin), destinationStation: toJapaneseStationName(destination),
+      totalDurationMinutes: total, transfers,
+      departureTime: segments[0]?.departureTime || null, arrivalTime: segments.at(-1)?.arrivalTime || null,
+      referenceLabel: `Transitous 標準班表・${reference.label}`,
+      sourceLinks: [{ title: "Transitous 路線資料", url: "https://transitous.org/" }, { title: "Transitous 資料來源", url: "https://transitous.org/sources/" }],
+      segments
+    });
+  }
+
+  return results;
+}
+
+async function fetchTransitousRoute(origin: string, destination: string, context = ""): Promise<CommuteRouteDetails | null> {
+  const routes = await fetchTransitousRoutes(origin, destination, context);
+  return routes[0] || null;
 }
 
 async function resolveRoutes(origins: RouteOrigin[], destination: string) {
@@ -154,11 +259,105 @@ async function resolveRoutes(origins: RouteOrigin[], destination: string) {
 }
 
 /**
- * 物件健檢的通勤查詢共用既有路線來源與驗證邏輯。
- * 呼叫端只需要一個物件最近車站，不必組成 RentRecommendation。
+ * 物件健檢的通勤查詢：推薦 1～3 條路線，並嚴格依「轉乘次數最少 → 轉乘次數多次」排序。
  */
+export async function resolveListingCommuteRoutes(originStation: string, destinationStation: string, context = ""): Promise<CommuteRouteDetails[]> {
+  const candidates: CommuteRouteDetails[] = [];
+
+  // 1. 本地 GTFS 圖資探索候選
+  try {
+    const localRoutes = findLocalTransitRoutes(originStation, destinationStation, 5);
+    if (localRoutes.length) {
+      candidates.push(...localRoutes);
+    }
+  } catch (error) {
+    console.warn(`Local transit routes error for ${originStation} → ${destinationStation}:`, String(error));
+  }
+
+  // 2. Transitous 班表候選
+  try {
+    const transitousRoutes = await fetchTransitousRoutes(originStation, destinationStation, context);
+    if (transitousRoutes.length) {
+      candidates.push(...transitousRoutes);
+    }
+  } catch (error) {
+    console.warn(`Transitous unavailable for ${originStation} → ${destinationStation}:`, String(error));
+  }
+
+  // 3. 若本地與 Transitous 均無法辨識，退回 AI/Web Grounding
+  if (!candidates.length) {
+    const contextualOrigin = `${normalizedStation(context)}:${normalizedStation(originStation)}`;
+    const cached = await readTransitRoute(contextualOrigin, normalizedStation(destinationStation));
+    if (cached) {
+      candidates.push(cached);
+    } else {
+      let aiRoutes = await searchRoutes([{ station: originStation, context }], destinationStation);
+      if (!aiRoutes.length) aiRoutes = await searchRoutes([{ station: originStation, context }], destinationStation);
+      if (!aiRoutes.length) aiRoutes = await estimateRoutes([{ station: originStation, context }], destinationStation);
+      if (aiRoutes.length) {
+        for (const r of aiRoutes) {
+          if (r.source !== "ai_estimate") await writeTransitRoute(contextualOrigin, normalizedStation(destinationStation), r);
+        }
+        candidates.push(...aiRoutes);
+      }
+    }
+  }
+
+  if (!candidates.length) return [];
+
+  // 4. 去重、排除過度繞路與依「轉乘最少到需要轉車多次」排序
+  const minMinutes = Math.min(...candidates.map(c => c.totalDurationMinutes));
+
+  // 合理性過濾：
+  // 1. 車程不可過度繞路（直達車允許寬容時間，轉乘車限制在合理時間範圍內）
+  const timeBounded = candidates.filter(r => {
+    const maxAllowed = r.transfers === 0
+      ? Math.max(Math.round(minMinutes * 1.7), minMinutes + 25)
+      : Math.max(Math.round(minMinutes * 1.5), minMinutes + 15);
+    return r.totalDurationMinutes <= maxAllowed;
+  });
+
+  if (!timeBounded.length) return [];
+
+  const bestTransfers = Math.min(...timeBounded.map(r => r.transfers));
+  // 2. 轉乘次數不得比合理最少轉乘多 2 次以上（但車程在最快範圍內的優選方案保留）
+  const viable = timeBounded.filter(r => {
+    if (r.totalDurationMinutes <= minMinutes + 8) return true;
+    return r.transfers <= bestTransfers + 1;
+  });
+
+  // 先依轉乘次數由少到多排序；同轉乘次數則依總分鐘由短到長排序
+  viable.sort((a, b) => a.transfers - b.transfers || a.totalDurationMinutes - b.totalDurationMinutes);
+
+  const selected: CommuteRouteDetails[] = [];
+  const seenSignatures = new Set<string>();
+  const seenLineSequences = new Set<string>();
+
+  for (const route of viable) {
+    const transitSegments = route.segments.filter(s => s.type !== "walk" && s.type !== "wait");
+    // 使用正規化線路名稱去除空格與格式差異（例如 "JR 山手線" vs "JR山手線"）
+    const signature = transitSegments
+      .map(s => `${toJapaneseLineName(s.lineName).replace(/\s+/g, "")}:${s.departureStop}->${s.arrivalStop}`)
+      .join("|");
+    const lineSequence = `${route.transfers}:${transitSegments
+      .map(s => toJapaneseLineName(s.lineName).replace(/\s+/g, ""))
+      .join(" > ")}`;
+
+    if (seenSignatures.has(signature)) continue;
+    seenSignatures.add(signature);
+
+    if (seenLineSequences.has(lineSequence)) continue;
+    seenLineSequences.add(lineSequence);
+
+    selected.push(route);
+  }
+
+  // 若經過合理性過濾與去重後只有 1 條或 2 條，就回傳實際找到的有效路線，最多回傳 3 條（絕不硬湊多餘/荒謬路線）
+  return selected.slice(0, 3);
+}
+
 export async function resolveListingCommuteRoute(originStation: string, destinationStation: string, context = "") {
-  const routes = await resolveRoutes([{ station: originStation, context }], destinationStation);
+  const routes = await resolveListingCommuteRoutes(originStation, destinationStation, context);
   return routes[0] || null;
 }
 
@@ -227,12 +426,15 @@ function parseGroundedRoute(raw: GroundedRoute, expectedOrigin: string, destinat
     if (!lineName || !departureStop || !arrivalStop || !Number.isFinite(durationValue) || duration < 0 || duration > 180) return null;
     const identity = getTransitLineIdentity(lineName);
     const type = segmentType(segment.type);
+    const colors = type === "walk"
+      ? { color: "#8A9590", textColor: "#FFFFFF" as const }
+      : getLineColors(lineName);
     return {
       type,
       lineName: identity?.name || (type === "walk" ? "徒歩" : toJapaneseLineName(lineName)),
       lineShortName: identity?.shortCode || null,
-      lineColor: identity?.color || (type === "walk" ? "#8A9590" : "#3F626D"),
-      lineTextColor: identity?.textColor || "#FFFFFF",
+      lineColor: colors.color,
+      lineTextColor: colors.textColor,
       operator: identity?.operator || segment.operator || null,
       departureStop,
       arrivalStop,
@@ -392,10 +594,13 @@ function parseLooseEstimate(raw: GroundedRoute, origin: RouteOrigin, destination
     const identity = getTransitLineIdentity(lineName);
     const departureStop = toJapaneseStationName(String(segment.departureStop || origin.station));
     const arrivalStop = toJapaneseStationName(String(segment.arrivalStop || destination));
+    const colors = type === "walk"
+      ? { color: "#8A9590", textColor: "#FFFFFF" as const }
+      : getLineColors(lineName);
     return {
       type, lineName: identity?.name || (type === "walk" ? "徒歩" : toJapaneseLineName(lineName)),
-      lineShortName: identity?.shortCode || null, lineColor: identity?.color || (type === "walk" ? "#8A9590" : "#3F626D"),
-      lineTextColor: identity?.textColor || "#FFFFFF", operator: identity?.operator || segment.operator || null,
+      lineShortName: identity?.shortCode || null, lineColor: colors.color,
+      lineTextColor: colors.textColor, operator: identity?.operator || segment.operator || null,
       departureStop, arrivalStop, startStationNumber: getStationCodeForLine(lineName, departureStop), endStationNumber: getStationCodeForLine(lineName, arrivalStop),
       departureTime: null, arrivalTime: null, durationMinutes: Math.max(0, Math.min(total, Math.round(Number(segment.durationMinutes) || 0))),
       stopCount: Number.isInteger(segment.stopCount) ? Number(segment.stopCount) : null, headsign: segment.headsign ? String(segment.headsign) : null

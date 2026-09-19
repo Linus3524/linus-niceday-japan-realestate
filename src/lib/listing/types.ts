@@ -251,8 +251,17 @@ export interface AnalyzeListingResult {
 }
 
 
+export interface CommuteRouteOption {
+  id?: string;
+  route: CommuteRouteDetails;
+  transitMinutes: number;
+  totalMinutes: number;
+  transfers: number;
+}
+
 export interface ListingCommuteResult {
   route?: CommuteRouteDetails | null;
+  routes?: CommuteRouteOption[];
   destinationInput: string;
   destinationAddress: string;
   destinationResolutionNote?: string | null;

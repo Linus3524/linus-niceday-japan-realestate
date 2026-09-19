@@ -9,7 +9,17 @@ function key(origin: string, destination: string) {
   // v4 includes the recommendation's geographic context in `origin` and
   // invalidates the earlier ambiguous-line cache entries; this
   // prevents homonymous stations such as 大通 from sharing a route across cities.
-  return `linus:transit:v4:${encodeURIComponent(origin)}:${encodeURIComponent(destination)}`;
+  //
+  // v5 discards routes cached before Transitous line identification was fixed.
+  // Those entries stored the GTFS train number (e.g. "10650744") as the line
+  // name, and the 30-day TTL means they would keep rendering numeric badges
+  // long after the code was corrected. Cached data outlives a deploy, so a
+  // fix in the builder is not enough on its own.
+  //
+  // v6 discards routes planned from a homonymous station in another prefecture
+  // (白山 resolving to Kagawa, 橋本 to Kanagawa) before geocode results were
+  // checked against the graph's metro-area coverage.
+  return `linus:transit:v6:${encodeURIComponent(origin)}:${encodeURIComponent(destination)}`;
 }
 
 export async function readTransitRoute(origin: string, destination: string) {

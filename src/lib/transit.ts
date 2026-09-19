@@ -1,5 +1,6 @@
 import { districtStations } from "../data/housingMarket.js";
 import stationCodeOverrides from "../data/stationCodeOverrides.json" with { type: "json" };
+import railLineColors from "../data/railLineColors.json" with { type: "json" };
 import type { RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
 import * as OpenCC from "opencc-js";
 
@@ -11,6 +12,14 @@ const openccConverter = typeof OpenCC?.Converter === "function"
  * 涵蓋 GTFS feed 沒有填 stop_code、但實際有官方編號的車站。索引鍵是 GTFS 原始路線名稱，
  * 涵蓋許多在 TRANSIT_LINES 沒有對應識別的地方線，所以獨立於 line identity 查表。 */
 const STATION_CODE_OVERRIDES = (stationCodeOverrides as { lines?: Record<string, Record<string, string>> }).lines || {};
+
+/** 全日本路線色（Wikidata P465，CC0）：由 scripts/build-line-colors.ts 產生。
+ *  lines 以圖資原始路線名為鍵；catalog 以 normalizeLineKey 正規化後的鍵涵蓋全日本。 */
+type LineColorEntry = { color: string; textColor: string };
+const RAIL_LINE_COLORS = railLineColors as {
+  lines?: Record<string, LineColorEntry>;
+  catalog?: Record<string, LineColorEntry>;
+};
 
 export interface TransitLineIdentity {
   id: string;
@@ -54,7 +63,7 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "jr-shonan-shinjuku", name: "JR 湘南新宿ライン", shortCode: "JS", color: "#E60012", textColor: "#FFFFFF", operator: "JR 東日本", patterns: [/JR?湘南新宿/]} ,
   { id: "jr-yamanote", name: "JR 山手線", shortCode: "JY", color: "#9ACD32", textColor: "#1A2A22", operator: "JR 東日本", patterns: [/JR?山手線/] },
   { id: "jr-chuo-rapid", name: "JR 中央線快速", shortCode: "JC", color: "#F15A22", textColor: "#FFFFFF", operator: "JR 東日本", patterns: [/JR?中央線(?!.*總武)/] },
-  { id: "jr-chuo-sobu", name: "JR 中央・総武線", shortCode: "JB", color: "#FFD400", textColor: "#1A2A22", operator: "JR 東日本", patterns: [/JR?(?:中央)?[總総]武線|JR中央[總総]武線/] },
+  { id: "jr-chuo-sobu", name: "JR 中央・総武線", shortCode: "JB", color: "#FFD400", textColor: "#1A2A22", operator: "JR 東日本", patterns: [/JR?(?:中央)?[・]?[總総]武(?:緩行)?線|JR中央[總総]武線/] },
   { id: "jr-keihin", name: "JR 京浜東北線", shortCode: "JK", color: "#00B2E5", textColor: "#1A2A22", operator: "JR 東日本", patterns: [/JR?京[濱浜]東北線/] },
   { id: "jr-yokosuka", name: "JR 横須賀線", shortCode: "JO", color: "#0072BC", textColor: "#FFFFFF", operator: "JR 東日本", patterns: [/JR?橫須賀線|JR?横須賀線/] },
   { id: "jr-nambu", name: "JR 南武線", shortCode: "JN", color: "#FFD400", textColor: "#1A2A22", operator: "JR 東日本", patterns: [/JR?南武線/] },
@@ -278,12 +287,109 @@ export function toJapanesePrefectureName(value: string) {
   return /[都道府県]$/.test(name) ? name : `${name}県`;
 }
 
+/**
+ * 路線名查表鍵：吸收「同一條線的不同寫法」後再比對。
+ *
+ * 圖資寫「都営三田線」、Wikidata 主標籤是「三田線」、AI 會回「東京都交通局三田線」，
+ * 三者指同一條線。業者前綴、JR 的空白、全半形、中黑點都不影響身分，先一律去掉。
+ * 這支同時給建表腳本與執行期使用，兩邊必須用同一套規則，否則表建得出來也查不到。
+ */
+const LINE_KEY_OPERATORS = /^(JR東日本|JR東海|JR西日本|JR九州|JR北海道|JR四国|JR|東京メトロ|東京地下鉄|都営地下鉄|都営|東京都交通局|横浜市営地下鉄|横浜市営|大阪市高速電気軌道|Osaka Metro|名古屋市営地下鉄|名古屋市営|札幌市営地下鉄|札幌市営|仙台市地下鉄|京都市営地下鉄|京都市営|神戸市営地下鉄|神戸市営|福岡市地下鉄)/;
+
+/** 種別（各駅停車・快速・急行…）不影響路線身分，查色前先整段拿掉。
+ *  必須在 normalize() 之前處理：normalize 會先吃掉「駅」，把「各駅停車」
+ *  變成「各停車」，再跑一次又變成「車」——同一個字串正規化兩次結果不同，
+ *  建表時與查表時就會對不起來。 */
+const LINE_SERVICE_WORDS = /各駅停車|各停|普通列車|普通|通勤快速|快速急行|区間急行|準急|通勤準急|快速|急行|特急|通勤/g;
+
+export function normalizeLineKey(value: string) {
+  let key = value
+    .replace(/[（(].*?[）)]/g, "")
+    .replace(LINE_SERVICE_WORDS, "");
+  key = normalize(key).replace(/[\s　・･]/g, "");
+  // 業者前綴可能疊兩層（「都営地下鉄三田線」），所以要重複剝離。
+  let previous = "";
+  while (previous !== key) {
+    previous = key;
+    key = key.replace(LINE_KEY_OPERATORS, "");
+  }
+  return key;
+}
+
+/**
+ * 依 WCAG 相對亮度挑可讀的文字色。
+ *
+ * 不能相信上游的 text_color：GTFS 圖資把 171 條路線的 lineTextColor 全部填成
+ * #FFFFFF，於是山手線（#9ACD32）、総武線（#FFD400）這類淺底色配白字，路線名
+ * 在畫面上完全看不見——使用者回報的「路線名稱不見了」就是這個。底色是已知的，
+ * 對比色算得出來，就不該依賴一個已知會錯的欄位。
+ */
+const DARK_TEXT = "#1A2A22";
+
+function relativeLuminance(hex: string) {
+  const channel = (offset: number) => {
+    const value = parseInt(hex.slice(offset, offset + 2), 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+}
+
+export function readableTextColor(backgroundColor: string): "#FFFFFF" | "#1A2A22" {
+  const hex = backgroundColor.replace(/^#/, "");
+  if (!/^[0-9A-Fa-f]{6}$/.test(hex)) return "#FFFFFF";
+  const luminance = relativeLuminance(hex);
+  // 對白字的對比 = 1.05 / (L + 0.05)；對深字 = (L + 0.05) / 0.05。
+  // 交叉點約在 L = 0.179，低於此用白字、高於此用深字。
+  return luminance > 0.179 ? DARK_TEXT : "#FFFFFF";
+}
+
+/**
+ * 可讀性底線：對比低於 3:1 就改用另一個文字色。
+ *
+ * TRANSIT_LINES 的 textColor 是照各業者官方標示填的，但官方標示是給大型月台
+ * 看板用的；同樣配色縮到畫面上 11px 的徽章就不夠看。實測埼京線（#00AC9A 配
+ * 白字）只有 2.8:1，低於 WCAG 對粗體大字的 3:1 下限。底色保持官方色不動，
+ * 只在必要時翻轉文字色，是唯一能同時保住品牌識別與可讀性的做法。
+ */
+function enforceContrast(backgroundColor: string, preferred: string): "#FFFFFF" | "#1A2A22" {
+  const hex = backgroundColor.replace(/^#/, "");
+  if (!/^[0-9A-Fa-f]{6}$/.test(hex)) return "#FFFFFF";
+  const background = relativeLuminance(hex);
+  const text = preferred === "#FFFFFF" ? 1 : relativeLuminance(DARK_TEXT.slice(1));
+  const [lighter, darker] = background > text ? [background, text] : [text, background];
+  const ratio = (lighter + 0.05) / (darker + 0.05);
+  if (ratio >= 3) return preferred === "#FFFFFF" ? "#FFFFFF" : DARK_TEXT;
+  return readableTextColor(backgroundColor);
+}
+
 export function getTransitLineIdentity(lineName: string): TransitLineIdentity | null {
   const normalized = normalize(lineName);
   const found = TRANSIT_LINES.find(line => line.patterns.some(pattern => pattern.test(normalized)));
   if (!found) return null;
   const { patterns: _patterns, ...identity } = found;
   return identity;
+}
+
+/**
+ * 路線的顯示配色。查表順序是刻意的：
+ *   1. TRANSIT_LINES：人工查證過的首都圈主要路線，最準，也帶 shortCode。
+ *   2. railLineColors.lines：圖資路線名 → Wikidata 官方色的直接對照。
+ *   3. railLineColors.catalog：正規化鍵查全日本 1600+ 條路線，接住 Transitous
+ *      與 AI 回傳的圖資以外路線名。
+ *   4. 呼叫端傳入的 GTFS 色：只當最後手段，且文字色一律重算不沿用。
+ */
+export function getLineColors(lineName: string, fallbackColor?: string | null): { color: string; textColor: "#FFFFFF" | "#1A2A22" } {
+  const identity = getTransitLineIdentity(lineName);
+  if (identity) return { color: identity.color, textColor: enforceContrast(identity.color, identity.textColor) };
+
+  const direct = RAIL_LINE_COLORS.lines?.[lineName];
+  if (direct) return { color: direct.color, textColor: readableTextColor(direct.color) };
+
+  const viaCatalog = RAIL_LINE_COLORS.catalog?.[normalizeLineKey(lineName)];
+  if (viaCatalog) return { color: viaCatalog.color, textColor: readableTextColor(viaCatalog.color) };
+
+  const color = fallbackColor && /^#[0-9A-Fa-f]{6}$/.test(fallbackColor) ? fallbackColor : "#3F626D";
+  return { color, textColor: readableTextColor(color) };
 }
 
 export function toJapaneseLineName(value: string) {

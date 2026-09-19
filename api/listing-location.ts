@@ -1,6 +1,6 @@
 import { getListingLocationContext, nearestStationForAddress } from "../src/lib/listingLocation.js";
 import { resolveCommuteDestination } from "../src/lib/commuteDestination.js";
-import { resolveListingCommuteRoute } from "../src/lib/transitRouteApi.js";
+import { resolveListingCommuteRoute, resolveListingCommuteRoutes } from "../src/lib/transitRouteApi.js";
 import { toJapaneseStationName } from "../src/lib/transit.js";
 import { originWalkIssue } from "../src/lib/commuteValidation.js";
 import { lookupCrimeSafety } from "../src/lib/crimeSafety.js";
@@ -99,8 +99,9 @@ export default async function handler(req: any, res: any) {
         return res.status(422).json({ error: "目的地附近車站的步行估算超過 30 分鐘，可能有定位偏差或車站資料缺漏。請核對目的地地址，或改填確定的目的車站（例如「新宿站」）。" });
       }
 
-      const route = await resolveListingCommuteRoute(originStation, destinationInfo.station, addressContext);
-      if (!route) return res.status(200).json({ found: false, message: "目前查不到這兩站之間的通勤路線，請稍後再試。" });
+      const routes = await resolveListingCommuteRoutes(originStation, destinationInfo.station, addressContext);
+      if (!routes.length) return res.status(200).json({ found: false, message: "目前查不到這兩站之間的通勤路線，請稍後再試。" });
+      const primaryRoute = routes[0];
       return res.status(200).json({
         found: true,
         commute: {
@@ -110,10 +111,17 @@ export default async function handler(req: any, res: any) {
           destinationStation: destinationInfo.station,
           destinationWalkMinutes: destinationInfo.normalMinutes,
           originWalkMinutes,
-          transitMinutes: route.totalDurationMinutes,
-          totalMinutes: originWalkMinutes + route.totalDurationMinutes + destinationInfo.normalMinutes,
-          transfers: route.transfers,
-          route,
+          transitMinutes: primaryRoute.totalDurationMinutes,
+          totalMinutes: originWalkMinutes + primaryRoute.totalDurationMinutes + destinationInfo.normalMinutes,
+          transfers: primaryRoute.transfers,
+          route: primaryRoute,
+          routes: routes.map((r, idx) => ({
+            id: `route-${idx + 1}`,
+            route: r,
+            transitMinutes: r.totalDurationMinutes,
+            totalMinutes: originWalkMinutes + r.totalDurationMinutes + destinationInfo.normalMinutes,
+            transfers: r.transfers,
+          })),
         },
       });
     }

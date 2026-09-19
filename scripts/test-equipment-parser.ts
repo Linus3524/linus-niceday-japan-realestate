@@ -75,3 +75,27 @@ console.log(`Renovation & occupancy translation tests passed: "${translatedReno}
 for (const [raw, expected] of [["新耐震", "新耐震結構"], ["新耐震基準", "新耐震結構"], ["新耐震構造", "新耐震結構"], ["新耐震結構", "新耐震結構"], ["耐震構造", "耐震結構"], ["耐火構造", "耐火結構"]]) {
   assert.deepEqual(parseEquipmentList(raw).map(item => item.nameZh), [expected]);
 }
+
+// 測試網路與寵物標籤
+for (const raw of ["インターネット無料", "ネット無料", "Wi-Fi無料", "wifi無料", "無料wifi", "無料Wi-Fi", "インターネット使い放題", "高速ネット無料", "シーファイブ", "UCOM光"]) {
+  const res = parseEquipmentList(raw);
+  assert.ok(res.length > 0, `應解析出免費網路設備: ${raw}`);
+  assert.equal(res[0].highlight, true, `免費網路必須具備 highlight: true: ${raw}`);
+  assert.equal(res[0].category, "通訊網路");
+}
+
+for (const raw of ["ペット可", "ペット相談", "ペット飼育可", "ペット可(小型犬・猫1匹迄)"]) {
+  const res = parseEquipmentList(raw);
+  assert.ok(res.length > 0, `應解析出可養寵物標籤: ${raw}`);
+  assert.equal(res[0].nameZh, "可飼養寵物");
+  assert.equal(res[0].highlight, true);
+}
+
+// 測試禁止限制條款不可誤轉為設備
+for (const raw of ["ペット不可", "事務所不可", "楽器等の使用不可", "室内禁煙"]) {
+  const res = parseEquipmentList(raw);
+  assert.equal(res.length, 0, `禁止限制條款不可被解析為設備標籤: ${raw}`);
+}
+
+console.log("Internet, Wi-Fi, Pet and negative restriction exclusion tests passed.");
+

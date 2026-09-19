@@ -13,20 +13,136 @@ export interface RentalConditionSection {
   rows: Array<{ title: string; items: string[] }>;
 }
 
-const noteTopics = [
-  /寵物|ペット|小型犬|貓|猫/u,
-  /清潔|清掃|クリーニング/u,
-  /換鎖|鍵交換/u,
-  /保證|保証/u,
-  /保險|保険/u,
-  /24\s*小時|24時間|生活支援|緊急支援|サポート/u,
-  /停車|駐車/u,
-  /自行車|駐輪/u,
-  /違約|解約/u,
-] as const;
+/**
+ * 語意去重與分類標籤產生器
+ * 依據條款核心語意分配唯一 canonicalKey 與標準所屬卡片/列，防止不同來源或句式重複出現。
+ */
+export function getSemanticKey(text: string): { key: string; canonicalCategory: "lease" | "moveIn" | "extraContract" | "guarantee" | "fees" | "moveOut" | "optional" | "other" } {
+  const norm = text.replace(/[\s\(\)（）:：,，。、]+/g, "").toLowerCase();
 
-function topicsOf(text: string) {
-  return noteTopics.flatMap((pattern, index) => pattern.test(text) ? [index] : []);
+  // 1. 24小時生活管家/支援服務（Concierge24、24Hサポート等） -> 歸入 fees
+  if (/concierge24|安心サポート|くらしーど|24時間サポート|ライフサポート|安心入居|生活支援|生活急難/i.test(norm)) {
+    return { key: "fee:concierge_or_support", canonicalCategory: "fees" };
+  }
+  // 2. 友之會 / 會員月費 -> 歸入 fees
+  if (/友の会|友之會|リブクラブ|livclub/i.test(norm)) {
+    return { key: "fee:membership", canonicalCategory: "fees" };
+  }
+  // 3. 換鎖費 -> 歸入 fees
+  if (/鍵交換|換鎖/i.test(norm)) {
+    return { key: "fee:lock_replacement", canonicalCategory: "fees" };
+  }
+  // 4. 簽約事務手續費（非更新/再契約手續費） -> 歸入 fees
+  if (/(?:契約事務|事務)(?:手数料|手續費)|事務費/i.test(norm) && !/更新|再契約|再簽約/i.test(norm)) {
+    return { key: "fee:admin_fee", canonicalCategory: "fees" };
+  }
+  // 5. 消毒/抗菌 -> 歸入 fees
+  if (/消毒|抗菌/i.test(norm)) {
+    return { key: "fee:disinfection", canonicalCategory: "fees" };
+  }
+  // 6. 家具家電撤除費 -> 歸入 fees
+  if (/家具家電撤除/i.test(norm)) {
+    return { key: "fee:furniture_removal", canonicalCategory: "fees" };
+  }
+
+  // 7. 長者守護服務 / 高齡者條件 (みまもりS等) -> 歸入 extraContract
+  if (/みまもり|見守り|高齢者|長者守護|安危監護/i.test(norm)) {
+    return { key: "contract:elderly_mimamori", canonicalCategory: "extraContract" };
+  }
+  // 8. 外國籍 / 海外審查 -> 歸入 extraContract
+  if (/外国籍|外國籍|海外審査|gtn/i.test(norm)) {
+    return { key: "contract:foreigner", canonicalCategory: "extraContract" };
+  }
+  // 9. 辦公室/事務所/SOHO限制 -> 歸入 extraContract
+  if (/事務所|soho|辦公室/i.test(norm)) {
+    return { key: "contract:office_use", canonicalCategory: "extraContract" };
+  }
+  // 10. 樂器使用限制 -> 歸入 extraContract
+  if (/楽器|樂器|鋼琴|ピアノ/i.test(norm)) {
+    return { key: "contract:instrument", canonicalCategory: "extraContract" };
+  }
+  // 11. 單身限定 / 入住人數 -> 歸入 extraContract
+  if (/単身|一人入居|二人入居|兩人|單身|合租|ルームシェア/i.test(norm)) {
+    return { key: "contract:occupancy_count", canonicalCategory: "extraContract" };
+  }
+  // 12. 禁煙 -> 歸入 extraContract
+  if (/禁煙|吸煙|吸菸/i.test(norm)) {
+    return { key: "contract:smoking", canonicalCategory: "extraContract" };
+  }
+  // 13. 民泊/轉租 -> 歸入 extraContract
+  if (/民泊|轉租|转租|民宿/i.test(norm)) {
+    return { key: "contract:minpaku", canonicalCategory: "extraContract" };
+  }
+  // 14. 先行契約 -> 歸入 extraContract
+  if (/先行契約/i.test(norm)) {
+    return { key: "contract:advance_signing", canonicalCategory: "extraContract" };
+  }
+
+  // 15. 寵物相關 -> 歸入 moveIn (寵物條件)
+  if (/ペット|寵物|小型犬|猫|飼育/i.test(norm)) {
+    return { key: "pet:condition", canonicalCategory: "moveIn" };
+  }
+  // 16. 入住時期 / 可入住日 -> 歸入 moveIn
+  if (/入居時期|入居日|起租|即時|立即入住|可看屋|内見/i.test(norm)) {
+    return { key: "moveIn:timing", canonicalCategory: "moveIn" };
+  }
+  // 17. 敷金禮金優惠 / 免租期 -> 歸入 moveIn
+  if (/キャンペーン|フリーレント|免租期|免押金.*免禮金|零押金/i.test(norm)) {
+    return { key: "moveIn:campaign", canonicalCategory: "moveIn" };
+  }
+
+  // 18. 短期解約違約金 -> 歸入 moveOut
+  if (/短期解約|解約違約金|違約金/i.test(norm)) {
+    return { key: "moveOut:cancellation_penalty", canonicalCategory: "moveOut" };
+  }
+  // 19. 解約預告 -> 歸入 moveOut
+  if (/解約予告|退租須於/i.test(norm)) {
+    return { key: "moveOut:notice_period", canonicalCategory: "moveOut" };
+  }
+  // 20. 退租清潔費 / クリーンコート代 / 清潔費支付時點 -> 歸入 moveOut
+  if (/ハウスクリーニング|ルームクリーニング|清掃|清潔費|クリーンコート|退去時支払/i.test(norm)) {
+    if (/退去時支払|變更為退租時支付|退租時支付/.test(norm)) {
+      return { key: "moveOut:cleaning_timing", canonicalCategory: "moveOut" };
+    }
+    return { key: "moveOut:cleaning_fee", canonicalCategory: "moveOut" };
+  }
+  // 21. 退租結算手續費 -> 歸入 moveOut
+  if (/退去時精算|退租結算/i.test(norm)) {
+    return { key: "moveOut:settlement_fee", canonicalCategory: "moveOut" };
+  }
+
+  // 22. 保證公司 / 保證料 -> 歸入 guarantee
+  if (/保証会社|保證公司|初回保証|月次保証|エポス|epos|gtn|casa|保証料/i.test(norm)) {
+    return { key: "guarantee:company", canonicalCategory: "guarantee" };
+  }
+  // 23. 火災保險 / 損害保險 -> 歸入 guarantee
+  if (/火災保険|損害保険|火災保險|家財保険|家財保險/i.test(norm)) {
+    return { key: "guarantee:insurance", canonicalCategory: "guarantee" };
+  }
+
+  // 24. 更新事務手續費 -> 歸入 lease
+  if (/更新事務手数料|更新手續費/i.test(norm)) {
+    return { key: "lease:renewal_admin", canonicalCategory: "lease" };
+  }
+  // 25. 更新料 / 再契約料 / 再契約特約 -> 歸入 lease
+  if (/更新料|再契約料|契約更新費|再契約|再簽約/i.test(norm)) {
+    return { key: "lease:renewal_fee", canonicalCategory: "lease" };
+  }
+  // 26. 租金調整 / 法人普通借相談 -> 歸入 lease
+  if (/賃料改定|租金調整|普通借相談/i.test(norm)) {
+    return { key: "lease:rent_revision", canonicalCategory: "lease" };
+  }
+  // 27. 租賃契約期間 / 租期 -> 歸入 lease
+  if (/普通賃貸借|定期借家|契約期間|租賃契約期間|租期\s*\d+年/i.test(norm)) {
+    return { key: "lease:term", canonicalCategory: "lease" };
+  }
+
+  // 28. 停車場 / 駐輪場 / 機車 -> 歸入 optional
+  if (/駐車場|駐輪場|バイク|停車場|自行車|機車|選配/i.test(norm)) {
+    return { key: "optional:parking_bike", canonicalCategory: "optional" };
+  }
+
+  return { key: `other:${norm.slice(0, 20)}`, canonicalCategory: "other" };
 }
 
 /**
@@ -57,58 +173,99 @@ export function buildRentalConditionSections({
   totalMonthlyCost?: number | null;
 }): RentalConditionSection[] {
   const groups = rentalConditionGroups(rentalConditions, optionalFacilities, rentalConditionItems);
-  const coveredTopics = new Set(topicsOf(`${rentalConditions || ""} ${optionalFacilities || ""}`));
-  const extraNotes = parseAndExplainSpecialNotes(specialNotes, specialNoteItems).filter((item) => {
-    const topics = topicsOf(`${item.title} ${item.explanation} ${item.rawJapanese || ""}`);
-    return topics.length === 0 || topics.some((topic) => !coveredTopics.has(topic));
-  });
+  const extraNotes = parseAndExplainSpecialNotes(specialNotes, specialNoteItems);
+
   if (!groups.length && !extraNotes.length && !guaranteeFee && !insuranceFee && !renewalFee) return [];
 
-  const getItems = (id: string) =>
-    (groups.find((group) => group.id === id)?.items || []).map(stripOrphanedBrackets).filter(Boolean);
+  const pool = new Map<string, { text: string; category: string }>();
 
-  const leaseItems = getItems("lease");
-  if (
-    renewalFee &&
-    renewalFee.trim() &&
-    !leaseItems.some((i) => i.includes("更新") || i.includes("再契約") || i.includes("再簽約"))
-  ) {
-    leaseItems.push(formatRenewalItem(renewalFee));
+  const addItem = (text: string, defaultCategory: string) => {
+    const cleaned = stripOrphanedBrackets(text.trim());
+    if (!cleaned || cleaned.includes("圖紙另有個別日文特約")) return;
+    const { key, canonicalCategory } = getSemanticKey(cleaned);
+    const targetCategory = canonicalCategory === "other" ? defaultCategory : canonicalCategory;
+
+    const existing = pool.get(key);
+    if (!existing) {
+      pool.set(key, { text: cleaned, category: targetCategory });
+    } else {
+      // 擇優保留：若新條目更完整、字數更豐富或具備更精確說明，予以覆蓋
+      if (cleaned.length > existing.text.length) {
+        pool.set(key, { text: cleaned, category: targetCategory });
+      }
+    }
+  };
+
+  // 1. 登記由 rentalConditionGroups 輸出的分組項目
+  for (const group of groups) {
+    for (const item of group.items) {
+      addItem(item, group.id);
+    }
   }
+
+  // 2. 登記額外費用與保證保險（若尚未涵蓋）
+  if (renewalFee && renewalFee.trim()) {
+    const { key } = getSemanticKey(renewalFee);
+    if (!pool.has(key) && !pool.has("lease:renewal_fee")) {
+      addItem(formatRenewalItem(renewalFee), "lease");
+    }
+  }
+  if (guaranteeFee && guaranteeFee.trim()) {
+    const { key } = getSemanticKey(guaranteeFee);
+    if (!pool.has(key) && !pool.has("guarantee:company")) {
+      addItem(formatGuaranteeItem(guaranteeFee, totalMonthlyCost), "guarantee");
+    }
+  }
+  if (insuranceFee && insuranceFee.trim()) {
+    const { key } = getSemanticKey(insuranceFee);
+    if (!pool.has(key) && !pool.has("guarantee:insurance")) {
+      addItem(formatInsuranceItem(insuranceFee), "guarantee");
+    }
+  }
+
+  // 3. 登記 specialNotes 與 specialNoteItems
+  for (const note of extraNotes) {
+    const defaultCat = ["契約特約", "合約特約", "入住條件", "使用限制", "生活規範"].includes(note.category)
+      ? "extraContract"
+      : note.category === "費用約定"
+        ? "fees"
+        : "other";
+    addItem(`${note.title}：${note.explanation}`, defaultCat);
+  }
+
+  // 4. 停車與選配設施片段清理：若已有包含多項設施的完整合成句子，清理孤立片段標籤
+  const optionalTexts = Array.from(pool.values()).filter(i => i.category === "optional").map(i => i.text);
+  const hasCombinedOptional = optionalTexts.some(t => t.includes("停車場") && (t.includes("自行車") || t.includes("機車") || t.includes("駐輪")));
+  if (hasCombinedOptional) {
+    for (const [key, val] of pool.entries()) {
+      if (val.category === "optional" && /^駐輪場$|^機車停車位$|^另有選配設施|^自行車停車場$/.test(val.text.trim())) {
+        pool.delete(key);
+      }
+    }
+  }
+
+  const getItemsByCat = (cat: string) => Array.from(pool.values()).filter(i => i.category === cat).map(i => i.text);
+
+  const leaseItems = getItemsByCat("lease");
   const lease = leaseItems.length ? leaseItems : ["圖紙未載明租期與契約更新條件，待核對正式契約。"];
 
-  const moveInItems = getItems("moveIn");
-  const petItems = groups.find((group) => group.id === "pet")?.items || [];
-  const combinedMoveIn = [...new Set([...moveInItems, ...petItems])].map(stripOrphanedBrackets).filter(Boolean);
-  const moveIn = combinedMoveIn.length ? combinedMoveIn : ["圖紙未載明入住日或優惠條件。"];
+  const moveInItems = getItemsByCat("moveIn");
+  const moveIn = moveInItems.length ? moveInItems : ["圖紙未載明入住日或優惠條件。"];
 
-  const guaranteeItems = getItems("guarantee");
-  if (guaranteeFee && guaranteeFee.trim() && !guaranteeItems.some((i) => i.includes("保證") || i.includes("保証"))) {
-    guaranteeItems.push(formatGuaranteeItem(guaranteeFee, totalMonthlyCost));
-  }
-  if (insuranceFee && insuranceFee.trim() && !guaranteeItems.some((i) => i.includes("保險") || i.includes("保険"))) {
-    guaranteeItems.push(formatInsuranceItem(insuranceFee));
-  }
+  const extraContract = getItemsByCat("extraContract");
+
+  const guaranteeItems = getItemsByCat("guarantee");
   const guarantee = guaranteeItems.length ? guaranteeItems : ["圖紙未載明保證公司方案與火災保險費用。"];
 
-  const feeItems = getItems("fees");
-  const extraFees = extraNotes
-    .filter((item) => item.category === "費用約定" || /支援|保險|保證/u.test(`${item.title}${item.explanation}`))
-    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`));
-  const combinedFees = [...feeItems, ...extraFees];
-  const fees = combinedFees.length ? combinedFees : ["圖紙未載明其他一次性或年度費用。"];
+  const feeItems = getItemsByCat("fees");
+  const fees = feeItems.length ? feeItems : ["圖紙未載明其他一次性或年度費用。"];
 
-  const moveOutItems = getItems("moveOut");
+  const moveOutItems = getItemsByCat("moveOut");
   const moveOut = moveOutItems.length ? moveOutItems : ["圖紙未載明退租清潔費或房屋個別提醒。"];
 
-  const optionalItems = getItems("optional");
-  const extraContract = extraNotes
-    .filter((item) => ["契約特約", "合約特約", "入住條件"].includes(item.category))
-    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`));
-  const usedExtra = new Set([...extraContract, ...extraFees]);
-  const extraOther = extraNotes
-    .map((item) => stripOrphanedBrackets(`${item.title}：${item.explanation}`))
-    .filter((item) => !usedExtra.has(item));
+  const optionalItems = getItemsByCat("optional");
+  const otherItems = getItemsByCat("other");
+  const combinedOptional = [...optionalItems, ...otherItems];
 
   return [
     {
@@ -140,7 +297,7 @@ export function buildRentalConditionSections({
     },
     {
       title: "附加條件與備考",
-      rows: [{ title: "停車、駐輪與其他條件", items: [...optionalItems, ...extraOther] }],
+      rows: [{ title: "停車、駐輪與其他條件", items: combinedOptional.length ? combinedOptional : ["另有選配設施，費用與使用條件待核對。"] }],
     },
   ];
 }
@@ -276,21 +433,29 @@ export function rentalConditionGroups(
     const isTeishaku = /定期借家|定借/u.test(raw || "");
     // normalizeMonthUnit：契約條件常寫成「更新料1ケ月」（正常大小的ケ），
     // 先統一成「ヶ月」，下面的翻譯規則才不會整條漏配而留著日文原文。
-    const clauses = normalizeMonthUnit((raw || "").normalize("NFKC"))
-      .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|再契約料|再契約手数料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヶ月|CATV|実入居者))/gu, "。")
+    const rawClauses = normalizeMonthUnit((raw || "").normalize("NFKC"))
+      .replace(/[,、・]\s*(?=(?:普通賃貸借|定期借家|2年定借|契約期間|解約予告|★?キャンペーン|入居日|入居時期|更新料|再契約料|再契約手数料|ペット|保証会社|M保証|木下グループ保証|木下の賃貸|損害保険|火災保険|24Hサポート|鍵交換|消毒代|定額ルーム|室内抗菌|事務手数料|当社指定|12ヶ月|CATV|実入居者|Concierge24|みまもり))/gu, "。")
       .replace(/[,、]\s*(?=※?退去時)/gu, "。")
-      // 項目符號本身就是分隔符。リブマックス 系圖紙把二十多條特約用「■」串成一行
-      // （「■鍵交換代33,000円■退去時精算手数料5,500円■…」），只切「。\n」會讓整串
-      // 變成單一子句：翻譯規則全部配不到，分類也只落進一個桶，前端於是顯示
-      // 「圖紙另有個別日文特約」這種等於沒說的話，5,500 円等費用全部看不到。
       .replace(/[■◆●▲☆★]+/gu, "。")
       .split(/[。\n]+/u)
       .map((clause) => stripOrphanedBrackets(clause.trim()))
       .filter(Boolean);
 
+    // 若單一子句內部有多個空格分開的短條目（如「ペット不可 事務所不可 楽器等の使用不可 単身可」）
+    const clauses: string[] = [];
+    for (const c of rawClauses) {
+      const spaceSubtokens = c.split(/[ \t]+/).filter(Boolean);
+      if (spaceSubtokens.length > 1 && spaceSubtokens.some((t) => /(?:不可|限定|専用|可|相談|禁煙|不要|必須)$/.test(t))) {
+        clauses.push(...spaceSubtokens);
+      } else {
+        clauses.push(c);
+      }
+    }
+
     for (const clause of clauses) {
-      const id = classifyClause(clause);
       const translated = stripOrphanedBrackets(translateRentalClause(clause, isTeishaku));
+      const { canonicalCategory } = getSemanticKey(translated);
+      const id = canonicalCategory === "other" ? classifyClause(clause) : canonicalCategory === "extraContract" ? "lease" : canonicalCategory;
       const items = grouped.get(id) || [];
       if (!items.includes(translated)) items.push(translated);
       grouped.set(id, items);
@@ -422,7 +587,17 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/法人契約の場合[、,]\s*普通借(?:家)?相談可(?:能)?/gu, "法人承租時，可洽談改採普通租賃契約")
     .replace(/海外審査相談可/gu, "可洽談海外審查（人在海外亦可申請）")
     .replace(/全物件先行契約になります/gu, "全部物件皆採先行簽約（須先簽約再入住）")
-    .replace(/事務所[・、]?SOHO利用禁止/gu, "禁止作為辦公室或 SOHO 使用")
+    .replace(/事務所[・、]?SOHO利用禁止|事務所不可|事務所使用不可/gu, "不可作為辦公室／事務所使用")
+    .replace(/楽器(?:等)?の使用不可|楽器不可|楽器使用禁止/gu, "不可彈奏或使用樂器")
+    .replace(/単身可|単身者限定|1人入居限定/gu, "允許單身入住")
+    .replace(/Concierge24加入必須\s*[（(]?月額\s*([\d,]+円)[）)]?/giu, "租客必須加入 Concierge24 支援服務，費用為每月 $1")
+    .replace(/Concierge24\s*[:：]\s*([\d,]+円)/giu, "每月生活支援服務 Concierge24：$1")
+    .replace(/高齢者入居\s*[：:]\s*みまもりS加入等条件有\s*[（(]?月額\s*([^）)]+)[）)]?/gu, "高齡者入住需加入「みまもりS」長者守護服務（月額 $1）等附加條件")
+    .replace(/敷金なしの場合はハウスクリーニング代を退去時支払いに変更することができます[。]?/gu, "若無收取押金，退租清潔費可變更為退租時支付")
+    .replace(/ハウスクリーニング代\s*[：:]\s*([\d,]+円)/gu, "退租房屋清潔費：$1")
+    .replace(/鍵交換費\s*[：:]\s*([\d,]+円)/gu, "換鎖費：$1")
+    .replace(/契約事務手数料\s*[：:]\s*([\d,]+円|[\d\.]+万円)/gu, "簽約事務手續費：$1")
+    .replace(/更新事務手数料\s*[：:]\s*([\d,]+円|[\d\.]+万円)/gu, "更新手續費：$1")
     .replace(/外国籍の方\s*[：:]\s*GTN加入要\s*[（(]海外審査OK[）)]/gu, "外國籍租客：須加入 GTN 保證（可接受海外審查）")
     .replace(/初回保証料\s*[：:]\s*賃料総額\s*(\d+)%/gu, "初回保證費：租金總額 $1%")
     .replace(/月次手数料\s*([\d,]+円)\s*[（(]税込[）)]/gu, "月付手續費：$1（含稅）")

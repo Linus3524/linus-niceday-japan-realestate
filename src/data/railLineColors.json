@@ -1,0 +1,6769 @@
+{
+  "generatedAt": "2026-09-19",
+  "note": "由 scripts/build-line-colors.ts 從 Wikidata (P465) 產生，請勿手改。",
+  "attribution": "Line colors from Wikidata (CC0). https://www.wikidata.org/",
+  "sourceUpdatedAt": null,
+  "lines": {
+    "JR伊東線": {
+      "color": "#22AA33",
+      "textColor": "#1A2A22",
+      "source": "伊東線"
+    },
+    "JR宇都宮線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22",
+      "source": "JR宇都宮線"
+    },
+    "JR烏山線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF",
+      "source": "烏山線"
+    },
+    "JR横須賀線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF",
+      "source": "JR横須賀線"
+    },
+    "JR横浜線": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22",
+      "source": "JR横浜線"
+    },
+    "JR外房線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22",
+      "source": "外房線"
+    },
+    "JR久留里線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22",
+      "source": "久留里線"
+    },
+    "JR京浜東北線・根岸線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "JR京浜東北線"
+    },
+    "JR京葉線": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF",
+      "source": "JR京葉線"
+    },
+    "JR五日市線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22",
+      "source": "五日市線"
+    },
+    "JR吾妻線": {
+      "color": "#0F5474",
+      "textColor": "#FFFFFF",
+      "source": "吾妻線"
+    },
+    "JR御殿場線": {
+      "color": "#40743C",
+      "textColor": "#FFFFFF",
+      "source": "御殿場線"
+    },
+    "JR高崎線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "JR高崎線"
+    },
+    "JR埼京線・川越線": {
+      "color": "#00AC9A",
+      "textColor": "#1A2A22",
+      "source": "埼京線"
+    },
+    "JR山手線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22",
+      "source": "JR山手線"
+    },
+    "JR鹿島線": {
+      "color": "#C56E2E",
+      "textColor": "#1A2A22",
+      "source": "鹿島線"
+    },
+    "JR湘南新宿ライン": {
+      "color": "#E21F26",
+      "textColor": "#FFFFFF",
+      "source": "湘南新宿ライン"
+    },
+    "JR上越線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "上越線"
+    },
+    "JR常磐線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "常磐快速線"
+    },
+    "JR常磐線快速": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "常磐快速線"
+    },
+    "JR常磐線各駅停車": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "常磐快速線"
+    },
+    "JR信越本線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22",
+      "source": "信越本線"
+    },
+    "JR水郡線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF",
+      "source": "水郡線"
+    },
+    "JR水郡線支線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF",
+      "source": "水郡線"
+    },
+    "JR水戸線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "水戸線"
+    },
+    "JR成田線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22",
+      "source": "成田線"
+    },
+    "JR成田線我孫子支線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22",
+      "source": "成田線"
+    },
+    "JR成田線空港支線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22",
+      "source": "成田線"
+    },
+    "JR青梅線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22",
+      "source": "青梅線"
+    },
+    "JR川越線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22",
+      "source": "川越線"
+    },
+    "JR相鉄直通線": {
+      "color": "#041452",
+      "textColor": "#FFFFFF",
+      "source": "相鉄新横浜線"
+    },
+    "JR相模線": {
+      "color": "#339999",
+      "textColor": "#1A2A22",
+      "source": "相模線"
+    },
+    "JR総武快速線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22",
+      "source": "JR総武線各駅停車"
+    },
+    "JR総武本線": {
+      "color": "#FFC20D",
+      "textColor": "#1A2A22",
+      "source": "総武本線"
+    },
+    "JR中央・総武緩行線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22",
+      "source": "中央総武緩行線"
+    },
+    "JR中央線快速": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22",
+      "source": "JR中央線"
+    },
+    "JR中央本線": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22",
+      "source": "中央本線"
+    },
+    "JR鶴見線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22",
+      "source": "鶴見線"
+    },
+    "JR東海道線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22",
+      "source": "JR東海道線"
+    },
+    "JR東金線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "東金線"
+    },
+    "JR内房線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "内房線"
+    },
+    "JR南武線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22",
+      "source": "JR南武線"
+    },
+    "JR南武線浜川崎支線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22",
+      "source": "JR南武線"
+    },
+    "JR日光線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22",
+      "source": "日光線"
+    },
+    "JR八高線": {
+      "color": "#A9A9A9",
+      "textColor": "#1A2A22",
+      "source": "八高線"
+    },
+    "JR武蔵野線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22",
+      "source": "JR武蔵野線"
+    },
+    "JR両毛線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22",
+      "source": "両毛線"
+    },
+    "いすみ線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22",
+      "source": "いすみ線"
+    },
+    "つくばエクスプレス": {
+      "color": "#000084",
+      "textColor": "#FFFFFF",
+      "source": "つくばエクスプレス"
+    },
+    "とさでん路面電車": {
+      "color": "#E60012",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "ニューシャトル": {
+      "color": "#10A899",
+      "textColor": "#1A2A22",
+      "source": "ニューシャトル"
+    },
+    "ひたちなか海浜鉄道湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "ひたちなか海浜鉄道湊線"
+    },
+    "みなとみらい線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF",
+      "source": "みなとみらい線"
+    },
+    "ユーカリが丘線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22",
+      "source": "ユーカリが丘線"
+    },
+    "ゆりかもめ": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF",
+      "source": "ゆりかもめ"
+    },
+    "りんかい線": {
+      "color": "#00389E",
+      "textColor": "#FFFFFF",
+      "source": "りんかい線"
+    },
+    "わたらせ渓谷線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "伊豆急行線": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "伊豆箱根駿豆線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF",
+      "source": "駿豆線"
+    },
+    "伊豆箱根大雄山線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF",
+      "source": "大雄山線"
+    },
+    "宇都宮芳賀ライトレール線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22",
+      "source": "宇都宮芳賀ライトレール線"
+    },
+    "横浜市営地下鉄グリーンライン": {
+      "color": "#048D58",
+      "textColor": "#1A2A22",
+      "source": "横浜市営地下鉄グリーンライン"
+    },
+    "横浜市営地下鉄ブルーライン": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "横浜市営地下鉄ブルーライン"
+    },
+    "環状線": {
+      "color": "#E80000",
+      "textColor": "#FFFFFF",
+      "source": "JR環状線"
+    },
+    "関鉄常総線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF",
+      "source": "関鉄常総線"
+    },
+    "関鉄竜ヶ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "関鉄竜ヶ崎線"
+    },
+    "京王井の頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22",
+      "source": "京王井の頭線"
+    },
+    "京王競馬場線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF",
+      "source": "京王競馬場線"
+    },
+    "京王高尾線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22",
+      "source": "京王高尾線"
+    },
+    "京王新線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF",
+      "source": "京王新線"
+    },
+    "京王線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF",
+      "source": "京王線"
+    },
+    "京王相模原線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF",
+      "source": "京王相模原線"
+    },
+    "京王動物園線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF",
+      "source": "京王動物園線"
+    },
+    "京急久里浜線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "京急久里浜線"
+    },
+    "京急空港線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "京急空港線"
+    },
+    "京急逗子線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "京急逗子線"
+    },
+    "京急大師線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "京急大師線"
+    },
+    "京急本線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "京急本線"
+    },
+    "京成スカイライナー": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "成田空港線"
+    },
+    "京成押上線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF",
+      "source": "京成押上線"
+    },
+    "京成金町線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF",
+      "source": "京成金町線"
+    },
+    "京成松戸線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22",
+      "source": "京成松戸線"
+    },
+    "京成成田スカイアクセス線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "京成成田スカイアクセス線"
+    },
+    "京成千原線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF",
+      "source": "京成千原線"
+    },
+    "京成千葉線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF",
+      "source": "京成千葉線"
+    },
+    "京成東成田線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF",
+      "source": "京成東成田線"
+    },
+    "京成本線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF",
+      "source": "京成本線"
+    },
+    "金沢シーサイドライン": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF",
+      "source": "金沢シーサイドライン"
+    },
+    "江ノ島電鉄線": {
+      "color": "#005C3F",
+      "textColor": "#FFFFFF",
+      "source": "江ノ島電鉄線"
+    },
+    "埼玉高速鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF",
+      "source": "埼玉高速鉄道線"
+    },
+    "市内軌道線": {
+      "color": "#00A0E9",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "鹿島臨海鉄道大洗鹿島線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "鹿島臨海鉄道大洗鹿島線"
+    },
+    "芝山鉄道線": {
+      "color": "#0097DB",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "小田急江ノ島線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22",
+      "source": "小田急江ノ島線"
+    },
+    "小田急小田原線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22",
+      "source": "小田急小田原線"
+    },
+    "小田急多摩線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22",
+      "source": "小田急多摩線"
+    },
+    "小湊鉄道線": {
+      "color": "#E8380D",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "湘南モノレール江の島線": {
+      "color": "#004097",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "上熊本線": {
+      "color": "#F66013",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "上信線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "上信線"
+    },
+    "上毛線": {
+      "color": "#00A0E9",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "真岡線": {
+      "color": "#E5006E",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "西武園線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22",
+      "source": "西武園線"
+    },
+    "西武狭山線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "西武狭山線"
+    },
+    "西武国分寺線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22",
+      "source": "西武国分寺線"
+    },
+    "西武山口線": {
+      "color": "#EF473D",
+      "textColor": "#1A2A22",
+      "source": "西武山口線"
+    },
+    "西武新宿線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22",
+      "source": "西武新宿線"
+    },
+    "西武多摩湖線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22",
+      "source": "西武多摩湖線"
+    },
+    "西武多摩川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "西武多摩川線"
+    },
+    "西武池袋線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "西武池袋線"
+    },
+    "西武秩父線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "西武秩父線"
+    },
+    "西武拝島線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22",
+      "source": "西武拝島線"
+    },
+    "西武豊島線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "西武豊島線"
+    },
+    "西武有楽町線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22",
+      "source": "西武有楽町線"
+    },
+    "千葉モノレール1号線": {
+      "color": "#23AC38",
+      "textColor": "#1A2A22",
+      "source": "千葉都市モノレール1号線"
+    },
+    "千葉モノレール2号線": {
+      "color": "#EA5413",
+      "textColor": "#1A2A22",
+      "source": "千葉都市モノレール2号線"
+    },
+    "相鉄いずみ野線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "相鉄いずみ野線"
+    },
+    "相鉄新横浜線": {
+      "color": "#041452",
+      "textColor": "#FFFFFF",
+      "source": "相鉄新横浜線"
+    },
+    "相鉄本線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22",
+      "source": "相鉄本線"
+    },
+    "多摩モノレール": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "秩父本線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF",
+      "source": "秩父本線"
+    },
+    "銚子電気鉄道線": {
+      "color": "#8B0000",
+      "textColor": "#FFFFFF",
+      "source": "銚子電気鉄道線"
+    },
+    "都営三田線": {
+      "color": "#0080C6",
+      "textColor": "#1A2A22",
+      "source": "東京都交通局三田線"
+    },
+    "都営新宿線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22",
+      "source": "新宿線"
+    },
+    "都営浅草線": {
+      "color": "#EF5BA1",
+      "textColor": "#1A2A22",
+      "source": "東京都交通局浅草線"
+    },
+    "都営大江戸線": {
+      "color": "#CF035A",
+      "textColor": "#FFFFFF",
+      "source": "大江戸線"
+    },
+    "都営東京さくらトラム（都電荒川線）": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22",
+      "source": "東京さくらトラム"
+    },
+    "都営日暮里・舎人ライナー": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22",
+      "source": "日暮里舎人ライナー"
+    },
+    "東急こどもの国線": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF",
+      "source": "東急こどもの国線"
+    },
+    "東急新横浜線": {
+      "color": "#890D84",
+      "textColor": "#FFFFFF",
+      "source": "東急新横浜線"
+    },
+    "東急世田谷線": {
+      "color": "#FCC800",
+      "textColor": "#1A2A22",
+      "source": "東急世田谷線"
+    },
+    "東急多摩川線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF",
+      "source": "東急多摩川線"
+    },
+    "東急大井町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "東急大井町線"
+    },
+    "東急池上線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22",
+      "source": "東急池上線"
+    },
+    "東急田園都市線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22",
+      "source": "東急田園都市線"
+    },
+    "東急東横線": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF",
+      "source": "東急東横線"
+    },
+    "東急目黒線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22",
+      "source": "東急目黒線"
+    },
+    "東京メトロ丸ノ内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22",
+      "source": "丸ノ内線"
+    },
+    "東京メトロ丸ノ内線支線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22",
+      "source": "丸ノ内線"
+    },
+    "東京メトロ銀座線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22",
+      "source": "東京地下鉄銀座線"
+    },
+    "東京メトロ千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22",
+      "source": "千代田線"
+    },
+    "東京メトロ東西線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22",
+      "source": "東西線"
+    },
+    "東京メトロ南北線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF",
+      "source": "南北線"
+    },
+    "東京メトロ日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22",
+      "source": "日比谷線"
+    },
+    "東京メトロ半蔵門線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22",
+      "source": "半蔵門線"
+    },
+    "東京メトロ副都心線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF",
+      "source": "副都心線"
+    },
+    "東京メトロ有楽町線": {
+      "color": "#BB8B38",
+      "textColor": "#1A2A22",
+      "source": "有楽町線"
+    },
+    "東京モノレール羽田空港線": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF",
+      "source": "東京モノレール羽田空港線"
+    },
+    "東武伊勢崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "東武伊勢崎線"
+    },
+    "東武宇都宮線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "東武宇都宮線"
+    },
+    "東武越生線": {
+      "color": "#004DA3",
+      "textColor": "#FFFFFF",
+      "source": "東武越生線"
+    },
+    "東武鬼怒川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22",
+      "source": "東武鬼怒川線"
+    },
+    "東武亀戸線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22",
+      "source": "東武亀戸線"
+    },
+    "東武桐生線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "東武桐生線"
+    },
+    "東武佐野線": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF",
+      "source": "東武佐野線"
+    },
+    "東武小泉線(館林-西小泉)": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "東武小泉線"
+    },
+    "東武小泉線(東小泉-太田)": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "東武小泉線"
+    },
+    "東武大師線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22",
+      "source": "東武大師線"
+    },
+    "東武東上線": {
+      "color": "#004098",
+      "textColor": "#FFFFFF",
+      "source": "東武東上線"
+    },
+    "東武東武アーバンパークライン": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "東武アーバンパークライン"
+    },
+    "東武東武スカイツリーライン": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22",
+      "source": "東武スカイツリーライン"
+    },
+    "東武日光線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22",
+      "source": "東武日光線"
+    },
+    "東葉高速線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22",
+      "source": "東葉高速線"
+    },
+    "箱根登山線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22",
+      "source": "箱根登山線"
+    },
+    "富山港線（環状線）": {
+      "color": "#00A0E9",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "富山港線（南富山）": {
+      "color": "#00A0E9",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "富山港線（富山大学前）": {
+      "color": "#00A0E9",
+      "textColor": "#1A2A22",
+      "source": "operator"
+    },
+    "富士急行線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF",
+      "source": "富士急行線"
+    },
+    "北総線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22",
+      "source": "北総線"
+    },
+    "本線": {
+      "color": "#BC312C",
+      "textColor": "#FFFFFF",
+      "source": "operator"
+    },
+    "流鉄流山線": {
+      "color": "#618755",
+      "textColor": "#1A2A22",
+      "source": "流鉄流山線"
+    }
+  },
+  "catalog": {
+    "「いちご王国」ライン": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "10号線": {
+      "color": "#B0BF1E",
+      "textColor": "#1A2A22"
+    },
+    "12号線": {
+      "color": "#CF035A",
+      "textColor": "#FFFFFF"
+    },
+    "13号線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "19世紀ホール": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "1号線": {
+      "color": "#EF5BA1",
+      "textColor": "#1A2A22"
+    },
+    "1号線東山線": {
+      "color": "#FFB700",
+      "textColor": "#1A2A22"
+    },
+    "2号線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "2号線名城線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "2号名城線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "3号線": {
+      "color": "#00936B",
+      "textColor": "#1A2A22"
+    },
+    "3号線鶴舞線": {
+      "color": "#009BBF",
+      "textColor": "#1A2A22"
+    },
+    "4号線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "6号線": {
+      "color": "#0080C6",
+      "textColor": "#1A2A22"
+    },
+    "6号線桜通線": {
+      "color": "#BD342C",
+      "textColor": "#FFFFFF"
+    },
+    "7号線上飯田線": {
+      "color": "#EA7AB2",
+      "textColor": "#1A2A22"
+    },
+    "9号線千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "A": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "B": {
+      "color": "#2B4B65",
+      "textColor": "#FFFFFF"
+    },
+    "C": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "CC": {
+      "color": "#6F2D98",
+      "textColor": "#FFFFFF"
+    },
+    "CD": {
+      "color": "#75A2DB",
+      "textColor": "#1A2A22"
+    },
+    "CF": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "CG": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "CO": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "CR": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "D": {
+      "color": "#E25885",
+      "textColor": "#1A2A22"
+    },
+    "DT": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "E": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "G": {
+      "color": "#009257",
+      "textColor": "#1A2A22"
+    },
+    "HS": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "I": {
+      "color": "#0080C6",
+      "textColor": "#1A2A22"
+    },
+    "ID": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "IK": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "IN": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "IRいしかわ鉄道線": {
+      "color": "#00A7E3",
+      "textColor": "#1A2A22"
+    },
+    "IS": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "J": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "JA": {
+      "color": "#00AC9A",
+      "textColor": "#1A2A22"
+    },
+    "JB": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "JC": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "JD": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "JE": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "JF": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "JG": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "JH": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "JI": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "JJ": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "JK": {
+      "color": "#8F3E97",
+      "textColor": "#FFFFFF"
+    },
+    "JL": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "JM": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "JN": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "JO": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "JS": {
+      "color": "#E21F26",
+      "textColor": "#FFFFFF"
+    },
+    "JT": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "JU": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "JY": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "K": {
+      "color": "#E25885",
+      "textColor": "#1A2A22"
+    },
+    "KD": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF"
+    },
+    "KG": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "KK": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "KS": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "L": {
+      "color": "#FF8E1F",
+      "textColor": "#1A2A22"
+    },
+    "Linimo": {
+      "color": "#4682B4",
+      "textColor": "#1A2A22"
+    },
+    "M": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "Mb": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "MG": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "MM21線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "MM線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "N": {
+      "color": "#B51E82",
+      "textColor": "#FFFFFF"
+    },
+    "NH": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "OE": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "OH": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "OM": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "OsakaMetro御堂筋線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "OsakaMetro千日前線": {
+      "color": "#E44D93",
+      "textColor": "#1A2A22"
+    },
+    "OsakaMetro中央線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "OT": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "OTSテクノポート線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "OTSニュートラムテクノポート線": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "P": {
+      "color": "#8F7DB9",
+      "textColor": "#1A2A22"
+    },
+    "R": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "S": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "SG": {
+      "color": "#FCC800",
+      "textColor": "#1A2A22"
+    },
+    "SH": {
+      "color": "#890D84",
+      "textColor": "#FFFFFF"
+    },
+    "SI": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "SL": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "ST": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "T": {
+      "color": "#F8ABA6",
+      "textColor": "#1A2A22"
+    },
+    "TD": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "TH": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "TI": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "TJ": {
+      "color": "#004098",
+      "textColor": "#FFFFFF"
+    },
+    "TKJ城北線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "TM": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "TN": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "TokyoPanoramaLine": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "TS": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "TX": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "TY": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF"
+    },
+    "U": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "V": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "W": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "X": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "Y": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "Z": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "アーバン": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "アーバンパークライン": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "アーバンパーク線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "あいの風とやま鉄道線": {
+      "color": "#00A556",
+      "textColor": "#1A2A22"
+    },
+    "あおなみ線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "アストラムライン": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "いい電": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "いずっぱこ": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "いすみ線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "いすみ鉄道いすみ線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "いずみ野線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "いわて銀河鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "うみねこレール八戸市内線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "えちごトキめき鉄道日本海ひすいライン": {
+      "color": "#3782BD",
+      "textColor": "#1A2A22"
+    },
+    "えちごトキめき鉄道妙高はねうまライン": {
+      "color": "#35C98E",
+      "textColor": "#1A2A22"
+    },
+    "えちぜん鉄道三国芦原線": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "えちぜん鉄道勝山永平寺線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "おおさか東線": {
+      "color": "#347293",
+      "textColor": "#FFFFFF"
+    },
+    "おはようライナー逗子": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "おはようライナー逗子ホームライナー逗子": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "お濠電車": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "ガーラ湯澤支線": {
+      "color": "#0A8C0D",
+      "textColor": "#1A2A22"
+    },
+    "ガーラ湯澤線": {
+      "color": "#0A8C0D",
+      "textColor": "#1A2A22"
+    },
+    "がみ線": {
+      "color": "#339999",
+      "textColor": "#1A2A22"
+    },
+    "きのくに線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "グリーンライン": {
+      "color": "#048D58",
+      "textColor": "#1A2A22"
+    },
+    "くりはら田園鉄道KD95形気動車": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "くりはら田園鉄道くりはら田園鉄道線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "くりはら田園鉄道線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "ぐるっとさんりくトレイン": {
+      "color": "#3399FF",
+      "textColor": "#1A2A22"
+    },
+    "こうや花鉄道": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "ことでん琴平線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "コトデン琴平線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "ことでん志度線": {
+      "color": "#FF3366",
+      "textColor": "#1A2A22"
+    },
+    "コトデン志度線": {
+      "color": "#FF3366",
+      "textColor": "#1A2A22"
+    },
+    "ことでん長尾線": {
+      "color": "#009966",
+      "textColor": "#1A2A22"
+    },
+    "コトデン長尾線": {
+      "color": "#009966",
+      "textColor": "#1A2A22"
+    },
+    "こどもの国線": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF"
+    },
+    "しなの鉄道しなの鉄道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "しなの鉄道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "しなの鉄道北しなの線": {
+      "color": "#999966",
+      "textColor": "#1A2A22"
+    },
+    "しまんとグリーンライン": {
+      "color": "#009257",
+      "textColor": "#1A2A22"
+    },
+    "スカイアクセス": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "スカイツリーライン": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "スカ線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "せとでん": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "チチビアンライン": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "つくばEX": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "つくばエクスプレス": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "つくばエクスプレス線": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "テクノポート線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "ドラゴンレール大船渡線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "ニューシャトル": {
+      "color": "#10A899",
+      "textColor": "#1A2A22"
+    },
+    "ニュートラム": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "ニュートラムテクノポート線": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "ハピラインふくい": {
+      "color": "#EC1C9C",
+      "textColor": "#1A2A22"
+    },
+    "ハピラインふくい線": {
+      "color": "#EC1C9C",
+      "textColor": "#1A2A22"
+    },
+    "はまなすベイライン大湊線": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "ハマ線": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22"
+    },
+    "ひたちなか海濱鉄道湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "ひたちなか鉄道湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "ビュー湘南": {
+      "color": "#E21F26",
+      "textColor": "#FFFFFF"
+    },
+    "フラワー長井線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "フルーツライン左澤線": {
+      "color": "#0073BF",
+      "textColor": "#FFFFFF"
+    },
+    "ブルーライン": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "ポートアイランド線": {
+      "color": "#07502B",
+      "textColor": "#FFFFFF"
+    },
+    "ポートライナー": {
+      "color": "#07502B",
+      "textColor": "#FFFFFF"
+    },
+    "ホームライナー逗子": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "ほくほく線": {
+      "color": "#C71585",
+      "textColor": "#FFFFFF"
+    },
+    "まほろば線": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "みなとみらい21線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "みなとみらい線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "やまぎんレトロライン": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "ゆいレール": {
+      "color": "#E72128",
+      "textColor": "#1A2A22"
+    },
+    "ユーカリが丘線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "ゆうゆうあぶくまライン": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "ゆめもぐら": {
+      "color": "#CF035A",
+      "textColor": "#FFFFFF"
+    },
+    "ゆめ咲線": {
+      "color": "#414FA3",
+      "textColor": "#FFFFFF"
+    },
+    "ゆりかもめ": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF"
+    },
+    "ゆりかもめ線": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF"
+    },
+    "ゆりかもめ東京臨海新交通臨海線": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF"
+    },
+    "よしの川ブルーライン": {
+      "color": "#2B4B65",
+      "textColor": "#FFFFFF"
+    },
+    "リニモ": {
+      "color": "#4682B4",
+      "textColor": "#1A2A22"
+    },
+    "りんかい線": {
+      "color": "#00389E",
+      "textColor": "#FFFFFF"
+    },
+    "りんかんサンライン": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "レオライナー": {
+      "color": "#EF473D",
+      "textColor": "#1A2A22"
+    },
+    "阿蘇高原線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "阿南鉄道": {
+      "color": "#00B5AD",
+      "textColor": "#1A2A22"
+    },
+    "阿波室戸シーサイドライン": {
+      "color": "#00B5AD",
+      "textColor": "#1A2A22"
+    },
+    "阿波線": {
+      "color": "#B51E82",
+      "textColor": "#FFFFFF"
+    },
+    "阿波鉄道": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "阿波電気軌道": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "阿波電軌": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "阿武隈阿武隈線": {
+      "color": "#00A63A",
+      "textColor": "#1A2A22"
+    },
+    "阿武隈線": {
+      "color": "#00A63A",
+      "textColor": "#1A2A22"
+    },
+    "愛環": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "愛環線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "愛知環状鉄道愛知環状鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "愛知環状鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "愛知高速交通東部丘陵線": {
+      "color": "#4682B4",
+      "textColor": "#1A2A22"
+    },
+    "愛媛線": {
+      "color": "#FBAF18",
+      "textColor": "#1A2A22"
+    },
+    "渥美線": {
+      "color": "#008080",
+      "textColor": "#FFFFFF"
+    },
+    "安蘇馬車鉄道": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "伊勢崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "伊丹支線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "伊丹線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "伊東線": {
+      "color": "#22AA33",
+      "textColor": "#1A2A22"
+    },
+    "伊豆箱根鉄道駿豆線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "伊豆箱根鉄道大雄山線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "伊奈線": {
+      "color": "#10A899",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道横河原線": {
+      "color": "#1DB0E9",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道花園線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道郡中線": {
+      "color": "#EB6C1F",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道高濱線": {
+      "color": "#90C132",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道城南線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道城北線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道大手町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道道後線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "伊予鉄道本町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "井ノ頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "井之頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "一条山鼻軌道線": {
+      "color": "#7ECC00",
+      "textColor": "#1A2A22"
+    },
+    "一畑電気鉄道北松江線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "一畑電車北松江線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "茨城交通湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "因美軽便線": {
+      "color": "#BB641D",
+      "textColor": "#1A2A22"
+    },
+    "因美線": {
+      "color": "#BB641D",
+      "textColor": "#1A2A22"
+    },
+    "因美南線": {
+      "color": "#BB641D",
+      "textColor": "#1A2A22"
+    },
+    "因美北線": {
+      "color": "#BB641D",
+      "textColor": "#1A2A22"
+    },
+    "宇都宮線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "宇都宮芳賀ライトレール線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "宇品線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "宇部西線": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "宇部線": {
+      "color": "#B02857",
+      "textColor": "#FFFFFF"
+    },
+    "宇部電気鉄道": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "宇部東線": {
+      "color": "#B02857",
+      "textColor": "#FFFFFF"
+    },
+    "宇野みなと線": {
+      "color": "#7CCCD0",
+      "textColor": "#1A2A22"
+    },
+    "宇野線": {
+      "color": "#7CCCD0",
+      "textColor": "#1A2A22"
+    },
+    "宇和島線": {
+      "color": "#009257",
+      "textColor": "#1A2A22"
+    },
+    "宇和島鉄道": {
+      "color": "#009257",
+      "textColor": "#1A2A22"
+    },
+    "烏丸線": {
+      "color": "#3CB371",
+      "textColor": "#1A2A22"
+    },
+    "烏山線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "羽越線": {
+      "color": "#16C0E9",
+      "textColor": "#1A2A22"
+    },
+    "羽越北線": {
+      "color": "#16C0E9",
+      "textColor": "#1A2A22"
+    },
+    "羽越本線": {
+      "color": "#16C0E9",
+      "textColor": "#1A2A22"
+    },
+    "羽島新線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "羽島線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "営団13号線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団丸の内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団丸ノ内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団銀座線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22"
+    },
+    "営団千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄11号線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄13号線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団地下鉄2号線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄3号線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄4号線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄5号線": {
+      "color": "#019BBF",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄9号線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄荻窪線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄丸の内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄丸ノ内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄銀座線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄勝田台線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄東西線": {
+      "color": "#019BBF",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄東西線東葉高速鉄道JR線直通区間停車": {
+      "color": "#019BBF",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄南北線": {
+      "color": "#00AD9C",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄半藏門線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄副都心線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団地下鉄有楽町線": {
+      "color": "#BB8B38",
+      "textColor": "#1A2A22"
+    },
+    "営団地下鉄有楽町線新線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団東西線": {
+      "color": "#019BBF",
+      "textColor": "#1A2A22"
+    },
+    "営団南北線": {
+      "color": "#00AD9C",
+      "textColor": "#1A2A22"
+    },
+    "営団日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "営団半藏門線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "営団副都心線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団有楽町新線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "営団有楽町線": {
+      "color": "#BB8B38",
+      "textColor": "#1A2A22"
+    },
+    "越後線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "越生線": {
+      "color": "#004DA3",
+      "textColor": "#FFFFFF"
+    },
+    "越生鉄道": {
+      "color": "#004DA3",
+      "textColor": "#FFFFFF"
+    },
+    "越前本線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "越美南線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "越美北線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "遠州鉄道鉄道線": {
+      "color": "#C32829",
+      "textColor": "#FFFFFF"
+    },
+    "遠鉄電車": {
+      "color": "#C32829",
+      "textColor": "#FFFFFF"
+    },
+    "奥の細道最上川ライン": {
+      "color": "#33DD66",
+      "textColor": "#1A2A22"
+    },
+    "奥の細道湯けむりライン": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "奥羽線": {
+      "color": "#EE7B28",
+      "textColor": "#1A2A22"
+    },
+    "奥羽本線": {
+      "color": "#EE7B28",
+      "textColor": "#1A2A22"
+    },
+    "奥久慈清流ライン": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "奥多摩電気鉄道": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "奥多摩電鉄": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "押上線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "横河原線": {
+      "color": "#1DB0E9",
+      "textColor": "#1A2A22"
+    },
+    "横須賀専用線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "横須賀線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "横須賀線専用線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "横須賀線専用線路": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "横須賀線専用路線": {
+      "color": "#000080",
+      "textColor": "#FFFFFF"
+    },
+    "横須賀総武線": {
+      "color": "#0067C0",
+      "textColor": "#FFFFFF"
+    },
+    "横川線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "横濱シーサイドライン金澤シーサイドライン": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF"
+    },
+    "横濱環状鉄道": {
+      "color": "#048D58",
+      "textColor": "#1A2A22"
+    },
+    "横濱高速鉄道こどもの国線": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF"
+    },
+    "横濱高速鉄道みなとみらい21線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "横濱高速鉄道みなとみらい線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "横濱根岸線": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22"
+    },
+    "横濱市営地下鉄1号線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "横濱市営地下鉄1号線3号線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "横濱市営地下鉄3号線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "横濱市営地下鉄4号線": {
+      "color": "#048D58",
+      "textColor": "#1A2A22"
+    },
+    "横濱市営地下鉄グリーンライン": {
+      "color": "#048D58",
+      "textColor": "#1A2A22"
+    },
+    "横濱市営地下鉄ブルーライン": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "横濱新都市交通金澤シーサイドライン": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF"
+    },
+    "横濱新都市交通金澤シーサイド線": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF"
+    },
+    "横濱線": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22"
+    },
+    "横濱鉄道": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22"
+    },
+    "横黑線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "岡多線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "沖縄都市モノレール線": {
+      "color": "#E72128",
+      "textColor": "#1A2A22"
+    },
+    "荻窪線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "加越能鉄道新湊港線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "加古川線": {
+      "color": "#00A497",
+      "textColor": "#1A2A22"
+    },
+    "加太軽便鉄道": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "加太支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "加太線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "加太電気鉄道": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "可部線": {
+      "color": "#09C0B0",
+      "textColor": "#1A2A22"
+    },
+    "河口湖線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "河和線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "花園線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "花咲線": {
+      "color": "#8CC63E",
+      "textColor": "#1A2A22"
+    },
+    "花輪線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "我孫子支線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "会場線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "会津線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "会津鉄道会津線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "海の中道線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "海岸線": {
+      "color": "#0388C0",
+      "textColor": "#1A2A22"
+    },
+    "海峡線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "皆実線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "外環状線": {
+      "color": "#347293",
+      "textColor": "#FFFFFF"
+    },
+    "外房線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "外房東金線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "各務原線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "各務原鉄道": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "学園都市線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "学研線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "学研都市線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "岳南線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "岳南電車岳南線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "葛生線": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "蒲郡線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "釜石西線": {
+      "color": "#3399FF",
+      "textColor": "#1A2A22"
+    },
+    "釜石線": {
+      "color": "#3399FF",
+      "textColor": "#1A2A22"
+    },
+    "釜石東線": {
+      "color": "#3399FF",
+      "textColor": "#1A2A22"
+    },
+    "鴨川電気鉄道": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "苅田港線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "環状線": {
+      "color": "#E80000",
+      "textColor": "#FFFFFF"
+    },
+    "甘木線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "関西空港線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "関西線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "関西本線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "関鉄常総線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "関鉄竜ヶ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "関東鉄道常総線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "関東鉄道竜ヶ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "関東鉄道竜ケ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "丸の内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "丸ノ内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "丸ノ内線分岐線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "丸森線": {
+      "color": "#00A63A",
+      "textColor": "#1A2A22"
+    },
+    "岩井支線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "岩越線": {
+      "color": "#A0522D",
+      "textColor": "#FFFFFF"
+    },
+    "岩越鉄道": {
+      "color": "#A0522D",
+      "textColor": "#FFFFFF"
+    },
+    "岩徳西線": {
+      "color": "#00A663",
+      "textColor": "#1A2A22"
+    },
+    "岩徳線": {
+      "color": "#00A663",
+      "textColor": "#1A2A22"
+    },
+    "岩徳東線": {
+      "color": "#00A663",
+      "textColor": "#1A2A22"
+    },
+    "岩日線": {
+      "color": "#87CEEB",
+      "textColor": "#1A2A22"
+    },
+    "岩日南線": {
+      "color": "#87CEEB",
+      "textColor": "#1A2A22"
+    },
+    "岩日北線": {
+      "color": "#87CEEB",
+      "textColor": "#1A2A22"
+    },
+    "気仙沼線": {
+      "color": "#3B459B",
+      "textColor": "#FFFFFF"
+    },
+    "紀勢線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "紀勢本線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "軌道線": {
+      "color": "#7ECC00",
+      "textColor": "#1A2A22"
+    },
+    "鬼怒川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "亀戸線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "吉都線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "吉備線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "久里濱線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "久留里線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "宮崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "宮崎本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "宮地軽便線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "宮地線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "京王井ノ頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "京王井之頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "京王京王線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王競馬場線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王高尾線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "京王新線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王相模原線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王電鉄井ノ頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "京王電鉄井之頭線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "京王電鉄京王線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王電鉄競馬場線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王電鉄高尾線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "京王電鉄新線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王電鉄相模原線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王電鉄動物園線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王動物園線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京王本線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "京急羽田線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急久里濱線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急空港線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急逗子線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急大師線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京急本線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京阪鴨東線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "京阪交野線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "京阪新京阪線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "京阪石坂線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "京阪石山坂本線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "京阪中之島新線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "京阪中之島線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "京阪本線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "京成スカイアクセス": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成押上線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京成金町線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "京成松戸線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "京成上野線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京成成田スカイアクセス線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成成田空港線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成成田高速鉄道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成成田新高速線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成成田新高速鉄道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "京成千原線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "京成千葉線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京成線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京成電鉄本線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京成東成田線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "京成本線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "京都市交通局東西線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "京都本線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "京福電気鉄道越前本線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "京福電気鉄道三国芦原線": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "京福電気鉄道北野線": {
+      "color": "#004B8D",
+      "textColor": "#FFFFFF"
+    },
+    "京福北野線": {
+      "color": "#004B8D",
+      "textColor": "#FFFFFF"
+    },
+    "京葉線": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF"
+    },
+    "京葉臨海鉄道臨海本線": {
+      "color": "#0B649B",
+      "textColor": "#FFFFFF"
+    },
+    "京濱線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京濱東北根岸線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京濱東北線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "京濱本線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "競馬場線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "境港線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "境線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "橋場軽便線": {
+      "color": "#DA70D6",
+      "textColor": "#1A2A22"
+    },
+    "橋場線": {
+      "color": "#DA70D6",
+      "textColor": "#1A2A22"
+    },
+    "狭山線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "玉ノ井線": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "玉南線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "桐生線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "錦川清流線": {
+      "color": "#87CEEB",
+      "textColor": "#1A2A22"
+    },
+    "錦川鉄道錦川清流線": {
+      "color": "#87CEEB",
+      "textColor": "#1A2A22"
+    },
+    "琴電琴平線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "琴電志度線": {
+      "color": "#FF3366",
+      "textColor": "#1A2A22"
+    },
+    "琴電長尾線": {
+      "color": "#009966",
+      "textColor": "#1A2A22"
+    },
+    "琴平線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "近鉄山田線": {
+      "color": "#00B3C1",
+      "textColor": "#1A2A22"
+    },
+    "近鉄大阪線": {
+      "color": "#4694D1",
+      "textColor": "#1A2A22"
+    },
+    "近鉄難波線": {
+      "color": "#D21644",
+      "textColor": "#FFFFFF"
+    },
+    "近鉄名古屋線": {
+      "color": "#153F97",
+      "textColor": "#FFFFFF"
+    },
+    "金町線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "金澤シーサイドライン": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF"
+    },
+    "金澤シーサイド線": {
+      "color": "#004EA2",
+      "textColor": "#FFFFFF"
+    },
+    "銀河ドリームライン釜石線": {
+      "color": "#3399FF",
+      "textColor": "#1A2A22"
+    },
+    "銀座線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22"
+    },
+    "九州新幹線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "九頭竜線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "空港支線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "空港線": {
+      "color": "#E05511",
+      "textColor": "#1A2A22"
+    },
+    "隅田川線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "釧網線": {
+      "color": "#EF59A1",
+      "textColor": "#1A2A22"
+    },
+    "釧網本線": {
+      "color": "#EF59A1",
+      "textColor": "#1A2A22"
+    },
+    "釧路線": {
+      "color": "#8CC63E",
+      "textColor": "#1A2A22"
+    },
+    "釧路本線": {
+      "color": "#8CC63E",
+      "textColor": "#1A2A22"
+    },
+    "栗原軌道": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "栗原電鉄C17形電車": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "栗原電鉄M15形電車": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "栗原電鉄M17形電車": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "郡中線": {
+      "color": "#EB6C1F",
+      "textColor": "#1A2A22"
+    },
+    "芸備線": {
+      "color": "#8F7DB9",
+      "textColor": "#1A2A22"
+    },
+    "芸備鉄道": {
+      "color": "#8F7DB9",
+      "textColor": "#1A2A22"
+    },
+    "穴守線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "犬山線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "犬飼軽便線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "犬飼線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "原田線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "古庄支線": {
+      "color": "#00B5AD",
+      "textColor": "#1A2A22"
+    },
+    "湖西線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "五所川原線": {
+      "color": "#003399",
+      "textColor": "#FFFFFF"
+    },
+    "五日市線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "五日市鉄道": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "五能線": {
+      "color": "#003399",
+      "textColor": "#FFFFFF"
+    },
+    "呉線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "吾妻線": {
+      "color": "#0F5474",
+      "textColor": "#FFFFFF"
+    },
+    "後藤寺線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "御殿場線": {
+      "color": "#40743C",
+      "textColor": "#FFFFFF"
+    },
+    "御堂筋線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "交通事業城北線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "交野線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "交野電気鉄道": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "弘南線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "弘南鉄道弘南線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "江ノ電": {
+      "color": "#005C3F",
+      "textColor": "#FFFFFF"
+    },
+    "江の島線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "江ノ島線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "江ノ島電鉄線": {
+      "color": "#005C3F",
+      "textColor": "#FFFFFF"
+    },
+    "江差線": {
+      "color": "#7CFC00",
+      "textColor": "#1A2A22"
+    },
+    "江波線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "港鉄道": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "甲陽園線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "甲陽支線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "甲陽線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "荒川線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "香椎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "高崎線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "高山線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "高山本線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "高師濱支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "高師濱線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "高松琴平電気鉄道琴平線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "高松琴平電気鉄道志度線": {
+      "color": "#FF3366",
+      "textColor": "#1A2A22"
+    },
+    "高松琴平電気鉄道長尾線": {
+      "color": "#009966",
+      "textColor": "#1A2A22"
+    },
+    "高知線": {
+      "color": "#E25885",
+      "textColor": "#1A2A22"
+    },
+    "高徳線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "高徳本線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "高尾線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "高野山ケーブル": {
+      "color": "#11823C",
+      "textColor": "#FFFFFF"
+    },
+    "高野山ケーブルカー": {
+      "color": "#11823C",
+      "textColor": "#FFFFFF"
+    },
+    "高野線": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "高野鉄道": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "高野登山鉄道": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "高濱線": {
+      "color": "#90C132",
+      "textColor": "#1A2A22"
+    },
+    "国際文化公園都市モノレール線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "国際文化公園都市線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "国鉄千歳線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "国都西線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "国都東線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "国分寺線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "今津線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "今渡線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "今里筋線": {
+      "color": "#EE7B1A",
+      "textColor": "#1A2A22"
+    },
+    "根岸線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "根室線": {
+      "color": "#8CC63E",
+      "textColor": "#1A2A22"
+    },
+    "根室本線": {
+      "color": "#8CC63E",
+      "textColor": "#1A2A22"
+    },
+    "佐久鉄道": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "佐世保線": {
+      "color": "#36B558",
+      "textColor": "#1A2A22"
+    },
+    "佐野線": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "佐野鉄道": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野トロッコ": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野トロッコ列車": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野観光線": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野観光鉄道嵯峨野観光線": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野号": {
+      "color": "#B22222",
+      "textColor": "#FFFFFF"
+    },
+    "嵯峨野山陰線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "嵯峨野線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "左澤軽便線": {
+      "color": "#0073BF",
+      "textColor": "#FFFFFF"
+    },
+    "左澤線": {
+      "color": "#0073BF",
+      "textColor": "#FFFFFF"
+    },
+    "砂原線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "彩都線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "阪急伊丹支線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急伊丹線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急京都線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急京都本線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急甲陽園線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急甲陽支線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急甲陽線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急今津線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急十三支線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急新京阪線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急神戸線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急神戸本線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急西宝線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "阪急千里山線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急千里線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪急宝塚線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "阪急宝塚本線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "阪急箕面支線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "阪急箕面線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "阪急嵐山線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪堺上町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "阪堺線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪堺電気軌道阪堺線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "阪堺電気軌道上町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "阪神なんば線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "阪神西大阪延伸線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "阪神西大阪線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "阪神伝法線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "阪神電気鉄道本線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "阪神武庫川線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "阪神本線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "阪鶴線": {
+      "color": "#FFCC00",
+      "textColor": "#1A2A22"
+    },
+    "阪和線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "堺筋線": {
+      "color": "#814721",
+      "textColor": "#FFFFFF"
+    },
+    "埼京線": {
+      "color": "#00AC9A",
+      "textColor": "#1A2A22"
+    },
+    "埼玉スタジアム線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "埼玉高速線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "埼玉高速鉄道埼玉高速鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "埼玉高速鉄道線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "埼玉新都市交通伊奈線": {
+      "color": "#10A899",
+      "textColor": "#1A2A22"
+    },
+    "作備西線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "作備線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "作備東線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "桜ノ宮線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "桜井線": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "桜宮線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "桜大線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "桜通線": {
+      "color": "#BD342C",
+      "textColor": "#FFFFFF"
+    },
+    "桜通線七宝町方面延伸計画": {
+      "color": "#BD342C",
+      "textColor": "#FFFFFF"
+    },
+    "桜島線": {
+      "color": "#414FA3",
+      "textColor": "#FFFFFF"
+    },
+    "札沼線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "札沼南線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "札沼北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "札幌市交通局軌道線": {
+      "color": "#7ECC00",
+      "textColor": "#1A2A22"
+    },
+    "三河線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "三河鉄道": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "三呉線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "三国芦原線": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "三国芦原電鉄": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "三神線": {
+      "color": "#8F7DB9",
+      "textColor": "#1A2A22"
+    },
+    "三田線": {
+      "color": "#0080C6",
+      "textColor": "#1A2A22"
+    },
+    "参宮線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "山の内線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山ノ内線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山陰西線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "山陰線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "山陰東線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "山陰本線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "山形鉄道フラワー長井線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "山口線": {
+      "color": "#EF473D",
+      "textColor": "#1A2A22"
+    },
+    "山手貨物線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "山手線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "山田線": {
+      "color": "#00B3C1",
+      "textColor": "#1A2A22"
+    },
+    "山電本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山万ユーカリが丘線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "山陽新幹線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "山陽線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "山陽電気鉄道本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山陽電気鉄道網干線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山陽電鉄本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山陽電鉄網干線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "山陽本線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "山陽網干線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "四ツ橋線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "四つ橋線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "四之宮": {
+      "color": "#339999",
+      "textColor": "#1A2A22"
+    },
+    "市営地下鉄鶴舞線": {
+      "color": "#009BBF",
+      "textColor": "#1A2A22"
+    },
+    "志度線": {
+      "color": "#FF3366",
+      "textColor": "#1A2A22"
+    },
+    "指宿線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "指宿枕崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "汐見橋線": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "鹿児島線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "鹿児島本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "鹿島参宮鉄道竜ヶ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "鹿島新線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "鹿島線": {
+      "color": "#C56E2E",
+      "textColor": "#1A2A22"
+    },
+    "鹿島臨海鉄道大洗鹿島線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "七隈線": {
+      "color": "#00936B",
+      "textColor": "#1A2A22"
+    },
+    "七尾線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "室蘭線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "室蘭本線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "篠ノ井線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "舎人ライナー": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "舎人線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "若松線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "酒田線": {
+      "color": "#33DD66",
+      "textColor": "#1A2A22"
+    },
+    "首都外郭環状線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "首都圏新都市鉄道つくばエクスプレス": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "首都圏新都市鉄道つくばエクスプレス線": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "首都圏新都市鉄道常磐新線": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "首都圏新都市鉄道線": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "宗谷線": {
+      "color": "#954A35",
+      "textColor": "#FFFFFF"
+    },
+    "宗谷本線": {
+      "color": "#954A35",
+      "textColor": "#FFFFFF"
+    },
+    "住宅都市整備公団千葉ニュータウン線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "十日町線": {
+      "color": "#7BC24B",
+      "textColor": "#1A2A22"
+    },
+    "十和田八幡平四季彩ライン": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "駿豆線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "勝山永平寺線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "勝田台線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "小海線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "小海南線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "小海北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "小串線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "小泉線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "小倉線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "小田急江の島線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小田急江ノ島線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小田急小田原線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小田急多摩線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小田急帝都線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "小田急箱根鉄道線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "小田急本線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小田原線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "小野田軽便鉄道": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "小野田線": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "小野田鉄道": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "小濱線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "庄原線": {
+      "color": "#8F7DB9",
+      "textColor": "#1A2A22"
+    },
+    "松江支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "松江線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "湘南新宿ライン": {
+      "color": "#E21F26",
+      "textColor": "#FFFFFF"
+    },
+    "湘南新宿線": {
+      "color": "#E21F26",
+      "textColor": "#FFFFFF"
+    },
+    "上磯軽便線": {
+      "color": "#7CFC00",
+      "textColor": "#1A2A22"
+    },
+    "上磯線": {
+      "color": "#7CFC00",
+      "textColor": "#1A2A22"
+    },
+    "上越新幹線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "上越線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "上越南線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "上越北線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "上信線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "上信電鉄上信線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "上町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "上飯田線": {
+      "color": "#EA7AB2",
+      "textColor": "#1A2A22"
+    },
+    "上野東京ライン": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "城端線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "城東線": {
+      "color": "#E80000",
+      "textColor": "#FFFFFF"
+    },
+    "城南線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "城北線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "常滑線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "常総線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "常磐ホームトレイン": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "常磐緩行線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "常磐新線": {
+      "color": "#000084",
+      "textColor": "#FFFFFF"
+    },
+    "常磐線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "常磐線電車": {
+      "color": "#339A99",
+      "textColor": "#1A2A22"
+    },
+    "飾磨港線": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "信越線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "信越本線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "信貴生駒電鉄枚方線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "新京阪線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "新京成線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "新京成電鉄新京成線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "新玉川線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "新交通ゆりかもめ": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF"
+    },
+    "新交通日暮里舎人線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "新高速線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "新宿線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "新庄線": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "新湊港線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "森と水とロマンの鉄道": {
+      "color": "#A0522D",
+      "textColor": "#FFFFFF"
+    },
+    "神戸新交通ポートアイランド線": {
+      "color": "#07502B",
+      "textColor": "#FFFFFF"
+    },
+    "神戸新交通ポートライナー": {
+      "color": "#07502B",
+      "textColor": "#FFFFFF"
+    },
+    "神戸新交通六甲アイランド線": {
+      "color": "#00561B",
+      "textColor": "#FFFFFF"
+    },
+    "神戸新交通六甲ライナー": {
+      "color": "#00561B",
+      "textColor": "#FFFFFF"
+    },
+    "神戸線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "神戸本線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "神中線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "神奈川臨海鉄道本牧線": {
+      "color": "#0049A7",
+      "textColor": "#FFFFFF"
+    },
+    "身延線": {
+      "color": "#6F2D98",
+      "textColor": "#FFFFFF"
+    },
+    "逗子線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "水空ライン": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "水郡線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "水郡南線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "水郡北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "水戸線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "水戸鉄道": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "瀬戸線": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "瀬戸電": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "瀬戸電気鉄道": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "瀬戸内さざなみ線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "是政線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田スカイアクセス": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田スカイアクセス線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田空港線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田高速鉄道アクセス線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田新高速鉄道": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田新高速鉄道プロジェクト": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田新高速鉄道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "成田線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "成田鉄道": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "生保内線": {
+      "color": "#DA70D6",
+      "textColor": "#1A2A22"
+    },
+    "西横黑軽便線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "西横黑線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "西寒川支線": {
+      "color": "#339999",
+      "textColor": "#1A2A22"
+    },
+    "西戸崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "西鹿島線": {
+      "color": "#C32829",
+      "textColor": "#FFFFFF"
+    },
+    "西神延伸線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "西神再延伸線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "西神山手線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "西神線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "西成線": {
+      "color": "#414FA3",
+      "textColor": "#FFFFFF"
+    },
+    "西大阪延伸線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "西鉄甘木線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "西鉄三井線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "西鉄糟屋線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "西鉄大牟田線": {
+      "color": "#A3D6CC",
+      "textColor": "#1A2A22"
+    },
+    "西鉄天神大牟田線": {
+      "color": "#A3D6CC",
+      "textColor": "#1A2A22"
+    },
+    "西鉄天神大牟田本線": {
+      "color": "#A3D6CC",
+      "textColor": "#1A2A22"
+    },
+    "西鉄粕屋線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "西板線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "西尾線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "西尾鉄道": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "西武園線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "西武狭山線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武国分寺線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "西武山口線": {
+      "color": "#EF473D",
+      "textColor": "#1A2A22"
+    },
+    "西武上水線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武新宿線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武新宿拝島線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武是政線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "西武西武園線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "西武多摩湖線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "西武多摩川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "西武池袋線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武池袋線秩父線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武秩父線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道狭山線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道国分寺線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道山口線": {
+      "color": "#EF473D",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道新宿線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道西武園線": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道西武秩父線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道西武有楽町線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道多摩湖線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道多摩川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道池袋線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武鉄道拝島線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武拝島線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "西武豊島線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西武有楽町線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "西名古屋港線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "青い森鉄道青い森鉄道線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "青い森鉄道線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "青梅線": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "青梅鉄道": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "青梅電気鉄道": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "青梅電鉄": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "石巻軽便線": {
+      "color": "#FFA0C0",
+      "textColor": "#1A2A22"
+    },
+    "石巻線": {
+      "color": "#FFA0C0",
+      "textColor": "#1A2A22"
+    },
+    "石坂線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "石崎奉燈号": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "石山坂本線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "石勝線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "石北線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "石北本線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "赤羽線": {
+      "color": "#00AC9A",
+      "textColor": "#1A2A22"
+    },
+    "赤坂支線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "赤坂線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "赤電": {
+      "color": "#C32829",
+      "textColor": "#FFFFFF"
+    },
+    "赤穂線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "折尾地区総合整備事業": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "仙崎支線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "仙崎線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "仙山西線": {
+      "color": "#72BC4A",
+      "textColor": "#1A2A22"
+    },
+    "仙山線": {
+      "color": "#72BC4A",
+      "textColor": "#1A2A22"
+    },
+    "仙山東線": {
+      "color": "#72BC4A",
+      "textColor": "#1A2A22"
+    },
+    "仙石河岸線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "仙石線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "仙台空港線": {
+      "color": "#2A5CAA",
+      "textColor": "#FFFFFF"
+    },
+    "仙台空港鉄道仙台空港線": {
+      "color": "#2A5CAA",
+      "textColor": "#FFFFFF"
+    },
+    "仙台市営地下鉄東西線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "仙台市営地下鉄南北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "仙台市高速鉄道東西線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "仙台市高速鉄道南北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "仙台地下鉄東西線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "仙台地下鉄南北線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "仙北軽便線": {
+      "color": "#FFA0C0",
+      "textColor": "#1A2A22"
+    },
+    "仙北軽便鉄道": {
+      "color": "#FFA0C0",
+      "textColor": "#1A2A22"
+    },
+    "千原線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "千歳線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "千日前線": {
+      "color": "#E44D93",
+      "textColor": "#1A2A22"
+    },
+    "千葉ニュータウン線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "千葉県営人車軌道大多喜線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "千葉線": {
+      "color": "#005AAA",
+      "textColor": "#FFFFFF"
+    },
+    "千葉電鉄千葉線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "千葉都市モノレール1号線": {
+      "color": "#23AC38",
+      "textColor": "#1A2A22"
+    },
+    "千葉都市モノレール2号線": {
+      "color": "#EA5413",
+      "textColor": "#1A2A22"
+    },
+    "千里山線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "千里線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "川越線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "川越鉄道": {
+      "color": "#00CC00",
+      "textColor": "#1A2A22"
+    },
+    "川内本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "泉北高速": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "泉北高速線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "泉北高速鉄道": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "泉北高速鉄道線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "浅草線": {
+      "color": "#EF5BA1",
+      "textColor": "#1A2A22"
+    },
+    "浅電": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "浅野川線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "浅野川電気鉄道": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "船川軽便線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "船川線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "相鉄いずみ野線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "相鉄新横濱線": {
+      "color": "#041452",
+      "textColor": "#FFFFFF"
+    },
+    "相鉄神中線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "相鉄線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "相鉄本線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "相模原線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "相模線": {
+      "color": "#339999",
+      "textColor": "#1A2A22"
+    },
+    "相模鉄道神中線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "相模鉄道本線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "総武横須賀線": {
+      "color": "#FFC20D",
+      "textColor": "#1A2A22"
+    },
+    "総武緩行線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "総武線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "総武中央緩行線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "総武本線": {
+      "color": "#FFC20D",
+      "textColor": "#1A2A22"
+    },
+    "総武流山線": {
+      "color": "#618755",
+      "textColor": "#1A2A22"
+    },
+    "総武流山電鉄総武流山線": {
+      "color": "#618755",
+      "textColor": "#1A2A22"
+    },
+    "草津線": {
+      "color": "#5A9934",
+      "textColor": "#1A2A22"
+    },
+    "村上線": {
+      "color": "#16C0E9",
+      "textColor": "#1A2A22"
+    },
+    "多奈川支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "多奈川線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "多摩湖線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "多摩湖鉄道": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "多摩川線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "多摩線": {
+      "color": "#0D82C7",
+      "textColor": "#1A2A22"
+    },
+    "多摩鉄道": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "太子線": {
+      "color": "#0F5474",
+      "textColor": "#FFFFFF"
+    },
+    "太多線": {
+      "color": "#BFBA2F",
+      "textColor": "#1A2A22"
+    },
+    "太田軽便鉄道": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "太田川鉄道": {
+      "color": "#09C0B0",
+      "textColor": "#1A2A22"
+    },
+    "大井町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "大環線": {
+      "color": "#E80000",
+      "textColor": "#FFFFFF"
+    },
+    "大郡線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "大月線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "大江戸線": {
+      "color": "#CF035A",
+      "textColor": "#FFFFFF"
+    },
+    "大阪モノレール国際文化公園都市線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪モノレール彩都線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪モノレール線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪モノレール本線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪外環状線": {
+      "color": "#347293",
+      "textColor": "#FFFFFF"
+    },
+    "大阪環状線": {
+      "color": "#E80000",
+      "textColor": "#FFFFFF"
+    },
+    "大阪高速鉄道国際文化公園都市モノレール線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪高速鉄道彩都線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪高速鉄道大阪モノレール線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪高速鉄道本線": {
+      "color": "#0A58A2",
+      "textColor": "#FFFFFF"
+    },
+    "大阪高野鉄道": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営ニュートラム": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営ニュートラム南港ポートタウン線": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄1号線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄2号線": {
+      "color": "#522886",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄3号線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄4号線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄4号線テクノポート線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄5号線": {
+      "color": "#E44D93",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄6号線": {
+      "color": "#814721",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄8号線": {
+      "color": "#EE7B1A",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄御堂筋線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄今里筋線": {
+      "color": "#EE7B1A",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄堺筋線": {
+      "color": "#814721",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄四つ橋線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄四ツ橋線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄千日前線": {
+      "color": "#E44D93",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄谷町線": {
+      "color": "#522886",
+      "textColor": "#FFFFFF"
+    },
+    "大阪市営地下鉄中央線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "大阪市営地下鉄長堀鶴見緑地線": {
+      "color": "#A9CC51",
+      "textColor": "#1A2A22"
+    },
+    "大阪市交通局南港ポートタウン線": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "大阪線": {
+      "color": "#4694D1",
+      "textColor": "#1A2A22"
+    },
+    "大阪東線": {
+      "color": "#347293",
+      "textColor": "#FFFFFF"
+    },
+    "大阪府都市開発泉北高速鉄道線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "大師線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "大師電気鉄道": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "大糸線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "大糸南線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "大糸北線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "大手町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "大洗鹿島線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "大船渡線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "大村線": {
+      "color": "#0095D9",
+      "textColor": "#1A2A22"
+    },
+    "大日本軌道廣島支社": {
+      "color": "#09C0B0",
+      "textColor": "#1A2A22"
+    },
+    "大分線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "大湊軽便線": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "大湊線": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "大牟田線": {
+      "color": "#A3D6CC",
+      "textColor": "#1A2A22"
+    },
+    "大雄山線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "大雄山鉄道": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "大和路線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "只見線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "谷町線": {
+      "color": "#522886",
+      "textColor": "#FFFFFF"
+    },
+    "男鹿なまはげライン": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "男鹿線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "知多新線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "知多線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "知多鉄道": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄営団日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄荻窪線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄海岸線": {
+      "color": "#0388C0",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄丸の内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄丸ノ内線": {
+      "color": "#F62F36",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄銀座線": {
+      "color": "#FF9501",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄空港線": {
+      "color": "#E05511",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄御堂筋線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄今里筋線": {
+      "color": "#EE7B1A",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄堺筋線": {
+      "color": "#814721",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄桜通線": {
+      "color": "#BD342C",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄山手線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄四つ橋線": {
+      "color": "#0078BE",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄七隈線": {
+      "color": "#00936B",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄上飯田線": {
+      "color": "#EA7AB2",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄西神線": {
+      "color": "#01AF98",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄千代田線": {
+      "color": "#00A650",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄千日前線": {
+      "color": "#E44D93",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄谷町線": {
+      "color": "#522886",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄中央線": {
+      "color": "#019A66",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄鶴舞線": {
+      "color": "#009BBF",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄箱崎線": {
+      "color": "#0077CC",
+      "textColor": "#FFFFFF"
+    },
+    "地下鉄半藏門線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄名港線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "地下鉄名城線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "智頭線": {
+      "color": "#122299",
+      "textColor": "#FFFFFF"
+    },
+    "智頭智頭線": {
+      "color": "#122299",
+      "textColor": "#FFFFFF"
+    },
+    "池上線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "池袋線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "築港支線": {
+      "color": "#6C6D70",
+      "textColor": "#FFFFFF"
+    },
+    "竹鼻線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "竹鼻鉄道": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "筑肥西線": {
+      "color": "#8F3E97",
+      "textColor": "#FFFFFF"
+    },
+    "筑肥線": {
+      "color": "#8F3E97",
+      "textColor": "#FFFFFF"
+    },
+    "筑肥東線": {
+      "color": "#8F3E97",
+      "textColor": "#FFFFFF"
+    },
+    "筑豊線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "筑豊本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "秩父線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "秩父鉄道線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "秩父鉄道秩父線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "秩父鉄道秩父本線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "秩父鉄道本線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "秩父本線": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "中越線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "中央緩行線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "中央西線": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "中央線": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "中央線電車": {
+      "color": "#FE642E",
+      "textColor": "#1A2A22"
+    },
+    "中央総武": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "中央総武緩行線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "中央総武線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "中央東線": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "中央本線": {
+      "color": "#0B8E0E",
+      "textColor": "#1A2A22"
+    },
+    "中国鉄道稲荷山線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "中国鉄道吉備線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "中国鉄道本線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "中之島新線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "中之島線": {
+      "color": "#5BA094",
+      "textColor": "#1A2A22"
+    },
+    "中部国際空港連絡線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "銚子電気鉄道線": {
+      "color": "#8B0000",
+      "textColor": "#FFFFFF"
+    },
+    "銚子電気鉄道銚子電気鉄道線": {
+      "color": "#8B0000",
+      "textColor": "#FFFFFF"
+    },
+    "銚子電鉄線": {
+      "color": "#8B0000",
+      "textColor": "#FFFFFF"
+    },
+    "長井軽便線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "長井線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "長崎線": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "長崎本線": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "長尾線": {
+      "color": "#009966",
+      "textColor": "#1A2A22"
+    },
+    "長堀鶴見緑地線": {
+      "color": "#A9CC51",
+      "textColor": "#1A2A22"
+    },
+    "長門本山線": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "長野原線": {
+      "color": "#0F5474",
+      "textColor": "#FFFFFF"
+    },
+    "長野線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "長野電鉄山の内線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "長野電鉄長野線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "長野電鉄平穏線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "長野北陸新幹線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "長良川鉄道越美南線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "長輪西線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "長輪線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "長輪東線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "津軽線": {
+      "color": "#00B2E5",
+      "textColor": "#1A2A22"
+    },
+    "津山線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "津島線": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "津和野線": {
+      "color": "#F37052",
+      "textColor": "#1A2A22"
+    },
+    "鶴見線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "鶴舞線": {
+      "color": "#009BBF",
+      "textColor": "#1A2A22"
+    },
+    "帝釈人車軌道": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "天王寺西門前": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "天神大牟田線": {
+      "color": "#A3D6CC",
+      "textColor": "#1A2A22"
+    },
+    "天北線": {
+      "color": "#954A35",
+      "textColor": "#FFFFFF"
+    },
+    "天竜濱名湖線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "天竜濱名湖鉄道線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "天竜濱名湖鉄道天竜濱名湖線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "天濱線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "伝法線": {
+      "color": "#FF8000",
+      "textColor": "#1A2A22"
+    },
+    "田んぼ鉄道": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "田園都市線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "田澤湖線": {
+      "color": "#DA70D6",
+      "textColor": "#1A2A22"
+    },
+    "登山線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "都電荒川線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "都留馬車鉄道": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "土讃線": {
+      "color": "#E25885",
+      "textColor": "#1A2A22"
+    },
+    "土讃本線": {
+      "color": "#E25885",
+      "textColor": "#1A2A22"
+    },
+    "東横": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF"
+    },
+    "東横線": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF"
+    },
+    "東横黑軽便線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "東横黑線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "東海交通事業城北線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "東海道山陽新幹線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "東海道新幹線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "東海道線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "東海道本線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "東急こどもの国線": {
+      "color": "#0068B7",
+      "textColor": "#FFFFFF"
+    },
+    "東急厚木線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "東急湘南線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "東急新横濱線": {
+      "color": "#890D84",
+      "textColor": "#FFFFFF"
+    },
+    "東急新玉川線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "東急世田谷線": {
+      "color": "#FCC800",
+      "textColor": "#1A2A22"
+    },
+    "東急多摩川線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "東急大井町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "東急池上線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "東急田園都市線": {
+      "color": "#2E8B57",
+      "textColor": "#1A2A22"
+    },
+    "東急東横線": {
+      "color": "#DC143C",
+      "textColor": "#FFFFFF"
+    },
+    "東急品川線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "東急目黑線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "東京アドベンチャーライン": {
+      "color": "#F15A22",
+      "textColor": "#1A2A22"
+    },
+    "東京さくらトラム": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "東京パノラマライン": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "東京モノレール羽田空港線": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "東京モノレール羽田線": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "東京モノレール東京モノレール羽田空港線": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "東京モノレール東京モノレール羽田線": {
+      "color": "#26326A",
+      "textColor": "#FFFFFF"
+    },
+    "東京環状線": {
+      "color": "#CF035A",
+      "textColor": "#FFFFFF"
+    },
+    "東京都営地下鉄新宿線": {
+      "color": "#B0BF1E",
+      "textColor": "#1A2A22"
+    },
+    "東京都営地下鉄浅草線": {
+      "color": "#EF5BA1",
+      "textColor": "#1A2A22"
+    },
+    "東京都電荒川線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "東京都電車荒川線": {
+      "color": "#EE86A7",
+      "textColor": "#1A2A22"
+    },
+    "東京臨海高速鉄道りんかい線": {
+      "color": "#00389E",
+      "textColor": "#FFFFFF"
+    },
+    "東京臨海高速鉄道臨海副都心線": {
+      "color": "#00389E",
+      "textColor": "#FFFFFF"
+    },
+    "東京臨海新交通臨海線": {
+      "color": "#1662B8",
+      "textColor": "#FFFFFF"
+    },
+    "東金線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "東山線": {
+      "color": "#FFB700",
+      "textColor": "#1A2A22"
+    },
+    "東上線": {
+      "color": "#004098",
+      "textColor": "#FFFFFF"
+    },
+    "東上本線": {
+      "color": "#004098",
+      "textColor": "#FFFFFF"
+    },
+    "東成田線": {
+      "color": "#0000CD",
+      "textColor": "#FFFFFF"
+    },
+    "東西線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "東西線東葉高速鉄道JR線直通区間停車": {
+      "color": "#019BBF",
+      "textColor": "#1A2A22"
+    },
+    "東美線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "東武アーバンパークライン": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "東武アーバンパーク線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "東武スカイツリーライン": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武伊勢崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武宇都宮線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "東武越生線": {
+      "color": "#004DA3",
+      "textColor": "#FFFFFF"
+    },
+    "東武鬼怒川線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "東武亀戸線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "東武桐生線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武佐野線": {
+      "color": "#E71212",
+      "textColor": "#FFFFFF"
+    },
+    "東武小泉線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武西板線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "東武仙石河岸線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武大師線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "東武鉄道伊勢崎線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "東武東上線": {
+      "color": "#004098",
+      "textColor": "#FFFFFF"
+    },
+    "東武東上本線": {
+      "color": "#004098",
+      "textColor": "#FFFFFF"
+    },
+    "東武日光線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "東部丘陵線": {
+      "color": "#4682B4",
+      "textColor": "#1A2A22"
+    },
+    "東豊線": {
+      "color": "#0080FF",
+      "textColor": "#1A2A22"
+    },
+    "東北縦貫線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "東北縦貫線計画": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "東北新幹線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "東北線": {
+      "color": "#3CB371",
+      "textColor": "#1A2A22"
+    },
+    "東北本線": {
+      "color": "#3CB371",
+      "textColor": "#1A2A22"
+    },
+    "東葉": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "東葉高速線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "東葉高速鉄道線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "東葉高速鉄道東葉高速線": {
+      "color": "#00B16B",
+      "textColor": "#1A2A22"
+    },
+    "桃太郎線": {
+      "color": "#FFC0CB",
+      "textColor": "#1A2A22"
+    },
+    "藤城線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "動物園線": {
+      "color": "#DD0077",
+      "textColor": "#FFFFFF"
+    },
+    "道後線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "道線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "道本線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "徳島線": {
+      "color": "#2B4B65",
+      "textColor": "#FFFFFF"
+    },
+    "徳島鉄道": {
+      "color": "#2B4B65",
+      "textColor": "#FFFFFF"
+    },
+    "徳島本線": {
+      "color": "#2B4B65",
+      "textColor": "#FFFFFF"
+    },
+    "敦賀港線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "奈良線": {
+      "color": "#B67C2B",
+      "textColor": "#1A2A22"
+    },
+    "那珂湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "内山線": {
+      "color": "#FBAF18",
+      "textColor": "#1A2A22"
+    },
+    "内子線": {
+      "color": "#FBAF18",
+      "textColor": "#1A2A22"
+    },
+    "内房線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "南海加太支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海加太線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海空港線": {
+      "color": "#594BAC",
+      "textColor": "#FFFFFF"
+    },
+    "南海鋼索線": {
+      "color": "#11823C",
+      "textColor": "#FFFFFF"
+    },
+    "南海高師濱支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海高師濱線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海高野線": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "南海阪堺線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "南海山手線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "南海汐見橋線": {
+      "color": "#009A41",
+      "textColor": "#1A2A22"
+    },
+    "南海松江支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海松江線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海上町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "南海泉北線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "南海線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海多奈川支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海多奈川線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海南海本線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海本線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海和歌山港支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南海和歌山港線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "南港ポートタウン線": {
+      "color": "#00A0DE",
+      "textColor": "#1A2A22"
+    },
+    "南中島": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "南武線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "南北線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "難波線": {
+      "color": "#D21644",
+      "textColor": "#FFFFFF"
+    },
+    "二俣西線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "二俣線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "二俣東線": {
+      "color": "#4D7F54",
+      "textColor": "#FFFFFF"
+    },
+    "尼崎港線": {
+      "color": "#FFCC00",
+      "textColor": "#1A2A22"
+    },
+    "日光線": {
+      "color": "#F68B1E",
+      "textColor": "#1A2A22"
+    },
+    "日高線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "日高本線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "日生線": {
+      "color": "#277C35",
+      "textColor": "#FFFFFF"
+    },
+    "日田線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "日田彦山線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "日比谷線": {
+      "color": "#A0ACAD",
+      "textColor": "#1A2A22"
+    },
+    "日暮里舎人ライナー": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "日暮里舎人線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "日豊線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "日豊本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "日本海ひすいライン": {
+      "color": "#3782BD",
+      "textColor": "#1A2A22"
+    },
+    "熱海線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "能勢電鉄日生線": {
+      "color": "#277C35",
+      "textColor": "#FFFFFF"
+    },
+    "能勢電鉄妙見線": {
+      "color": "#277C35",
+      "textColor": "#FFFFFF"
+    },
+    "能勢電日生線": {
+      "color": "#277C35",
+      "textColor": "#FFFFFF"
+    },
+    "能代線": {
+      "color": "#003399",
+      "textColor": "#FFFFFF"
+    },
+    "播州鉄道": {
+      "color": "#00A497",
+      "textColor": "#1A2A22"
+    },
+    "播但線": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "播丹鉄道": {
+      "color": "#00A497",
+      "textColor": "#1A2A22"
+    },
+    "拝島線": {
+      "color": "#00CED1",
+      "textColor": "#1A2A22"
+    },
+    "伯備線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "伯備南線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "伯備北線": {
+      "color": "#009933",
+      "textColor": "#1A2A22"
+    },
+    "博多港線": {
+      "color": "#2D86BD",
+      "textColor": "#1A2A22"
+    },
+    "博多南線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "博多臨港線": {
+      "color": "#2D86BD",
+      "textColor": "#1A2A22"
+    },
+    "白新線": {
+      "color": "#FF69B4",
+      "textColor": "#1A2A22"
+    },
+    "白島線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "函館線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "函館本線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "箱根登山線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "箱根登山鉄道線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "箱根登山電車": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "箱崎線": {
+      "color": "#0077CC",
+      "textColor": "#FFFFFF"
+    },
+    "八ヶ岳高原線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "八戸線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "八戸臨海鉄道線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "八高線": {
+      "color": "#A9A9A9",
+      "textColor": "#1A2A22"
+    },
+    "八高秩父路": {
+      "color": "#4169E1",
+      "textColor": "#FFFFFF"
+    },
+    "八高南線": {
+      "color": "#A9A9A9",
+      "textColor": "#1A2A22"
+    },
+    "八高北線": {
+      "color": "#A9A9A9",
+      "textColor": "#1A2A22"
+    },
+    "八濱線": {
+      "color": "#7FC342",
+      "textColor": "#1A2A22"
+    },
+    "半藏門線": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "半藏門線車両": {
+      "color": "#8F75D6",
+      "textColor": "#1A2A22"
+    },
+    "飯坂線": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "飯坂電車": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "飯山線": {
+      "color": "#7BC24B",
+      "textColor": "#1A2A22"
+    },
+    "飯山鉄道": {
+      "color": "#7BC24B",
+      "textColor": "#1A2A22"
+    },
+    "飯田線": {
+      "color": "#75A2DB",
+      "textColor": "#1A2A22"
+    },
+    "磐越西線": {
+      "color": "#A0522D",
+      "textColor": "#FFFFFF"
+    },
+    "磐越線": {
+      "color": "#A0522D",
+      "textColor": "#FFFFFF"
+    },
+    "磐越東線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "比治山線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "飛越線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "簸上鉄道": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "尾西線": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "尾西鉄道": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "美濃赤坂線": {
+      "color": "#F77321",
+      "textColor": "#1A2A22"
+    },
+    "彦山線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "姫新線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "姫津西線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "姫津線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "姫津東線": {
+      "color": "#E9451B",
+      "textColor": "#1A2A22"
+    },
+    "富山西線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "富山線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "富山東線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "富士河口湖線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "富士急線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "富士線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "富士大月線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "富直線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "富良野線": {
+      "color": "#AA5EA6",
+      "textColor": "#1A2A22"
+    },
+    "撫養線": {
+      "color": "#B51E82",
+      "textColor": "#FFFFFF"
+    },
+    "武藏野線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "武藏野鉄道山口線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "武藏野南線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "舞鶴線": {
+      "color": "#FF8E1F",
+      "textColor": "#1A2A22"
+    },
+    "副都心線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "福塩線": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "福塩南線": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "福塩北線": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "福岡市営地下鉄空港線": {
+      "color": "#E05511",
+      "textColor": "#1A2A22"
+    },
+    "福岡市営地下鉄七隈線": {
+      "color": "#00936B",
+      "textColor": "#1A2A22"
+    },
+    "福岡市営地下鉄箱崎線": {
+      "color": "#0077CC",
+      "textColor": "#FFFFFF"
+    },
+    "福知山線": {
+      "color": "#FFCC00",
+      "textColor": "#1A2A22"
+    },
+    "福島交通飯坂線": {
+      "color": "#0066FF",
+      "textColor": "#FFFFFF"
+    },
+    "福島臨海鉄道本線": {
+      "color": "#2341A1",
+      "textColor": "#FFFFFF"
+    },
+    "福北ゆたか線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "平穏線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "平郡西線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "平郡東線": {
+      "color": "#800080",
+      "textColor": "#FFFFFF"
+    },
+    "平成筑豊鉄道門司港レトロ観光線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "米坂西線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "米坂線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "米坂東線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "碧海電気鉄道": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "碧西線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "片町線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "片福線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "片福連絡線": {
+      "color": "#FF1493",
+      "textColor": "#1A2A22"
+    },
+    "宝塚線": {
+      "color": "#FFCC00",
+      "textColor": "#1A2A22"
+    },
+    "宝塚本線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "芳賀宇都宮LRT": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "豊橋鉄道渥美線": {
+      "color": "#008080",
+      "textColor": "#FFFFFF"
+    },
+    "豊州本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "豊川市内線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "豊川線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "豊田新線": {
+      "color": "#9AAB43",
+      "textColor": "#1A2A22"
+    },
+    "豊田線": {
+      "color": "#9AAB43",
+      "textColor": "#1A2A22"
+    },
+    "豊島線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "豊肥線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "豊肥本線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "房総西線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "房総線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "房総東線": {
+      "color": "#FF4500",
+      "textColor": "#1A2A22"
+    },
+    "北アルプス線": {
+      "color": "#9370DB",
+      "textColor": "#1A2A22"
+    },
+    "北しなの線": {
+      "color": "#999966",
+      "textColor": "#1A2A22"
+    },
+    "北越ほくほく線": {
+      "color": "#C71585",
+      "textColor": "#FFFFFF"
+    },
+    "北越北線": {
+      "color": "#C71585",
+      "textColor": "#FFFFFF"
+    },
+    "北海道新幹線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "北九州銀行レトロライン": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "北九州高速鉄道小倉線": {
+      "color": "#3333FF",
+      "textColor": "#FFFFFF"
+    },
+    "北松江線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "北上線": {
+      "color": "#9966FF",
+      "textColor": "#1A2A22"
+    },
+    "北条線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "北神線": {
+      "color": "#CB8A07",
+      "textColor": "#1A2A22"
+    },
+    "北神電鉄北神線": {
+      "color": "#CB8A07",
+      "textColor": "#1A2A22"
+    },
+    "北総開発鉄道北総公団線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "北総公団線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "北総線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "北総鉄道北総線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "北大阪電鉄会場線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "北大阪電鉄東西線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "北大阪電鉄南北線": {
+      "color": "#E5171F",
+      "textColor": "#FFFFFF"
+    },
+    "北野線": {
+      "color": "#004B8D",
+      "textColor": "#FFFFFF"
+    },
+    "北陸新幹線": {
+      "color": "#008000",
+      "textColor": "#FFFFFF"
+    },
+    "北陸線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "北陸鉄道浅野川線": {
+      "color": "#FF6600",
+      "textColor": "#1A2A22"
+    },
+    "北陸本線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "本山支線": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "本山線": {
+      "color": "#695FAA",
+      "textColor": "#FFFFFF"
+    },
+    "本四備讃線": {
+      "color": "#0073BC",
+      "textColor": "#FFFFFF"
+    },
+    "本町線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "本牧線": {
+      "color": "#0049A7",
+      "textColor": "#FFFFFF"
+    },
+    "万葉まほろば線": {
+      "color": "#B11E52",
+      "textColor": "#FFFFFF"
+    },
+    "万葉線新湊港線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "箕面支線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "箕面線": {
+      "color": "#F39800",
+      "textColor": "#1A2A22"
+    },
+    "湊線": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "湊鉄道": {
+      "color": "#FF8C00",
+      "textColor": "#1A2A22"
+    },
+    "妙見線": {
+      "color": "#277C35",
+      "textColor": "#FFFFFF"
+    },
+    "妙高はねうまライン": {
+      "color": "#35C98E",
+      "textColor": "#1A2A22"
+    },
+    "夢かもめ": {
+      "color": "#0388C0",
+      "textColor": "#1A2A22"
+    },
+    "牟岐線": {
+      "color": "#00B5AD",
+      "textColor": "#1A2A22"
+    },
+    "名古屋市高速度鉄道第2号線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "名古屋線": {
+      "color": "#153F97",
+      "textColor": "#FFFFFF"
+    },
+    "名古屋本線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名古屋臨海高速鉄道あおなみ線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "名古屋臨海高速鉄道西名古屋港線": {
+      "color": "#00008B",
+      "textColor": "#FFFFFF"
+    },
+    "名港線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "名松線": {
+      "color": "#FF7F00",
+      "textColor": "#1A2A22"
+    },
+    "名城線": {
+      "color": "#8F76D6",
+      "textColor": "#1A2A22"
+    },
+    "名鉄羽島新線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "名鉄羽島線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "名鉄河和線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "名鉄各務原線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "名鉄蒲郡線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄空港線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄犬山線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "名鉄今渡線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "名鉄三河線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄小牧線": {
+      "color": "#EF59A1",
+      "textColor": "#1A2A22"
+    },
+    "名鉄常滑線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄瀬戸線": {
+      "color": "#802990",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄西尾線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄知多新線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "名鉄知多線": {
+      "color": "#00AEEF",
+      "textColor": "#1A2A22"
+    },
+    "名鉄築港支線": {
+      "color": "#6C6D70",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄築港線": {
+      "color": "#6C6D70",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄竹鼻線": {
+      "color": "#D09927",
+      "textColor": "#1A2A22"
+    },
+    "名鉄津島線": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "名鉄東美線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "名鉄尾西線": {
+      "color": "#F15921",
+      "textColor": "#1A2A22"
+    },
+    "名鉄碧西線": {
+      "color": "#6558A5",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄豊川市内線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄豊川線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄豊田新線": {
+      "color": "#9AAB43",
+      "textColor": "#1A2A22"
+    },
+    "名鉄豊田線": {
+      "color": "#9AAB43",
+      "textColor": "#1A2A22"
+    },
+    "名鉄本線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄名古屋線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄名古屋本線": {
+      "color": "#CE1929",
+      "textColor": "#FFFFFF"
+    },
+    "名鉄廣見線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "鳴門きんときライナー": {
+      "color": "#B51E82",
+      "textColor": "#FFFFFF"
+    },
+    "鳴門線": {
+      "color": "#B51E82",
+      "textColor": "#FFFFFF"
+    },
+    "網干線": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    },
+    "木原線": {
+      "color": "#FFFF00",
+      "textColor": "#1A2A22"
+    },
+    "木更津線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "木次線": {
+      "color": "#FFD700",
+      "textColor": "#1A2A22"
+    },
+    "目黑線": {
+      "color": "#1E90FF",
+      "textColor": "#1A2A22"
+    },
+    "門司港レトロ観光線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "門倉": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "野田線": {
+      "color": "#00BFFF",
+      "textColor": "#1A2A22"
+    },
+    "弥彦線": {
+      "color": "#4B0082",
+      "textColor": "#FFFFFF"
+    },
+    "柳津線": {
+      "color": "#3B459B",
+      "textColor": "#FFFFFF"
+    },
+    "有楽町新線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "有楽町線": {
+      "color": "#BB8B38",
+      "textColor": "#1A2A22"
+    },
+    "有楽町線新線": {
+      "color": "#9C5D31",
+      "textColor": "#FFFFFF"
+    },
+    "有明西線": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "有明線": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "有明東線": {
+      "color": "#FAAF18",
+      "textColor": "#1A2A22"
+    },
+    "夕張線": {
+      "color": "#9ACD32",
+      "textColor": "#1A2A22"
+    },
+    "予讃線": {
+      "color": "#FBAF18",
+      "textColor": "#1A2A22"
+    },
+    "予讃本線": {
+      "color": "#FBAF18",
+      "textColor": "#1A2A22"
+    },
+    "予土線": {
+      "color": "#009257",
+      "textColor": "#1A2A22"
+    },
+    "嵐山支線": {
+      "color": "#32CD32",
+      "textColor": "#1A2A22"
+    },
+    "嵐電北野線": {
+      "color": "#004B8D",
+      "textColor": "#FFFFFF"
+    },
+    "陸羽西線": {
+      "color": "#33DD66",
+      "textColor": "#1A2A22"
+    },
+    "陸羽東線": {
+      "color": "#808080",
+      "textColor": "#1A2A22"
+    },
+    "流山線": {
+      "color": "#618755",
+      "textColor": "#1A2A22"
+    },
+    "流鉄流山線": {
+      "color": "#618755",
+      "textColor": "#1A2A22"
+    },
+    "留萌線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "留萌本線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "留萠線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "留萠本線": {
+      "color": "#2CB431",
+      "textColor": "#1A2A22"
+    },
+    "竜ヶ崎線": {
+      "color": "#0000FF",
+      "textColor": "#FFFFFF"
+    },
+    "両備軽便鉄道": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "両備鉄道": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "両備鉄道本線": {
+      "color": "#49479E",
+      "textColor": "#FFFFFF"
+    },
+    "両毛線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "臨海副都心線": {
+      "color": "#00389E",
+      "textColor": "#FFFFFF"
+    },
+    "臨海本線": {
+      "color": "#0B649B",
+      "textColor": "#FFFFFF"
+    },
+    "六甲アイランド線": {
+      "color": "#00561B",
+      "textColor": "#FFFFFF"
+    },
+    "六甲ライナー": {
+      "color": "#00561B",
+      "textColor": "#FFFFFF"
+    },
+    "和歌山港支線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "和歌山港線": {
+      "color": "#0065AF",
+      "textColor": "#FFFFFF"
+    },
+    "和歌山線": {
+      "color": "#F8ABA6",
+      "textColor": "#1A2A22"
+    },
+    "和田岬線": {
+      "color": "#0072BC",
+      "textColor": "#FFFFFF"
+    },
+    "廣見線": {
+      "color": "#07914B",
+      "textColor": "#1A2A22"
+    },
+    "廣電宇品線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣電横川線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣電皆実線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣電江波線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣電白島線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島高速交通廣島新交通1号線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "廣島新交通1号線": {
+      "color": "#FFA500",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄宇品線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄横川線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄皆実線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄江波線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄白島線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣島電鉄比治山線": {
+      "color": "#009944",
+      "textColor": "#1A2A22"
+    },
+    "廣濱鉄道": {
+      "color": "#09C0B0",
+      "textColor": "#1A2A22"
+    },
+    "濱川崎支線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "濱川崎線": {
+      "color": "#FFD400",
+      "textColor": "#1A2A22"
+    },
+    "濱田線": {
+      "color": "#878DDC",
+      "textColor": "#1A2A22"
+    },
+    "藪塚石材軌道": {
+      "color": "#FF0000",
+      "textColor": "#1A2A22"
+    }
+  }
+}

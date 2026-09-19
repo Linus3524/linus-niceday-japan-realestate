@@ -455,6 +455,89 @@ console.log("Renewal fee (更新料／再契約料) wording tests passed.");
 
   console.log("XEBEC 定期借家 (再契約料／法人普通借相談／家具家電撤去) 雙軌測試通過。");
 }
+// ── Main Stage Oyama 多來源重複特約去重與分類防呆測試 ──
+{
+  const structuredItems = [
+    { category: "lease" as const, ja: "契約期間 2年", zh: "租賃契約期間為 2 年" },
+    { category: "lease" as const, ja: "更新料 1.5ヶ月(新賃料)", zh: "契約更新料：新租金的 1.5 個月" },
+    { category: "lease" as const, ja: "更新事務手数料 1.1万円", zh: "更新手續費：11,000 円" },
+    { category: "lease" as const, ja: "事務所不可", zh: "不可作為辦公室／事務所使用" },
+    { category: "lease" as const, ja: "楽器等の使用不可", zh: "不可彈奏或使用樂器" },
+    { category: "lease" as const, ja: "単身可", zh: "允許單身入住" },
+    { category: "lease" as const, ja: "高齢者入居：みまもりS加入等条件有(月額3千円)", zh: "高齡者入住：有加入長者守護服務（みまもりS）等條件（每月 3,000 円）" },
+    { category: "moveIn" as const, ja: "入居時期 即時", zh: "起租入住時間：可立即入住" },
+    { category: "pet" as const, ja: "ペット不可", zh: "不可飼養寵物" },
+    { category: "guarantee" as const, ja: "損害保険 有 21,500円 24ヶ月", zh: "火災保險：須投保，21,500 円／24 個月" },
+    { category: "guarantee" as const, ja: "必須 株式会社エポスカードの申込書をご利用ください。初回保証料70％ 月次保証料1％", zh: "必須加入保證公司（EPOS Card）：首期保證費 70%，每月保證費 1%" },
+    { category: "fees" as const, ja: "鍵交換費：29,700円", zh: "一次性換鎖費用：29,700 円" },
+    { category: "fees" as const, ja: "契約事務手数料：11,000円", zh: "一次性簽約手續費：11,000 円" },
+    { category: "fees" as const, ja: "Concierge24：990円", zh: "每月生活支援服務 Concierge24：990 円" },
+    { category: "fees" as const, ja: "敷金なしの場合はハウスクリーニング代を退去時支払いに変更することができます。", zh: "若無收取押金，退租清潔費可變更為退租時支付" },
+    { category: "fees" as const, ja: "Concierge24加入必須(月額990円)", zh: "必須加入 Concierge24 服務（每月 990 円）" },
+    { category: "moveOut" as const, ja: "ハウスクリーニング代：62,700円", zh: "退租房屋清潔費：62,700 円" },
+    { category: "moveOut" as const, ja: "短期解約違約金：6ヶ月未満の解約の場合、総賃料の1ヶ月分", zh: "短期解約違約金：未滿 6 個月解約須支付總租金 1 個月作為違約金" },
+    { category: "optional" as const, ja: "駐車場 要問い合わせ,駐輪場,バイク置き場", zh: "停車場需洽詢，設有自行車停車場與機車停車位" },
+  ];
+
+  const structuredNotes = [
+    {
+      category: "入住條件" as const,
+      title: "高齡者入住附加條件",
+      ja: "高齢者入居：みまもりS加入等条件有(月額3千円)",
+      zh: "高齡者入住需加入「みまもりS」長者守護服務（月額 3,000 円）等附加條件。",
+    },
+    {
+      category: "入住條件" as const,
+      title: "外國籍及高齡者可商量",
+      ja: "■仲介会社様へ： 外国籍・高齢者入居可能物件多数有。詳細は担当者までご連絡ください。",
+      zh: "本物件可接受外國籍人士及高齡者租住，詳情可諮詢窗口。",
+    },
+    {
+      category: "設施設備" as const,
+      title: "必須加入24小時服務",
+      ja: "Concierge24加入必須(月額990円)",
+      zh: "租客必須加入 Concierge24 支援服務，費用為每月 990 円。",
+    },
+  ];
+
+  const sections = buildRentalConditionSections({
+    rentalConditions: "ペット不可 事務所不可 楽器等の使用不可 単身可\n[一時金] 鍵交換費：29,700円 契約事務手数料：11,000円 ハウスクリーニング代：62,700円\n[月次費用] Concierge24：990円",
+    rentalConditionItems: structuredItems,
+    specialNotes: "短期解約違約金：6ヶ月未満の解約の場合、総賃料の1ヶ月分\n敷金なしの場合はハウスクリーニング代を退去時支払いに変更することができます。\nConcierge24加入必須(月額990円)\n高齢者入居：みまもりS加入等条件有(月額3千円)\n■仲介会社様へ： 外国籍・高齢者入居可能物件多数有。詳細は担当者までご連絡ください。",
+    specialNoteItems: structuredNotes,
+    optionalFacilities: "要問い合わせ,駐輪場,バイク置き場",
+    guaranteeFee: "初回保証料70％ 月次保証料1％",
+    insuranceFee: "21,500円 24ヶ月",
+    renewalFee: "1.5ヶ月(新賃料)",
+    totalMonthlyCost: 105000,
+  });
+
+  const allVisibleItems = sections.flatMap(s => s.rows.flatMap(r => r.items));
+
+  // 1. Concierge24 必須去重至唯一 1 筆，且必須位於「附加費用與服務」
+  const conciergeItems = allVisibleItems.filter(i => /Concierge24/i.test(i));
+  assert.equal(conciergeItems.length, 1, `Concierge24 不可重複出現多次，實際出現: ${conciergeItems.length}`);
+  const feesRow = sections.find(s => s.title === "保證、保險與附加費用")?.rows.find(r => r.title === "附加費用與服務");
+  assert.ok(feesRow?.items.some(i => /Concierge24/i.test(i)), "Concierge24 必須正確歸於「附加費用與服務」");
+
+  // 2. 長者守護服務（みまもりS）必須去重至唯一 1 筆，且必須位於「其他入住與契約條件」
+  const mimamoriItems = allVisibleItems.filter(i => /みまもり|長者守護/i.test(i));
+  assert.equal(mimamoriItems.length, 1, `みまもりS 不可重複出現多次，實際出現: ${mimamoriItems.length}`);
+  const extraContractRow = sections.find(s => s.title === "契約與入住")?.rows.find(r => r.title === "其他入住與契約條件");
+  assert.ok(extraContractRow?.items.some(i => /みまもり|長者守護/i.test(i)), "みまもりS 必須正確歸於「其他入住與契約條件」");
+
+  // 3. 生活規範與人數限制不可誤落入「租期與契約更新」
+  const leaseRow = sections.find(s => s.title === "契約與入住")?.rows.find(r => r.title === "租期與契約更新");
+  assert.doesNotMatch(leaseRow?.items.join("\n") || "", /辦公室|樂器|單身|みまもり/, "租期與契約更新不可混入生活規範或長者條件");
+
+  // 4. 選配設施不可殘留零碎標籤
+  const optionalRow = sections.find(s => s.title === "附加條件與備考")?.rows.find(r => r.title === "停車、駐輪與其他條件");
+  assert.equal(optionalRow?.items.length, 1, "已有完整停車/駐輪合成說明時，不可殘留零碎單字標籤");
+  assert.match(optionalRow?.items[0] || "", /停車場需洽詢/);
+
+  console.log("Main Stage Oyama duplication prevention & canonical classification tests passed.");
+}
+
 
 
 
