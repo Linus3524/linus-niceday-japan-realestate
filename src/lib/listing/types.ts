@@ -129,6 +129,8 @@ export interface SaleAnalysisVerdict {
 export interface ExtractedFields extends SpecialSaleFields, RentalConditionFields, AuditFields {
   /** Legacy report payload alias for orientation. */
   direction?: string;
+  /** 圖紙內的間取り・配置図可讀資訊，例如各房間大小、ロフト、收納與水區配置。 */
+  floorPlanDetails?: string;
   otherConditions?: string;
   buildingCoverageRatio?: string;
   floorAreaRatio?: string;
@@ -267,7 +269,10 @@ export interface ListingCommuteResult {
   destinationResolutionNote?: string | null;
   destinationStation: string;
   destinationWalkMinutes: number;
+  /** 自宅到起站的步行；巴士接駁時是自宅到巴士站的步行。 */
   originWalkMinutes: number;
+  originBusMinutes?: number;
+  originBusStop?: string | null;
   transitMinutes: number;
   totalMinutes: number;
   transfers: number;

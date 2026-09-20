@@ -615,7 +615,7 @@ const EQUIPMENT_RULES: EquipmentRule[] = [
     pattern: /サービスルーム|納戸|S\s*ルーム/i,
     category: "室內舒適",
     nameZh: "多功能室（納戸）",
-    note: "建築法規上採光未達居室標準，圖面以「S」或「納戸」標示",
+    note: "建築法規上採光未達居室標準，圖紙以「S」或「納戸」標示",
   },
   {
     pattern: /ロフト|loft/i,

@@ -234,6 +234,13 @@ export function findLocalTransitRoutes(originValue: string, destinationValue: st
     const segments: CommuteRouteSegment[] = [];
     const usedSourceIds = new Set(path.map(step => step.edge.sourceId));
     let from = origin;
+    // 合併判斷必須用 GTFS 原始 lineName，不能用 canonicalLineName：
+    // canonicalLineName 是經 getTransitLineIdentity 正規化後的顯示名稱，
+    // 會把不同服務收斂成同一個 id（例如 小田急多摩線 → 小田急小田原線、
+    // 京王新線 → 京王線、JR南武線浜川崎支線 → JR 南武線）。
+    // 路線名一旦被正規化後再拿來做合併判斷，就會把兩段實際不同的列車併成一段，
+    // 漏掉中間的轉乘站——典型案例：小田急小田原線→小田急多摩線 在新百合ヶ丘轉乘。
+    let lastRawLineName = "";
 
     for (const step of path) {
       if (visitedStations.has(from)) {
@@ -246,7 +253,7 @@ export function findLocalTransitRoutes(originValue: string, destinationValue: st
       const canonicalLineName = identity?.name || step.edge.lineName;
       const last = segments.at(-1);
 
-      if (last && last.lineName === canonicalLineName) {
+      if (last && step.edge.lineName === lastRawLineName) {
         last.arrivalStop = step.edge.to;
         last.endStationNumber = step.edge.toCode;
         last.arrivalTime = `${String(Math.floor(step.arrivalMinute / 60) % 24).padStart(2, "0")}:${String(step.arrivalMinute % 60).padStart(2, "0")}`;
@@ -273,6 +280,7 @@ export function findLocalTransitRoutes(originValue: string, destinationValue: st
           stopCount: 1,
           headsign: step.edge.headsign
         });
+        lastRawLineName = step.edge.lineName;
       }
       from = step.edge.to;
     }

@@ -148,7 +148,8 @@ export async function extractPdfLayoutText(pdf: PDFDocumentProxy): Promise<strin
 
 
 /**
- * 讀 PDF 首頁並產生介面預覽縮圖。
+ * 讀 PDF 首頁並產生介面預覽縮圖。多頁 PDF 的完整內容仍由原始 PDF 交給模型；
+ * 預覽與額外高解析轉圖只取首頁，避免多頁圖紙倍增瀏覽器記憶體與上傳量。
  *
  * 舊版把「讀長寬比」與「轉縮圖」拆成兩個函式，各自 getDocument 同一個檔案並同時啟動；
  * pdf.js 只有一條 worker，兩份解析互相搶資源，實測レグノ・セレーノ這種滿版日文図面

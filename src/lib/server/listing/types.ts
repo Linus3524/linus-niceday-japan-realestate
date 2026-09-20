@@ -22,6 +22,8 @@ export interface ExtractedListingFields extends SpecialSaleFields, RentalConditi
   area: string;
   structure: string;
   direction?: string;
+  /** 間取り・配置図中可確認的房間大小、收納、閣樓與水區配置原文摘要。 */
+  floorPlanDetails?: string;
   guaranteeFee: string;
   lockReplacementFee: string;
   cleaningFee: string;

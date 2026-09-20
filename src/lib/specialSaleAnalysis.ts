@@ -199,7 +199,7 @@ export function buildSpecialSaleDetails(fields: SpecialSaleFields) {
     yieldMismatch: calculatedYieldPercent !== null && statedYieldPercent !== null && Math.abs(calculatedYieldPercent - statedYieldPercent) > 0.15,
     partialIncome,
     marketNote: kind === "detached" || kind === "land"
-      ? "本案改以同類型國交省成交與 At Home 公開刊登相場比較；不套用中古公寓行情。"
+      ? "本案改以同類型國交省成交與 At Home 公開刊登行情比較；不套用中古公寓行情。"
       : excludeCondoComparison ? "此物件的整棟建物或營業用途，與現有中古公寓成交資料口徑不同，暫不作高低價判定。需另取同類成交與營運資料評估。" : null,
   };
 }

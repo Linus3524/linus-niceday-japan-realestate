@@ -26,7 +26,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
   return (<>{!isSearchActive && showProcessSection && (
                 <section className="space-y-4 pt-4">
                   <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3">
-                    <span>日本租屋正式申請與引渡流程 SOP</span>
+                    <span>日本租屋正式申請與交屋流程 SOP</span>
                   </h3>
 
                   {/* General / Overseas SOP highlight banner */}

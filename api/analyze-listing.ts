@@ -923,6 +923,7 @@ async function extractListingFields(
     物件規格欄位（請格外仔細，務必尋找提取）：
     - layout（間取り，例如 "1K"、"1LDK"、"2DK"、"2LDK"）。
       必須交叉核對「間取り」總表與「間取詳細」。若總表寫 1DK，但間取詳細明確列出 LDK(10.3畳)＋洋室(6.4畳)，應輸出 1LDK，並在 specialNotes 記錄總表與詳細不一致及採用依據。只有 LDK 字樣、總面積或家具配置時，不可自行推定房間數或升級格局；看不清楚或證據不足時保留原標示。
+    - floorPlanDetails（間取り・配置図分析）：只要圖紙包含完整或部分格局圖，就不可留空。請逐項整理圖上明確可讀的房間種類與大小（㎡／畳／帖）、キッチン、浴室、トイレ、洗面、洗濯機置場、収納／クローゼット、ロフト、バルコニー、玄関及樓層配置等；以精簡日文原文摘要輸出。只寫圖上看得到的標註，不可由家具圖示猜設備，也不可把整棟配置誤當本戶室內格局。例如本戶圖標有「洋室 9.37㎡／5.7J、ロフト、収納」時，這些資訊都必須保留，不能只輸出 layout="1K"。
     - area（専有面積／平米數／坪數）：
       * 請仔細在表格、間取り圖旁或建物概要搜尋「専有面積」「専有」「面積」「床面積」「建物面積」等標記。
       * 常見格式如 "40.17㎡"、"30.21㎡"、"40.66㎡"、"50.55㎡"、"12.29坪"、"15.29坪"。
@@ -950,8 +951,11 @@ async function extractListingFields(
         5. 若透過此方式推算出朝向，請輸出方位並附上備註，例如："北東（依間取り圖方位記號推算）" 或 "東北（依間取り圖方位記號推算）"。
       * 若整張圖紙既無文字記載，且平面圖亦無指北針／完全無法判讀朝向，才填 "-" 或留空字串。
     - age（築年數／建築年月，例如 "築4年"、"平成11年2月"、"2002年5月"、"2013年2月"）。
-    - floor（所在階／總階數，例如 "4階部分 / 8階建"、"6階部分"）。
-    - address（所在地／住所，例如 "東京都世田谷区太子堂4-30-31"、"千葉県船橋市本町2-6-14"）。
+    - address（所在地／住所／物件所在地）：
+      * 必須逐字完整提取圖紙所載之完整地址，一字不漏！
+      * 【極重要・嚴禁截斷枝番／號碼】：務必完整提取至最後的「番地」與「枝番／号」（例如圖紙載明「千葉県千葉市稲毛区長沼町32-2」或「長沼町３２−２」，絕對不可只提取「長沼町32」而丟失「-2」；載明「太子堂4-30-31」不可只提取「太子堂4-30」；載明「1-2-3」或「32番2号」必須一字不漏完整提取至最後一個號碼「32-2」或「32番2号」）！
+      * 全形數字與全形連字號（如 ３２−２、３２ー２、３２番地２）請正規化為標準半形（32-2），但絕不可擅自截斷任何號碼！
+      * 完整地址直接影響精確經緯度定位、防犯數據查證與門到門通勤精算，丟失枝番（之二、-2 等）屬於重大漏失，務必逐字核對！
 
     設備與公設規格（極重要，務必巨細靡遺全盤檢索）：
     - facilityTranslations：把 facilities 裡的**每一個項目**都翻成台灣用語的繁體中文，
@@ -1067,6 +1071,7 @@ async function extractListingFields(
             },
           },
           layout: { type: Type.STRING, description: "間取り，例如 1LDK、2DK、1K" },
+          floorPlanDetails: { type: Type.STRING, description: "間取り・配置図中明確可讀的房間大小、キッチン、浴室、トイレ、収納、ロフト等配置摘要；有格局圖時不可只填房型而留空" },
           rent: { type: Type.STRING, description: "賃料／家賃，原文格式" },
           managementFee: { type: Type.STRING, description: "管理費／共益費，原文格式" },
           keyMoney: { type: Type.STRING, description: "礼金，原文格式" },
@@ -1091,7 +1096,7 @@ async function extractListingFields(
           leaseTerms: { type: Type.STRING, description: "敷金、礼金、保証金、償却金、敷引所在整列的原文，必須保留各標籤" },
           age: { type: Type.STRING, description: "築年數／建築年月" },
           floor: { type: Type.STRING, description: "所在階" },
-          address: { type: Type.STRING, description: "地址／所在地" },
+          address: { type: Type.STRING, description: "地址／所在地。必須完整提取至最後的番地與枝番/號碼（例如 32-2 必須包含 -2，絕不可只提取至番地而截斷枝番）" },
           area: { type: Type.STRING, description: "専有面積，例如 40.17㎡" },
           structure: { type: Type.STRING, description: "建物構造，例如 RC造" },
           direction: { type: Type.STRING, description: "主要採光面／朝向／向き。優先抓取表格文字（如 南、東南、南向き、北）。若表格未載明但間取り圖有指北針（N 箭頭）與陽台／採光窗，請依指北針推算朝向並註明，例如「北東（依間取り圖方位記號推算）」；切記以 N 箭頭為正北，順時針 45° 為東北（例如 N 指向右下、陽台朝下即為東北向，切勿誤判為東南）。若完全無方位資訊則填 -，未標示則留空" },
@@ -1163,7 +1168,7 @@ async function extractListingFields(
         },
         required: [
           "propertyType", "priceDetails", "handoverDetails", "unitBreakdown", "optionalFacilities", "buildingCondition", "landArea", "buildingArea", "roadDetails", "hospitalityDetails", "revenueDetails", "revenueScope", "taxDetails",
-          "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "transitLegs", "layout", "rent", "managementFee",
+          "dealType", "buildingName", "roomNumber", "station", "walkTime", "transitAccess", "transitLegs", "layout", "floorPlanDetails", "rent", "managementFee",
           "keyMoney", "deposit", "leaseTerms", "rentalConditions", "rentalConditionItems", "age", "floor", "address",
           "area", "structure", "direction", "guaranteeFee", "lockReplacementFee",
           "cleaningFee", "insuranceFee", "supportFee", "freeRent", "shikibiki", "cancellationPenalty",

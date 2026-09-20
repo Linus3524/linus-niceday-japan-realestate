@@ -58,8 +58,8 @@ export function SaleInitialCostsSection({ model }: SaleInitialCostsSectionProps)
           <p className={`mt-2.5 ${informationStyle.note}`}>
             {isSpecialSale ? "已列項目概算，取得稅待確認登記用途後另計；仲介費按一般上限參考，非已確認報價。" : "法定公式精算仲介費、印紙稅、固都稅日割與管修預繳；"}
             {taxEstimationSummary
-              ? `評價額相關稅費依圖面推算（${taxEstimationSummary}），實際金額以交屋正式文件為準。`
-              : "評價額相關稅費由 AI 依圖面推算，實際金額以交屋正式文件為準。"}
+              ? `評價額相關稅費依圖紙推算（${taxEstimationSummary}），實際金額以交屋正式文件為準。`
+              : "評價額相關稅費由 AI 依圖紙推算，實際金額以交屋正式文件為準。"}
           </p>
       </CostSummary>
 
@@ -102,7 +102,7 @@ export function SaleInitialCostsSection({ model }: SaleInitialCostsSectionProps)
             <span className="font-bold text-[#854D0E]">•</span>
             <span>
               <strong className="text-[#1A2A22]">固都稅日割計算標準：</strong>
-              因現行圖紙分析階段尚未簽約約定交屋日，系統預設以「<strong>本日分析日起至年底之剩餘日數</strong>」進行日割概算；正式成交時將由司法書士以合約約定的<strong>實際交屋日（引渡日）</strong>為準按日精算。
+              因現行圖紙分析階段尚未簽約約定交屋日，系統預設以「<strong>本日分析日起至年底之剩餘日數</strong>」進行日割概算；正式成交時將由司法書士以契約約定的<strong>實際交屋日（引渡日）</strong>為準按日精算。
             </span>
           </li>
           <li className="flex items-start gap-1.5">

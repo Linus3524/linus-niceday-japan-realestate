@@ -199,6 +199,20 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   font-family: var(--font-jp-serif);
 }
 
+/* 反向規則：明確宣告黑體者，日文字一律維持思源黑體。
+   必要性：App 根容器（App.tsx）帶 .font-serif，因此上面的 .font-serif :lang(ja)
+   實際上命中全站每一個 [lang="ja"]，連介面元件（如通勤路線圖的站名、線路徽章）
+   都會被拉成明體——那些是資訊元件不是閱讀內容，應該跟隨介面黑體。
+   .font-jp 與 .font-sans 都是「我要黑體」的明示意圖，必須贏過上面的繼承式明體規則；
+   特異性刻意對齊 (0,2,0) 並排在後方，靠順序取勝，不動用 !important。
+   .font-jp-serif 是刻意指定明體，排除在外。 */
+.font-jp:lang(ja),
+.font-jp[lang="ja"],
+.font-sans :lang(ja):not(.font-jp-serif),
+.font-sans[lang="ja"]:not(.font-jp-serif) {
+  font-family: var(--font-jp-sans);
+}
+
 /* 桌機版頂部資訊列（logo + 令和日期時間 + 東京天氣）：磨砂玻璃，
    捲動時讓下方內容透一點上來。做法與手機版底部分頁列 (.mobile-dock) 相同，
    但白色再淡一些。手機版維持純白：那裡字更小、又疊在主視覺上，透明會不好讀。 */

@@ -74,7 +74,7 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
       propertyName: extracted?.buildingName,
     });
     if (unitFeatures.facingDirectionZh) return unitFeatures.facingDirectionZh;
-    return "未於圖面載明";
+    return "未於圖紙載明";
   })();
 
   // normalizeMonthUnit：先把「1ケ月」統一成「1ヶ月」，否則敷引月數配不到。
@@ -165,7 +165,7 @@ export function buildListingReportModel(result: AnalyzeListingResult | null, fil
     listingBenchmarkPeriod: specialComparison.listingPeriod,
     listingBenchmarkSourceUrl: specialComparison.listingSourceUrl,
     listingBenchmarkSourceLabel: specialComparison.listingPriceYen
-      ? `At Home ${specialComparison.market}・${specialComparison.areaBand} 刊登相場`
+      ? `At Home ${specialComparison.market}・${specialComparison.areaBand} 刊登行情`
       : null,
     periodStart: specialComparison.officialPeriod ? specialComparison.officialPeriod.split("～")[0] : "",
     periodEnd: specialComparison.officialPeriod ? specialComparison.officialPeriod.split("～")[1] : "",

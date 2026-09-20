@@ -5,6 +5,7 @@ import {
 } from '../lib/listing/apiClient';
 import type { AnalyzeListingResult, ListingCommuteResult } from '../lib/listing/types';
 import type { ListingLocationContext } from "../lib/listingLocation";
+import { resolveListingOriginAccess } from "../lib/listingCommuteAccess";
 import { parseTransitStations } from "../lib/transitParser";
 import type { ListingState } from './useListingState';
 
@@ -128,11 +129,13 @@ export function createListingLocationActions(context: Context) {
 
   const analyzeCommute = async () => {
     const destination = commuteDestination.trim();
-    const firstWalk = locationContext?.stationWalks[0];
     const fallbackStation = result?.extracted.station.split(/[,，]/).map(v => v.trim()).find(Boolean);
-    const originStation = firstWalk?.station || fallbackStation;
-    if (!destination || !originStation || commuteLoading || requests.pending("commute")) return;
-    const walkIssue = originWalkIssue(firstWalk?.normalMinutes, firstWalk?.advertisedMinutes);
+    const transitLegs = result?.extracted.transitLegs?.length
+      ? result.extracted.transitLegs
+      : parseTransitStations(result?.extracted.transitAccess, result?.extracted.station, result?.extracted.walkTime);
+    const originAccess = resolveListingOriginAccess(locationContext?.stationWalks, transitLegs, fallbackStation);
+    if (!destination || !originAccess || commuteLoading || requests.pending("commute")) return;
+    const walkIssue = originWalkIssue(originAccess.walkMinutes, originAccess.advertisedWalkMinutes);
     if (walkIssue) {
       setCommute(null);
       setCommuteError(walkIssue);
@@ -147,9 +150,11 @@ export function createListingLocationActions(context: Context) {
     try {
       const response = await requestListingLocation({
         mode: "commute",
-        originStation,
-        originWalkMinutes: firstWalk?.normalMinutes,
-        originAdvertisedMinutes: firstWalk?.advertisedMinutes,
+        originStation: originAccess.station,
+        originWalkMinutes: originAccess.walkMinutes,
+        originAdvertisedMinutes: originAccess.advertisedWalkMinutes,
+        originBusMinutes: originAccess.busMinutes,
+        originBusStop: originAccess.busStop,
         addressContext: result?.extracted.address || "",
         destination,
       });

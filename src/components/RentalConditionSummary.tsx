@@ -17,7 +17,7 @@ const rowIcons: Record<string, LucideIcon> = {
   "租期與續約": Clock3,
   "入住與優惠": House,
   "其他入住與契約條件": FileWarning,
-  "保證料與火災保險": ShieldCheck,
+  "保證費與火災保險": ShieldCheck,
   "保證與保險": ShieldCheck,
   "附加費用與服務": Coins,
   "敷引約定": CheckCircle2,

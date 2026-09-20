@@ -172,7 +172,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                     {busLeg && (
                       <p className="mt-1 text-[11px] text-[#66736C]">
                         圖紙為巴士接駁：バス <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.busMin}</span> 分＋徒歩 <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.walkMin}</span> 分
-                        {busLeg.busStop ? `（巴士站 ${busLeg.busStop}）` : ""}；直接步行到車站約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘
+                        {busLeg.busStop ? `（巴士站 ${busLeg.busStop}）` : ""}；通勤試算將採此巴士接駁。直接步行到車站約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘（僅供比較）
                       </p>
                     )}
                   </div>

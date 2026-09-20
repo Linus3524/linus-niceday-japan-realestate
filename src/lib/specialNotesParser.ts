@@ -254,7 +254,7 @@ const RULES: SpecialNoteRule[] = [
     explanation: (text) => {
       const fee = text.match(/[\d,]+円|\d+万(?:円)?/)?.[0];
       return fee
-        ? `交屋前由借主負擔更換全新鎖芯費用（約定：${fee}），保障前房客無留存備份鑰匙。`
+        ? `交屋前由借主負擔更換全新鎖芯費用（約定：${fee}），保障前租客無留存備份鑰匙。`
         : "交屋前由借主負擔更換全新鎖芯費用，以保障居住安全。";
     },
     badgeTone: "neutral",
@@ -557,7 +557,7 @@ function generateFallbackExplanation(token: string): ParsedSpecialNoteItem | nul
   return {
     category: "其他備考",
     title: "圖紙記載事項",
-    explanation: `圖面記載：「${clean}」，建議簽約前與房仲核對細節。`,
+    explanation: `圖紙記載：「${clean}」，建議簽約前與房仲核對細節。`,
     rawJapanese: clean,
     badgeTone: "neutral",
   };

@@ -15,8 +15,8 @@ export interface AtHomeSpecialSaleSnapshotRow {
 export const atHomeSpecialSaleSnapshotMeta = {
   capturedAt: "2026-09-08",
   sourceId: "athome-public" as const,
-  sourceLabel: "At Home 公開刊登相場",
-  methodology: "中古戶建依建物面積帶保存刊登平均總價；土地依土地面積帶保存每㎡刊登平均。數值來自公開相場頁最近刊登資料，並非成交價。",
+  sourceLabel: "At Home 公開刊登行情",
+  methodology: "中古戶建依建物面積帶保存刊登平均總價；土地依土地面積帶保存每㎡刊登平均。數值來自公開行情頁最近刊登資料，並非成交價。",
   detachedMarketCount: 1434,
   landMarketCount: 1489
 };

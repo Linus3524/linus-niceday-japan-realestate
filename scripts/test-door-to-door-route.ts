@@ -89,7 +89,28 @@ const sum = (segments: CommuteRouteSegment[]) =>
   console.log("✓ 零步行不產生空節點。");
 }
 
-// 4. 跨午夜的轉乘：23:50 到站、00:05 發車是等 15 分，不是負 1425 分。
+// 4. 圖紙為巴士接駁時，門到門起始段必須是「自宅步行到巴士站＋巴士到鐵路站」，
+//    不可誤用地圖算出的直接走到鐵路站時間。
+{
+  const [route] = findLocalTransitRoutes("中野", "新宿", 1);
+  assert.ok(route);
+  const doorToDoor = buildDoorToDoorRoute(route, {
+    originWalkMinutes: 9,
+    originBusMinutes: 11,
+    originBusStop: "長沼",
+    destinationWalkMinutes: 0,
+  });
+  assert.deepEqual(
+    doorToDoor.segments.slice(0, 2).map(segment => [segment.type, segment.departureStop, segment.arrivalStop, segment.durationMinutes]),
+    [["walk", "自宅", "長沼", 9], ["bus", "長沼", route.originStation, 11]],
+    "巴士接駁應完整畫出走到巴士站與搭巴士兩段"
+  );
+  assert.equal(doorToDoor.totalDurationMinutes, route.totalDurationMinutes + 20);
+  assert.equal(sum(doorToDoor.segments), doorToDoor.totalDurationMinutes);
+  console.log("✓ 巴士接駁正確接到鐵路起站。");
+}
+
+// 5. 跨午夜的轉乘：23:50 到站、00:05 發車是等 15 分，不是負 1425 分。
 {
   const midnight: CommuteRouteDetails = {
     source: "local_gtfs",
@@ -128,7 +149,7 @@ const sum = (segments: CommuteRouteSegment[]) =>
   console.log("✓ 跨午夜轉乘等待計算正確。");
 }
 
-// 5. 直達且無候車：不得憑空生出節點。
+// 6. 直達且無候車：不得憑空生出節點。
 {
   const direct: CommuteRouteDetails = {
     source: "local_gtfs",

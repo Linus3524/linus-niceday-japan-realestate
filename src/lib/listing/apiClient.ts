@@ -9,7 +9,7 @@ export interface AnalyzeListingRequest {
 export type ListingLocationRequest =
   | { mode: 'context'; address: string; stations: string[]; advertisedWalkMinutes: Array<number | null>; stationLines?: string[] }
   | { mode: 'crime'; address: string }
-  | { mode: 'commute'; originStation: string; originWalkMinutes: number | undefined; originAdvertisedMinutes: number | null | undefined; addressContext: string; destination: string };
+  | { mode: 'commute'; originStation: string; originWalkMinutes: number | undefined; originAdvertisedMinutes: number | null | undefined; originBusMinutes?: number; originBusStop?: string | null; addressContext: string; destination: string };
 
 // Keep response parsing and each workflow's different failure policy at the caller.
 export function readListingShare(sharedId: string): Promise<Response> {

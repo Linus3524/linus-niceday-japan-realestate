@@ -213,7 +213,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                           <div className="flex justify-between items-start gap-2 mb-2">
                             <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={fee.name} /></h4>
                             {fee.jpName && (
-                              <span lang="ja" className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-medium">{fee.jpName}</span>
+                              <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{fee.jpName}</span>
                             )}
                           </div>
                           <p className="text-sm text-[#3F5147] leading-relaxed line-clamp-3">

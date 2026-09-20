@@ -67,8 +67,31 @@ function walkSegment(from: string, to: string, minutes: number, endStationNumber
   };
 }
 
+function busSegment(from: string, to: string, minutes: number, endStationNumber: string | null): CommuteRouteSegment {
+  return {
+    type: "bus",
+    lineName: "バス",
+    lineShortName: null,
+    lineColor: "#2563EB",
+    lineTextColor: "#FFFFFF",
+    operator: null,
+    departureStop: from,
+    arrivalStop: to,
+    startStationNumber: null,
+    endStationNumber,
+    departureTime: null,
+    arrivalTime: null,
+    durationMinutes: minutes,
+    stopCount: null,
+    headsign: null,
+  };
+}
+
 export interface DoorToDoorOptions {
   originWalkMinutes?: number | null;
+  /** 圖紙刊載的起站巴士接駁；有值時，originWalkMinutes 代表走到巴士站。 */
+  originBusMinutes?: number | null;
+  originBusStop?: string | null;
   destinationWalkMinutes?: number | null;
   originLabel?: string;
   destinationLabel?: string;
@@ -105,6 +128,8 @@ function withTransferWaits(segments: CommuteRouteSegment[]) {
  */
 export function buildDoorToDoorRoute(route: CommuteRouteDetails, options: DoorToDoorOptions = {}): CommuteRouteDetails {
   const originWalk = Math.max(0, Math.round(Number(options.originWalkMinutes) || 0));
+  const originBus = Math.max(0, Math.round(Number(options.originBusMinutes) || 0));
+  const originBusStop = options.originBusStop?.trim() || "巴士站";
   const destinationWalk = Math.max(0, Math.round(Number(options.destinationWalkMinutes) || 0));
   const originLabel = options.originLabel || "自宅";
   const destinationLabel = options.destinationLabel || "目的地";
@@ -124,9 +149,13 @@ export function buildDoorToDoorRoute(route: CommuteRouteDetails, options: DoorTo
   const firstTransit = transitSegments[0];
   const lastTransit = transitSegments[transitSegments.length - 1];
 
-  const leading = originWalk > 0 && firstTransit
-    ? [walkSegment(originLabel, firstTransit.departureStop, originWalk, firstTransit.startStationNumber ?? null)]
-    : [];
+  const leading: CommuteRouteSegment[] = [];
+  if (firstTransit && originBus > 0) {
+    if (originWalk > 0) leading.push(walkSegment(originLabel, originBusStop, originWalk, null));
+    leading.push(busSegment(originBusStop, firstTransit.departureStop, originBus, firstTransit.startStationNumber ?? null));
+  } else if (originWalk > 0 && firstTransit) {
+    leading.push(walkSegment(originLabel, firstTransit.departureStop, originWalk, firstTransit.startStationNumber ?? null));
+  }
   const trailing = destinationWalk > 0 && lastTransit
     ? [walkSegment(lastTransit.arrivalStop, destinationLabel, destinationWalk, null)]
     : [];

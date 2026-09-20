@@ -38,8 +38,8 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
   const customGuarantee = guaranteeBreakdown.initial;
   const guaranteeAmount = customGuarantee ?? Math.round(totalMonthlyCost * 0.5);
   const recurringGuaranteeNote = [
-    guaranteeBreakdown.monthly ? `另有月額保證料約 ¥${guaranteeBreakdown.monthly.toLocaleString()}／月（按月支付，不計入初期費用）` : "",
-    guaranteeBreakdown.annual ? `另有年度保證料約 ¥${guaranteeBreakdown.annual.toLocaleString()}／年（續約時支付，不計入初期費用）` : "",
+    guaranteeBreakdown.monthly ? `另有月額保證費約 ¥${guaranteeBreakdown.monthly.toLocaleString()}／月（按月支付，不計入初期費用）` : "",
+    guaranteeBreakdown.annual ? `另有年度保證費約 ¥${guaranteeBreakdown.annual.toLocaleString()}／年（續約時支付，不計入初期費用）` : "",
   ].filter(Boolean).join("；");
 
   const items: InitialCostBreakdownItem[] = [
@@ -49,9 +49,9 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
       amount: deposit,
       isUnknown: depositUnknown,
       isFromFlyer: Boolean(result.extracted.deposit) || depositExplicitZero,
-      note: depositUnknown ? "押金未確認，未計入小計" : deposit === 0
-        ? "免押金（需留意退租時之原狀恢復或預收清掃費條款）" : hasShikibiki
-          ? `擔保性質費用（ 含「${formattedShikibiki}」扣除約定，退租時不退還）` : "擔保性質費用，退租扣除自然折舊外之修繕後退還餘額",
+      note: depositUnknown ? "押金未載明，尚未計入小計；不代表免押金" : deposit === 0
+        ? "免押金（需留意退租時是否有預收清掃費或特約條款）" : hasShikibiki
+          ? `擔保性質費用（含「${formattedShikibiki}」扣除約定，退租時不退還）` : "擔保性質費用，退租扣除修繕後退還餘額",
     },
     {
       id: "keyMoney",
@@ -59,14 +59,14 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
       amount: keyMoney,
       isUnknown: keyMoneyUnknown,
       isFromFlyer: Boolean(result.extracted.keyMoney) || keyMoneyExplicitZero,
-      note: keyMoneyUnknown ? "禮金未確認，未計入小計" : keyMoney === 0 ? "免禮金（無須額外贈與房東謝禮，初期負擔大幅減輕）" : "日本傳統贈與房東之謝禮，退租時不予退還",
+      note: keyMoneyUnknown ? "禮金未載明，尚未計入小計；不代表免禮金" : keyMoney === 0 ? "免禮金（無須贈與房東謝禮，初期負擔大幅減輕）" : "贈與房東之謝禮，退租時不予退還",
     },
     {
       id: "advanceRent",
-      name: "前家賃（次月完整租金＋管理費）",
+      name: "前家賃（次月完整租金與管理費）",
       amount: totalMonthlyCost,
       isFromFlyer: true,
-      note: "簽約時預先繳交入住次月之全月租金與共益費",
+      note: "簽約時預先支付入住次月之全額租金與管理費",
     },
     {
       id: "proratedRent",
@@ -77,15 +77,15 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
     },
     {
       id: "guaranteeFee",
-      name: "保證公司初回保證料",
+      name: "保證公司初回保證費",
       amount: guaranteeAmount,
       isFromFlyer: Boolean(customGuarantee),
       note: [
         customGuarantee
-          ? `圖紙載明：${result.extracted.guaranteeFee}（依月總租金 ¥${totalMonthlyCost.toLocaleString()} 計約 ¥${guaranteeAmount.toLocaleString()}）`
+          ? `圖紙標示：${result.extracted.guaranteeFee}（以月總租金 ¥${totalMonthlyCost.toLocaleString()} 計）`
           : result.extracted.guaranteeFee
-            ? `圖紙標示：${result.extracted.guaranteeFee}${guaranteeBreakdown.monthly || guaranteeBreakdown.annual ? "；初回保證料未載明，暫以總租金 50% 預估" : ""}`
-            : "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%",
+            ? `圖紙標示：${result.extracted.guaranteeFee}${guaranteeBreakdown.monthly || guaranteeBreakdown.annual ? "；初回保證費未載明，暫以總月租 50% 預估" : ""}`
+            : "外國籍租客多需加入保證公司，一般常態為總月租之 50%～100%",
         recurringGuaranteeNote,
       ].filter(Boolean).join("。"),
     },
@@ -98,13 +98,18 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
     },
     (() => {
       const insuranceIncluded = /(?:含む|込み|含まれ|包含|已含)/u.test(result.extracted.insuranceFee || "");
-      const insuranceAmount = insuranceIncluded ? 0 : (parseYenAmount(result.extracted.insuranceFee) ?? 20000);
+      const customInsurance = insuranceIncluded ? 0 : parseYenAmount(result.extracted.insuranceFee);
+      const insuranceAmount = customInsurance ?? 20000;
       return {
         id: "insuranceFee",
         name: "火災保險／家財保險（期間待核對）",
         amount: insuranceAmount,
-        isFromFlyer: insuranceIncluded || Boolean(parseYenAmount(result.extracted.insuranceFee)),
-        note: insuranceIncluded ? `已包含於圖紙指定的會員／支援費中：${result.extracted.insuranceFee}` : result.extracted.insuranceFee ? `圖紙標示：${result.extracted.insuranceFee}` : "保障租客個人財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
+        isFromFlyer: insuranceIncluded || Boolean(customInsurance),
+        note: insuranceIncluded
+          ? `已包含於圖紙指定的會員／支援費中：${result.extracted.insuranceFee}`
+          : result.extracted.insuranceFee
+            ? `圖紙標示：${result.extracted.insuranceFee}${customInsurance === null ? "；金額未載，暫估20,000円，期間待核對" : ""}`
+            : "保障租客財物與租賃賠償責任（常態約 1.8 萬～2.2 萬円）",
       };
     })(),
     {
@@ -114,7 +119,7 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
       isFromFlyer: isFreeOrZero(result.extracted.lockReplacementFee) || Boolean(parseYenAmount(result.extracted.lockReplacementFee)),
       note: isFreeOrZero(result.extracted.lockReplacementFee)
         ? `免換鎖費用（圖紙標示：${result.extracted.lockReplacementFee || "無償"}）` : result.extracted.lockReplacementFee
-          ? `圖紙標示：${result.extracted.lockReplacementFee}` : "交屋前換新鎖芯費用（一般鎖約 1.6 萬～2.2 萬円，電子鎖約 3.3 萬円）",
+          ? `圖紙標示：${result.extracted.lockReplacementFee}` : "交屋前換新鎖芯（一般鎖約 1.6 萬～2.2 萬円，電子防盜鎖約 3.3 萬円）",
     },
   ];
 

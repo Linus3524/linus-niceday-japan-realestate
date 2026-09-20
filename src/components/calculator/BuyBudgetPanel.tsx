@@ -57,7 +57,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
           />
           <span className="ml-2 shrink-0 text-sm font-bold text-[#66736C]">萬円</span>
         </div>
-        <span className="mt-1 block text-[9px] font-normal leading-relaxed text-[#8A9590]">包含頭期款與購屋初期諸費用</span>
+        <span className="mt-1 block text-[9px] font-normal leading-relaxed text-[#8A9590]">包含自備款與購屋初期諸費用</span>
       </label>
       <label className="block text-xs font-bold text-[#3F5147]">
         每月可接受的本息還款
@@ -102,7 +102,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
 
       <div className="mt-4 grid grid-cols-1 gap-px border border-[#DDE3DF] bg-[#DDE3DF] sm:grid-cols-3">
         <div className="bg-white p-4">
-          <p className={informationStyle.label}>頭期款概算</p>
+          <p className={informationStyle.label}>自備款概算</p>
           <p className="mt-1 font-mono text-lg font-bold text-[#1A2A22]">{formatManYen(affordableDownPayment, 0)}</p>
           <p className={`mt-1 ${informationStyle.source}`}>總價的 {100 - loanRatio}%</p>
         </div>

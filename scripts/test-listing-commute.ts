@@ -4,6 +4,7 @@ import { parseTransitStations } from "../src/lib/transitParser.js";
 import { distanceMeters, getListingLocationContext, nearestStationForAddress } from "../src/lib/listingLocation.js";
 import listingLocationHandler from "../api/listing-location.js";
 import { originWalkIssue } from "../src/lib/commuteValidation.js";
+import { resolveListingOriginAccess } from "../src/lib/listingCommuteAccess.js";
 
 assert.ok(originWalkIssue(62, 6), "圖紙6分但計算62分必須攔截");
 assert.ok(originWalkIssue(2, 30), "異常偏短也必須核對");
@@ -12,6 +13,16 @@ assert.ok(originWalkIssue(62), "沒有圖紙依據的長步行必須核對");
 assert.equal(originWalkIssue(9, 6), null, "正常步速差異不攔截");
 assert.equal(originWalkIssue(32, 28), null);
 assert.equal(originWalkIssue(62, 60), null, "圖紙確實記載長步行，不可硬改數字");
+
+const busOrigin = resolveListingOriginAccess(
+  [{ station: "スポーツセンター", source: "flyer", distanceMeters: 3491, advertisedMinutes: null, fastMinutes: 39, normalMinutes: 47, slowMinutes: 64, differenceMinutes: null, needsAttention: false }],
+  [{ lineName: "千葉モノレール", stationName: "スポーツセンター", walkMin: 9, busMin: 11, busStop: "長沼" }],
+);
+assert.deepEqual(busOrigin, {
+  station: "スポーツセンター", walkMinutes: 9, advertisedWalkMinutes: 9,
+  busMinutes: 11, busStop: "長沼",
+}, "36941 圖紙應採步行 9 分＋巴士 11 分，不可採直接步行到車站 47 分");
+assert.equal(originWalkIssue(busOrigin?.walkMinutes, busOrigin?.advertisedWalkMinutes), null);
 
 // 東武練馬などの正式駅名を、別の実在駅へ短縮してはいけない。
 for (const name of ["東武練馬", "西武新宿", "京成高砂", "京急蒲田", "小田急相模原", "京王八王子"]) {

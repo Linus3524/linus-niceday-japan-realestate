@@ -89,6 +89,10 @@ export default async function handler(req: any, res: any) {
       const addressContext = cleanString(req.body?.addressContext);
       const destination = cleanString(req.body?.destination);
       const originWalkMinutes = req.body?.originWalkMinutes;
+      const rawOriginBusMinutes = Number(req.body?.originBusMinutes);
+      const originBusMinutes = Number.isFinite(rawOriginBusMinutes) && rawOriginBusMinutes > 0 && rawOriginBusMinutes <= 180
+        ? Math.round(rawOriginBusMinutes) : 0;
+      const originBusStop = cleanString(req.body?.originBusStop, 60) || null;
       if (!originStation || !destination) return res.status(400).json({ error: "請提供物件車站與公司／學校地址。" });
       const walkIssue = originWalkIssue(originWalkMinutes, req.body?.originAdvertisedMinutes);
       if (walkIssue) return res.status(422).json({ error: walkIssue });
@@ -111,15 +115,17 @@ export default async function handler(req: any, res: any) {
           destinationStation: destinationInfo.station,
           destinationWalkMinutes: destinationInfo.normalMinutes,
           originWalkMinutes,
+          originBusMinutes,
+          originBusStop,
           transitMinutes: primaryRoute.totalDurationMinutes,
-          totalMinutes: originWalkMinutes + primaryRoute.totalDurationMinutes + destinationInfo.normalMinutes,
+          totalMinutes: originWalkMinutes + originBusMinutes + primaryRoute.totalDurationMinutes + destinationInfo.normalMinutes,
           transfers: primaryRoute.transfers,
           route: primaryRoute,
           routes: routes.map((r, idx) => ({
             id: `route-${idx + 1}`,
             route: r,
             transitMinutes: r.totalDurationMinutes,
-            totalMinutes: originWalkMinutes + r.totalDurationMinutes + destinationInfo.normalMinutes,
+            totalMinutes: originWalkMinutes + originBusMinutes + r.totalDurationMinutes + destinationInfo.normalMinutes,
             transfers: r.transfers,
           })),
         },

@@ -89,8 +89,8 @@ assert.doesNotMatch(moveInRow.items.join("\n"), /圖紙未載明入住日或優�
 
 const feeSection = ryogokuSections.find(s => s.title === "保證、保險與附加費用");
 assert.ok(feeSection, "必須包含「保證、保險與附加費用」");
-const guaranteeRow = feeSection.rows.find(r => r.title === "保證料與火災保險");
-assert.ok(guaranteeRow, "必須包含「保證料與火災保險」");
+const guaranteeRow = feeSection.rows.find(r => r.title === "保證費與火災保險");
+assert.ok(guaranteeRow, "必須包含「保證費與火災保險」");
 assert.match(guaranteeRow.items.join("\n"), /50％ 起/);
 assert.match(guaranteeRow.items.join("\n"), /約 100,000円/);
 assert.match(guaranteeRow.items.join("\n"), /火災保險：須投保，22,200円/);

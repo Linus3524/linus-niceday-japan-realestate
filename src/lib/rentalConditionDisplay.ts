@@ -279,7 +279,7 @@ export function buildRentalConditionSections({
     {
       title: "保證、保險與附加費用",
       rows: [
-        { title: "保證料與火災保險", items: guarantee },
+        { title: "保證費與火災保險", items: guarantee },
         { title: "附加費用與服務", items: fees },
       ],
     },
@@ -327,7 +327,7 @@ function formatGuaranteeItem(text: string, totalMonthlyCost?: number | null): st
       notes.push(`年度約 ${breakdown.annual.toLocaleString()}円／年，續約時支付、未計入初期費用`);
     }
   }
-  const base = /保證|保証/u.test(s) ? s : `保證公司（初回保證料）：${s}`;
+  const base = /保證|保証/u.test(s) ? s : `保證公司（初回保證費）：${s}`;
   return notes.length ? `${base}（${notes.join("；")}）` : base;
 }
 
@@ -406,7 +406,7 @@ const groupOrder = [
   ["lease", "租期與契約更新"],
   ["moveIn", "入住與優惠"],
   ["pet", "寵物條件"],
-  ["guarantee", "保證料與火災保險"],
+  ["guarantee", "保證費與火災保險"],
   ["fees", "附加費用與服務"],
   ["moveOut", "退租與房屋提醒"],
   ["optional", "選配設施"],
@@ -547,7 +547,7 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/敷金0[・\s]*礼金0キャンペーン中/gu, "零押金、零禮金優惠中")
     .replace(/[（(]キャンペーンは(\d+)月末日迄の成約となります[）)]/gu, "（須於 $1 月底前完成簽約）")
     .replace(/★?キャンペーンは(\d+)月末日迄の成約となります/gu, "優惠期限：須於 $1 月底前完成簽約")
-    .replace(/保証会社\s*(?:必須)?\s*(?:家賃総額より|総賃料)?\s*(\d+%)[～~]?/gu, "保證公司（初回保證料）：須加入，月租總額 $1 起")
+    .replace(/保証会社\s*(?:必須)?\s*(?:家賃総額より|総賃料)?\s*(\d+%)[～~]?/gu, "保證公司（初回保證費）：須加入，月租總額 $1 起")
     .replace(/損害保険\s*(?:有)?\s*([\d,]+円)\s*(\d+ヶ月)?/gu, "火災保險：須投保，$1（$2）")
     .replace(/M保証システム利用料\s*[（(]家賃総額の(\d+)%[〜~～][）)]/gu, "M 保證系統初回費：租金總額 $1% 起")
     .replace(/木下グループ保証\s*[：:]\s*初回保証料(\d+)%[、,]?利用手数料月額([\d,]+円)[、,]?継続保証委託料([\d,]+円)[（(](\d+)年毎[）)]/gu, "木下集團保證：初回費為月租總額 $1%；月額手續費 $2；持續保證委託費 $3（每 $4 年）")

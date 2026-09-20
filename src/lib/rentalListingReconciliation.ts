@@ -62,7 +62,8 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   if (!layoutText?.trim()) return original;
   // normalizeMonthUnit：版面文字的月數寫法有 ヶ／ヵ／ケ／カ／か 五種，下面的
   // 敷金・礼金・更新料・解約予告比對全都只認「ヶ月」，不先統一會整條配不到而漏補。
-  const normalized = normalizeMonthUnit(layoutText.normalize("NFKC"));
+  // 同時將全形連字號（−、ー、―、－等）正規化為標準半形減號「-」，確保地址中的枝番（如 32-2、4-30-31）不被截斷。
+  const normalized = normalizeMonthUnit(layoutText.normalize("NFKC").replace(/[−ー―－–—]/gu, "-"));
   const compact = compactText(normalized);
   const looksRental = original.dealType === "rent" || /(?:賃料|LEASECONDITION|契約期間|敷金)/iu.test(compact);
   if (!looksRental) return original;
@@ -77,7 +78,10 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   const layout = capture(compact, /間取り([1-9][A-Z]{0,4})タイプ/iu);
   const rawArea = capture(compact, /専有面積([\d.]+(?:㎡|m2))/iu);
   const area = rawArea?.replace(/m2$/iu, "㎡");
-  const address = capture(compact, /所在地(東京都[^■]+?)(?:構造|竣工日|駐車場)/u);
+  const rawAddress = capture(
+    compact,
+    /(?:所在地|住所)[:：]?([^\s■\n\r]+?(?:\d+(?:-\d+)+|\d+番地?(?:\d+号?)?|\d+))/u
+  ) || capture(compact, /所在地(東京都[^■]+?)(?:構造|竣工日|駐車場)/u);
   const structure = capture(compact, /構造([^■]+?)規模/u);
   const buildingFloors = capture(compact, /規模(\d+)階建/u);
   const floor = capture(compact, /規模\d+階建(\d+)階/u);
@@ -95,7 +99,17 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   fill(result, "leaseTerms", deposit && keyMoney ? `敷金${deposit} 礼金${keyMoney}` as T["leaseTerms"] : undefined);
   fill(result, "layout", layout as T["layout"]);
   fill(result, "area", area as T["area"]);
-  fill(result, "address", address as T["address"]);
+  if (rawAddress) {
+    if (!result.address) {
+      result.address = rawAddress as T["address"];
+    } else if (
+      (rawAddress.includes("-") || rawAddress.includes("番")) &&
+      !result.address.includes("-")
+    ) {
+      // 若原欄位只有番地（如長沼町32），而版面文字明確包含枝番/號碼（如長沼町32-2），升級為完整地址
+      result.address = rawAddress as T["address"];
+    }
+  }
   fill(result, "structure", structure as T["structure"]);
   fill(result, "buildingFloors", buildingFloors as T["buildingFloors"]);
   fill(result, "floor", floor ? `${floor}階` as T["floor"] : undefined);

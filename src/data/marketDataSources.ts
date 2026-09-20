@@ -56,9 +56,9 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
   },
   {
     id: "athome-public",
-    label: "At Home 公開相場頁",
+    label: "At Home 公開行情頁",
     kinds: ["rent_listing", "sale_listing"],
-    statistic: "租金、中古公寓、中古戶建與土地的公開刊登相場",
+    statistic: "租金、中古公寓、中古戶建與土地的公開刊登行情",
     publicationCadence: "最近 3 個月滾動平均；本站每季更新一次",
     reviewCadenceDays: 100,
     ingestionStatus: "enabled",
@@ -69,7 +69,7 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
   },
   {
     id: "suumo-public",
-    label: "SUUMO 公開相場頁",
+    label: "SUUMO 公開行情頁",
     kinds: ["rent_listing", "sale_listing"],
     statistic: "SUUMO 刊登／登錄資料的獨自集計",
     publicationCadence: "頁面會標示資料時點，但未承諾本站可依固定頻率再利用",
@@ -82,7 +82,7 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
   },
   {
     id: "homes-public",
-    label: "LIFULL HOME'S 公開相場頁",
+    label: "LIFULL HOME'S 公開行情頁",
     kinds: ["rent_listing", "sale_listing"],
     statistic: "刊登物件平均；租金頁通常每週五更新、二手公寓價格頁每月更新",
     publicationCadence: "租金每週、二手公寓每月（依各頁標示）",

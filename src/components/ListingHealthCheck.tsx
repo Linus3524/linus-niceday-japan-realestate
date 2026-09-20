@@ -40,7 +40,7 @@ import { ACCEPTED_MIME_TYPES } from '../lib/listing/browser/uploadConfig';
 
 import { formatFileSize } from '../lib/listing/formatters';
 
-import { CommuteRouteCard } from "./CommuteRouteCard";
+import { CommuteRouteCard, getCommuteSourceLabel } from "./CommuteRouteCard";
 import { buildDoorToDoorRoute, isRidingSegment } from "../lib/commuteRouteDisplay";
 
 import { ErrorBoundary } from "./ErrorBoundary";
@@ -488,8 +488,8 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-[#1A2A22]">這份買賣圖紙未載明販売価格，無法進行行情比對</p>
                       <p className="mt-1.5 text-xs leading-relaxed text-[#3F5147]">
-                        圖面上的「価格」欄為空白或標示「応相談」「未定」，因此無法計算每坪單價、實價登錄對照與交屋初期費用。
-                        建議向仲介索取載有販売価格的正式版図面後重新上傳，或直接詢問目前的開價。
+                        圖紙上的「価格」欄為空白或標示「応相談」「未定」，因此無法計算每坪單價、實價登錄對照與交屋初期費用。
+                        建議向仲介索取載有販売価格的正式版圖紙（図面）後重新上傳，或直接詢問目前的開價。
                       </p>
                     </div>
                   </div>
@@ -663,20 +663,20 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
                     onClick={() => setSelectedRouteIndex(idx)}
                     className={`text-left p-3 transition-all border ${
                       isSelected
-                        ? "border-[#00A174] bg-[#EAF6F0] shadow-sm ring-1 ring-[#00A174]"
-                        : "border-[#DDE3DF] bg-white hover:border-[#B2C4BC] hover:bg-[#F9FAF9]"
+                        ? "border-[#00A174] bg-[#E6F6F1] shadow-sm ring-1 ring-[#00A174]"
+                        : "border-[#DDE3DF] bg-white hover:border-[#AEB8B2] hover:bg-[#FAFCFB]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1.5">
                       <span className={`text-xs font-bold ${isSelected ? "text-[#00A174]" : "text-[#1A2A22]"}`}>
                         路線 {idx + 1}
                       </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-sm ${
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 ${
                         isDirect
-                          ? "bg-[#D1FAE5] text-[#065F46]"
+                          ? "bg-[#00A174] text-white"
                           : isLeastTransfers
-                          ? "bg-[#EAF6F0] text-[#00A174]"
-                          : "bg-[#F3F4F6] text-[#4B5563]"
+                          ? "bg-[#E6F6F1] text-[#00A174]"
+                          : "bg-[#EEF2F0] text-[#66736C]"
                       }`}>
                         {isDirect ? "直達・免轉車" : isLeastTransfers ? `轉乘最少 (${opt.transfers}次)` : `轉乘 ${opt.transfers} 次`}
                       </span>
@@ -696,46 +696,69 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
         );
       })()}
 
-      {/* 主路線概要資訊 */}
-      <div className={`flex flex-wrap items-end justify-between gap-3 ${routeOptions.length > 1 ? "border-t border-[#DDE3DF] pt-3.5" : ""}`}>
-        <div>
-          <div className="flex items-center gap-2">
-            <p className="text-[11px] font-bold text-[#00A174]">全程門到門通勤時間</p>
-            {routeOptions.length > 1 && (
-              <span className="text-[10px] font-bold text-[#00A174] bg-[#EAF6F0] px-1.5 py-0.5 rounded-sm">
-                目前檢視：路線 {selectedRouteIndex + 1}
-              </span>
-            )}
-          </div>
-          <p className="mt-1 text-base font-bold text-[#1A2A22]">
+      {/* 主路線概要資訊。
+          左右兩欄各自是一個完整的意義單位：左欄回答「這是哪條路線、時間由什麼組成」，
+          右欄回答「結論是幾分鐘」。用 items-start 讓兩欄頂端對齊——
+          右欄大字 text-3xl（30px）和左欄標題 text-base（16px）文字頂端齊平，
+          下方說明行自然往下長，視覺上左右起跑線一致。
+          （items-baseline 會讓基線對齊，但 30px 與 16px 的 ascent 差距約 7px，
+          造成右側大字頂端遠高於左側標題，看起來右邊飄上去了。） */}
+      <div className={`flex items-start justify-between gap-4 ${routeOptions.length > 1 ? "border-t border-[#DDE3DF] pt-3.5" : ""}`}>
+        <div className="min-w-0 flex-1">
+          {/* 不再加「全程門到門通勤時間」這類標籤：區塊標題已經寫明是門到門精算，
+              起訖站配上右側大字分鐘數本身就說得清楚。
+              也不標「目前檢視：路線 N」——上方 tab 已有選中態，用文字再講一次是多餘的。 */}
+          <p className="text-base font-bold leading-none text-[#1A2A22]">
             {activeOption?.route ? `${activeOption.route.originStation} → ${activeOption.route.destinationStation}` : commute.destinationStation}
             ・{activeOption ? (activeOption.transfers === 0 ? "直達線路（免轉乘）" : `轉乘 ${activeOption.transfers} 次`) : `轉乘 ${commute.transfers} 次`}
           </p>
+          {/* 目的地端的步行只在真的要走路時才列出：0 分代表下車就到，寫「出站抵達 0 分」
+              既不是通順中文，也是在報告一段不存在的路程。 */}
+          <p className="mt-1.5 text-xs leading-relaxed text-[#3F5147]">
+            {commute.originBusMinutes
+              ? `出門步行至巴士站 ${commute.originWalkMinutes} 分${commute.originBusStop ? `（${commute.originBusStop}）` : ""} ＋ 巴士 ${commute.originBusMinutes} 分 ＋ 站間交通 ${activeOption ? activeOption.transitMinutes : commute.transitMinutes} 分（含候車與轉乘等待）`
+              : `出門步行至車站 ${commute.originWalkMinutes} 分 ＋ 站間交通 ${activeOption ? activeOption.transitMinutes : commute.transitMinutes} 分（含候車與轉乘等待）`}
+            {commute.destinationWalkMinutes > 0 && ` ＋ 下車後步行 ${commute.destinationWalkMinutes} 分`}
+          </p>
+          <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">目的地定位：{commute.destinationAddress}</p>
+          {commute.destinationResolutionNote && (
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#D97706]">{commute.destinationResolutionNote}</p>
+          )}
         </div>
-        <p className="shrink-0 text-3xl font-black text-[#00A174]">
-          約 {activeOption ? activeOption.totalMinutes : commute.totalMinutes} 分
-        </p>
+        {/* 資料來源徽章貼在總時間底下：它修飾的是這個分鐘數的可信度，
+            放在路線圖角落會讓人不確定它在講哪一項。 */}
+        <div className="shrink-0 text-right">
+          <p className="whitespace-nowrap text-3xl font-black leading-none text-[#00A174]">
+            約 {activeOption ? activeOption.totalMinutes : commute.totalMinutes} 分
+          </p>
+          {activeOption?.route && (
+            <p className="mt-1.5 text-[10px] leading-none text-[#66736C]">
+              {getCommuteSourceLabel(activeOption.route.source)}
+            </p>
+          )}
+        </div>
       </div>
 
-      <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">
-        出門步行 {commute.originWalkMinutes} 分 ＋ 站間交通 {activeOption ? activeOption.transitMinutes : commute.transitMinutes} 分（含候車與轉乘等待）＋ 出站抵達 {commute.destinationWalkMinutes} 分
-      </p>
-      <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">目的地定位：{commute.destinationAddress}</p>
-      {commute.destinationResolutionNote && (
-        <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#D97706]">{commute.destinationResolutionNote}</p>
-      )}
-
       {activeOption?.route ? (
-        <div className="mt-4 min-w-0">
-          <p className="mb-2 text-[11px] text-[#66736C]">
-            門到門路線{routeOptions.length > 1 ? `（路線 ${selectedRouteIndex + 1}）` : ""}（含出門步行、候車與轉乘等待）
-          </p>
+        <div className="mt-3 min-w-0 border-t border-[#DDE3DF] pt-3">
+          {/* 路線圖直接續在摘要下方，只用一條分隔線收邊：這張圖講的就是上面那組數字的組成，
+              另開一個白底方框會變成框中框，也會讓人誤以為是另一筆資料。
+              也不再加「門到門路線（含…）」的標題：上一行已經把步行、候車與轉乘等待逐項拆給使用者看，
+              圖本身又直接畫出自宅→車站→轉乘→目的地，再寫一次等於同句話講第三遍。 */}
           <CommuteRouteCard
+            // 外層已經是完整區塊：卡片去掉自己的外框與重複的起訖站／時間／轉乘次數，
+            // 只負責畫路線圖與標示資料來源。
+            embedded
             route={buildDoorToDoorRoute(activeOption.route, {
               originWalkMinutes: commute.originWalkMinutes,
+              originBusMinutes: commute.originBusMinutes,
+              originBusStop: commute.originBusStop,
               destinationWalkMinutes: commute.destinationWalkMinutes,
               originLabel: "自宅",
-              destinationLabel: commute.destinationInput || "目的地",
+              // 終點節點固定寫「目的地」，與起點的「自宅」同為角色標籤。
+              // 這裡若塞使用者輸入的原始地址，遇到完整住所就會被節點寬度截成「〒101-0…」，
+              // 既讀不出是哪裡也不對稱；真正的完整地址上面「目的地定位：」那行已經完整列出。
+              destinationLabel: "目的地",
             })}
           />
         </div>

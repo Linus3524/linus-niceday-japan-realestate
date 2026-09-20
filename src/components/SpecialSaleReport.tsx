@@ -151,7 +151,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                 {handoverDate}
               </p>
               <p className="mt-1 text-[11px] leading-relaxed text-[#8A9590]">
-                圖面記載預定引渡時程，確切交屋與產權移轉日依買賣契約協議。
+                圖紙記載預定引渡時程，確切交屋與產權移轉日依買賣契約協議。
               </p>
             </div>
 
@@ -228,7 +228,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   <li
                     key={condition.raw}
                     className="flex items-start gap-2 border border-[#ECEFEC] bg-white p-2.5"
-                    title={condition.translated ? `圖面原文：${condition.raw}` : undefined}
+                    title={condition.translated ? `圖紙原文：${condition.raw}` : undefined}
                   >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-[#00A174]" />
                     <span className="leading-relaxed">{condition.text}</span>
@@ -308,11 +308,11 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                 </p>
               </div>
 
-              {/* 營運規模與圖面記載 */}
+              {/* 營運規模與圖紙記載 */}
               <div className="min-w-0 p-4 sm:p-5">
                 <p
                   className="text-[11px] font-bold text-[#66736C]"
-                  title={fields.hospitalityDetails ? `圖面原文：${fields.hospitalityDetails}` : undefined}
+                  title={fields.hospitalityDetails ? `圖紙原文：${fields.hospitalityDetails}` : undefined}
                 >
                   營運條件與規模
                 </p>
@@ -320,7 +320,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   <div className="flex items-baseline justify-between border-b border-[#ECEFEC] pb-1.5">
                     <dt className="text-[#66736C]">最大容納人數</dt>
                     <dd className="font-black tabular-nums text-[#1A2A22]">
-                      {hospitalityInfo.capacity ? `${hospitalityInfo.capacity} 名` : "圖面未標明"}
+                      {hospitalityInfo.capacity ? `${hospitalityInfo.capacity} 名` : "圖紙未標明"}
                     </dd>
                   </div>
                   <div className="flex items-baseline justify-between border-b border-[#ECEFEC] pb-1.5">
@@ -380,7 +380,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
               <div className="grid divide-y divide-[#DDE3DF] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                 {/* 欄 1：預估年營收 */}
                 <div className="p-4 sm:p-5">
-                  <p className="text-[11px] font-bold text-[#66736C]">預估年營收（圖面刊載）</p>
+                  <p className="text-[11px] font-bold text-[#66736C]">預估年營收（圖紙刊載）</p>
                   <p className="mt-1.5 text-2xl font-black tabular-nums text-[#1A2A22]">
                     {typeof d.annualRevenueYen === "number" && !isNaN(d.annualRevenueYen)
                       ? `${d.annualRevenueYen.toLocaleString()} 円`
@@ -457,7 +457,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                 <div className="border-t border-[#DDE3DF] p-4 sm:p-5">
                   <div className="flex items-center justify-between border-b border-[#DDE3DF] pb-2.5">
                     <span className="text-xs font-bold text-[#1A2A22]">營收算式細項拆解</span>
-                    <span className="text-[10px] text-[#8A9590]">按圖面公式還原組成項目</span>
+                    <span className="text-[10px] text-[#8A9590]">按圖紙公式還原組成項目</span>
                   </div>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {breakdownItems.map((detail) => (
@@ -596,7 +596,7 @@ const CONDITION_RULES: Array<[RegExp, (m: RegExpMatchArray) => string]> = [
   [/^取引[様態]*\s*[：:]\s*(.+)$/u, (m) => `交易形態：${m[1]}`],
   [/^地目\s*[：:]\s*宅地/u, () => "地目：宅地（住宅用地）"],
   [/^接道\s*[：:]\s*(.+)$/u, (m) => `接道狀況：${m[1]}`],
-  [/^私道負担\s*[：:]?\s*(.*)$/u, (m) => `私道負擔：${m[1] || "詳圖面"}`],
+  [/^私道負担\s*[：:]?\s*(.*)$/u, (m) => `私道負擔：${m[1] || "詳圖紙"}`],
   [/^民泊運営許可取得済/u, () => "已取得民泊營運許可（許可屬經營主體，不隨產權自動移轉）"],
   [/^外壁[・･]?車庫塗装から室内リフォーム実施/u, () => "自外牆、車庫塗裝到室內全面翻修"],
   [/^フルリフォーム済/u, () => "全室翻新完成"],

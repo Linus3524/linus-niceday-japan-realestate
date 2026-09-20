@@ -77,6 +77,9 @@ console.log("Starting multi-commute routes test...");
       mode: "commute",
       originStation: "中野",
       originWalkMinutes: 6,
+      originAdvertisedMinutes: 6,
+      originBusMinutes: 11,
+      originBusStop: "長沼",
       addressContext: "東京都中野区",
       destination: "新宿站",
     },
@@ -87,6 +90,9 @@ console.log("Starting multi-commute routes test...");
   const commute = responseBody.commute;
   assert.ok(commute, "API 應回傳 commute 物件");
   assert.ok(Array.isArray(commute.routes), "commute 物件應包含 routes 陣列");
+  assert.equal(commute.originWalkMinutes, 6);
+  assert.equal(commute.originBusMinutes, 11);
+  assert.equal(commute.originBusStop, "長沼");
   assert.ok(commute.routes.length >= 2 && commute.routes.length <= 3, `API 應推薦 2~3 條路線，實際回傳 ${commute.routes.length} 條`);
 
   // 驗證 routes[0] 與最外層向後相容欄位一致
@@ -103,7 +109,7 @@ console.log("Starting multi-commute routes test...");
     assert.equal(typeof opt.transitMinutes, "number");
     assert.equal(typeof opt.totalMinutes, "number");
     assert.equal(typeof opt.transfers, "number");
-    assert.equal(opt.totalMinutes, commute.originWalkMinutes + opt.transitMinutes + commute.destinationWalkMinutes);
+    assert.equal(opt.totalMinutes, commute.originWalkMinutes + (commute.originBusMinutes || 0) + opt.transitMinutes + commute.destinationWalkMinutes);
 
     if (i > 0) {
       const prev = commute.routes[i - 1];

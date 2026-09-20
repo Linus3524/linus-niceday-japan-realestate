@@ -201,7 +201,7 @@ const staticSearchSections: Array<{ id: RentStaticSectionId; text: string }> = [
   {
     id: "sop",
     text: [
-      "日本租屋正式申請與引渡流程 SOP",
+      "日本租屋正式申請與交屋流程 SOP",
       overseasSop.badge,
       overseasSop.title,
       overseasSop.description,

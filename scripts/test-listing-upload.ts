@@ -127,6 +127,7 @@ try {
     files: [{ mimeType: "image/jpeg", data: "anBlZw==" }, raw], layoutText: "敷金　　無\n礼金",
   });
   assert.deepEqual(state.timeouts, [10000]);
+  assert.equal(state.documents.length, 1, "單頁完整圖紙只需解析一次 PDF");
   assert.equal(state.destroyed, 1);
   assert.equal(state.cleaned, 1);
   assert.equal(lastCanvas?.width, 2200);
