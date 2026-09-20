@@ -536,7 +536,7 @@ function generateFallbackExplanation(token: string): ParsedSpecialNoteItem | nul
     return {
       category: "入住條件",
       title: `承租條件約定（${clean}）`,
-      explanation: `圖紙標示「${clean}」，相關承租資格或設備使用可於申請前向房東或管理會社進一步洽詢確認。`,
+      explanation: `圖紙標示「${clean}」，相關承租資格或設備使用可於申請前向房東或管理公司進一步洽詢確認。`,
       rawJapanese: clean,
       badgeTone: "blue",
     };

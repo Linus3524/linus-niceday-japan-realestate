@@ -91,7 +91,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
                   <Cell label="管理費" value={e.managementFee} />
                   <Cell label="敷金／礼金" value={[e.deposit || "—", e.keyMoney || "—"].join(" ／ ")} />
                   <Cell label="更新料" value={e.renewalFee} />
-                  <Cell label="保證會社" value={e.guaranteeFee} />
+                  <Cell label="保證公司" value={e.guaranteeFee} />
                   <Cell label="損害保險" value={e.insuranceFee} />
                 </>
               )}

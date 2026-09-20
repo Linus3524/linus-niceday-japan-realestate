@@ -97,7 +97,7 @@ export function calculateInitialCostBreakdown(params: {
     note: "以月中 15 天起租試算；若起租日靠近月底（例如 25 號後）可降至更低",
   });
 
-  // 5. 保證會社初回保證料
+  // 5. 保證公司初回保證料
   // 只計初回：月額（GTN、Casa 常見的「月額1%」）與年額（継続保証委託料）
   // 不是簽約當下的支出，混進初期費用會讓總額失真；改在備註如實揭露。
   const guaranteeBreakdown = parseGuaranteeFeeBreakdown(params.extractedGuaranteeFee, totalMonthlyCost);
@@ -109,7 +109,7 @@ export function calculateInitialCostBreakdown(params: {
   ].filter(Boolean).join("；");
   items.push({
     id: "guaranteeFee",
-    name: "保證會社初回保證料",
+    name: "保證公司初回保證料",
     amount: guaranteeAmount,
     isFromFlyer: Boolean(customGuarantee),
     note: [

@@ -77,7 +77,7 @@ export function buildClientInitialCost(result: AnalyzeListingResult): InitialCos
     },
     {
       id: "guaranteeFee",
-      name: "保證會社初回保證料",
+      name: "保證公司初回保證料",
       amount: guaranteeAmount,
       isFromFlyer: Boolean(customGuarantee),
       note: [

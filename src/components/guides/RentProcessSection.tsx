@@ -135,7 +135,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>緊急聯絡人：</strong>通常需要兩位，一位為母國二親等內家長（能提供戶籍謄本佐證親屬關係較佳），另一位為日本在留者（部分保證會社要求，若無可向仲介諮詢協助）。</span>
+                            <span><strong>緊急聯絡人：</strong>通常需要兩位，一位為母國二親等內家長（能提供戶籍謄本佐證親屬關係較佳），另一位為日本在留者（部分保證公司要求，若無可向仲介諮詢協助）。</span>
                           </li>
                         </ul>
                       </div>
@@ -155,7 +155,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>日本手機門號：</strong>保證會社審查時會撥打電話照會，必須能正常通話與接聽。</span>
+                            <span><strong>日本手機門號：</strong>保證公司審查時會撥打電話照會，必須能正常通話與接聽。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>

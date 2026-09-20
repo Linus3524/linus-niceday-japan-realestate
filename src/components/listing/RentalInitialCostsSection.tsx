@@ -45,7 +45,7 @@ export function RentalInitialCostsSection({ model }: RentalInitialCostsSectionPr
             {formatYen(initialCost.totalMin)} ～ {formatYen(initialCost.totalMax)}
           </p>
           <p className="mt-2.5 text-xs leading-relaxed text-[#3F5147]">
-            約相當於月總租金的 <strong className="font-bold text-[#00A174]">{initialCost.monthsMultipleMin} ～ {initialCost.monthsMultipleMax} 倍</strong>（取決於實際起租日與保證會社方案）
+            約相當於月總租金的 <strong className="font-bold text-[#00A174]">{initialCost.monthsMultipleMin} ～ {initialCost.monthsMultipleMax} 倍</strong>（取決於實際起租日與保證公司方案）
           </p>
       </CostSummary>
 

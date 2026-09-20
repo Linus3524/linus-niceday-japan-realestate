@@ -75,7 +75,7 @@
             },
             {
               "id": "guaranteeFee",
-              "name": "保證會社初回保證料",
+              "name": "保證公司初回保證料",
               "amount": 52500,
               "isFromFlyer": false,
               "note": "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%"
@@ -193,7 +193,7 @@
             },
             {
               "id": "guaranteeFee",
-              "name": "保證會社初回保證料",
+              "name": "保證公司初回保證料",
               "amount": 52500,
               "isFromFlyer": false,
               "note": "外國籍租客多數需加入保證公司，一般首年為總租金 50%～100%"
@@ -317,7 +317,7 @@
             },
             {
               "id": "guaranteeFee",
-              "name": "保證會社初回保證料",
+              "name": "保證公司初回保證料",
               "amount": 31500,
               "isFromFlyer": true,
               "note": "圖紙載明：月額総賃料の30%（依月總租金 ¥105,000 計約 ¥31,500）"
