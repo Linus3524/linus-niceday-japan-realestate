@@ -439,7 +439,7 @@ export function initialFeePreferenceAxis(criteria: RentSearchCriteria): AxisVerd
       ? "同時指定免禮金與免押金可降低初期費用，但會明顯縮小可選房源。"
       : `${conditions[0]}能降低初期費用，但不是所有物件都有此募集條件。`,
     drivers: [
-      criteria.noDeposit ? "免押金物件仍可能預收退房清潔費或定額償卻費" : "",
+      criteria.noDeposit ? "免押金物件仍可能預收退租清潔費或定額償卻費" : "",
       criteria.noKeyMoney ? "熱門地區與熱門車站附近的免禮金物件通常更少" : ""
     ].filter(Boolean),
     nextStep: both ? "若結果太少，建議先保留免禮金，押金則確認可退還條件後再比較。" : undefined,
@@ -453,7 +453,7 @@ export function petAxis(criteria: RentSearchCriteria): AxisVerdict | null {
   return {
     key: "pet", label: "特殊條件", detail: petLabel, status: "難度高",
     headline: `${petLabel}會直接縮小可申請的房源範圍。`,
-    drivers: [`${petLabel}物件供給較少，常增加敷金或退房清潔費`],
+    drivers: [`${petLabel}物件供給較少，常增加敷金或退租清潔費`],
     nextStep: "從一開始就以可養寵物物件篩選，避免找到後才被管理規約排除。",
     supplyImpact: 3
   };

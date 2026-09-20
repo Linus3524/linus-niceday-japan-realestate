@@ -56,10 +56,10 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
           {formatYen(totalMonthlyCost)}
           <span className="text-xs font-normal text-[#66736C]"> / 月</span>
         </p>
-        <p className="mt-1 text-[10px] text-[#66736C]">房租 ＋ 管理費每月實付總額</p>
+        <p className="mt-1 text-[10px] text-[#66736C]">租金 ＋ 管理費每月實付總額</p>
       </div>
 
-      {/* 純房租 */}
+      {/* 純租金 */}
       <div className="border border-[#DDE3DF] bg-white p-4">
         <p className="text-[11px] font-bold text-[#66736C]">純租金（賃料／家賃）</p>
         <p className="mt-1 text-2xl font-black text-[#1A2A22]">
@@ -105,7 +105,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
         <div>
           <dt className="text-[#66736C]">專有面積</dt>
           <dd className="font-bold text-[#1A2A22]">
-            {displayArea || "未於圖面載明"}
+            {displayArea || "未於圖紙載明"}
           </dd>
         </div>
         <div>
@@ -119,7 +119,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
         <div>
           <dt className="text-[#66736C]">建物構造</dt>
           <dd className="font-bold text-[#1A2A22]">
-            {displayStructure || "未於圖面載明"}
+            {displayStructure || "未於圖紙載明"}
           </dd>
         </div>
         <div>
@@ -137,7 +137,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
                 displayDirection
               )
             ) : (
-              "未於圖面載明"
+              "未於圖紙載明"
             )}
           </dd>
         </div>

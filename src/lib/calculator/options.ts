@@ -4,7 +4,7 @@ export const rentSearchFilterOptions: Array<{ key: RentSearchFilter; label: stri
   { key: "pets", label: "可養寵物", note: "物件規約與追加敷金須逐間確認", pressure: 3 },
   { key: "freeInternet", label: "免費網路／網路費包含", note: "確認速度、線路、初裝費與另簽約要求", pressure: 1.5 },
   { key: "noKeyMoney", label: "免禮金", note: "可降低初期費用；熱門地區符合物件通常較少", pressure: 2 },
-  { key: "noDeposit", label: "免押金／免敷金", note: "仍可能另收退房清潔費或定額償卻費", pressure: 1.5 },
+  { key: "noDeposit", label: "免押金／免敷金", note: "仍可能另收退租清潔費或定額償卻費", pressure: 1.5 },
   { key: "balcony", label: "附陽台", note: "只篩選房源，不直接推定租金溢價", pressure: 1 },
   { key: "secondFloor", label: "房間位於 2 樓以上", note: "排除一樓房源，不直接增加租金", pressure: 1.5 },
   { key: "twoBurners", label: "瓦斯爐 2 口以上", note: "確認爐具類型、是否附設及廚房空間", pressure: 1.5 },

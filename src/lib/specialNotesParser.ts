@@ -203,7 +203,7 @@ const RULES: SpecialNoteRule[] = [
   {
     pattern: /先行申込|先行契約/i,
     category: "契約特約",
-    title: "接受尚未看屋前先行送件／簽約",
+    title: "接受尚未看房前先行送件／簽約",
     explanation: "物件目前可能仍有人居住或正在整修，接受租客先遞交申請資料或先完成簽約手續以鎖定承租順位。",
     badgeTone: "blue",
   },

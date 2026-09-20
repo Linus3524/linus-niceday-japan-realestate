@@ -135,7 +135,7 @@ const RESIDENTIAL_COPY: Record<SafetyGrade, GradeCopy> = {
   },
   C: {
     label: "高於平均",
-    description: "以住戶數換算後，住家侵入竊盜發生率高於東京多數町丁目。看屋時可留意自動門鎖、監視器與門鎖種類。",
+    description: "以住戶數換算後，住家侵入竊盜發生率高於東京多數町丁目。看房時可留意自動門鎖、監視器與門鎖種類。",
   },
   D: {
     label: "明顯偏高",

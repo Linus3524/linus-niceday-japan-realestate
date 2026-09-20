@@ -83,7 +83,7 @@ export function getSemanticKey(text: string): { key: string; canonicalCategory: 
     return { key: "pet:condition", canonicalCategory: "moveIn" };
   }
   // 16. 入住時期 / 可入住日 -> 歸入 moveIn
-  if (/入居時期|入居日|起租|即時|立即入住|可看屋|内見/i.test(norm)) {
+  if (/入居時期|入居日|起租|即時|立即入住|可看房|可看屋|内見/i.test(norm)) {
     return { key: "moveIn:timing", canonicalCategory: "moveIn" };
   }
   // 17. 敷金禮金優惠 / 免租期 -> 歸入 moveIn
@@ -543,7 +543,7 @@ function translateRentalClause(source: string, isTeishaku = false) {
     .replace(/入居時期\s*[：:]\s*/gu, "預定入住時期：")
     .replace(/入居時期\s*(\d{4}年\d{1,2}月[^\s。、]+)/gu, "預定入住時期：$1")
     .replace(/入居日\s*[：:]\s*/gu, "可入住日：")
-    .replace(/可入住日：即[、,]?内見可/gu, "可立即入住，且可安排看屋")
+    .replace(/可入住日：即[、,]?内見可/gu, "可立即入住，且可安排看房")
     .replace(/敷金0[・\s]*礼金0キャンペーン中/gu, "零押金、零禮金優惠中")
     .replace(/[（(]キャンペーンは(\d+)月末日迄の成約となります[）)]/gu, "（須於 $1 月底前完成簽約）")
     .replace(/★?キャンペーンは(\d+)月末日迄の成約となります/gu, "優惠期限：須於 $1 月底前完成簽約")

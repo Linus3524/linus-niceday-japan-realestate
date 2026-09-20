@@ -36,7 +36,7 @@ export function calculateRentUpfrontBudget({ getCalculatedRent, getSelectedDistr
       : null,
     hasPetRequirement ? "可養寵物物件可能另有追加敷金或清潔條件" : null,
     hasTowerRequirement ? "塔樓大廈常有較高的保證、保險或附帶費用" : null,
-    wantsNoDeposit ? "免押金仍可能改收退房清潔費或定額償卻費" : null,
+    wantsNoDeposit ? "免押金仍可能改收退租清潔費或定額償卻費" : null,
     wantsNoKeyMoney && !highDemandLocation ? "已把免禮金列為必要條件" : null
   ].filter(Boolean) as string[];
   return { monthlyRent, recommendedMultiplier, recommendedCash, cashGap, reasons };

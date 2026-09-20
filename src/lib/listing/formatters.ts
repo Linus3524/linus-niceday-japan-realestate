@@ -53,10 +53,10 @@ export function formatDirection(direction?: string | null): string {
   const trimmed = direction.trim();
   if (!trimmed) return "";
   if (/^[-ー—－／/]+$/.test(trimmed) || /^(?:無|なし|未定)$/.test(trimmed)) {
-    return "圖面標示 -（未載明）";
+    return "圖紙標示 -（未載明）";
   }
-  if (/^(?:未載明|未於圖面載明|不明)$/.test(trimmed)) {
-    return "未於圖面載明";
+  if (/^(?:未載明|未於圖[紙面]載明|不明)$/.test(trimmed)) {
+    return "未於圖紙載明";
   }
   const normalized = trimmed.normalize("NFKC");
   const isEstimated = /平面圖|平面図|間取|間取り|推算|推定|推測|方位記號|方位記号|指北針|指南針/i.test(normalized);

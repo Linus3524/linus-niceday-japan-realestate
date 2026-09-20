@@ -122,11 +122,56 @@ assert.equal(
   "搜尋『乾溼分離』應能命中『衛浴分離』"
 );
 
-// 續柄 -> 親屬關係
+// 房客 -> 租客
 assert.equal(
-  matchesAllTokens("提供各自的親屬關係（續柄）與收入資料", tokenizeQuery("續柄")),
+  matchesAllTokens("保障租客與房東權益", tokenizeQuery("房客")),
   true,
-  "搜尋『續柄』應能命中『親屬關係』"
+  "搜尋『房客』應能命中『租客』"
+);
+
+// 圖面 -> 圖紙
+assert.equal(
+  matchesAllTokens("未於圖紙載明事項", tokenizeQuery("圖面")),
+  true,
+  "搜尋『圖面』應能命中『圖紙』"
+);
+assert.equal(
+  matchesAllTokens("未於圖紙載明事項", tokenizeQuery("格局圖")),
+  true,
+  "搜尋『格局圖』應能命中『圖紙』"
+);
+
+// 買主 -> 買方
+assert.equal(
+  matchesAllTokens("向買方詳細說明重要事項", tokenizeQuery("買主")),
+  true,
+  "搜尋『買主』應能命中『買方』"
+);
+
+// 看屋 -> 看房
+assert.equal(
+  matchesAllTokens("看房時需確認插座位置與動線", tokenizeQuery("看屋")),
+  true,
+  "搜尋『看屋』應能命中『看房』"
+);
+
+// 退房清潔費 -> 退租清潔費
+assert.equal(
+  matchesAllTokens("退租清潔費需於簽約時確認條款", tokenizeQuery("退房清潔費")),
+  true,
+  "搜尋『退房清潔費』應能命中『退租清潔費』"
+);
+
+// 房況 / 屋況 / 房子 / 物件
+assert.equal(
+  matchesAllTokens("確認物件現況與修繕責任", tokenizeQuery("房況")),
+  true,
+  "搜尋『房況』應能命中『現況』"
+);
+assert.equal(
+  matchesAllTokens("優質東京物件推薦清單", tokenizeQuery("房子")),
+  true,
+  "搜尋『房子』應能命中『物件』"
 );
 
 console.log("All kanji normalization and vocabulary expansion search tests passed successfully!");

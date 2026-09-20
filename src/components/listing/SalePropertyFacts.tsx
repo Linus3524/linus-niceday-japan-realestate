@@ -54,7 +54,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
         </div>
         <div>
           <dt className="text-[#66736C]">{specialSale.kind === "land" ? "土地面積" : isSpecialSale ? "建物總面積" : "專有面積"}</dt>
-          <dd className="font-bold text-[#1A2A22]">{displayArea || extracted?.buildingArea || "未於圖面載明"}</dd>
+          <dd className="font-bold text-[#1A2A22]">{displayArea || extracted?.buildingArea || "未於圖紙載明"}</dd>
         </div>
         {isSpecialSale && specialSale.kind !== "land" && extracted?.landArea ? (
           <div>
@@ -64,7 +64,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
         ) : (
           <div>
             <dt className="text-[#66736C]">陽台面積（バルコニー）</dt>
-            <dd className="font-bold text-[#1A2A22]">{extracted?.balconyArea || "未於圖面載明"}</dd>
+            <dd className="font-bold text-[#1A2A22]">{extracted?.balconyArea || "未於圖紙載明"}</dd>
           </div>
         )}
         <div>
@@ -108,7 +108,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
         </div>
         <div>
           <dt className="text-[#66736C]">建物構造</dt>
-          <dd className="font-bold text-[#1A2A22]">{displayStructure || "未於圖面載明"}</dd>
+          <dd className="font-bold text-[#1A2A22]">{displayStructure || "未於圖紙載明"}</dd>
         </div>
         <div>
           <dt className="text-[#66736C]">主要採光面（朝向）</dt>
@@ -125,7 +125,7 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
                 displayDirection
               )
             ) : (
-              "未於圖面載明"
+              "未於圖紙載明"
             )}
           </dd>
         </div>

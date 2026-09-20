@@ -43,9 +43,9 @@ const SEARCH_RESULT_MIN_SCORE = 52;
 const AI_RECOMMENDATION_MIN_SCORE = 78;
 const TITLE_MAX_LENGTH = 46;
 const EXCERPT_MAX_LENGTH = 150;
-const GENERIC_AI_CONCEPTS = new Set(["物件", "房源", "房子", "房屋", "租屋", "租房", "租賃", "買房", "購屋"]);
-const BUY_INTENT = /買房|買日本房|購屋|置產|購入|自備款|首付|首期|房貸|住宅ローン|民泊|airbnb|一戶建|一戸建|修繕積立金|修繕基金|買付|固定資產稅|不動產取得稅|司法書士|殺價|砍價|議價/iu;
-const RENT_INTENT = /租屋|租房|租約|退租|退房|解約|敷金|禮金|礼金|房租|家賃|租金|入住|入居|審查|審査|保證公司|保証会社|合租|室友|水電瓦斯|更新料|先行契約|先行申請|看得到租不到|suumo/iu;
+const GENERIC_AI_CONCEPTS = new Set(["物件", "房源", "房子", "房屋", "房產", "租屋", "租房", "租賃", "買房", "購屋"]);
+const BUY_INTENT = /買房|買日本房|購屋|置產|購入|自備款|首付|首期|房貸|住宅ローン|民泊|airbnb|一戶建|一戸建|修繕積立金|修繕基金|買付|固定資產稅|不動產取得稅|司法書士|殺價|砍價|議價|買方|買主/iu;
+const RENT_INTENT = /租屋|租房|租約|退租|退房|解約|敷金|禮金|礼金|房租|家賃|租金|入住|入居|審查|審査|保證公司|保証会社|合租|室友|水電瓦斯|更新料|先行契約|先行申請|看得到租不到|suumo|租客|房客|看房|看屋/iu;
 
 const TITLE_BOILERPLATE = /^(linus\s*住好日|日本租房|日本買房|日本生活|日本不動產|租賃知識系列|買賣知識系列|在日生活知識系列)$/i;
 
