@@ -178,8 +178,14 @@ export function toJapaneseStationName(value: string) {
  * 將中文地名、站名、門牌（全面支援繁體字、簡體字）轉換為日本官方地圖與鐵道所使用的日文漢字（新字體）。
  * 涵蓋全日本 47 都道府縣、1,700+ 市町村與所有鐵道線路常用之偏旁部首與異體字。
  */
+const CJK_RADICAL_FOLD: Record<string, string> = {
+  "⻄": "西", "⺟": "母", "⻑": "長", "⻘": "青", "⻩": "黄",
+  "⻢": "馬", "⻱": "亀", "⺠": "民", "⻝": "食", "⻤": "鬼",
+};
+
 export function toJapanesePlaceName(value: string) {
-  const base = openccConverter ? openccConverter(value) : value;
+  const folded = (value || "").replace(/[\u2E80-\u2EFF]/gu, char => CJK_RADICAL_FOLD[char] ?? char);
+  const base = openccConverter ? openccConverter(folded) : folded;
   return base
     .replace(/[澀涉涩渉]/g, "渋")
     // 車部、車字旁

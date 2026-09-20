@@ -62,10 +62,11 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   if (!layoutText?.trim()) return original;
   // normalizeMonthUnit：版面文字的月數寫法有 ヶ／ヵ／ケ／カ／か 五種，下面的
   // 敷金・礼金・更新料・解約予告比對全都只認「ヶ月」，不先統一會整條配不到而漏補。
-  // 同時將全形連字號（−、ー、―、－等）正規化為標準半形減號「-」，確保地址中的枝番（如 32-2、4-30-31）不被截斷。
-  const normalized = normalizeMonthUnit(layoutText.normalize("NFKC").replace(/[−ー―－–—]/gu, "-"));
+  // 同時將全形連字號（−、ー、―、－等）正規化為標準半形減號「-」，並折疊 CJK 康熙偏旁部首（如 ⻑ -> 長），確保地址中的枝番（如 32-2）不被截斷。
+  const folded = layoutText.normalize("NFKC").replace(/[−ー―－–—]/gu, "-").replace(/[\u2E80-\u2EFF]/gu, char => ({ "⻄": "西", "⺟": "母", "⻑": "長", "⻘": "青", "⻩": "黄", "⻢": "馬", "⻱": "亀", "⺠": "民", "⻝": "食", "⻤": "鬼" }[char] ?? char));
+  const normalized = normalizeMonthUnit(folded);
   const compact = compactText(normalized);
-  const looksRental = original.dealType === "rent" || /(?:賃料|LEASECONDITION|契約期間|敷金)/iu.test(compact);
+  const looksRental = original.dealType === "rent" || /(?:賃料|家[\s\u3000]*賃|LEASECONDITION|契約期間|敷金|礼金)/iu.test(compact);
   if (!looksRental) return original;
 
   const result: T & RentalListingFields = { ...original };

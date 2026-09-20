@@ -76,7 +76,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
         <div className="flex items-center justify-between bg-[#F5F8F6] p-3 text-xs">
           <div className="flex items-center gap-2">
             <span className="font-bold text-[#66736C]">定位地址：</span>
-            <span className="font-bold text-[#1A2A22]">{locationContext.matchedAddress}</span>
+            <span className="font-bold text-[#1A2A22]">{locationContext.address || locationContext.matchedAddress}</span>
           </div>
           {result && (
             <button

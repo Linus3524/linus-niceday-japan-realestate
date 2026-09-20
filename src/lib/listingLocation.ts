@@ -202,8 +202,15 @@ async function geocodeCandidate(candidate: AddressCandidate): Promise<GeocodedAd
   const coordinates = item?.geometry?.coordinates;
   const lon = Number(coordinates?.[0]);
   const lat = Number(coordinates?.[1]);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon) || lat < 20 || lat > 46 || lon < 122 || lon > 154) return null;
-  const matchedAddress = String(item?.properties?.title || candidate.value);
+  const matchedTitle = String(item?.properties?.title || "");
+  const hasInputFullStreet = hasFullStreetNumber(candidate.value);
+  const normCandidate = candidate.value.normalize("NFKC").replace(/[−ー―－–—]/gu, "-");
+  const normMatchedBase = matchedTitle.normalize("NFKC").replace(/番地?$/, "");
+  // 若輸入地址本就具備完整門牌（如 32-2 或 3丁目4-5），且 GSI 圖資成功對齊到該番地（例如長沼町３２番地），
+  // 代表已精準鎖定到該地號區塊。保留輸入的完整門牌，不因國土地理院圖資未收錄個別枝番而將地址截斷或誤報「缺少完整門牌」。
+  const matchedAddress = hasInputFullStreet && normMatchedBase && normCandidate.includes(normMatchedBase)
+    ? candidate.value
+    : (matchedTitle || candidate.value);
   const lostStreetNumber = candidate.confidence === "high" && !hasFullStreetNumber(matchedAddress);
   return {
     point: { lat, lon },
@@ -883,7 +890,9 @@ export async function getListingLocationContext(
   if (!geocoded) return null;
   const notices: string[] = [];
   if (geocoded.confidence === "medium") {
-    notices.push("輸入內容缺少完整門牌或經過建物名稱搜尋，定位可能是附近街區中心；請先用「在地圖確認」核對位置。");
+    if (!hasFullStreetNumber(address)) {
+      notices.push("輸入內容缺少完整門牌或經過建物名稱搜尋，定位可能是附近街區中心；請先用「在地圖確認」核對位置。");
+    }
   }
 
   // 並行查詢 OSM 圖資與 MLIT 設施。用途地域、人口統計與托育福祉件數是街區活動卡片的官方後援，
