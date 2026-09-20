@@ -103,7 +103,7 @@ export function ListingReportPdf({ result, title, generatedAt, shareUrl, assetBa
 
           <EquipmentCard items={equipment} />
           {isSale ? <SpecialNotesCard notes={e.specialNotes} preParsedItems={e.specialNoteItems} /> : null}
-          <LocationCard locationContext={locationContext} commute={commute} />
+          <LocationCard locationContext={locationContext} commute={commute} transitLegs={transitLegs} />
           <SafetyCard safety={safety} />
 
           <View style={styles.disclaimer} wrap={false}>

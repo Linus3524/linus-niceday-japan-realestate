@@ -116,10 +116,15 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
 
             <div className="space-y-2.5">
               {locationContext.stationWalks.map((walk, idx) => {
-                // 圖紙寫的是巴士接駁時，這一站的實際步行距離只是參考，要講清楚圖紙口徑
+                // 圖紙寫的是巴士接駁時，以出門走到巴士站牌為平日實際步行標的
                 const busLeg = walk.source === "flyer"
                   ? result?.extracted?.transitLegs?.find(leg => leg.busMin && leg.stationName === walk.station)
                   : undefined;
+                const busWalkDist = busLeg ? (busLeg.walkMin ?? 1) * 80 : 0;
+                const fastMinutes = busLeg ? Math.max(1, Math.ceil(busWalkDist / 90)) : walk.fastMinutes;
+                const normalMinutes = busLeg ? Math.max(1, Math.ceil(busWalkDist / 75)) : walk.normalMinutes;
+                const slowMinutes = busLeg ? Math.max(1, Math.ceil(busWalkDist / 55)) : walk.slowMinutes;
+
                 return (
                 <div
                   key={`${walk.station}-${walk.lineName || idx}`}
@@ -134,17 +139,38 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                         </span>
                       )}
                       <span className="text-sm font-black text-[#1A2A22]">{walk.station}駅</span>
-                      <span className={`border px-2 py-0.5 text-[10px] font-semibold ${walk.source === "nearby"
-                          ? "border-[#C9D2CD] bg-[#F5F8F6] text-[#66736C]"
-                          : "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
-                        }`}>
-                        {walk.source === "nearby" ? "附近補充" : "圖紙刊載"}
-                      </span>
-                      <span className="bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] border border-[#DDE3DF]">
-                        約 {walk.distanceMeters.toLocaleString("zh-TW")}m
-                      </span>
+                      {busLeg ? (
+                        <>
+                          <span className="border border-[#9EE2CF] bg-[#E6F6F1] px-2 py-0.5 text-[10px] font-semibold text-[#00A174]">
+                            圖紙刊載・巴士接駁
+                          </span>
+                          <span className="border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#1A2A22]">
+                            至公車站約 {busWalkDist}m
+                          </span>
+                          <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-0.5 text-[10px] font-semibold text-[#66736C]">
+                            巴士約 {busLeg.busMin} 分
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={`border px-2 py-0.5 text-[10px] font-semibold ${walk.source === "nearby"
+                              ? "border-[#C9D2CD] bg-[#F5F8F6] text-[#66736C]"
+                              : "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
+                            }`}>
+                            {walk.source === "nearby" ? "附近補充" : "圖紙刊載"}
+                          </span>
+                          <span className="bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] border border-[#DDE3DF]">
+                            約 {walk.distanceMeters.toLocaleString("zh-TW")}m
+                          </span>
+                        </>
+                      )}
                     </div>
-                    {walk.advertisedMinutes !== null && (
+                    {busLeg ? (
+                      <p className="mt-1 text-[11px] leading-relaxed text-[#66736C]">
+                        圖紙刊載動線：徒步 <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.walkMin ?? "—"}</span> 分至{busLeg.busStop ? `公車站「${busLeg.busStop}」` : "公車站"}，轉乘公車約 <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.busMin}</span> 分至 {walk.station}駅。
+                        通勤試算已採此巴士接駁；右側為<strong className="font-semibold text-[#1A2A22]">日常出門至公車站牌</strong>之步行時間比對（若徒步直達車站約需 {walk.normalMinutes} 分鐘 / {walk.distanceMeters.toLocaleString("zh-TW")}m，僅供末班車極端備援參考）。
+                      </p>
+                    ) : walk.advertisedMinutes !== null ? (
                       <p className="mt-1 text-[11px] text-[#66736C]">
                         圖紙標示徒步 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.advertisedMinutes}</span> 分鐘
                         {walk.differenceMinutes && walk.differenceMinutes > 0 ? (
@@ -163,36 +189,43 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                           </>
                         )}
                       </p>
-                    )}
-                    {walk.source === "nearby" && (
+                    ) : walk.source === "nearby" ? (
                       <p className="mt-1 text-[11px] text-[#66736C]">
                         圖紙未刊載，依物件座標補充之最近車站（實際步行約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘）
                       </p>
-                    )}
-                    {busLeg && (
-                      <p className="mt-1 text-[11px] text-[#66736C]">
-                        圖紙為巴士接駁：バス <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.busMin}</span> 分＋徒歩 <span className="tabular-nums font-bold text-[#1A2A22]">{busLeg.walkMin}</span> 分
-                        {busLeg.busStop ? `（巴士站 ${busLeg.busStop}）` : ""}；通勤試算將採此巴士接駁。直接步行到車站約需 <span className="tabular-nums font-bold text-[#1A2A22]">{walk.normalMinutes}</span> 分鐘（僅供比較）
-                      </p>
-                    )}
+                    ) : null}
                   </div>
 
                   {/* 3 段速度緊湊膠囊（含每分鐘公尺數標註） */}
-                  <div className="flex shrink-0 items-center gap-1.5">
-                    <div className="border border-[#DDE3DF] bg-white px-2 py-1 text-center min-w-[56px]" title="快步通勤步速：約 90m/分">
-                      <span className="block text-[9px] text-[#66736C]">快步</span>
-                      <span className="block font-mono text-[8px] text-[#8A9590]">90m/分</span>
-                      <span className="mt-0.5 block font-mono text-xs font-bold text-[#1A2A22]">{walk.fastMinutes}分</span>
-                    </div>
-                    <div className="border border-[#00A174] bg-[#E6F6F1] px-2.5 py-1 text-center min-w-[62px]" title="日常常態步速：約 75m/分（含停等紅綠燈過路口餘裕）">
-                      <span className="block text-[9px] font-bold text-[#00A174]">一般常態</span>
-                      <span className="block font-mono text-[8px] font-semibold text-[#00A174]/80">75m/分</span>
-                      <span className="mt-0.5 block font-mono text-sm font-black text-[#00A174]">{walk.normalMinutes}分</span>
-                    </div>
-                    <div className="border border-[#DDE3DF] bg-white px-2 py-1 text-center min-w-[56px]" title="雨天傘步或攜帶行李推車：約 55m/分">
-                      <span className="block text-[9px] text-[#66736C]">雨天/行李</span>
-                      <span className="block font-mono text-[8px] text-[#8A9590]">55m/分</span>
-                      <span className="mt-0.5 block font-mono text-xs font-bold text-[#1A2A22]">{walk.slowMinutes}分</span>
+                  <div className="flex flex-col sm:items-end shrink-0 gap-1">
+                    <span className="text-[10px] font-bold text-[#00A174]">
+                      {busLeg ? `徒步至公車站牌${busLeg.busStop ? `（${busLeg.busStop}）` : ""}` : "徒步至車站步速"}
+                    </span>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <div
+                        className="border border-[#DDE3DF] bg-white px-2 py-1 text-center min-w-[56px]"
+                        title={busLeg ? "快步至公車站：約 90m/分" : "快步通勤步速：約 90m/分"}
+                      >
+                        <span className="block text-[9px] text-[#66736C]">快步</span>
+                        <span className="block font-mono text-[8px] text-[#8A9590]">90m/分</span>
+                        <span className="mt-0.5 block font-mono text-xs font-bold text-[#1A2A22]">{fastMinutes}分</span>
+                      </div>
+                      <div
+                        className="border border-[#00A174] bg-[#E6F6F1] px-2.5 py-1 text-center min-w-[62px]"
+                        title={busLeg ? "日常常態至公車站：約 75m/分（含停等紅綠燈）" : "日常常態步速：約 75m/分（含停等紅綠燈過路口餘裕）"}
+                      >
+                        <span className="block text-[9px] font-bold text-[#00A174]">一般常態</span>
+                        <span className="block font-mono text-[8px] font-semibold text-[#00A174]/80">75m/分</span>
+                        <span className="mt-0.5 block font-mono text-sm font-black text-[#00A174]">{normalMinutes}分</span>
+                      </div>
+                      <div
+                        className="border border-[#DDE3DF] bg-white px-2 py-1 text-center min-w-[56px]"
+                        title={busLeg ? "雨天傘步至公車站：約 55m/分" : "雨天傘步或攜帶行李推車：約 55m/分"}
+                      >
+                        <span className="block text-[9px] text-[#66736C]">雨天/行李</span>
+                        <span className="block font-mono text-[8px] text-[#8A9590]">55m/分</span>
+                        <span className="mt-0.5 block font-mono text-xs font-bold text-[#1A2A22]">{slowMinutes}分</span>
+                      </div>
                     </div>
                   </div>
                 </div>

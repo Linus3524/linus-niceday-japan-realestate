@@ -37,7 +37,13 @@ export function amenitiesByCategory(list: Array<{ category: string; label: strin
     .filter(cat => cat.items.length > 0);
 }
 
-export function LocationCard({ locationContext, commute }: Pick<ListingReportPdfProps, "locationContext" | "commute">) {
+import type { TransitLeg } from "../../lib/transitParser.js";
+
+export interface LocationCardProps extends Pick<ListingReportPdfProps, "locationContext" | "commute"> {
+  transitLegs?: TransitLeg[];
+}
+
+export function LocationCard({ locationContext, commute, transitLegs }: LocationCardProps) {
   const walks = locationContext?.stationWalks ?? [];
   const amenities = locationContext?.amenities ?? [];
   if (!walks.length && !amenities.length && !commute) return null;
@@ -54,25 +60,45 @@ export function LocationCard({ locationContext, commute }: Pick<ListingReportPdf
           {walks.length ? (
             <View style={[styles.subBlock, commute ? {} : styles.subBlockLast]}>
               <Text style={styles.sectionLabel}>步行時間比對（圖紙 80m＝1 分 vs 實際路徑）</Text>
-              {walks.map((w, i) => (
+              {walks.map((w, i) => {
+                const busLeg = w.source === "flyer"
+                  ? transitLegs?.find(leg => leg.busMin && leg.stationName === w.station)
+                  : undefined;
+                const busWalkDist = busLeg ? (busLeg.walkMin ?? 1) * 80 : 0;
+                const fastMin = busLeg ? Math.max(1, Math.ceil(busWalkDist / 90)) : w.fastMinutes;
+                const normalMin = busLeg ? Math.max(1, Math.ceil(busWalkDist / 75)) : w.normalMinutes;
+                const slowMin = busLeg ? Math.max(1, Math.ceil(busWalkDist / 55)) : w.slowMinutes;
+
+                return (
                 <View key={i} style={[styles.tableRow, i === walks.length - 1 ? styles.tableRowLast : {}]}>
-                  <View style={{ width: "34%", paddingRight: 4 }}>
+                  <View style={{ width: "32%", paddingRight: 4 }}>
                     <Text style={{ fontSize: 7.5, fontWeight: 700 }}>
                       {w.station}駅
-                      {w.source === "nearby" ? <Text style={{ fontSize: 6, fontWeight: 400, color: INK_MUTE }}>（附近補充）</Text> : null}
+                      {busLeg ? (
+                        <Text style={{ fontSize: 6, fontWeight: 400, color: INK_MUTE }}>（公車接駁）</Text>
+                      ) : w.source === "nearby" ? (
+                        <Text style={{ fontSize: 6, fontWeight: 400, color: INK_MUTE }}>（附近補充）</Text>
+                      ) : null}
                     </Text>
                     {w.lineName ? <Text style={{ fontSize: 6, color: INK_MUTE, marginTop: 1 }}>{w.lineName}</Text> : null}
                   </View>
-                  <Text style={[styles.tdAmount, { width: "18%" }]}>
-                    {w.advertisedMinutes != null ? `圖紙 ${w.advertisedMinutes} 分` : "—"}
+                  <Text style={[styles.tdAmount, { width: "24%" }]}>
+                    {busLeg
+                      ? `公車 ${busLeg.busMin} 分＋徒步 ${busLeg.walkMin ?? "—"} 分`
+                      : w.advertisedMinutes != null
+                        ? `圖紙 ${w.advertisedMinutes} 分`
+                        : "—"}
                   </Text>
-                  <Text style={[styles.tdNote, { width: "48%" }, w.needsAttention ? { color: AMBER_DEEP } : {}]}>
-                    {typeof w.distanceMeters === "number" ? `約 ${Math.round(w.distanceMeters).toLocaleString("zh-TW")}m・` : ""}
-                    快走 {w.fastMinutes} 分・一般 {w.normalMinutes} 分・慢走／行李 {w.slowMinutes} 分
-                    {w.needsAttention ? "（比圖紙標示明顯更遠）" : ""}
+                  <Text style={[styles.tdNote, { width: "44%" }, w.needsAttention ? { color: AMBER_DEEP } : {}]}>
+                    {busLeg ? (
+                      `公車站約 ${busWalkDist}m・快走 ${fastMin} 分・一般 ${normalMin} 分・慢走 ${slowMin} 分`
+                    ) : (
+                      `${typeof w.distanceMeters === "number" ? `約 ${Math.round(w.distanceMeters).toLocaleString("zh-TW")}m・` : ""}快走 ${w.fastMinutes} 分・一般 ${w.normalMinutes} 分・慢走／行李 ${w.slowMinutes} 分${w.needsAttention ? "（比圖紙標示明顯更遠）" : ""}`
+                    )}
                   </Text>
                 </View>
-              ))}
+                );
+              })}
             </View>
           ) : null}
           {commute ? (
