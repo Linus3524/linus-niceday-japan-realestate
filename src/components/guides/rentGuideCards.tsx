@@ -138,7 +138,7 @@ export function SpecialTermCard({ term, onAskAI }: { key?: string | number; term
       )}
 
       <div className="mt-4 flex items-center justify-between text-xs text-[#8A9590] font-sans border-t border-[#ECEFEC] pt-2.5">
-        <span>房屋／設備</span>
+        <span>格局／設備</span>
         <button
           type="button"
           onClick={onAskAI}

@@ -236,7 +236,7 @@ export function SaleSections({ result }: { result: AnalyzeListingResult }) {
       ) : null}
 
       {occ ? (
-        <Card title="物件現況・投資回報率與自住法務要點">
+        <Card title="物件現況・投資投報率與自住法務要點">
           <View style={styles.grid}>
             <Cell label="現況" value={occ.statusText} wide />
             {occ.investmentYield ? (

@@ -38,7 +38,7 @@ const KNOWLEDGE_SECTIONS: [string, unknown][] = [
   // --- 租屋部分 ---
   ["初期費用名詞介紹", initialFees],
   ["其他專有名詞介紹", specialTerms],
-  ["房屋申請與審查流程 (9個步驟)", processSteps],
+  ["租屋申請與審查流程 (9個步驟)", processSteps],
   ["東京23區2026租金行情", rentRates],
   ["日本租房預算加減價公式", budgetModifiers],
   ["租屋常見 Q&A 內容", otherQA],

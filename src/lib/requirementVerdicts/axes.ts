@@ -390,7 +390,7 @@ export function timingAxis(criteria: RentSearchCriteria): AxisVerdict | null {
     return {
       key: "timing", label: "入住條件", detail, status: "符合",
       headline: `${size} 人同住，格局與審查資料會以此為準。`,
-      drivers: size && size >= 2 ? ["兩人以上需確認物件是否接受複數入居，並提供各自的續柄與收入資料"] : [],
+      drivers: size && size >= 2 ? ["兩人以上需確認物件是否接受同住（二人入居），並提供各自的親屬關係（續柄）與收入資料"] : [],
       supplyImpact: 0
     };
   }
@@ -401,7 +401,7 @@ export function timingAxis(criteria: RentSearchCriteria): AxisVerdict | null {
       "日本物件多在入住前 1～2 個月才釋出募集，太早看到的多半留不到入住日",
       residence ? "目前已在日本居住，可走境內審查並安排實際看房" : "",
       employment ? `${employment}，申請時準備雇用契約或內定資料` : "",
-      size && size >= 2 ? `${size} 人同住需確認物件是否接受複數入居` : ""
+      size && size >= 2 ? `${size} 人同住需確認物件是否接受多人合住（二人入居）` : ""
     ].filter(Boolean),
     supplyImpact: 0
   };
@@ -634,7 +634,7 @@ export function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
       : "補上在留資格與剩餘期間。";
   } else if (category === "workingHoliday") {
     nextStep = isOverseas
-      ? "提前準備 15 個月租金以上的存款餘額證明，並務必在房子審查通過後再購買赴日機票。"
+      ? "提前準備 15 個月租金以上的存款餘額證明，並務必在租屋審查通過後再購買赴日機票。"
       : "提前準備存款證明（預金殘高證明），方便仲介快速鎖定可申請的長期物件。";
   } else if (category === "student" && isOverseas) {
     nextStep = "提早取得入學許可書與 COE，由顧問鎖定留學生友善之海外審查房源。";

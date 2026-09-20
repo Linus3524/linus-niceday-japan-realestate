@@ -119,7 +119,7 @@ function getRegionalMarketInsight(
       consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）之剛需價格優勢`,
       consultantText: (
         <>
-          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為東京生活圈的主要衛星城市，擁有龐大且穩定的通勤剛需，購屋總價門檻較東京都心親民許多，租金收益率與自住舒適度具備極佳競爭力。
+          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為東京生活圈的主要衛星城市，擁有龐大且穩定的通勤剛需，購屋總價門檻較東京都心親民許多，租金投報率與自住舒適度具備極佳競爭力。
         </>
       )
     };
@@ -139,10 +139,10 @@ function getRegionalMarketInsight(
           關西都會區中古大樓交易熱絡，1981 新耐震為融資審查基本門檻；若為 20～30 年中古大樓，具備<strong>室內全面骨架翻新（フルリノベーション）</strong>的物件在二手市場承接力道最為強勁。
         </>
       ),
-      consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）租金回報與商圈潛力`,
+      consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）租金投報與商圈潛力`,
       consultantText: (
         <>
-          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。關西核心圈商業與觀光動能活絡，租金回報率普遍較東京高出約 <strong>+0.5%～+1.5%</strong>。投資布局時需特別留意各街區的人口流向、學區與商業繁華度差異。
+          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。關西核心圈商業與觀光動能活絡，租金投報率普遍較東京高出約 <strong>+0.5%～+1.5%</strong>。投資布局時需特別留意各街區的人口流向、學區與商業繁華度差異。
         </>
       )
     };
@@ -165,7 +165,7 @@ function getRegionalMarketInsight(
       consultantTitle: `Linus 房產顧問觀點：${jpDistrict}（${region}）地方首善之人口紅利`,
       consultantText: (
         <>
-          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為地方核心大城，持續吸引周邊區域年輕就業人口移入，單身套房與小家庭租賃需求強勁，兼具相對親民的入場總價與穩健的租金收益率。
+          【{jpDistrict}】當前表面投報率約 <strong>{yieldStr}</strong>。做為地方核心大城，持續吸引周邊區域年輕就業人口移入，單身套房與小家庭租賃需求強勁，兼具相對親民的入場總價與穩健的租金投報率。
         </>
       )
     };
@@ -272,7 +272,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
               <span className="text-[11px] text-[#8A9590] font-normal">
                 {isOfficial
                   ? `統計區間：${currentEstimate.periodStart}～${currentEstimate.periodEnd}`
-                  : "收益率模型推估"}
+                  : "投報率模型推估"}
               </span>
             </div>
             <h4 className="mt-1.5 text-sm sm:text-base font-bold text-[#1A2A22] flex items-center gap-1.5">

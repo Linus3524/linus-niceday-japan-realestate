@@ -1,11 +1,9 @@
 /* 網頁字型分兩路走，完整說明見 docs/FONTS.md：
    1. 英數字型 (Jost / JetBrains Mono) → 自架在 public/fonts/，並在 index.html preload。
-   2. 中日文字型 (Noto Sans TC / Noto Sans JP / Noto Serif TC / Shippori Mincho) → 仍走 Google，
-      因為它們會依頁面實際出現的文字分片下載，自架整包反而是好幾 MB，
-      而 AI 顧問會輸出任意中文字，靜態 subset 有缺字變成 □ 的風險。
-      載入標籤現在寫在 index.html <head>，不要改回 @import：
-      @import 得等這支 CSS 下載完才會被發現，字型起跑晚一整輪，
-      使用者就會先看到系統字型再跳字。 */
+   2. 中日文字型 (Noto Sans TC / Noto Sans JP / Noto Serif TC / Noto Serif JP) → 走 Google Fonts，
+      繁體中文與日文全面採用開源「思源系列 (Source Han / Noto)」，
+      字重規格（Serif 400-900 / Sans 400-700）完全對齊，同一處混排時中日文筆劃粗細與高度無縫吻合。
+      載入標籤寫在 index.html <head>。 */
 @import "tailwindcss";
 
 /* Jost：可變字型，涵蓋 300–700，站內用於英文標題與標籤 */
@@ -75,7 +73,8 @@
 @theme {
   --font-sans: "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
   --font-jp-sans: "Noto Sans JP", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Noto Serif TC", "Shippori Mincho", serif;
+  --font-serif: "Noto Serif TC", "Noto Serif JP", serif;
+  --font-jp-serif: "Noto Serif JP", "Noto Serif TC", serif;
   --font-jost: "Jost", "Noto Sans JP", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
@@ -183,9 +182,21 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-jost);
 }
 
-/* 日本正式地名、車站與線路專用。繁體說明仍使用 .font-sans。 */
-.font-jp {
+/* 日本正式地名、車站、專有名詞與日文內容。
+   預設在黑體內文環境下，優先使用日文思源黑體 Noto Sans JP。 */
+:lang(ja), [lang="ja"], .font-jp {
   font-family: var(--font-jp-sans);
+}
+
+/* 在標題 (h1~h6) 或明體容器 (.font-serif) 內，日文字詞自動無縫切換為思源明體原生日文字型 Noto Serif JP。
+   中日文思源明體 (Noto Serif TC / Noto Serif JP) 同根同源，在相同字重 (400, 500, 600, 700, 900) 下，
+   筆劃粗細、骨架完全一致，日文漢字維持原生標準筆形，且字重直接繼承父層。 */
+h1 :lang(ja), h2 :lang(ja), h3 :lang(ja), h4 :lang(ja), h5 :lang(ja), h6 :lang(ja),
+.font-serif :lang(ja),
+h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[lang="ja"],
+.font-serif[lang="ja"],
+.font-jp-serif {
+  font-family: var(--font-jp-serif);
 }
 
 /* 桌機版頂部資訊列（logo + 令和日期時間 + 東京天氣）：磨砂玻璃，
@@ -862,7 +873,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   backdrop-filter: blur(20px);
 }
 .primary-nav-tab {
-  font-family: "Shippori Mincho", var(--font-serif);
+  font-family: var(--font-serif);
   font-weight: 500;
 }
 /* 罫線:相鄰分頁之間一條 1px 短直線,上下不到底 */
@@ -1021,7 +1032,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     height: min(calc(var(--app-vh) * 44), 370px);
     margin: 0;
     color: #008761; /* 🍊 橘子場景：對標色票指南「深翡翠綠」#008761 */
-    font-family: "Shippori Mincho", "Noto Serif TC", serif;
+    font-family: var(--font-jp-serif);
     font-size: clamp(17px, 4.7vw, 23px);
     font-weight: 600;
     line-height: 1.85;
@@ -1147,7 +1158,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
     border: 0;
     background: transparent;
     color: #1a2a22;
-    font-family: "Shippori Mincho", var(--font-serif);
+    font-family: var(--font-serif);
   }
   /* 罫線:每組第二個按鈕的左緣畫一條 1px 短直線,上下不到底 */
   .mobile-dock-side button + button {

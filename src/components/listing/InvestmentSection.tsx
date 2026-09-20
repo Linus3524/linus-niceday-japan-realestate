@@ -21,7 +21,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
         <ShieldCheck className="h-4 w-4 text-[#00A174]" />
-        <span>物件現況・投資回報率與自住法務要點</span>
+        <span>物件現況・投資投報率與自住法務要點</span>
       </div>
       <span className="text-[10px] text-[#66736C]">
         現況判定：{translateOccupancyStatus(saleAnalysis?.occupancyAssessment?.statusText)}

@@ -571,7 +571,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-[#66736C]">
-              輸入公司、學校地址、知名地標或車站（繁體字、簡體字或俗稱均可自動優化辨識），精算從這間房子「出家門到抵達目的地」的全程門到門耗時與轉乘次數。
+              輸入公司、學校地址、知名地標或車站（繁體字、簡體字或俗稱均可自動優化辨識），精算從本物件「出家門到抵達目的地」的全程門到門耗時與轉乘次數。
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <input

@@ -60,4 +60,73 @@ const threadsRentJp = searchThreads("審査", { context: "rent", limit: 3 });
 assert.ok(threadsRentJp.total > 0, "搜尋『審査』應能找到相關文章");
 assert.equal(threadsRent.total, threadsRentJp.total, "搜尋『審查』與『審査』結果筆數應一致");
 
-console.log("All kanji normalization search tests passed successfully!");
+// 5. 統一用語與放寬同義詞相容性測試
+// 首付 -> 自備款
+assert.equal(
+  matchesAllTokens("購屋自備款需準備兩成以上", tokenizeQuery("首付")),
+  true,
+  "搜尋『首付』應能命中『自備款』"
+);
+
+// 退房 -> 退租
+assert.equal(
+  matchesAllTokens("解約退租前需提前一個月通知", tokenizeQuery("退房")),
+  true,
+  "搜尋『退房』應能命中『退租』"
+);
+
+// 入居 -> 入住
+assert.equal(
+  matchesAllTokens("等入住日簽收鑰匙並點交屋況", tokenizeQuery("入居")),
+  true,
+  "搜尋『入居』應能命中『入住』"
+);
+
+// 渡假 -> 度假
+assert.equal(
+  matchesAllTokens("打工度假簽證專屬找房指南", tokenizeQuery("渡假")),
+  true,
+  "搜尋『渡假』應能命中『度假』"
+);
+
+// 回報率 / 收益率 -> 投報率
+assert.equal(
+  matchesAllTokens("當前表面投報率約 4.5%", tokenizeQuery("回報率")),
+  true,
+  "搜尋『回報率』應能命中『投報率』"
+);
+assert.equal(
+  matchesAllTokens("當前表面投報率約 4.5%", tokenizeQuery("收益率")),
+  true,
+  "搜尋『收益率』應能命中『投報率』"
+);
+
+// 合約 -> 契約
+assert.equal(
+  matchesAllTokens("核對重要事項說明書與契約特約", tokenizeQuery("合約")),
+  true,
+  "搜尋『合約』應能命中『契約』"
+);
+
+// 換鎖費 / 鑰匙費 -> 更換鎖芯費
+assert.equal(
+  matchesAllTokens("更換鎖芯費（換鎖費）約兩萬日圓", tokenizeQuery("鑰匙費")),
+  true,
+  "搜尋『鑰匙費』應能命中『更換鎖芯費』"
+);
+
+// 乾溼分離 -> 衛浴分離
+assert.equal(
+  matchesAllTokens("衛浴分離（乾濕分離・BT別）房源篩選", tokenizeQuery("乾溼分離")),
+  true,
+  "搜尋『乾溼分離』應能命中『衛浴分離』"
+);
+
+// 續柄 -> 親屬關係
+assert.equal(
+  matchesAllTokens("提供各自的親屬關係（續柄）與收入資料", tokenizeQuery("續柄")),
+  true,
+  "搜尋『續柄』應能命中『親屬關係』"
+);
+
+console.log("All kanji normalization and vocabulary expansion search tests passed successfully!");

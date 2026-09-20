@@ -159,7 +159,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>日本銀行帳戶 & 提款卡/存摺：</strong>合約通過後綁定每個月房租自動扣款使用。</span>
+                            <span><strong>日本銀行帳戶 & 提款卡/存摺：</strong>契約簽署後綁定每個月房租自動扣款使用。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
@@ -181,7 +181,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                     <div className="mb-4 flex flex-col gap-1 border-b border-[#DDE3DF] pb-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
-                        <p className="mt-1 text-xs leading-relaxed text-[#3F5147] font-sans">是否已退房、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
+                        <p className="mt-1 text-xs leading-relaxed text-[#3F5147] font-sans">是否已退租、能否內見，會直接影響申請後還有沒有改變決定的空間。</p>
                       </div>
                       <span className="text-xs font-bold text-[#00a174] font-sans">三種申請方式</span>
                     </div>

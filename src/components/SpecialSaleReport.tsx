@@ -254,7 +254,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   )}
                   {d.kind === "land" && (
                     <li>
-                      「建築条件なし」仍須核對用途地域、建蔽率、容積率、接道及防火限制。古屋拆除、整地與新建費用未列入交屋費用小計；契約不適合責任免責範圍須核對合約特約。
+                      「建築条件なし」仍須核對用途地域、建蔽率、容積率、接道及防火限制。古屋拆除、整地與新建費用未列入交屋費用小計；契約不適合責任免責範圍須核對契約特約。
                     </li>
                   )}
                   {(d.illustrativePhotos || d.renovationExtra) && (

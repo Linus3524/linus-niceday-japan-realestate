@@ -1,6 +1,7 @@
 import type { SelectTerm } from "../../lib/uiTypes";
 import { QACard } from "../QACard";
 import { RelatedThreads } from "../RelatedThreads";
+import { JapaneseRuby } from "../JapaneseRuby";
 
 interface Props {
   isSearchActive: boolean;
@@ -58,7 +59,7 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
                                 onClick={() => setSelectedFee(term)}
                                 className="border border-[#DDE3DF] bg-[#FAFCFB] p-4 text-left transition-colors hover:border-[#00a174]"
                               >
-                                <strong className="font-serif text-sm text-[#1A2A22]">{term.name}</strong>
+                                <strong className="font-serif text-sm text-[#1A2A22]"><JapaneseRuby text={term.name} /></strong>
                                 {term.jpName && <span className="ml-2 font-sans text-[10px] text-[#66736C]">{term.jpName}</span>}
                                 <p className="mt-2 line-clamp-3 font-sans text-xs leading-6 text-[#3F5147]">{term.description}</p>
                               </button>

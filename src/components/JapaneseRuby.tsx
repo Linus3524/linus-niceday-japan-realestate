@@ -111,15 +111,28 @@ export function JapaneseRuby({ text }: { text: string }) {
   let index = 0;
 
   while ((match = matcher.exec(text)) !== null) {
-    if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index));
+    if (match.index > lastIndex) {
+      nodes.push(
+        <span key={`text-${lastIndex}`} lang="ja" className="font-inherit">
+          {text.slice(lastIndex, match.index)}
+        </span>
+      );
+    }
     nodes.push(
-      <ruby key={`${match[0]}-${index++}`} className="whitespace-nowrap [ruby-position:over]">
-        {match[0]}<rt className="relative -top-[0.08em] select-none font-sans text-[0.5em] font-semibold tracking-normal text-[#00a174]">{toHiragana(readings[match[0]])}</rt>
+      <ruby key={`${match[0]}-${index++}`} lang="ja" className="whitespace-nowrap [ruby-position:over] font-inherit">
+        <span lang="ja" className="font-inherit">{match[0]}</span>
+        <rt lang="ja" className="relative -top-[0.08em] select-none text-[0.5em] font-semibold tracking-normal text-[#00a174]">{toHiragana(readings[match[0]])}</rt>
       </ruby>
     );
     lastIndex = match.index + match[0].length;
   }
 
-  if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
-  return <>{nodes}</>;
+  if (lastIndex < text.length) {
+    nodes.push(
+      <span key={`text-${lastIndex}`} lang="ja" className="font-inherit">
+        {text.slice(lastIndex)}
+      </span>
+    );
+  }
+  return <span lang="ja" className="font-inherit inline">{nodes}</span>;
 }

@@ -107,7 +107,7 @@ export function TermModal(props: TermModalProps) {
                     })()}
                   </h4>
                   {selectedFee.jpName && (
-                    <span className={`${stackHeader ? "self-end" : "self-auto"} shrink-0 bg-[#00a174] text-white px-2 py-1 font-sans text-xs leading-snug sm:self-auto`}>
+                    <span lang="ja" className={`${stackHeader ? "self-end" : "self-auto"} shrink-0 bg-[#00a174] text-white px-2 py-1 text-xs leading-snug sm:self-auto`}>
                       <span className="flex flex-col items-end gap-y-0">
                         {splitReading(selectedFee.jpName).map((word, index) => <span key={`${word}-${index}`} className="whitespace-nowrap">{word}</span>)}
                       </span>

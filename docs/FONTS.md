@@ -7,7 +7,7 @@
 | Material Symbols Rounded（圖示） | 自架 | `public/fonts/material-symbols-rounded-subset.woff2`（16KB，只含 4 個圖示） |
 | Jost（英文標題／標籤） | 自架 | `public/fonts/jost-latin.woff2`（26KB）、`jost-latin-ext.woff2`（17KB） |
 | JetBrains Mono（LINE ID／數字） | 自架 | `public/fonts/jetbrains-mono-latin.woff2`（31KB） |
-| Noto Sans TC / Noto Sans JP / Noto Serif TC / Shippori Mincho（中日文） | Google Fonts | `index.html` 的 `<link rel="stylesheet">` |
+| Noto Sans TC / Noto Sans JP / Noto Serif TC / Noto Serif JP（中日文） | Google Fonts | `index.html` 的 `<link rel="stylesheet">` |
 
 `@font-face` 宣告集中在 `src/index.css` 最上方，載入標籤集中在 `index.html` `<head>`。
 
@@ -24,18 +24,21 @@ latin 分片只有 20–30KB，preload 之後幾乎都能在首次繪製前就�
 使用者只下載頁面實際出現的那幾百個字。自架的話：整包丟出去是好幾 MB；
 靜態 subset 又會漏字（**AI 顧問會輸出任意中文字，漏字會變成 □**），風險太高。
 
-## 只請求真的用到的字重（重要）
+## 中日文思源同系列（Source Han / Noto）整合
 
-中日文每多一個字重，Google 那支樣式表就會多展開上百段 `@font-face`。
-先前請求了 300 字重與整個 `Noto Sans JP` 家族，當時沒有指定日文專有名詞使用，
-反而讓樣式表膨脹。現在只保留實際用於行政區、車站與線路的 500／700 字重。
+為解決中日文字體混排時字重不一致、字形割裂問題，全站繁體中文與日文一律採用同系列的開源思源字型（Google / Adobe 出品）：
+- **思源明體系列**：`Noto Serif TC`（繁中）+ `Noto Serif JP`（日文）
+- **思源黑體系列**：`Noto Sans TC`（繁中）+ `Noto Sans JP`（日文）
 
-目前請求的字重（要改之前請先確認站內真的有用到）：
+在相同的 `font-weight`（Serif 400-900 / Sans 400-700）下，中日文筆劃粗細、骨架完全一致。
+標題（`h1-h6`）與 `.font-serif` 明體容器內的日文標記（`:lang(ja)` / `[lang="ja"]` / `.font-jp-serif`），自動套用 `Noto Serif JP` 原生日文字型，呈現純正 JIS 漢字與明體假名；內文黑體則自動套用 `Noto Sans JP`。
 
+目前請求的字重：
+
+- Noto Serif TC — 400 / 500 / 600 / 700 / 900
+- Noto Serif JP — 400 / 500 / 600 / 700 / 900
 - Noto Sans TC — 400 / 500 / 700
-- Noto Sans JP — 500 / 700（只用於日本正式地名、車站與線路）
-- Noto Serif TC — 400 / 700
-- Shippori Mincho — 400 / 500 / 600（手機版直式日文標語用 600）
+- Noto Sans JP — 400 / 500 / 700
 
 驗證某個字重有沒有被實際使用，可在瀏覽器 console 執行：
 
