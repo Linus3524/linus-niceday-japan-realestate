@@ -116,7 +116,7 @@ export const screeningDocumentDisclaimer =
   "以上為 Linus 整理的申請對照表；不同管理公司與保證公司會依您的簽證與工作條件微調文件清單，審查過程中亦可能視情況要求追加或補交資料，送件前均會為您核對最新需求。";
 
 export const overseasSop = {
-  badge: "海外審査",
+  badge: "海外審查",
   title: "飛日前提前申請流程",
   description:
     "適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租屋等待期，好處是落地即入住！",
@@ -125,7 +125,7 @@ export const overseasSop = {
     "開始找房",
     "遞交個人資料",
     "申請房子",
-    "審査",
+    "審查",
     "繳交初期費用",
     "入境日本（在海關那邊領取在留卡）",
     "簽約",
@@ -138,7 +138,7 @@ export const overseasSop = {
 };
 
 export const domesticSop = {
-  badge: "入境審査",
+  badge: "入境審查",
   title: "抵達日本境內申請流程",
   description:
     "適合人已在日本，擁有登記過原臨時地址在留卡、日本電話與個人印章的人。可安排實體內見看房，能挑選的房源物件範圍是最多的。",
@@ -149,7 +149,7 @@ export const domesticSop = {
     "開始找房",
     "遞交個人資料",
     "申請房子",
-    "審査",
+    "審查",
     "繳交初期費用",
     "簽約",
     "等入居日簽收鑰匙",
@@ -215,8 +215,8 @@ const staticSearchSections: Array<{ id: RentStaticSectionId; text: string }> = [
   {
     id: "documents",
     text: [
-      "審査所需資料與準備文件對照",
-      "依海外 日本境內審査與目前身份 查看建議先準備的文件",
+      "審查所需資料與準備文件對照",
+      "依海外 日本境內審查與目前身份 查看建議先準備的文件",
       ...joinProfiles(overseasScreeningDocuments),
       ...joinProfiles(domesticScreeningDocuments),
       domesticScreeningNotice,

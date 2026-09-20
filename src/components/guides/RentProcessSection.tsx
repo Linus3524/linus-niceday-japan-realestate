@@ -41,7 +41,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                         {overseasSop.description}
                       </p>
                       <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF]">
-                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 海外審査 SOP 完整步驟：</span>
+                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 海外審查 SOP 完整步驟：</span>
                         <div className="space-y-2 text-xs text-[#3F5147] font-sans leading-relaxed">
                           {overseasSop.steps.map((step, idx) => (
                             <div key={idx} className="flex items-start gap-2">
@@ -64,7 +64,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                         {domesticSop.description}
                       </p>
                       <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF]">
-                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 入境審査 SOP 完整步驟：</span>
+                        <span className="font-bold text-[#1A2A22] block border-b border-[#C9D2CD] pb-1.5 mb-2.5 font-sans">📋 入境審查 SOP 完整步驟：</span>
                         <div className="space-y-2 text-xs text-[#3F5147] font-sans leading-relaxed">
                           {domesticSop.steps.map((step, idx) => (
                             <div key={idx} className="flex items-start gap-2">
@@ -94,8 +94,8 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       <span className="flex min-w-0 items-start gap-3">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
                         <span>
-                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審査所需資料與準備文件對照</span>
-                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審査與目前身份，查看建議先準備的文件</span>
+                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審查所需資料與準備文件對照</span>
+                          <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審查與目前身份，查看建議先準備的文件</span>
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#00a174]">
@@ -114,7 +114,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                     <div className="hidden" aria-hidden="true">
                       <div className="bg-white p-5 border border-[#C9D2CD] space-y-3">
                         <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-[#ECEFEC] pb-1 flex items-center gap-1.5">
-                          <span>✈ 海外審査需要資料</span>
+                          <span>✈ 海外審查需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-[#3F5147] leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
@@ -142,7 +142,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                       <div className="bg-white p-5 border border-[#C9D2CD] space-y-3">
                         <h5 className="font-bold text-[#00a174] text-xs uppercase tracking-wider border-b border-[#ECEFEC] pb-1 flex items-center gap-1.5">
-                          <span>🇯🇵 境內審査需要資料</span>
+                          <span>🇯🇵 境內審查需要資料</span>
                         </h5>
                         <ul className="space-y-2 text-xs text-[#3F5147] leading-normal font-sans">
                           <li className="flex items-start gap-1.5">
@@ -155,7 +155,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>日本手機門號：</strong>保證會社審査時會撥打電話照會，必須能正常通話與接聽。</span>
+                            <span><strong>日本手機門號：</strong>保證會社審查時會撥打電話照會，必須能正常通話與接聽。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>

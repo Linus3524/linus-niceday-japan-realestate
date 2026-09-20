@@ -55,8 +55,8 @@ export function RentGuideTab(props: RentGuideTabProps) {
     },
     {
       id: "documents" as const,
-      category: "審査文件",
-      title: "審査所需資料與準備文件",
+      category: "審查文件",
+      title: "審查所需資料與準備文件",
       text: "依海外或日本境內申請、簽證與工作狀況，整理送審前應準備的身分、收入、就職及財力文件。"
     },
     {

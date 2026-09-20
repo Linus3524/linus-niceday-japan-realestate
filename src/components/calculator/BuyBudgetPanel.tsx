@@ -119,7 +119,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
       </div>
 
       <div className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-3 text-xs leading-relaxed text-[#245746]">
-        這個結果只回答「資金上大致負擔得起多少」，尚未計入管理費、修繕積立金、固定資產稅與個別銀行審査。地區行情與物件條件可在下方進階工具繼續比較。
+        這個結果只回答「資金上大致負擔得起多少」，尚未計入管理費、修繕積立金、固定資產稅與個別銀行審查。地區行情與物件條件可在下方進階工具繼續比較。
       </div>
     </div>
   </div>);

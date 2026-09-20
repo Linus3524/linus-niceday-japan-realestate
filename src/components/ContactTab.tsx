@@ -37,7 +37,7 @@ export function ContactTab(props: ContactTabProps) {
                 title="專業台灣仲介 Linus，陪您安心找到日本的家"
               >
                 <p>
-                  無論您正準備赴日工作、留學或長期定居，想租屋、買房置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審査條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
+                  無論您正準備赴日工作、留學或長期定居，想租屋、買房置產，或已看中特定物件，都歡迎直接與 Linus 聯繫。我會以台灣人的溝通方式，協助整理需求、配對公開及未公開房源、確認外國人審查條件，並陪同處理內見、申請與簽約。全程提供中文一對一服務，讓您在日本找房更透明、更順利，也更安心。
                 </p>
               </PageIntroCard>
 
@@ -121,7 +121,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#00a174] shrink-0">✔️</span>
-                          <span>熟悉打工度假與外國人租屋審査／協助生活服務開通！</span>
+                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通！</span>
                         </div>
                         <div className="flex items-start gap-1">
                           <span className="text-[#00a174] shrink-0">✔️</span>
@@ -285,7 +285,7 @@ export function ContactTab(props: ContactTabProps) {
 2. 入境日期（機票時間）或目前在日本何處：
 3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
 4. 每月租屋預算範圍：
-5. 通勤目的地 and 可接受交通時間（學校或公司名稱、靠近的車站）：
+5. 通勤目的地／可接受交通時間（學校或公司名稱、靠近的車站）：
 6. 是否為自己住／有無同居人（代問或代找請表明）：
 7. 其他對房子的核心條件（如：獨立洗面台、屋齡限制等）：`}
                         </div>

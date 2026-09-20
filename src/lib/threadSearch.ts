@@ -8,7 +8,7 @@ import {
 } from "../data/featuredThreads.js";
 import { threadsSearchIndex } from "../data/threadsSearchIndex.js";
 import { threadImageIndex } from "../data/threadImageIndex.js";
-import { expandToken, extractKnownSearchTokens, tokenizeQuery } from "./search.js";
+import { expandToken, extractKnownSearchTokens, normalizeSearchText, tokenizeQuery } from "./search.js";
 
 export type ThreadSearchContext = "all" | "rent" | "buy";
 
@@ -89,9 +89,9 @@ const documents: ThreadDocument[] = threadCategories.flatMap(category =>
       text,
       title,
       excerpt,
-      titleText: title.toLocaleLowerCase(),
-      leadingText: text.slice(0, 220).toLocaleLowerCase(),
-      keywordText: (thread.keywords ?? []).join(" ").toLocaleLowerCase(),
+      titleText: normalizeSearchText(title.toLocaleLowerCase()),
+      leadingText: normalizeSearchText(text.slice(0, 220).toLocaleLowerCase()),
+      keywordText: normalizeSearchText((thread.keywords ?? []).join(" ").toLocaleLowerCase()),
     };
   })
 );
@@ -120,7 +120,7 @@ function maxSingleAliasOccurrences(text: string, aliases: string[]) {
 }
 
 function scoreDocument(document: ThreadDocument, tokens: string[], rawQuery: string, requireAllTokens: boolean) {
-  const bodyText = document.text.toLocaleLowerCase();
+  const bodyText = normalizeSearchText(document.text.toLocaleLowerCase());
   let matchedTokens = 0;
   let score = 0;
 

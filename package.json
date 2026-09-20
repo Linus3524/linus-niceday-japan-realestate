@@ -23,6 +23,7 @@
     "test:equipment": "tsx scripts/test-equipment-parser.ts",
     "test:transit": "tsx scripts/test-transit-parser.ts",
     "test:transit-formats": "tsx scripts/test-transit-formats.ts",
+    "test:kanji-normalization": "tsx scripts/test-kanji-normalization.ts",
     "test:line-colors": "tsx scripts/test-line-colors.ts",
     "test:transitous-lines": "tsx scripts/test-transitous-line-names.ts",
     "test:door-to-door": "tsx scripts/test-door-to-door-route.ts",

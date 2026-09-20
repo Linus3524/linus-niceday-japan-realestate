@@ -256,7 +256,6 @@ export const threadCategories: ThreadCategory[] = [
           "Working Holiday",
           "赴日前準備",
           "先找房再買機票",
-          "海外審査",
           "海外審查",
           "入境日期",
           "入住日期",

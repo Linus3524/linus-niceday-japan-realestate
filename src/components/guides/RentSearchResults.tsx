@@ -36,7 +36,7 @@ export function RentSearchResults({ isSearchActive, searchQuery, rentSearchResul
                   {hasNoResults && threadMatches.total === 0 ? (
                     <div className="bg-[#F5F8F6] px-5 py-10 text-center font-sans">
                       <p className="text-sm font-bold text-[#1A2A22]">找不到符合的內容</p>
-                      <p className="mt-2 text-xs text-[#66736C]">可改用較短的關鍵字，例如「敷金」、「先行契約」、「保證公司」或「審査」。</p>
+                      <p className="mt-2 text-xs text-[#66736C]">可改用較短的關鍵字，例如「敷金」、「先行契約」、「保證公司」或「審查」。</p>
                     </div>
                   ) : (
                     <div className="space-y-7">

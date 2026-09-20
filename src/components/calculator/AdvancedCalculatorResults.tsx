@@ -517,7 +517,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                   <span className="font-mono text-[#00a174]">{getMonthlyPayment(getCalculatedBuyPrice()).toLocaleString()} 円 / 月</span>
                 </div>
                 <p className="text-[10px] text-[#66736C] mt-1 text-justify">
-                  本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審査。
+                  本試算採本息平均攤還，不含寬限期、銀行手續費、保證費、提前清償費或利率變動。可自行調整參數；是否核貸與實際條件由金融機構個案審查。
                 </p>
               </div>
             </div>

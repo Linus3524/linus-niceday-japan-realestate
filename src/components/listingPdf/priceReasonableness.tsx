@@ -46,7 +46,7 @@ export function ReasonablenessCard({ mlit, salePriceMan }: { mlit: NonNullable<N
         : "開價與條件加權後之行情落點相符。";
 
   return (
-    <Card title="優勢條件累計與開價合理性對照" tag="官方査定教科書 ＋ 東京カンテイ大數據統計">
+    <Card title="優勢條件累計與開價合理性對照" tag="官方查定教科書 ＋ 東京カンテイ大數據統計">
       <View style={styles.benchmarkGrid}>
         {/* ① 本案優勢條件加總 */}
         <View style={[styles.benchmarkCard, { borderLeftColor: GREEN_DEEP }]}>
@@ -102,7 +102,7 @@ export function ReasonablenessCard({ mlit, salePriceMan }: { mlit: NonNullable<N
         </View>
       </View>
       <Text style={{ fontSize: 6, color: INK_MUTE, marginTop: 2 }}>
-        ※ 査定依據來源：公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》官方標準，以及日本東京カンテイ（Tokyo Kantei）實證大數據統計。
+        ※ 查定依據來源：公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》官方標準，以及日本東京カンテイ（Tokyo Kantei）實證大數據統計。
       </Text>
     </Card>
   );

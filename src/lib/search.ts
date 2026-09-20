@@ -112,10 +112,75 @@ const SYNONYM_GROUPS: string[][] = [
   ["格局", "套房", "1k", "1r", "1ldk", "2ldk"],
 ];
 
-/** 詞 → 該詞所屬群組的所有寫法（都存小寫，比對時才不分大小寫） */
+/**
+ * 台日漢字與常見異體字正規化映射表。
+ * 將日文常用漢字／新字體、簡體字與常見異體字歸一化至繁體中文標準字，
+ * 確保「海外審查」必中「海外審査」、「印紙税」必中「印紙稅」、「一戸建」必中「一戶建」。
+ */
+const KANJI_NORMALIZATION_MAP: Record<string, string> = {
+  // 核心台日異體字（不動產關鍵字）
+  "査": "查",
+  "税": "稅",
+  "戸": "戶", "户": "戶",
+  "証": "證", "证": "證",
+  "説": "說", "说": "說",
+  "価": "價", "价": "價",
+  "専": "專", "专": "專",
+  "気": "氣", "气": "氣",
+  "験": "驗", "验": "驗",
+  "渋": "澀", "澁": "澀", "涩": "澀",
+  "浜": "濱", "滨": "濱",
+  "横": "橫",
+  "条": "條",
+  "対": "對", "对": "對",
+  "転": "轉", "转": "轉",
+  "満": "滿", "满": "滿",
+  "広": "廣", "广": "廣",
+  "総": "總", "总": "總",
+  "関": "關", "关": "關",
+  "鉄": "鐵", "铁": "鐵",
+  "区": "區",
+  "県": "縣", "县": "縣",
+  "権": "權", "权": "權",
+  "売": "賣", "卖": "賣",
+  "済": "濟", "济": "濟",
+  "続": "續", "续": "續",
+  "絵": "繪", "绘": "繪",
+  "経": "經", "经": "經",
+  "営": "營", "营": "營",
+  "読": "讀", "读": "讀",
+  "単": "單", "单": "單",
+  "点": "點",
+  "数": "數",
+  "実": "實", "实": "實",
+  "楽": "樂", "乐": "樂",
+  "薬": "藥", "药": "藥",
+  "銭": "錢", "钱": "錢",
+  "積": "積", "积": "積",
+  "貸": "貸", "贷": "貸",
+  "賃": "賃", "赁": "賃",
+  "約": "約", "约": "約",
+  "規": "規", "规": "規",
+  "則": "則", "则": "則",
+  "円": "圓", "圆": "圓",
+};
+
+const KANJI_REGEX = new RegExp("[" + Object.keys(KANJI_NORMALIZATION_MAP).join("") + "]", "g");
+
+/**
+ * 將文字進行漢字字元正規化（轉為小寫並映射異體字／日文新字體）。
+ */
+export function normalizeSearchText(text: string): string {
+  if (!text) return "";
+  return text
+    .toLocaleLowerCase()
+    .replace(KANJI_REGEX, ch => KANJI_NORMALIZATION_MAP[ch] || ch);
+}
+
+/** 詞 → 該詞所屬群組的所有寫法（都存小寫並正規化漢字，比對時才不分大小寫與台日字體） */
 const synonymIndex = new Map<string, Set<string>>();
 for (const group of SYNONYM_GROUPS) {
-  const normalized = group.map(term => term.toLocaleLowerCase());
+  const normalized = group.map(term => normalizeSearchText(term));
   for (const term of normalized) {
     const bucket = synonymIndex.get(term) ?? new Set<string>();
     normalized.forEach(alias => bucket.add(alias));
@@ -123,18 +188,17 @@ for (const group of SYNONYM_GROUPS) {
   }
 }
 
-/** 把查詢字串切成多個關鍵字：半形空白、全形空白、逗號與頓號都視為分隔符 */
+/** 把查詢字串切成多個關鍵字：半形空白、全形空白、逗號與頓號都視為分隔符，並自動進行漢字歸一化 */
 export function tokenizeQuery(query: string): string[] {
-  return query
+  return normalizeSearchText(query)
     .trim()
-    .toLocaleLowerCase()
     .split(/[\s　、,，]+/)
     .filter(Boolean);
 }
 
-/** 把一個關鍵字展開成「它自己 ＋ 所有同義寫法」 */
+/** 把一個關鍵字展開成「它自己 ＋ 所有同義寫法」（全部經過漢字歸一化） */
 export function expandToken(token: string): string[] {
-  const normalized = token.toLocaleLowerCase();
+  const normalized = normalizeSearchText(token);
   const bucket = synonymIndex.get(normalized);
   return bucket ? Array.from(bucket) : [normalized];
 }
@@ -146,7 +210,7 @@ export function expandToken(token: string): string[] {
  * 只靠空白切詞。這裡會辨識句中的同義詞，並讓同一群同義詞只回傳一次。
  */
 export function extractKnownSearchTokens(text: string): string[] {
-  const normalized = text.toLocaleLowerCase();
+  const normalized = normalizeSearchText(text);
   const aliases = Array.from(synonymIndex.keys()).sort((a, b) => b.length - a.length);
   const seenGroups = new Set<string>();
   const tokens: string[] = [];
@@ -166,12 +230,15 @@ export function extractKnownSearchTokens(text: string): string[] {
 
 /**
  * 所有關鍵字都要命中才算（AND）；單一關鍵字只要命中任一同義寫法即可（OR）。
- * 例如查「敷金 退還」，會找出同時提到（敷金／押金／保證金）與「退還」的項目。
+ * 搜尋文字與被搜尋內容皆經過漢字歸一化，支援同字不同編碼的無縫比對。
  */
 export function matchesAllTokens(haystack: string, tokens: string[]): boolean {
   if (tokens.length === 0) return false;
-  const text = haystack.toLocaleLowerCase();
-  return tokens.every(token => expandToken(token).some(alias => text.includes(alias)));
+  const text = normalizeSearchText(haystack);
+  return tokens.every(token => {
+    const normalizedToken = normalizeSearchText(token);
+    return expandToken(normalizedToken).some(alias => text.includes(alias));
+  });
 }
 
 /** 把一個項目的多個欄位串成一份可搜尋的文字（略過 undefined 與空值） */

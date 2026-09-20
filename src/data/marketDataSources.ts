@@ -97,14 +97,14 @@ export const marketDataSources: MarketDataSourcePolicy[] = [
     id: "retpc-appraisal-manual",
     label: "公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》",
     kinds: ["appraisal_standard"],
-    statistic: "日本仲介公會中古公寓官方價格査定基準點數（位置・開口部方位・階層・專有使用權・借地權）",
+    statistic: "日本仲介公會中古公寓官方價格查定基準點數（位置・開口部方位・階層・專有使用權・借地權）",
     publicationCadence: "定期修訂；日本不動產經紀業官方標準",
     reviewCadenceDays: 180,
     ingestionStatus: "manual_only",
     automatedIngestionAllowed: false,
     sourceUrl: "https://www.retpc.jp/chousa/satei/",
     termsUrl: "https://www.retpc.jp/",
-    note: "日本各大仲介（三井、住友、東急等）與銀行採用的二手公寓査定標準：角部屋（+3%～+5%）、開口部南向（+3%～+5%）、北向（-3%～-5%）、最上階（+3%～+5%）、1階（-5%）、借地權折價（-20%～-35%）。定期由 scripts/review-appraisal-standards.ts 複核更新。"
+    note: "日本各大仲介（三井、住友、東急等）與銀行採用的二手公寓查定標準：角部屋（+3%～+5%）、開口部南向（+3%～+5%）、北向（-3%～-5%）、最上階（+3%～+5%）、1階（-5%）、借地權折價（-20%～-35%）。定期由 scripts/review-appraisal-standards.ts 複核更新。"
   },
   {
     id: "tokyo-kantei-research",

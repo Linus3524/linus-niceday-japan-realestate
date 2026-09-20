@@ -353,14 +353,14 @@ export function buildSalePriceVerdict(input: {
     factors.push({
       label: "角部屋",
       ratePercent: 4,
-      note: "角部屋（邊間住戶）：雙面採光通風佳、少一面鄰戶噪音干擾（不動產流通推進中心査定手冊基準 +3%～+5%，東京カンテイ實證溢價 +4.2%）",
+      note: "角部屋（邊間住戶）：雙面採光通風佳、少一面鄰戶噪音干擾（不動產流通推進中心查定手冊基準 +3%～+5%，東京カンテイ實證溢價 +4.2%）",
       applied: false,
       basis: "estimate",
     });
   }
 
   // ── 5.2 陽台朝向（開口部方位）──
-  // RETPC 査定手冊：南向/東南向 +3%～+5%，北向 -3%～-5%；
+  // RETPC 查定手冊：南向/東南向 +3%～+5%，北向 -3%～-5%；
   // 東京カンテイ大數據：首都圈南北向公寓平均成交單價差 7%～9%。
   if (input.unitFeatures?.facingDirection) {
     const dir = input.unitFeatures.facingDirection;
@@ -369,7 +369,7 @@ export function buildSalePriceVerdict(input: {
       factors.push({
         label: "陽台朝向",
         ratePercent: 3,
-        note: `採光面朝向（${zh}）：日照時間長、冬暖夏涼受市場青睞（不動產流通推進中心査定手冊基準 +3%～+5%，東京カンテイ實證南北向價差 7%～9%）`,
+        note: `採光面朝向（${zh}）：日照時間長、冬暖夏涼受市場青睞（不動產流通推進中心查定手冊基準 +3%～+5%，東京カンテイ實證南北向價差 7%～9%）`,
         applied: false,
         basis: "estimate",
       });
@@ -377,7 +377,7 @@ export function buildSalePriceVerdict(input: {
       factors.push({
         label: "陽台朝向",
         ratePercent: -3,
-        note: `採光面朝向（${zh}）：冬季日照較短、採光受限（不動產流通推進中心査定手冊基準 -3%～-5%）`,
+        note: `採光面朝向（${zh}）：冬季日照較短、採光受限（不動產流通推進中心查定手冊基準 -3%～-5%）`,
         applied: false,
         basis: "estimate",
       });
@@ -389,7 +389,7 @@ export function buildSalePriceVerdict(input: {
     factors.push({
       label: "專用露台",
       ratePercent: 5,
-      note: "附設景觀露台（ルーフバルコニー）：具備私人戶外活動與開闊眺望空間，屬稀少性溢價配備（査定手冊基準 +3%～+5%）",
+      note: "附設景觀露台（ルーフバルコニー）：具備私人戶外活動與開闊眺望空間，屬稀少性溢價配備（查定手冊基準 +3%～+5%）",
       applied: false,
       basis: "estimate",
     });
@@ -404,7 +404,7 @@ export function buildSalePriceVerdict(input: {
   }
 
   // ── 5.4 土地權利（借地權 vs 所有權）──
-  // RETPC 査定手冊與市場慣例：借地權無土地所有權，折價約 -20%～-35%。
+  // RETPC 查定手冊與市場慣例：借地權無土地所有權，折價約 -20%～-35%。
   if (input.unitFeatures?.isLeasehold) {
     const typeLabel = input.unitFeatures.leaseholdType || "借地權";
     factors.push({
@@ -418,26 +418,26 @@ export function buildSalePriceVerdict(input: {
   }
 
   // ── 5.42 大樓管理體制（自主管理 vs 專業委託）──
-  // 不動產流通推進中心査定手冊：「管理の良否」項目，全部委託日勤為基準，自主管理減點 -5%～-8%。
+  // 不動產流通推進中心查定手冊：「管理の良否」項目，全部委託日勤為基準，自主管理減點 -5%～-8%。
   const mgmtText = `${input.managementStyle || ""} ${input.managementCompany || ""} ${input.buildingNotes || ""}`;
   if (/自主管理/.test(mgmtText)) {
     factors.push({
       label: "管理體制",
       ratePercent: -5,
-      note: "大樓為「自主管理」（無委託專業物業公司，住戶自行運作，銀行承貸嚴格且長期維護風險高，査定手冊折價約 -5%～-8%）",
+      note: "大樓為「自主管理」（無委託專業物業公司，住戶自行運作，銀行承貸嚴格且長期維護風險高，查定手冊折價約 -5%～-8%）",
       applied: false,
       basis: "estimate",
     });
   }
 
   // ── 5.44 電梯配置（3 樓以上無電梯）──
-  // 不動產流通推進中心査定手冊：3 階以上エレベーター無住戶需逐層扣減使用效用比率。
+  // 不動產流通推進中心查定手冊：3 階以上エレベーター無住戶需逐層扣減使用效用比率。
   const isElevatorNone = /エレベーター無|EV無|無EV|エレベータ無/.test(input.buildingNotes || "");
   if (isElevatorNone && floor !== null && floor >= 3) {
     factors.push({
       label: "電梯配置",
       ratePercent: -6,
-      note: `${floor} 樓且大樓未配置電梯（日常進出需爬梯，對長輩、重物不便，査定手冊折價約 -5%～-8%）`,
+      note: `${floor} 樓且大樓未配置電梯（日常進出需爬梯，對長輩、重物不便，查定手冊折價約 -5%～-8%）`,
       applied: false,
       basis: "estimate",
     });

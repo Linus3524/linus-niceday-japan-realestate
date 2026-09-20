@@ -140,7 +140,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
                         </span>
                       </div>
                       <span className="text-[10px] text-[#66736C]">
-                        官方査定教科書 ＋ 東京カンテイ大數據統計
+                        官方查定教科書 ＋ 東京カンテイ大數據統計
                       </span>
                     </div>
 
@@ -219,7 +219,7 @@ export function SalePriceFactors({ FACTOR_SCALE, c, factorIcon, priceMan }: Prop
 
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[10px] text-[#8A9590] pt-1">
                       <span>
-                        ※ 査定依據來源：公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》官方標準，以及日本東京カンテイ（Tokyo Kantei）實證大數據統計。
+                        ※ 查定依據來源：公益財團法人 不動產流通推進中心《中古マンション価格査定マニュアル》官方標準，以及日本東京カンテイ（Tokyo Kantei）實證大數據統計。
                       </span>
                     </div>
                   </div>

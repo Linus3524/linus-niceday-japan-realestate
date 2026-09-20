@@ -49,8 +49,8 @@ export function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string 
   return (
     <div className="space-y-5 font-sans">
       <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
-        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審査</button>
-        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審査</button>
+        <button onClick={() => setScreeningMode("overseas")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "overseas" ? "bg-[#1A2A22] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>✈ 海外審查</button>
+        <button onClick={() => setScreeningMode("domestic")} className={`min-h-12 px-4 py-3 text-sm font-bold ${screeningMode === "domestic" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}>🇯🇵 日本境內審查</button>
       </div>
       {screeningMode === "domestic" && (
         <div className="border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 text-sm leading-7 text-[#3F5147]">{domesticScreeningNotice}</div>
