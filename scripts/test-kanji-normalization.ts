@@ -174,4 +174,11 @@ assert.equal(
   "搜尋『房子』應能命中『物件』"
 );
 
+// 傢俱 -> 家具
+assert.equal(
+  matchesAllTokens("附家具家電精裝套房", tokenizeQuery("傢俱")),
+  true,
+  "搜尋『傢俱』應能命中『家具』"
+);
+
 console.log("All kanji normalization and vocabulary expansion search tests passed successfully!");

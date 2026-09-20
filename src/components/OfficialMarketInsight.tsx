@@ -333,7 +333,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
               </div>
             </div>
             <div className="mt-2 text-[11px] text-[#8A9590] pt-1.5 border-t border-[#ECEFEC] flex items-center justify-between">
-              <span>月租相場約 {((currentRentYen || 0) / 10000).toFixed(1)} 萬円</span>
+              <span>月租行情約 {((currentRentYen || 0) / 10000).toFixed(1)} 萬円</span>
               <span className="text-[10px] text-[#8A9590]">At Home 統計</span>
             </div>
           </div>

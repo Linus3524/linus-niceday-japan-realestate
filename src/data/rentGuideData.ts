@@ -190,7 +190,7 @@ export const initialFees: InitialFeeItem[] = [
   {
     name: "決済サービス料・口座振替手数料",
     jpName: "付款服務費／帳戶扣款手續費",
-    description: "租屋帳戶自動扣款產生的手續費，通常由租客負擔，費用大約在 220、330、550 日圓不等，依保證會社而定。",
+    description: "租屋帳戶自動扣款產生的手續費，通常由租客負擔，費用大約在 220、330、550 日圓不等，依保證公司而定。",
     category: "fee"
   },
   {
@@ -437,7 +437,7 @@ export const processSteps: ProcessStep[] = [
   },
   {
     id: "2",
-    name: "② 保證會社審查",
+    name: "② 保證公司審查",
     description: "多數物件須先通過租賃保證公司審查。對方可能電話確認申請人、在日或海外緊急聯絡人資料，也可能只做文件審查。保證費細節與續約費用，在收到管理公司開立的正式精算書時，會為您一次對照整理；月額費用常見約為月租合計的 1～3%。",
     duration: "2 - 5 工作日",
     details: [
@@ -458,7 +458,7 @@ export const processSteps: ProcessStep[] = [
   },
   {
     id: "4",
-    name: "④ 出租人／管理公司審查",
+    name: "④ 房東／管理公司審查",
     description: "保證公司通過後，部分物件仍會由房東或管理公司做最終確認。通常會綜合工作、收入、在留期間、入住人數與申請資料判斷；保證公司審查通過後，管理公司也會進行最後確認。全數核准後即可安排後續簽約事宜。",
     duration: "3 - 5 工作日",
     details: [
@@ -695,7 +695,7 @@ export const budgetModifiers: BudgetModifier[] = [
   { id: "major_station", text: "熱門大站 (2條線路以上)", price: 10000, type: "plus", category: "location" },
   { id: "minor_station", text: "熱門小站 (1條線路)", price: 5000, type: "plus", category: "location" },
   { id: "walk_within_5min", text: "徒步車站 5 分鐘內", price: 5000, type: "plus", category: "location" },
-  { id: "furnished", text: "附傢俱家電", price: 20000, type: "plus", category: "others" },
+  { id: "furnished", text: "附家具家電", price: 20000, type: "plus", category: "others" },
   
   { id: "walk_11_15min", text: "徒步車站 11〜15 分鐘", price: -5000, type: "minus", category: "subtraction" },
   { id: "walk_15_20min", text: "徒步車站 15〜20 分鐘", price: -10000, type: "minus", category: "subtraction" },

@@ -254,8 +254,6 @@ export const RentMap: React.FC<RentMapProps> = ({
   const availableAreaGroups = areaGroupOrder.filter(group => rentRates.some(rate => rate.areaGroup === group));
   const visibleRegions = availableRegions.filter(region => rentRates.some(rate => rate.region === region && rate.areaGroup === activeAreaGroup));
   const regionDisplayName = toJapanesePrefectureName;
-  const latestSourceDate = rentRates.reduce((latest, rate) =>
-    (rate.sourceDate || "") > latest ? rate.sourceDate || latest : latest, "");
 
   return (
     <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
@@ -266,8 +264,8 @@ export const RentMap: React.FC<RentMapProps> = ({
             <MapPin className="w-4 h-4 text-[#00a174]" />
             <span>
               {mode === "buy"
-                ? `${latestSourceDate || "最新"} 日本主要中古公寓房價概算地圖`
-                : `${latestSourceDate || "最新"} 日本主要租屋市場家賃行情地圖`}
+                ? "日本主要城市房價行情地圖"
+                : "日本主要城市租金行情地圖"}
             </span>
           </h4>
           <p className="text-[10px] text-[#66736C]">
@@ -384,7 +382,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                   className={`${isTokyoMap ? "h-[72px]" : "h-[56px]"} p-1 sm:p-1.5 border cursor-pointer text-center transition-all duration-150 flex flex-col justify-between rounded-none ${bg} ${border}`}
                   title={mode === "buy"
                     ? `${toJapanesePlaceName(cell.name)} - ${getDistrictBuySource(rateData, roomType) === "official_transaction" ? "交易資料" : "收益率模型"}: ${val.toLocaleString()}萬円`
-                    : `${toJapanesePlaceName(cell.name)} - ${rateData.sourceDate || latestSourceDate}行情: ${val}萬円/月`}
+                    : `${toJapanesePlaceName(cell.name)} 租金行情: ${val.toFixed(1)}萬円/月`}
                 >
                   <div lang="ja" className="font-jp text-[9px] sm:text-[10px] font-bold leading-tight whitespace-nowrap">{toJapanesePlaceName(cell.name)}</div>
                   <div className={`text-[10px] font-mono font-bold leading-none mt-1.5 ${text}`}>
@@ -402,7 +400,7 @@ export const RentMap: React.FC<RentMapProps> = ({
         {/* Color Legend */}
         <div className="md:col-span-5 space-y-2">
               <span className="font-bold text-[#3F5147] block text-[11px] tracking-wider">
-            {mode === "buy" ? "房價（預估總價）熱力圖例：" : "房租熱力圖例："}
+            {mode === "buy" ? "房價（預估總價）熱力圖例：" : "租金熱力圖例："}
           </span>
           <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] text-[#3F5147]">
             <div className="flex items-center gap-1.5">
@@ -479,7 +477,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                           <span>{activeBuyEstimate?.source === "official_transaction" ? "國交省成約" : "租金模型"}</span>
                         </>
                       ) : (
-                        `${activeWard.sourceDate || latestSourceDate} 家賃相場`
+                        "市場租金行情"
                       )}
                     </span>
                   </div>
