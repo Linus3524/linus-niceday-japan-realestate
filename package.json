@@ -23,6 +23,7 @@
     "test:market-sources": "tsx scripts/test-market-data-sources.ts",
     "test:market-location": "tsx scripts/test-market-location.ts",
     "test:equipment": "tsx scripts/test-equipment-parser.ts",
+    "test:floor-plan": "tsx scripts/test-floor-plan-details.ts",
     "test:transit": "tsx scripts/test-transit-parser.ts",
     "test:transit-formats": "tsx scripts/test-transit-formats.ts",
     "test:kanji-normalization": "tsx scripts/test-kanji-normalization.ts",

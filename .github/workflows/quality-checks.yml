@@ -98,6 +98,7 @@ jobs:
           npm run test:address-normalization
           npm run test:kanji-normalization
           npm run test:equipment
+          npm run test:floor-plan
           npm run test:sale-costs
           npm run test:lease-charges
           npm run test:guarantee-fee

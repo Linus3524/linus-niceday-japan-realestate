@@ -4,6 +4,7 @@ FileSpreadsheet
 } from "lucide-react";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 import { TransitStationChips } from './TransitStationChips';
+import { FloorPlanDetailsPanel } from './FloorPlanDetailsPanel';
 import {
 translateOccupancyStatus
 } from "../../lib/equipmentParser";
@@ -149,12 +150,8 @@ export function SalePropertyFacts({ model }: SalePropertyFactsProps) {
         )}
       </dl>
 
-      {extracted?.floorPlanDetails && (
-        <div className="mt-3 border-t border-[#DDE3DF] pt-3 text-xs leading-relaxed">
-          <p className="font-bold text-[#1A2A22]">格局圖分析（間取り・配置図）</p>
-          <p className="mt-1 whitespace-pre-line break-words text-[#3F5147]">{extracted.floorPlanDetails}</p>
-        </div>
-      )}
+      {/* 買賣報告下方另有完整的注意事項區塊，這裡不重複免責聲明 */}
+      <FloorPlanDetailsPanel raw={extracted?.floorPlanDetails} showDisclaimer={false} />
 
       {/* 交通資訊・最寄り駅路線與徒步 */}
       {!isSpecialSale && extracted?.optionalFacilities && <div className="mt-3 border-t border-[#DDE3DF] pt-3 text-xs leading-relaxed">

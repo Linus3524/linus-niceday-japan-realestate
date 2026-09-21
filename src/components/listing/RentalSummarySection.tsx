@@ -4,6 +4,7 @@ Coins
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 import { formatYen } from '../../lib/listing/formatters';
 import { TransitStationChips } from './TransitStationChips';
+import { FloorPlanDetailsPanel } from './FloorPlanDetailsPanel';
 
 interface RentalSummarySectionProps {
   model: Pick<
@@ -143,13 +144,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
         </div>
       </dl>
 
-      {extracted?.floorPlanDetails && (
-        <div className="mt-3 border-t border-[#DDE3DF] pt-3 text-xs leading-relaxed">
-          <p className="font-bold text-[#1A2A22]">格局圖分析（間取り・配置図）</p>
-          <p className="mt-1 whitespace-pre-line break-words text-[#3F5147]">{extracted.floorPlanDetails}</p>
-          <p className="mt-1 text-[10px] text-[#66736C]">依圖紙可辨識標註整理；實際尺寸、設備位置與可使用範圍請以現場及管理方資料為準。</p>
-        </div>
-      )}
+      <FloorPlanDetailsPanel raw={extracted?.floorPlanDetails} />
 
       {/* 交通資訊・最寄り駅路線與徒步（分開獨立列點、標記所屬線路） */}
       <TransitStationChips stationItems={stationItems} locationContext={locationContext} />
