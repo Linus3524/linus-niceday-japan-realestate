@@ -59,71 +59,130 @@ const segments: CommuteRouteSegment[] = [
 const legs = buildCommuteLegs(segments);
 assert.equal(legs.length, 5, "全行程應重組為 5 個跨站實質移動路段");
 
-// 還原 timeline 中的站牌節點列表
-const renderedStations = [legs[0].fromStation];
+// 驗證東急東橫線 Leg 的起訖站牌資訊
+assert.equal(legs[1].fromStation.name, "都立大学");
+assert.equal(legs[1].fromStation.number, "TY06", "都立大學站號為 TY06");
+assert.equal(legs[1].toStation.name, "渋谷");
+assert.equal(legs[1].toStation.number, "TY01", "東急東橫線到達澀谷站號應為 TY01");
+assert.equal(legs[1].toStation.color, "#DA0442", "東急東橫線到達澀谷站牌顏色應為東橫線桃紅色");
+
+// 驗證東急東橫線到達澀谷後之轉乘過渡 (transferAfter)
+assert.ok(legs[1].transferAfter, "東急東橫線到澀谷後應掛載轉乘過渡 (transferAfter)");
+assert.equal(legs[1].transferAfter.badge.label, "轉乘");
+assert.equal(legs[1].transferAfter.badge.durationMinutes, 3, "澀谷轉乘總時間應為 3 分鐘");
+assert.equal(legs[1].transferAfter.badge.waitMinutes, 1, "澀谷轉乘候車時間應為 1 分鐘");
+assert.equal(legs[1].transferAfter.badge.detailTooltip, "站內步行 2 分 ＋ 月台候車 1 分");
+
+// 驗證 JR 山手線 Leg 的起訖站牌資訊
+assert.equal(legs[2].fromStation.name, "渋谷");
+assert.equal(legs[2].fromStation.number, "JY20", "JR 山手線出發澀谷站號應為 JY20");
+assert.equal(legs[2].fromStation.color, "#9ACD32", "JR 山手線出發澀谷站牌顏色應為山手線嫩綠色");
+assert.equal(legs[2].toStation.name, "高田馬場");
+assert.equal(legs[2].toStation.number, "JY15", "JR 山手線到達高田馬場站號應為 JY15");
+assert.equal(legs[2].toStation.color, "#9ACD32", "JR 山手線到達高田馬場站牌顏色應為山手線嫩綠色");
+
+// 驗證 JR 山手線到達高田馬場後之轉乘過渡 (transferAfter)
+assert.ok(legs[2].transferAfter, "JR 山手線到高田馬場後應掛載轉乘過渡 (transferAfter)");
+assert.equal(legs[2].transferAfter.badge.label, "轉乘");
+assert.equal(legs[2].transferAfter.badge.durationMinutes, 4, "高田馬場轉乘總時間應為 4 分鐘");
+assert.equal(legs[2].transferAfter.badge.waitMinutes, 2, "高田馬場轉乘候車時間應為 2 分鐘");
+assert.equal(legs[2].transferAfter.badge.detailTooltip, "站內步行 2 分 ＋ 月台候車 2 分");
+
+// 驗證東京メトロ東西線 Leg 的起訖站牌資訊
+assert.equal(legs[3].fromStation.name, "高田馬場");
+assert.equal(legs[3].fromStation.number, "T03", "東京メトロ東西線出發高田馬場站號應為 T03");
+assert.equal(legs[3].fromStation.color, "#00A7DB", "東西線出發高田馬場站牌顏色應為東西線天藍色");
+assert.equal(legs[3].toStation.name, "早稲田");
+assert.equal(legs[3].toStation.number, "T04", "東京メトロ東西線到達早稻田站號應為 T04");
+assert.equal(legs[3].toStation.color, "#00A7DB", "東西線到達早稻田站牌顏色應為東西線天藍色");
+
+// 驗證早稲田站出站步行至目的地，不掛載轉乘過渡
+assert.equal(legs[3].transferAfter, undefined, "東西線早稻田出站徒步不應有轉乘過渡");
+
+// 還原時間軸中的完整站牌與轉乘順序
+type RenderedItem =
+  | { type: "station"; name: string; number: string; color: string }
+  | { type: "badge"; label: string; duration: number };
+
+const timelineSeq: RenderedItem[] = [];
+timelineSeq.push({
+  type: "station",
+  name: legs[0].fromStation.name,
+  number: legs[0].fromStation.number,
+  color: legs[0].fromStation.color,
+});
+
 legs.forEach((leg, idx) => {
   const isLastLeg = idx === legs.length - 1;
   const nextLeg = legs[idx + 1];
-  const stationNode = isLastLeg ? leg.toStation : pickStationNode(leg.toStation, nextLeg?.fromStation);
-  renderedStations.push(stationNode);
+
+  leg.badges.forEach((b) => {
+    timelineSeq.push({ type: "badge", label: b.label, duration: b.durationMinutes });
+  });
+
+  if (leg.transferAfter && nextLeg) {
+    // 1. 前線到達站牌 (東橫線 渋谷 TY01)
+    timelineSeq.push({
+      type: "station",
+      name: leg.toStation.name,
+      number: leg.toStation.number,
+      color: leg.toStation.color,
+    });
+    // 2. 轉乘標籤 (轉乘 3分)
+    timelineSeq.push({
+      type: "badge",
+      label: leg.transferAfter.badge.label,
+      duration: leg.transferAfter.badge.durationMinutes,
+    });
+    // 3. 後線出發站牌 (山手線 渋谷 JY20)
+    timelineSeq.push({
+      type: "station",
+      name: nextLeg.fromStation.name,
+      number: nextLeg.fromStation.number,
+      color: nextLeg.fromStation.color,
+    });
+  } else {
+    const st = isLastLeg ? leg.toStation : pickStationNode(leg.toStation, nextLeg?.fromStation);
+    timelineSeq.push({
+      type: "station",
+      name: st.name,
+      number: st.number,
+      color: st.color,
+    });
+  }
 });
 
-assert.equal(renderedStations.length, 6, "整條路線圖應恰好有 6 個車站節點：自宅、都立大学、渋谷、高田馬場、早稲田、目的地");
+// 驗證時間軸中的重要順序：
+// 東急東橫線 ── [渋谷 TY01 (桃紅色)] ── [轉乘 3分] ── [渋谷 JY20 (綠色)] ── JR 山手線
+const ty01Idx = timelineSeq.findIndex(item => item.type === "station" && item.number === "TY01");
+const transfer1Idx = timelineSeq.findIndex((item, i) => i > ty01Idx && item.type === "badge" && item.label === "轉乘");
+const jy20Idx = timelineSeq.findIndex((item, i) => i > transfer1Idx && item.type === "station" && item.number === "JY20");
 
-const stationNames = renderedStations.map(s => s.name);
-assert.deepEqual(
-  stationNames,
-  ["自宅", "都立大学", "渋谷", "高田馬場", "早稲田", "目的地"],
-  "轉乘站（渋谷、高田馬場）不得重複出現兩次"
+assert.ok(ty01Idx !== -1, "時間軸應包含東橫線到達站 渋谷 TY01");
+assert.ok(transfer1Idx !== -1, "時間軸應包含 渋谷 轉乘標籤");
+assert.ok(jy20Idx !== -1, "時間軸應包含山手線出發站 渋谷 JY20");
+assert.ok(
+  ty01Idx < transfer1Idx && transfer1Idx < jy20Idx,
+  "轉乘順序必須為：東橫線到澀谷 (TY01) ── 轉乘 ── 變山手線顏色的澀谷 (JY20)"
 );
 
-// 驗證 渋谷 節點
-const shibuya = renderedStations.find(s => s.name === "渋谷");
-assert.ok(shibuya);
-assert.equal(shibuya.number, "JY20", "渋谷站牌應顯示 JR 山手線 JY20");
-assert.notEqual(shibuya.type, "walk", "渋谷轉乘站不得為灰色小方塊 (type !== walk)");
+// 驗證高田馬場的轉乘順序：
+// JR 山手線 ── [高田馬場 JY15 (綠色)] ── [轉乘 4分] ── [高田馬場 T03 (藍色)] ── 東京メトロ東西線
+const jy15Idx = timelineSeq.findIndex(item => item.type === "station" && item.number === "JY15");
+const transfer2Idx = timelineSeq.findIndex((item, i) => i > jy15Idx && item.type === "badge" && item.label === "轉乘");
+const t03Idx = timelineSeq.findIndex((item, i) => i > transfer2Idx && item.type === "station" && item.number === "T03");
 
-// 驗證 高田馬場 節點
-const takadanobaba = renderedStations.find(s => s.name === "高田馬場");
-assert.ok(takadanobaba);
-assert.equal(takadanobaba.number, "T03", "高田馬場站牌應顯示東西線 T03");
-assert.notEqual(takadanobaba.type, "walk", "高田馬場轉乘站不得為灰色小方塊 (type !== walk)");
-
-// 驗證 早稲田 節點：到達站必須保留東京メトロ東西線圖標與站號 T04
-const waseda = renderedStations.find(s => s.name === "早稲田");
-assert.ok(waseda);
-assert.equal(waseda.number, "T04", "早稲田終點鐵道站牌必須維持東西線車站編號 T04");
-assert.notEqual(waseda.type, "walk", "早稲田到達站牌不得被後續步行段覆蓋為灰色小方格");
-assert.equal(waseda.color, "#00A7DB", "早稲田站牌應具備東西線代表色 #00A7DB");
-
-// 驗證 目的地 節點
-const dest = renderedStations[renderedStations.length - 1];
-assert.equal(dest.name, "目的地");
-assert.equal(dest.type, "walk", "最終目的地節點應為灰色角色小方格");
-
-// 6. 驗證站內轉乘徒步與候車合併為單一「轉乘」標籤
-assert.deepEqual(
-  legs[2].badges.map(b => `${b.label}:${b.durationMinutes}分`),
-  ["轉乘:3分", "JR 山手線:11分"],
-  "渋谷站轉乘活動應合併為單一「轉乘 3分」標籤，不分成轉乘與候車兩個標籤"
-);
-assert.deepEqual(
-  legs[3].badges.map(b => `${b.label}:${b.durationMinutes}分`),
-  ["轉乘:4分", "東京メトロ東西線:2分"],
-  "高田馬場站轉乘活動應合併為單一「轉乘 4分」標籤，不分成轉乘與候車兩個標籤"
+assert.ok(jy15Idx !== -1, "時間軸應包含山手線到達站 高田馬場 JY15");
+assert.ok(transfer2Idx !== -1, "時間軸應包含 高田馬場 轉乘標籤");
+assert.ok(t03Idx !== -1, "時間軸應包含東西線出發站 高田馬場 T03");
+assert.ok(
+  jy15Idx < transfer2Idx && transfer2Idx < t03Idx,
+  "高田馬場轉乘順序必須為：山手線到高田馬場 (JY15) ── 轉乘 ── 變東西線顏色的高田馬場 (T03)"
 );
 
-// 驗證 Hover/點擊明細 Tooltip
-assert.equal(
-  legs[2].badges[0].detailTooltip,
-  "站內步行 2 分 ＋ 月台候車 1 分",
-  "渋谷站轉乘標籤應提供站內步行與候車明細之 Tooltip"
-);
-assert.equal(
-  legs[3].badges[0].detailTooltip,
-  "站內步行 2 分 ＋ 月台候車 2 分",
-  "高田馬場站轉乘標籤應提供站內步行與候車明細之 Tooltip"
-);
+// 驗證早稲田終點鐵道站保留 T04
+const t04Item = timelineSeq.find(item => item.type === "station" && item.number === "T04");
+assert.ok(t04Item, "早稲田鐵道到達站必須保留東西線 T04 標誌");
 
-console.log("✓ 轉乘站無重複灰色方塊、站內轉乘與候車合併為單一標籤（支援 Hover 顯示步行與候車明細）、早稲田站保持東西線 (T04) 車站圖標測試通過！");
+console.log("✓ 轉乘順序（東橫線到澀谷 TY01 ── 轉乘 ── 山手線澀谷 JY20）與雙站號顏色對齊、轉乘標籤合併 (候車X分) 測試全部通過！");
 

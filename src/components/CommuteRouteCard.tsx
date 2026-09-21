@@ -14,98 +14,23 @@ const UI_LABELS = new Set(["自宅", "目的地", "候車", "轉乘候車", "公
 const isUiLabel = (value: string) => UI_LABELS.has(value.trim());
 
 /**
- * 只有真的被 CSS 截斷（出現 …）的文字才掛提示。
- * 沒截斷還彈一個內容一模一樣的小框，只會擋住旁邊的路線圖。
- */
-function useTruncationHint<T extends HTMLElement>(text: string) {
-  const ref = React.useRef<T | null>(null);
-  const [truncated, setTruncated] = React.useState(false);
-
-  React.useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    // 字型載入（Noto Sans JP 有幾百 KB）會改變文字寬度，要等字型就緒再量一次，
-    // 否則以系統字型量到的寬度可能剛好沒溢出，提示就永遠不會出現。
-    const measure = () => setTruncated(element.scrollWidth > element.clientWidth + 1);
-    measure();
-    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
-    fonts?.ready.then(measure).catch(() => {});
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [text]);
-
-  return { ref, truncated };
-}
-
-/**
- * 被截斷的文字（線路名、站名）的完整內容。
- * hover 與鍵盤 focus 都會顯示，觸控裝置沒有 hover，因此也接受點擊切換。
- *
- * 提示用 position: fixed 依實際螢幕座標繪製，不是相對節點的 absolute：
- * 路線圖的軌道是 overflow-x-auto，而 CSS 規定 overflow-x 一旦不是 visible，
- * overflow-y 的 visible 就會被計算成 auto——往上彈的提示會被容器上緣裁掉。
+ * 文字被截斷時使用原生 HTML title 提示完整內容：
+ * 1. 零 JS 開銷，絕不因滾動捕獲或子元素事件觸發閃現或消失。
+ * 2. 游標維持標準指針，絕不出現困擾使用者的問號 cursor-help。
  */
 const TruncatedText: React.FC<{
   text: string;
   japanese: boolean;
   className: string;
 }> = ({ text, japanese, className }) => {
-  const { ref, truncated } = useTruncationHint<HTMLSpanElement>(text);
-  const [tip, setTip] = React.useState<{ left: number; top: number } | null>(null);
   const langProps = japanese ? ({ lang: "ja" } as const) : {};
-
-  const show = React.useCallback(() => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (rect) setTip({ left: rect.left + rect.width / 2, top: rect.top });
-  }, [ref]);
-  const hide = React.useCallback(() => setTip(null), []);
-
-  // 固定定位的提示不會跟著頁面捲動，捲動時直接收起比讓它飄在錯的位置好。
-  React.useEffect(() => {
-    if (!tip) return;
-    window.addEventListener("scroll", hide, true);
-    window.addEventListener("resize", hide);
-    return () => {
-      window.removeEventListener("scroll", hide, true);
-      window.removeEventListener("resize", hide);
-    };
-  }, [tip, hide]);
-
-  if (!truncated) {
-    return <span {...langProps} ref={ref} className={className}>{text}</span>;
-  }
-
   return (
     <span
-      className="inline-flex max-w-full cursor-help"
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-      onClick={event => {
-        // 節點位在可橫向捲動的軌道裡，點擊只切換提示，不讓外層誤判成拖曳或選取。
-        event.stopPropagation();
-        if (tip) hide();
-        else show();
-      }}
-      onKeyDown={event => {
-        if (event.key === "Escape") hide();
-      }}
-      tabIndex={0}
-      role="button"
-      aria-label={text}
+      {...langProps}
+      title={text}
+      className={className}
     >
-      <span {...langProps} ref={ref} className={className}>{text}</span>
-      {tip && (
-        <span
-          {...langProps}
-          role="tooltip"
-          className="pointer-events-none fixed z-50 w-max max-w-[12rem] -translate-x-1/2 -translate-y-full whitespace-normal break-words border border-[#3F5147] bg-[#1A2A22] px-2 py-1 text-[11px] font-medium leading-snug text-white shadow-colored-soft"
-          style={{ left: tip.left, top: tip.top - 6 }}
-        >
-          {text}
-        </span>
-      )}
+      {text}
     </span>
   );
 };
@@ -164,54 +89,20 @@ const StationSign: React.FC<{
 const CommuteBadgeItem: React.FC<{
   badge: CommuteBadgeNode;
 }> = ({ badge }) => {
-  const [tip, setTip] = React.useState<{ left: number; top: number } | null>(null);
-  const ref = React.useRef<HTMLDivElement | null>(null);
-
-  const show = React.useCallback(() => {
-    if (!badge.detailTooltip) return;
-    const rect = ref.current?.getBoundingClientRect();
-    if (rect) setTip({ left: rect.left + rect.width / 2, top: rect.top });
-  }, [badge.detailTooltip]);
-
-  const hide = React.useCallback(() => setTip(null), []);
-
-  React.useEffect(() => {
-    if (!tip) return;
-    window.addEventListener("scroll", hide, true);
-    window.addEventListener("resize", hide);
-    return () => {
-      window.removeEventListener("scroll", hide, true);
-      window.removeEventListener("resize", hide);
-    };
-  }, [tip, hide]);
+  const hasWaitBreakdown =
+    badge.waitMinutes != null &&
+    badge.waitMinutes > 0 &&
+    badge.waitMinutes < badge.durationMinutes;
 
   return (
     <div
-      ref={ref}
       data-commute-badge
-      className={`flex shrink-0 flex-col items-center ${badge.detailTooltip ? "cursor-help group" : ""}`}
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-      onClick={event => {
-        if (!badge.detailTooltip) return;
-        event.stopPropagation();
-        const rect = ref.current?.getBoundingClientRect();
-        if (rect) {
-          setTip(prev => prev ? null : { left: rect.left + rect.width / 2, top: rect.top });
-        }
-      }}
-      onKeyDown={event => {
-        if (event.key === "Escape") hide();
-      }}
-      tabIndex={badge.detailTooltip ? 0 : undefined}
-      role={badge.detailTooltip ? "button" : undefined}
-      aria-label={badge.detailTooltip || `${badge.label} ${badge.durationMinutes}分鐘`}
+      className="flex shrink-0 flex-col items-center select-none"
+      title={badge.detailTooltip || `${badge.label} ${badge.durationMinutes}分鐘`}
     >
       <div className="flex h-10 items-center justify-center">
         <div
-          className={`flex max-w-full items-center px-2 py-0.5 text-[11px] font-bold shadow-2xs ${badge.detailTooltip ? "group-hover:opacity-90 transition-opacity" : ""}`}
+          className="flex max-w-full items-center px-2 py-0.5 text-[11px] font-bold shadow-2xs"
           style={{ backgroundColor: badge.bgColor, color: badge.textColor }}
         >
           <TruncatedText
@@ -221,18 +112,16 @@ const CommuteBadgeItem: React.FC<{
           />
         </div>
       </div>
-      <div className="mt-1 text-xs font-mono font-medium text-[#66736C] text-center whitespace-nowrap">
-        {badge.durationMinutes}分
-      </div>
-      {tip && badge.detailTooltip && (
-        <span
-          role="tooltip"
-          className="pointer-events-none fixed z-50 w-max max-w-[14rem] -translate-x-1/2 -translate-y-full whitespace-normal break-words border border-[#3F5147] bg-[#1A2A22] px-2.5 py-1 text-[11px] font-medium leading-snug text-white shadow-colored-soft"
-          style={{ left: tip.left, top: tip.top - 6 }}
-        >
-          {badge.detailTooltip}
+      <div className="mt-1 flex flex-col items-center text-center">
+        <span className="text-xs font-mono font-medium text-[#66736C] whitespace-nowrap leading-tight">
+          {badge.durationMinutes}分
         </span>
-      )}
+        {hasWaitBreakdown ? (
+          <span className="mt-0.5 text-[10px] text-[#8A9590] whitespace-nowrap leading-tight">
+            (候車{badge.waitMinutes}分)
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 };
@@ -276,16 +165,21 @@ interface CommuteBadgeNode {
   label: string;
   isUiLabel: boolean;
   durationMinutes: number;
+  waitMinutes?: number;
   detailTooltip?: string;
   bgColor: string;
   textColor: string;
 }
 
-interface CommuteLegItem {
+export interface CommuteLegItem {
   fromStation: CommuteStationNode;
   toStation: CommuteStationNode;
   badges: CommuteBadgeNode[];
   lineStyles: string[];
+  transferAfter?: {
+    badge: CommuteBadgeNode;
+    lineStyle: string;
+  };
 }
 
 function isSameStation(stopA: string, stopB: string): boolean {
@@ -296,7 +190,7 @@ function isSameStation(stopA: string, stopB: string): boolean {
   return normA === normB;
 }
 
-function resolveStationCode(lineName: string, stationName: string, fallbackNumber?: string | null): string {
+export function resolveStationCode(lineName: string, stationName: string, fallbackNumber?: string | null): string {
   if (fallbackNumber) return fallbackNumber;
   const direct = getStationCodeForLine(lineName, stationName);
   if (direct) return direct;
@@ -317,11 +211,10 @@ function resolveStationCode(lineName: string, stationName: string, fallbackNumbe
 }
 
 /**
- * 選取兩段行程交界處的站牌節點：
+ * 選取兩段行程交界處的站牌節點（非同站鐵道轉乘時）：
  * 1. 若當前段為鐵道到達站，下一段為徒步前往目的地，必須保留鐵道車站圖標與代表色（如早稲田站 T 04 東西線藍），
  *    絕不被徒步段的灰色小方塊覆蓋。
  * 2. 若前一段為徒步（如自宅出發），下一段為鐵道出發站，採用鐵道車站圖標（如都立大學 TY 06）。
- * 3. 若為轉乘（東急 → JR 山手線），優先採用將搭乘路線之車站資訊（JY 20 渋谷），若無站號則退回到達站。
  */
 export function pickStationNode(toStation: CommuteStationNode, nextFromStation?: CommuteStationNode): CommuteStationNode {
   if (!nextFromStation) return toStation;
@@ -338,25 +231,26 @@ export function pickStationNode(toStation: CommuteStationNode, nextFromStation?:
 
 /**
  * 將原始 segments 依站到站的「路段 Leg」重組：
- * 1. 同站站內活動（如同站轉乘步行、候車段）均作為出發站的前置標籤，直接接在轉乘站之後，
- *    絕不在同一個轉乘車站重複出現「沒有任何線路記號的灰色方塊車站」。
+ * 1. 同站站內活動（轉乘徒步、候車）：
+ *    - 當前線與次線在同站轉乘時（例如東急東橫線抵達澀谷，轉乘山手線）：
+ *      打包為前線的 transferAfter 轉乘過渡（包含轉乘虛線與轉乘標籤）。
+ *      渲染時呈現：【東橫線澀谷 TY01】── 虛線 ──【轉乘 3分 (候車1分)】── 虛線 ──【山手線澀谷 JY20】。
+ *      轉乘標籤在山手線澀谷的前方，完美符合乘客轉乘心理模型與視覺邏輯。
  * 2. 區間內的所有線條（前置活動虛線、搭乘實線）均設定為等比例 flex-1，確保所有卡片與標籤間線段完全等長。
  */
 export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegItem[] {
   const legs: CommuteLegItem[] = [];
   let pendingPreActivities: CommuteRouteSegment[] = [];
-  let i = 0;
 
-  while (i < segments.length) {
+  for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
     const isSameStationActivity =
       seg.type === "wait" ||
       (seg.type === "walk" && isSameStation(seg.departureStop, seg.arrivalStop));
 
-    // 站內活動（同站轉乘徒步、月台候車）暫存為下一段出發行程的前置標籤
+    // 站內活動（同站轉乘徒步、月台候車）暫存
     if (isSameStationActivity) {
       pendingPreActivities.push(seg);
-      i++;
       continue;
     }
 
@@ -369,10 +263,23 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
     const fromStationCode = resolveStationCode(seg.lineName, seg.departureStop, seg.startStationNumber);
     const toStationCode = resolveStationCode(seg.lineName, seg.arrivalStop, seg.endStationNumber);
 
-    const badges: CommuteBadgeNode[] = [];
-    const lineStyles: string[] = [];
+    const currentLegFromStation: CommuteStationNode = {
+      name: seg.departureStop,
+      number: fromStationCode,
+      color: lineColors.color,
+      type: seg.type,
+    };
 
-    // 1. 合併站內轉乘活動：若有站內轉乘徒步與候車，化繁為簡整合成單一「轉乘」標籤，分鐘數合併
+    const currentLegToStation: CommuteStationNode = {
+      name: seg.arrivalStop,
+      number: toStationCode,
+      color: lineColors.color,
+      type: seg.type,
+    };
+
+    // 處理前一段與當前段之間的活動（pendingPreActivities）
+    let initialWaitBadge: CommuteBadgeNode | null = null;
+
     if (pendingPreActivities.length > 0) {
       const totalMinutes = pendingPreActivities.reduce((sum, p) => sum + p.durationMinutes, 0);
       const walkMinutes = pendingPreActivities
@@ -382,31 +289,52 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
         .filter(p => p.type === "wait")
         .reduce((sum, p) => sum + p.durationMinutes, 0);
 
-      const isInitialBoarding = legs.length === 0;
-      const label = isInitialBoarding ? "候車" : "轉乘";
+      // 若前面已有 Leg，且前一個 Leg 的到達站與當前出發站為同站轉乘
+      if (legs.length > 0 && isSameStation(legs[legs.length - 1].toStation.name, seg.departureStop)) {
+        const prevLeg = legs[legs.length - 1];
+        let detailTooltip = "";
+        if (walkMinutes > 0 && waitMinutes > 0) {
+          detailTooltip = `站內步行 ${walkMinutes} 分 ＋ 月台候車 ${waitMinutes} 分`;
+        } else if (walkMinutes > 0) {
+          detailTooltip = `站內轉乘步行 ${walkMinutes} 分`;
+        } else if (waitMinutes > 0) {
+          detailTooltip = `月台候車 ${waitMinutes} 分`;
+        }
 
-      let detailTooltip = "";
-      if (walkMinutes > 0 && waitMinutes > 0) {
-        detailTooltip = `站內步行 ${walkMinutes} 分 ＋ 月台候車 ${waitMinutes} 分`;
-      } else if (walkMinutes > 0) {
-        detailTooltip = `站內轉乘步行 ${walkMinutes} 分`;
-      } else if (waitMinutes > 0) {
-        detailTooltip = isInitialBoarding ? `起站月台候車 ${waitMinutes} 分` : `月台候車 ${waitMinutes} 分`;
+        prevLeg.transferAfter = {
+          badge: {
+            label: "轉乘",
+            isUiLabel: true,
+            durationMinutes: totalMinutes,
+            waitMinutes: waitMinutes > 0 ? waitMinutes : undefined,
+            detailTooltip: detailTooltip || undefined,
+            bgColor: "#8A9590",
+            textColor: "#FFFFFF",
+          },
+          lineStyle: DASHED_LINE_GRADIENT,
+        };
+      } else {
+        initialWaitBadge = {
+          label: "候車",
+          isUiLabel: true,
+          durationMinutes: totalMinutes,
+          waitMinutes: waitMinutes > 0 ? waitMinutes : undefined,
+          detailTooltip: `起站月台候車 ${totalMinutes} 分`,
+          bgColor: "#8A9590",
+          textColor: "#FFFFFF",
+        };
       }
-
-      badges.push({
-        label,
-        isUiLabel: true,
-        durationMinutes: totalMinutes,
-        detailTooltip: detailTooltip || undefined,
-        bgColor: "#8A9590",
-        textColor: "#FFFFFF",
-      });
-      lineStyles.push(DASHED_LINE_GRADIENT);
       pendingPreActivities = [];
     }
 
-    // 2. 注入該段移動之主標籤
+    const badges: CommuteBadgeNode[] = [];
+    const lineStyles: string[] = [];
+
+    if (initialWaitBadge) {
+      badges.push(initialWaitBadge);
+      lineStyles.push(DASHED_LINE_GRADIENT);
+    }
+
     const isUi = isUiLabel(seg.lineName);
     const mainLabel = isUi ? seg.lineName.trim() : toJapaneseLineName(seg.lineName);
     badges.push({
@@ -431,37 +359,27 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
     }
 
     legs.push({
-      fromStation: {
-        name: seg.departureStop,
-        number: fromStationCode,
-        color: lineColors.color,
-        type: seg.type,
-      },
-      toStation: {
-        name: seg.arrivalStop,
-        number: toStationCode,
-        color: lineColors.color,
-        type: seg.type,
-      },
+      fromStation: currentLegFromStation,
+      toStation: currentLegToStation,
       badges,
       lineStyles,
     });
-
-    i++;
   }
 
   // 防禦性處理末尾殘留之站內活動
   if (pendingPreActivities.length > 0 && legs.length > 0) {
     const lastLeg = legs[legs.length - 1];
     const totalMinutes = pendingPreActivities.reduce((sum, p) => sum + p.durationMinutes, 0);
-    lastLeg.badges.push({
-      label: "轉乘",
-      isUiLabel: true,
-      durationMinutes: totalMinutes,
-      bgColor: "#8A9590",
-      textColor: "#FFFFFF",
-    });
-    lastLeg.lineStyles.push(DASHED_LINE_GRADIENT);
+    lastLeg.transferAfter = {
+      badge: {
+        label: "轉乘",
+        isUiLabel: true,
+        durationMinutes: totalMinutes,
+        bgColor: "#8A9590",
+        textColor: "#FFFFFF",
+      },
+      lineStyle: DASHED_LINE_GRADIENT,
+    };
   }
 
   return legs;
@@ -528,14 +446,42 @@ export function CommuteRouteCard({ route, embedded = false }: { route: CommuteRo
         lineStyle: leg.lineStyles[leg.badges.length],
       });
 
-      // 目標車站：若非最後終點，依交界規則優先保留鐵道車站圖標與登車線路編號
-      const stationNode = isLastLeg ? leg.toStation : pickStationNode(leg.toStation, nextLeg?.fromStation);
-
-      items.push({
-        key: `station-${legIdx + 1}`,
-        type: "station",
-        station: stationNode,
-      });
+      // 如果有轉乘過渡（Transfer Transition）：
+      // 依序呈現：前線到達站 (TY01 渋谷) ── 轉乘標籤 (轉乘 3分) ── 後線起發站 (JY20 渋谷)
+      if (leg.transferAfter && nextLeg) {
+        items.push({
+          key: `station-${legIdx}-arrival`,
+          type: "station",
+          station: leg.toStation,
+        });
+        items.push({
+          key: `line-${legIdx}-transfer-before`,
+          type: "line",
+          lineStyle: leg.transferAfter.lineStyle,
+        });
+        items.push({
+          key: `badge-${legIdx}-transfer`,
+          type: "badge",
+          badge: leg.transferAfter.badge,
+        });
+        items.push({
+          key: `line-${legIdx}-transfer-after`,
+          type: "line",
+          lineStyle: leg.transferAfter.lineStyle,
+        });
+        items.push({
+          key: `station-${legIdx + 1}-departure`,
+          type: "station",
+          station: nextLeg.fromStation,
+        });
+      } else {
+        const stationNode = isLastLeg ? leg.toStation : pickStationNode(leg.toStation, nextLeg?.fromStation);
+        items.push({
+          key: `station-${legIdx + 1}`,
+          type: "station",
+          station: stationNode,
+        });
+      }
     });
 
     return items;
