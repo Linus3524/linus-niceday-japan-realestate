@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "./rentAnalysis.js";
 import { getLineColors, getStationCodeForLine, getTransitLineIdentity, toJapaneseLineName, toJapaneseStationName } from "./transit.js";
 import { readTransitRoute, writeTransitRoute } from "./transitRouteCache.js";
-import { findLocalTransitRoute, findLocalTransitRoutes, graphStationCode, identifyGraphLine, isGraphStation } from "./localTransitRoute.js";
+import { findLocalTransitRoute, findLocalTransitRoutes, graphStationCode, identifyGraphLine, isGraphStation, isTokyoGraphStation, isRegionalGraphStation, isKansaiGraphStation } from "./localTransitRoute.js";
 
 type GroundedSegment = {
   type?: string;
@@ -57,12 +57,6 @@ function isTrainNumber(value: unknown) {
 
 /**
  * Transitous leg → 路線名。
- *
- * 查表順序是刻意的，而且每一層都必須擋掉班次編號：
- *   1. routeId／routeLongName 的已知對照（羅馬字路線代號）。
- *   2. 停靠站序列回查本地圖資——jp-japan-rail 唯一可用的線索。
- *   3. routeLongName／displayName／routeShortName，但只在不是純數字時採用。
- * 全部落空回 null，由呼叫端丟掉這條路線，不顯示假路線名。
  */
 function transitousLineName(leg: any): string | null {
   const identityText = `${leg.routeId || ""} ${leg.routeLongName || ""}`;
@@ -84,40 +78,50 @@ function transitousLineName(leg: any): string | null {
 
 async function transitousFetch(path: string, params: Record<string, string>) {
   const url = new URL(`${TRANSITOUS_API}${path}`);
-  Object.entries(params).forEach(([name, value]) => url.searchParams.set(name, value));
-  const response = await fetch(url, { headers: { "User-Agent": TRANSITOUS_USER_AGENT, Accept: "application/json" }, signal: AbortSignal.timeout(12_000) });
-  if (!response.ok) throw new Error(`Transitous ${response.status}`);
-  return response.json() as Promise<any>;
+  for (const [key, value] of Object.entries(params)) {
+    if (value) url.searchParams.set(key, value);
+  }
+  const response = await fetch(url.toString(), {
+    headers: { Accept: "application/json", "User-Agent": TRANSITOUS_USER_AGENT }
+  });
+  if (!response.ok) throw new Error(`Transitous API error: ${response.status} ${response.statusText}`);
+  return response.json();
 }
 
-/**
- * 起訖站本來就是圖資上的車站，不該讓外部地理編碼的結果凌駕這個事實。
- *
- * 舊版只比對「站名相等 + 國家為日本」，但日本同名車站很多：白山在都營三田線
- * （文京區）也在香川縣，橋本在京王線也在神奈川，青葉台在東急也在橫濱。
- * 這些回答名稱完全相等、country 也都是 JP，單看名稱一個都擋不掉，
- * 結果就是拿外縣市的站去規劃首都圈的通勤路線。
- *
- * 圖資只收首都圈，所以「站在圖資裡」就等於「站在首都圈」——據此要求
- * geocode 的答案必須落在首都圈，對不上就當作查無此站，交給本地圖資去算。
- */
 const METRO_AREA_PREFECTURES = ["東京都", "神奈川県", "埼玉県", "千葉県"];
+const REGIONAL_AREA_PREFECTURES = [
+  "大阪府", "京都府", "兵庫県", "奈良県", "滋賀県", "和歌山県",
+  "北海道", "宮城県", "愛知県", "岐阜県", "三重県", "広島県", "岡山県", "福岡県", "佐賀県", "沖縄県"
+];
+const KANSAI_AREA_PREFECTURES = REGIONAL_AREA_PREFECTURES;
 
 function stopAreaNames(item: any): string[] {
-  return Array.isArray(item?.areas) ? item.areas.map((area: any) => String(area?.name || "")) : [];
+  return [
+    item?.state,
+    item?.countryOrState,
+    ...(Array.isArray(item?.regions) ? item.regions.map((region: any) => region?.name) : [])
+  ].filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
 }
 
 /**
+ * 日本各地常有同名站（如福島、日本橋、八幡、府中等），以行政區白名單防禦
  * geocode 的某筆結果能不能代表這個站。
- *
- * 抽成純函式是為了能直接測：整條路線規劃會被本地圖資的正確結果蓋過去，
- * 就算選錯站也看不出來，必須針對這層驗。
  */
-export function isAcceptableStopMatch(item: any, wanted: string, mustBeInMetroArea: boolean): boolean {
+export function isAcceptableStopMatch(
+  item: any,
+  wanted: string,
+  mustBeInMetroArea: boolean,
+  mustBeInRegional = false
+): boolean {
   if (normalizedStation(item?.name) !== wanted || item?.country !== "JP") return false;
-  if (!mustBeInMetroArea) return true;
   const areas = stopAreaNames(item);
-  return METRO_AREA_PREFECTURES.some(prefecture => areas.includes(prefecture));
+  if (mustBeInMetroArea) {
+    return METRO_AREA_PREFECTURES.some(prefecture => areas.includes(prefecture));
+  }
+  if (mustBeInRegional) {
+    return REGIONAL_AREA_PREFECTURES.some(prefecture => areas.includes(prefecture));
+  }
+  return true;
 }
 
 async function transitousStop(station: string, context = "") {
@@ -126,10 +130,10 @@ async function transitousStop(station: string, context = "") {
   if (geocodeCache.has(cacheKey)) return geocodeCache.get(cacheKey) || null;
   const results = await transitousFetch("/v1/geocode", { text: `${context} ${toJapaneseStationName(station)}駅`.trim(), language: "ja", type: "STOP", numResults: "8" });
 
-  // 圖資認得這個站，就代表它在首都圈；外縣市的同名站一律不接受。
-  const mustBeInMetroArea = isGraphStation(station);
+  const mustBeInMetroArea = isTokyoGraphStation(station);
+  const mustBeInRegional = !mustBeInMetroArea && isRegionalGraphStation(station);
   const exact = Array.isArray(results)
-    ? results.find(item => isAcceptableStopMatch(item, wanted, mustBeInMetroArea))
+    ? results.find(item => isAcceptableStopMatch(item, wanted, mustBeInMetroArea, mustBeInRegional))
     : null;
 
   const stop = exact?.id ? { id: String(exact.id), name: toJapaneseStationName(station) } : null;
@@ -225,7 +229,7 @@ async function resolveRoutes(origins: RouteOrigin[], destination: string) {
   for (const originInfo of origins) {
     const { station: origin, context } = originInfo;
     try {
-      const localRoute = findLocalTransitRoute(origin, destination);
+      const localRoute = findLocalTransitRoute(origin, destination, context);
       if (localRoute) {
         routes.push(localRoute);
         continue;
@@ -266,7 +270,7 @@ export async function resolveListingCommuteRoutes(originStation: string, destina
 
   // 1. 本地 GTFS 圖資探索候選
   try {
-    const localRoutes = findLocalTransitRoutes(originStation, destinationStation, 5);
+    const localRoutes = findLocalTransitRoutes(originStation, destinationStation, 5, context);
     if (localRoutes.length) {
       candidates.push(...localRoutes);
     }

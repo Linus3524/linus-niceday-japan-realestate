@@ -14,6 +14,8 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "transit:build": "node scripts/build-tokyo-transit.mjs",
+    "transit:regional:build": "tsx scripts/build-japan-transit.ts",
+    "test:nationwide-transit": "tsx scripts/test-nationwide-transit.ts",
     "test:requirement-verdict": "tsx scripts/test-requirement-verdict.ts",
     "test:heatmap-transit": "tsx scripts/test-heatmap-transit.ts",
     "test:athome-rent": "tsx scripts/test-athome-rent-snapshot.ts",

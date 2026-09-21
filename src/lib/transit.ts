@@ -48,7 +48,7 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "metro-ginza", name: "東京メトロ銀座線", shortCode: "G", color: "#F39700", textColor: "#1A2A22", operator: "東京メトロ", patterns: [/銀座線/] },
   { id: "metro-marunouchi", name: "東京メトロ丸ノ内線", shortCode: "M", color: "#E60012", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/丸(?:之內|ノ内)線/] },
   { id: "metro-hibiya", name: "東京メトロ日比谷線", shortCode: "H", color: "#9CAEB7", textColor: "#1A2A22", operator: "東京メトロ", patterns: [/日比谷線/] },
-  { id: "metro-tozai", name: "東京メトロ東西線", shortCode: "T", color: "#00A7DB", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/東西線/] },
+  { id: "metro-tozai", name: "東京メトロ東西線", shortCode: "T", color: "#00A7DB", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/東京メトロ東西線|東京地下鉄東西線|^東西線$/] },
   { id: "metro-chiyoda", name: "東京メトロ千代田線", shortCode: "C", color: "#009944", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/千代田線/] },
   { id: "metro-yurakucho", name: "東京メトロ有楽町線", shortCode: "Y", color: "#D7C447", textColor: "#1A2A22", operator: "東京メトロ", patterns: [/有[樂楽]町線/] },
   { id: "metro-hanzomon", name: "東京メトロ半蔵門線", shortCode: "Z", color: "#9B7CB6", textColor: "#FFFFFF", operator: "東京メトロ", patterns: [/半[藏蔵]門線/] },
@@ -85,7 +85,63 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "seibu-ikebukuro", name: "西武池袋線", shortCode: "SI", color: "#F58220", textColor: "#1A2A22", operator: "西武鉄道", patterns: [/西武池袋線/] },
   { id: "keikyu", name: "京急本線", shortCode: "KK", color: "#00BFFF", textColor: "#1A2A22", operator: "京浜急行電鉄", patterns: [/京急(?:本線|線)/] },
   { id: "rinkai", name: "りんかい線", shortCode: "R", color: "#00A7E3", textColor: "#FFFFFF", operator: "東京臨海高速鉄道", patterns: [/臨海線/] },
-  { id: "tsukuba-express", name: "つくばエクスプレス", shortCode: "TX", color: "#0017C4", textColor: "#FFFFFF", operator: "首都圏新都市鉄道", patterns: [/筑波快線/] }
+  { id: "tsukuba-express", name: "つくばエクスプレス", shortCode: "TX", color: "#0017C4", textColor: "#FFFFFF", operator: "首都圏新都市鉄道", patterns: [/筑波快線/] },
+  // ── 關西都會圈核心路網（Osaka Metro / JR西日本 / 阪急 / 京阪 / 近鐵 / 南海） ──
+  { id: "osaka-midosuji", name: "Osaka Metro御堂筋線", shortCode: "M", color: "#E5171F", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/御堂筋線|北大阪急行/] },
+  { id: "osaka-tanimachi", name: "Osaka Metro谷町線", shortCode: "T", color: "#522886", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/谷町線/] },
+  { id: "osaka-yotsubashi", name: "Osaka Metro四つ橋線", shortCode: "Y", color: "#0078BA", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/四つ橋線|四ツ橋線|四橋線/] },
+  { id: "osaka-chuo", name: "Osaka Metro中央線", shortCode: "C", color: "#019A66", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/中央線(?:\(大阪\)|（大阪）)?/] },
+  { id: "osaka-sennichimae", name: "Osaka Metro千日前線", shortCode: "S", color: "#E44D93", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/千日前線/] },
+  { id: "osaka-sakaisuji", name: "Osaka Metro堺筋線", shortCode: "K", color: "#81472C", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/堺筋線/] },
+  { id: "osaka-nagahori", name: "Osaka Metro長堀鶴見緑地線", shortCode: "N", color: "#A9CC51", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/長堀鶴見[緑綠]地線|長堀線/] },
+  { id: "osaka-imazatosuji", name: "Osaka Metro今里筋線", shortCode: "I", color: "#EE7B1A", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/今里筋線/] },
+  { id: "jr-osaka-loop", name: "JR大阪環状線", shortCode: "O", color: "#E60012", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/大阪環[狀状]線/] },
+  { id: "jr-kyoto-kobe", name: "JR京都線・神戸線", shortCode: "A", color: "#0072BC", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR京都線|JR[神神戸]線|東海道本線/] },
+  { id: "jr-tozai", name: "JR東西線", shortCode: "H", color: "#E8398D", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR東西線/] },
+  { id: "jr-yamatoji", name: "JR大和路線", shortCode: "Q", color: "#82BD27", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/大和路線|關西本線|関西本線/] },
+  { id: "hankyu-kobe", name: "阪急神戸線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急[神神戸]線/] },
+  { id: "hankyu-takarazuka", name: "阪急宝塚線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急[寶宝]塚線/] },
+  { id: "hankyu-kyoto", name: "阪急京都線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急京都線/] },
+  { id: "hankyu-senri", name: "阪急千里線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急千里線/] },
+  { id: "keihan-main", name: "京阪本線", shortCode: "KH", color: "#004526", textColor: "#FFFFFF", operator: "京阪電鉄", patterns: [/京阪本線|京阪線/] },
+  { id: "kintetsu-nara", name: "近鉄奈良線", shortCode: "A", color: "#E84518", textColor: "#FFFFFF", operator: "近畿日本鉄道", patterns: [/近[鐵鉄]奈良線/] },
+  { id: "kintetsu-osaka", name: "近鉄大阪線", shortCode: "D", color: "#0054A6", textColor: "#FFFFFF", operator: "近畿日本鉄道", patterns: [/近[鐵鉄]大阪線/] },
+  { id: "nankai-main", name: "南海本線", shortCode: "NK", color: "#0055A5", textColor: "#FFFFFF", operator: "南海電気鉄道", patterns: [/南海本線/] },
+  { id: "nankai-koya", name: "南海高野線", shortCode: "NK", color: "#008080", textColor: "#FFFFFF", operator: "南海電気鉄道", patterns: [/南海高野線/] },
+  // ── 京都市營地下鐵 ──
+  { id: "kyoto-karasuma", name: "京都市営地下鉄烏丸線", shortCode: "K", color: "#008000", textColor: "#FFFFFF", operator: "京都市交通局", patterns: [/烏丸線/] },
+  { id: "kyoto-tozai", name: "京都市営地下鉄東西線", shortCode: "T", color: "#E50012", textColor: "#FFFFFF", operator: "京都市交通局", patterns: [/京都(?:市營|市営)?(?:地下鐵|地下鉄)?東西線|東西線京都/] },
+  // ── 神戶市營地下鐵 ──
+  { id: "kobe-seishin", name: "神戸市営地下鉄西神・山手線", shortCode: "S", color: "#008000", textColor: "#FFFFFF", operator: "神戸市交通局", patterns: [/西神[・･]?山手線/] },
+  { id: "kobe-kaigan", name: "神戸市営地下鉄海岸線", shortCode: "K", color: "#0055A5", textColor: "#FFFFFF", operator: "神戸市交通局", patterns: [/海岸線|夢かもめ/] },
+  // ── 名古屋都會圈（名古屋市營地下鐵 / JR東海 / 名鐵） ──
+  { id: "nagoya-higashiyama", name: "名古屋市営地下鉄東山線", shortCode: "H", color: "#F8B500", textColor: "#FFFFFF", operator: "名古屋市交通局", patterns: [/東山線/] },
+  { id: "nagoya-meijo", name: "名古屋市営地下鉄名城線", shortCode: "M", color: "#A056A0", textColor: "#FFFFFF", operator: "名古屋市交通局", patterns: [/名城線/] },
+  { id: "nagoya-sakuradori", name: "名古屋市営地下鉄桜通線", shortCode: "S", color: "#E50012", textColor: "#FFFFFF", operator: "名古屋市交通局", patterns: [/桜通線|櫻通線/] },
+  { id: "nagoya-tsurumai", name: "名古屋市営地下鉄鶴舞線", shortCode: "T", color: "#00A3E0", textColor: "#FFFFFF", operator: "名古屋市交通局", patterns: [/鶴舞線/] },
+  { id: "jr-tokaido-chubu", name: "JR東海道本線(名古屋)", shortCode: "CA", color: "#F77321", textColor: "#FFFFFF", operator: "JR東海", patterns: [/JR?東海道本線(?:名古屋)?/] },
+  { id: "jr-chuo-chubu", name: "JR中央本線(名古屋)", shortCode: "CF", color: "#0072BC", textColor: "#FFFFFF", operator: "JR東海", patterns: [/JR?中央本線(?:名古屋)?/] },
+  { id: "meitetsu-main", name: "名鉄名古屋本線", shortCode: "NH", color: "#E60012", textColor: "#FFFFFF", operator: "名古屋鉄道", patterns: [/名[鐵鉄](?:名古屋)?本線/] },
+  // ── 九州與沖繩（福岡市地下鐵 / JR九州 / 西鐵 / ゆいレール） ──
+  { id: "fukuoka-kuko", name: "福岡市地下鉄空港線", shortCode: "K", color: "#FF8C00", textColor: "#FFFFFF", operator: "福岡市交通局", patterns: [/空港線|機場線/] },
+  { id: "fukuoka-nanakuma", name: "福岡市地下鉄七隈線", shortCode: "N", color: "#008000", textColor: "#FFFFFF", operator: "福岡市交通局", patterns: [/七隈線/] },
+  { id: "fukuoka-hakozaki", name: "福岡市地下鉄箱崎線", shortCode: "H", color: "#0055A5", textColor: "#FFFFFF", operator: "福岡市交通局", patterns: [/箱崎線/] },
+  { id: "jr-kagoshima-fukuoka", name: "JR鹿児島本線(福岡)", shortCode: "JA", color: "#EE1C25", textColor: "#FFFFFF", operator: "JR九州", patterns: [/鹿[兒児]島本線/] },
+  { id: "nishitetsu-tenjin", name: "西鉄天神大牟田線", shortCode: "T", color: "#0055A5", textColor: "#FFFFFF", operator: "西日本鉄道", patterns: [/西[鐵鉄]天神大牟田線|西[鐵鉄]大牟田線/] },
+  { id: "okinawa-yui", name: "ゆいレール", shortCode: "1", color: "#C8102E", textColor: "#FFFFFF", operator: "沖縄都市モノレール", patterns: [/ゆいレール|沖[繩縄]都市モノレール|沖[繩縄]單軌/] },
+  // ── 北海道（札幌市營地下鐵 / JR北海道） ──
+  { id: "sapporo-namboku", name: "札幌市営地下鉄南北線", shortCode: "N", color: "#008000", textColor: "#FFFFFF", operator: "札幌市交通局", patterns: [/札幌(?:市營|市営)?(?:地下鐵|地下鉄)?南北線|南北線札幌/] },
+  { id: "sapporo-tozai", name: "札幌市営地下鉄東西線", shortCode: "T", color: "#FF8C00", textColor: "#FFFFFF", operator: "札幌市交通局", patterns: [/札幌(?:市營|市営)?(?:地下鐵|地下鉄)?東西線|東西線札幌/] },
+  { id: "sapporo-toho", name: "札幌市営地下鉄東豊線", shortCode: "H", color: "#0072BC", textColor: "#FFFFFF", operator: "札幌市交通局", patterns: [/東[豐豊]線/] },
+  { id: "jr-sapporo-chitose", name: "JR函館本線・千歳線", shortCode: "JR", color: "#008000", textColor: "#FFFFFF", operator: "JR北海道", patterns: [/函館本線|千[歲歳]線/] },
+  // ── 東北（仙台市地下鐵 / JR東日本） ──
+  { id: "sendai-namboku", name: "仙台市地下鉄南北線", shortCode: "N", color: "#008000", textColor: "#FFFFFF", operator: "仙台市交通局", patterns: [/仙台(?:市)?(?:地下鐵|地下鉄)?南北線|南北線仙台/] },
+  { id: "sendai-tozai", name: "仙台市地下鉄東西線", shortCode: "T", color: "#00A3E0", textColor: "#FFFFFF", operator: "仙台市交通局", patterns: [/仙台(?:市)?(?:地下鐵|地下鉄)?東西線|東西線仙台/] },
+  { id: "jr-tohoku-sendai", name: "JR東北本線(仙台)", shortCode: "JR", color: "#008000", textColor: "#FFFFFF", operator: "JR東日本", patterns: [/JR?東北本線(?:仙台)?/] },
+  // ── 中國（廣島 / 岡山） ──
+  { id: "hiroshima-astram", name: "アストラムライン", shortCode: "AL", color: "#FF8C00", textColor: "#FFFFFF", operator: "広島高速交通", patterns: [/アストラムライン|AstramLine/] },
+  { id: "jr-sanyo-hiroshima", name: "JR山陽本線(広島)", shortCode: "R", color: "#E60012", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR?山陽本線(?:廣島|広島)?/] },
+  { id: "jr-sanyo-okayama", name: "JR山陽本線(岡山)", shortCode: "W", color: "#F77321", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR?山陽本線(?:岡山)?/] }
 ];
 
 const INOKASHIRA_STATION_CODES: Record<string, string> = {
@@ -113,7 +169,44 @@ const STATION_CODES: Record<string, Record<string, string>> = {
     "原木中山": "T22", "西船橋": "T23"
   },
   "tokyu-toyoko": { "澀谷": "TY01", "渋谷": "TY01", "代官山": "TY02", "中目黑": "TY03", "中目黒": "TY03", "祐天寺": "TY04", "學藝大學": "TY05", "学芸大学": "TY05", "都立大學": "TY06", "都立大学": "TY06", "自由之丘": "TY07", "自由が丘": "TY07", "田園調布": "TY08", "多摩川": "TY09", "新丸子": "TY10", "武藏小杉": "TY11", "武蔵小杉": "TY11", "元住吉": "TY12", "日吉": "TY13" },
-  "tokyu-denentoshi": { "澀谷": "DT01", "渋谷": "DT01", "池尻大橋": "DT02", "三軒茶屋": "DT03", "櫻新町": "DT05", "二子玉川": "DT07" }
+  "tokyu-denentoshi": { "澀谷": "DT01", "渋谷": "DT01", "池尻大橋": "DT02", "三軒茶屋": "DT03", "櫻新町": "DT05", "二子玉川": "DT07" },
+  // ── 關西車站編號 ──
+  "osaka-midosuji": {
+    "箕面萱野": "M06", "箕面船場阪大前": "M07", "千里中央": "M08", "江坂": "M11",
+    "東三国": "M12", "東三國": "M12", "新大阪": "M13", "西中島南方": "M14", "中津": "M15",
+    "梅田": "M16", "淀屋橋": "M17", "本町": "M18", "心斎橋": "M19", "心齋橋": "M19", "心斋桥": "M19",
+    "なんば": "M20", "難波": "M20", "难波": "M20", "大国町": "M21", "大國町": "M21",
+    "動物園前": "M22", "天王寺": "M23", "なかもず": "M30"
+  },
+  "osaka-tanimachi": {
+    "大日": "T11", "東梅田": "T20", "南森町": "T21", "天満橋": "T22", "天滿橋": "T22",
+    "谷町四丁目": "T23", "谷町六丁目": "T24", "谷町九丁目": "T25", "天王寺": "T27", "八尾南": "T36"
+  },
+  "osaka-yotsubashi": {
+    "西梅田": "Y11", "肥後橋": "Y12", "本町": "Y13", "四ツ橋": "Y14", "四橋": "Y14",
+    "なんば": "Y15", "難波": "Y15", "难波": "Y15", "大国町": "Y16", "大國町": "Y16", "住之江公園": "Y21"
+  },
+  "osaka-chuo": {
+    "コスモスクエア": "C10", "大阪港": "C11", "弁天町": "C13", "阿波座": "C15",
+    "本町": "C16", "堺筋本町": "C17", "谷町四丁目": "C18", "森ノ宮": "C19", "森之宮": "C19", "長田": "C23"
+  },
+  "osaka-sennichimae": {
+    "野田阪神": "S11", "阿波座": "S13", "西長堀": "S14", "なんば": "S16", "難波": "S16",
+    "日本橋": "S17", "谷町九丁目": "S18", "鶴橋": "S19", "今里": "S20", "南巽": "S24"
+  },
+  "osaka-sakaisuji": {
+    "天神橋筋六丁目": "K11", "南森町": "K13", "北浜": "K14", "堺筋本町": "K15",
+    "長堀橋": "K16", "日本橋": "K17", "動物園前": "K19", "天下茶屋": "K20"
+  },
+  "osaka-nagahori": {
+    "大正": "N11", "心斎橋": "N15", "心齋橋": "N15", "長堀橋": "N16",
+    "谷町六丁目": "N18", "森ノ宮": "N20", "森之宮": "N20", "京橋": "N22"
+  },
+  "jr-osaka-loop": {
+    "大阪": "O11", "天満": "O12", "天滿": "O12", "桜ノ宮": "O13", "櫻之宮": "O13", "京橋": "O14", "大阪城公園": "O15",
+    "森ノ宮": "O16", "森之宮": "O16", "玉造": "O17", "鶴橋": "O18", "天王寺": "O01",
+    "新今宮": "O18", "芦原橋": "O16", "大正": "O15", "弁天町": "O14", "西九条": "O13", "西九條": "O13", "野田": "O12", "福島": "O11"
+  }
 };
 
 export const JAPANESE_STATION_NAMES: Record<string, string> = {
@@ -130,6 +223,23 @@ export const JAPANESE_STATION_NAMES: Record<string, string> = {
   "羽田機場第1・第2航廈": "羽田空港第1・第2ターミナル", "羽田机场第1・第2航站楼": "羽田空港第1・第2ターミナル",
   "成田機場": "成田空港", "成田机场": "成田空港",
   "關西機場": "関西空港", "关西机场": "関西空港",
+  // ── 關西知名地標與繁簡對照 ──
+  "心齋橋": "心斎橋", "心斋桥": "心斎橋",
+  "難波": "なんば", "难波": "なんば", "難波站": "なんば", "难波站": "なんば",
+  "大國町": "大国町", "大国町": "大国町",
+  "森之宮": "森ノ宮", "森之宫": "森ノ宮",
+  "櫻之宮": "桜ノ宮", "桜之宮": "桜ノ宮",
+  "天滿": "天満", "天满": "天満", "天滿橋": "天満橋", "天满桥": "天満橋",
+  "四橋": "四ツ橋", "四ツ橋": "四ツ橋",
+  "東三國": "東三国", "東三国": "東三国",
+  "三國": "三国", "三国": "三国",
+  "三之宮": "三ノ宮", "三ノ宮": "三ノ宮", "神戶三宮": "神戸三宮", "神户三宫": "神戸三宮",
+  "西九條": "西九条", "西九条": "西九条",
+  "九條": "九条", "九条": "九条",
+  "四天王寺前夕陽之丘": "四天王寺前夕陽ヶ丘",
+  "箕面船場阪大前": "箕面船場阪大前",
+  "大阪城公園": "大阪城公園",
+  "日本橋 (大阪)": "日本橋",
   "豪德寺": "豪徳寺",
   "千歲烏山": "千歳烏山", "宮之坂": "宮の坂", "鷺之宮": "鷺ノ宮",
   "三鷹 (北口)": "三鷹", "三鷹 (南口)": "三鷹", "多摩中心": "多摩センター",

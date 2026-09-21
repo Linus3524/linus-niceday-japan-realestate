@@ -1,12 +1,13 @@
 import { districtStations as dsHousing } from "../data/housingMarket.js";
 import { districtStations as dsStation } from "../data/stationData.js";
 import graphJson from "../data/tokyoTransitGraph.json" with { type: "json" };
+import regionalGraphJson from "../data/japanRegionalTransitGraph.json" with { type: "json" };
 import { GoogleGenAI } from "@google/genai";
 import { JAPANESE_STATION_NAMES, toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
 import { stripStationOperatorPrefix } from "./listingExtraction.js";
 import { nearestStationForAddress } from "./listingLocation.js";
 
-// 彙整已知站名（包含首都圈 2,300+ 車站與各區市町村重要車站）
+// 彙整已知站名（包含首都圈 2,300+ 車站、全國主要都會路網與各區市町村重要車站）
 const KNOWN_STATIONS = new Set<string>();
 for (const list of Object.values(dsHousing)) {
   for (const s of list) KNOWN_STATIONS.add(toJapaneseStationName(s.name));
@@ -15,6 +16,9 @@ for (const list of Object.values(dsStation)) {
   for (const s of list) KNOWN_STATIONS.add(toJapaneseStationName(s.name));
 }
 for (const name of Object.keys((graphJson as { stations?: Record<string, unknown> }).stations || {})) {
+  KNOWN_STATIONS.add(toJapaneseStationName(name.replace(/[〈（(].*$/, "")));
+}
+for (const name of Object.keys((regionalGraphJson as { stations?: Record<string, unknown> }).stations || {})) {
   KNOWN_STATIONS.add(toJapaneseStationName(name.replace(/[〈（(].*$/, "")));
 }
 for (const target of Object.values(JAPANESE_STATION_NAMES)) {
