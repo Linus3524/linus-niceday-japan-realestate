@@ -96,10 +96,18 @@ const TRANSIT_LINES: Array<TransitLineIdentity & { patterns: RegExp[] }> = [
   { id: "osaka-nagahori", name: "Osaka Metro長堀鶴見緑地線", shortCode: "N", color: "#A9CC51", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/長堀鶴見[緑綠]地線|長堀線/] },
   { id: "osaka-imazatosuji", name: "Osaka Metro今里筋線", shortCode: "I", color: "#EE7B1A", textColor: "#FFFFFF", operator: "Osaka Metro", patterns: [/今里筋線/] },
   { id: "jr-osaka-loop", name: "JR大阪環状線", shortCode: "O", color: "#E60012", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/大阪環[狀状]線/] },
-  { id: "jr-kyoto-kobe", name: "JR京都線・神戸線", shortCode: "A", color: "#0072BC", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR京都線|JR[神神戸]線|東海道本線/] },
+  // 「東海道本線」橫跨東京～神戶，各 JR 公司對同一條線的營業通稱不同：
+  // 關西段叫「JR京都線・神戸線」，名古屋段（JR東海）則就叫「JR東海道本線(名古屋)」。
+  // 這裡若無條件吃下「東海道本線」，會先於下方的 jr-tokaido-chubu 命中，
+  // 讓名古屋的路線在畫面上顯示成關西線名（實測 金山 → 名古屋 就被標成「JR京都線・神戸線」）。
+  // 因此排除帶有名古屋標記的寫法，交給中部的定義處理。
+  { id: "jr-kyoto-kobe", name: "JR京都線・神戸線", shortCode: "A", color: "#0072BC", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR京都線|JR神[戸戶]線|^(?!.*名古屋).*東海道本線/] },
   { id: "jr-tozai", name: "JR東西線", shortCode: "H", color: "#E8398D", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/JR東西線/] },
   { id: "jr-yamatoji", name: "JR大和路線", shortCode: "Q", color: "#82BD27", textColor: "#FFFFFF", operator: "JR西日本", patterns: [/大和路線|關西本線|関西本線/] },
-  { id: "hankyu-kobe", name: "阪急神戸線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急[神神戸]線/] },
+  // 「神戸」是兩個字，寫成字元類 [神戸] 只會匹配「阪急神線」「阪急戸線」這種不存在的寫法，
+  // 真正的「阪急神戸線」反而匹配不到（實測 getTransitLineIdentity 回傳 null，線路顏色因此失效）。
+  // 繁體「神戶」與日文「神戸」的戶字不同，兩種都要收。
+  { id: "hankyu-kobe", name: "阪急神戸線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急神[戸戶]線/] },
   { id: "hankyu-takarazuka", name: "阪急宝塚線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急[寶宝]塚線/] },
   { id: "hankyu-kyoto", name: "阪急京都線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急京都線/] },
   { id: "hankyu-senri", name: "阪急千里線", shortCode: "HK", color: "#68212F", textColor: "#FFFFFF", operator: "阪急電鉄", patterns: [/阪急千里線/] },

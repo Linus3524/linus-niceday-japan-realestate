@@ -186,3 +186,186 @@ assert.ok(t04Item, "早稲田鐵道到達站必須保留東西線 T04 標誌");
 
 console.log("✓ 轉乘順序（東橫線到澀谷 TY01 ── 轉乘 ── 山手線澀谷 JY20）與雙站號顏色對齊、轉乘標籤合併 (候車X分) 測試全部通過！");
 
+// ---------------------------------------------------------------------------
+// 6. 出門第一段的候車不得畫成「轉乘」
+//
+// 迴歸案例：自宅徒步 4 分到都立大學、再等 4 分上車，畫面卻變成
+// 「都立大学（灰方塊）── 轉乘 4分 ── TY06 都立大学」，同一個車站出現兩次，
+// 看起來像要在都立大學轉乘到都立大學。徒步或巴士接到車站都只是上車前候車。
+// ---------------------------------------------------------------------------
+import { buildDoorToDoorRoute } from "../src/lib/commuteRouteDisplay.js";
+import { countThroughConnections } from "../src/lib/throughService.js";
+import type { CommuteRouteDetails } from "../src/lib/rentAnalysis.js";
+
+const railSeg = (
+  lineName: string, from: string, to: string, minutes: number,
+  startCode: string | null, endCode: string | null,
+  departureTime: string | null = null, arrivalTime: string | null = null,
+  type: CommuteRouteSegment["type"] = "rail"
+): CommuteRouteSegment => ({
+  type, lineName, lineShortName: null, lineColor: "#DA0442", lineTextColor: "#FFFFFF",
+  operator: null, departureStop: from, arrivalStop: to,
+  startStationNumber: startCode, endStationNumber: endCode,
+  departureTime, arrivalTime, durationMinutes: minutes, stopCount: null, headsign: null,
+});
+
+const walkThenBoard = buildDoorToDoorRoute(
+  {
+    source: "local_gtfs", originStation: "都立大学", destinationStation: "渋谷",
+    totalDurationMinutes: 13, transfers: 0, departureTime: "08:00", arrivalTime: "08:09",
+    referenceLabel: "", segments: [railSeg("東急東横線", "都立大学", "渋谷", 9, "TY06", "TY01", "08:00", "08:09")],
+  } satisfies CommuteRouteDetails,
+  { originWalkMinutes: 4 }
+);
+
+const boardLegs = buildCommuteLegs(walkThenBoard.segments);
+assert.equal(boardLegs.length, 2, "自宅徒步 ＋ 一段電車應重組為 2 個路段");
+assert.equal(
+  boardLegs[0].transferAfter, undefined,
+  "自宅徒步到車站後的等待是上車前候車，不得掛成轉乘（否則車站會重複出現兩次）"
+);
+const boardBadges = boardLegs[1].badges.map(b => b.label);
+assert.deepEqual(boardBadges, ["候車", "東急東横線"], "上車前的等待應標為「候車」並併入電車路段");
+
+// 同一個車站不得在時間軸上連續出現兩次
+const boardStations: string[] = [boardLegs[0].fromStation.name];
+boardLegs.forEach((leg, idx) => {
+  const next = boardLegs[idx + 1];
+  if (leg.transferAfter && next) {
+    boardStations.push(leg.toStation.name, next.fromStation.name);
+  } else {
+    boardStations.push(pickStationNode(leg.toStation, next?.fromStation).name);
+  }
+});
+assert.deepEqual(
+  boardStations, ["自宅", "都立大学", "渋谷"],
+  "時間軸應為 自宅 → 都立大学 → 渋谷，都立大学只能出現一次"
+);
+
+console.log("✓ 出門第一段候車不再誤判為轉乘、車站不重複顯示。");
+
+// ---------------------------------------------------------------------------
+// 7. 同一條線在同站換車（各停換急行）必須標示出來
+// ---------------------------------------------------------------------------
+const sameLineLegs = buildCommuteLegs(
+  buildDoorToDoorRoute({
+    source: "local_gtfs", originStation: "都立大学", destinationStation: "渋谷",
+    totalDurationMinutes: 12, transfers: 1, departureTime: "08:00", arrivalTime: "08:11",
+    referenceLabel: "",
+    segments: [
+      railSeg("東急東横線", "都立大学", "学芸大学", 1, "TY06", "TY05", "08:00", "08:01"),
+      railSeg("東急東横線", "学芸大学", "渋谷", 8, "TY05", "TY01", "08:03", "08:11"),
+    ],
+  } satisfies CommuteRouteDetails, {}).segments
+);
+
+const sameLineTransfer = sameLineLegs[0].transferAfter;
+assert.ok(sameLineTransfer, "同一條線在学芸大学換車應掛載轉乘過渡");
+assert.equal(sameLineTransfer.badge.label, "轉乘", "同線換車仍是一次換車動作");
+assert.equal(
+  sameLineTransfer.badge.note, "同線換車",
+  "同一條線換車必須在分鐘數下方標示，否則看起來像「学芸大学轉乘学芸大学」"
+);
+assert.match(
+  sameLineTransfer.badge.detailTooltip ?? "",
+  /同一條路線（東急東横線）在本站換車/,
+  "同線換車的提示應說明是同一條路線換車"
+);
+
+console.log("✓ 同一條線在同站換車已標示「同線換車」。");
+
+// ---------------------------------------------------------------------------
+// 8. 直通運轉（同一台車跨線）應標為「直通」而非「轉乘」
+// ---------------------------------------------------------------------------
+const throughLegs = buildCommuteLegs(
+  buildDoorToDoorRoute({
+    source: "local_gtfs", originStation: "都立大学", destinationStation: "新宿三丁目",
+    totalDurationMinutes: 18, transfers: 1, departureTime: "08:34", arrivalTime: "08:52",
+    referenceLabel: "",
+    segments: [
+      railSeg("東急東横線", "都立大学", "渋谷", 9, "TY06", "TY01", "08:34", "08:43"),
+      railSeg("東京メトロ副都心線", "渋谷", "新宿三丁目", 6, "F16", "F13", "08:46", "08:52", "subway"),
+    ],
+  } satisfies CommuteRouteDetails, {}).segments
+);
+
+const throughBadge = throughLegs[0].transferAfter?.badge;
+assert.ok(throughBadge, "東橫線接副都心線應掛載過渡節點");
+assert.equal(throughBadge.label, "直通", "東急東横線直通東京メトロ副都心線不該顯示為「轉乘」");
+assert.equal(
+  throughBadge.note, "不需下車",
+  "直通要用使用者在意的說法標示（不需下車），而不是只寫日文味的「同車直通」"
+);
+assert.equal(throughBadge.bgColor, "#00A174", "直通用主題綠與轉乘的灰色區隔");
+assert.equal(throughBadge.waitMinutes, undefined, "直通不必下車，不應再拆出候車分鐘");
+
+// 對照組：真正需要換車的池袋（湘南新宿線 → 東武東上線）必須維持「轉乘」
+const realTransferLegs = buildCommuteLegs(
+  buildDoorToDoorRoute({
+    source: "local_gtfs", originStation: "武蔵小杉", destinationStation: "和光市",
+    totalDurationMinutes: 42, transfers: 1, departureTime: "08:31", arrivalTime: "09:13",
+    referenceLabel: "",
+    segments: [
+      railSeg("JR 湘南新宿ライン", "武蔵小杉", "池袋", 25, null, null, "08:31", "08:56"),
+      railSeg("東武東上線", "池袋", "和光市", 13, null, null, "09:00", "09:13"),
+    ],
+  } satisfies CommuteRouteDetails, {}).segments
+);
+assert.equal(
+  realTransferLegs[0].transferAfter?.badge.label, "轉乘",
+  "沒有直通關係的線對（湘南新宿線／東武東上線）必須維持轉乘，不得誤標為直通"
+);
+
+console.log("✓ 直通運轉標示正確，且未直通的線對仍正確顯示為轉乘。");
+
+// ---------------------------------------------------------------------------
+// 9. 推薦卡的直通標記必須與路線圖上的徽章一致
+//
+// 卡片上寫「含 1 次直通」、展開後圖上卻畫成灰色轉乘（或反過來），
+// 比完全不標示更傷害信任。兩邊都必須走 countThroughConnections()。
+// ---------------------------------------------------------------------------
+const throughRoute = {
+  source: "local_gtfs", originStation: "都立大学", destinationStation: "新宿三丁目",
+  totalDurationMinutes: 18, transfers: 1, departureTime: "08:34", arrivalTime: "08:52",
+  referenceLabel: "",
+  segments: [
+    railSeg("東急東横線", "都立大学", "渋谷", 9, "TY06", "TY01", "08:34", "08:43"),
+    railSeg("東京メトロ副都心線", "渋谷", "新宿三丁目", 6, "F16", "F13", "08:46", "08:52", "subway"),
+  ],
+} satisfies CommuteRouteDetails;
+
+assert.equal(
+  countThroughConnections(throughRoute), 1,
+  "東橫線直通副都心線：推薦卡應計為 1 次直通"
+);
+
+// 對照組：真正的轉乘不得被計入
+assert.equal(
+  countThroughConnections({
+    segments: [
+      railSeg("JR 湘南新宿ライン", "武蔵小杉", "池袋", 25, null, null, "08:31", "08:56"),
+      railSeg("東武東上線", "池袋", "和光市", 13, null, null, "09:00", "09:13"),
+    ],
+  }), 0,
+  "沒有直通關係的線對不得被計為直通"
+);
+
+// 一致性：兩層對同一條路線必須得到相同結論
+const doorToDoorSegments = buildDoorToDoorRoute(throughRoute, {
+  originWalkMinutes: 4, destinationWalkMinutes: 3, originLabel: "自宅",
+}).segments;
+const badgeThroughCount = buildCommuteLegs(doorToDoorSegments)
+  .filter(leg => leg.transferAfter?.badge.label === "直通").length;
+assert.equal(
+  badgeThroughCount, countThroughConnections({ segments: doorToDoorSegments }),
+  "推薦卡的直通次數必須與路線圖上的直通徽章數一致，否則同一畫面會自相矛盾"
+);
+
+// 門到門包裝（頭尾徒步）不得影響直通判斷
+assert.equal(
+  countThroughConnections({ segments: doorToDoorSegments }), 1,
+  "加上自宅徒步與目的地徒步後，直通次數不應改變"
+);
+
+console.log("✓ 推薦卡與路線圖的直通標示一致，且不受頭尾徒步影響。");
+

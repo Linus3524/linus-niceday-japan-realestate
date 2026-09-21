@@ -316,6 +316,65 @@ async function runNationwideTransitTests() {
   console.log(`全日本 7 大生活圈主要核心城市測試全部通過！(${passedCount}/${testCases.length})`);
   console.log(`總測試耗時: ${totalElapsed.toFixed(2)}ms，平均每筆查詢 ${(totalElapsed / testCases.length).toFixed(2)}ms`);
   console.log(`==================================================`);
+
+  // -------------------------------------------------------------------------
+  // 跨地區穿越防護
+  //
+  // 全國圖把各都會圈放在同一份資料、共用 sourceId="regional"，因此同名車站
+  // （奈良與札幌都有「学園前」、神戶與札幌都有「元町」）在圖上會塌成同一個節點。
+  // 修復前 近鉄奈良 → 三宮 會被規劃成「近鉄奈良線 → 札幌市営地下鉄東豊線 → JR神戸線」，
+  // 從奈良一步瞬移到札幌。路線搜尋必須鎖住地區。
+  // -------------------------------------------------------------------------
+  const OTHER_REGION_LINES = /札幌市営|仙台市地下鉄|福岡市地下鉄|名古屋市営|アストラムライン|ゆいレール|西鉄/;
+  // 圖資中確認存在的 5 組跨地區同名站：元町、県庁前、学園前、金山、国際センター
+  const crossRegionCases: Array<{ origin: string; destination: string; note: string }> = [
+    { origin: "近鉄奈良", destination: "三宮", note: "奈良→神戶（「学園前」同名站）" },
+    { origin: "三宮", destination: "梅田", note: "神戶→大阪（「元町」同名站）" },
+    { origin: "学園前", destination: "難波", note: "直接由同名站「学園前」出發（奈良）" },
+    { origin: "元町", destination: "神戸", note: "直接由同名站「元町」出發（神戶）" },
+  ];
+
+  for (const { origin, destination, note } of crossRegionCases) {
+    const routes = findLocalTransitRoutes(origin, destination, 3);
+    assert.ok(routes.length > 0, `[跨地區] ${origin} → ${destination} 應找到路線`);
+    for (const route of routes) {
+      const lines = route.segments
+        .filter(s => s.type !== "walk" && s.type !== "wait")
+        .map(s => s.lineName);
+      const intruder = lines.find(line => OTHER_REGION_LINES.test(line));
+      assert.ok(
+        !intruder,
+        `[跨地區] ${note}：關西路線不得經過其他都會圈的「${intruder}」（同名車站造成的瞬移）`
+      );
+    }
+    console.log(`✓ [跨地區] ${note}：未穿越到其他都會圈`);
+  }
+  console.log("✓ 同名車站不再導致跨地區瞬移。");
+
+  // -------------------------------------------------------------------------
+  // 線名不得跨地區誤對應
+  //
+  // 「東海道本線」橫跨東京～神戶，JR西日本叫它「JR京都線・神戸線」、
+  // JR東海叫它「JR東海道本線(名古屋)」。線路識別表若無條件吃下「東海道本線」，
+  // 名古屋的路線就會在畫面上顯示成關西線名（實測 金山 → 名古屋 曾被標成
+  // 「JR京都線・神戸線」）。另外「神戸」是兩個字，寫成字元類 [神戸] 會匹配不到
+  // 「阪急神戸線」，導致該線失去識別與官方色。
+  // -------------------------------------------------------------------------
+  const lineIdentityCases: Array<{ input: string; expectId: string; note: string }> = [
+    { input: "JR東海道本線(名古屋)", expectId: "jr-tokaido-chubu", note: "名古屋的東海道本線不得顯示為關西線名" },
+    { input: "JR東海道本線", expectId: "jr-kyoto-kobe", note: "未指明地區的東海道本線維持關西通稱" },
+    { input: "阪急神戸線", expectId: "hankyu-kobe", note: "「神戸」是兩個字，不可寫成字元類" },
+    { input: "阪急神戶線", expectId: "hankyu-kobe", note: "繁體「神戶」也要能識別" },
+    { input: "JR中央本線(名古屋)", expectId: "jr-chuo-chubu", note: "名古屋中央本線" },
+  ];
+
+  for (const { input, expectId, note } of lineIdentityCases) {
+    const identity = getTransitLineIdentity(input);
+    assert.ok(identity, `[線名識別] 「${input}」應可解析出線路識別（${note}）`);
+    assert.equal(identity.id, expectId, `[線名識別] 「${input}」應對應 ${expectId}：${note}`);
+    assert.ok(identity.color, `[線名識別] 「${input}」應具有官方色彩`);
+  }
+  console.log("✓ 線名未跨地區誤對應，多字線名（阪急神戸線）可正確識別。");
 }
 
 runNationwideTransitTests();

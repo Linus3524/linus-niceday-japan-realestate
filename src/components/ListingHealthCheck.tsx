@@ -42,6 +42,7 @@ import { formatFileSize } from '../lib/listing/formatters';
 
 import { CommuteRouteCard, getCommuteSourceLabel } from "./CommuteRouteCard";
 import { buildDoorToDoorRoute, isRidingSegment } from "../lib/commuteRouteDisplay";
+import { countThroughConnections } from "../lib/throughService";
 
 import { ErrorBoundary } from "./ErrorBoundary";
 
@@ -631,6 +632,13 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
     transfers: commute.transfers,
   } : null);
 
+  // 目前檢視這條路線的直通次數。與路線圖上的「直通」徽章共用 countThroughConnections()，
+  // 確保摘要、比較卡、路線圖三處說法一致。
+  const activeThroughCount = useMemo(
+    () => (activeOption?.route ? countThroughConnections(activeOption.route) : 0),
+    [activeOption]
+  );
+
   return (
     <div className="mt-3 border border-[#DDE3DF] bg-[#F5F8F6] p-4">
       {/* 若有多條路線（2～3 條），顯示路線比較切換 Tabs；若只有 1 條路線，直接展示不硬湊 Tabs */}
@@ -656,6 +664,12 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
                 const isSelected = idx === selectedRouteIndex;
                 const isDirect = opt.transfers === 0;
                 const isLeastTransfers = hasDifferentTransfers && opt.transfers === minTransfers;
+                // 直通運轉：這條路線裡有幾次「換線但不必下車」。
+                // 排序刻意不因直通而改變（仍是轉乘最少優先），否則會出現
+                // 「路線1 轉乘 0 次卻排在轉乘 1 次的後面」這種無法解釋的順序；
+                // 直通的價值是減輕某一次轉乘的負擔，不是讓整條路線更快，
+                // 所以如實標示、把取捨留給使用者自己判斷。
+                const throughCount = countThroughConnections(opt.route);
                 return (
                   <button
                     key={opt.id || `route-tab-${idx}`}
@@ -685,6 +699,16 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
                       <span className="text-lg font-black text-[#1A2A22]">約 {opt.totalMinutes} 分</span>
                       <span className="text-[10px] text-[#66736C]">站間 {opt.transitMinutes} 分</span>
                     </div>
+                    {/* 直通標記只在真的有直通時出現。使用者關心的不是「直通」這個日文詞，
+                        而是「我要不要拖著行李下車換月台」，所以寫成「不需下車」。 */}
+                    {throughCount > 0 && (
+                      <div
+                        className="mt-1.5 inline-flex items-center gap-1 bg-[#E6F6F1] px-1.5 py-0.5 text-[10px] font-bold text-[#00A174]"
+                        title={`這條路線有 ${throughCount} 次換線是直通運轉，通常坐在原車不必下車換月台（實際是否直通仍以當班車種為準）`}
+                      >
+                        直通・{throughCount} 次換線不需下車
+                      </div>
+                    )}
                     <div className="mt-1 text-[10px] text-[#66736C] truncate">
                       {opt.route.segments.filter(isRidingSegment).map(s => s.lineName).join(" → ")}
                     </div>
@@ -712,6 +736,13 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
             {activeOption?.route ? `${activeOption.route.originStation} → ${activeOption.route.destinationStation}` : commute.destinationStation}
             ・{activeOption ? (activeOption.transfers === 0 ? "直達線路（免轉乘）" : `轉乘 ${activeOption.transfers} 次`) : `轉乘 ${commute.transfers} 次`}
           </p>
+          {/* 只有一條路線時不會顯示上方的比較卡，直通資訊必須在這裡補上，
+              否則使用者要展開路線圖才知道其中一次轉乘其實不用下車。 */}
+          {activeThroughCount > 0 && (
+            <p className="mt-1.5 text-[11px] font-bold leading-none text-[#00A174]">
+              其中 {activeThroughCount} 次換線為直通運轉・不需下車換月台
+            </p>
+          )}
           {/* 目的地端的步行只在真的要走路時才列出：0 分代表下車就到，寫「出站抵達 0 分」
               既不是通順中文，也是在報告一段不存在的路程。 */}
           <p className="mt-1.5 text-xs leading-relaxed text-[#3F5147]">

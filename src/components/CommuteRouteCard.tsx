@@ -2,6 +2,7 @@ import React from "react";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
 import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapanesePlaceName, toJapaneseStationName } from "../lib/transit";
 import { graphStationCode } from "../lib/localTransitRoute";
+import { hasThroughService, THROUGH_SERVICE_MAX_GAP_MINUTES } from "../lib/throughService";
 
 /**
  * 「自宅」「目的地」「候車」「轉乘候車」是介面自己加的角色標籤，不是日本鐵道的專有名詞。
@@ -10,7 +11,7 @@ import { graphStationCode } from "../lib/localTransitRoute";
  * 轉換會把「轉乘候車」變成日文漢字「転乗候車」——那既不是中文也不是日文，畫面上就出現混用。
  * 這裡先攔下這些標籤，讓它們維持繁體中文且不標 lang="ja"。
  */
-const UI_LABELS = new Set(["自宅", "目的地", "候車", "轉乘候車", "公司", "巴士站", "轉乘"]);
+const UI_LABELS = new Set(["自宅", "目的地", "候車", "轉乘候車", "公司", "巴士站", "轉乘", "直通"]);
 const isUiLabel = (value: string) => UI_LABELS.has(value.trim());
 
 /**
@@ -121,6 +122,15 @@ const CommuteBadgeItem: React.FC<{
             (候車{badge.waitMinutes}分)
           </span>
         ) : null}
+        {/* 同線換車、直通等「看分鐘數看不出來」的資訊，貼在分鐘數正下方 */}
+        {badge.note ? (
+          <span
+            data-commute-badge-note
+            className="mt-0.5 text-[10px] text-[#8A9590] whitespace-nowrap leading-tight"
+          >
+            ({badge.note})
+          </span>
+        ) : null}
       </div>
     </div>
   );
@@ -166,12 +176,21 @@ interface CommuteBadgeNode {
   isUiLabel: boolean;
   durationMinutes: number;
   waitMinutes?: number;
+  /**
+   * 分鐘數下方括號裡的補充說明（例如同一條線換車時的「同線月台換車」）。
+   * 只放判讀路線必要的一句話，長句請走 detailTooltip。
+   */
+  note?: string;
   detailTooltip?: string;
   bgColor: string;
   textColor: string;
 }
 
 export interface CommuteLegItem {
+  /** 這一段的移動方式，用來判斷站間交界要畫成「轉乘」還是「候車」。 */
+  type: CommuteRouteSegment["type"];
+  /** 這一段的路線名（原始值），用來判斷同線換車。 */
+  lineName: string;
   fromStation: CommuteStationNode;
   toStation: CommuteStationNode;
   badges: CommuteBadgeNode[];
@@ -180,6 +199,23 @@ export interface CommuteLegItem {
     badge: CommuteBadgeNode;
     lineStyle: string;
   };
+}
+
+/** 軌道運具。只有「軌道→軌道」才算轉乘，徒步或巴士接到車站都是上車前的候車。 */
+const RAIL_TYPES = new Set<CommuteRouteSegment["type"]>(["train", "subway", "rail"]);
+const isRailLeg = (type: CommuteRouteSegment["type"]) => RAIL_TYPES.has(type);
+
+/**
+ * 兩段行程是否屬於同一條路線。
+ *
+ * 圖資同一條線的名稱常有寫法差異（全半形空白、「JR 山手線」與「JR山手線」、
+ * 中日漢字），先正規化再比，才不會把同線換車誤判成換線。
+ */
+function isSameLineName(lineA: string, lineB: string): boolean {
+  if (!lineA || !lineB) return false;
+  const normalize = (value: string) =>
+    toJapaneseLineName(value.trim()).replace(/[\s　]/g, "");
+  return normalize(lineA) === normalize(lineB);
 }
 
 function isSameStation(stopA: string, stopB: string): boolean {
@@ -289,9 +325,26 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
         .filter(p => p.type === "wait")
         .reduce((sum, p) => sum + p.durationMinutes, 0);
 
-      // 若前面已有 Leg，且前一個 Leg 的到達站與當前出發站為同站轉乘
-      if (legs.length > 0 && isSameStation(legs[legs.length - 1].toStation.name, seg.departureStop)) {
-        const prevLeg = legs[legs.length - 1];
+      // 真正的「轉乘」必須是軌道換軌道：前一段是搭車、這一段也是搭車，且在同一個車站。
+      // 從自宅徒步到車站之後的那段等待是「上車前候車」，不是轉乘——把它畫成轉乘會讓
+      // 同一個車站在圖上出現兩次（灰色方塊的都立大学 ── 轉乘 ── TY06 都立大学）。
+      const prevLeg = legs.length > 0 ? legs[legs.length - 1] : null;
+      const isRailToRailTransfer =
+        prevLeg != null &&
+        isRailLeg(prevLeg.type) &&
+        isRailLeg(seg.type) &&
+        isSameStation(prevLeg.toStation.name, seg.departureStop);
+
+      if (prevLeg && isRailToRailTransfer) {
+        // 同一條路線在同一站換車（例如東橫線各停換同線急行）：對乘客而言是換月台／換車，
+        // 不講清楚就會變成「都立大学轉乘都立大学」這種看不懂的呈現。
+        const isSameLineChange = isSameLineName(prevLeg.lineName, seg.lineName);
+        // 直通運轉（如東橫線直通副都心線）：同一台車繼續開，不必下車換月台。
+        // 只有銜接等待夠短才這樣標，避免把「等下一班直通車」說成無縫直通。
+        const isThrough =
+          !isSameLineChange &&
+          hasThroughService(prevLeg.lineName, seg.lineName) &&
+          totalMinutes <= THROUGH_SERVICE_MAX_GAP_MINUTES;
         let detailTooltip = "";
         if (walkMinutes > 0 && waitMinutes > 0) {
           detailTooltip = `站內步行 ${walkMinutes} 分 ＋ 月台候車 ${waitMinutes} 分`;
@@ -300,15 +353,27 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
         } else if (waitMinutes > 0) {
           detailTooltip = `月台候車 ${waitMinutes} 分`;
         }
+        if (isSameLineChange) {
+          const lineLabel = isUiLabel(seg.lineName) ? seg.lineName.trim() : toJapaneseLineName(seg.lineName);
+          detailTooltip = `同一條路線（${lineLabel}）在本站換車${detailTooltip ? `：${detailTooltip}` : ""}`;
+        } else if (isThrough) {
+          const fromLine = toJapaneseLineName(prevLeg.lineName);
+          const toLine = toJapaneseLineName(seg.lineName);
+          detailTooltip = `${fromLine} 直通 ${toLine}，通常不必下車換月台（實際是否直通仍以當班車種為準）`;
+        }
 
         prevLeg.transferAfter = {
           badge: {
-            label: "轉乘",
+            label: isThrough ? "直通" : "轉乘",
             isUiLabel: true,
             durationMinutes: totalMinutes,
-            waitMinutes: waitMinutes > 0 ? waitMinutes : undefined,
+            waitMinutes: !isThrough && waitMinutes > 0 ? waitMinutes : undefined,
+            // 「不需下車」講的是使用者真正在意的事（要不要扛行李換月台），
+            // 比只寫「同車直通」這個日文味的詞更快被理解。
+            note: isSameLineChange ? "同線換車" : isThrough ? "不需下車" : undefined,
             detailTooltip: detailTooltip || undefined,
-            bgColor: "#8A9590",
+            // 直通不是障礙，用主題綠與轉乘的灰色區隔，掃一眼就知道這裡不必換車
+            bgColor: isThrough ? "#00A174" : "#8A9590",
             textColor: "#FFFFFF",
           },
           lineStyle: DASHED_LINE_GRADIENT,
@@ -359,6 +424,8 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
     }
 
     legs.push({
+      type: seg.type,
+      lineName: seg.lineName,
       fromStation: currentLegFromStation,
       toStation: currentLegToStation,
       badges,

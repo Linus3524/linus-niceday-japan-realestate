@@ -71,6 +71,17 @@ type State = {
   line: string;
   operator: string;
   sourceId: string;
+  /**
+   * 目前所在的地區（kansai／hokkaido／chubu…）。
+   *
+   * 全國圖把各都會圈放在同一份資料裡，且共用 sourceId="regional"，
+   * 所以 sourceId 擋不住跨地區穿越。偏偏日本各地有同名車站——
+   * 奈良的「学園前」與札幌的「学園前」、神戶的「元町」與札幌的「元町」
+   * 在圖上會塌成同一個節點，搜尋因此能從近鉄奈良線一步「瞬移」到札幌地下鐵
+   * （實測 近鉄奈良 → 三宮 就被規劃成「近鉄奈良線 → 札幌市営地下鉄東豊線 → JR神戸線」）。
+   * 帶著地區一起走，進到某個地區後就只在該地區內展開。
+   */
+  region: string;
   cost: number;
   transfers: number;
   lastTransitLine: string;
@@ -112,7 +123,7 @@ function searchGraph(
   }
 
   let nextStateId = 1;
-  const queue: State[] = [{ id: 0, station: origin, line: "", operator: "", sourceId: "", cost: 0, transfers: 0, lastTransitLine: "", prevStation: "" }];
+  const queue: State[] = [{ id: 0, station: origin, line: "", operator: "", sourceId: "", region: "", cost: 0, transfers: 0, lastTransitLine: "", prevStation: "" }];
   const minCost = new Map<string, number>();
   minCost.set(`${origin}::0`, 0);
   const stateData = new Map<number, StepRecord>();
@@ -135,6 +146,9 @@ function searchGraph(
 
     for (const edge of graph.stations[curr.station] || []) {
       if (curr.sourceId && curr.sourceId !== edge.sourceId) continue;
+      // 同名車站（奈良／札幌都有「学園前」）會讓不同都會圈在圖上塌成同一點，
+      // 鎖住地區才不會規劃出「近鉄奈良線轉札幌市営地下鉄」這種不存在的路線。
+      if (curr.region && edge.region && curr.region !== edge.region) continue;
       // 擋掉立即折返（甲→乙→甲）：同線折返不需重新候車，成本為零，
       // 會讓搜尋偏好繞反方向的假路徑，並在還原階段連帶丟失整條正解。
       if (edge.to === curr.prevStation) continue;
@@ -186,6 +200,7 @@ function searchGraph(
         line: edge.lineName,
         operator: edge.operator,
         sourceId: edge.sourceId,
+        region: edge.region || curr.region,
         cost: newCost,
         transfers: newTransfers,
         lastTransitLine: newLastTransitLine,
