@@ -21,6 +21,34 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # test:controller-flows 會用 Playwright 開真實 Chromium 驗證前端競態處理，
+      # 而 npm ci 只裝 npm 套件、不會下載瀏覽器執行檔。本機開發者通常早就裝過，
+      # CI 的乾淨環境沒有，於是只在 CI 失敗（d1f0d52 即為此情形）。
+      # 瀏覽器約 150MB，用 Playwright 版本當快取鍵：版本沒變就直接命中，
+      # 升版時自動失效重抓，不會沿用到不相容的舊瀏覽器。
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+
+      # 只裝 chromium：整份 repo 只有 test:controller-flows 用到瀏覽器，且指定
+      # chromium。裝滿三種引擎會多花數分鐘下載卻完全用不到。
+      # --with-deps 補上 Linux 缺少的系統函式庫；快取命中時函式庫仍需確認，
+      # 因此改跑不含下載的 install-deps，成本遠低於重抓瀏覽器。
+      - name: Install Playwright chromium
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            npx playwright install-deps chromium
+          else
+            npx playwright install --with-deps chromium
+          fi
+
       - name: Type check
         run: npm run lint
 
