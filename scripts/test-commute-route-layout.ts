@@ -101,4 +101,29 @@ const dest = renderedStations[renderedStations.length - 1];
 assert.equal(dest.name, "目的地");
 assert.equal(dest.type, "walk", "最終目的地節點應為灰色角色小方格");
 
-console.log("✓ 轉乘站無重複灰色方塊、早稲田站保持東京メトロ東西線 (T04) 車站圖標與線路色測試通過！");
+// 6. 驗證站內轉乘徒步與候車合併為單一「轉乘」標籤
+assert.deepEqual(
+  legs[2].badges.map(b => `${b.label}:${b.durationMinutes}分`),
+  ["轉乘:3分", "JR 山手線:11分"],
+  "渋谷站轉乘活動應合併為單一「轉乘 3分」標籤，不分成轉乘與候車兩個標籤"
+);
+assert.deepEqual(
+  legs[3].badges.map(b => `${b.label}:${b.durationMinutes}分`),
+  ["轉乘:4分", "東京メトロ東西線:2分"],
+  "高田馬場站轉乘活動應合併為單一「轉乘 4分」標籤，不分成轉乘與候車兩個標籤"
+);
+
+// 驗證 Hover/點擊明細 Tooltip
+assert.equal(
+  legs[2].badges[0].detailTooltip,
+  "站內步行 2 分 ＋ 月台候車 1 分",
+  "渋谷站轉乘標籤應提供站內步行與候車明細之 Tooltip"
+);
+assert.equal(
+  legs[3].badges[0].detailTooltip,
+  "站內步行 2 分 ＋ 月台候車 2 分",
+  "高田馬場站轉乘標籤應提供站內步行與候車明細之 Tooltip"
+);
+
+console.log("✓ 轉乘站無重複灰色方塊、站內轉乘與候車合併為單一標籤（支援 Hover 顯示步行與候車明細）、早稲田站保持東西線 (T04) 車站圖標測試通過！");
+

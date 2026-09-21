@@ -161,6 +161,82 @@ const StationSign: React.FC<{
   );
 };
 
+const CommuteBadgeItem: React.FC<{
+  badge: CommuteBadgeNode;
+}> = ({ badge }) => {
+  const [tip, setTip] = React.useState<{ left: number; top: number } | null>(null);
+  const ref = React.useRef<HTMLDivElement | null>(null);
+
+  const show = React.useCallback(() => {
+    if (!badge.detailTooltip) return;
+    const rect = ref.current?.getBoundingClientRect();
+    if (rect) setTip({ left: rect.left + rect.width / 2, top: rect.top });
+  }, [badge.detailTooltip]);
+
+  const hide = React.useCallback(() => setTip(null), []);
+
+  React.useEffect(() => {
+    if (!tip) return;
+    window.addEventListener("scroll", hide, true);
+    window.addEventListener("resize", hide);
+    return () => {
+      window.removeEventListener("scroll", hide, true);
+      window.removeEventListener("resize", hide);
+    };
+  }, [tip, hide]);
+
+  return (
+    <div
+      ref={ref}
+      data-commute-badge
+      className={`flex shrink-0 flex-col items-center ${badge.detailTooltip ? "cursor-help group" : ""}`}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
+      onClick={event => {
+        if (!badge.detailTooltip) return;
+        event.stopPropagation();
+        const rect = ref.current?.getBoundingClientRect();
+        if (rect) {
+          setTip(prev => prev ? null : { left: rect.left + rect.width / 2, top: rect.top });
+        }
+      }}
+      onKeyDown={event => {
+        if (event.key === "Escape") hide();
+      }}
+      tabIndex={badge.detailTooltip ? 0 : undefined}
+      role={badge.detailTooltip ? "button" : undefined}
+      aria-label={badge.detailTooltip || `${badge.label} ${badge.durationMinutes}分鐘`}
+    >
+      <div className="flex h-10 items-center justify-center">
+        <div
+          className={`flex max-w-full items-center px-2 py-0.5 text-[11px] font-bold shadow-2xs ${badge.detailTooltip ? "group-hover:opacity-90 transition-opacity" : ""}`}
+          style={{ backgroundColor: badge.bgColor, color: badge.textColor }}
+        >
+          <TruncatedText
+            text={badge.label}
+            japanese={!badge.isUiLabel}
+            className={`${badge.isUiLabel ? "" : "font-jp "}block max-w-full truncate whitespace-nowrap`}
+          />
+        </div>
+      </div>
+      <div className="mt-1 text-xs font-mono font-medium text-[#66736C] text-center whitespace-nowrap">
+        {badge.durationMinutes}分
+      </div>
+      {tip && badge.detailTooltip && (
+        <span
+          role="tooltip"
+          className="pointer-events-none fixed z-50 w-max max-w-[14rem] -translate-x-1/2 -translate-y-full whitespace-normal break-words border border-[#3F5147] bg-[#1A2A22] px-2.5 py-1 text-[11px] font-medium leading-snug text-white shadow-colored-soft"
+          style={{ left: tip.left, top: tip.top - 6 }}
+        >
+          {badge.detailTooltip}
+        </span>
+      )}
+    </div>
+  );
+};
+
 /**
  * @param embedded 這張卡是否已經被外層區塊包住（物件健檢的通勤模組就是這種情形）。
  *   為 true 時做兩件事：
@@ -200,6 +276,7 @@ interface CommuteBadgeNode {
   label: string;
   isUiLabel: boolean;
   durationMinutes: number;
+  detailTooltip?: string;
   bgColor: string;
   textColor: string;
 }
@@ -295,23 +372,39 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
     const badges: CommuteBadgeNode[] = [];
     const lineStyles: string[] = [];
 
-    // 1. 注入所有站內前置活動（轉乘徒步、候車）
-    for (const pre of pendingPreActivities) {
-      const isUi = isUiLabel(pre.lineName);
-      let label = isUi ? pre.lineName.trim() : toJapaneseLineName(pre.lineName);
-      if (pre.type === "walk" && isSameStation(pre.departureStop, pre.arrivalStop)) {
-        label = "轉乘";
+    // 1. 合併站內轉乘活動：若有站內轉乘徒步與候車，化繁為簡整合成單一「轉乘」標籤，分鐘數合併
+    if (pendingPreActivities.length > 0) {
+      const totalMinutes = pendingPreActivities.reduce((sum, p) => sum + p.durationMinutes, 0);
+      const walkMinutes = pendingPreActivities
+        .filter(p => p.type === "walk")
+        .reduce((sum, p) => sum + p.durationMinutes, 0);
+      const waitMinutes = pendingPreActivities
+        .filter(p => p.type === "wait")
+        .reduce((sum, p) => sum + p.durationMinutes, 0);
+
+      const isInitialBoarding = legs.length === 0;
+      const label = isInitialBoarding ? "候車" : "轉乘";
+
+      let detailTooltip = "";
+      if (walkMinutes > 0 && waitMinutes > 0) {
+        detailTooltip = `站內步行 ${walkMinutes} 分 ＋ 月台候車 ${waitMinutes} 分`;
+      } else if (walkMinutes > 0) {
+        detailTooltip = `站內轉乘步行 ${walkMinutes} 分`;
+      } else if (waitMinutes > 0) {
+        detailTooltip = isInitialBoarding ? `起站月台候車 ${waitMinutes} 分` : `月台候車 ${waitMinutes} 分`;
       }
+
       badges.push({
         label,
-        isUiLabel: isUi || label === "轉乘",
-        durationMinutes: pre.durationMinutes,
-        bgColor: pre.lineColor || "#8A9590",
+        isUiLabel: true,
+        durationMinutes: totalMinutes,
+        detailTooltip: detailTooltip || undefined,
+        bgColor: "#8A9590",
         textColor: "#FFFFFF",
       });
       lineStyles.push(DASHED_LINE_GRADIENT);
+      pendingPreActivities = [];
     }
-    pendingPreActivities = [];
 
     // 2. 注入該段移動之主標籤
     const isUi = isUiLabel(seg.lineName);
@@ -360,16 +453,15 @@ export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegIte
   // 防禦性處理末尾殘留之站內活動
   if (pendingPreActivities.length > 0 && legs.length > 0) {
     const lastLeg = legs[legs.length - 1];
-    for (const pre of pendingPreActivities) {
-      lastLeg.badges.push({
-        label: pre.lineName,
-        isUiLabel: isUiLabel(pre.lineName),
-        durationMinutes: pre.durationMinutes,
-        bgColor: pre.lineColor || "#8A9590",
-        textColor: "#FFFFFF",
-      });
-      lastLeg.lineStyles.push(DASHED_LINE_GRADIENT);
-    }
+    const totalMinutes = pendingPreActivities.reduce((sum, p) => sum + p.durationMinutes, 0);
+    lastLeg.badges.push({
+      label: "轉乘",
+      isUiLabel: true,
+      durationMinutes: totalMinutes,
+      bgColor: "#8A9590",
+      textColor: "#FFFFFF",
+    });
+    lastLeg.lineStyles.push(DASHED_LINE_GRADIENT);
   }
 
   return legs;
@@ -500,27 +592,7 @@ export function CommuteRouteCard({ route, embedded = false }: { route: CommuteRo
 
             if (item.type === "badge") {
               return (
-                <div
-                  key={item.key}
-                  data-commute-badge
-                  className="flex shrink-0 flex-col items-center"
-                >
-                  <div className="flex h-10 items-center justify-center">
-                    <div
-                      className="flex max-w-full items-center px-2 py-0.5 text-[11px] font-bold shadow-2xs"
-                      style={{ backgroundColor: item.badge.bgColor, color: item.badge.textColor }}
-                    >
-                      <TruncatedText
-                        text={item.badge.label}
-                        japanese={!item.badge.isUiLabel}
-                        className={`${item.badge.isUiLabel ? "" : "font-jp "}block max-w-full truncate whitespace-nowrap`}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-1 text-xs font-mono font-medium text-[#66736C] text-center">
-                    {item.badge.durationMinutes}分
-                  </div>
-                </div>
+                <CommuteBadgeItem key={item.key} badge={item.badge} />
               );
             }
 
