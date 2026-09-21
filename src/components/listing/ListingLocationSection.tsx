@@ -119,7 +119,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                   type="button"
                   onClick={() => setIsEditingAddress(false)}
                   disabled={locationLoading}
-                  className="border border-[#DDE3DF] bg-white px-2.5 py-1.5 text-xs font-medium text-[#66736C] hover:bg-gray-100 transition"
+                  className="border border-[#DDE3DF] bg-white px-2.5 py-1.5 text-xs font-medium text-[#66736C] hover:bg-[#F5F8F6] transition"
                 >
                   取消
                 </button>

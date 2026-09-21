@@ -44,5 +44,56 @@ jobs:
           npm run test:market-sources
           npm run test:market-location
 
+      # 以下各步驟的測試原本都已寫好，卻沒有被 CI 執行，等於白寫。
+      # 實際後果：2026-09-21 有三個迴歸（通勤繞路、路線配色不可讀、同名站防護
+      # 失效）全部推上 main 都沒有被擋下，而守護它們的測試在本地一跑就紅。
+      # 測試只有進到 CI 才算數，因此全部納入。
+      # 41 個測試合計約 40 秒，幾乎都在 1 秒內，不影響 CI 時間。
+
+      # 路線規劃是通勤試算的地基，算錯會讓整份報告的結論失真。
+      - name: Verify transit graph routing and line identity
+        run: |
+          npm run test:line-merge
+          npm run test:line-colors
+          npm run test:transitous-lines
+          npm run test:nationwide-transit
+          npm run test:heatmap-transit
+          npm run test:transit-formats
+          npm run test:door-to-door
+          npm run test:commute-layout
+          npm run test:multi-commute
+          npm run test:flyer-transit-count
+
+      # 圖紙解析：地址、設備、費用抓錯會直接寫進給客戶的報告。
+      - name: Verify listing extraction and fee breakdown
+        run: |
+          npm run test:address-normalization
+          npm run test:kanji-normalization
+          npm run test:equipment
+          npm run test:sale-costs
+          npm run test:lease-charges
+          npm run test:guarantee-fee
+          npm run test:listing-upload
+          npm run test:pdf-layout
+          npm run test:numeric-input
+
+      # 行情、治安與周邊數據：判定基準錯了，建議就會反過來。
+      - name: Verify market, safety and building metrics
+        run: |
+          npm run test:building-health
+          npm run test:admin-metrics
+          npm run test:crime-safety
+          npm run test:municipal-crime
+          npm run test:prefecture-bar-chart
+          npm run test:tokyo-bar-chart
+          npm run test:threads-search
+
+      # 前端契約與設計規範：競態處理與色彩收斂的回歸守護。
+      - name: Verify controller contracts and design tokens
+        run: |
+          npm run test:controller-flows
+          npm run test:refactor-contracts
+          npm run test:ink-colors
+
       - name: Build production bundle
         run: npm run build

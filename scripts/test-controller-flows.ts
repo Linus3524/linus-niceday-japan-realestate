@@ -201,6 +201,27 @@ try {
     }
     return value;
   };
+  // 巴士通勤（4b9a085）讓 location 的 commute 請求多帶 originBusMinutes／originBusStop：
+  // 路線起點是巴士站時，步行時間要算到巴士站而不是車站。歷史 fixture 產生於此之前，
+  // 因此比對前先移除，與上面 safety／sharedCommute 的處理一致。
+  // 只移除「沒有巴士」的預設值（0 / null）：真的有巴士資料時必須看得出差異，不可靜默吃掉。
+  const busCommutePayloads: unknown[] = [];
+  const withoutOriginBus = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(withoutOriginBus);
+    if (value && typeof value === "object") {
+      const record = value as Record<string, unknown>;
+      const payload = record.payload as Record<string, unknown> | undefined;
+      if (payload && payload.mode === "commute" && "originBusMinutes" in payload
+        && payload.originBusMinutes === 0 && payload.originBusStop === null) {
+        const { originBusMinutes, originBusStop, ...rest } = payload;
+        busCommutePayloads.push({ originBusMinutes, originBusStop });
+        return { ...record, payload: rest };
+      }
+      return Object.fromEntries(Object.entries(record).map(([key, item]) => [key, withoutOriginBus(item)]));
+    }
+    return value;
+  };
+
   // The historical fixture stays immutable. Only the explicitly fixed race
   // checkpoints use new assertions; unaffected form/API results keep the baseline.
   const changed = new Set(["preview-reverse-completion", "preview-completes-after-removal", "analysis-loading-guard-and-file-switch", "analysis-old-file-response", "analysis-current-file-response", "shared-unmount-ignores-rejection"]);
@@ -218,8 +239,16 @@ try {
       assert.deepEqual(actual.state, refreshed ? { ...old.state, prefectureSafety: null } : old.state, name + " state");
       // 同一次修正也讓 PDF 匯出的 payload 帶上 safety；治安結果被清掉時它是 null。
       // 歷史 fixture 產生於此欄位存在之前，因此比對前先移除，與上面 state 的處理一致。
-      assert.deepEqual(withoutSafety(withoutStationLines(withoutSharedCommute(actual.pending))), old.pending, name + " requests");
-    } else assert.deepEqual(withoutStationLines(withoutSharedCommute(value)), expected.snapshots[name], name);
+      assert.deepEqual(withoutOriginBus(withoutSafety(withoutStationLines(withoutSharedCommute(actual.pending)))), old.pending, name + " requests");
+    } else assert.deepEqual(withoutOriginBus(withoutStationLines(withoutSharedCommute(value))), expected.snapshots[name], name);
+  }
+
+  // 上面把「沒有巴士」的預設值剝掉才能比對歷史 fixture，因此這裡必須確認該欄位
+  // 真的有送出——否則哪天請求整個不帶巴士欄位，剝離會無聲通過，等於守護消失。
+  assert.ok(busCommutePayloads.length > 0, "commute 請求必須帶上 originBusMinutes／originBusStop");
+  for (const payload of busCommutePayloads) {
+    assert.deepEqual(payload, { originBusMinutes: 0, originBusStop: null },
+      "無巴士路線時，originBusMinutes 應為 0 且 originBusStop 為 null");
   }
 
   // stationLines 必須真的送出且與 stations 等長，否則後端無法區分同名站的不同路線。

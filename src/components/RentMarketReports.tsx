@@ -250,7 +250,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
                   <span>
                     純電車車程：<strong className="font-mono font-bold text-[#00A174]">{trainMinutes} 分鐘</strong>
                   </span>
-                  <span className="text-[#DDE3DF]">|</span>
+                  <span className="text-[#8A9590]">|</span>
                   <span>
                     預估門到門：<strong className="font-mono font-bold text-[#1A2A22]">約 {doorToDoorMinutes} 分鐘</strong>
                     <span className="ml-1 text-[10px] text-[#8A9590]">（含預估步行 {estimatedWalk} 分）</span>
