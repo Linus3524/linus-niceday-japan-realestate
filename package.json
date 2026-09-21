@@ -24,6 +24,7 @@
     "test:transit": "tsx scripts/test-transit-parser.ts",
     "test:transit-formats": "tsx scripts/test-transit-formats.ts",
     "test:kanji-normalization": "tsx scripts/test-kanji-normalization.ts",
+    "test:address-normalization": "tsx scripts/test-address-normalization.ts",
     "test:line-colors": "tsx scripts/test-line-colors.ts",
     "test:line-merge": "tsx scripts/test-line-merge.ts",
     "test:transitous-lines": "tsx scripts/test-transitous-line-names.ts",

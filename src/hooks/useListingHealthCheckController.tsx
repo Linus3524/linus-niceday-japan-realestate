@@ -111,6 +111,7 @@ export function useListingHealthCheckController({ sharedId }: ListingHealthCheck
     commuteDestination,
     locationContext,
     result,
+    setResult,
     commuteLoading,
     setCommute,
     setCommuteError,

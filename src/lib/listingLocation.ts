@@ -121,12 +121,11 @@ async function fetchJson(url: string, init: RequestInit = {}, timeoutMs = 12_000
   return response.json() as Promise<any>;
 }
 
-function hasFullStreetNumber(value: string) {
-  return /(?:丁目[0-9０-９一二三四五六七八九十]+(?:番|[-‐‑‒–—―ー－−]))|[0-9０-９]+[-‐‑‒–—―ー－−][0-9０-９]+|[0-9０-９一二三四五六七八九十]+番[0-9０-９一二三四五六七八九十]+号?/.test(value);
-}
+import { normalizeJapaneseAddress, hasFullStreetNumber } from "./addressNormalization.js";
 
 function addressSearchCandidates(address: string) {
-  const cleaned = toJapanesePlaceName(address).replace(/\u3000/g, " ").trim();
+  const normalized = normalizeJapaneseAddress(address);
+  const cleaned = toJapanesePlaceName(normalized).replace(/\u3000/g, " ").trim();
   const withoutPostalCode = cleaned.replace(/^〒?\s*\d{3}\s*[-‐‑‒–—―ー－]?\s*\d{4}\s*/, "").trim();
   const withoutBuildingName = withoutPostalCode.split(/\s+/)[0]?.trim() || "";
   const compact = withoutPostalCode.replace(/\s+/g, "");
@@ -137,6 +136,7 @@ function addressSearchCandidates(address: string) {
   const municipality = compact.match(/^(.+?[都道府県].+?(?:市|区|町|村))/)?.[1] || "";
   const directConfidence: AddressConfidence = hasFullStreetNumber(compact) ? "high" : "medium";
   const raw: AddressCandidate[] = [
+    { value: normalized, confidence: directConfidence, method: "normalized" },
     { value: cleaned, confidence: directConfidence, method: "normalized" },
     { value: withoutPostalCode, confidence: directConfidence, method: "normalized" },
     { value: withoutBuildingName, confidence: directConfidence, method: "street" },

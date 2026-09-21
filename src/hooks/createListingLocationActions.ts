@@ -9,6 +9,8 @@ import { resolveListingOriginAccess } from "../lib/listingCommuteAccess";
 import { parseTransitStations } from "../lib/transitParser";
 import type { ListingState } from './useListingState';
 
+import { normalizeJapaneseAddress } from "../lib/addressNormalization";
+
 type Context = Pick<ListingState,
   "requests" |
   "setLocationError"
@@ -20,6 +22,7 @@ type Context = Pick<ListingState,
   | "commuteDestination"
   | "locationContext"
   | "result"
+  | "setResult"
   | "commuteLoading"
   | "setCommute"
   | "setCommuteError"
@@ -38,13 +41,14 @@ export function createListingLocationActions(context: Context) {
     commuteDestination,
     locationContext,
     result,
+    setResult,
     commuteLoading,
     setCommute,
     setCommuteError,
     setCommuteLoading,
   } = context;
 
-  const loadLocationContext = async (analysis: AnalyzeListingResult) => {
+  const loadLocationContext = async (analysis: AnalyzeListingResult, overrideAddress?: string) => {
     const task = requests.begin("location");
     requests.invalidate("crime", "commute");
     setCrimeLoading(false);
@@ -54,12 +58,23 @@ export function createListingLocationActions(context: Context) {
     setLocationContext(null);
     setCommute(null);
     setCommuteError(null);
-    const address = (analysis?.extracted?.address || "").trim();
+    const rawAddress = (overrideAddress !== undefined ? overrideAddress : (analysis?.extracted?.address || "")).trim();
+    const address = normalizeJapaneseAddress(rawAddress);
     if (!address) {
       task.finish();
       setLocationLoading(false);
-      setLocationError("圖紙上未載明完整地址，因此無法進行精確步行與生活機能定位。");
+      setLocationError("請輸入完整地址，以進行精確步行與生活機能定位。");
       return;
+    }
+    // 若手動修改了地址或經正規化後有調整，同步更新前端分析結果與 PDF 報告用地址
+    if (analysis && (overrideAddress !== undefined || address !== analysis.extracted?.address)) {
+      setResult({
+        ...analysis,
+        extracted: {
+          ...analysis.extracted,
+          address,
+        },
+      });
     }
     // transitLegs 是交通動線的事實來源；舊分享連結沒有它時才重新解析。
     const stationItems = analysis?.extracted?.transitLegs?.length

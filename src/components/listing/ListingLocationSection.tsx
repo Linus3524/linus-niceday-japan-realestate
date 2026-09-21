@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { LoadingNotice } from "../ui/LoadingNotice";
 import { ErrorNotice } from "../ui/ErrorNotice";
 import { informationStyle } from "../../lib/ui/informationStyles";
 import {
-Footprints,
-Info,
-MapPin,
-RefreshCw,
-Store
+  Check,
+  Footprints,
+  Info,
+  MapPin,
+  Pencil,
+  RefreshCw,
+  Store,
 } from "lucide-react";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 import { CrimeSafetyCard } from "../CrimeSafetyCard";
@@ -39,61 +42,142 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
     crimeData,
     prefectureSafety,
   } = model;
-  return (<div className="space-y-3">
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
-        <MapPin className="h-4 w-4 text-[#00A174]" />
-        <span>位置與生活機能</span>
+
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [addressInput, setAddressInput] = useState("");
+
+  const currentAddress = (
+    locationContext?.address ||
+    locationContext?.matchedAddress ||
+    result?.extracted?.address ||
+    ""
+  );
+
+  const handleStartEdit = () => {
+    setAddressInput(currentAddress);
+    setIsEditingAddress(true);
+  };
+
+  const handleSaveAddress = async () => {
+    if (!result || !addressInput.trim()) return;
+    try {
+      await loadLocationContext(result, addressInput.trim());
+      setIsEditingAddress(false);
+    } catch {
+      // 錯誤已於 loadLocationContext 內部處理並寫入 locationError
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
+          <MapPin className="h-4 w-4 text-[#00A174]" />
+          <span>位置與生活機能</span>
+        </div>
+        <span className="text-[10px] text-[#66736C]">
+          門牌定位、步行時間比對與 1.2km 生活圈
+        </span>
       </div>
-      <span className="text-[10px] text-[#66736C]">
-        門牌定位、步行時間比對與 1.2km 生活圈
-      </span>
-    </div>
 
-    {locationLoading && (
-      <LoadingNotice description="比對真實道路步行時間，並搜尋周邊 1.2km 超商、超市、藥妝、公園等生活設施">
-        正在定位門牌與檢索周邊生活機能設施…
-      </LoadingNotice>
-    )}
-
-    {locationError && !locationLoading && (
-      <ErrorNotice tone="caution" action={result && (
-          <button
-            type="button"
-            onClick={() => void loadLocationContext(result)}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#00895D]"
-          >
-            <RefreshCw className="h-3.5 w-3.5" /> 重新載入設施與地圖
-          </button>
-        )}>
-        {locationError}
-      </ErrorNotice>
-    )}
-
-    {locationContext && (
-      <div className="space-y-4">
-        {/* 定位地址標頭列 */}
-        <div className="flex items-center justify-between bg-[#F5F8F6] p-3 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-[#66736C]">定位地址：</span>
-            <span className="font-bold text-[#1A2A22]">{locationContext.address || locationContext.matchedAddress}</span>
+      {/* 定位地址列：支援檢視、修改補齊門牌與一鍵重新定位 */}
+      {result && (
+        isEditingAddress ? (
+          <div className="border border-[#00A174] bg-[#F5F8F6] p-3 text-xs space-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-1">
+              <span className="font-bold text-[#00A174] flex items-center gap-1.5">
+                <Pencil className="h-3.5 w-3.5" /> 修改物件地址
+              </span>
+              <span className="text-[10px] text-[#66736C]">
+                支援全形/半形數字、丁目番地、連字號、中文「之」（Enter 儲存並重新搜尋）
+              </span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input
+                type="text"
+                value={addressInput}
+                onChange={e => setAddressInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") void handleSaveAddress();
+                  if (e.key === "Escape") setIsEditingAddress(false);
+                }}
+                placeholder="例：千葉県千葉市稲毛区長沼町32-2 或 長沼町32番地2号"
+                className="flex-1 border border-[#DDE3DF] bg-white px-3 py-1.5 text-xs text-[#1A2A22] placeholder:text-[#8A9590] focus:border-[#00A174] focus:outline-none"
+                autoFocus
+              />
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => void handleSaveAddress()}
+                  disabled={locationLoading || !addressInput.trim()}
+                  className="inline-flex items-center gap-1 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#00895D] disabled:opacity-50 transition"
+                >
+                  {locationLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                  儲存並重新搜尋
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingAddress(false)}
+                  disabled={locationLoading}
+                  className="border border-[#DDE3DF] bg-white px-2.5 py-1.5 text-xs font-medium text-[#66736C] hover:bg-gray-100 transition"
+                >
+                  取消
+                </button>
+              </div>
+            </div>
           </div>
-          {result && (
+        ) : (
+          <div className="flex flex-wrap items-center justify-between gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
+              <span className="font-bold text-[#66736C] shrink-0">定位地址：</span>
+              <span className="font-bold text-[#1A2A22] break-all">{currentAddress || "（圖紙未載明地址）"}</span>
+              <button
+                type="button"
+                onClick={handleStartEdit}
+                className="inline-flex items-center gap-1 border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#00A174] hover:border-[#9EE2CF] hover:bg-[#E6F6F1] transition"
+                title="手動修改或補上完整門牌"
+              >
+                <Pencil className="h-2.5 w-2.5" /> 修改地址
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => void loadLocationContext(result)}
-              disabled={locationLoading}
-              className="flex items-center gap-1 border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] hover:bg-[#EEF2F0] hover:text-[#1A2A22]"
-              title="重新整理周邊生活機能設施"
+              disabled={locationLoading || !currentAddress}
+              className="flex items-center gap-1 border border-[#DDE3DF] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#66736C] hover:bg-[#EEF2F0] hover:text-[#1A2A22] disabled:opacity-50 transition"
+              title="依目前地址重新整理周邊生活機能設施"
             >
               <RefreshCw className={`h-3 w-3 ${locationLoading ? "animate-spin" : ""}`} /> 重新整理
             </button>
-          )}
-        </div>
+          </div>
+        )
+      )}
 
-        {locationContext.notices?.map(notice => (
-          <p key={notice} className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-xs leading-relaxed text-[#854D0E]">{notice}</p>
-        ))}
+      {locationLoading && (
+        <LoadingNotice description="比對真實道路步行時間，並搜尋周邊 1.2km 超商、超市、藥妝、公園等生活設施">
+          正在定位門牌與檢索周邊生活機能設施…
+        </LoadingNotice>
+      )}
+
+      {locationError && !locationLoading && (
+        <ErrorNotice tone="caution" action={result && (
+            <button
+              type="button"
+              onClick={() => void loadLocationContext(result)}
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#00895D]"
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> 重新載入設施與地圖
+            </button>
+          )}>
+          {locationError}
+        </ErrorNotice>
+      )}
+
+      {locationContext && (
+        <div className="space-y-4">
+          {locationContext.notices?.map(notice => (
+            <p key={notice} className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-xs leading-relaxed text-[#854D0E]">{notice}</p>
+          ))}
 
         {/* 這裡原本顯示「圖紙文字層可見 N 條動線，僅讀出 M 條」的提醒，已移除。
             該判斷由抽平後的文字層以 regex 推算，看不到版面角色，無法分辨
