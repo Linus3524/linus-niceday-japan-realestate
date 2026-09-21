@@ -89,7 +89,7 @@ export function FloorPlanDetailsPanel({
         <div className="mb-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <span className="font-bold text-xs text-[#1A2A22]">格局圖分析</span>
           {showDisclaimer && (
-            <span className="text-[10px] text-[#8A9590]">
+            <span className="text-[10px] text-[#66736C]">
               依圖紙辨識；實際尺寸與設備以管理方資料為準。
             </span>
           )}
@@ -110,7 +110,7 @@ export function FloorPlanDetailsPanel({
           <span className="text-[10px] text-[#8A9590]">（共 {items.length} 項標註）</span>
         </div>
         {showDisclaimer && (
-          <span className="text-[10px] text-[#8A9590]">
+          <span className="text-[10px] text-[#66736C]">
             依圖紙辨識；實際尺寸與設備以管理方資料為準。
           </span>
         )}
