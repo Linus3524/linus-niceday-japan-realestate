@@ -1,6 +1,6 @@
 import React from "react";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
-import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapanesePlaceName, toJapaneseStationName } from "../lib/transit";
 import { graphStationCode } from "../lib/localTransitRoute";
 
 /**
@@ -593,13 +593,46 @@ export function CommuteRouteCard({ route, embedded = false }: { route: CommuteRo
 }
 
 export function CommuteRouteSkeleton({ item, criteria }: { item: RentRecommendation; criteria: RentSearchCriteria }) {
-  if (!item.station || !criteria.commuteStation) return null;
+  if (!criteria.commuteStation) return null;
+
+  // 情況 A：無指定車站（全區平均行情推薦）
+  if (!item.station) {
+    return (
+      <section className="border border-[#DDE3DF] bg-white p-4 font-sans">
+        <div className="flex items-center justify-between border-b border-[#ECEFEC] pb-2">
+          <div className="flex items-center gap-2">
+            <div className="flex h-5 w-5 items-center justify-center border border-[#9EE2CF] bg-[#E6F6F1] text-[10px] font-bold text-[#00A174]">
+              区
+            </div>
+            <span className="text-xs font-bold text-[#1A2A22]">
+              {toJapanesePlaceName(item.district)}・全區平均行情總覽
+            </span>
+          </div>
+          <span className="border border-[#D6EAF0] bg-[#F2F8FA] px-2 py-0.5 text-[10px] font-bold text-[#3F626D]">
+            全區參考
+          </span>
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-[#66736C]">
+          本推薦為【{toJapanesePlaceName(item.district)}】行政區整體租金與條件評估。確定物件鄰近之具體車站生活圈後，系統即可為您規劃前往【{toJapaneseStationName(criteria.commuteStation)}】之詳細電車乘車班表與轉乘路徑。
+        </p>
+      </section>
+    );
+  }
+
+  // 情況 B：有車站但暫未取得班表快取
   return (
-    <div className="border border-[#DDE3DF] bg-[#FAFCFB] px-4 py-3 font-sans">
-      <p lang="ja" className="font-jp text-xs font-bold text-[#3F5147]">
-        {toJapaneseStationName(item.station)} → {toJapaneseStationName(criteria.commuteStation)}
+    <section className="border border-[#DDE3DF] bg-white p-4 font-sans">
+      <div className="flex items-center justify-between border-b border-[#ECEFEC] pb-2">
+        <p lang="ja" className="font-jp text-xs font-bold text-[#1A2A22]">
+          {toJapaneseStationName(item.station)}站 → {toJapaneseStationName(criteria.commuteStation)}站
+        </p>
+        <span className="border border-[#DDE3DF] bg-[#F5F8F6] px-2 py-0.5 text-[10px] font-bold text-[#8A9590]">
+          路線待確認
+        </span>
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-[#66736C]">
+        目前未取得可引用的標準大眾運輸班表資料。建議可至乘換案內查詢【{toJapaneseStationName(item.station)}】前往【{toJapaneseStationName(criteria.commuteStation)}】之即時車次，或嘗試調整至鄰近的主要樞紐車站。
       </p>
-      <p className="mt-1 text-[11px] text-[#66736C]">目前未取得可引用的路線資料，因此不顯示推測時間與轉乘資訊。</p>
-    </div>
+    </section>
   );
 }

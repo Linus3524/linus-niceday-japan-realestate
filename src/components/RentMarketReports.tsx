@@ -193,6 +193,10 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
   const scaleMax = Math.max(item.rangeHigh, budget) * 1.1;
   const pos = (value: number) => Math.max(0, Math.min(100, (value - scaleMin) / (scaleMax - scaleMin) * 100));
 
+  const estimatedWalk = criteria.walkMinutes || 10;
+  const trainMinutes = item.commuteRoute?.totalDurationMinutes ?? 0;
+  const doorToDoorMinutes = trainMinutes > 0 ? trainMinutes + estimatedWalk : 0;
+
   return (
     <article className={`border ${expanded ? "border-[#00a174]" : "border-[#DDE3DF]"} bg-white`}>
       <button onClick={onToggle} className="w-full text-left p-4 hover:bg-[#F5F8F6] transition-colors font-sans" aria-expanded={expanded}>
@@ -204,8 +208,18 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
               <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.fit === "預算內" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : item.fit === "接近預算" ? "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]" : "border-[#FCA5A5] bg-[#FEF2F2] text-[#B13818]"}`}>{item.fit}</span>
               {criteria.commuteStation && <span className={`border text-[10px] px-2 py-0.5 font-bold ${item.commuteFit === "直達線路" ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : "border-[#FDE047] bg-[#FEF9C3] text-[#854D0E]"}`}>{item.commuteFit}</span>}
               {item.commuteRoute ? (
-                <span className={`border px-2 py-0.5 text-[10px] font-bold ${criteria.commuteMinutes && item.commuteRoute.totalDurationMinutes <= criteria.commuteMinutes ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]" : "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"}`}>
-                  {item.commuteRoute.totalDurationMinutes} 分・轉乘 {item.commuteRoute.transfers} 次
+                <span
+                  className={`border px-2 py-0.5 text-[10px] font-bold ${
+                    criteria.commuteMinutes && trainMinutes <= criteria.commuteMinutes
+                      ? "border-[#9EE2CF] bg-[#E6F6F1] text-[#00A174]"
+                      : "border-[#D6EAF0] bg-[#F2F8FA] text-[#3F626D]"
+                  }`}
+                  title={`電車車程約 ${trainMinutes} 分鐘（轉乘 ${item.commuteRoute.transfers} 次）。加上生活圈步行約 ${estimatedWalk} 分鐘，預估門到門通勤約 ${doorToDoorMinutes} 分鐘。`}
+                >
+                  車程 {trainMinutes} 分・轉乘 {item.commuteRoute.transfers} 次
+                  <span className="ml-1 text-[9px] font-normal text-[#66736C]">
+                    (門到門約 {doorToDoorMinutes}分)
+                  </span>
                 </span>
               ) : null}
             </div>
@@ -220,7 +234,34 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
       </button>
       {expanded && (
         <div className="border-t border-[#DDE3DF] p-4 md:p-5 bg-[#FAFCFB] space-y-5">
-          {item.commuteRoute ? <CommuteRouteCard route={item.commuteRoute} /> : <CommuteRouteSkeleton item={item} criteria={criteria} />}
+          {item.commuteRoute ? (
+            <section className="border border-[#DDE3DF] bg-white p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[#ECEFEC] pb-2 font-sans">
+                <div className="flex items-center gap-2">
+                  <TrainFront className="h-4 w-4 text-[#00A174]" />
+                  <span className="text-xs font-bold text-[#1A2A22]">
+                    大眾運輸通勤路線
+                  </span>
+                  <span className="text-[10px] text-[#8A9590]">
+                    （{toJapaneseStationName(item.commuteRoute.originStation)}站 → {toJapaneseStationName(item.commuteRoute.destinationStation)}站）
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-[11px] text-[#3F5147]">
+                  <span>
+                    純電車車程：<strong className="font-mono font-bold text-[#00A174]">{trainMinutes} 分鐘</strong>
+                  </span>
+                  <span className="text-[#DDE3DF]">|</span>
+                  <span>
+                    預估門到門：<strong className="font-mono font-bold text-[#1A2A22]">約 {doorToDoorMinutes} 分鐘</strong>
+                    <span className="ml-1 text-[10px] text-[#8A9590]">（含預估步行 {estimatedWalk} 分）</span>
+                  </span>
+                </div>
+              </div>
+              <CommuteRouteCard route={item.commuteRoute} embedded={true} />
+            </section>
+          ) : (
+            <CommuteRouteSkeleton item={item} criteria={criteria} />
+          )}
           <section className="border border-[#DDE3DF] bg-white p-4">
             <div className="flex items-center gap-2 font-bold text-xs mb-5"><BarChart3 className="w-4 h-4 text-[#00a174]" /> 預算 vs. 推估租金區間</div>
             <div className="relative h-12 mx-3">
