@@ -204,7 +204,8 @@ async function geocodeCandidate(candidate: AddressCandidate): Promise<GeocodedAd
   const lat = Number(coordinates?.[1]);
   const matchedTitle = String(item?.properties?.title || "");
   const hasInputFullStreet = hasFullStreetNumber(candidate.value);
-  const normCandidate = candidate.value.normalize("NFKC").replace(/[−ー―－–—]/gu, "-");
+  // 「ー」(U+30FC) 只有夾在數字之間時才是地址枝番的連字號；直接全換會破壞町名中的片假名（如 パークタウン）。
+  const normCandidate = candidate.value.normalize("NFKC").replace(/[−―–—]/gu, "-").replace(/(?<=[0-9])ー(?=[0-9])/gu, "-");
   const normMatchedBase = matchedTitle.normalize("NFKC").replace(/番地?$/, "");
   // 若輸入地址本就具備完整門牌（如 32-2 或 3丁目4-5），且 GSI 圖資成功對齊到該番地（例如長沼町３２番地），
   // 代表已精準鎖定到該地號區塊。保留輸入的完整門牌，不因國土地理院圖資未收錄個別枝番而將地址截斷或誤報「缺少完整門牌」。

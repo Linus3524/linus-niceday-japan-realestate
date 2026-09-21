@@ -74,6 +74,15 @@ type State = {
   cost: number;
   transfers: number;
   lastTransitLine: string;
+  /**
+   * 上一站站名，用來擋掉「甲→乙→甲」的立即折返。
+   *
+   * 候車時間只在首次上車與轉乘時計算（同線直通各站不必重新等車），
+   * 這使得同一條線上的折返邊變成零候車成本，搜尋會誤判「先往反方向坐一站再折返」
+   * 比直接搭乘更便宜，路徑還原階段才被迴圈偵測整條丟棄（例如馬喰町→浅草橋
+   * 會漏掉錦糸町轉乘這條最少轉乘的正解）。在展開邊時就擋住，成本比事後偵測低。
+   */
+  prevStation: string;
 };
 
 type StepRecord = {
@@ -103,7 +112,7 @@ function searchGraph(
   }
 
   let nextStateId = 1;
-  const queue: State[] = [{ id: 0, station: origin, line: "", operator: "", sourceId: "", cost: 0, transfers: 0, lastTransitLine: "" }];
+  const queue: State[] = [{ id: 0, station: origin, line: "", operator: "", sourceId: "", cost: 0, transfers: 0, lastTransitLine: "", prevStation: "" }];
   const minCost = new Map<string, number>();
   minCost.set(`${origin}::0`, 0);
   const stateData = new Map<number, StepRecord>();
@@ -126,6 +135,10 @@ function searchGraph(
 
     for (const edge of graph.stations[curr.station] || []) {
       if (curr.sourceId && curr.sourceId !== edge.sourceId) continue;
+      // 擋掉立即折返（甲→乙→甲）：同線折返不需重新候車，成本為零，
+      // 會讓搜尋偏好繞反方向的假路徑，並在還原階段連帶丟失整條正解。
+      if (edge.to === curr.prevStation) continue;
+      if (edge.to === origin) continue;
       const isWalkEdge = edge.operator === "徒歩" || /連絡通路|地下道/.test(edge.lineName);
 
       let isTransfer = false;
@@ -176,6 +189,7 @@ function searchGraph(
         cost: newCost,
         transfers: newTransfers,
         lastTransitLine: newLastTransitLine,
+        prevStation: curr.station,
       });
     }
   }
@@ -222,10 +236,14 @@ function searchGraph(
         last.headsign = step.edge.headsign || last.headsign;
       } else {
         const isWalk = step.edge.operator === "徒歩" || /連絡通路|地下道/.test(step.edge.lineName);
-        const type = isWalk ? "walk" : "rail";
+        const type = isWalk ? "walk" : (/メトロ|地下鉄|都営|Osaka Metro|市営地下鉄|市地下鉄/.test(step.edge.lineName) ? "subway" : "rail");
+        // 必須走 getLineColors()：它會做對比度保護（enforceContrast）。
+        // 直接取 identity.textColor 會繞過保護——官方標示色是給大型月台看板用的，
+        // 縮到畫面上的小徽章就不夠看（如東京メトロ東西線 #00A7DB 配白字只有 2.78:1）。
+        // 圖資也把 171 條路線的 lineTextColor 全填成 #FFFFFF，同樣不能直接沿用。
         const colors = isWalk
           ? { color: "#8A9590", textColor: "#FFFFFF" as const }
-          : { color: identity?.color || step.edge.lineColor, textColor: (identity?.textColor || step.edge.lineTextColor || "#FFFFFF") as any };
+          : getLineColors(step.edge.lineName, step.edge.lineColor);
 
         segments.push({
           type,

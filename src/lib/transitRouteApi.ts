@@ -95,10 +95,18 @@ const REGIONAL_AREA_PREFECTURES = [
 ];
 const KANSAI_AREA_PREFECTURES = REGIONAL_AREA_PREFECTURES;
 
+/**
+ * Transitous geocode 的行政區資訊分散在數個欄位，必須全部讀取。
+ *
+ * areas[] 是最完整的一層（含都道府県與市區町村），漏掉它，同名異地站的防護
+ * 就整個失效——香川縣的白山會通過文京區白山的檢查，拿去規劃首都圈通勤。
+ * state／countryOrState／regions 是同一份資訊在不同回應格式下的變體，一併納入。
+ */
 function stopAreaNames(item: any): string[] {
   return [
     item?.state,
     item?.countryOrState,
+    ...(Array.isArray(item?.areas) ? item.areas.map((area: any) => area?.name) : []),
     ...(Array.isArray(item?.regions) ? item.regions.map((region: any) => region?.name) : [])
   ].filter((name: unknown): name is string => typeof name === "string" && name.length > 0);
 }

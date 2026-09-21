@@ -62,8 +62,14 @@ export function reconcileRentalListingText<T extends RentalListingFields>(origin
   if (!layoutText?.trim()) return original;
   // normalizeMonthUnit：版面文字的月數寫法有 ヶ／ヵ／ケ／カ／か 五種，下面的
   // 敷金・礼金・更新料・解約予告比對全都只認「ヶ月」，不先統一會整條配不到而漏補。
-  // 同時將全形連字號（−、ー、―、－等）正規化為標準半形減號「-」，並折疊 CJK 康熙偏旁部首（如 ⻑ -> 長），確保地址中的枝番（如 32-2）不被截斷。
-  const folded = layoutText.normalize("NFKC").replace(/[−ー―－–—]/gu, "-").replace(/[\u2E80-\u2EFF]/gu, char => ({ "⻄": "西", "⺟": "母", "⻑": "長", "⻘": "青", "⻩": "黄", "⻢": "馬", "⻱": "亀", "⺠": "民", "⻝": "食", "⻤": "鬼" }[char] ?? char));
+  // 同時將全形連字號（−、―、–、— 等）正規化為標準半形減號「-」，並折疊 CJK 康熙偏旁部首（如 ⻑ -> 長），確保地址中的枝番（如 32-2）不被截斷。
+  // 片假名長音符「ー」(U+30FC) 必須另外處理：它同時是「ルーム」「オートロック」等詞的組成部分，
+  // 無條件換成「-」會把版面文字中所有片假名詞打爛（定額ルームクリーニング代 -> 定額ル-ムクリ-ニング代），
+  // 導致清潔費、設備等比對全數失效。只有夾在數字之間時才視為地址枝番的連字號。
+  const folded = layoutText.normalize("NFKC")
+    .replace(/[−―–—]/gu, "-")
+    .replace(/(?<=[0-9])ー(?=[0-9])/gu, "-")
+    .replace(/[\u2E80-\u2EFF]/gu, char => ({ "⻄": "西", "⺟": "母", "⻑": "長", "⻘": "青", "⻩": "黄", "⻢": "馬", "⻱": "亀", "⺠": "民", "⻝": "食", "⻤": "鬼" }[char] ?? char));
   const normalized = normalizeMonthUnit(folded);
   const compact = compactText(normalized);
   const looksRental = original.dealType === "rent" || /(?:賃料|家[\s\u3000]*賃|LEASECONDITION|契約期間|敷金|礼金)/iu.test(compact);
