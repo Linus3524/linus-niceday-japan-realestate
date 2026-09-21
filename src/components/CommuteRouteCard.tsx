@@ -1,6 +1,7 @@
 import React from "react";
 import type { CommuteRouteDetails, CommuteRouteSegment, RentRecommendation, RentSearchCriteria } from "../lib/rentAnalysis";
 import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapaneseStationName } from "../lib/transit";
+import { graphStationCode } from "../lib/localTransitRoute";
 
 /**
  * 「自宅」「目的地」「候車」「轉乘候車」是介面自己加的角色標籤，不是日本鐵道的專有名詞。
@@ -9,7 +10,7 @@ import { getLineColors, getStationCodeForLine, toJapaneseLineName, toJapaneseSta
  * 轉換會把「轉乘候車」變成日文漢字「転乗候車」——那既不是中文也不是日文，畫面上就出現混用。
  * 這裡先攔下這些標籤，讓它們維持繁體中文且不標 lang="ja"。
  */
-const UI_LABELS = new Set(["自宅", "目的地", "候車", "轉乘候車", "公司", "巴士站"]);
+const UI_LABELS = new Set(["自宅", "目的地", "候車", "轉乘候車", "公司", "巴士站", "轉乘"]);
 const isUiLabel = (value: string) => UI_LABELS.has(value.trim());
 
 /**
@@ -119,7 +120,7 @@ const StationSign: React.FC<{
   // 角色標籤（自宅／目的地）維持中文，只有真正的車站名才做日文站名正規化。
   const uiLabel = isUiLabel(rawName);
   const cleanedName = uiLabel ? rawName : toJapaneseStationName(rawName);
-  const isWalk = type === "walk";
+  const isWalk = type === "walk" || uiLabel;
 
   return (
     <div className={`flex flex-col items-center shrink-0 text-center ${isWalk ? "w-5" : "w-10"} font-sans relative`}>
@@ -210,124 +211,164 @@ interface CommuteLegItem {
   lineStyles: string[];
 }
 
+function isSameStation(stopA: string, stopB: string): boolean {
+  if (!stopA || !stopB) return false;
+  if (stopA.trim() === stopB.trim()) return true;
+  const normA = toJapaneseStationName(stopA.replace(/\(.*\)/, "").trim());
+  const normB = toJapaneseStationName(stopB.replace(/\(.*\)/, "").trim());
+  return normA === normB;
+}
+
+function resolveStationCode(lineName: string, stationName: string, fallbackNumber?: string | null): string {
+  if (fallbackNumber) return fallbackNumber;
+  const direct = getStationCodeForLine(lineName, stationName);
+  if (direct) return direct;
+  const jpLine = toJapaneseLineName(lineName);
+  const jpStation = toJapaneseStationName(stationName).replace(/駅$/, "");
+  const compactJpLine = jpLine.replace(/\s+/g, "");
+  const compactLine = lineName.replace(/\s+/g, "");
+
+  return graphStationCode(jpLine, jpStation)
+    || graphStationCode(compactJpLine, jpStation)
+    || graphStationCode(lineName, jpStation)
+    || graphStationCode(compactLine, jpStation)
+    || graphStationCode(jpLine, stationName)
+    || graphStationCode(compactJpLine, stationName)
+    || graphStationCode(lineName, stationName)
+    || graphStationCode(compactLine, stationName)
+    || "";
+}
+
+/**
+ * 選取兩段行程交界處的站牌節點：
+ * 1. 若當前段為鐵道到達站，下一段為徒步前往目的地，必須保留鐵道車站圖標與代表色（如早稲田站 T 04 東西線藍），
+ *    絕不被徒步段的灰色小方塊覆蓋。
+ * 2. 若前一段為徒步（如自宅出發），下一段為鐵道出發站，採用鐵道車站圖標（如都立大學 TY 06）。
+ * 3. 若為轉乘（東急 → JR 山手線），優先採用將搭乘路線之車站資訊（JY 20 渋谷），若無站號則退回到達站。
+ */
+export function pickStationNode(toStation: CommuteStationNode, nextFromStation?: CommuteStationNode): CommuteStationNode {
+  if (!nextFromStation) return toStation;
+  if (nextFromStation.type === "walk" && toStation.type !== "walk") {
+    return toStation;
+  }
+  if (toStation.type === "walk" && nextFromStation.type !== "walk") {
+    return nextFromStation;
+  }
+  if (nextFromStation.number) return nextFromStation;
+  if (toStation.number) return toStation;
+  return nextFromStation;
+}
+
 /**
  * 將原始 segments 依站到站的「路段 Leg」重組：
- * 讓候車段（wait）與後續鐵道乘車段（rail）在同一個站間區間呈現，
- * 區間內的各段線條（如：出發站→候車虛線、候車→路線虛線、路線→到達站實線）
- * 均設定為等比例 flex-1，確保兩段灰虛線與實線路段完全等長，比例和諧。
+ * 1. 同站站內活動（如同站轉乘步行、候車段）均作為出發站的前置標籤，直接接在轉乘站之後，
+ *    絕不在同一個轉乘車站重複出現「沒有任何線路記號的灰色方塊車站」。
+ * 2. 區間內的所有線條（前置活動虛線、搭乘實線）均設定為等比例 flex-1，確保所有卡片與標籤間線段完全等長。
  */
-function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegItem[] {
+export function buildCommuteLegs(segments: CommuteRouteSegment[]): CommuteLegItem[] {
   const legs: CommuteLegItem[] = [];
+  let pendingPreActivities: CommuteRouteSegment[] = [];
   let i = 0;
 
   while (i < segments.length) {
     const seg = segments[i];
-    const nextSeg = segments[i + 1];
+    const isSameStationActivity =
+      seg.type === "wait" ||
+      (seg.type === "walk" && isSameStation(seg.departureStop, seg.arrivalStop));
 
-    if (seg.type === "wait" && nextSeg) {
-      const boardingLineColors = getLineColors(nextSeg.lineName, nextSeg.lineColor);
-      const fromNumber = seg.startStationNumber
-        || getStationCodeForLine(nextSeg.lineName, seg.departureStop);
-      const toNumber = nextSeg.endStationNumber
-        || getStationCodeForLine(nextSeg.lineName, nextSeg.arrivalStop);
+    // 站內活動（同站轉乘徒步、月台候車）暫存為下一段出發行程的前置標籤
+    if (isSameStationActivity) {
+      pendingPreActivities.push(seg);
+      i++;
+      continue;
+    }
 
-      const waitIsUi = isUiLabel(seg.lineName);
-      const waitLabel = waitIsUi ? seg.lineName.trim() : toJapaneseLineName(seg.lineName);
+    // 地點間實質移動段（A -> B）
+    const isWalk = seg.type === "walk";
+    const lineColors = isWalk
+      ? { color: "#8A9590", textColor: "#FFFFFF" }
+      : getLineColors(seg.lineName, seg.lineColor);
 
-      const railIsUi = isUiLabel(nextSeg.lineName);
-      const railLabel = railIsUi ? nextSeg.lineName.trim() : toJapaneseLineName(nextSeg.lineName);
+    const fromStationCode = resolveStationCode(seg.lineName, seg.departureStop, seg.startStationNumber);
+    const toStationCode = resolveStationCode(seg.lineName, seg.arrivalStop, seg.endStationNumber);
 
-      legs.push({
-        fromStation: {
-          name: seg.departureStop,
-          number: fromNumber || "",
-          color: boardingLineColors.color,
-          type: nextSeg.type,
-        },
-        toStation: {
-          name: nextSeg.arrivalStop,
-          number: toNumber || "",
-          color: boardingLineColors.color,
-          type: nextSeg.type,
-        },
-        badges: [
-          {
-            label: waitLabel,
-            isUiLabel: waitIsUi,
-            durationMinutes: seg.durationMinutes,
-            bgColor: seg.lineColor || "#8A9590",
-            textColor: "#FFFFFF",
-          },
-          {
-            label: railLabel,
-            isUiLabel: railIsUi,
-            durationMinutes: nextSeg.durationMinutes,
-            bgColor: boardingLineColors.color,
-            textColor: boardingLineColors.textColor,
-          },
-        ],
-        // 三段完全等長之連接線：月台候車虛線、登車過渡虛線、列車行駛官方顏色實線
-        lineStyles: [
-          DASHED_LINE_GRADIENT,
-          DASHED_LINE_GRADIENT,
-          boardingLineColors.color,
-        ],
-      });
-      i += 2;
-    } else {
-      const prevSeg = i > 0 ? segments[i - 1] : null;
-      let fromNumber = seg.startStationNumber;
-      let toNumber = seg.endStationNumber;
-      let fromColor = seg.lineColor;
-      let toColor = seg.lineColor;
+    const badges: CommuteBadgeNode[] = [];
+    const lineStyles: string[] = [];
 
-      if (seg.type === "walk") {
-        fromNumber = seg.startStationNumber || (prevSeg ? getStationCodeForLine(prevSeg.lineName, seg.departureStop) : "");
-        toNumber = seg.endStationNumber || (nextSeg ? getStationCodeForLine(nextSeg.lineName, seg.arrivalStop) : "");
-        fromColor = prevSeg ? getLineColors(prevSeg.lineName, prevSeg.lineColor).color : "#8A9590";
-        toColor = nextSeg ? getLineColors(nextSeg.lineName, nextSeg.lineColor).color : "#8A9590";
-      } else {
-        const lineColors = getLineColors(seg.lineName, seg.lineColor);
-        fromNumber = seg.startStationNumber || getStationCodeForLine(seg.lineName, seg.departureStop);
-        toNumber = seg.endStationNumber || getStationCodeForLine(seg.lineName, seg.arrivalStop);
-        fromColor = lineColors.color;
-        toColor = lineColors.color;
+    // 1. 注入所有站內前置活動（轉乘徒步、候車）
+    for (const pre of pendingPreActivities) {
+      const isUi = isUiLabel(pre.lineName);
+      let label = isUi ? pre.lineName.trim() : toJapaneseLineName(pre.lineName);
+      if (pre.type === "walk" && isSameStation(pre.departureStop, pre.arrivalStop)) {
+        label = "轉乘";
       }
-
-      const badgeColors = seg.type === "walk" || seg.type === "wait"
-        ? { color: seg.lineColor, textColor: "#FFFFFF" }
-        : getLineColors(seg.lineName, seg.lineColor);
-
-      const isUi = isUiLabel(seg.lineName);
-      const label = isUi ? seg.lineName.trim() : toJapaneseLineName(seg.lineName);
-      const lineStyle = seg.type === "walk" || seg.type === "wait" ? DASHED_LINE_GRADIENT : badgeColors.color;
-
-      legs.push({
-        fromStation: {
-          name: seg.departureStop,
-          number: fromNumber || "",
-          color: fromColor,
-          type: seg.type,
-        },
-        toStation: {
-          name: seg.arrivalStop,
-          number: toNumber || "",
-          color: toColor,
-          type: seg.type,
-        },
-        badges: [
-          {
-            label,
-            isUiLabel: isUi,
-            durationMinutes: seg.durationMinutes,
-            bgColor: badgeColors.color,
-            textColor: badgeColors.textColor,
-          },
-        ],
-        // 前後兩段完全等長之連接線
-        lineStyles: [lineStyle, lineStyle],
+      badges.push({
+        label,
+        isUiLabel: isUi || label === "轉乘",
+        durationMinutes: pre.durationMinutes,
+        bgColor: pre.lineColor || "#8A9590",
+        textColor: "#FFFFFF",
       });
-      i += 1;
+      lineStyles.push(DASHED_LINE_GRADIENT);
+    }
+    pendingPreActivities = [];
+
+    // 2. 注入該段移動之主標籤
+    const isUi = isUiLabel(seg.lineName);
+    const mainLabel = isUi ? seg.lineName.trim() : toJapaneseLineName(seg.lineName);
+    badges.push({
+      label: mainLabel,
+      isUiLabel: isUi,
+      durationMinutes: seg.durationMinutes,
+      bgColor: lineColors.color,
+      textColor: lineColors.textColor,
+    });
+
+    if (isWalk) {
+      lineStyles.push(DASHED_LINE_GRADIENT);
+      lineStyles.push(DASHED_LINE_GRADIENT);
+    } else {
+      if (badges.length > 1) {
+        lineStyles.push(DASHED_LINE_GRADIENT);
+        lineStyles.push(lineColors.color);
+      } else {
+        lineStyles.push(lineColors.color);
+        lineStyles.push(lineColors.color);
+      }
+    }
+
+    legs.push({
+      fromStation: {
+        name: seg.departureStop,
+        number: fromStationCode,
+        color: lineColors.color,
+        type: seg.type,
+      },
+      toStation: {
+        name: seg.arrivalStop,
+        number: toStationCode,
+        color: lineColors.color,
+        type: seg.type,
+      },
+      badges,
+      lineStyles,
+    });
+
+    i++;
+  }
+
+  // 防禦性處理末尾殘留之站內活動
+  if (pendingPreActivities.length > 0 && legs.length > 0) {
+    const lastLeg = legs[legs.length - 1];
+    for (const pre of pendingPreActivities) {
+      lastLeg.badges.push({
+        label: pre.lineName,
+        isUiLabel: isUiLabel(pre.lineName),
+        durationMinutes: pre.durationMinutes,
+        bgColor: pre.lineColor || "#8A9590",
+        textColor: "#FFFFFF",
+      });
+      lastLeg.lineStyles.push(DASHED_LINE_GRADIENT);
     }
   }
 
@@ -395,8 +436,8 @@ export function CommuteRouteCard({ route, embedded = false }: { route: CommuteRo
         lineStyle: leg.lineStyles[leg.badges.length],
       });
 
-      // 目標車站：若非終點站，優先使用下一段之出發車站資訊（保留軌道車號與代表色）
-      const stationNode = isLastLeg ? leg.toStation : (nextLeg?.fromStation || leg.toStation);
+      // 目標車站：若非最後終點，依交界規則優先保留鐵道車站圖標與登車線路編號
+      const stationNode = isLastLeg ? leg.toStation : pickStationNode(leg.toStation, nextLeg?.fromStation);
 
       items.push({
         key: `station-${legIdx + 1}`,
