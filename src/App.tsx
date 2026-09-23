@@ -827,7 +827,7 @@ export default function App() {
             <div className="max-w-[30rem] text-xs md:text-sm text-[#66736C] font-sans tracking-wide leading-relaxed space-y-1 mt-4">
               <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
               <p>分享日本租屋、買房、貸款規劃與在日生活的經驗實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
-              <p>從找房到安居，希望成為你在日本最值得信賴的指南。</p>
+              <p>從找房到安居，希望成為你在日本最值得信賴的夥伴。</p>
               <p>Linus 住好日，一起在日本住好日！</p>
             </div>
 
