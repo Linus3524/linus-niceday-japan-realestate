@@ -27,8 +27,6 @@ interface SaleMarketSectionProps {
     ListingHealthCheckModel,
     | "effectiveMlitComparison"
     | "saleAnalysis"
-    | "locationContext"
-    | "extracted"
     | "isSpecialSale"
     | "specialComparison"
     | "specialSale"
@@ -40,15 +38,13 @@ export function SaleMarketSection({ model }: SaleMarketSectionProps) {
   const {
     effectiveMlitComparison,
     saleAnalysis,
-    locationContext,
-    extracted,
     isSpecialSale,
     specialComparison,
     specialSale,
     parsedArea,
   } = model;
   return (<>{effectiveMlitComparison && (() => {
-    const { c, priceMan, man, sqmOf, amenityHighlights, stationFacts, walkFacts, officialMan, officialDiffPercent, listingMan, listingLowMan, listingHighMan, listingRangeText, fairLow, fairHigh, hasFairRange, span, pos } = buildSaleMarketPresentation({ effectiveMlitComparison, saleAnalysis, locationContext, extracted });
+    const { c, priceMan, man, sqmOf, officialMan, officialDiffPercent, listingMan, listingLowMan, listingHighMan, listingRangeText, fairLow, fairHigh, hasFairRange, span, pos } = buildSaleMarketPresentation({ effectiveMlitComparison, saleAnalysis });
 
     // 本案沿用租賃圖紙診斷的同一組語意色票（STATUS_STYLE）：
     // 落在區間內是綠、明顯高於上緣才是紅，不再不分結論一律深紅。
@@ -156,30 +152,7 @@ export function SaleMarketSection({ model }: SaleMarketSectionProps) {
             {/* ② 中層：雙來源官方數據與算式（簡潔雙欄方格卡片） */}
             <SalePriceSources c={c} parsedArea={parsedArea} man={man} officialMan={officialMan} officialDiffPercent={officialDiffPercent} isSpecialSale={isSpecialSale} listingRangeText={listingRangeText} listingMan={listingMan} />
 
-            {/* ③ 下層：未量化個別條件（簡短標籤與說明） */}
-            <div className="border border-[#DDE3DF] bg-white p-3.5 sm:p-4 text-xs">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[#3F5147]">
-                {stationFacts.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-[#1A2A22]">交通：</span>
-                    <span>
-                      {stationFacts.map((st, i) => `${st}${walkFacts[i] ? ` 徒步${walkFacts[i]}分` : ""}`).join("、")}
-                    </span>
-                  </div>
-                )}
-                {amenityHighlights.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-[#1A2A22]">生活機能：</span>
-                    <span>
-                      {amenityHighlights.map(a => `${a.label} ${Math.round(a.distanceMeters)}m`).join(" · ")}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <p className="mt-2.5 border-t border-[#DDE3DF] pt-2 text-[10px] leading-relaxed text-[#8A9590]">
-                ※ 國交省成交庫主要涵蓋區域、格局與屋齡帶；徒步距離、樓層視野與周邊機能等個別優勢，可做為評估本案開價合理性與議價之依據。
-              </p>
-            </div>
+            {/* 交通與生活機能不在這裡重列：下方「周邊情報地圖」已完整呈現車站動線與周邊設施。 */}
           </div>
         )}
 

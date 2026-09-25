@@ -1,8 +1,6 @@
-import type { ListingLocationContext } from '../listingLocation.js';
-import { parseTransitStations } from '../transitParser.js';
 import type { ListingReportModel } from './reportModel.js';
 
-export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnalysis, locationContext, extracted }: Pick<ListingReportModel, 'saleAnalysis' | 'extracted'> & { effectiveMlitComparison: NonNullable<ListingReportModel['effectiveMlitComparison']>; locationContext: ListingLocationContext | null }) {
+export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnalysis }: Pick<ListingReportModel, 'saleAnalysis'> & { effectiveMlitComparison: NonNullable<ListingReportModel['effectiveMlitComparison']> }) {
   const c = effectiveMlitComparison;
   const priceMan = typeof saleAnalysis?.salePriceMan === "number" ? saleAnalysis.salePriceMan : 0;
   const man = (v: number | null | undefined) =>
@@ -13,42 +11,6 @@ export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnaly
     totalMan == null || !saleAnalysis?.areaSqm
       ? null
       : (totalMan / saleAnalysis.areaSqm).toFixed(1);
-
-  // 車站熱門度／路線多寡屬於「同區內這一戶比區域平均好在哪」，
-  // 區域層級的條件已內含在成交基準裡，不該再乘一次係數；
-  // 但用具體事實（可利用幾站、各幾分）解釋價差，比一個估出來的百分比有說服力。
-  // 周邊機能同樣屬於「同區內這一戶比區域平均好在哪」：
-  // 區域層級已含在成交基準裡，但門口有沒有超商、醫院多遠，
-  // 同一個行政區內差異很大，是解釋價差時的具體材料。
-  // 這份資料由 /api/listing-location 非同步取得，可能還沒回來，要容許缺席。
-  const amenityHighlights = (() => {
-    const list = locationContext?.amenities ?? [];
-    if (!list.length) return [];
-    const order = ["convenience", "supermarket", "pharmacy", "medical", "school", "park"];
-    const nearest = new Map<string, { label: string; distanceMeters: number }>();
-    for (const a of list) {
-      const cur = nearest.get(a.category);
-      if (!cur || a.distanceMeters < cur.distanceMeters) {
-        nearest.set(a.category, { label: a.label, distanceMeters: a.distanceMeters });
-      }
-    }
-    return order
-      .filter(k => nearest.has(k))
-      .map(k => ({ category: k, ...nearest.get(k)! }));
-  })();
-
-  // 交通動線以 transitLegs 為事實來源。
-  //
-  // 舊寫法是把 station 與 walkTime 各自 split 後 filter(Boolean)，下游再用
-  // stationFacts[i] / walkFacts[i] 配對。只要有任一條動線未刊載步行時間，
-  // walkTime 就會少一格而讓後續全部錯位——實測 station="両国,両国,錦糸町"
-  // walkTime="1,,8" 會把錦糸町的 8 分錯配給第二個両国。
-  // legs 把三個維度綁在一起，結構上不可能錯位。
-  const legs = extracted?.transitLegs?.length
-    ? extracted.transitLegs
-    : parseTransitStations(extracted?.transitAccess, extracted?.station, extracted?.walkTime);
-  const stationFacts = legs.map(leg => leg.stationName).filter(Boolean);
-  const walkFacts = legs.map(leg => leg.walkMin === null ? "" : String(leg.walkMin));
 
   const officialMan = typeof c.areaBaselineMan === "number" && c.areaBaselineMan > 0
     ? c.areaBaselineMan
@@ -81,7 +43,7 @@ export function buildSaleMarketPresentation({ effectiveMlitComparison, saleAnaly
   const maxBound = axisHi + axisPad;
   const denom = maxBound - minBound;
   const pos = (v: number) => denom > 0 ? Math.max(0, Math.min(100, ((v - minBound) / denom) * 100)) : 50;
-  return { c, priceMan, man, sqmOf, amenityHighlights, stationFacts, walkFacts, officialMan, officialDiffPercent, listingMan, listingLowMan, listingHighMan, listingRangeText, fairLow, fairHigh, hasFairRange, span, pos };
+  return { c, priceMan, man, sqmOf, officialMan, officialDiffPercent, listingMan, listingLowMan, listingHighMan, listingRangeText, fairLow, fairHigh, hasFairRange, span, pos };
 }
 
 export function layoutSalePriceMarks(pos: (value: number) => number, fairLow: number | null, fairHigh: number | null, benchmarks: Array<{ key: string; value: number; shortLabel: string; tone: string }>) {
