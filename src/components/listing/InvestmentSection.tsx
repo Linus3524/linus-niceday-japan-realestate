@@ -5,6 +5,7 @@ ShieldCheck
 } from "lucide-react";
 import type { ListingHealthCheckModel } from '../../hooks/useListingHealthCheckController';
 import {
+splitRenovationGroups,
 translateOccupancyStatus,
 translateRenovationDetails
 } from "../../lib/equipmentParser";
@@ -130,14 +131,35 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
               </p>
             </div>
 
-            {extracted?.renovationDetails && (
-              <div className=" border border-[#DDE3DF] bg-[#F5F8F6] p-2.5">
-                <span className="font-bold text-[#1A2A22]">裝修與翻新內容（室內翻新履歷）：</span>
-                <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">
-                  {translateRenovationDetails(extracted.renovationDetails)}
-                </p>
-              </div>
-            )}
+            {extracted?.renovationDetails && (() => {
+              const translated = translateRenovationDetails(extracted.renovationDetails);
+              const groups = splitRenovationGroups(translated);
+              return (
+                <div className=" border border-[#DDE3DF] bg-[#F5F8F6] p-2.5">
+                  <p className="font-bold text-[#1A2A22]">裝修與翻新內容</p>
+                  {groups.length > 0 ? (
+                    <div className="mt-1.5 space-y-2">
+                      {groups.map((group, gi) => (
+                        <div key={gi}>
+                          {group.heading && (
+                            <p className="text-[11px] font-bold text-[#3F5147]">{group.heading}</p>
+                          )}
+                          {group.items.length > 0 && (
+                            <ul className="mt-0.5 list-disc space-y-0.5 pl-4 text-[11px] leading-relaxed text-[#3F5147] marker:text-[#8A9590]">
+                              {group.items.map((item, ii) => (
+                                <li key={ii}>{item}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">{translated}</p>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   parseEquipmentList,
+  splitRenovationGroups,
   translateRenovationDetails,
   translateOccupancyStatus,
 } from "../src/lib/equipmentParser";
@@ -98,4 +99,29 @@ for (const raw of ["ペット不可", "事務所不可", "楽器等の使用不�
 }
 
 console.log("Internet, Wi-Fi, Pet and negative restriction exclusion tests passed.");
+
+// 裝修翻新內容條列：以「。」分段、「：」前為小標、「、」切項目，括號內的頓號不可切開
+{
+  const groups = splitRenovationGroups(
+    "2026年2月室內裝修完工：整體衛浴（附浴室換氣乾燥與追焚功能）、獨立化妝盥洗台更新、溫水洗淨便座2座、系統廚房（附洗碗機、IH爐）。2013年大樓大規模修繕工程實施。"
+  );
+  assert.deepEqual(groups, [
+    {
+      heading: "2026年2月室內裝修完工",
+      items: ["整體衛浴（附浴室換氣乾燥與追焚功能）", "獨立化妝盥洗台更新", "溫水洗淨便座2座", "系統廚房（附洗碗機、IH爐）"],
+    },
+    { heading: "", items: ["2013年大樓大規模修繕工程實施"] },
+  ]);
+
+  // 巢狀括號（和曆附註）與括號內冒號不可被誤判為小標或切開
+  const nested = splitRenovationGroups(translatedReno);
+  assert.equal(nested[0].heading, "翻新內容（2022年（令和4年）1月實施）");
+  assert.ok(nested[0].items.includes("更換木質地板"));
+  assert.ok(nested[0].items.length >= 5);
+  assert.ok(nested.every((g) => g.items.every((i) => !/\u0000/.test(i))));
+
+  assert.deepEqual(splitRenovationGroups(""), []);
+  assert.deepEqual(splitRenovationGroups("全室翻新完成"), [{ heading: "", items: ["全室翻新完成"] }]);
+}
+console.log("Renovation bullet grouping tests passed.");
 

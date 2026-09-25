@@ -1120,6 +1120,56 @@ export function translateRenovationDetails(raw: unknown): string {
 }
 
 /**
+ * 把（已翻譯的）裝修翻新文字拆成條列用的分組。
+ *
+ * 圖紙常寫成「2026年2月室內裝修完工：A、B（附C、D）、E。2013年大樓大規模修繕工程實施。」
+ * 一整串直接顯示很難讀，所以：
+ * - 以「。」切成段落；段落內第一個「：」之前當小標（完工時點等），之後的內容依「、」切成項目。
+ * - 括號內的頓號、冒號、句號不當分隔符（「整體衛浴（附換氣乾燥、追焚）」必須保持完整），
+ *   先把括號內容換成佔位符，切完再還原；巢狀括號（和曆附註）要反覆遮蔽到沒有為止。
+ * - 小標過長時不視為小標，避免把整句內文誤當標題。
+ */
+export function splitRenovationGroups(text: unknown): Array<{ heading: string; items: string[] }> {
+  if (typeof text !== "string" || !text.trim()) return [];
+  const parens: string[] = [];
+  let masked = text.trim();
+  for (;;) {
+    const next = masked.replace(/[（(][^（()）]*[)）]/gu, (m) => {
+      parens.push(m);
+      return `\u0000${parens.length - 1}\u0000`;
+    });
+    if (next === masked) break;
+    masked = next;
+  }
+  const restore = (s: string): string => {
+    let out = s;
+    while (/\u0000\d+\u0000/.test(out)) {
+      out = out.replace(/\u0000(\d+)\u0000/g, (_, i) => parens[Number(i)] ?? "");
+    }
+    return out.trim();
+  };
+
+  const groups: Array<{ heading: string; items: string[] }> = [];
+  for (const sentence of masked.split(/[。\n\r]+/u)) {
+    const s = sentence.trim();
+    if (!s) continue;
+    const colon = s.search(/[：:]/u);
+    let heading = "";
+    let body = s;
+    if (colon > 0 && colon <= 40 && colon < s.length - 1) {
+      heading = restore(s.slice(0, colon));
+      body = s.slice(colon + 1);
+    }
+    const items = body
+      .split(/[、，,；;]+/u)
+      .map((item) => restore(item).replace(/^[-・•*※\s]+|[-・•*※\s]+$/g, ""))
+      .filter(Boolean);
+    if (heading || items.length) groups.push({ heading, items });
+  }
+  return groups;
+}
+
+/**
  * 將日本不動產圖紙現況（引渡條件）翻譯為繁體中文
  */
 export function translateOccupancyStatus(raw: unknown): string {
