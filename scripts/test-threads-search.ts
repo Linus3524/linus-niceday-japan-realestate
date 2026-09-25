@@ -89,6 +89,11 @@ const buyBudgetHandoff = recommendThreadsForAnswer(
 assert.ok(buyBudgetHandoff.length > 0, "買房預算計算器帶入 AI 時應推薦相關文章");
 assert.ok(buyBudgetHandoff.every(result => BUY_CONTEXT_CATEGORIES.includes(result.category)), "買房預算只可推薦買房相關文章");
 
+const wooden = recommendThreadsForAnswer("日本的木造房子會不會很吵？", "木造的隔音通常不如 RC。", { limit: 2 });
+assert.equal(wooden[0]?.id, "DdqnAJrk31t", "AI 應辨識木造／隔音問法並推薦木造迷思專文");
+const woodenAlias = searchThreads("W造", { context: "buy", limit: 3 });
+assert.ok(woodenAlias.results.some(result => result.id === "DdqnAJrk31t"), "圖紙寫法 W造 應透過同義詞找到木造專文，且知識系列在買房情境也應曝光");
+
 const unrelated = recommendThreadsForAnswer("日本有沒有推薦的美食？", "這與日本住宅無關。", { limit: 2 });
 assert.deepEqual(unrelated, [], "離題問題不應推薦 Threads 文章");
 

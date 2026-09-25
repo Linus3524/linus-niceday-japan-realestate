@@ -34,6 +34,21 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DYwX2kyk97_" },
       { url: "https://www.threads.com/@linus3524/post/DZt6_hKEymN" },
       { url: "https://www.threads.com/@linus3524/post/DaJ5NIDkww9" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DdqnAJrk31t",
+        keywords: [
+          "木造",
+          "木造迷思",
+          "木造公寓",
+          "W造",
+          "木構造",
+          "建物構造",
+          "建築結構",
+          "隔音",
+          "防火",
+          "不耐用"
+        ]
+      },
     ],
   },
   {
