@@ -40,7 +40,7 @@ export interface MlitBuySnapshotRow {
 }
 
 export const mlitBuySnapshotMeta = {
-  generatedAt: "2026-09-09" as string | null,
+  generatedAt: "2026-10-02" as string | null,
   latestPeriod: "2026-Q1",
   sourceId: "mlit-reinfolib" as const,
   status: "ready" as "pending_api_approval" | "ready",
@@ -23625,8 +23625,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 28,
     "structureCounts": {
-      "ＲＣ": 17,
-      "ＳＲＣ": 11
+      "ＳＲＣ": 11,
+      "ＲＣ": 17
     },
     "sampleCount": 29,
     "windowQuarters": 4,
@@ -23931,8 +23931,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 14,
     "structureCounts": {
-      "ＲＣ": 7,
-      "ＳＲＣ": 8
+      "ＳＲＣ": 8,
+      "ＲＣ": 7
     },
     "sampleCount": 15,
     "windowQuarters": 4,
@@ -23999,8 +23999,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 66,
     "structureCounts": {
-      "ＲＣ": 35,
-      "ＳＲＣ": 31
+      "ＳＲＣ": 31,
+      "ＲＣ": 35
     },
     "sampleCount": 66,
     "windowQuarters": 4,
@@ -24039,8 +24039,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 172,
     "structureCounts": {
-      "ＳＲＣ": 63,
       "ＲＣ": 105,
+      "ＳＲＣ": 63,
       "ＲＣ、鉄骨造": 1,
       "ＳＲＣ、ＲＣ": 3
     },
@@ -24307,8 +24307,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 68,
     "structureCounts": {
-      "ＳＲＣ": 21,
-      "ＲＣ": 47
+      "ＲＣ": 47,
+      "ＳＲＣ": 21
     },
     "sampleCount": 69,
     "windowQuarters": 4,
@@ -24343,8 +24343,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 61,
     "structureCounts": {
-      "ＳＲＣ": 27,
       "ＲＣ": 33,
+      "ＳＲＣ": 27,
       "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 62,
@@ -24507,8 +24507,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 11
+      "ＲＣ": 11,
+      "ＳＲＣ": 2
     },
     "sampleCount": 13,
     "windowQuarters": 4,
@@ -24697,8 +24697,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 27,
     "structureCounts": {
-      "ＳＲＣ": 5,
-      "ＲＣ": 21
+      "ＲＣ": 21,
+      "ＳＲＣ": 5
     },
     "sampleCount": 29,
     "windowQuarters": 4,
@@ -24764,8 +24764,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 11,
     "structureCounts": {
-      "ＲＣ": 7,
-      "ＳＲＣ": 4
+      "ＳＲＣ": 4,
+      "ＲＣ": 7
     },
     "sampleCount": 11,
     "windowQuarters": 4,
@@ -24811,8 +24811,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 10,
     "structureCounts": {
-      "鉄骨造": 1,
-      "ＲＣ": 8
+      "ＲＣ": 8,
+      "鉄骨造": 1
     },
     "sampleCount": 10,
     "windowQuarters": 4,
@@ -24866,8 +24866,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＳＲＣ": 1,
-      "ＲＣ": 8
+      "ＲＣ": 8,
+      "ＳＲＣ": 1
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -25196,9 +25196,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 71,
     "structureCounts": {
+      "軽量鉄骨造": 2,
       "ＲＣ": 59,
       "ＳＲＣ": 9,
-      "軽量鉄骨造": 2,
       "鉄骨造": 1
     },
     "sampleCount": 71,
@@ -25471,8 +25471,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 5,
     "structureCounts": {
-      "ＲＣ": 3,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 3
     },
     "sampleCount": 5,
     "windowQuarters": 4,
@@ -25490,8 +25490,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 5,
     "structureCounts": {
-      "ＲＣ": 3,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 3
     },
     "sampleCount": 5,
     "windowQuarters": 4,
@@ -25509,8 +25509,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 7,
     "structureCounts": {
-      "ＲＣ": 5,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 5
     },
     "sampleCount": 7,
     "windowQuarters": 4,
@@ -25529,8 +25529,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 8,
     "structureCounts": {
       "ＲＣ": 6,
-      "ＳＲＣ": 1,
-      "鉄骨造": 1
+      "鉄骨造": 1,
+      "ＳＲＣ": 1
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -25857,8 +25857,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 127,
     "structureCounts": {
       "ＲＣ": 121,
-      "鉄骨造": 1,
-      "ＳＲＣ": 4
+      "ＳＲＣ": 4,
+      "鉄骨造": 1
     },
     "sampleCount": 127,
     "windowQuarters": 4,
@@ -25889,8 +25889,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 45,
     "structureCounts": {
-      "ＳＲＣ": 12,
       "ＲＣ": 32,
+      "ＳＲＣ": 12,
       "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 45,
@@ -25930,10 +25930,10 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 102,
     "structureCounts": {
-      "ＲＣ": 72,
       "ＳＲＣ": 28,
-      "ＳＲＣ、ＲＣ": 1,
-      "鉄骨造": 1
+      "ＲＣ": 72,
+      "鉄骨造": 1,
+      "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 102,
     "windowQuarters": 4,
@@ -25972,10 +25972,10 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 148,
     "structureCounts": {
-      "ＳＲＣ": 37,
-      "ＳＲＣ、ＲＣ": 2,
       "ＲＣ": 106,
-      "ＲＣ、鉄骨造": 1
+      "ＳＲＣ": 37,
+      "ＲＣ、鉄骨造": 1,
+      "ＳＲＣ、ＲＣ": 2
     },
     "sampleCount": 148,
     "windowQuarters": 4,
@@ -26052,8 +26052,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 7,
     "structureCounts": {
-      "ＲＣ": 4,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 4
     },
     "sampleCount": 7,
     "windowQuarters": 4,
@@ -26089,8 +26089,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 30,
     "structureCounts": {
       "ＲＣ": 26,
-      "ＳＲＣ、ＲＣ": 1,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 31,
     "windowQuarters": 4,
@@ -26648,8 +26648,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 154,
     "structureCounts": {
-      "ＳＲＣ": 17,
-      "ＲＣ": 135
+      "ＲＣ": 135,
+      "ＳＲＣ": 17
     },
     "sampleCount": 154,
     "windowQuarters": 4,
@@ -26688,8 +26688,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 60,
     "structureCounts": {
-      "ＳＲＣ": 13,
-      "ＲＣ": 47
+      "ＲＣ": 47,
+      "ＳＲＣ": 13
     },
     "sampleCount": 63,
     "windowQuarters": 4,
@@ -26728,8 +26728,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 64,
     "structureCounts": {
-      "ＳＲＣ": 12,
       "ＲＣ": 51,
+      "ＳＲＣ": 12,
       "鉄骨造": 1
     },
     "sampleCount": 65,
@@ -26939,8 +26939,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＲＣ": 5,
       "ＳＲＣ": 3,
+      "ＲＣ": 5,
       "鉄骨造": 1
     },
     "sampleCount": 10,
@@ -26976,9 +26976,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 34,
     "structureCounts": {
-      "ＳＲＣ": 3,
       "ＲＣ": 27,
-      "鉄骨造": 3
+      "鉄骨造": 3,
+      "ＳＲＣ": 3
     },
     "sampleCount": 37,
     "windowQuarters": 4,
@@ -27018,8 +27018,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 56,
     "structureCounts": {
       "ＲＣ": 47,
-      "ＳＲＣ": 8,
-      "ＲＣ、鉄骨造": 1
+      "ＲＣ、鉄骨造": 1,
+      "ＳＲＣ": 8
     },
     "sampleCount": 57,
     "windowQuarters": 4,
@@ -27043,8 +27043,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 17,
     "structureCounts": {
       "ＲＣ": 14,
-      "ＳＲＣ、ＲＣ": 1,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＳＲＣ、ＲＣ": 1
     },
     "sampleCount": 17,
     "windowQuarters": 4,
@@ -27067,8 +27067,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＳＲＣ": 1,
-      "ＲＣ": 11
+      "ＲＣ": 11,
+      "ＳＲＣ": 1
     },
     "sampleCount": 14,
     "windowQuarters": 4,
@@ -27168,8 +27168,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 30,
     "structureCounts": {
-      "ＳＲＣ": 5,
-      "ＲＣ": 25
+      "ＲＣ": 25,
+      "ＳＲＣ": 5
     },
     "sampleCount": 31,
     "windowQuarters": 4,
@@ -27192,8 +27192,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 13,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 11
+      "ＲＣ": 11,
+      "ＳＲＣ": 2
     },
     "sampleCount": 13,
     "windowQuarters": 4,
@@ -27216,9 +27216,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
+      "鉄骨造": 2,
       "ＲＣ": 6,
-      "ＳＲＣ": 1,
-      "鉄骨造": 2
+      "ＳＲＣ": 1
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -27302,8 +27302,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 32,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 31
+      "ＲＣ": 31,
+      "ＳＲＣ": 2
     },
     "sampleCount": 33,
     "windowQuarters": 4,
@@ -27359,8 +27359,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "structureCounts": {
       "ＲＣ": 30,
       "ＳＲＣ": 15,
-      "ＲＣ、鉄骨造": 1,
-      "鉄骨造": 1
+      "鉄骨造": 1,
+      "ＲＣ、鉄骨造": 1
     },
     "sampleCount": 50,
     "windowQuarters": 4,
@@ -27493,8 +27493,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 51,
     "structureCounts": {
-      "ＲＣ": 27,
       "ＳＲＣ": 22,
+      "ＲＣ": 27,
       "鉄骨造": 1
     },
     "sampleCount": 53,
@@ -27534,8 +27534,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 111,
     "structureCounts": {
-      "ＳＲＣ": 31,
-      "ＲＣ": 81
+      "ＲＣ": 81,
+      "ＳＲＣ": 31
     },
     "sampleCount": 112,
     "windowQuarters": 4,
@@ -27574,8 +27574,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 127,
     "structureCounts": {
-      "ＳＲＣ": 39,
-      "ＲＣ": 90
+      "ＲＣ": 90,
+      "ＳＲＣ": 39
     },
     "sampleCount": 131,
     "windowQuarters": 4,
@@ -27821,9 +27821,9 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＳＲＣ": 1,
       "ＲＣ": 4,
-      "鉄骨造": 1
+      "鉄骨造": 1,
+      "ＳＲＣ": 1
     },
     "sampleCount": 6,
     "windowQuarters": 4,
@@ -27858,8 +27858,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 35,
     "structureCounts": {
-      "ＲＣ": 23,
-      "ＳＲＣ": 10
+      "ＳＲＣ": 10,
+      "ＲＣ": 23
     },
     "sampleCount": 35,
     "windowQuarters": 4,
@@ -27940,8 +27940,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 12,
     "structureCounts": {
-      "ＲＣ": 7,
-      "ＳＲＣ": 5
+      "ＳＲＣ": 5,
+      "ＲＣ": 7
     },
     "sampleCount": 12,
     "windowQuarters": 4,
@@ -27964,8 +27964,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 9,
     "structureCounts": {
-      "ＲＣ": 7,
-      "ＳＲＣ": 2
+      "ＳＲＣ": 2,
+      "ＲＣ": 7
     },
     "sampleCount": 9,
     "windowQuarters": 4,
@@ -27983,8 +27983,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 16,
     "structureCounts": {
-      "ＲＣ": 10,
-      "ＳＲＣ": 7
+      "ＳＲＣ": 7,
+      "ＲＣ": 10
     },
     "sampleCount": 17,
     "windowQuarters": 4,
@@ -28428,8 +28428,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＳＲＣ": 2,
-      "ＲＣ": 4
+      "ＲＣ": 4,
+      "ＳＲＣ": 2
     },
     "sampleCount": 6,
     "windowQuarters": 4,
@@ -28970,8 +28970,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 52,
     "structureCounts": {
-      "ＳＲＣ": 20,
-      "ＲＣ": 32
+      "ＲＣ": 32,
+      "ＳＲＣ": 20
     },
     "sampleCount": 52,
     "windowQuarters": 4,
@@ -29011,8 +29011,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "buildingYearSampleCount": 82,
     "structureCounts": {
       "ＲＣ": 59,
-      "ＳＲＣ": 24,
-      "ＲＣ、鉄骨造": 1
+      "ＲＣ、鉄骨造": 1,
+      "ＳＲＣ": 24
     },
     "sampleCount": 84,
     "windowQuarters": 4,
@@ -29111,8 +29111,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 105,
     "structureCounts": {
-      "ＲＣ": 66,
-      "ＳＲＣ": 41
+      "ＳＲＣ": 41,
+      "ＲＣ": 66
     },
     "sampleCount": 112,
     "windowQuarters": 4,
@@ -29187,8 +29187,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 74,
     "structureCounts": {
-      "ＳＲＣ": 24,
-      "ＲＣ": 51
+      "ＲＣ": 51,
+      "ＳＲＣ": 24
     },
     "sampleCount": 78,
     "windowQuarters": 4,
@@ -29227,8 +29227,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 47,
     "structureCounts": {
-      "ＲＣ": 35,
-      "ＳＲＣ": 14
+      "ＳＲＣ": 14,
+      "ＲＣ": 35
     },
     "sampleCount": 50,
     "windowQuarters": 4,
@@ -29287,8 +29287,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 182,
     "structureCounts": {
-      "ＲＣ": 156,
       "ＳＲＣ": 26,
+      "ＲＣ": 156,
       "鉄骨造": 1
     },
     "sampleCount": 183,
@@ -29364,8 +29364,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     },
     "buildingYearSampleCount": 65,
     "structureCounts": {
-      "ＲＣ": 45,
       "ＳＲＣ": 20,
+      "ＲＣ": 45,
       "鉄骨造": 1
     },
     "sampleCount": 67,
@@ -29417,8 +29417,8 @@ export const mlitBuySnapshots: MlitBuySnapshotRow[] = [
     "ageBands": {},
     "buildingYearSampleCount": 6,
     "structureCounts": {
-      "ＲＣ": 5,
-      "ＳＲＣ": 1
+      "ＳＲＣ": 1,
+      "ＲＣ": 5
     },
     "sampleCount": 6,
     "windowQuarters": 4,

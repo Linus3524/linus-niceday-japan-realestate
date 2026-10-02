@@ -9,11 +9,11 @@ export interface AtHomeNationwideRentSnapshotRow {
 }
 
 export const atHomeNationwideRentSnapshotMeta = {
-  capturedAt: "2026-09-05",
+  capturedAt: "2026-10-02",
   sourceId: "athome-public" as const,
   sourceLabel: "At Home 刊登物件直近 3 個月租金平均",
   municipalityCount: 1192,
-  layoutValueCount: 4785,
+  layoutValueCount: 4773,
   includesManagementFee: null as boolean | null
 };
 
@@ -23,11 +23,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya-city/",
     "rents": {
-      "r1": 52763,
-      "k1": 55373,
-      "ldk1": 73199,
-      "ldk2": 94116,
-      "ldk3": 114565
+      "r1": 52708,
+      "k1": 55380,
+      "ldk1": 73483,
+      "ldk2": 94324,
+      "ldk3": 114629
     }
   },
   {
@@ -35,11 +35,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市千種區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_chikusa-city/",
     "rents": {
-      "r1": 56411,
-      "k1": 60529,
-      "ldk1": 83631,
-      "ldk2": 109914,
-      "ldk3": 142234
+      "r1": 56148,
+      "k1": 60180,
+      "ldk1": 84403,
+      "ldk2": 110460,
+      "ldk3": 141242
     }
   },
   {
@@ -47,11 +47,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_higashi-city/",
     "rents": {
-      "r1": 66624,
-      "k1": 68489,
-      "ldk1": 91660,
-      "ldk2": 123511,
-      "ldk3": 147561
+      "r1": 67024,
+      "k1": 66794,
+      "ldk1": 92140,
+      "ldk2": 127083,
+      "ldk3": 168652
     }
   },
   {
@@ -59,11 +59,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_kita-city/",
     "rents": {
-      "r1": 56004,
-      "k1": 58465,
-      "ldk1": 72263,
-      "ldk2": 89504,
-      "ldk3": 105899
+      "r1": 55873,
+      "k1": 58594,
+      "ldk1": 72164,
+      "ldk2": 89702,
+      "ldk3": 102394
     }
   },
   {
@@ -71,11 +71,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_nishi-city/",
     "rents": {
-      "r1": 55111,
-      "k1": 56458,
-      "ldk1": 74044,
-      "ldk2": 93021,
-      "ldk3": 111113
+      "r1": 54606,
+      "k1": 55943,
+      "ldk1": 73474,
+      "ldk2": 92054,
+      "ldk3": 110308
     }
   },
   {
@@ -83,11 +83,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市中村區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_nakamura-city/",
     "rents": {
-      "r1": 58365,
-      "k1": 61143,
-      "ldk1": 77299,
-      "ldk2": 101331,
-      "ldk3": 129241
+      "r1": 55000,
+      "k1": 58500,
+      "ldk1": 59500,
+      "ldk2": 94575,
+      "ldk3": 160000
     }
   },
   {
@@ -95,11 +95,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市中區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_naka-city/",
     "rents": {
-      "r1": 67118,
-      "k1": 67748,
-      "ldk1": 95416,
-      "ldk2": 117386,
-      "ldk3": 141876
+      "r1": 67123,
+      "k1": 67952,
+      "ldk1": 95732,
+      "ldk2": 120394,
+      "ldk3": 142174
     }
   },
   {
@@ -107,11 +107,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市昭和區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_showa-city/",
     "rents": {
-      "r1": 48911,
-      "k1": 53255,
-      "ldk1": 76265,
-      "ldk2": 95373,
-      "ldk3": 122439
+      "r1": 47511,
+      "k1": 52508,
+      "ldk1": 75239,
+      "ldk2": 95489,
+      "ldk3": 123341
     }
   },
   {
@@ -119,11 +119,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市瑞穗區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_mizuho-city/",
     "rents": {
-      "r1": 50713,
-      "k1": 55868,
-      "ldk1": 74439,
-      "ldk2": 99717,
-      "ldk3": 120905
+      "r1": 50636,
+      "k1": 55537,
+      "ldk1": 73899,
+      "ldk2": 99030,
+      "ldk3": 119836
     }
   },
   {
@@ -131,11 +131,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市熱田區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_atsuta-city/",
     "rents": {
-      "r1": 51500,
-      "k1": 56250,
-      "ldk1": 59500,
-      "ldk2": 80000,
-      "ldk3": 102650
+      "r1": 52000,
+      "k1": 56500,
+      "ldk1": 58500,
+      "ldk2": 83250,
+      "ldk3": 102300
     }
   },
   {
@@ -144,9 +144,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_nakagawa-city/",
     "rents": {
       "r1": 50000,
-      "k1": 54725,
-      "ldk1": 54000,
-      "ldk2": 64750,
+      "k1": 54850,
+      "ldk1": 55000,
+      "ldk2": 65000,
       "ldk3": 82000
     }
   },
@@ -155,11 +155,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市港區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_minato-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 50000,
+      "r1": 47250,
+      "k1": 52000,
       "ldk1": 53000,
-      "ldk2": 63000,
-      "ldk3": 66125
+      "ldk2": 63500,
+      "ldk3": 65500
     }
   },
   {
@@ -170,8 +170,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 49000,
       "k1": 52500,
       "ldk1": 56000,
-      "ldk2": 68750,
-      "ldk3": 82000
+      "ldk2": 69500,
+      "ldk3": 81000
     }
   },
   {
@@ -179,11 +179,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市守山區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_moriyama-city/",
     "rents": {
-      "r1": 48250,
-      "k1": 47500,
+      "r1": 47000,
+      "k1": 48000,
       "ldk1": 52000,
-      "ldk2": 62700,
-      "ldk3": 81000
+      "ldk2": 62250,
+      "ldk3": 80000
     }
   },
   {
@@ -192,10 +192,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_midori-city/",
     "rents": {
       "r1": 56000,
-      "k1": 53500,
+      "k1": 53250,
       "ldk1": 55000,
-      "ldk2": 67000,
-      "ldk3": 74000
+      "ldk2": 67250,
+      "ldk3": 72750
     }
   },
   {
@@ -203,11 +203,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市名東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_meito-city/",
     "rents": {
-      "r1": 43628,
-      "k1": 46640,
-      "ldk1": 69901,
-      "ldk2": 85799,
-      "ldk3": 102144
+      "r1": 42603,
+      "k1": 45660,
+      "ldk1": 69196,
+      "ldk2": 85807,
+      "ldk3": 102385
     }
   },
   {
@@ -215,11 +215,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名古屋市天白區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagoya_tempaku-city/",
     "rents": {
-      "r1": 36159,
-      "k1": 41322,
-      "ldk1": 57286,
-      "ldk2": 75272,
-      "ldk3": 88290
+      "r1": 36694,
+      "k1": 41672,
+      "ldk1": 57574,
+      "ldk2": 75689,
+      "ldk3": 89456
     }
   },
   {
@@ -227,11 +227,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐橋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/toyohashi-city/",
     "rents": {
-      "r1": 40500,
-      "k1": 41000,
+      "r1": 41000,
+      "k1": 41500,
       "ldk1": 44000,
       "ldk2": 50000,
-      "ldk3": 70250
+      "ldk3": 73000
     }
   },
   {
@@ -239,11 +239,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/okazaki-city/",
     "rents": {
-      "r1": 48750,
-      "k1": 48500,
+      "r1": 48000,
+      "k1": 49000,
       "ldk1": 49000,
       "ldk2": 58000,
-      "ldk3": 69500
+      "ldk3": 67750
     }
   },
   {
@@ -251,8 +251,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "一宮市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/ichinomiya-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 45000,
+      "r1": 49500,
+      "k1": 45500,
       "ldk1": 45000,
       "ldk2": 50000,
       "ldk3": 71500
@@ -263,11 +263,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "瀬戶市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/seto-city/",
     "rents": {
-      "r1": null,
-      "k1": 45000,
-      "ldk1": 52750,
-      "ldk2": 58750,
-      "ldk3": 88000
+      "r1": 45750,
+      "k1": 44000,
+      "ldk1": 54250,
+      "ldk2": 59250,
+      "ldk3": 86000
     }
   },
   {
@@ -275,10 +275,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "半田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/handa-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 45000,
-      "ldk1": 50000,
-      "ldk2": 55250,
+      "r1": 43500,
+      "k1": 42750,
+      "ldk1": 48000,
+      "ldk2": 55000,
       "ldk3": 70000
     }
   },
@@ -287,11 +287,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "春日井市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/kasugai-city/",
     "rents": {
-      "r1": 49000,
+      "r1": 48000,
       "k1": 45000,
       "ldk1": 48000,
-      "ldk2": 55000,
-      "ldk3": 83000
+      "ldk2": 54000,
+      "ldk3": 74000
     }
   },
   {
@@ -300,10 +300,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/toyokawa-city/",
     "rents": {
       "r1": 43000,
-      "k1": 42250,
-      "ldk1": 43000,
-      "ldk2": 54000,
-      "ldk3": 67575
+      "k1": 42375,
+      "ldk1": 44000,
+      "ldk2": 54250,
+      "ldk3": 65650
     }
   },
   {
@@ -312,9 +312,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/tsushima-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
-      "ldk1": 50125,
-      "ldk2": 54000,
+      "k1": 48000,
+      "ldk1": 49500,
+      "ldk2": 53500,
       "ldk3": 63000
     }
   },
@@ -324,9 +324,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/hekinan-city/",
     "rents": {
       "r1": 44000,
-      "k1": 48500,
+      "k1": 49000,
       "ldk1": 49000,
-      "ldk2": 54750,
+      "ldk2": 55000,
       "ldk3": 80000
     }
   },
@@ -335,11 +335,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "刈谷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/kariya-city/",
     "rents": {
-      "r1": 49556,
-      "k1": 52134,
-      "ldk1": 62137,
-      "ldk2": 73950,
-      "ldk3": 81942
+      "r1": 51007,
+      "k1": 53225,
+      "ldk1": 62621,
+      "ldk2": 73735,
+      "ldk3": 81316
     }
   },
   {
@@ -347,11 +347,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/toyota-city/",
     "rents": {
-      "r1": 52000,
-      "k1": 52500,
+      "r1": 53250,
+      "k1": 52750,
       "ldk1": 55000,
       "ldk2": 58000,
-      "ldk3": 77600
+      "ldk3": 81500
     }
   },
   {
@@ -359,11 +359,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "安城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/anjo-city/",
     "rents": {
-      "r1": 53500,
+      "r1": 57250,
       "k1": 50000,
       "ldk1": 52000,
-      "ldk2": 66500,
-      "ldk3": 80000
+      "ldk2": 67000,
+      "ldk3": 100000
     }
   },
   {
@@ -371,11 +371,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西尾市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nishio-city/",
     "rents": {
-      "r1": 50250,
-      "k1": 46750,
-      "ldk1": 44500,
-      "ldk2": 54500,
-      "ldk3": 67500
+      "r1": 49500,
+      "k1": 46625,
+      "ldk1": 45000,
+      "ldk2": 55000,
+      "ldk3": 65000
     }
   },
   {
@@ -383,11 +383,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "蒲郡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/gamagori-city/",
     "rents": {
-      "r1": 39000,
-      "k1": 40250,
-      "ldk1": 42000,
-      "ldk2": 51250,
-      "ldk3": 59500
+      "r1": 36000,
+      "k1": 40000,
+      "ldk1": 40000,
+      "ldk2": 50000,
+      "ldk3": 63000
     }
   },
   {
@@ -395,11 +395,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "犬山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/inuyama-city/",
     "rents": {
-      "r1": 46006,
-      "k1": 44942,
-      "ldk1": 55285,
-      "ldk2": 61912,
-      "ldk3": 74036
+      "r1": 40000,
+      "k1": 46000,
+      "ldk1": 54000,
+      "ldk2": 60500,
+      "ldk3": 77000
     }
   },
   {
@@ -407,11 +407,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "常滑市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/tokoname-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 46500,
-      "ldk1": 51750,
-      "ldk2": 55750,
-      "ldk3": 85000
+      "r1": 49000,
+      "k1": 47375,
+      "ldk1": 52250,
+      "ldk2": 56500,
+      "ldk3": 83500
     }
   },
   {
@@ -419,11 +419,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "江南市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/konan-city/",
     "rents": {
-      "r1": 33500,
-      "k1": 45500,
+      "r1": 35000,
+      "k1": 46125,
       "ldk1": 44000,
-      "ldk2": 43100,
-      "ldk3": 73250
+      "ldk2": 43050,
+      "ldk3": 78000
     }
   },
   {
@@ -432,9 +432,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/komaki-city/",
     "rents": {
       "r1": 48000,
-      "k1": 51000,
-      "ldk1": 51000,
-      "ldk2": 61300,
+      "k1": 48000,
+      "ldk1": 50000,
+      "ldk2": 61750,
       "ldk3": 70000
     }
   },
@@ -443,11 +443,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "稻澤市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/inazawa-city/",
     "rents": {
-      "r1": 53000,
+      "r1": 55500,
       "k1": 42500,
-      "ldk1": 45000,
-      "ldk2": 58650,
-      "ldk3": 85000
+      "ldk1": 53000,
+      "ldk2": 59400,
+      "ldk3": 84000
     }
   },
   {
@@ -456,10 +456,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/shinshiro-city/",
     "rents": {
       "r1": null,
-      "k1": 43000,
-      "ldk1": 46250,
-      "ldk2": 51500,
-      "ldk3": 47500
+      "k1": 39500,
+      "ldk1": 46500,
+      "ldk2": 50750,
+      "ldk3": 40750
     }
   },
   {
@@ -467,11 +467,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東海市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/tokai-city/",
     "rents": {
-      "r1": 53000,
-      "k1": 49750,
-      "ldk1": 53000,
-      "ldk2": 64000,
-      "ldk3": 70000
+      "r1": 54000,
+      "k1": 51000,
+      "ldk1": 52000,
+      "ldk2": 64500,
+      "ldk3": 71000
     }
   },
   {
@@ -479,11 +479,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大府市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/obu-city/",
     "rents": {
-      "r1": 54000,
-      "k1": 47000,
-      "ldk1": 55000,
-      "ldk2": 66000,
-      "ldk3": 75000
+      "r1": 52514,
+      "k1": 51161,
+      "ldk1": 60892,
+      "ldk2": 68741,
+      "ldk3": 79526
     }
   },
   {
@@ -491,11 +491,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "知多市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chita-city/",
     "rents": {
-      "r1": 40750,
+      "r1": 40000,
       "k1": 47000,
-      "ldk1": 55000,
-      "ldk2": 56000,
-      "ldk3": 74000
+      "ldk1": 55750,
+      "ldk2": 57000,
+      "ldk3": 73000
     }
   },
   {
@@ -503,11 +503,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "知立市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chiryu-city/",
     "rents": {
-      "r1": 55000,
-      "k1": 52500,
-      "ldk1": 55000,
-      "ldk2": 61500,
-      "ldk3": 73000
+      "r1": 54000,
+      "k1": 52750,
+      "ldk1": 64250,
+      "ldk2": 60500,
+      "ldk3": 68000
     }
   },
   {
@@ -515,11 +515,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "尾張旭市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/owariasahi-city/",
     "rents": {
-      "r1": 43500,
-      "k1": 46000,
-      "ldk1": 57725,
-      "ldk2": 60000,
-      "ldk3": 73000
+      "r1": 41000,
+      "k1": 47000,
+      "ldk1": 57100,
+      "ldk2": 59000,
+      "ldk3": 74000
     }
   },
   {
@@ -527,11 +527,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高濱市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/takahama-city/",
     "rents": {
-      "r1": 40500,
-      "k1": 43000,
-      "ldk1": 59500,
-      "ldk2": 61525,
-      "ldk3": 97000
+      "r1": 41500,
+      "k1": 44000,
+      "ldk1": 56000,
+      "ldk2": 60825,
+      "ldk3": 82100
     }
   },
   {
@@ -539,11 +539,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岩倉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/iwakura-city/",
     "rents": {
-      "r1": 44799,
-      "k1": 46212,
-      "ldk1": 56161,
-      "ldk2": 65192,
-      "ldk3": 72704
+      "r1": 51000,
+      "k1": 42000,
+      "ldk1": 48000,
+      "ldk2": 60900,
+      "ldk3": 81500
     }
   },
   {
@@ -551,11 +551,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐明市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/toyoake-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 48250,
-      "ldk1": 48000,
-      "ldk2": 65500,
-      "ldk3": 91000
+      "r1": 49000,
+      "k1": 52500,
+      "ldk1": 47100,
+      "ldk2": 65000,
+      "ldk3": 75000
     }
   },
   {
@@ -563,11 +563,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "日進市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nisshin-city/",
     "rents": {
-      "r1": 50189,
-      "k1": 47079,
-      "ldk1": 63509,
-      "ldk2": 74029,
-      "ldk3": 105587
+      "r1": 49710,
+      "k1": 43290,
+      "ldk1": 62850,
+      "ldk2": 74130,
+      "ldk3": 104527
     }
   },
   {
@@ -575,10 +575,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "田原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/tahara-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 54000,
-      "ldk1": 51000,
-      "ldk2": 59000,
+      "r1": 45000,
+      "k1": 47000,
+      "ldk1": 50500,
+      "ldk2": 62000,
       "ldk3": null
     }
   },
@@ -589,9 +589,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 42500,
-      "ldk1": 53000,
-      "ldk2": 60000,
-      "ldk3": null
+      "ldk1": 54000,
+      "ldk2": 58000,
+      "ldk3": 67500
     }
   },
   {
@@ -599,11 +599,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "清須市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/kiyosu-city/",
     "rents": {
-      "r1": 50500,
-      "k1": 48500,
-      "ldk1": 55750,
+      "r1": 47500,
+      "k1": 47750,
+      "ldk1": 54750,
       "ldk2": 61500,
-      "ldk3": 99000
+      "ldk3": 105000
     }
   },
   {
@@ -611,10 +611,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北名古屋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/kitanagoya-city/",
     "rents": {
-      "r1": 47500,
+      "r1": 48000,
       "k1": 45500,
       "ldk1": 52000,
-      "ldk2": 59500,
+      "ldk2": 59750,
       "ldk3": 80000
     }
   },
@@ -624,10 +624,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/yatomi-city/",
     "rents": {
       "r1": null,
-      "k1": 58000,
-      "ldk1": 53500,
-      "ldk2": 67500,
-      "ldk3": 70000
+      "k1": 60500,
+      "ldk1": 60000,
+      "ldk2": 65000,
+      "ldk3": null
     }
   },
   {
@@ -635,11 +635,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "みよし市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/miyoshi-city/",
     "rents": {
-      "r1": 52500,
-      "k1": 51000,
-      "ldk1": 57000,
-      "ldk2": 73000,
-      "ldk3": 84000
+      "r1": 54500,
+      "k1": 53500,
+      "ldk1": 61000,
+      "ldk2": 72500,
+      "ldk3": 85100
     }
   },
   {
@@ -648,10 +648,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/ama-city/",
     "rents": {
       "r1": 43500,
-      "k1": 51000,
-      "ldk1": 53625,
+      "k1": 50000,
+      "ldk1": 52250,
       "ldk2": 53000,
-      "ldk3": 66000
+      "ldk3": 69000
     }
   },
   {
@@ -659,11 +659,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "長久手市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nagakute-city/",
     "rents": {
-      "r1": 46729,
-      "k1": 48920,
-      "ldk1": 63659,
-      "ldk2": 75658,
-      "ldk3": 91343
+      "r1": 46857,
+      "k1": 48797,
+      "ldk1": 63963,
+      "ldk2": 76213,
+      "ldk3": 92623
     }
   },
   {
@@ -671,11 +671,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "愛知郡東鄉町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/aichi_togo-city/",
     "rents": {
-      "r1": null,
-      "k1": 54000,
-      "ldk1": 64000,
-      "ldk2": 62900,
-      "ldk3": 70200
+      "r1": 42530,
+      "k1": 46747,
+      "ldk1": 49326,
+      "ldk2": 65830,
+      "ldk3": 76985
     }
   },
   {
@@ -685,9 +685,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 45000,
       "k1": 50000,
-      "ldk1": 56000,
-      "ldk2": 66000,
-      "ldk3": 60000
+      "ldk1": 59000,
+      "ldk2": 71500,
+      "ldk3": 59000
     }
   },
   {
@@ -695,11 +695,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "丹羽郡大口町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/niwa_oguchi-city/",
     "rents": {
-      "r1": 47346,
-      "k1": 47285,
-      "ldk1": 53817,
-      "ldk2": 59081,
-      "ldk3": 69053
+      "r1": 44917,
+      "k1": 45148,
+      "ldk1": 54442,
+      "ldk2": 59784,
+      "ldk3": 70156
     }
   },
   {
@@ -707,10 +707,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "丹羽郡扶桑町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/niwa_fuso-city/",
     "rents": {
-      "r1": 44000,
+      "r1": 43000,
       "k1": 52000,
-      "ldk1": 53500,
-      "ldk2": 57750,
+      "ldk1": 54500,
+      "ldk2": 57000,
       "ldk3": 63000
     }
   },
@@ -719,11 +719,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "海部郡大治町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/ama_oharu-city/",
     "rents": {
-      "r1": 44000,
+      "r1": null,
       "k1": 46500,
-      "ldk1": 49500,
-      "ldk2": 52500,
-      "ldk3": 89500
+      "ldk1": 49000,
+      "ldk2": 52000,
+      "ldk3": 90000
     }
   },
   {
@@ -731,11 +731,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "海部郡蟹江町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/ama_kanie-city/",
     "rents": {
-      "r1": 48000,
+      "r1": null,
       "k1": 53000,
-      "ldk1": 52250,
-      "ldk2": 56750,
-      "ldk3": 67000
+      "ldk1": 54000,
+      "ldk2": 56375,
+      "ldk3": 66000
     }
   },
   {
@@ -744,10 +744,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chita_agui-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
-      "ldk1": 55250,
-      "ldk2": 61500,
-      "ldk3": 75000
+      "k1": 44000,
+      "ldk1": 53000,
+      "ldk2": 62000,
+      "ldk3": null
     }
   },
   {
@@ -755,11 +755,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "知多郡東浦町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chita_higashiura-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 45000,
-      "ldk1": 56000,
-      "ldk2": 58000,
-      "ldk3": 66000
+      "r1": 45769,
+      "k1": 46590,
+      "ldk1": 55556,
+      "ldk2": 63721,
+      "ldk3": 84244
     }
   },
   {
@@ -767,11 +767,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "知多郡美濱町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chita_mihama-city/",
     "rents": {
-      "r1": 18764,
-      "k1": 22694,
-      "ldk1": 37524,
-      "ldk2": 43313,
-      "ldk3": 51835
+      "r1": 18661,
+      "k1": 22848,
+      "ldk1": 35687,
+      "ldk2": 43885,
+      "ldk3": 52641
     }
   },
   {
@@ -779,11 +779,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "知多郡武豐町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/chita_taketoyo-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 48500,
-      "ldk1": 50500,
-      "ldk2": 55000,
-      "ldk3": 76000
+      "r1": 48500,
+      "k1": 47000,
+      "ldk1": 51500,
+      "ldk2": 54250,
+      "ldk3": 75000
     }
   },
   {
@@ -791,11 +791,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "額田郡幸田町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aichi/nukata_kota-city/",
     "rents": {
-      "r1": 44500,
-      "k1": 39000,
-      "ldk1": 53500,
-      "ldk2": 58500,
-      "ldk3": 59000
+      "r1": 42882,
+      "k1": 41208,
+      "ldk1": 51718,
+      "ldk2": 59636,
+      "ldk3": 64790
     }
   },
   {
@@ -803,11 +803,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "秋田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/akita-city/",
     "rents": {
-      "r1": 42750,
-      "k1": 41000,
-      "ldk1": 48000,
+      "r1": 42000,
+      "k1": 40500,
+      "ldk1": 49000,
       "ldk2": 50000,
-      "ldk3": 75000
+      "ldk3": 75250
     }
   },
   {
@@ -815,11 +815,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "能代市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/noshiro-city/",
     "rents": {
-      "r1": 39000,
+      "r1": 42750,
       "k1": 49750,
-      "ldk1": 42500,
-      "ldk2": 50000,
-      "ldk3": 55000
+      "ldk1": 44000,
+      "ldk2": 48750,
+      "ldk3": null
     }
   },
   {
@@ -828,7 +828,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/yokote-city/",
     "rents": {
       "r1": null,
-      "k1": 59000,
+      "k1": 60000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -839,11 +839,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大館市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/odate-city/",
     "rents": {
-      "r1": 46000,
+      "r1": 46500,
       "k1": 40000,
-      "ldk1": 51750,
-      "ldk2": 50000,
-      "ldk3": 61000
+      "ldk1": 53000,
+      "ldk2": 54750,
+      "ldk3": 61500
     }
   },
   {
@@ -853,7 +853,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 57500,
+      "ldk1": 56000,
       "ldk2": null,
       "ldk3": null
     }
@@ -864,9 +864,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/yurihonjo-city/",
     "rents": {
       "r1": null,
-      "k1": 46500,
-      "ldk1": 48750,
-      "ldk2": 62000,
+      "k1": 45000,
+      "ldk1": 50000,
+      "ldk2": 60750,
       "ldk3": null
     }
   },
@@ -877,7 +877,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44000,
+      "ldk1": 45000,
       "ldk2": null,
       "ldk3": null
     }
@@ -888,9 +888,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/akita/daisen-city/",
     "rents": {
       "r1": null,
-      "k1": 52500,
-      "ldk1": 52000,
-      "ldk2": null,
+      "k1": 56000,
+      "ldk1": 51000,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -899,11 +899,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "青森市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/aomori-city/",
     "rents": {
-      "r1": 18000,
-      "k1": 42000,
+      "r1": 20000,
+      "k1": 41500,
       "ldk1": 45000,
-      "ldk2": 51900,
-      "ldk3": 67500
+      "ldk2": 52200,
+      "ldk3": 70000
     }
   },
   {
@@ -912,9 +912,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/hirosaki-city/",
     "rents": {
       "r1": 32000,
-      "k1": 37500,
+      "k1": 38000,
       "ldk1": 42000,
-      "ldk2": 52800,
+      "ldk2": 49600,
       "ldk3": null
     }
   },
@@ -924,10 +924,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/hachinohe-city/",
     "rents": {
       "r1": 49000,
-      "k1": 41500,
+      "k1": 40500,
       "ldk1": 40000,
       "ldk2": 45000,
-      "ldk3": 78000
+      "ldk3": 80000
     }
   },
   {
@@ -936,7 +936,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/kuroishi-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
+      "k1": 39500,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -948,8 +948,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/goshogawara-city/",
     "rents": {
       "r1": null,
-      "k1": 58000,
-      "ldk1": 41750,
+      "k1": 57000,
+      "ldk1": 45250,
       "ldk2": null,
       "ldk3": null
     }
@@ -960,9 +960,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/aomori/towada-city/",
     "rents": {
       "r1": null,
-      "k1": 61500,
+      "k1": 61000,
       "ldk1": 60000,
-      "ldk2": 68000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -983,11 +983,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba-city/",
     "rents": {
-      "r1": 56000,
+      "r1": 58000,
       "k1": 65000,
-      "ldk1": 57000,
-      "ldk2": 64250,
-      "ldk3": 80000
+      "ldk1": 58000,
+      "ldk2": 65000,
+      "ldk3": 103000
     }
   },
   {
@@ -995,11 +995,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_chuo-city/",
     "rents": {
-      "r1": 60234,
-      "k1": 63052,
-      "ldk1": 81893,
-      "ldk2": 101257,
-      "ldk3": 124256
+      "r1": 60851,
+      "k1": 63246,
+      "ldk1": 81842,
+      "ldk2": 101338,
+      "ldk3": 125672
     }
   },
   {
@@ -1007,11 +1007,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市花見川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_hanamigawa-city/",
     "rents": {
-      "r1": 56000,
-      "k1": 67500,
-      "ldk1": 57000,
+      "r1": 61500,
+      "k1": 68000,
+      "ldk1": 58000,
       "ldk2": 81000,
-      "ldk3": 110000
+      "ldk3": 105000
     }
   },
   {
@@ -1019,11 +1019,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市稻毛區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_inage-city/",
     "rents": {
-      "r1": 55569,
-      "k1": 61294,
-      "ldk1": 76923,
-      "ldk2": 92333,
-      "ldk3": 112327
+      "r1": 53000,
+      "k1": 62750,
+      "ldk1": 57000,
+      "ldk2": 75000,
+      "ldk3": 103000
     }
   },
   {
@@ -1031,11 +1031,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市若葉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_wakaba-city/",
     "rents": {
-      "r1": 41000,
+      "r1": 45000,
       "k1": 49500,
-      "ldk1": 54000,
-      "ldk2": 70000,
-      "ldk3": 89000
+      "ldk1": 54500,
+      "ldk2": 70500,
+      "ldk3": 90000
     }
   },
   {
@@ -1043,11 +1043,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市綠區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_midori-city/",
     "rents": {
-      "r1": 42393,
-      "k1": 46033,
-      "ldk1": 59736,
-      "ldk2": 65531,
-      "ldk3": 81066
+      "r1": 42976,
+      "k1": 46683,
+      "ldk1": 59915,
+      "ldk2": 67594,
+      "ldk3": 82112
     }
   },
   {
@@ -1055,11 +1055,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千葉市美濱區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chiba_mihama-city/",
     "rents": {
-      "r1": 68532,
-      "k1": 65998,
-      "ldk1": 85224,
-      "ldk2": 108490,
-      "ldk3": 157662
+      "r1": 70620,
+      "k1": 69382,
+      "ldk1": 86970,
+      "ldk2": 110655,
+      "ldk3": 170409
     }
   },
   {
@@ -1069,8 +1069,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 37500,
       "k1": 42000,
-      "ldk1": 48000,
-      "ldk2": 55000,
+      "ldk1": 50000,
+      "ldk2": 51500,
       "ldk3": null
     }
   },
@@ -1079,11 +1079,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "市川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/ichikawa-city/",
     "rents": {
-      "r1": 64536,
-      "k1": 73307,
-      "ldk1": 97414,
-      "ldk2": 118390,
-      "ldk3": 144585
+      "r1": 65432,
+      "k1": 74049,
+      "ldk1": 98240,
+      "ldk2": 119256,
+      "ldk3": 146137
     }
   },
   {
@@ -1091,11 +1091,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "船橋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/funabashi-city/",
     "rents": {
-      "r1": 55000,
-      "k1": 70000,
+      "r1": 56000,
+      "k1": 70500,
       "ldk1": 65000,
       "ldk2": 75000,
-      "ldk3": 114500
+      "ldk3": 99000
     }
   },
   {
@@ -1104,9 +1104,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/tateyama-city/",
     "rents": {
       "r1": 48000,
-      "k1": 47250,
-      "ldk1": 53000,
-      "ldk2": 55000,
+      "k1": 48250,
+      "ldk1": 50000,
+      "ldk2": 53000,
       "ldk3": 115000
     }
   },
@@ -1115,11 +1115,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "木更津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/kisarazu-city/",
     "rents": {
-      "r1": 58250,
-      "k1": 50000,
-      "ldk1": 49000,
-      "ldk2": 60500,
-      "ldk3": 93000
+      "r1": 58000,
+      "k1": 48500,
+      "ldk1": 47500,
+      "ldk2": 60000,
+      "ldk3": 126000
     }
   },
   {
@@ -1127,11 +1127,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "松戶市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/matsudo-city/",
     "rents": {
-      "r1": 57270,
-      "k1": 60586,
-      "ldk1": 77684,
-      "ldk2": 92690,
-      "ldk3": 108304
+      "r1": 58000,
+      "k1": 65000,
+      "ldk1": 62000,
+      "ldk2": 72000,
+      "ldk3": 100000
     }
   },
   {
@@ -1139,11 +1139,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "野田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/noda-city/",
     "rents": {
-      "r1": 43704,
-      "k1": 48971,
-      "ldk1": 65540,
-      "ldk2": 80138,
-      "ldk3": 114183
+      "r1": 44941,
+      "k1": 50073,
+      "ldk1": 66216,
+      "ldk2": 76689,
+      "ldk3": 113607
     }
   },
   {
@@ -1152,7 +1152,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/mobara-city/",
     "rents": {
       "r1": 30000,
-      "k1": 40000,
+      "k1": 41500,
       "ldk1": 40000,
       "ldk2": 45000,
       "ldk3": 64000
@@ -1163,10 +1163,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "成田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/narita-city/",
     "rents": {
-      "r1": 59000,
-      "k1": 59000,
+      "r1": 62000,
+      "k1": 61000,
       "ldk1": 55000,
-      "ldk2": 79650,
+      "ldk2": 82000,
       "ldk3": 140000
     }
   },
@@ -1175,8 +1175,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐倉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/sakura-city/",
     "rents": {
-      "r1": 41500,
-      "k1": 48750,
+      "r1": 40000,
+      "k1": 49750,
       "ldk1": 52000,
       "ldk2": 70000,
       "ldk3": 92000
@@ -1190,8 +1190,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 33000,
       "k1": 37000,
       "ldk1": 45000,
-      "ldk2": 53750,
-      "ldk3": 62000
+      "ldk2": 54000,
+      "ldk3": 62500
     }
   },
   {
@@ -1200,10 +1200,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/asahi-city/",
     "rents": {
       "r1": null,
-      "k1": 65000,
-      "ldk1": 52500,
+      "k1": 63000,
+      "ldk1": 51750,
       "ldk2": 57250,
-      "ldk3": 67250
+      "ldk3": 68500
     }
   },
   {
@@ -1211,11 +1211,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "習志野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/narashino-city/",
     "rents": {
-      "r1": 59128,
-      "k1": 64308,
-      "ldk1": 84215,
-      "ldk2": 100424,
-      "ldk3": 126261
+      "r1": 57442,
+      "k1": 63771,
+      "ldk1": 83351,
+      "ldk2": 100377,
+      "ldk3": 124469
     }
   },
   {
@@ -1223,11 +1223,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柏市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/kashiwa-city/",
     "rents": {
-      "r1": 56916,
-      "k1": 61002,
-      "ldk1": 78298,
-      "ldk2": 92613,
-      "ldk3": 112758
+      "r1": 56438,
+      "k1": 61655,
+      "ldk1": 78712,
+      "ldk2": 92323,
+      "ldk3": 115792
     }
   },
   {
@@ -1236,8 +1236,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/katsura-city/",
     "rents": {
       "r1": null,
-      "k1": 25500,
-      "ldk1": null,
+      "k1": 27500,
+      "ldk1": 57000,
       "ldk2": null,
       "ldk3": null
     }
@@ -1247,11 +1247,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "市原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/ichihara-city/",
     "rents": {
-      "r1": 40500,
+      "r1": 38000,
       "k1": 50000,
-      "ldk1": 48000,
+      "ldk1": 49000,
       "ldk2": 54000,
-      "ldk3": 70000
+      "ldk3": 69750
     }
   },
   {
@@ -1259,11 +1259,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "流山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/nagareyama-city/",
     "rents": {
-      "r1": 71969,
-      "k1": 75039,
-      "ldk1": 96164,
-      "ldk2": 117980,
-      "ldk3": 137993
+      "r1": 71156,
+      "k1": 73950,
+      "ldk1": 97577,
+      "ldk2": 118033,
+      "ldk3": 138511
     }
   },
   {
@@ -1271,11 +1271,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八千代市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/yachiyo-city/",
     "rents": {
-      "r1": 55000,
-      "k1": 57500,
-      "ldk1": 53500,
-      "ldk2": 63000,
-      "ldk3": 94500
+      "r1": 56000,
+      "k1": 59500,
+      "ldk1": 55000,
+      "ldk2": 62800,
+      "ldk3": 106000
     }
   },
   {
@@ -1283,11 +1283,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "我孫子市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/abiko-city/",
     "rents": {
-      "r1": 40500,
-      "k1": 57000,
-      "ldk1": 65000,
-      "ldk2": 70250,
-      "ldk3": 85500
+      "r1": 45000,
+      "k1": 54000,
+      "ldk1": 55000,
+      "ldk2": 69500,
+      "ldk3": 106000
     }
   },
   {
@@ -1295,11 +1295,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鴨川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/kamogawa-city/",
     "rents": {
-      "r1": 57500,
-      "k1": 50750,
-      "ldk1": 50000,
-      "ldk2": 72750,
-      "ldk3": 130000
+      "r1": 54000,
+      "k1": 52250,
+      "ldk1": 51000,
+      "ldk2": 62500,
+      "ldk3": 128500
     }
   },
   {
@@ -1307,11 +1307,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鎌ケ谷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/kamagaya-city/",
     "rents": {
-      "r1": 45500,
-      "k1": 63500,
-      "ldk1": 53500,
-      "ldk2": 72250,
-      "ldk3": 81250
+      "r1": 41000,
+      "k1": 61000,
+      "ldk1": 51500,
+      "ldk2": 74000,
+      "ldk3": 85975
     }
   },
   {
@@ -1319,10 +1319,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "君津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/kimitsu-city/",
     "rents": {
-      "r1": 54000,
-      "k1": 59000,
+      "r1": 51000,
+      "k1": 56500,
       "ldk1": 45000,
-      "ldk2": 55500,
+      "ldk2": 56500,
       "ldk3": 85000
     }
   },
@@ -1332,9 +1332,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/futtsu-city/",
     "rents": {
       "r1": null,
-      "k1": 72500,
-      "ldk1": 54000,
-      "ldk2": 63500,
+      "k1": 71000,
+      "ldk1": 53250,
+      "ldk2": 62750,
       "ldk3": null
     }
   },
@@ -1343,11 +1343,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "浦安市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/urayasu-city/",
     "rents": {
-      "r1": 63262,
-      "k1": 77041,
-      "ldk1": 100488,
-      "ldk2": 127735,
-      "ldk3": 165120
+      "r1": 64129,
+      "k1": 77831,
+      "ldk1": 102161,
+      "ldk2": 130154,
+      "ldk3": 166843
     }
   },
   {
@@ -1355,10 +1355,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "四街道市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/yotsukaido-city/",
     "rents": {
-      "r1": 67500,
-      "k1": 51400,
-      "ldk1": 54250,
-      "ldk2": 70000,
+      "r1": 63000,
+      "k1": 59000,
+      "ldk1": 62750,
+      "ldk2": 66750,
       "ldk3": 127500
     }
   },
@@ -1367,11 +1367,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "袖ケ浦市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/sodegaura-city/",
     "rents": {
-      "r1": null,
-      "k1": 63500,
-      "ldk1": 49000,
-      "ldk2": 63125,
-      "ldk3": 120000
+      "r1": 61500,
+      "k1": 55500,
+      "ldk1": 50000,
+      "ldk2": 62250,
+      "ldk3": 125000
     }
   },
   {
@@ -1380,10 +1380,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/yachimata-city/",
     "rents": {
       "r1": null,
-      "k1": 58500,
-      "ldk1": 43000,
-      "ldk2": 59625,
-      "ldk3": 63500
+      "k1": 55000,
+      "ldk1": 42000,
+      "ldk2": 57500,
+      "ldk3": 63000
     }
   },
   {
@@ -1391,11 +1391,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "印西市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/inzai-city/",
     "rents": {
-      "r1": 50460,
-      "k1": 52224,
-      "ldk1": 71702,
-      "ldk2": 91940,
-      "ldk3": 113482
+      "r1": 50508,
+      "k1": 52148,
+      "ldk1": 70162,
+      "ldk2": 85138,
+      "ldk3": 109066
     }
   },
   {
@@ -1406,7 +1406,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 65000,
       "ldk1": 65000,
-      "ldk2": 78000,
+      "ldk2": 71750,
       "ldk3": 81000
     }
   },
@@ -1416,10 +1416,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/tomisato-city/",
     "rents": {
       "r1": 40500,
-      "k1": 64000,
-      "ldk1": 58000,
-      "ldk2": 65500,
-      "ldk3": 69000
+      "k1": 64500,
+      "ldk1": 59000,
+      "ldk2": 68000,
+      "ldk3": 77500
     }
   },
   {
@@ -1430,7 +1430,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 50500,
-      "ldk2": 148000,
+      "ldk2": 156000,
       "ldk3": null
     }
   },
@@ -1440,9 +1440,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/sosa-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
-      "ldk1": 48000,
-      "ldk2": null,
+      "k1": 47000,
+      "ldk1": 50625,
+      "ldk2": 67000,
       "ldk3": null
     }
   },
@@ -1452,9 +1452,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/katori-city/",
     "rents": {
       "r1": null,
-      "k1": 61000,
+      "k1": 66000,
       "ldk1": 45000,
-      "ldk2": 56500,
+      "ldk2": 57000,
       "ldk3": null
     }
   },
@@ -1464,10 +1464,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/sammu-city/",
     "rents": {
       "r1": 29000,
-      "k1": 51500,
+      "k1": 43000,
       "ldk1": 50000,
-      "ldk2": 45000,
-      "ldk3": 61500
+      "ldk2": 54125,
+      "ldk3": 61000
     }
   },
   {
@@ -1478,7 +1478,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 40000,
-      "ldk2": 55000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -1487,11 +1487,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大網白里市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/oamishirasato-city/",
     "rents": {
-      "r1": 38104,
-      "k1": 36627,
-      "ldk1": 45417,
-      "ldk2": 53583,
-      "ldk3": 63588
+      "r1": 39370,
+      "k1": 36325,
+      "ldk1": 45007,
+      "ldk2": 53138,
+      "ldk3": 63712
     }
   },
   {
@@ -1499,10 +1499,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "印旛郡酒々井町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/imba_shisui-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 48500,
-      "ldk1": 69500,
-      "ldk2": 85000,
+      "r1": 37500,
+      "k1": 45000,
+      "ldk1": 70500,
+      "ldk2": 87500,
       "ldk3": null
     }
   },
@@ -1512,19 +1512,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/imba_sakae-city/",
     "rents": {
       "r1": null,
-      "k1": 61500,
-      "ldk1": 48000,
-      "ldk2": null,
-      "ldk3": null
-    }
-  },
-  {
-    "region": "千葉",
-    "district": "香取郡多古町",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/katori_tako-city/",
-    "rents": {
-      "r1": null,
-      "k1": 30000,
+      "k1": 62000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -1532,12 +1520,12 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
   },
   {
     "region": "千葉",
-    "district": "山武郡九十九里町",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/sambu_kujukuri-city/",
+    "district": "香取郡東庄町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/katori_tonosho-city/",
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 40000,
+      "ldk1": 45000,
       "ldk2": null,
       "ldk3": null
     }
@@ -1560,8 +1548,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chosei_ichinomiya-city/",
     "rents": {
       "r1": null,
-      "k1": 61000,
-      "ldk1": 56250,
+      "k1": 59000,
+      "ldk1": 57500,
       "ldk2": 128000,
       "ldk3": null
     }
@@ -1584,7 +1572,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/chiba/chosei_shirako-city/",
     "rents": {
       "r1": null,
-      "k1": 35500,
+      "k1": 35000,
       "ldk1": 43500,
       "ldk2": null,
       "ldk3": null
@@ -1595,11 +1583,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "松山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/matsuyama-city/",
     "rents": {
-      "r1": 35120,
-      "k1": 34522,
-      "ldk1": 46298,
-      "ldk2": 55471,
-      "ldk3": 67241
+      "r1": 34947,
+      "k1": 34311,
+      "ldk1": 46089,
+      "ldk2": 55613,
+      "ldk3": 67061
     }
   },
   {
@@ -1607,10 +1595,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "今治市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/imabari-city/",
     "rents": {
-      "r1": 42750,
-      "k1": 42000,
-      "ldk1": 47750,
-      "ldk2": 51500,
+      "r1": 42500,
+      "k1": 41500,
+      "ldk1": 47000,
+      "ldk2": 52625,
       "ldk3": 65000
     }
   },
@@ -1619,11 +1607,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宇和島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/uwajima-city/",
     "rents": {
-      "r1": 49000,
-      "k1": 40500,
-      "ldk1": 51500,
-      "ldk2": 51000,
-      "ldk3": 74500
+      "r1": 47000,
+      "k1": 39500,
+      "ldk1": 50500,
+      "ldk2": 57000,
+      "ldk3": 74000
     }
   },
   {
@@ -1632,7 +1620,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/yawatahama-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
+      "k1": 46000,
       "ldk1": 52000,
       "ldk2": 49000,
       "ldk3": 60000
@@ -1643,11 +1631,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新居濱市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/niihama-city/",
     "rents": {
-      "r1": 37750,
-      "k1": 37500,
-      "ldk1": 41000,
-      "ldk2": 45000,
-      "ldk3": 54750
+      "r1": 38000,
+      "k1": 37250,
+      "ldk1": 41250,
+      "ldk2": 44500,
+      "ldk3": 54000
     }
   },
   {
@@ -1655,8 +1643,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西条市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/saijo-city/",
     "rents": {
-      "r1": 39500,
-      "k1": 40500,
+      "r1": 36500,
+      "k1": 41500,
       "ldk1": 43000,
       "ldk2": 44000,
       "ldk3": 62000
@@ -1668,8 +1656,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/ozu-city/",
     "rents": {
       "r1": null,
-      "k1": 61000,
-      "ldk1": 48000,
+      "k1": 60000,
+      "ldk1": 46000,
       "ldk2": 51250,
       "ldk3": null
     }
@@ -1680,9 +1668,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/iyo-city/",
     "rents": {
       "r1": null,
-      "k1": 42500,
-      "ldk1": 46000,
-      "ldk2": 50250,
+      "k1": 38000,
+      "ldk1": 45500,
+      "ldk2": 50000,
       "ldk3": 60000
     }
   },
@@ -1692,10 +1680,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/shikokuchuo-city/",
     "rents": {
       "r1": null,
-      "k1": 42250,
-      "ldk1": 47500,
+      "k1": 41750,
+      "ldk1": 47875,
       "ldk2": 53000,
-      "ldk3": 59000
+      "ldk3": 58000
     }
   },
   {
@@ -1705,8 +1693,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 51250,
-      "ldk2": 57750,
+      "ldk1": 51500,
+      "ldk2": 59000,
       "ldk3": null
     }
   },
@@ -1715,11 +1703,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東温市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/toon-city/",
     "rents": {
-      "r1": 32000,
-      "k1": 35000,
-      "ldk1": 50000,
+      "r1": 31750,
+      "k1": 34000,
+      "ldk1": 49750,
       "ldk2": 51250,
-      "ldk3": 61000
+      "ldk3": 62000
     }
   },
   {
@@ -1729,8 +1717,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 42000,
       "k1": 42000,
-      "ldk1": 51250,
-      "ldk2": 55000,
+      "ldk1": 53000,
+      "ldk2": 55250,
       "ldk3": 65000
     }
   },
@@ -1739,11 +1727,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊予郡砥部町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ehime/iyo_tobe-city/",
     "rents": {
-      "r1": 41103,
-      "k1": 43984,
-      "ldk1": 51008,
-      "ldk2": 53240,
-      "ldk3": 57807
+      "r1": 37982,
+      "k1": 37295,
+      "ldk1": 46811,
+      "ldk2": 49247,
+      "ldk3": 53459
     }
   },
   {
@@ -1751,11 +1739,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福井市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/fukui-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 43000,
-      "ldk1": 54000,
-      "ldk2": 58500,
-      "ldk3": 69250
+      "r1": 45457,
+      "k1": 43948,
+      "ldk1": 53091,
+      "ldk2": 62084,
+      "ldk3": 76567
     }
   },
   {
@@ -1763,8 +1751,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "敦賀市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/tsuruga-city/",
     "rents": {
-      "r1": 49500,
-      "k1": 48500,
+      "r1": 48250,
+      "k1": 48650,
       "ldk1": 55000,
       "ldk2": 59000,
       "ldk3": 65000
@@ -1776,7 +1764,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/obama-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
+      "k1": 48000,
       "ldk1": 36000,
       "ldk2": null,
       "ldk3": null
@@ -1789,8 +1777,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 58500,
-      "ldk2": 63500,
+      "ldk1": 60000,
+      "ldk2": 66000,
       "ldk3": null
     }
   },
@@ -1801,7 +1789,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 53500,
+      "ldk1": 54000,
       "ldk2": null,
       "ldk3": null
     }
@@ -1813,8 +1801,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 46000,
       "k1": 54000,
-      "ldk1": 57500,
-      "ldk2": 68000,
+      "ldk1": 56750,
+      "ldk2": 69000,
       "ldk3": null
     }
   },
@@ -1825,7 +1813,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 54000,
+      "ldk1": 55750,
       "ldk2": 48750,
       "ldk3": null
     }
@@ -1835,10 +1823,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "越前市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/echizen-city/",
     "rents": {
-      "r1": 47500,
-      "k1": 58000,
-      "ldk1": 56250,
-      "ldk2": 74500,
+      "r1": 48250,
+      "k1": 47500,
+      "ldk1": 56875,
+      "ldk2": 75000,
       "ldk3": null
     }
   },
@@ -1848,8 +1836,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/sakai-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 52000,
+      "k1": 48000,
+      "ldk1": 53375,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -1860,8 +1848,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukui/yoshida_eiheiji-city/",
     "rents": {
       "r1": null,
-      "k1": 48000,
-      "ldk1": 57500,
+      "k1": 47000,
+      "ldk1": 58500,
       "ldk2": null,
       "ldk3": null
     }
@@ -1871,11 +1859,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu-city/",
     "rents": {
-      "r1": 37526,
-      "k1": 40059,
-      "ldk1": 50630,
-      "ldk2": 62558,
-      "ldk3": 78288
+      "r1": 37552,
+      "k1": 39982,
+      "ldk1": 50370,
+      "ldk2": 62227,
+      "ldk3": 74356
     }
   },
   {
@@ -1883,11 +1871,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市門司區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_moji-city/",
     "rents": {
-      "r1": 34000,
-      "k1": 45000,
+      "r1": 35000,
+      "k1": 46550,
       "ldk1": 40000,
       "ldk2": 46000,
-      "ldk3": 64000
+      "ldk3": 62500
     }
   },
   {
@@ -1896,10 +1884,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_wakamatsu-city/",
     "rents": {
       "r1": 43000,
-      "k1": 45500,
-      "ldk1": 40000,
-      "ldk2": 51250,
-      "ldk3": 57500
+      "k1": 45750,
+      "ldk1": 41000,
+      "ldk2": 51500,
+      "ldk3": 61250
     }
   },
   {
@@ -1907,11 +1895,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市戶畑區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_tobata-city/",
     "rents": {
-      "r1": 37850,
-      "k1": 41387,
-      "ldk1": 49675,
-      "ldk2": 68010,
-      "ldk3": 78118
+      "r1": 34500,
+      "k1": 43750,
+      "ldk1": 40000,
+      "ldk2": 60500,
+      "ldk3": 67000
     }
   },
   {
@@ -1919,11 +1907,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市小倉北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_kokurakita-city/",
     "rents": {
-      "r1": 42764,
-      "k1": 44803,
-      "ldk1": 57347,
-      "ldk2": 75575,
-      "ldk3": 94844
+      "r1": 42723,
+      "k1": 44924,
+      "ldk1": 56912,
+      "ldk2": 74616,
+      "ldk3": 92909
     }
   },
   {
@@ -1931,11 +1919,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市小倉南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_kokuraminami-city/",
     "rents": {
-      "r1": 33042,
-      "k1": 37204,
-      "ldk1": 46144,
-      "ldk2": 56608,
-      "ldk3": 66772
+      "r1": 34004,
+      "k1": 37180,
+      "ldk1": 45899,
+      "ldk2": 56150,
+      "ldk3": 65932
     }
   },
   {
@@ -1943,11 +1931,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市八幡東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_yahatahigashi-city/",
     "rents": {
-      "r1": 35088,
-      "k1": 38168,
-      "ldk1": 47210,
-      "ldk2": 57522,
-      "ldk3": 74440
+      "r1": 34781,
+      "k1": 37023,
+      "ldk1": 46744,
+      "ldk2": 56750,
+      "ldk3": 71470
     }
   },
   {
@@ -1955,11 +1943,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北九州市八幡西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kitakyushu_yahatanishi-city/",
     "rents": {
-      "r1": 34047,
-      "k1": 37597,
-      "ldk1": 47748,
-      "ldk2": 57647,
-      "ldk3": 68413
+      "r1": 34100,
+      "k1": 37395,
+      "ldk1": 47715,
+      "ldk2": 57472,
+      "ldk3": 68277
     }
   },
   {
@@ -1969,9 +1957,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 53000,
       "k1": 58500,
-      "ldk1": 60000,
-      "ldk2": 119000,
-      "ldk3": 112500
+      "ldk1": 61000,
+      "ldk2": 120000,
+      "ldk3": 113500
     }
   },
   {
@@ -1979,11 +1967,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_higashi-city/",
     "rents": {
-      "r1": 50269,
-      "k1": 54171,
-      "ldk1": 65816,
-      "ldk2": 93485,
-      "ldk3": 125356
+      "r1": 50223,
+      "k1": 54369,
+      "ldk1": 66063,
+      "ldk2": 94232,
+      "ldk3": 132953
     }
   },
   {
@@ -1991,11 +1979,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市博多區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_hakata-city/",
     "rents": {
-      "r1": 64000,
+      "r1": 65000,
       "k1": 64500,
-      "ldk1": 68000,
-      "ldk2": 97750,
-      "ldk3": 137000
+      "ldk1": 67000,
+      "ldk2": 97500,
+      "ldk3": 135000
     }
   },
   {
@@ -2003,11 +1991,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_chuo-city/",
     "rents": {
-      "r1": 68828,
-      "k1": 71983,
-      "ldk1": 92385,
-      "ldk2": 139167,
-      "ldk3": 189033
+      "r1": 67926,
+      "k1": 71065,
+      "ldk1": 92514,
+      "ldk2": 141557,
+      "ldk3": 194974
     }
   },
   {
@@ -2015,11 +2003,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_minami-city/",
     "rents": {
-      "r1": 53124,
-      "k1": 55259,
-      "ldk1": 68085,
-      "ldk2": 97705,
-      "ldk3": 122185
+      "r1": 53407,
+      "k1": 55772,
+      "ldk1": 68395,
+      "ldk2": 97287,
+      "ldk3": 121613
     }
   },
   {
@@ -2027,11 +2015,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_nishi-city/",
     "rents": {
-      "r1": 48940,
-      "k1": 51643,
-      "ldk1": 62523,
-      "ldk2": 89831,
-      "ldk3": 108909
+      "r1": 48684,
+      "k1": 51703,
+      "ldk1": 62533,
+      "ldk2": 89248,
+      "ldk3": 104557
     }
   },
   {
@@ -2039,11 +2027,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市城南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_jonan-city/",
     "rents": {
-      "r1": 41104,
-      "k1": 44854,
-      "ldk1": 59381,
-      "ldk2": 86375,
-      "ldk3": 104935
+      "r1": 41830,
+      "k1": 45921,
+      "ldk1": 61603,
+      "ldk2": 89873,
+      "ldk3": 110964
     }
   },
   {
@@ -2051,11 +2039,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福岡市早良區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukuoka_sawara-city/",
     "rents": {
-      "r1": 48643,
-      "k1": 54629,
-      "ldk1": 69016,
-      "ldk2": 106462,
-      "ldk3": 135703
+      "r1": 48842,
+      "k1": 52639,
+      "ldk1": 68364,
+      "ldk2": 104117,
+      "ldk3": 133174
     }
   },
   {
@@ -2063,11 +2051,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大牟田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/omuta-city/",
     "rents": {
-      "r1": 37000,
-      "k1": 42000,
+      "r1": 37500,
+      "k1": 43750,
       "ldk1": 37000,
       "ldk2": 42000,
-      "ldk3": 50750
+      "ldk3": 52000
     }
   },
   {
@@ -2075,11 +2063,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "久留米市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kurume-city/",
     "rents": {
-      "r1": 37267,
-      "k1": 38623,
-      "ldk1": 46531,
-      "ldk2": 55962,
-      "ldk3": 65120
+      "r1": 37544,
+      "k1": 39024,
+      "ldk1": 46828,
+      "ldk2": 56272,
+      "ldk3": 65279
     }
   },
   {
@@ -2088,10 +2076,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/nogata-city/",
     "rents": {
       "r1": 51000,
-      "k1": 45500,
-      "ldk1": 47150,
-      "ldk2": 49250,
-      "ldk3": 58000
+      "k1": 45250,
+      "ldk1": 46000,
+      "ldk2": 49000,
+      "ldk3": 58900
     }
   },
   {
@@ -2099,11 +2087,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "飯塚市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/iizuka-city/",
     "rents": {
-      "r1": 37114,
-      "k1": 37539,
-      "ldk1": 44303,
-      "ldk2": 51898,
-      "ldk3": 59532
+      "r1": 36680,
+      "k1": 37033,
+      "ldk1": 44072,
+      "ldk2": 51920,
+      "ldk3": 59804
     }
   },
   {
@@ -2112,10 +2100,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/tagawa-city/",
     "rents": {
       "r1": 31000,
-      "k1": 38000,
-      "ldk1": 50750,
-      "ldk2": 52500,
-      "ldk3": 66000
+      "k1": 38500,
+      "ldk1": 50000,
+      "ldk2": 52000,
+      "ldk3": 61500
     }
   },
   {
@@ -2123,11 +2111,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柳川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/yanagawa-city/",
     "rents": {
-      "r1": 43500,
-      "k1": 32500,
+      "r1": 42000,
+      "k1": 32750,
       "ldk1": 44500,
-      "ldk2": 47500,
-      "ldk3": 75000
+      "ldk2": 46500,
+      "ldk3": 75500
     }
   },
   {
@@ -2135,11 +2123,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八女市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/yame-city/",
     "rents": {
-      "r1": 44458,
-      "k1": 38431,
-      "ldk1": 46480,
-      "ldk2": 55438,
-      "ldk3": 62867
+      "r1": 38000,
+      "k1": 37000,
+      "ldk1": 44750,
+      "ldk2": 50500,
+      "ldk3": 66000
     }
   },
   {
@@ -2149,9 +2137,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 37000,
-      "ldk1": 43250,
-      "ldk2": 47250,
-      "ldk3": 63000
+      "ldk1": 43875,
+      "ldk2": 48000,
+      "ldk3": 61500
     }
   },
   {
@@ -2159,11 +2147,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/okawa-city/",
     "rents": {
-      "r1": 38000,
+      "r1": 37500,
       "k1": 38000,
       "ldk1": 41000,
       "ldk2": 48500,
-      "ldk3": 71500
+      "ldk3": 70250
     }
   },
   {
@@ -2171,11 +2159,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "行橋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/yukuhashi-city/",
     "rents": {
-      "r1": 47500,
+      "r1": 46000,
       "k1": 52250,
-      "ldk1": 50500,
-      "ldk2": 51250,
-      "ldk3": 72000
+      "ldk1": 49500,
+      "ldk2": 50500,
+      "ldk3": 70000
     }
   },
   {
@@ -2185,9 +2173,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 41000,
-      "ldk1": 44750,
-      "ldk2": 48250,
-      "ldk3": null
+      "ldk1": 45125,
+      "ldk2": 48500,
+      "ldk3": 60000
     }
   },
   {
@@ -2197,8 +2185,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 35000,
-      "ldk1": 44000,
-      "ldk2": 43000,
+      "ldk1": 43500,
+      "ldk2": 46000,
       "ldk3": 59750
     }
   },
@@ -2207,11 +2195,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小郡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/ogori-city/",
     "rents": {
-      "r1": 34000,
-      "k1": 37250,
-      "ldk1": 50750,
-      "ldk2": 51500,
-      "ldk3": 67000
+      "r1": 37000,
+      "k1": 37375,
+      "ldk1": 51000,
+      "ldk2": 54000,
+      "ldk3": 66000
     }
   },
   {
@@ -2219,11 +2207,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "筑紫野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/chikushino-city/",
     "rents": {
-      "r1": 41617,
-      "k1": 44842,
-      "ldk1": 52429,
-      "ldk2": 65783,
-      "ldk3": 77232
+      "r1": 42266,
+      "k1": 45637,
+      "ldk1": 53452,
+      "ldk2": 67329,
+      "ldk3": 78765
     }
   },
   {
@@ -2231,11 +2219,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "春日市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuga-city/",
     "rents": {
-      "r1": 41850,
-      "k1": 44216,
-      "ldk1": 57831,
-      "ldk2": 72777,
-      "ldk3": 91309
+      "r1": 41201,
+      "k1": 42414,
+      "ldk1": 54510,
+      "ldk2": 71370,
+      "ldk3": 89381
     }
   },
   {
@@ -2243,11 +2231,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大野城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/onojo-city/",
     "rents": {
-      "r1": 50915,
-      "k1": 51447,
-      "ldk1": 64446,
-      "ldk2": 77036,
-      "ldk3": 92381
+      "r1": 50878,
+      "k1": 51037,
+      "ldk1": 62578,
+      "ldk2": 76569,
+      "ldk3": 91878
     }
   },
   {
@@ -2255,11 +2243,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宗像市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/munakata-city/",
     "rents": {
-      "r1": 31087,
-      "k1": 37617,
-      "ldk1": 46248,
-      "ldk2": 55620,
-      "ldk3": 66186
+      "r1": 32369,
+      "k1": 37416,
+      "ldk1": 46450,
+      "ldk2": 55697,
+      "ldk3": 66582
     }
   },
   {
@@ -2267,11 +2255,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "太宰府市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/dazaifu-city/",
     "rents": {
-      "r1": 38432,
-      "k1": 40109,
-      "ldk1": 48484,
-      "ldk2": 62875,
-      "ldk3": 82378
+      "r1": 37622,
+      "k1": 39784,
+      "ldk1": 48527,
+      "ldk2": 63231,
+      "ldk3": 80726
     }
   },
   {
@@ -2279,11 +2267,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "古賀市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/koga-city/",
     "rents": {
-      "r1": 49000,
-      "k1": 46500,
-      "ldk1": 48000,
-      "ldk2": 56450,
-      "ldk3": 73000
+      "r1": 48250,
+      "k1": 45500,
+      "ldk1": 49000,
+      "ldk2": 55950,
+      "ldk3": 75000
     }
   },
   {
@@ -2291,11 +2279,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/fukutsu-city/",
     "rents": {
-      "r1": 47549,
-      "k1": 48281,
-      "ldk1": 60712,
-      "ldk2": 68656,
-      "ldk3": 84348
+      "r1": 42000,
+      "k1": 47250,
+      "ldk1": 45000,
+      "ldk2": 68500,
+      "ldk3": 84500
     }
   },
   {
@@ -2304,10 +2292,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/ukiha-city/",
     "rents": {
       "r1": 33000,
-      "k1": 38500,
-      "ldk1": 47500,
-      "ldk2": 50000,
-      "ldk3": 58500
+      "k1": 38000,
+      "ldk1": 48500,
+      "ldk2": 51250,
+      "ldk3": 60000
     }
   },
   {
@@ -2316,8 +2304,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/miyawaka-city/",
     "rents": {
       "r1": null,
-      "k1": 66000,
-      "ldk1": 46000,
+      "k1": 62500,
+      "ldk1": 43000,
       "ldk2": 52500,
       "ldk3": null
     }
@@ -2329,8 +2317,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44000,
-      "ldk2": 47000,
+      "ldk1": 43500,
+      "ldk2": 47250,
       "ldk3": null
     }
   },
@@ -2339,10 +2327,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "朝倉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/asakura-city/",
     "rents": {
-      "r1": 45500,
-      "k1": 44750,
+      "r1": 45750,
+      "k1": 45000,
       "ldk1": 44000,
-      "ldk2": 45500,
+      "ldk2": 46500,
       "ldk3": 63500
     }
   },
@@ -2353,8 +2341,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 32000,
-      "ldk1": 50750,
-      "ldk2": 54000,
+      "ldk1": null,
+      "ldk2": 46250,
       "ldk3": null
     }
   },
@@ -2364,10 +2352,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/itoshima-city/",
     "rents": {
       "r1": 48500,
-      "k1": 47750,
-      "ldk1": 55125,
-      "ldk2": 70000,
-      "ldk3": 80000
+      "k1": 46000,
+      "ldk1": 53750,
+      "ldk2": 65000,
+      "ldk3": 81500
     }
   },
   {
@@ -2375,11 +2363,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "那珂川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/nakagawa-city/",
     "rents": {
-      "r1": 37861,
-      "k1": 41351,
-      "ldk1": 48943,
-      "ldk2": 68906,
-      "ldk3": 80584
+      "r1": null,
+      "k1": 47500,
+      "ldk1": 58500,
+      "ldk2": 63500,
+      "ldk3": 77000
     }
   },
   {
@@ -2388,9 +2376,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_umi-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 54250,
-      "ldk2": 71500,
+      "k1": 43000,
+      "ldk1": 55250,
+      "ldk2": 66000,
       "ldk3": 124000
     }
   },
@@ -2400,10 +2388,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_sasaguri-city/",
     "rents": {
       "r1": null,
-      "k1": 54000,
+      "k1": 63000,
       "ldk1": 53000,
-      "ldk2": 70000,
-      "ldk3": 74000
+      "ldk2": 69000,
+      "ldk3": 73000
     }
   },
   {
@@ -2411,11 +2399,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "糟屋郡志免町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_shime-city/",
     "rents": {
-      "r1": 58537,
-      "k1": 57482,
-      "ldk1": 66275,
-      "ldk2": 72158,
-      "ldk3": 78938
+      "r1": 45000,
+      "k1": 61000,
+      "ldk1": 60000,
+      "ldk2": 64750,
+      "ldk3": 75000
     }
   },
   {
@@ -2423,10 +2411,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "糟屋郡須惠町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_sue-city/",
     "rents": {
-      "r1": null,
-      "k1": 61000,
-      "ldk1": 64000,
-      "ldk2": 75500,
+      "r1": 49500,
+      "k1": 62000,
+      "ldk1": 64250,
+      "ldk2": 78000,
       "ldk3": null
     }
   },
@@ -2435,11 +2423,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "糟屋郡新宮町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_shingu-city/",
     "rents": {
-      "r1": 40999,
-      "k1": 47154,
-      "ldk1": 58005,
-      "ldk2": 73919,
-      "ldk3": 80837
+      "r1": 40765,
+      "k1": 47542,
+      "ldk1": 59276,
+      "ldk2": 73892,
+      "ldk3": 86433
     }
   },
   {
@@ -2447,11 +2435,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "糟屋郡粕屋町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/kasuya_kasuya-city/",
     "rents": {
-      "r1": 57080,
-      "k1": 60644,
-      "ldk1": 72475,
-      "ldk2": 78152,
-      "ldk3": 96890
+      "r1": 55861,
+      "k1": 59296,
+      "ldk1": 70176,
+      "ldk2": 77951,
+      "ldk3": 93557
     }
   },
   {
@@ -2461,8 +2449,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 30000,
       "k1": null,
-      "ldk1": 43750,
-      "ldk2": 51000,
+      "ldk1": 47000,
+      "ldk2": 49125,
       "ldk3": null
     }
   },
@@ -2473,9 +2461,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 43000,
-      "ldk1": 45750,
-      "ldk2": 49250,
-      "ldk3": 59500
+      "ldk1": 46750,
+      "ldk2": 48875,
+      "ldk3": 59000
     }
   },
   {
@@ -2485,8 +2473,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 38000,
-      "ldk1": 40500,
-      "ldk2": 47500,
+      "ldk1": 41000,
+      "ldk2": 47750,
       "ldk3": 60000
     }
   },
@@ -2496,9 +2484,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/onga_onga-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
-      "ldk1": 45125,
-      "ldk2": 47250,
+      "k1": 48000,
+      "ldk1": 45000,
+      "ldk2": 45750,
       "ldk3": 60000
     }
   },
@@ -2509,8 +2497,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 52000,
-      "ldk2": 50000,
+      "ldk1": null,
+      "ldk2": 38200,
       "ldk3": null
     }
   },
@@ -2521,9 +2509,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45000,
-      "ldk2": 48000,
-      "ldk3": 65500
+      "ldk1": 43853,
+      "ldk2": 52258,
+      "ldk3": 68066
     }
   },
   {
@@ -2533,8 +2521,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 40000,
-      "ldk1": 46500,
-      "ldk2": 53250,
+      "ldk1": 47000,
+      "ldk2": 56000,
       "ldk3": 60000
     }
   },
@@ -2543,10 +2531,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三井郡大刀洗町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/mii_tachiarai-city/",
     "rents": {
-      "r1": 35000,
+      "r1": null,
       "k1": 40000,
-      "ldk1": 45625,
-      "ldk2": 55000,
+      "ldk1": 48250,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -2556,9 +2544,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/mizuma_oki-city/",
     "rents": {
       "r1": null,
-      "k1": 31000,
+      "k1": null,
       "ldk1": 40000,
-      "ldk2": 49000,
+      "ldk2": 50500,
       "ldk3": null
     }
   },
@@ -2567,10 +2555,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八女郡廣川町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/yame_hirokawa-city/",
     "rents": {
-      "r1": 30000,
-      "k1": 33000,
-      "ldk1": 42250,
-      "ldk2": 42325,
+      "r1": 31000,
+      "k1": 35500,
+      "ldk1": 41625,
+      "ldk2": 43275,
       "ldk3": 55000
     }
   },
@@ -2580,9 +2568,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/miyako_kanda-city/",
     "rents": {
       "r1": 30000,
-      "k1": 48500,
-      "ldk1": 51625,
-      "ldk2": 55500,
+      "k1": 50000,
+      "ldk1": 52250,
+      "ldk2": 55250,
       "ldk3": 72000
     }
   },
@@ -2592,10 +2580,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukuoka/chikujo_yoshitomi-city/",
     "rents": {
       "r1": null,
-      "k1": 42000,
-      "ldk1": 43500,
-      "ldk2": 50000,
-      "ldk3": 67000
+      "k1": 43000,
+      "ldk1": 42750,
+      "ldk2": 48500,
+      "ldk3": 69250
     }
   },
   {
@@ -2617,8 +2605,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 46500,
-      "ldk2": 53000,
+      "ldk1": 45750,
+      "ldk2": 51500,
       "ldk3": null
     }
   },
@@ -2627,11 +2615,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/fukushima-city/",
     "rents": {
-      "r1": 42000,
-      "k1": 41500,
+      "r1": 41750,
+      "k1": 40750,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 60000
+      "ldk3": 71000
     }
   },
   {
@@ -2639,11 +2627,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "会津若松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/aizuwakamatsu-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 38750,
+      "r1": 49500,
+      "k1": 38000,
       "ldk1": 49000,
       "ldk2": 50000,
-      "ldk3": 63000
+      "ldk3": 64000
     }
   },
   {
@@ -2653,9 +2641,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 42000,
       "k1": 40000,
-      "ldk1": 45000,
+      "ldk1": 46000,
       "ldk2": 54000,
-      "ldk3": 80000
+      "ldk3": 82000
     }
   },
   {
@@ -2663,10 +2651,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "磐城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/iwaki-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 36750,
+      "r1": 36000,
+      "k1": 36500,
       "ldk1": 42000,
-      "ldk2": 48000,
+      "ldk2": 47100,
       "ldk3": 73500
     }
   },
@@ -2676,9 +2664,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/shirakawa-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
+      "k1": 50000,
       "ldk1": 46000,
-      "ldk2": 54500,
+      "ldk2": 54250,
       "ldk3": null
     }
   },
@@ -2690,7 +2678,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 47000,
       "k1": 45000,
       "ldk1": 48000,
-      "ldk2": 58000,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -2700,9 +2688,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/kitakata-city/",
     "rents": {
       "r1": null,
-      "k1": 35000,
+      "k1": 34000,
       "ldk1": 44000,
-      "ldk2": 57500,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -2713,8 +2701,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 49000,
-      "ldk1": 40000,
-      "ldk2": 56000,
+      "ldk1": 41500,
+      "ldk2": 57000,
       "ldk3": null
     }
   },
@@ -2723,8 +2711,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "二本松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/nihommatsu-city/",
     "rents": {
-      "r1": 40500,
-      "k1": 39500,
+      "r1": 38000,
+      "k1": 39000,
       "ldk1": 45000,
       "ldk2": 50000,
       "ldk3": null
@@ -2735,10 +2723,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "田村市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/tamura-city/",
     "rents": {
-      "r1": 41953,
-      "k1": 39313,
-      "ldk1": 49855,
-      "ldk2": 56847,
+      "r1": null,
+      "k1": 42000,
+      "ldk1": 51000,
+      "ldk2": 58000,
       "ldk3": null
     }
   },
@@ -2747,8 +2735,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "南相馬市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/minamisoma-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 41500,
+      "r1": 43000,
+      "k1": 41000,
       "ldk1": 42000,
       "ldk2": 48000,
       "ldk3": 65000
@@ -2759,10 +2747,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊達市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/date-city/",
     "rents": {
-      "r1": 44750,
-      "k1": 47000,
+      "r1": 45000,
+      "k1": 45000,
       "ldk1": 45000,
-      "ldk2": 50000,
+      "ldk2": 49900,
       "ldk3": null
     }
   },
@@ -2772,9 +2760,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/motomiya-city/",
     "rents": {
       "r1": null,
-      "k1": 50500,
-      "ldk1": 42000,
-      "ldk2": 53375,
+      "k1": 50000,
+      "ldk1": 43000,
+      "ldk2": 54250,
       "ldk3": null
     }
   },
@@ -2785,8 +2773,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 48125,
-      "ldk2": 47600,
+      "ldk1": 48500,
+      "ldk2": 46100,
       "ldk3": null
     }
   },
@@ -2798,7 +2786,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 46000,
-      "ldk2": 47000,
+      "ldk2": 44500,
       "ldk3": null
     }
   },
@@ -2809,7 +2797,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 47750,
+      "ldk1": 47875,
       "ldk2": 56000,
       "ldk3": null
     }
@@ -2820,7 +2808,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/iwase_kagamiishi-city/",
     "rents": {
       "r1": null,
-      "k1": 58000,
+      "k1": 60500,
       "ldk1": 45000,
       "ldk2": null,
       "ldk3": null
@@ -2844,7 +2832,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/fukushima/nishishirakawa_nishigo-city/",
     "rents": {
       "r1": null,
-      "k1": 67000,
+      "k1": 69000,
       "ldk1": 54500,
       "ldk2": null,
       "ldk3": null
@@ -2857,7 +2845,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 66000,
-      "ldk1": 45500,
+      "ldk1": 45000,
       "ldk2": null,
       "ldk3": null
     }
@@ -2869,7 +2857,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 35000,
-      "ldk1": null,
+      "ldk1": 38000,
       "ldk2": null,
       "ldk3": null
     }
@@ -2893,8 +2881,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 54500,
-      "ldk1": 53000,
-      "ldk2": 61000,
+      "ldk1": 52500,
+      "ldk2": 60000,
       "ldk3": null
     }
   },
@@ -2931,7 +2919,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 37000,
       "ldk1": 41000,
       "ldk2": 45000,
-      "ldk3": 54500
+      "ldk3": 55000
     }
   },
   {
@@ -2939,11 +2927,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大垣市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/ogaki-city/",
     "rents": {
-      "r1": 40750,
-      "k1": 39250,
+      "r1": 39000,
+      "k1": 39500,
       "ldk1": 40000,
       "ldk2": 45000,
-      "ldk3": 62000
+      "ldk3": 59900
     }
   },
   {
@@ -2952,8 +2940,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/takayama-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
-      "ldk1": 55000,
+      "k1": 43500,
+      "ldk1": 50000,
       "ldk2": null,
       "ldk3": null
     }
@@ -2963,11 +2951,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "多治見市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/tajimi-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 54000,
-      "ldk1": 46500,
-      "ldk2": 57000,
-      "ldk3": 61000
+      "r1": 45000,
+      "k1": 52500,
+      "ldk1": 46000,
+      "ldk2": 55500,
+      "ldk3": 62000
     }
   },
   {
@@ -2978,7 +2966,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 33000,
       "k1": 33500,
       "ldk1": 40000,
-      "ldk2": 48750,
+      "ldk2": 50000,
       "ldk3": 52000
     }
   },
@@ -2990,7 +2978,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 45000,
       "ldk1": 46000,
-      "ldk2": 49750,
+      "ldk2": 50525,
       "ldk3": null
     }
   },
@@ -3001,7 +2989,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 48250,
+      "ldk1": 48000,
       "ldk2": 49000,
       "ldk3": null
     }
@@ -3011,10 +2999,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "瑞浪市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/mizunami-city/",
     "rents": {
-      "r1": 43500,
+      "r1": 42500,
       "k1": 51000,
-      "ldk1": 49125,
-      "ldk2": 61500,
+      "ldk1": 48250,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -3023,10 +3011,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "羽島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/hashima-city/",
     "rents": {
-      "r1": 37500,
-      "k1": 42500,
-      "ldk1": 43750,
-      "ldk2": 49500,
+      "r1": 41000,
+      "k1": 40000,
+      "ldk1": 43000,
+      "ldk2": 50000,
       "ldk3": 75000
     }
   },
@@ -3036,7 +3024,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/ena-city/",
     "rents": {
       "r1": null,
-      "k1": 64000,
+      "k1": 56000,
       "ldk1": 41000,
       "ldk2": null,
       "ldk3": null
@@ -3048,10 +3036,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/minokamo-city/",
     "rents": {
       "r1": 39000,
-      "k1": 40000,
-      "ldk1": 44750,
+      "k1": 37500,
+      "ldk1": 41000,
       "ldk2": 48500,
-      "ldk3": 56500
+      "ldk3": 55000
     }
   },
   {
@@ -3060,9 +3048,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/toki-city/",
     "rents": {
       "r1": 53500,
-      "k1": 52000,
+      "k1": 52500,
       "ldk1": 40000,
-      "ldk2": 54000,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -3071,11 +3059,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "各務原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/kakamigahara-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 43500,
+      "r1": 44000,
+      "k1": 44000,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 61000
+      "ldk3": 63000
     }
   },
   {
@@ -3083,10 +3071,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "可兒市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/kani-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 37000,
-      "ldk1": 46875,
-      "ldk2": 52875,
+      "r1": 43500,
+      "k1": 38000,
+      "ldk1": 46000,
+      "ldk2": 51750,
       "ldk3": 62000
     }
   },
@@ -3097,7 +3085,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 42000,
+      "ldk1": 43000,
       "ldk2": null,
       "ldk3": null
     }
@@ -3109,7 +3097,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 25000,
       "k1": 28500,
-      "ldk1": 38500,
+      "ldk1": 39000,
       "ldk2": 40000,
       "ldk3": 66000
     }
@@ -3120,10 +3108,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/motosu-city/",
     "rents": {
       "r1": null,
-      "k1": null,
-      "ldk1": 43750,
+      "k1": 33500,
+      "ldk1": 44000,
       "ldk2": 48000,
-      "ldk3": 65000
+      "ldk3": null
     }
   },
   {
@@ -3144,10 +3132,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/hashima_ginan-city/",
     "rents": {
       "r1": 39500,
-      "k1": 43500,
-      "ldk1": 53500,
-      "ldk2": 57750,
-      "ldk3": 76500
+      "k1": 45000,
+      "ldk1": 42500,
+      "ldk2": 56500,
+      "ldk3": 71000
     }
   },
   {
@@ -3157,8 +3145,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 38000,
-      "ldk1": 47000,
-      "ldk2": 48250,
+      "ldk1": 47125,
+      "ldk2": 48500,
       "ldk3": 65000
     }
   },
@@ -3168,7 +3156,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/yoro_yoro-city/",
     "rents": {
       "r1": null,
-      "k1": null,
+      "k1": 32000,
       "ldk1": 45000,
       "ldk2": 49000,
       "ldk3": null
@@ -3181,7 +3169,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44125,
+      "ldk1": 44000,
       "ldk2": 55000,
       "ldk3": null
     }
@@ -3192,10 +3180,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/ampachi_godo-city/",
     "rents": {
       "r1": null,
-      "k1": 32978,
-      "ldk1": 40040,
-      "ldk2": 45070,
-      "ldk3": 54347
+      "k1": null,
+      "ldk1": 41000,
+      "ldk2": 45000,
+      "ldk3": null
     }
   },
   {
@@ -3216,10 +3204,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/ampachi_ampachi-city/",
     "rents": {
       "r1": null,
-      "k1": 33375,
-      "ldk1": 36604,
-      "ldk2": 39803,
-      "ldk3": 45616
+      "k1": 32689,
+      "ldk1": 36537,
+      "ldk2": 40350,
+      "ldk3": 46116
     }
   },
   {
@@ -3230,7 +3218,19 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 48000,
+      "ldk2": 47500,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "岐阜",
+    "district": "揖斐郡池田町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/ibi_ikeda-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": null,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -3241,8 +3241,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 35000,
-      "ldk1": 44500,
-      "ldk2": 45000,
+      "ldk1": 45250,
+      "ldk2": 45250,
       "ldk3": 62000
     }
   },
@@ -3253,8 +3253,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 36000,
-      "ldk1": 41500,
-      "ldk2": 45000,
+      "ldk1": 40500,
+      "ldk2": 47000,
       "ldk3": null
     }
   },
@@ -3277,8 +3277,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 48000,
-      "ldk2": 50000,
+      "ldk1": 43500,
+      "ldk2": 50250,
       "ldk3": null
     }
   },
@@ -3287,11 +3287,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "可兒郡御嵩町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gifu/kani_mitake-city/",
     "rents": {
-      "r1": 40081,
-      "k1": 34911,
-      "ldk1": 46431,
-      "ldk2": 50026,
-      "ldk3": 77628
+      "r1": null,
+      "k1": 34000,
+      "ldk1": 44750,
+      "ldk2": 50000,
+      "ldk3": null
     }
   },
   {
@@ -3301,9 +3301,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 35000,
       "k1": 37000,
-      "ldk1": 42000,
+      "ldk1": 41000,
       "ldk2": 50000,
-      "ldk3": 78000
+      "ldk3": 76000
     }
   },
   {
@@ -3311,11 +3311,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/takasaki-city/",
     "rents": {
-      "r1": 41327,
-      "k1": 42044,
-      "ldk1": 53678,
-      "ldk2": 61953,
-      "ldk3": 79035
+      "r1": 41122,
+      "k1": 41958,
+      "ldk1": 53467,
+      "ldk2": 61303,
+      "ldk3": 78171
     }
   },
   {
@@ -3323,11 +3323,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "桐生市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/kiryu-city/",
     "rents": {
-      "r1": 25000,
-      "k1": 29750,
-      "ldk1": 39000,
+      "r1": 26000,
+      "k1": 29500,
+      "ldk1": 39500,
       "ldk2": 45000,
-      "ldk3": 55000
+      "ldk3": 65000
     }
   },
   {
@@ -3335,11 +3335,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊勢崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/isesaki-city/",
     "rents": {
-      "r1": 40539,
-      "k1": 39769,
-      "ldk1": 49933,
-      "ldk2": 54500,
-      "ldk3": 69161
+      "r1": 40869,
+      "k1": 40170,
+      "ldk1": 50291,
+      "ldk2": 55240,
+      "ldk3": 69503
     }
   },
   {
@@ -3348,10 +3348,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/ota-city/",
     "rents": {
       "r1": 49000,
-      "k1": 41750,
+      "k1": 42500,
       "ldk1": 43000,
       "ldk2": 50000,
-      "ldk3": 74500
+      "ldk3": 75000
     }
   },
   {
@@ -3360,9 +3360,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/numata-city/",
     "rents": {
       "r1": 30000,
-      "k1": 62000,
-      "ldk1": 50500,
-      "ldk2": 46250,
+      "k1": 60000,
+      "ldk1": 50000,
+      "ldk2": 45000,
       "ldk3": null
     }
   },
@@ -3371,11 +3371,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "館林市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/tatebayashi-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 34500,
+      "r1": 44000,
+      "k1": 34750,
       "ldk1": 41000,
-      "ldk2": 51375,
-      "ldk3": 63000
+      "ldk2": 51500,
+      "ldk3": 64250
     }
   },
   {
@@ -3384,9 +3384,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/shibukawa-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 46000,
-      "ldk2": 45000,
+      "k1": 52000,
+      "ldk1": 45250,
+      "ldk2": 47000,
       "ldk3": null
     }
   },
@@ -3395,11 +3395,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "藤岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/fujioka-city/",
     "rents": {
-      "r1": 40551,
-      "k1": 40616,
-      "ldk1": 48988,
-      "ldk2": 52947,
-      "ldk3": 80040
+      "r1": 39794,
+      "k1": 39304,
+      "ldk1": 48171,
+      "ldk2": 52363,
+      "ldk3": 81055
     }
   },
   {
@@ -3408,9 +3408,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/tomioka-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
-      "ldk1": 40000,
-      "ldk2": 48000,
+      "k1": 41000,
+      "ldk1": 45000,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -3420,9 +3420,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/annaka-city/",
     "rents": {
       "r1": null,
-      "k1": 35000,
-      "ldk1": 49750,
-      "ldk2": 56000,
+      "k1": 35500,
+      "ldk1": 49125,
+      "ldk2": 49750,
       "ldk3": null
     }
   },
@@ -3433,7 +3433,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 36000,
-      "ldk1": 42000,
+      "ldk1": 42750,
       "ldk2": 46000,
       "ldk3": null
     }
@@ -3445,8 +3445,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 48000,
-      "ldk2": 52000,
+      "ldk1": 51250,
+      "ldk2": 57500,
       "ldk3": null
     }
   },
@@ -3456,9 +3456,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/kitagumma_yoshioka-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
-      "ldk1": 45000,
-      "ldk2": 54500,
+      "k1": 40500,
+      "ldk1": 46000,
+      "ldk2": 54000,
       "ldk3": null
     }
   },
@@ -3469,7 +3469,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 78000,
+      "ldk1": 85000,
       "ldk2": null,
       "ldk3": null
     }
@@ -3479,11 +3479,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐波郡玉村町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/sawa_tamamura-city/",
     "rents": {
-      "r1": 34616,
-      "k1": 33892,
-      "ldk1": 47735,
-      "ldk2": 52764,
-      "ldk3": 76699
+      "r1": 32624,
+      "k1": 31965,
+      "ldk1": 47737,
+      "ldk2": 50822,
+      "ldk3": 74823
     }
   },
   {
@@ -3504,9 +3504,21 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/ora_meiwa-city/",
     "rents": {
       "r1": null,
-      "k1": 59500,
+      "k1": 54000,
       "ldk1": null,
       "ldk2": null,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "群馬",
+    "district": "邑楽郡千代田町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/ora_chiyoda-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": null,
+      "ldk2": 51000,
       "ldk3": null
     }
   },
@@ -3515,10 +3527,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "邑楽郡大泉町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/oura_oizumi-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 37500,
+      "r1": null,
+      "k1": 40000,
       "ldk1": 42000,
-      "ldk2": 54750,
+      "ldk2": 56875,
       "ldk3": 79500
     }
   },
@@ -3528,8 +3540,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/gunma/ora_ora-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
-      "ldk1": 42000,
+      "k1": 46000,
+      "ldk1": 45750,
       "ldk2": 52000,
       "ldk3": null
     }
@@ -3539,11 +3551,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 45000,
-      "ldk1": 55000,
-      "ldk2": 60000,
-      "ldk3": 70000
+      "r1": 41722,
+      "k1": 44551,
+      "ldk1": 58438,
+      "ldk2": 72925,
+      "ldk3": 85349
     }
   },
   {
@@ -3551,11 +3563,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市中區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_naka-city/",
     "rents": {
-      "r1": 49549,
-      "k1": 51736,
-      "ldk1": 68267,
-      "ldk2": 89542,
-      "ldk3": 110496
+      "r1": 48197,
+      "k1": 50736,
+      "ldk1": 67963,
+      "ldk2": 88508,
+      "ldk3": 99725
     }
   },
   {
@@ -3565,9 +3577,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 45000,
       "k1": 47500,
-      "ldk1": 53500,
-      "ldk2": 62500,
-      "ldk3": 75000
+      "ldk1": 51500,
+      "ldk2": 55000,
+      "ldk3": 75500
     }
   },
   {
@@ -3575,11 +3587,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_minami-city/",
     "rents": {
-      "r1": 43698,
-      "k1": 47952,
-      "ldk1": 63924,
-      "ldk2": 79909,
-      "ldk3": 92960
+      "r1": 43552,
+      "k1": 48048,
+      "ldk1": 63787,
+      "ldk2": 78859,
+      "ldk3": 91830
     }
   },
   {
@@ -3587,11 +3599,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_nishi-city/",
     "rents": {
-      "r1": 36727,
-      "k1": 39211,
-      "ldk1": 53958,
-      "ldk2": 70659,
-      "ldk3": 81224
+      "r1": 36644,
+      "k1": 39103,
+      "ldk1": 54276,
+      "ldk2": 70318,
+      "ldk3": 81571
     }
   },
   {
@@ -3599,11 +3611,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市安佐南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_asaminami-city/",
     "rents": {
-      "r1": 40717,
-      "k1": 43594,
-      "ldk1": 57359,
-      "ldk2": 69035,
-      "ldk3": 84203
+      "r1": 40803,
+      "k1": 44035,
+      "ldk1": 57601,
+      "ldk2": 69207,
+      "ldk3": 84217
     }
   },
   {
@@ -3612,10 +3624,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_asakita-city/",
     "rents": {
       "r1": 30000,
-      "k1": 35500,
+      "k1": 35750,
       "ldk1": 46000,
-      "ldk2": 55250,
-      "ldk3": 53500
+      "ldk2": 55500,
+      "ldk3": 56000
     }
   },
   {
@@ -3623,11 +3635,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市安藝區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_aki-city/",
     "rents": {
-      "r1": 46250,
-      "k1": 48500,
+      "r1": 49500,
+      "k1": 46750,
       "ldk1": 50000,
-      "ldk2": 55500,
-      "ldk3": 68000
+      "ldk2": 55000,
+      "ldk3": 64000
     }
   },
   {
@@ -3635,11 +3647,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廣島市佐伯區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hiroshima_saeki-city/",
     "rents": {
-      "r1": 34986,
-      "k1": 38440,
-      "ldk1": 50612,
-      "ldk2": 66540,
-      "ldk3": 75269
+      "r1": 35424,
+      "k1": 38823,
+      "ldk1": 50727,
+      "ldk2": 64828,
+      "ldk3": 74079
     }
   },
   {
@@ -3647,11 +3659,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "呉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/kure-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 48000,
-      "ldk1": 45250,
-      "ldk2": 52000,
-      "ldk3": 61000
+      "r1": 47000,
+      "k1": 50500,
+      "ldk1": 45500,
+      "ldk2": 50000,
+      "ldk3": 62500
     }
   },
   {
@@ -3660,9 +3672,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/takehara-city/",
     "rents": {
       "r1": null,
-      "k1": 60500,
-      "ldk1": 48875,
-      "ldk2": 46750,
+      "k1": 65500,
+      "ldk1": 46500,
+      "ldk2": 47000,
       "ldk3": null
     }
   },
@@ -3672,10 +3684,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/mihara-city/",
     "rents": {
       "r1": 43000,
-      "k1": 39750,
+      "k1": 39000,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 62250
+      "ldk3": 74000
     }
   },
   {
@@ -3684,9 +3696,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/onomichi-city/",
     "rents": {
       "r1": 45000,
-      "k1": 42750,
+      "k1": 44000,
       "ldk1": 49000,
-      "ldk2": 50450,
+      "ldk2": 51500,
       "ldk3": 62250
     }
   },
@@ -3699,7 +3711,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 41500,
       "ldk1": 44000,
       "ldk2": 49000,
-      "ldk3": 66000
+      "ldk3": 68500
     }
   },
   {
@@ -3708,9 +3720,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/fuchu-city/",
     "rents": {
       "r1": 32000,
-      "k1": 34000,
-      "ldk1": 43500,
-      "ldk2": 47250,
+      "k1": 35000,
+      "ldk1": 43375,
+      "ldk2": 48125,
       "ldk3": null
     }
   },
@@ -3720,8 +3732,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/miyoshi-city/",
     "rents": {
       "r1": null,
-      "k1": 46500,
-      "ldk1": null,
+      "k1": 47000,
+      "ldk1": 57500,
       "ldk2": null,
       "ldk3": null
     }
@@ -3732,8 +3744,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/shobara-city/",
     "rents": {
       "r1": null,
-      "k1": 47500,
-      "ldk1": 50000,
+      "k1": 49000,
+      "ldk1": 48500,
       "ldk2": 54500,
       "ldk3": null
     }
@@ -3744,9 +3756,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/otake-city/",
     "rents": {
       "r1": 46000,
-      "k1": 42250,
-      "ldk1": 51250,
-      "ldk2": 54000,
+      "k1": 40750,
+      "ldk1": 51375,
+      "ldk2": 53500,
       "ldk3": null
     }
   },
@@ -3755,11 +3767,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東廣島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/higashihiroshima-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 37750,
-      "ldk1": 48000,
+      "r1": 44500,
+      "k1": 38000,
+      "ldk1": 49000,
       "ldk2": 59000,
-      "ldk3": 72000
+      "ldk3": 73500
     }
   },
   {
@@ -3767,11 +3779,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "廿日市市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/hatsukaichi-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 41500,
-      "ldk1": 52500,
-      "ldk2": 61500,
-      "ldk3": 66500
+      "r1": 45500,
+      "k1": 49000,
+      "ldk1": 53000,
+      "ldk2": 61000,
+      "ldk3": 64750
     }
   },
   {
@@ -3781,8 +3793,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44500,
-      "ldk2": 52000,
+      "ldk1": 41500,
+      "ldk2": 51500,
       "ldk3": null
     }
   },
@@ -3793,7 +3805,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 52625,
+      "ldk1": 51000,
       "ldk2": 61000,
       "ldk3": null
     }
@@ -3804,10 +3816,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/aki_fuchu-city/",
     "rents": {
       "r1": 55000,
-      "k1": 49500,
-      "ldk1": 57500,
-      "ldk2": 71000,
-      "ldk3": 81500
+      "k1": 48000,
+      "ldk1": 60250,
+      "ldk2": 71500,
+      "ldk3": 79000
     }
   },
   {
@@ -3815,10 +3827,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "安藝郡海田町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/aki_kaita-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 49000,
-      "ldk1": 56750,
-      "ldk2": 63500,
+      "r1": 40500,
+      "k1": 49500,
+      "ldk1": 57000,
+      "ldk2": 62500,
       "ldk3": 72000
     }
   },
@@ -3830,7 +3842,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 45000,
-      "ldk2": 57000,
+      "ldk2": 54250,
       "ldk3": null
     }
   },
@@ -3840,8 +3852,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/aki_saka-city/",
     "rents": {
       "r1": null,
-      "k1": 54000,
-      "ldk1": 76000,
+      "k1": 55000,
+      "ldk1": 70000,
       "ldk2": null,
       "ldk3": null
     }
@@ -3852,9 +3864,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hiroshima/yamagata_kitahiroshima-city/",
     "rents": {
       "r1": null,
-      "k1": 36000,
-      "ldk1": 50000,
-      "ldk2": 49000,
+      "k1": null,
+      "ldk1": 49500,
+      "ldk2": 48000,
       "ldk3": null
     }
   },
@@ -3863,11 +3875,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo-city/",
     "rents": {
-      "r1": 39183,
-      "k1": 42728,
-      "ldk1": 56373,
-      "ldk2": 75694,
-      "ldk3": 118991
+      "r1": 39649,
+      "k1": 43058,
+      "ldk1": 54478,
+      "ldk2": 76572,
+      "ldk3": 119545
     }
   },
   {
@@ -3875,11 +3887,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_chuo-city/",
     "rents": {
-      "r1": 42846,
-      "k1": 46842,
-      "ldk1": 65654,
-      "ldk2": 89677,
-      "ldk3": 116187
+      "r1": 43546,
+      "k1": 47581,
+      "ldk1": 66101,
+      "ldk2": 90111,
+      "ldk3": 115623
     }
   },
   {
@@ -3887,11 +3899,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_kita-city/",
     "rents": {
-      "r1": 38038,
-      "k1": 41654,
-      "ldk1": 51353,
-      "ldk2": 71057,
-      "ldk3": 88826
+      "r1": 38750,
+      "k1": 42396,
+      "ldk1": 52294,
+      "ldk2": 73828,
+      "ldk3": 90889
     }
   },
   {
@@ -3899,11 +3911,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_higashi-city/",
     "rents": {
-      "r1": 37775,
-      "k1": 40974,
-      "ldk1": 53735,
-      "ldk2": 69843,
-      "ldk3": 86224
+      "r1": 36893,
+      "k1": 41030,
+      "ldk1": 53866,
+      "ldk2": 71126,
+      "ldk3": 88026
     }
   },
   {
@@ -3911,11 +3923,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市白石區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_shiroishi-city/",
     "rents": {
-      "r1": 37631,
-      "k1": 41189,
-      "ldk1": 50137,
-      "ldk2": 70838,
-      "ldk3": 85636
+      "r1": 38705,
+      "k1": 42289,
+      "ldk1": 51671,
+      "ldk2": 74425,
+      "ldk3": 90325
     }
   },
   {
@@ -3923,11 +3935,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市豐平區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_toyohira-city/",
     "rents": {
-      "r1": 39004,
-      "k1": 42319,
-      "ldk1": 55205,
-      "ldk2": 70452,
-      "ldk3": 90075
+      "r1": 39946,
+      "k1": 43205,
+      "ldk1": 56866,
+      "ldk2": 71998,
+      "ldk3": 91800
     }
   },
   {
@@ -3935,10 +3947,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_minami-city/",
     "rents": {
-      "r1": 32000,
-      "k1": 37375,
-      "ldk1": 41500,
-      "ldk2": 54750,
+      "r1": 30000,
+      "k1": 37500,
+      "ldk1": 42250,
+      "ldk2": 53200,
       "ldk3": 65000
     }
   },
@@ -3947,11 +3959,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_nishi-city/",
     "rents": {
-      "r1": 40028,
-      "k1": 43770,
-      "ldk1": 57704,
-      "ldk2": 75707,
-      "ldk3": 116802
+      "r1": 39464,
+      "k1": 44009,
+      "ldk1": 57595,
+      "ldk2": 75264,
+      "ldk3": 115970
     }
   },
   {
@@ -3959,11 +3971,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市厚別區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_atsubetsu-city/",
     "rents": {
-      "r1": 38557,
-      "k1": 42771,
-      "ldk1": 57968,
-      "ldk2": 79255,
-      "ldk3": 91923
+      "r1": 39407,
+      "k1": 42772,
+      "ldk1": 56849,
+      "ldk2": 78036,
+      "ldk3": 89998
     }
   },
   {
@@ -3971,11 +3983,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "札幌市手稻區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_teine-city/",
     "rents": {
-      "r1": 34199,
-      "k1": 37643,
-      "ldk1": 45857,
-      "ldk2": 56088,
-      "ldk3": 68651
+      "r1": 34975,
+      "k1": 37434,
+      "ldk1": 45852,
+      "ldk2": 56166,
+      "ldk3": 68525
     }
   },
   {
@@ -3984,10 +3996,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sapporo_kiyota-city/",
     "rents": {
       "r1": null,
-      "k1": 35949,
-      "ldk1": 44440,
-      "ldk2": 60462,
-      "ldk3": 79053
+      "k1": 34532,
+      "ldk1": 42256,
+      "ldk2": 55786,
+      "ldk3": 73204
     }
   },
   {
@@ -3995,10 +4007,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "函館市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/hakodate-city/",
     "rents": {
-      "r1": 30000,
-      "k1": 41000,
-      "ldk1": 45000,
-      "ldk2": 47000,
+      "r1": 33000,
+      "k1": 42000,
+      "ldk1": 46000,
+      "ldk2": 48000,
       "ldk3": 65000
     }
   },
@@ -4007,11 +4019,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小樽市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/otaru-city/",
     "rents": {
-      "r1": 28000,
-      "k1": 40500,
-      "ldk1": 45000,
+      "r1": 29000,
+      "k1": 40000,
+      "ldk1": 47500,
       "ldk2": 50000,
-      "ldk3": 61000
+      "ldk3": 64000
     }
   },
   {
@@ -4019,11 +4031,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "旭川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/asahikawa-city/",
     "rents": {
-      "r1": 32609,
-      "k1": 32700,
-      "ldk1": 40480,
-      "ldk2": 48710,
-      "ldk3": 57515
+      "r1": 32683,
+      "k1": 32691,
+      "ldk1": 40492,
+      "ldk2": 48684,
+      "ldk3": 57460
     }
   },
   {
@@ -4031,11 +4043,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "室蘭市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/muroran-city/",
     "rents": {
-      "r1": 31000,
+      "r1": 30500,
       "k1": 45000,
       "ldk1": 46000,
       "ldk2": 44500,
-      "ldk3": 58000
+      "ldk3": 60000
     }
   },
   {
@@ -4044,7 +4056,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/kushiro-city/",
     "rents": {
       "r1": null,
-      "k1": 46500,
+      "k1": 47500,
       "ldk1": 40000,
       "ldk2": 45000,
       "ldk3": null
@@ -4056,8 +4068,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/obihiro-city/",
     "rents": {
       "r1": 28000,
-      "k1": 42000,
-      "ldk1": 39000,
+      "k1": 55000,
+      "ldk1": 39250,
       "ldk2": 48000,
       "ldk3": null
     }
@@ -4067,11 +4079,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北見市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/kitami-city/",
     "rents": {
-      "r1": 35672,
-      "k1": 37286,
-      "ldk1": 44258,
-      "ldk2": 58515,
-      "ldk3": 60354
+      "r1": 35900,
+      "k1": 37330,
+      "ldk1": 44192,
+      "ldk2": 58037,
+      "ldk3": 60155
     }
   },
   {
@@ -4080,9 +4092,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/iwamizawa-city/",
     "rents": {
       "r1": 30000,
-      "k1": 38500,
-      "ldk1": 40000,
-      "ldk2": 48000,
+      "k1": 39000,
+      "ldk1": 40500,
+      "ldk2": 49000,
       "ldk3": 55000
     }
   },
@@ -4104,21 +4116,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/tomakomai-city/",
     "rents": {
       "r1": null,
-      "k1": 71000,
-      "ldk1": 44000,
-      "ldk2": 49000,
-      "ldk3": 63000
-    }
-  },
-  {
-    "region": "北海道",
-    "district": "稚内市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/wakkanai-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": null,
-      "ldk2": 55000,
+      "k1": 72000,
+      "ldk1": 50000,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -4127,11 +4127,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "美唄市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/bibai-city/",
     "rents": {
-      "r1": 29541,
-      "k1": 31475,
-      "ldk1": 36440,
-      "ldk2": 39696,
-      "ldk3": 44026
+      "r1": 27569,
+      "k1": 30096,
+      "ldk1": 36620,
+      "ldk2": 40869,
+      "ldk3": 46571
     }
   },
   {
@@ -4139,11 +4139,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "江別市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/ebetsu-city/",
     "rents": {
-      "r1": 34768,
-      "k1": 37030,
-      "ldk1": 47666,
-      "ldk2": 60054,
-      "ldk3": 68337
+      "r1": 23000,
+      "k1": 31500,
+      "ldk1": 43250,
+      "ldk2": 53925,
+      "ldk3": 74500
     }
   },
   {
@@ -4175,11 +4175,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名寄市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/nayoro-city/",
     "rents": {
-      "r1": 36500,
-      "k1": null,
-      "ldk1": 55000,
-      "ldk2": 66000,
-      "ldk3": 82000
+      "r1": 37546,
+      "k1": 43812,
+      "ldk1": 48242,
+      "ldk2": 55519,
+      "ldk3": 61141
     }
   },
   {
@@ -4189,7 +4189,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 35000,
+      "ldk1": null,
       "ldk2": 55000,
       "ldk3": 60000
     }
@@ -4199,11 +4199,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千歳市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/chitose-city/",
     "rents": {
-      "r1": null,
-      "k1": 60750,
-      "ldk1": 54000,
-      "ldk2": 81000,
-      "ldk3": 84000
+      "r1": 40000,
+      "k1": 61250,
+      "ldk1": 54500,
+      "ldk2": 79500,
+      "ldk3": 78000
     }
   },
   {
@@ -4212,10 +4212,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/takikawa-city/",
     "rents": {
       "r1": 28000,
-      "k1": 36500,
-      "ldk1": 46500,
-      "ldk2": 50500,
-      "ldk3": 62000
+      "k1": 36000,
+      "ldk1": 45750,
+      "ldk2": 50000,
+      "ldk3": 63000
     }
   },
   {
@@ -4223,11 +4223,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "砂川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sunagawa-city/",
     "rents": {
-      "r1": 38659,
-      "k1": 42861,
-      "ldk1": 46967,
-      "ldk2": 50177,
-      "ldk3": 54312
+      "r1": 41956,
+      "k1": 45251,
+      "ldk1": 48367,
+      "ldk2": 50949,
+      "ldk3": 54204
     }
   },
   {
@@ -4235,11 +4235,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "深川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/fukagawa-city/",
     "rents": {
-      "r1": null,
-      "k1": 30500,
-      "ldk1": 35000,
-      "ldk2": 52000,
-      "ldk3": null
+      "r1": 27986,
+      "k1": 28595,
+      "ldk1": 33086,
+      "ldk2": 40398,
+      "ldk3": 43911
     }
   },
   {
@@ -4249,8 +4249,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 61000,
-      "ldk2": 57000,
+      "ldk1": 64000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -4260,8 +4260,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/noboribetsu-city/",
     "rents": {
       "r1": 30000,
-      "k1": 42000,
-      "ldk1": 45000,
+      "k1": 40500,
+      "ldk1": 47500,
       "ldk2": 50000,
       "ldk3": 65000
     }
@@ -4273,9 +4273,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 41000,
       "k1": 50000,
-      "ldk1": 56000,
-      "ldk2": 62500,
-      "ldk3": 89000
+      "ldk1": 57000,
+      "ldk2": 60000,
+      "ldk3": 87000
     }
   },
   {
@@ -4295,11 +4295,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北廣島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/kitahiroshima-city/",
     "rents": {
-      "r1": 39000,
-      "k1": 50000,
-      "ldk1": 59500,
-      "ldk2": 63000,
-      "ldk3": 95000
+      "r1": 45000,
+      "k1": 50500,
+      "ldk1": 60000,
+      "ldk2": 60000,
+      "ldk3": 96500
     }
   },
   {
@@ -4307,10 +4307,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "石狩市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/ishikari-city/",
     "rents": {
-      "r1": 24000,
-      "k1": 47000,
-      "ldk1": 46000,
-      "ldk2": 47000,
+      "r1": 23000,
+      "k1": 46750,
+      "ldk1": 46500,
+      "ldk2": 46000,
       "ldk3": 72000
     }
   },
@@ -4319,11 +4319,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北斗市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/hokuto-city/",
     "rents": {
-      "r1": 33000,
-      "k1": 40000,
+      "r1": null,
+      "k1": 42000,
       "ldk1": 47500,
       "ldk2": 50000,
-      "ldk3": 58000
+      "ldk3": 57500
     }
   },
   {
@@ -4333,9 +4333,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 32000,
       "k1": 30000,
-      "ldk1": 44500,
-      "ldk2": 50750,
-      "ldk3": 54000
+      "ldk1": 45000,
+      "ldk2": 52000,
+      "ldk3": null
     }
   },
   {
@@ -4346,7 +4346,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 42000,
       "ldk1": 52000,
-      "ldk2": 50000,
+      "ldk2": 52000,
       "ldk3": null
     }
   },
@@ -4369,9 +4369,21 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 57500,
+      "ldk1": null,
       "ldk2": 45000,
-      "ldk3": 46000
+      "ldk3": 48000
+    }
+  },
+  {
+    "region": "北海道",
+    "district": "夕張郡長沼町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/yubari_naganuma-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": null,
+      "ldk2": 55000,
+      "ldk3": null
     }
   },
   {
@@ -4379,11 +4391,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "夕張郡栗山町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/yubari_kuriyama-city/",
     "rents": {
-      "r1": 33000,
-      "k1": null,
-      "ldk1": 51250,
-      "ldk2": 59500,
-      "ldk3": 57000
+      "r1": 42809,
+      "k1": 42514,
+      "ldk1": 46936,
+      "ldk2": 55153,
+      "ldk3": 59527
     }
   },
   {
@@ -4394,7 +4406,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 65000,
+      "ldk2": 57000,
       "ldk3": null
     }
   },
@@ -4405,20 +4417,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 62000,
+      "ldk1": 62500,
       "ldk2": 49000,
-      "ldk3": null
-    }
-  },
-  {
-    "region": "北海道",
-    "district": "空知郡上富良野町",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/sorachi_kamifurano-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": null,
-      "ldk2": 53500,
       "ldk3": null
     }
   },
@@ -4428,10 +4428,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hokkaido/kato_otofuke-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
+      "k1": 41750,
       "ldk1": 45000,
-      "ldk2": 53000,
-      "ldk3": 60000
+      "ldk2": 52000,
+      "ldk3": 61000
     }
   },
   {
@@ -4463,10 +4463,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神戶市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 59500,
+      "r1": 48000,
+      "k1": 59750,
       "ldk1": 60000,
-      "ldk2": 56000,
+      "ldk2": 57000,
       "ldk3": 60000
     }
   },
@@ -4475,11 +4475,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神戶市東灘區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_higashinada-city/",
     "rents": {
-      "r1": 51703,
-      "k1": 60025,
-      "ldk1": 83900,
-      "ldk2": 103666,
-      "ldk3": 146994
+      "r1": 52347,
+      "k1": 60239,
+      "ldk1": 83594,
+      "ldk2": 104233,
+      "ldk3": 121753
     }
   },
   {
@@ -4487,11 +4487,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神戶市灘區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_nada-city/",
     "rents": {
-      "r1": 49927,
-      "k1": 57032,
-      "ldk1": 77542,
-      "ldk2": 98467,
-      "ldk3": 123775
+      "r1": 50052,
+      "k1": 57360,
+      "ldk1": 78155,
+      "ldk2": 99082,
+      "ldk3": 126503
     }
   },
   {
@@ -4500,10 +4500,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_hyogo-city/",
     "rents": {
       "r1": 50000,
-      "k1": 63800,
+      "k1": 64500,
       "ldk1": 65000,
-      "ldk2": 69000,
-      "ldk3": 85000
+      "ldk2": 67500,
+      "ldk3": 81500
     }
   },
   {
@@ -4512,9 +4512,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_nagata-city/",
     "rents": {
       "r1": 50000,
-      "k1": 54000,
+      "k1": 56000,
       "ldk1": 55000,
-      "ldk2": 56000,
+      "ldk2": 55000,
       "ldk3": 67500
     }
   },
@@ -4523,11 +4523,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神戶市須磨區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_suma-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 50000,
-      "ldk1": 56000,
-      "ldk2": 62000,
-      "ldk3": 71000
+      "r1": 43000,
+      "k1": 51000,
+      "ldk1": 59500,
+      "ldk2": 60250,
+      "ldk3": 70000
     }
   },
   {
@@ -4536,9 +4536,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_tarumi-city/",
     "rents": {
       "r1": 40000,
-      "k1": 46500,
-      "ldk1": 48000,
-      "ldk2": 44300,
+      "k1": 47500,
+      "ldk1": 48400,
+      "ldk2": 45000,
       "ldk3": 55000
     }
   },
@@ -4548,10 +4548,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_kita-city/",
     "rents": {
       "r1": 50000,
-      "k1": 52400,
+      "k1": 51650,
       "ldk1": 49000,
       "ldk2": 50000,
-      "ldk3": 62500
+      "ldk3": 62950
     }
   },
   {
@@ -4559,11 +4559,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神戶市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_chuo-city/",
     "rents": {
-      "r1": 66988,
-      "k1": 71419,
-      "ldk1": 95752,
-      "ldk2": 124204,
-      "ldk3": 153626
+      "r1": 60000,
+      "k1": 71000,
+      "ldk1": 70000,
+      "ldk2": 109325,
+      "ldk3": 162500
     }
   },
   {
@@ -4572,10 +4572,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kobe_nishi-city/",
     "rents": {
       "r1": 30000,
-      "k1": 44000,
+      "k1": 46500,
       "ldk1": 50000,
-      "ldk2": 59750,
-      "ldk3": 72500
+      "ldk2": 60750,
+      "ldk3": 73750
     }
   },
   {
@@ -4583,10 +4583,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "姬路市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/himeji-city/",
     "rents": {
-      "r1": 42250,
-      "k1": 46500,
-      "ldk1": 45000,
-      "ldk2": 47500,
+      "r1": 42000,
+      "k1": 46000,
+      "ldk1": 46000,
+      "ldk2": 48000,
       "ldk3": 50000
     }
   },
@@ -4595,11 +4595,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "尼崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/amagasaki-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 61250,
-      "ldk1": 63000,
+      "r1": 43500,
+      "k1": 61500,
+      "ldk1": 62000,
       "ldk2": 67000,
-      "ldk3": 77000
+      "ldk3": 78000
     }
   },
   {
@@ -4607,11 +4607,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "明石市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/akashi-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 55000,
-      "ldk1": 51000,
+      "r1": 47000,
+      "k1": 55750,
+      "ldk1": 52000,
       "ldk2": 55000,
-      "ldk3": 71000
+      "ldk3": 70000
     }
   },
   {
@@ -4619,11 +4619,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西宮市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/nishinomiya-city/",
     "rents": {
-      "r1": 49115,
-      "k1": 58610,
-      "ldk1": 76331,
-      "ldk2": 99404,
-      "ldk3": 129611
+      "r1": 48879,
+      "k1": 58288,
+      "ldk1": 76300,
+      "ldk2": 100844,
+      "ldk3": 125330
     }
   },
   {
@@ -4632,9 +4632,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/sumoto-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
+      "k1": null,
       "ldk1": 57500,
-      "ldk2": 72500,
+      "ldk2": 69500,
       "ldk3": null
     }
   },
@@ -4643,11 +4643,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "芦屋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/ashiya-city/",
     "rents": {
-      "r1": 58162,
-      "k1": 58196,
-      "ldk1": 87607,
-      "ldk2": 112365,
-      "ldk3": 130977
+      "r1": 57542,
+      "k1": 57947,
+      "ldk1": 87867,
+      "ldk2": 113368,
+      "ldk3": 147475
     }
   },
   {
@@ -4655,11 +4655,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊丹市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/itami-city/",
     "rents": {
-      "r1": 50594,
-      "k1": 52184,
-      "ldk1": 65669,
-      "ldk2": 73057,
-      "ldk3": 88927
+      "r1": 50593,
+      "k1": 52196,
+      "ldk1": 65668,
+      "ldk2": 72754,
+      "ldk3": 88623
     }
   },
   {
@@ -4667,11 +4667,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "相生市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/aioi-city/",
     "rents": {
-      "r1": null,
-      "k1": 44000,
-      "ldk1": 51000,
-      "ldk2": 47000,
-      "ldk3": 66000
+      "r1": 35000,
+      "k1": 42000,
+      "ldk1": 51250,
+      "ldk2": 46500,
+      "ldk3": 57500
     }
   },
   {
@@ -4680,10 +4680,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/toyoka-city/",
     "rents": {
       "r1": 35000,
-      "k1": 52750,
-      "ldk1": 46900,
-      "ldk2": 54875,
-      "ldk3": 85500
+      "k1": 46500,
+      "ldk1": 46000,
+      "ldk2": 54375,
+      "ldk3": 82000
     }
   },
   {
@@ -4691,11 +4691,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "加古川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kakogawa-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 52500,
+      "r1": 40750,
+      "k1": 54500,
       "ldk1": 48000,
       "ldk2": 50000,
-      "ldk3": 59750
+      "ldk3": 61000
     }
   },
   {
@@ -4705,9 +4705,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 41000,
       "k1": 37000,
-      "ldk1": 50000,
-      "ldk2": 45000,
-      "ldk3": 58500
+      "ldk1": 50250,
+      "ldk2": 47000,
+      "ldk3": 61000
     }
   },
   {
@@ -4715,11 +4715,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西脇市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/nishiwaki-city/",
     "rents": {
-      "r1": 36000,
+      "r1": 37000,
       "k1": 39000,
-      "ldk1": 41250,
+      "ldk1": 42000,
       "ldk2": 48500,
-      "ldk3": 60250
+      "ldk3": 58250
     }
   },
   {
@@ -4727,11 +4727,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宝塚市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/takarazuka-city/",
     "rents": {
-      "r1": 55000,
-      "k1": 59500,
-      "ldk1": 55000,
-      "ldk2": 60350,
-      "ldk3": 76500
+      "r1": 51494,
+      "k1": 51826,
+      "ldk1": 66448,
+      "ldk2": 78187,
+      "ldk3": 94797
     }
   },
   {
@@ -4739,11 +4739,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三木市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/miki-city/",
     "rents": {
-      "r1": 49000,
-      "k1": 56000,
-      "ldk1": 63000,
-      "ldk2": 65600,
-      "ldk3": 74500
+      "r1": 49250,
+      "k1": 56500,
+      "ldk1": 60000,
+      "ldk2": 66525,
+      "ldk3": 73250
     }
   },
   {
@@ -4751,11 +4751,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高砂市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/takasago-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 51500,
-      "ldk1": 52750,
-      "ldk2": 50000,
-      "ldk3": 57000
+      "r1": 39000,
+      "k1": 50750,
+      "ldk1": 45000,
+      "ldk2": 49000,
+      "ldk3": 57500
     }
   },
   {
@@ -4763,11 +4763,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川西市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kawanishi-city/",
     "rents": {
-      "r1": 61000,
-      "k1": 59000,
-      "ldk1": 55750,
-      "ldk2": 62000,
-      "ldk3": 72250
+      "r1": 60750,
+      "k1": 53750,
+      "ldk1": 60000,
+      "ldk2": 65000,
+      "ldk3": 70750
     }
   },
   {
@@ -4775,9 +4775,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/ono-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 54250,
-      "ldk1": 47750,
+      "r1": 37000,
+      "k1": 53750,
+      "ldk1": 49500,
       "ldk2": 61000,
       "ldk3": 80000
     }
@@ -4788,9 +4788,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/sanda-city/",
     "rents": {
       "r1": 53000,
-      "k1": 63000,
-      "ldk1": 60750,
-      "ldk2": 73125,
+      "k1": 64000,
+      "ldk1": 60500,
+      "ldk2": 78000,
       "ldk3": 82000
     }
   },
@@ -4801,9 +4801,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 48000,
       "k1": 42000,
-      "ldk1": 45500,
+      "ldk1": 47000,
       "ldk2": 56000,
-      "ldk3": 69000
+      "ldk3": 70500
     }
   },
   {
@@ -4812,9 +4812,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/tambasasayama-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
-      "ldk1": 50000,
-      "ldk2": 61000,
+      "k1": 44500,
+      "ldk1": 49000,
+      "ldk2": 60500,
       "ldk3": 66000
     }
   },
@@ -4826,7 +4826,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 39000,
+      "ldk2": 37700,
       "ldk3": null
     }
   },
@@ -4836,10 +4836,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/tamba-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
+      "k1": 39750,
       "ldk1": 50000,
       "ldk2": 53500,
-      "ldk3": 65000
+      "ldk3": 65500
     }
   },
   {
@@ -4848,8 +4848,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/asago-city/",
     "rents": {
       "r1": null,
-      "k1": 49500,
-      "ldk1": 54000,
+      "k1": 50000,
+      "ldk1": 55500,
       "ldk2": 62000,
       "ldk3": null
     }
@@ -4860,8 +4860,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/shiso-city/",
     "rents": {
       "r1": null,
-      "k1": 63000,
-      "ldk1": 46500,
+      "k1": 71000,
+      "ldk1": 48000,
       "ldk2": 55000,
       "ldk3": null
     }
@@ -4871,7 +4871,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "加東市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kato-city/",
     "rents": {
-      "r1": 29500,
+      "r1": 31000,
       "k1": 36000,
       "ldk1": 45000,
       "ldk2": 53500,
@@ -4883,10 +4883,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "たつの市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/tatsuno-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 51000,
-      "ldk1": 46250,
-      "ldk2": 52000,
+      "r1": 42000,
+      "k1": 45500,
+      "ldk1": 47500,
+      "ldk2": 51750,
       "ldk3": 63000
     }
   },
@@ -4898,7 +4898,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 51000,
+      "ldk2": 49000,
       "ldk3": null
     }
   },
@@ -4907,11 +4907,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "加古郡稻美町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kako_inami-city/",
     "rents": {
-      "r1": 45757,
-      "k1": 46901,
-      "ldk1": 60031,
-      "ldk2": 67582,
-      "ldk3": 88402
+      "r1": null,
+      "k1": 62000,
+      "ldk1": 66000,
+      "ldk2": 72500,
+      "ldk3": 84500
     }
   },
   {
@@ -4919,11 +4919,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "加古郡播磨町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kako_harima-city/",
     "rents": {
-      "r1": null,
-      "k1": 56000,
-      "ldk1": 54000,
-      "ldk2": 59250,
-      "ldk3": 63000
+      "r1": 50000,
+      "k1": 59000,
+      "ldk1": 55500,
+      "ldk2": 61000,
+      "ldk3": 71000
     }
   },
   {
@@ -4934,7 +4934,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 51750,
+      "ldk2": 51500,
       "ldk3": 59000
     }
   },
@@ -4943,9 +4943,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神崎郡福崎町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/kanzaki_fukusaki-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 48500,
-      "ldk1": 54250,
+      "r1": 37000,
+      "k1": 46250,
+      "ldk1": 54375,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -4956,10 +4956,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/hyogo/ibo_taishi-city/",
     "rents": {
       "r1": 36000,
-      "k1": 52500,
-      "ldk1": 49750,
-      "ldk2": 45000,
-      "ldk3": 68000
+      "k1": 51000,
+      "ldk1": 45000,
+      "ldk2": 50000,
+      "ldk3": 69000
     }
   },
   {
@@ -4969,8 +4969,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 25000,
-      "ldk1": 43750,
-      "ldk2": 45125,
+      "ldk1": 42750,
+      "ldk2": 43500,
       "ldk3": null
     }
   },
@@ -4980,10 +4980,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/mito-city/",
     "rents": {
       "r1": 38000,
-      "k1": 41500,
+      "k1": 41000,
       "ldk1": 45000,
-      "ldk2": 50000,
-      "ldk3": 81000
+      "ldk2": 51000,
+      "ldk3": 72000
     }
   },
   {
@@ -4991,9 +4991,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "日立市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/hitachi-city/",
     "rents": {
-      "r1": 51500,
+      "r1": 52000,
       "k1": 47000,
-      "ldk1": 43500,
+      "ldk1": 40000,
       "ldk2": 49000,
       "ldk3": 65000
     }
@@ -5004,10 +5004,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/tsuchiura-city/",
     "rents": {
       "r1": 44000,
-      "k1": 43875,
-      "ldk1": 44000,
-      "ldk2": 49000,
-      "ldk3": 67500
+      "k1": 44000,
+      "ldk1": 43000,
+      "ldk2": 50000,
+      "ldk3": 66750
     }
   },
   {
@@ -5015,9 +5015,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "古河市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/koga-city/",
     "rents": {
-      "r1": 47500,
-      "k1": 45250,
-      "ldk1": 40550,
+      "r1": 48000,
+      "k1": 44500,
+      "ldk1": 40000,
       "ldk2": 47000,
       "ldk3": 62000
     }
@@ -5028,7 +5028,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/ishioka-city/",
     "rents": {
       "r1": 25000,
-      "k1": 44500,
+      "k1": 43000,
       "ldk1": 40000,
       "ldk2": 50000,
       "ldk3": 55000
@@ -5040,10 +5040,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/yuki-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 46375,
-      "ldk2": 56000,
-      "ldk3": 68000
+      "k1": 47000,
+      "ldk1": 45000,
+      "ldk2": 55175,
+      "ldk3": null
     }
   },
   {
@@ -5051,11 +5051,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "龍ケ崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/ryugasaki-city/",
     "rents": {
-      "r1": 34793,
-      "k1": 46187,
-      "ldk1": 45983,
-      "ldk2": 54452,
-      "ldk3": 61696
+      "r1": 33558,
+      "k1": 34250,
+      "ldk1": 45305,
+      "ldk2": 53803,
+      "ldk3": 64571
     }
   },
   {
@@ -5063,10 +5063,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "下妻市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/shimotsuma-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 46000,
-      "ldk1": 47000,
-      "ldk2": 53125,
+      "r1": 45000,
+      "k1": 50000,
+      "ldk1": 45750,
+      "ldk2": 54000,
       "ldk3": null
     }
   },
@@ -5076,9 +5076,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/joso-city/",
     "rents": {
       "r1": null,
-      "k1": 50000,
-      "ldk1": 49750,
-      "ldk2": 58250,
+      "k1": 49500,
+      "ldk1": 50750,
+      "ldk2": 59125,
       "ldk3": null
     }
   },
@@ -5088,7 +5088,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/hitachiota-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
+      "k1": 41000,
       "ldk1": null,
       "ldk2": 63000,
       "ldk3": null
@@ -5101,7 +5101,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 43000,
-      "ldk1": 42000,
+      "ldk1": 41000,
       "ldk2": 45000,
       "ldk3": 50000
     }
@@ -5112,10 +5112,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/kitaibaraki-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 42750,
-      "ldk2": 46000,
-      "ldk3": null
+      "k1": 51000,
+      "ldk1": 44250,
+      "ldk2": 45000,
+      "ldk3": 68000
     }
   },
   {
@@ -5124,9 +5124,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/kasama-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 47500,
-      "ldk2": 50125,
+      "k1": 45000,
+      "ldk1": 42500,
+      "ldk2": 49750,
       "ldk3": null
     }
   },
@@ -5135,11 +5135,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "取手市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/toride-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 44250,
-      "ldk1": 46600,
-      "ldk2": 62250,
-      "ldk3": 62500
+      "r1": 39000,
+      "k1": 44375,
+      "ldk1": 48000,
+      "ldk2": 50200,
+      "ldk3": 63500
     }
   },
   {
@@ -5148,10 +5148,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/ushiku-city/",
     "rents": {
       "r1": 47000,
-      "k1": 41250,
-      "ldk1": 48000,
-      "ldk2": 56000,
-      "ldk3": 71500
+      "k1": 41500,
+      "ldk1": 54000,
+      "ldk2": 56500,
+      "ldk3": 71000
     }
   },
   {
@@ -5159,11 +5159,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "筑波市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/tsukuba-city/",
     "rents": {
-      "r1": 56000,
-      "k1": 53750,
+      "r1": 55500,
+      "k1": 53250,
       "ldk1": 48000,
-      "ldk2": 70000,
-      "ldk3": 120000
+      "ldk2": 70250,
+      "ldk3": 118000
     }
   },
   {
@@ -5172,10 +5172,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/hitachinaka-city/",
     "rents": {
       "r1": 50000,
-      "k1": 53500,
-      "ldk1": 55500,
-      "ldk2": 61000,
-      "ldk3": 76000
+      "k1": 46250,
+      "ldk1": 56000,
+      "ldk2": 61500,
+      "ldk3": 75000
     }
   },
   {
@@ -5184,8 +5184,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/kashima-city/",
     "rents": {
       "r1": 49000,
-      "k1": 43000,
-      "ldk1": 43000,
+      "k1": 44500,
+      "ldk1": 44000,
       "ldk2": 49000,
       "ldk3": 55000
     }
@@ -5195,10 +5195,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "潮来市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/itako-city/",
     "rents": {
-      "r1": 28899,
-      "k1": 30950,
-      "ldk1": 40702,
-      "ldk2": 46835,
+      "r1": null,
+      "k1": 32000,
+      "ldk1": 38825,
+      "ldk2": 53375,
       "ldk3": null
     }
   },
@@ -5207,11 +5207,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "守谷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/moriya-city/",
     "rents": {
-      "r1": 60000,
-      "k1": 48500,
-      "ldk1": 64500,
-      "ldk2": 95500,
-      "ldk3": 176000
+      "r1": 58453,
+      "k1": 57381,
+      "ldk1": 73781,
+      "ldk2": 88855,
+      "ldk3": 104157
     }
   },
   {
@@ -5220,8 +5220,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/hitachiomiya-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
-      "ldk1": 51000,
+      "k1": 45000,
+      "ldk1": 51500,
       "ldk2": 59000,
       "ldk3": null
     }
@@ -5232,8 +5232,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/naka-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 50000,
+      "k1": 48500,
+      "ldk1": 50750,
       "ldk2": 60000,
       "ldk3": null
     }
@@ -5244,10 +5244,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/chikusei-city/",
     "rents": {
       "r1": null,
-      "k1": 40500,
+      "k1": 47000,
       "ldk1": 40000,
       "ldk2": 50000,
-      "ldk3": 73000
+      "ldk3": null
     }
   },
   {
@@ -5257,7 +5257,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 57000,
-      "ldk1": 55500,
+      "ldk1": 54625,
       "ldk2": 65000,
       "ldk3": null
     }
@@ -5268,9 +5268,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/inashiki-city/",
     "rents": {
       "r1": null,
-      "k1": 29000,
-      "ldk1": 40500,
-      "ldk2": 44500,
+      "k1": 28000,
+      "ldk1": 40000,
+      "ldk2": 43750,
       "ldk3": null
     }
   },
@@ -5280,9 +5280,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/kasumigaura-city/",
     "rents": {
       "r1": null,
-      "k1": 45500,
-      "ldk1": 39500,
-      "ldk2": 60000,
+      "k1": 45000,
+      "ldk1": 47000,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -5292,9 +5292,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/sakuragawa-city/",
     "rents": {
       "r1": null,
-      "k1": 50000,
-      "ldk1": 45750,
-      "ldk2": 50500,
+      "k1": 49500,
+      "ldk1": 46500,
+      "ldk2": 54000,
       "ldk3": null
     }
   },
@@ -5303,11 +5303,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "神栖市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/kamisu-city/",
     "rents": {
-      "r1": 47649,
-      "k1": 45555,
-      "ldk1": 51449,
-      "ldk2": 60562,
-      "ldk3": 71605
+      "r1": 47582,
+      "k1": 45617,
+      "ldk1": 51442,
+      "ldk2": 60072,
+      "ldk3": 70516
     }
   },
   {
@@ -5316,9 +5316,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/hokota-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
-      "ldk1": 48000,
-      "ldk2": 54000,
+      "k1": 46500,
+      "ldk1": 46500,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -5328,10 +5328,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/tsukubamirai-city/",
     "rents": {
       "r1": null,
-      "k1": 57000,
-      "ldk1": 61250,
+      "k1": 60000,
+      "ldk1": 64500,
       "ldk2": 75000,
-      "ldk3": 112500
+      "ldk3": 92500
     }
   },
   {
@@ -5340,10 +5340,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/omitama-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 39500,
+      "k1": 44000,
+      "ldk1": 40000,
       "ldk2": 51000,
-      "ldk3": 64000
+      "ldk3": 62000
     }
   },
   {
@@ -5353,7 +5353,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 51000,
+      "ldk1": 54500,
       "ldk2": 64500,
       "ldk3": null
     }
@@ -5364,8 +5364,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/higashiibaraki_oarai-city/",
     "rents": {
       "r1": null,
-      "k1": 42000,
-      "ldk1": 54625,
+      "k1": 43000,
+      "ldk1": 50750,
       "ldk2": null,
       "ldk3": null
     }
@@ -5376,9 +5376,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/naka_tokai-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
+      "k1": 46500,
       "ldk1": 55000,
-      "ldk2": 60000,
+      "ldk2": 62500,
       "ldk3": null
     }
   },
@@ -5389,7 +5389,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": null,
+      "ldk1": 40000,
       "ldk2": 50000,
       "ldk3": null
     }
@@ -5399,11 +5399,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "稻敷郡阿見町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ibaraki/inashiki_ami-city/",
     "rents": {
-      "r1": 49000,
-      "k1": 37000,
-      "ldk1": 52000,
-      "ldk2": 47000,
-      "ldk3": 94000
+      "r1": 47000,
+      "k1": 36500,
+      "ldk1": 51500,
+      "ldk2": 48000,
+      "ldk3": 93500
     }
   },
   {
@@ -5413,7 +5413,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 51750,
+      "ldk1": 50250,
       "ldk2": 63000,
       "ldk3": null
     }
@@ -5423,11 +5423,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "金澤市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/kanazawa-city/",
     "rents": {
-      "r1": 43276,
-      "k1": 43044,
-      "ldk1": 54024,
-      "ldk2": 64470,
-      "ldk3": 77578
+      "r1": 43680,
+      "k1": 43259,
+      "ldk1": 54478,
+      "ldk2": 64319,
+      "ldk3": 79926
     }
   },
   {
@@ -5435,11 +5435,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/komatsu-city/",
     "rents": {
-      "r1": 46000,
+      "r1": 45000,
       "k1": 45000,
       "ldk1": 45000,
-      "ldk2": 57500,
-      "ldk3": 66250
+      "ldk2": 56250,
+      "ldk3": null
     }
   },
   {
@@ -5449,20 +5449,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 32000,
       "k1": 40000,
-      "ldk1": 41000,
-      "ldk2": 46325,
-      "ldk3": null
-    }
-  },
-  {
-    "region": "石川",
-    "district": "羽咋市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/hakui-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": null,
-      "ldk2": 67000,
+      "ldk1": 44000,
+      "ldk2": 45150,
       "ldk3": null
     }
   },
@@ -5472,9 +5460,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/kahoku-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 54250,
-      "ldk2": 63750,
+      "k1": 58000,
+      "ldk1": 59500,
+      "ldk2": 64500,
       "ldk3": null
     }
   },
@@ -5484,9 +5472,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/hakusan-city/",
     "rents": {
       "r1": null,
-      "k1": 57000,
-      "ldk1": 54750,
-      "ldk2": 64000,
+      "k1": 57500,
+      "ldk1": 55250,
+      "ldk2": 60000,
       "ldk3": 85000
     }
   },
@@ -5495,10 +5483,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "能美市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/nomi-city/",
     "rents": {
-      "r1": 47750,
-      "k1": 49000,
-      "ldk1": 50500,
-      "ldk2": 55500,
+      "r1": null,
+      "k1": 45500,
+      "ldk1": 46500,
+      "ldk2": 54500,
       "ldk3": null
     }
   },
@@ -5507,11 +5495,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "野々市市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/nonoichi-city/",
     "rents": {
-      "r1": 45677,
-      "k1": 48653,
-      "ldk1": 55460,
-      "ldk2": 72484,
-      "ldk3": 79008
+      "r1": 46896,
+      "k1": 49948,
+      "ldk1": 56802,
+      "ldk2": 72653,
+      "ldk3": 81408
     }
   },
   {
@@ -5520,8 +5508,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/ishikawa/kahoku_tsubata-city/",
     "rents": {
       "r1": null,
-      "k1": 62000,
-      "ldk1": 45000,
+      "k1": 63000,
+      "ldk1": 43000,
       "ldk2": 59900,
       "ldk3": null
     }
@@ -5533,8 +5521,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 53000,
       "k1": 57000,
-      "ldk1": 73000,
-      "ldk2": null,
+      "ldk1": 56000,
+      "ldk2": 81000,
       "ldk3": null
     }
   },
@@ -5543,8 +5531,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "盛岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/morioka-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 41000,
+      "r1": 45000,
+      "k1": 41500,
       "ldk1": 49000,
       "ldk2": 55000,
       "ldk3": 95000
@@ -5555,8 +5543,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宮古市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/miyako-city/",
     "rents": {
-      "r1": 60000,
-      "k1": 44000,
+      "r1": null,
+      "k1": 45000,
       "ldk1": 53000,
       "ldk2": 55400,
       "ldk3": null
@@ -5567,11 +5555,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大船渡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/ofunato-city/",
     "rents": {
-      "r1": 42339,
-      "k1": 42003,
-      "ldk1": 46348,
-      "ldk2": 50564,
-      "ldk3": 61140
+      "r1": null,
+      "k1": 41000,
+      "ldk1": 45500,
+      "ldk2": 50000,
+      "ldk3": null
     }
   },
   {
@@ -5579,10 +5567,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "花巻市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/hanamaki-city/",
     "rents": {
-      "r1": null,
-      "k1": 35500,
+      "r1": 40000,
+      "k1": 34250,
       "ldk1": 40000,
-      "ldk2": 50400,
+      "ldk2": 50275,
       "ldk3": 73000
     }
   },
@@ -5592,9 +5580,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/kitakami-city/",
     "rents": {
       "r1": 47000,
-      "k1": 46500,
-      "ldk1": 44500,
-      "ldk2": 54500,
+      "k1": 45500,
+      "ldk1": 45000,
+      "ldk2": 55000,
       "ldk3": 77000
     }
   },
@@ -5605,7 +5593,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 55000,
+      "ldk1": 57000,
       "ldk2": 63000,
       "ldk3": null
     }
@@ -5616,10 +5604,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/ichinoseki-city/",
     "rents": {
       "r1": 43000,
-      "k1": 36750,
-      "ldk1": 46000,
+      "k1": 37000,
+      "ldk1": 43000,
       "ldk2": 48000,
-      "ldk3": 70000
+      "ldk3": 65000
     }
   },
   {
@@ -5629,8 +5617,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 49825,
-      "ldk2": 58500,
+      "ldk1": 49525,
+      "ldk2": 59000,
       "ldk3": null
     }
   },
@@ -5642,7 +5630,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 42000,
       "ldk1": null,
-      "ldk2": 41400,
+      "ldk2": 41200,
       "ldk3": null
     }
   },
@@ -5665,7 +5653,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 41000,
+      "ldk1": 43000,
       "ldk2": null,
       "ldk3": null
     }
@@ -5675,9 +5663,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "奥州市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/oshu-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 37750,
-      "ldk1": 41500,
+      "r1": 43500,
+      "k1": 37125,
+      "ldk1": 42000,
       "ldk2": 45000,
       "ldk3": 60000
     }
@@ -5687,10 +5675,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "滝澤市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/takizawa-city/",
     "rents": {
-      "r1": 33000,
-      "k1": 33500,
+      "r1": 20000,
+      "k1": 32000,
       "ldk1": 43000,
-      "ldk2": 50500,
+      "ldk2": 48000,
       "ldk3": null
     }
   },
@@ -5701,8 +5689,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 46500,
-      "ldk1": 48875,
-      "ldk2": 75000,
+      "ldk1": 51250,
+      "ldk2": 71000,
       "ldk3": null
     }
   },
@@ -5713,8 +5701,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 50000,
-      "ldk1": 45000,
-      "ldk2": 66000,
+      "ldk1": 49000,
+      "ldk2": 65000,
       "ldk3": null
     }
   },
@@ -5726,7 +5714,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 43000,
       "ldk1": 45000,
-      "ldk2": 53000,
+      "ldk2": 54500,
       "ldk3": null
     }
   },
@@ -5737,7 +5725,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 35000,
+      "ldk1": 36500,
       "ldk2": null,
       "ldk3": null
     }
@@ -5748,8 +5736,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/iwate/kamihei_otsuchi-city/",
     "rents": {
       "r1": null,
-      "k1": 39250,
-      "ldk1": 48000,
+      "k1": 39000,
+      "ldk1": null,
       "ldk2": null,
       "ldk3": null
     }
@@ -5759,8 +5747,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/takamatsu-city/",
     "rents": {
-      "r1": 34250,
-      "k1": 37250,
+      "r1": 34000,
+      "k1": 37000,
       "ldk1": 40000,
       "ldk2": 45000,
       "ldk3": 50000
@@ -5771,11 +5759,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "丸亀市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/marugame-city/",
     "rents": {
-      "r1": 38500,
-      "k1": 36750,
-      "ldk1": 38000,
+      "r1": 38750,
+      "k1": 38000,
+      "ldk1": 38250,
       "ldk2": 43000,
-      "ldk3": 64000
+      "ldk3": 60750
     }
   },
   {
@@ -5787,7 +5775,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 39400,
       "ldk1": 39000,
       "ldk2": 46000,
-      "ldk3": 76000
+      "ldk3": 71000
     }
   },
   {
@@ -5795,10 +5783,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "善通寺市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/zentsuji-city/",
     "rents": {
-      "r1": 27000,
+      "r1": 26000,
       "k1": 31000,
       "ldk1": 39000,
-      "ldk2": 49500,
+      "ldk2": 48750,
       "ldk3": 71500
     }
   },
@@ -5807,11 +5795,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "観音寺市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/kanonji-city/",
     "rents": {
-      "r1": 40000,
-      "k1": 41750,
-      "ldk1": 47000,
-      "ldk2": 44000,
-      "ldk3": 51000
+      "r1": 39000,
+      "k1": 39000,
+      "ldk1": 45500,
+      "ldk2": 43700,
+      "ldk3": 53000
     }
   },
   {
@@ -5819,11 +5807,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "さぬき市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/sanuki-city/",
     "rents": {
-      "r1": 20593,
-      "k1": 25044,
-      "ldk1": 34617,
-      "ldk2": 41030,
-      "ldk3": 60004
+      "r1": 20910,
+      "k1": 25017,
+      "ldk1": 33458,
+      "ldk2": 40579,
+      "ldk3": 56947
     }
   },
   {
@@ -5833,8 +5821,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 34550,
-      "ldk2": 44500,
+      "ldk1": 33975,
+      "ldk2": 43000,
       "ldk3": null
     }
   },
@@ -5844,9 +5832,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/mitoyo-city/",
     "rents": {
       "r1": null,
-      "k1": 36000,
-      "ldk1": 42375,
-      "ldk2": 46000,
+      "k1": 38000,
+      "ldk1": 41800,
+      "ldk2": 45500,
       "ldk3": null
     }
   },
@@ -5855,11 +5843,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "木田郡三木町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/kita_miki-city/",
     "rents": {
-      "r1": 27403,
-      "k1": 29888,
-      "ldk1": 36510,
-      "ldk2": 44554,
-      "ldk3": 53042
+      "r1": 26837,
+      "k1": 30026,
+      "ldk1": 36139,
+      "ldk2": 44814,
+      "ldk3": 52598
     }
   },
   {
@@ -5867,11 +5855,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "綾歌郡宇多津町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagawa/ayauta_utazu-city/",
     "rents": {
-      "r1": 33000,
-      "k1": 39125,
-      "ldk1": 47000,
-      "ldk2": 51500,
-      "ldk3": 60000
+      "r1": 30980,
+      "k1": 35272,
+      "ldk1": 43906,
+      "ldk2": 51787,
+      "ldk3": 57105
     }
   },
   {
@@ -5882,7 +5870,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 49250,
-      "ldk2": 52250,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -5893,8 +5881,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 35000,
-      "ldk2": 52500,
+      "ldk1": 38000,
+      "ldk2": 48750,
       "ldk3": null
     }
   },
@@ -5905,9 +5893,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 32000,
-      "ldk1": 42750,
-      "ldk2": 41625,
-      "ldk3": null
+      "ldk1": 43000,
+      "ldk2": 41375,
+      "ldk3": 67000
     }
   },
   {
@@ -5918,7 +5906,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 49500,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -5927,11 +5915,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鹿兒島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/kagoshima-city/",
     "rents": {
-      "r1": 39685,
-      "k1": 41131,
-      "ldk1": 51630,
-      "ldk2": 64488,
-      "ldk3": 78330
+      "r1": 39575,
+      "k1": 41124,
+      "ldk1": 51252,
+      "ldk2": 63811,
+      "ldk3": 77252
     }
   },
   {
@@ -5939,10 +5927,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鹿屋市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/kanoya-city/",
     "rents": {
-      "r1": 31000,
-      "k1": 34000,
-      "ldk1": 41000,
-      "ldk2": 46000,
+      "r1": 30500,
+      "k1": 33500,
+      "ldk1": 42000,
+      "ldk2": 51000,
       "ldk3": 53250
     }
   },
@@ -5953,8 +5941,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 70000,
-      "ldk1": 50000,
-      "ldk2": 56500,
+      "ldk1": 55250,
+      "ldk2": 49000,
       "ldk3": null
     }
   },
@@ -5965,8 +5953,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 50000,
-      "ldk2": 55750,
+      "ldk1": 49500,
+      "ldk2": 55250,
       "ldk3": null
     }
   },
@@ -5976,10 +5964,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/satsumasendai-city/",
     "rents": {
       "r1": 38000,
-      "k1": 37500,
+      "k1": 36500,
       "ldk1": 40000,
       "ldk2": 50000,
-      "ldk3": 61000
+      "ldk3": 60000
     }
   },
   {
@@ -5988,10 +5976,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/hioki-city/",
     "rents": {
       "r1": null,
-      "k1": 39000,
-      "ldk1": 49250,
+      "k1": null,
+      "ldk1": 49500,
       "ldk2": 52000,
-      "ldk3": 47500
+      "ldk3": 45000
     }
   },
   {
@@ -6001,8 +5989,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45500,
-      "ldk2": null,
+      "ldk1": 46000,
+      "ldk2": 49500,
       "ldk3": null
     }
   },
@@ -6011,11 +5999,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "霧島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/kirishima-city/",
     "rents": {
-      "r1": 37467,
-      "k1": 36906,
-      "ldk1": 43705,
-      "ldk2": 51930,
-      "ldk3": 63468
+      "r1": 36345,
+      "k1": 36447,
+      "ldk1": 43527,
+      "ldk2": 51759,
+      "ldk3": 69269
     }
   },
   {
@@ -6026,7 +6014,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 37000,
       "ldk1": 43000,
-      "ldk2": 47000,
+      "ldk2": 48000,
       "ldk3": null
     }
   },
@@ -6036,22 +6024,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/shibushi-city/",
     "rents": {
       "r1": null,
-      "k1": 33000,
-      "ldk1": 43000,
+      "k1": null,
+      "ldk1": 43250,
       "ldk2": 46000,
       "ldk3": 58500
-    }
-  },
-  {
-    "region": "鹿兒島",
-    "district": "南九州市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/minamikyushu-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": 42500,
-      "ldk2": null,
-      "ldk3": null
     }
   },
   {
@@ -6059,11 +6035,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "姶良市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kagoshima/aira-city/",
     "rents": {
-      "r1": 39500,
+      "r1": 40000,
       "k1": 39500,
-      "ldk1": 43000,
-      "ldk2": 51500,
-      "ldk3": 74500
+      "ldk1": 43500,
+      "ldk2": 52500,
+      "ldk3": 66250
     }
   },
   {
@@ -6083,11 +6059,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama-city/",
     "rents": {
-      "r1": 56552,
-      "k1": 72407,
-      "ldk1": 99947,
-      "ldk2": 122959,
-      "ldk3": 157066
+      "r1": 56707,
+      "k1": 72696,
+      "ldk1": 100272,
+      "ldk2": 123157,
+      "ldk3": 158352
     }
   },
   {
@@ -6095,11 +6071,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市鶴見區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_tsurumi-city/",
     "rents": {
-      "r1": 58702,
-      "k1": 78361,
-      "ldk1": 108261,
-      "ldk2": 136049,
-      "ldk3": 175723
+      "r1": 58917,
+      "k1": 79126,
+      "ldk1": 108157,
+      "ldk2": 134044,
+      "ldk3": 176648
     }
   },
   {
@@ -6107,11 +6083,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市神奈川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_kanagawa-city/",
     "rents": {
-      "r1": 58123,
-      "k1": 76997,
-      "ldk1": 107010,
-      "ldk2": 136366,
-      "ldk3": 174173
+      "r1": 57891,
+      "k1": 76859,
+      "ldk1": 107643,
+      "ldk2": 134460,
+      "ldk3": 177782
     }
   },
   {
@@ -6119,11 +6095,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_nishi-city/",
     "rents": {
-      "r1": 68341,
-      "k1": 89647,
-      "ldk1": 126337,
-      "ldk2": 153514,
-      "ldk3": 208166
+      "r1": 68517,
+      "k1": 90485,
+      "ldk1": 127647,
+      "ldk2": 154848,
+      "ldk3": 210464
     }
   },
   {
@@ -6131,11 +6107,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市中區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_naka-city/",
     "rents": {
-      "r1": 81660,
-      "k1": 95564,
-      "ldk1": 128955,
-      "ldk2": 160601,
-      "ldk3": 205803
+      "r1": 82775,
+      "k1": 96006,
+      "ldk1": 129558,
+      "ldk2": 161587,
+      "ldk3": 213126
     }
   },
   {
@@ -6143,11 +6119,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_minami-city/",
     "rents": {
-      "r1": 58311,
-      "k1": 73485,
-      "ldk1": 99379,
-      "ldk2": 125192,
-      "ldk3": 154046
+      "r1": 57990,
+      "k1": 73557,
+      "ldk1": 98686,
+      "ldk2": 123752,
+      "ldk3": 155138
     }
   },
   {
@@ -6155,11 +6131,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市保土ケ谷區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_hodogaya-city/",
     "rents": {
-      "r1": 46398,
-      "k1": 63796,
-      "ldk1": 88016,
-      "ldk2": 107759,
-      "ldk3": 125231
+      "r1": 46913,
+      "k1": 63756,
+      "ldk1": 88113,
+      "ldk2": 108868,
+      "ldk3": 138288
     }
   },
   {
@@ -6167,11 +6143,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市磯子區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_isogo-city/",
     "rents": {
-      "r1": 44579,
-      "k1": 60839,
-      "ldk1": 81798,
-      "ldk2": 100524,
-      "ldk3": 135629
+      "r1": 45095,
+      "k1": 62049,
+      "ldk1": 83386,
+      "ldk2": 101715,
+      "ldk3": 139615
     }
   },
   {
@@ -6179,11 +6155,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市金澤區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_kanazawa-city/",
     "rents": {
-      "r1": 47131,
-      "k1": 57309,
-      "ldk1": 78431,
-      "ldk2": 92616,
-      "ldk3": 123984
+      "r1": 47839,
+      "k1": 58609,
+      "ldk1": 79845,
+      "ldk2": 95882,
+      "ldk3": 123285
     }
   },
   {
@@ -6191,11 +6167,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市港北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_kohoku-city/",
     "rents": {
-      "r1": 61941,
-      "k1": 77913,
-      "ldk1": 111760,
-      "ldk2": 137928,
-      "ldk3": 178287
+      "r1": 62299,
+      "k1": 78270,
+      "ldk1": 111305,
+      "ldk2": 136968,
+      "ldk3": 175263
     }
   },
   {
@@ -6203,11 +6179,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市戶塚區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_totsuka-city/",
     "rents": {
-      "r1": 53000,
-      "k1": 69000,
-      "ldk1": 70000,
-      "ldk2": 80000,
-      "ldk3": 138000
+      "r1": 54688,
+      "k1": 65200,
+      "ldk1": 87813,
+      "ldk2": 104474,
+      "ldk3": 136427
     }
   },
   {
@@ -6215,11 +6191,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市港南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_konan-city/",
     "rents": {
-      "r1": 46263,
-      "k1": 56335,
-      "ldk1": 83241,
-      "ldk2": 101796,
-      "ldk3": 136822
+      "r1": 45967,
+      "k1": 56557,
+      "ldk1": 82072,
+      "ldk2": 100537,
+      "ldk3": 135950
     }
   },
   {
@@ -6227,11 +6203,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市旭區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_asahi-city/",
     "rents": {
-      "r1": 47430,
-      "k1": 58654,
-      "ldk1": 79907,
-      "ldk2": 100578,
-      "ldk3": 125488
+      "r1": 47881,
+      "k1": 58792,
+      "ldk1": 80057,
+      "ldk2": 99609,
+      "ldk3": 123875
     }
   },
   {
@@ -6239,11 +6215,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市綠區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_midori-city/",
     "rents": {
-      "r1": 56952,
-      "k1": 66151,
-      "ldk1": 86149,
-      "ldk2": 105210,
-      "ldk3": 138504
+      "r1": 57000,
+      "k1": 71000,
+      "ldk1": 73000,
+      "ldk2": 103500,
+      "ldk3": 135000
     }
   },
   {
@@ -6251,11 +6227,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市瀬谷區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_seya-city/",
     "rents": {
-      "r1": 48713,
-      "k1": 57283,
-      "ldk1": 75040,
-      "ldk2": 89697,
-      "ldk3": 104208
+      "r1": 48218,
+      "k1": 57358,
+      "ldk1": 74936,
+      "ldk2": 89602,
+      "ldk3": 117195
     }
   },
   {
@@ -6263,11 +6239,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市栄區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_sakae-city/",
     "rents": {
-      "r1": 53250,
-      "k1": 62000,
-      "ldk1": 66000,
-      "ldk2": 93000,
-      "ldk3": 142000
+      "r1": 55000,
+      "k1": 65000,
+      "ldk1": 67500,
+      "ldk2": 94000,
+      "ldk3": 136500
     }
   },
   {
@@ -6275,11 +6251,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市泉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_izumi-city/",
     "rents": {
-      "r1": 52000,
-      "k1": 69000,
-      "ldk1": 66000,
+      "r1": 54500,
+      "k1": 70500,
+      "ldk1": 65000,
       "ldk2": 81000,
-      "ldk3": 110000
+      "ldk3": 111000
     }
   },
   {
@@ -6287,11 +6263,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市青葉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_aoba-city/",
     "rents": {
-      "r1": 56338,
-      "k1": 65849,
-      "ldk1": 96244,
-      "ldk2": 116629,
-      "ldk3": 149036
+      "r1": 57516,
+      "k1": 69056,
+      "ldk1": 97754,
+      "ldk2": 117514,
+      "ldk3": 150626
     }
   },
   {
@@ -6299,11 +6275,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橫濱市都筑區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokohama_tsuzuki-city/",
     "rents": {
-      "r1": 64485,
-      "k1": 70044,
-      "ldk1": 98749,
-      "ldk2": 123605,
-      "ldk3": 152695
+      "r1": 63353,
+      "k1": 70362,
+      "ldk1": 98113,
+      "ldk2": 119401,
+      "ldk3": 154814
     }
   },
   {
@@ -6311,11 +6287,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki-city/",
     "rents": {
-      "r1": 63097,
-      "k1": 77138,
-      "ldk1": 107809,
-      "ldk2": 133575,
-      "ldk3": 165516
+      "r1": 63320,
+      "k1": 78045,
+      "ldk1": 108348,
+      "ldk2": 133824,
+      "ldk3": 166387
     }
   },
   {
@@ -6323,11 +6299,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市川崎區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_kawasaki-city/",
     "rents": {
-      "r1": 62916,
-      "k1": 82415,
-      "ldk1": 110261,
-      "ldk2": 135129,
-      "ldk3": 173283
+      "r1": 62707,
+      "k1": 82455,
+      "ldk1": 111911,
+      "ldk2": 131574,
+      "ldk3": 175120
     }
   },
   {
@@ -6335,11 +6311,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市幸區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_saiwai-city/",
     "rents": {
-      "r1": 63377,
-      "k1": 83382,
-      "ldk1": 113247,
-      "ldk2": 136144,
-      "ldk3": 160733
+      "r1": 62825,
+      "k1": 83535,
+      "ldk1": 113100,
+      "ldk2": 132757,
+      "ldk3": 163598
     }
   },
   {
@@ -6347,11 +6323,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市中原區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_nakahara-city/",
     "rents": {
-      "r1": 72060,
-      "k1": 85029,
-      "ldk1": 126245,
-      "ldk2": 158795,
-      "ldk3": 203700
+      "r1": 71769,
+      "k1": 87549,
+      "ldk1": 126102,
+      "ldk2": 160751,
+      "ldk3": 196969
     }
   },
   {
@@ -6359,11 +6335,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市高津區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_takatsu-city/",
     "rents": {
-      "r1": 69387,
-      "k1": 80288,
-      "ldk1": 112588,
-      "ldk2": 138265,
-      "ldk3": 165037
+      "r1": 69103,
+      "k1": 80756,
+      "ldk1": 113666,
+      "ldk2": 139294,
+      "ldk3": 166756
     }
   },
   {
@@ -6371,11 +6347,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市多摩區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_tama-city/",
     "rents": {
-      "r1": 57478,
-      "k1": 71321,
-      "ldk1": 97911,
-      "ldk2": 124405,
-      "ldk3": 153406
+      "r1": 56599,
+      "k1": 70648,
+      "ldk1": 97275,
+      "ldk2": 125275,
+      "ldk3": 153629
     }
   },
   {
@@ -6383,11 +6359,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市宮前區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_miyamae-city/",
     "rents": {
-      "r1": 62125,
-      "k1": 70309,
-      "ldk1": 98445,
-      "ldk2": 121181,
-      "ldk3": 150210
+      "r1": 61786,
+      "k1": 70733,
+      "ldk1": 98235,
+      "ldk2": 124753,
+      "ldk3": 128974
     }
   },
   {
@@ -6395,11 +6371,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川崎市麻生區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kawasaki_asao-city/",
     "rents": {
-      "r1": 51360,
-      "k1": 60007,
-      "ldk1": 85955,
-      "ldk2": 104799,
-      "ldk3": 142779
+      "r1": 50722,
+      "k1": 59814,
+      "ldk1": 87054,
+      "ldk2": 105186,
+      "ldk3": 143947
     }
   },
   {
@@ -6407,11 +6383,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "相模原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/sagamihara-city/",
     "rents": {
-      "r1": 49991,
-      "k1": 56997,
-      "ldk1": 76760,
-      "ldk2": 92186,
-      "ldk3": 112129
+      "r1": 50184,
+      "k1": 56496,
+      "ldk1": 76453,
+      "ldk2": 92075,
+      "ldk3": 113055
     }
   },
   {
@@ -6419,11 +6395,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "相模原市綠區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/sagamihara_midori-city/",
     "rents": {
-      "r1": 55335,
-      "k1": 60805,
-      "ldk1": 79832,
-      "ldk2": 93357,
-      "ldk3": 115262
+      "r1": 56195,
+      "k1": 61494,
+      "ldk1": 80015,
+      "ldk2": 98170,
+      "ldk3": 118387
     }
   },
   {
@@ -6431,11 +6407,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "相模原市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/sagamihara_chuo-city/",
     "rents": {
-      "r1": 48711,
-      "k1": 56294,
-      "ldk1": 74936,
-      "ldk2": 88154,
-      "ldk3": 107144
+      "r1": 49324,
+      "k1": 55041,
+      "ldk1": 74053,
+      "ldk2": 86847,
+      "ldk3": 102943
     }
   },
   {
@@ -6443,11 +6419,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "相模原市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/sagamihara_minami-city/",
     "rents": {
-      "r1": 49991,
-      "k1": 56212,
-      "ldk1": 77383,
-      "ldk2": 94349,
-      "ldk3": 115511
+      "r1": 49140,
+      "k1": 56001,
+      "ldk1": 77236,
+      "ldk2": 94147,
+      "ldk3": 116590
     }
   },
   {
@@ -6456,8 +6432,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yokosuka-city/",
     "rents": {
       "r1": 45000,
-      "k1": 52500,
-      "ldk1": 58000,
+      "k1": 53250,
+      "ldk1": 59000,
       "ldk2": 70000,
       "ldk3": 78000
     }
@@ -6467,44 +6443,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "平塚市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/hiratsuka-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 55500,
-      "ldk1": 55000,
-      "ldk2": 61000,
-      "ldk3": 87500
-    }
-  },
-  {
-    "region": "神奈川",
-    "district": "鎌倉市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kamakura-city/",
-    "rents": {
-      "r1": 69884,
-      "k1": 73267,
-      "ldk1": 96783,
-      "ldk2": 119262,
-      "ldk3": 168423
-    }
-  },
-  {
-    "region": "神奈川",
-    "district": "藤澤市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/fujisawa-city/",
-    "rents": {
-      "r1": 60558,
-      "k1": 69707,
-      "ldk1": 93159,
-      "ldk2": 113816,
-      "ldk3": 149252
-    }
-  },
-  {
-    "region": "神奈川",
-    "district": "小田原市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/odawara-city/",
-    "rents": {
-      "r1": 51250,
-      "k1": 55500,
+      "r1": 48000,
+      "k1": 56000,
       "ldk1": 55000,
       "ldk2": 60000,
       "ldk3": 90000
@@ -6512,14 +6452,50 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
   },
   {
     "region": "神奈川",
+    "district": "鎌倉市",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/kamakura-city/",
+    "rents": {
+      "r1": 71837,
+      "k1": 73520,
+      "ldk1": 97937,
+      "ldk2": 118755,
+      "ldk3": 161483
+    }
+  },
+  {
+    "region": "神奈川",
+    "district": "藤澤市",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/fujisawa-city/",
+    "rents": {
+      "r1": 62559,
+      "k1": 69933,
+      "ldk1": 93542,
+      "ldk2": 114723,
+      "ldk3": 160540
+    }
+  },
+  {
+    "region": "神奈川",
+    "district": "小田原市",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/odawara-city/",
+    "rents": {
+      "r1": 51000,
+      "k1": 55500,
+      "ldk1": 53000,
+      "ldk2": 60000,
+      "ldk3": 90500
+    }
+  },
+  {
+    "region": "神奈川",
     "district": "茅ヶ崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/chigasaki-city/",
     "rents": {
-      "r1": 55612,
-      "k1": 60321,
-      "ldk1": 81563,
-      "ldk2": 101138,
-      "ldk3": 130259
+      "r1": 54000,
+      "k1": 64000,
+      "ldk1": 66500,
+      "ldk2": 75000,
+      "ldk3": 127000
     }
   },
   {
@@ -6527,9 +6503,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "逗子市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/zushi-city/",
     "rents": {
-      "r1": 71000,
-      "k1": 66000,
-      "ldk1": 75500,
+      "r1": 67500,
+      "k1": 66500,
+      "ldk1": 74000,
       "ldk2": 104750,
       "ldk3": 180000
     }
@@ -6540,10 +6516,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/miura-city/",
     "rents": {
       "r1": 55000,
-      "k1": 62500,
+      "k1": 64000,
       "ldk1": 55000,
-      "ldk2": 67250,
-      "ldk3": 95000
+      "ldk2": 68750,
+      "ldk3": 110000
     }
   },
   {
@@ -6551,11 +6527,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "秦野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/hadano-city/",
     "rents": {
-      "r1": 39025,
-      "k1": 43158,
-      "ldk1": 53834,
-      "ldk2": 60180,
-      "ldk3": 77211
+      "r1": 38457,
+      "k1": 42841,
+      "ldk1": 53554,
+      "ldk2": 59561,
+      "ldk3": 76410
     }
   },
   {
@@ -6563,11 +6539,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "厚木市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/atsugi-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 57500,
-      "ldk1": 56000,
-      "ldk2": 65000,
-      "ldk3": 97750
+      "r1": 53324,
+      "k1": 58605,
+      "ldk1": 73380,
+      "ldk2": 86411,
+      "ldk3": 103445
     }
   },
   {
@@ -6575,11 +6551,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大和市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/yamato-city/",
     "rents": {
-      "r1": 52472,
-      "k1": 61995,
-      "ldk1": 83191,
-      "ldk2": 101241,
-      "ldk3": 132237
+      "r1": 52768,
+      "k1": 61691,
+      "ldk1": 84109,
+      "ldk2": 102015,
+      "ldk3": 129490
     }
   },
   {
@@ -6587,11 +6563,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊勢原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/isehara-city/",
     "rents": {
-      "r1": 43989,
-      "k1": 45279,
-      "ldk1": 58531,
-      "ldk2": 68400,
-      "ldk3": 82569
+      "r1": 45070,
+      "k1": 45872,
+      "ldk1": 59083,
+      "ldk2": 68854,
+      "ldk3": 84330
     }
   },
   {
@@ -6599,10 +6575,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "海老名市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ebina-city/",
     "rents": {
-      "r1": 56000,
-      "k1": 63000,
+      "r1": 59000,
+      "k1": 63500,
       "ldk1": 63000,
-      "ldk2": 71500,
+      "ldk2": 71000,
       "ldk3": 122000
     }
   },
@@ -6611,11 +6587,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "座間市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/zama-city/",
     "rents": {
-      "r1": 37000,
-      "k1": 52000,
-      "ldk1": 58000,
-      "ldk2": 77750,
-      "ldk3": 105500
+      "r1": 35000,
+      "k1": 52500,
+      "ldk1": 59000,
+      "ldk2": 77000,
+      "ldk3": 94000
     }
   },
   {
@@ -6624,10 +6600,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/minamiashigara-city/",
     "rents": {
       "r1": null,
-      "k1": 56750,
-      "ldk1": 53750,
+      "k1": 56000,
+      "ldk1": 53500,
       "ldk2": 50000,
-      "ldk3": 73000
+      "ldk3": 74000
     }
   },
   {
@@ -6635,10 +6611,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "綾瀬市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ayase-city/",
     "rents": {
-      "r1": 40000,
-      "k1": 56000,
-      "ldk1": 59000,
-      "ldk2": 68500,
+      "r1": 51000,
+      "k1": 57000,
+      "ldk1": 58000,
+      "ldk2": 72250,
       "ldk3": 90000
     }
   },
@@ -6648,10 +6624,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/miura_hayama-city/",
     "rents": {
       "r1": null,
-      "k1": null,
-      "ldk1": 77000,
-      "ldk2": 107500,
-      "ldk3": 180000
+      "k1": 42503,
+      "ldk1": 68168,
+      "ldk2": 92195,
+      "ldk3": 236556
     }
   },
   {
@@ -6659,11 +6635,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高座郡寒川町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/koza_samukawa-city/",
     "rents": {
-      "r1": 68000,
-      "k1": 62000,
-      "ldk1": 67000,
-      "ldk2": 74250,
-      "ldk3": 85000
+      "r1": 55500,
+      "k1": 70000,
+      "ldk1": 67700,
+      "ldk2": 75000,
+      "ldk3": 87000
     }
   },
   {
@@ -6672,10 +6648,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/naka_oiso-city/",
     "rents": {
       "r1": null,
-      "k1": 52000,
-      "ldk1": 64250,
-      "ldk2": 68250,
-      "ldk3": 98000
+      "k1": 53000,
+      "ldk1": 68250,
+      "ldk2": 68500,
+      "ldk3": 96500
     }
   },
   {
@@ -6683,11 +6659,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "中郡二宮町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/naka_ninomiya-city/",
     "rents": {
-      "r1": 42500,
-      "k1": 45000,
+      "r1": 40000,
+      "k1": 44500,
       "ldk1": 50000,
-      "ldk2": 66000,
-      "ldk3": 93000
+      "ldk2": 67000,
+      "ldk3": 93500
     }
   },
   {
@@ -6698,7 +6674,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 53000,
-      "ldk2": 60500,
+      "ldk2": 59500,
       "ldk3": null
     }
   },
@@ -6708,9 +6684,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ashigarakami_oi-city/",
     "rents": {
       "r1": null,
-      "k1": 42000,
+      "k1": 45000,
       "ldk1": 61500,
-      "ldk2": 58375,
+      "ldk2": 59375,
       "ldk3": null
     }
   },
@@ -6720,9 +6696,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ashigarakami_matsuda-city/",
     "rents": {
       "r1": null,
-      "k1": 48000,
-      "ldk1": 53500,
-      "ldk2": 66000,
+      "k1": 49000,
+      "ldk1": null,
+      "ldk2": 72000,
       "ldk3": null
     }
   },
@@ -6731,10 +6707,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "足柄上郡開成町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ashigarakami_kaisei-city/",
     "rents": {
-      "r1": 54750,
+      "r1": 56000,
       "k1": null,
-      "ldk1": 60500,
-      "ldk2": 67500,
+      "ldk1": 62000,
+      "ldk2": 68750,
       "ldk3": null
     }
   },
@@ -6743,10 +6719,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "足柄下郡箱根町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ashigarashimo_hakone-city/",
     "rents": {
-      "r1": 58000,
+      "r1": 68000,
       "k1": null,
-      "ldk1": null,
-      "ldk2": 100000,
+      "ldk1": 74000,
+      "ldk2": 95000,
       "ldk3": null
     }
   },
@@ -6756,10 +6732,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/ashigarashimo_yugawara-city/",
     "rents": {
       "r1": 41000,
-      "k1": 58000,
-      "ldk1": 57750,
-      "ldk2": 64000,
-      "ldk3": 86000
+      "k1": 61000,
+      "ldk1": 60000,
+      "ldk2": 63000,
+      "ldk3": 87000
     }
   },
   {
@@ -6768,9 +6744,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kanagawa/aiko_aikawa-city/",
     "rents": {
       "r1": null,
-      "k1": 66000,
-      "ldk1": 57000,
-      "ldk2": 60250,
+      "k1": 64000,
+      "ldk1": 55000,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -6779,11 +6755,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高知市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kochi/kochi-city/",
     "rents": {
-      "r1": 38788,
-      "k1": 40681,
-      "ldk1": 52928,
-      "ldk2": 62494,
-      "ldk3": 73725
+      "r1": 38852,
+      "k1": 40781,
+      "ldk1": 52997,
+      "ldk2": 63181,
+      "ldk3": 73998
     }
   },
   {
@@ -6791,11 +6767,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "南国市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kochi/nankoku-city/",
     "rents": {
-      "r1": null,
-      "k1": 44000,
-      "ldk1": 57500,
-      "ldk2": 62000,
-      "ldk3": 72000
+      "r1": 43533,
+      "k1": 45527,
+      "ldk1": 55910,
+      "ldk2": 59673,
+      "ldk3": 65660
     }
   },
   {
@@ -6805,8 +6781,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 35000,
       "k1": null,
-      "ldk1": null,
-      "ldk2": 57000,
+      "ldk1": 44000,
+      "ldk2": 56000,
       "ldk3": null
     }
   },
@@ -6817,7 +6793,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 46000,
-      "ldk1": 42000,
+      "ldk1": null,
       "ldk2": null,
       "ldk3": null
     }
@@ -6829,8 +6805,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45000,
-      "ldk2": 53250,
+      "ldk1": 46500,
+      "ldk2": 56000,
       "ldk3": null
     }
   },
@@ -6840,9 +6816,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kochi/konan-city/",
     "rents": {
       "r1": null,
-      "k1": 48500,
+      "k1": 44000,
       "ldk1": null,
-      "ldk2": 61000,
+      "ldk2": 61500,
       "ldk3": null
     }
   },
@@ -6852,9 +6828,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kochi/kami-city/",
     "rents": {
       "r1": null,
-      "k1": 42000,
-      "ldk1": null,
-      "ldk2": null,
+      "k1": 39000,
+      "ldk1": 57000,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -6865,8 +6841,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44000,
-      "ldk2": 57000,
+      "ldk1": 40000,
+      "ldk2": 56000,
       "ldk3": null
     }
   },
@@ -6879,7 +6855,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 38500,
       "ldk1": 43000,
       "ldk2": 49000,
-      "ldk3": 70000
+      "ldk3": 69500
     }
   },
   {
@@ -6887,11 +6863,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "熊本市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kumamoto_chuo-city/",
     "rents": {
-      "r1": 44656,
-      "k1": 42998,
-      "ldk1": 57380,
-      "ldk2": 72589,
-      "ldk3": 87839
+      "r1": 44103,
+      "k1": 42763,
+      "ldk1": 56974,
+      "ldk2": 71683,
+      "ldk3": 90069
     }
   },
   {
@@ -6899,11 +6875,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "熊本市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kumamoto_higashi-city/",
     "rents": {
-      "r1": 42252,
-      "k1": 41299,
-      "ldk1": 51015,
-      "ldk2": 62194,
-      "ldk3": 76157
+      "r1": 41637,
+      "k1": 40393,
+      "ldk1": 51152,
+      "ldk2": 62092,
+      "ldk3": 75600
     }
   },
   {
@@ -6911,11 +6887,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "熊本市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kumamoto_nishi-city/",
     "rents": {
-      "r1": 47368,
-      "k1": 45329,
-      "ldk1": 58537,
-      "ldk2": 70217,
-      "ldk3": 85442
+      "r1": 48236,
+      "k1": 45436,
+      "ldk1": 58405,
+      "ldk2": 69497,
+      "ldk3": 84821
     }
   },
   {
@@ -6924,10 +6900,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kumamoto_minami-city/",
     "rents": {
       "r1": 47000,
-      "k1": 41875,
+      "k1": 42500,
       "ldk1": 45000,
-      "ldk2": 47000,
-      "ldk3": 64500
+      "ldk2": 48000,
+      "ldk3": 63000
     }
   },
   {
@@ -6936,10 +6912,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kumamoto_kita-city/",
     "rents": {
       "r1": 45000,
-      "k1": 37625,
-      "ldk1": 40950,
-      "ldk2": 50000,
-      "ldk3": 66000
+      "k1": 38000,
+      "ldk1": 40900,
+      "ldk2": 50250,
+      "ldk3": 65000
     }
   },
   {
@@ -6948,10 +6924,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/yatsushiro-city/",
     "rents": {
       "r1": 40000,
-      "k1": 39250,
+      "k1": 39500,
       "ldk1": 40000,
       "ldk2": 45000,
-      "ldk3": 54500
+      "ldk3": 53500
     }
   },
   {
@@ -6959,9 +6935,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "人吉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/hitoyoshi-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 39000,
-      "ldk1": 45000,
+      "r1": null,
+      "k1": 41000,
+      "ldk1": 46000,
       "ldk2": 45000,
       "ldk3": null
     }
@@ -6972,10 +6948,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/arao-city/",
     "rents": {
       "r1": 39000,
-      "k1": 56000,
-      "ldk1": 44500,
-      "ldk2": 46000,
-      "ldk3": 56875
+      "k1": 56500,
+      "ldk1": 40250,
+      "ldk2": 42500,
+      "ldk3": 57500
     }
   },
   {
@@ -6984,9 +6960,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/tamana-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 42000,
-      "ldk2": 45250,
+      "k1": 45000,
+      "ldk1": 43000,
+      "ldk2": 45500,
       "ldk3": null
     }
   },
@@ -6996,10 +6972,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/yamaga-city/",
     "rents": {
       "r1": null,
-      "k1": 63500,
-      "ldk1": 40750,
-      "ldk2": 47000,
-      "ldk3": 50000
+      "k1": 63000,
+      "ldk1": 40000,
+      "ldk2": 49250,
+      "ldk3": 61000
     }
   },
   {
@@ -7008,10 +6984,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kikuchi-city/",
     "rents": {
       "r1": null,
-      "k1": 35814,
-      "ldk1": 49881,
-      "ldk2": 58305,
-      "ldk3": 97197
+      "k1": 35783,
+      "ldk1": 48851,
+      "ldk2": 56684,
+      "ldk3": 93294
     }
   },
   {
@@ -7020,9 +6996,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/uto-city/",
     "rents": {
       "r1": null,
-      "k1": 40500,
-      "ldk1": 44250,
-      "ldk2": 48000,
+      "k1": 42000,
+      "ldk1": 44500,
+      "ldk2": 47750,
       "ldk3": null
     }
   },
@@ -7032,9 +7008,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/uki-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 41250,
-      "ldk2": 47750,
+      "k1": 44500,
+      "ldk1": 41500,
+      "ldk2": 47625,
       "ldk3": null
     }
   },
@@ -7044,10 +7020,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/aso-city/",
     "rents": {
       "r1": null,
-      "k1": 35750,
+      "k1": 35000,
       "ldk1": 45500,
       "ldk2": 51000,
-      "ldk3": null
+      "ldk3": 65000
     }
   },
   {
@@ -7057,8 +7033,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 47000,
-      "ldk2": null,
+      "ldk1": null,
+      "ldk2": 60000,
       "ldk3": null
     }
   },
@@ -7068,10 +7044,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/koshi-city/",
     "rents": {
       "r1": null,
-      "k1": 44750,
-      "ldk1": 46500,
-      "ldk2": 53000,
-      "ldk3": 72000
+      "k1": 40500,
+      "ldk1": 45875,
+      "ldk2": 52250,
+      "ldk3": 73500
     }
   },
   {
@@ -7093,7 +7069,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 42000,
+      "ldk1": null,
       "ldk2": 50000,
       "ldk3": null
     }
@@ -7104,10 +7080,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kikuchi_ozu-city/",
     "rents": {
       "r1": null,
-      "k1": 50000,
-      "ldk1": 49875,
-      "ldk2": 55000,
-      "ldk3": 78750
+      "k1": 55000,
+      "ldk1": 51000,
+      "ldk2": 56000,
+      "ldk3": 79000
     }
   },
   {
@@ -7115,11 +7091,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "菊池郡菊陽町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kikuchi_kikuyo-city/",
     "rents": {
-      "r1": 49000,
-      "k1": 44500,
+      "r1": 48000,
+      "k1": 46250,
       "ldk1": 51000,
-      "ldk2": 57750,
-      "ldk3": 99000
+      "ldk2": 58000,
+      "ldk3": 98500
     }
   },
   {
@@ -7128,10 +7104,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kamimashiki_mifune-city/",
     "rents": {
       "r1": null,
-      "k1": null,
-      "ldk1": 45875,
+      "k1": 44000,
+      "ldk1": 46000,
       "ldk2": 54000,
-      "ldk3": 65000
+      "ldk3": null
     }
   },
   {
@@ -7140,7 +7116,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kumamoto/kamimashiki_kashima-city/",
     "rents": {
       "r1": null,
-      "k1": 48000,
+      "k1": 50000,
       "ldk1": 50500,
       "ldk2": 57000,
       "ldk3": 65000
@@ -7153,9 +7129,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 58000,
-      "ldk1": 52625,
+      "ldk1": 54125,
       "ldk2": 53000,
-      "ldk3": 52000
+      "ldk3": 55000
     }
   },
   {
@@ -7166,7 +7142,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 56500,
+      "ldk2": 57000,
       "ldk3": null
     }
   },
@@ -7190,7 +7166,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 49500,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -7199,11 +7175,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto-city/",
     "rents": {
-      "r1": 50254,
-      "k1": 58431,
-      "ldk1": 81317,
-      "ldk2": 101613,
-      "ldk3": 123125
+      "r1": 49874,
+      "k1": 58484,
+      "ldk1": 81214,
+      "ldk2": 101271,
+      "ldk3": 122312
     }
   },
   {
@@ -7211,11 +7187,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_kita-city/",
     "rents": {
-      "r1": 39173,
-      "k1": 49132,
-      "ldk1": 70189,
-      "ldk2": 86743,
-      "ldk3": 115708
+      "r1": 40410,
+      "k1": 49526,
+      "ldk1": 69141,
+      "ldk2": 85988,
+      "ldk3": 111494
     }
   },
   {
@@ -7223,11 +7199,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市上京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_kamigyo-city/",
     "rents": {
-      "r1": 49457,
-      "k1": 59412,
-      "ldk1": 90401,
-      "ldk2": 108517,
-      "ldk3": 141517
+      "r1": 49096,
+      "k1": 59992,
+      "ldk1": 90970,
+      "ldk2": 112652,
+      "ldk3": 142069
     }
   },
   {
@@ -7235,11 +7211,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市左京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_sakyo-city/",
     "rents": {
-      "r1": 40473,
-      "k1": 53265,
-      "ldk1": 78203,
-      "ldk2": 97044,
-      "ldk3": 128146
+      "r1": 40567,
+      "k1": 52930,
+      "ldk1": 78304,
+      "ldk2": 97353,
+      "ldk3": 130287
     }
   },
   {
@@ -7247,11 +7223,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市中京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_nakagyo-city/",
     "rents": {
-      "r1": 59054,
-      "k1": 69940,
-      "ldk1": 109207,
-      "ldk2": 149495,
-      "ldk3": 185016
+      "r1": 57053,
+      "k1": 69744,
+      "ldk1": 109159,
+      "ldk2": 147472,
+      "ldk3": 182185
     }
   },
   {
@@ -7259,11 +7235,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市東山區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_higashiyama-city/",
     "rents": {
-      "r1": 52623,
-      "k1": 61282,
-      "ldk1": 86007,
-      "ldk2": 124339,
-      "ldk3": 142755
+      "r1": 53663,
+      "k1": 63374,
+      "ldk1": 86561,
+      "ldk2": 119203,
+      "ldk3": 140863
     }
   },
   {
@@ -7271,11 +7247,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市下京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_shimogyo-city/",
     "rents": {
-      "r1": 62765,
-      "k1": 71814,
-      "ldk1": 102014,
-      "ldk2": 132133,
-      "ldk3": 170732
+      "r1": 62557,
+      "k1": 72712,
+      "ldk1": 102163,
+      "ldk2": 134177,
+      "ldk3": 158556
     }
   },
   {
@@ -7283,11 +7259,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_minami-city/",
     "rents": {
-      "r1": 54000,
-      "k1": 70500,
-      "ldk1": 71150,
+      "r1": 55000,
+      "k1": 69750,
+      "ldk1": 72300,
       "ldk2": 82000,
-      "ldk3": 120000
+      "ldk3": 116000
     }
   },
   {
@@ -7295,11 +7271,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市右京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_ukyo-city/",
     "rents": {
-      "r1": 45302,
-      "k1": 52008,
-      "ldk1": 71326,
-      "ldk2": 95135,
-      "ldk3": 109048
+      "r1": 46143,
+      "k1": 52722,
+      "ldk1": 71610,
+      "ldk2": 94738,
+      "ldk3": 108622
     }
   },
   {
@@ -7307,11 +7283,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市伏見區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_fushimi-city/",
     "rents": {
-      "r1": 45446,
-      "k1": 50909,
-      "ldk1": 67990,
-      "ldk2": 79921,
-      "ldk3": 91883
+      "r1": 45280,
+      "k1": 50897,
+      "ldk1": 67941,
+      "ldk2": 81304,
+      "ldk3": 92784
     }
   },
   {
@@ -7319,11 +7295,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市山科區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_yamashina-city/",
     "rents": {
-      "r1": 45314,
-      "k1": 49507,
-      "ldk1": 64398,
-      "ldk2": 79543,
-      "ldk3": 93071
+      "r1": 45983,
+      "k1": 50012,
+      "ldk1": 64389,
+      "ldk2": 78523,
+      "ldk3": 91456
     }
   },
   {
@@ -7331,11 +7307,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京都市西京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyoto_nishikyo-city/",
     "rents": {
-      "r1": 43170,
-      "k1": 49594,
-      "ldk1": 66298,
-      "ldk2": 82345,
-      "ldk3": 84329
+      "r1": 43217,
+      "k1": 49953,
+      "ldk1": 66829,
+      "ldk2": 81344,
+      "ldk3": 83538
     }
   },
   {
@@ -7343,10 +7319,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "福知山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/fukuchiyama-city/",
     "rents": {
-      "r1": 49250,
-      "k1": 59000,
-      "ldk1": 52000,
-      "ldk2": 58750,
+      "r1": 51000,
+      "k1": 60000,
+      "ldk1": 51000,
+      "ldk2": 59000,
       "ldk3": 65000
     }
   },
@@ -7355,11 +7331,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "舞鶴市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/maizuru-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 46250,
+      "r1": 39000,
+      "k1": 46000,
       "ldk1": 48000,
-      "ldk2": 50000,
-      "ldk3": 70500
+      "ldk2": 54000,
+      "ldk3": 71000
     }
   },
   {
@@ -7369,8 +7345,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 51000,
-      "ldk1": 58000,
-      "ldk2": 65000,
+      "ldk1": 57500,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -7379,11 +7355,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宇治市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/uji-city/",
     "rents": {
-      "r1": 37000,
-      "k1": 50000,
+      "r1": 37500,
+      "k1": 48000,
       "ldk1": 58000,
-      "ldk2": 63000,
-      "ldk3": 71500
+      "ldk2": 60000,
+      "ldk3": 74000
     }
   },
   {
@@ -7392,9 +7368,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kameoka-city/",
     "rents": {
       "r1": 30000,
-      "k1": 48500,
-      "ldk1": 61000,
-      "ldk2": 54500,
+      "k1": 51250,
+      "ldk1": 60500,
+      "ldk2": 54800,
       "ldk3": 65000
     }
   },
@@ -7403,11 +7379,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "城陽市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/joyo-city/",
     "rents": {
-      "r1": 47152,
-      "k1": 53656,
-      "ldk1": 65897,
-      "ldk2": 74821,
-      "ldk3": 84432
+      "r1": 45477,
+      "k1": 51822,
+      "ldk1": 64762,
+      "ldk2": 75268,
+      "ldk3": 84417
     }
   },
   {
@@ -7415,11 +7391,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "向日市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/muko-city/",
     "rents": {
-      "r1": 42314,
-      "k1": 47178,
-      "ldk1": 63391,
-      "ldk2": 78769,
-      "ldk3": 91547
+      "r1": 41546,
+      "k1": 49792,
+      "ldk1": 62645,
+      "ldk2": 79669,
+      "ldk3": 89826
     }
   },
   {
@@ -7427,11 +7403,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "長岡京市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/nagaokakyo-city/",
     "rents": {
-      "r1": 50318,
-      "k1": 55915,
-      "ldk1": 67190,
-      "ldk2": 82167,
-      "ldk3": 85566
+      "r1": 50204,
+      "k1": 54618,
+      "ldk1": 65854,
+      "ldk2": 81320,
+      "ldk3": 84621
     }
   },
   {
@@ -7440,10 +7416,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/yawata-city/",
     "rents": {
       "r1": 30000,
-      "k1": 61300,
-      "ldk1": 59500,
+      "k1": 58000,
+      "ldk1": 57375,
       "ldk2": 62000,
-      "ldk3": 69000
+      "ldk3": 66750
     }
   },
   {
@@ -7451,11 +7427,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "京田邊市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyotanabe-city/",
     "rents": {
-      "r1": 54439,
-      "k1": 55345,
-      "ldk1": 60475,
-      "ldk2": 88085,
-      "ldk3": 101920
+      "r1": 54138,
+      "k1": 54232,
+      "ldk1": 59552,
+      "ldk2": 86059,
+      "ldk3": 100932
     }
   },
   {
@@ -7464,8 +7440,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kyotango-city/",
     "rents": {
       "r1": null,
-      "k1": 63000,
-      "ldk1": 58000,
+      "k1": 64000,
+      "ldk1": 57500,
       "ldk2": 62000,
       "ldk3": null
     }
@@ -7476,8 +7452,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/nantan-city/",
     "rents": {
       "r1": 30000,
-      "k1": 40000,
-      "ldk1": 50000,
+      "k1": 41000,
+      "ldk1": 52000,
       "ldk2": 64000,
       "ldk3": null
     }
@@ -7487,11 +7463,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "木津川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/kizugawa-city/",
     "rents": {
-      "r1": null,
-      "k1": 52000,
-      "ldk1": 52500,
+      "r1": 52000,
+      "k1": 50250,
+      "ldk1": 55000,
       "ldk2": 54500,
-      "ldk3": 80250
+      "ldk3": 80000
     }
   },
   {
@@ -7500,10 +7476,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/otokuni_oyamazaki-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 61000,
-      "ldk2": 76750,
-      "ldk3": 89000
+      "k1": 45000,
+      "ldk1": 60000,
+      "ldk2": 74000,
+      "ldk3": 86500
     }
   },
   {
@@ -7513,8 +7489,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 73000,
-      "ldk2": 82000,
+      "ldk1": 69500,
+      "ldk2": 79000,
       "ldk3": null
     }
   },
@@ -7526,7 +7502,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 57000,
+      "ldk2": 66500,
       "ldk3": null
     }
   },
@@ -7536,10 +7512,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/kyoto/soraku_seika-city/",
     "rents": {
       "r1": 38000,
-      "k1": 58000,
-      "ldk1": 62000,
-      "ldk2": 62500,
-      "ldk3": 78000
+      "k1": 58750,
+      "ldk1": 60875,
+      "ldk2": 65000,
+      "ldk3": 79000
     }
   },
   {
@@ -7549,8 +7525,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 60000,
-      "ldk1": 53500,
-      "ldk2": 57000,
+      "ldk1": null,
+      "ldk2": 57500,
       "ldk3": null
     }
   },
@@ -7559,11 +7535,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/tsu-city/",
     "rents": {
-      "r1": 34031,
-      "k1": 34609,
-      "ldk1": 45094,
-      "ldk2": 52966,
-      "ldk3": 63645
+      "r1": 35197,
+      "k1": 34482,
+      "ldk1": 45018,
+      "ldk2": 53092,
+      "ldk3": 64405
     }
   },
   {
@@ -7571,11 +7547,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "四日市市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/yokkaichi-city/",
     "rents": {
-      "r1": 51500,
-      "k1": 49250,
-      "ldk1": 45000,
-      "ldk2": 48000,
-      "ldk3": 62500
+      "r1": 50000,
+      "k1": 49000,
+      "ldk1": 44000,
+      "ldk2": 47000,
+      "ldk3": 63250
     }
   },
   {
@@ -7583,11 +7559,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊勢市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/ise-city/",
     "rents": {
-      "r1": 33000,
-      "k1": 36500,
+      "r1": 32500,
+      "k1": 34500,
       "ldk1": 42000,
-      "ldk2": 46000,
-      "ldk3": 56250
+      "ldk2": 45000,
+      "ldk3": 57500
     }
   },
   {
@@ -7596,10 +7572,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/matsusaka-city/",
     "rents": {
       "r1": 35000,
-      "k1": 36000,
+      "k1": 36500,
       "ldk1": 39000,
       "ldk2": 46000,
-      "ldk3": 58500
+      "ldk3": 58000
     }
   },
   {
@@ -7611,7 +7587,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 47000,
       "ldk1": 47000,
       "ldk2": 50000,
-      "ldk3": 69000
+      "ldk3": 70000
     }
   },
   {
@@ -7620,7 +7596,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/suzuka-city/",
     "rents": {
       "r1": 39000,
-      "k1": 35000,
+      "k1": 36000,
       "ldk1": 39000,
       "ldk2": 44000,
       "ldk3": 62000
@@ -7632,9 +7608,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/nabari-city/",
     "rents": {
       "r1": null,
-      "k1": 45500,
-      "ldk1": 40000,
-      "ldk2": 50750,
+      "k1": 47000,
+      "ldk1": 40500,
+      "ldk2": 50500,
       "ldk3": null
     }
   },
@@ -7645,8 +7621,20 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 35000,
       "k1": 40000,
-      "ldk1": 47250,
+      "ldk1": 45500,
       "ldk2": 56000,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "三重",
+    "district": "鳥羽市",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/toba-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": 52000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -7656,9 +7644,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/inabe-city/",
     "rents": {
       "r1": null,
-      "k1": 47750,
-      "ldk1": 54000,
-      "ldk2": 62000,
+      "k1": 45750,
+      "ldk1": 55750,
+      "ldk2": 60500,
       "ldk3": null
     }
   },
@@ -7668,9 +7656,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/shima-city/",
     "rents": {
       "r1": null,
-      "k1": 32000,
-      "ldk1": 39000,
-      "ldk2": 45050,
+      "k1": null,
+      "ldk1": 40000,
+      "ldk2": 43100,
       "ldk3": null
     }
   },
@@ -7680,9 +7668,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/iga-city/",
     "rents": {
       "r1": null,
-      "k1": 46500,
-      "ldk1": 49000,
-      "ldk2": 52500,
+      "k1": 45000,
+      "ldk1": 46000,
+      "ldk2": 55000,
       "ldk3": 72000
     }
   },
@@ -7692,9 +7680,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/inabe_toin-city/",
     "rents": {
       "r1": null,
-      "k1": 51000,
+      "k1": 51500,
       "ldk1": 59000,
-      "ldk2": 69000,
+      "ldk2": 71000,
       "ldk3": null
     }
   },
@@ -7703,10 +7691,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三重郡菰野町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/mie_komono-city/",
     "rents": {
-      "r1": 48500,
-      "k1": 43000,
-      "ldk1": 48000,
-      "ldk2": 54000,
+      "r1": 48000,
+      "k1": 43500,
+      "ldk1": 48500,
+      "ldk2": 53750,
       "ldk3": null
     }
   },
@@ -7716,9 +7704,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/mie_asahi-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 48500,
-      "ldk2": 59000,
+      "k1": 45500,
+      "ldk1": 48375,
+      "ldk2": 60500,
       "ldk3": null
     }
   },
@@ -7727,10 +7715,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三重郡川越町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/mie_kawagoe-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 44000,
-      "ldk1": 48500,
-      "ldk2": 53500,
+      "r1": 43250,
+      "k1": 43000,
+      "ldk1": 50000,
+      "ldk2": 54250,
       "ldk3": null
     }
   },
@@ -7740,8 +7728,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/mie/taki_meiwa-city/",
     "rents": {
       "r1": null,
-      "k1": 40800,
-      "ldk1": 48250,
+      "k1": 43000,
+      "ldk1": 47750,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -7753,8 +7741,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 49000,
-      "ldk2": 46500,
+      "ldk1": 44000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -7765,7 +7753,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 37000,
-      "ldk1": 42000,
+      "ldk1": null,
       "ldk2": 50000,
       "ldk3": null
     }
@@ -7778,7 +7766,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 52000,
+      "ldk2": 51500,
       "ldk3": null
     }
   },
@@ -7787,11 +7775,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai-city/",
     "rents": {
-      "r1": 45531,
-      "k1": 47381,
-      "ldk1": 60112,
-      "ldk2": 73377,
-      "ldk3": 90620
+      "r1": 45583,
+      "k1": 47486,
+      "ldk1": 60123,
+      "ldk2": 73519,
+      "ldk3": 90099
     }
   },
   {
@@ -7799,11 +7787,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市青葉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai_aoba-city/",
     "rents": {
-      "r1": 44239,
-      "k1": 46336,
-      "ldk1": 60669,
-      "ldk2": 76539,
-      "ldk3": 97175
+      "r1": 44652,
+      "k1": 46616,
+      "ldk1": 60273,
+      "ldk2": 76075,
+      "ldk3": 95049
     }
   },
   {
@@ -7811,11 +7799,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市宮城野區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai_miyagino-city/",
     "rents": {
-      "r1": 47420,
-      "k1": 49318,
-      "ldk1": 60303,
-      "ldk2": 71340,
-      "ldk3": 81440
+      "r1": 47695,
+      "k1": 49443,
+      "ldk1": 60238,
+      "ldk2": 71104,
+      "ldk3": 81048
     }
   },
   {
@@ -7823,11 +7811,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市若林區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai_wakabayashi-city/",
     "rents": {
-      "r1": 50917,
-      "k1": 53036,
-      "ldk1": 67891,
-      "ldk2": 86950,
-      "ldk3": 105121
+      "r1": 50448,
+      "k1": 52351,
+      "ldk1": 67587,
+      "ldk2": 86170,
+      "ldk3": 105253
     }
   },
   {
@@ -7835,11 +7823,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市太白區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai_taihaku-city/",
     "rents": {
-      "r1": 44104,
-      "k1": 44492,
-      "ldk1": 56259,
-      "ldk2": 67835,
-      "ldk3": 82485
+      "r1": 43086,
+      "k1": 44270,
+      "ldk1": 56506,
+      "ldk2": 68578,
+      "ldk3": 83555
     }
   },
   {
@@ -7847,11 +7835,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "仙台市泉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/sendai_izumi-city/",
     "rents": {
-      "r1": 38100,
-      "k1": 42494,
-      "ldk1": 54011,
-      "ldk2": 66877,
-      "ldk3": 89678
+      "r1": 38815,
+      "k1": 42672,
+      "ldk1": 54258,
+      "ldk2": 67200,
+      "ldk3": 80084
     }
   },
   {
@@ -7859,11 +7847,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "石巻市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/ishinomaki-city/",
     "rents": {
-      "r1": 39500,
-      "k1": 38000,
+      "r1": 40500,
+      "k1": 38500,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 65000
+      "ldk3": 64125
     }
   },
   {
@@ -7872,10 +7860,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/shiogama-city/",
     "rents": {
       "r1": null,
-      "k1": 37000,
+      "k1": 38000,
       "ldk1": 45000,
-      "ldk2": 48000,
-      "ldk3": 72500
+      "ldk2": 51500,
+      "ldk3": 70000
     }
   },
   {
@@ -7883,11 +7871,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "気仙沼市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/kesennuma-city/",
     "rents": {
-      "r1": 41350,
-      "k1": 45921,
-      "ldk1": 48021,
-      "ldk2": 54059,
-      "ldk3": 69397
+      "r1": 42996,
+      "k1": 45214,
+      "ldk1": 48155,
+      "ldk2": 53531,
+      "ldk3": 67001
     }
   },
   {
@@ -7896,8 +7884,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/shiroishi-city/",
     "rents": {
       "r1": null,
-      "k1": 40500,
-      "ldk1": 40500,
+      "k1": 47000,
+      "ldk1": 41500,
       "ldk2": 44500,
       "ldk3": null
     }
@@ -7907,10 +7895,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名取市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/natori-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 47000,
-      "ldk1": 51000,
-      "ldk2": 64000,
+      "r1": 52000,
+      "k1": 49000,
+      "ldk1": 50500,
+      "ldk2": 62500,
       "ldk3": 98000
     }
   },
@@ -7920,9 +7908,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/kakuda-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
+      "k1": 53000,
       "ldk1": 39000,
-      "ldk2": 53000,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -7931,11 +7919,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "多賀城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/tagajo-city/",
     "rents": {
-      "r1": 40580,
-      "k1": 43411,
-      "ldk1": 51961,
-      "ldk2": 60275,
-      "ldk3": 91612
+      "r1": 40469,
+      "k1": 43300,
+      "ldk1": 51708,
+      "ldk2": 60567,
+      "ldk3": 90550
     }
   },
   {
@@ -7944,9 +7932,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/iwanuma-city/",
     "rents": {
       "r1": 44000,
-      "k1": 41000,
-      "ldk1": 45500,
-      "ldk2": 54500,
+      "k1": 40500,
+      "ldk1": 46000,
+      "ldk2": 50000,
       "ldk3": 70000
     }
   },
@@ -7970,7 +7958,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 41000,
       "ldk1": 45000,
-      "ldk2": 49000,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -7979,8 +7967,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東松島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/higashimatsushima-city/",
     "rents": {
-      "r1": 46250,
-      "k1": 37500,
+      "r1": 45000,
+      "k1": 40000,
       "ldk1": 45000,
       "ldk2": 48000,
       "ldk3": null
@@ -7991,11 +7979,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/osaki-city/",
     "rents": {
-      "r1": 38500,
-      "k1": 35500,
-      "ldk1": 40000,
+      "r1": 38250,
+      "k1": 36750,
+      "ldk1": 39000,
       "ldk2": 50000,
-      "ldk3": 68000
+      "ldk3": 69000
     }
   },
   {
@@ -8004,10 +7992,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/tomiya-city/",
     "rents": {
       "r1": null,
-      "k1": 42750,
-      "ldk1": 45000,
-      "ldk2": 60500,
-      "ldk3": 95000
+      "k1": 43803,
+      "ldk1": 57394,
+      "ldk2": 69112,
+      "ldk3": null
     }
   },
   {
@@ -8015,10 +8003,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柴田郡大河原町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/shibata_ogawara-city/",
     "rents": {
-      "r1": 39500,
-      "k1": 37000,
+      "r1": 36000,
+      "k1": 36000,
       "ldk1": 39000,
-      "ldk2": 45000,
+      "ldk2": 50500,
       "ldk3": 79500
     }
   },
@@ -8028,7 +8016,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/shibata_murata-city/",
     "rents": {
       "r1": null,
-      "k1": 29000,
+      "k1": 28500,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -8039,10 +8027,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柴田郡柴田町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/shibata_shibata-city/",
     "rents": {
-      "r1": 45000,
+      "r1": 44000,
       "k1": 40000,
       "ldk1": 43600,
-      "ldk2": 54000,
+      "ldk2": 56000,
       "ldk3": null
     }
   },
@@ -8052,9 +8040,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/watari_watari-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
-      "ldk1": 44500,
-      "ldk2": 51000,
+      "k1": 44500,
+      "ldk1": 43000,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -8065,7 +8053,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45000,
+      "ldk1": 47500,
       "ldk2": null,
       "ldk3": null
     }
@@ -8077,9 +8065,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 65000,
-      "ldk1": 50000,
+      "ldk1": 50500,
       "ldk2": 67000,
-      "ldk3": 74000
+      "ldk3": null
     }
   },
   {
@@ -8087,11 +8075,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "黑川郡大和町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/kurokawa_taiwa-city/",
     "rents": {
-      "r1": 46500,
-      "k1": 45000,
+      "r1": 47000,
+      "k1": 44000,
       "ldk1": 47000,
-      "ldk2": 53425,
-      "ldk3": 83500
+      "ldk2": 54500,
+      "ldk3": 80000
     }
   },
   {
@@ -8100,10 +8088,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyagi/kami_kami-city/",
     "rents": {
       "r1": null,
-      "k1": 36500,
-      "ldk1": 38000,
-      "ldk2": 55000,
-      "ldk3": null
+      "k1": 33470,
+      "ldk1": 40199,
+      "ldk2": 47822,
+      "ldk3": 71612
     }
   },
   {
@@ -8113,7 +8101,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 56000,
-      "ldk1": 40500,
+      "ldk1": 39500,
       "ldk2": 53000,
       "ldk3": null
     }
@@ -8125,8 +8113,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 41000,
-      "ldk1": 44750,
-      "ldk2": 54500,
+      "ldk1": 43625,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -8135,11 +8123,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宮崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyazaki/miyazaki-city/",
     "rents": {
-      "r1": 41000,
-      "k1": 39000,
-      "ldk1": 43000,
-      "ldk2": 57000,
-      "ldk3": 65000
+      "r1": 42500,
+      "k1": 37500,
+      "ldk1": 45000,
+      "ldk2": 58000,
+      "ldk3": 64750
     }
   },
   {
@@ -8147,11 +8135,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "都城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyazaki/miyakonojo-city/",
     "rents": {
-      "r1": 33000,
+      "r1": 35000,
       "k1": 30000,
       "ldk1": 42500,
-      "ldk2": 45000,
-      "ldk3": 75000
+      "ldk2": 45250,
+      "ldk3": 69000
     }
   },
   {
@@ -8160,9 +8148,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyazaki/nobeoka-city/",
     "rents": {
       "r1": 39000,
-      "k1": 41000,
-      "ldk1": 48500,
-      "ldk2": 60000,
+      "k1": 49000,
+      "ldk1": 48750,
+      "ldk2": 62500,
       "ldk3": null
     }
   },
@@ -8184,10 +8172,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyazaki/kobayashi-city/",
     "rents": {
       "r1": 45000,
-      "k1": 38000,
+      "k1": 39000,
       "ldk1": 43000,
-      "ldk2": 46250,
-      "ldk3": 60000
+      "ldk2": 45750,
+      "ldk3": 57500
     }
   },
   {
@@ -8196,9 +8184,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/miyazaki/hyuga-city/",
     "rents": {
       "r1": null,
-      "k1": 50000,
-      "ldk1": 48000,
-      "ldk2": 57250,
+      "k1": 51500,
+      "ldk1": 49000,
+      "ldk2": 57500,
       "ldk3": null
     }
   },
@@ -8209,8 +8197,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45000,
-      "ldk2": 51500,
+      "ldk1": 45500,
+      "ldk2": 50900,
       "ldk3": null
     }
   },
@@ -8222,7 +8210,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 37000,
-      "ldk2": 48000,
+      "ldk2": 48500,
       "ldk3": null
     }
   },
@@ -8234,8 +8222,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 40000,
-      "ldk3": null
+      "ldk2": null,
+      "ldk3": 56000
     }
   },
   {
@@ -8243,11 +8231,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "長野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/nagano-city/",
     "rents": {
-      "r1": 43943,
-      "k1": 43324,
-      "ldk1": 53368,
-      "ldk2": 62449,
-      "ldk3": 74842
+      "r1": 43924,
+      "k1": 43405,
+      "ldk1": 53344,
+      "ldk2": 62144,
+      "ldk3": 72638
     }
   },
   {
@@ -8255,11 +8243,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "松本市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/matsumoto-city/",
     "rents": {
-      "r1": 49231,
-      "k1": 48273,
-      "ldk1": 58987,
-      "ldk2": 68106,
-      "ldk3": 84108
+      "r1": 47625,
+      "k1": 47275,
+      "ldk1": 58428,
+      "ldk2": 68091,
+      "ldk3": 83693
     }
   },
   {
@@ -8267,11 +8255,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "上田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/ueda-city/",
     "rents": {
-      "r1": 43250,
+      "r1": 40000,
       "k1": 41500,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 81500
+      "ldk3": 83250
     }
   },
   {
@@ -8281,7 +8269,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 47000,
-      "ldk1": 43000,
+      "ldk1": 42500,
       "ldk2": 62000,
       "ldk3": 67000
     }
@@ -8295,7 +8283,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 46250,
       "ldk1": 47000,
       "ldk2": 55000,
-      "ldk3": 70000
+      "ldk3": 68000
     }
   },
   {
@@ -8303,10 +8291,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "諏訪市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/suwa-city/",
     "rents": {
-      "r1": 54500,
-      "k1": 49000,
-      "ldk1": 55000,
-      "ldk2": 59500,
+      "r1": 59000,
+      "k1": 50000,
+      "ldk1": 47000,
+      "ldk2": 56250,
       "ldk3": null
     }
   },
@@ -8317,7 +8305,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 51000,
-      "ldk1": 55750,
+      "ldk1": 55875,
       "ldk2": 60000,
       "ldk3": null
     }
@@ -8328,10 +8316,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/komoro-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 46000,
-      "ldk2": 51800,
-      "ldk3": null
+      "k1": 45500,
+      "ldk1": 45000,
+      "ldk2": 54375,
+      "ldk3": 89500
     }
   },
   {
@@ -8339,11 +8327,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊那市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/ina-city/",
     "rents": {
-      "r1": null,
-      "k1": 38250,
-      "ldk1": 46000,
-      "ldk2": 50000,
-      "ldk3": null
+      "r1": 36940,
+      "k1": 38731,
+      "ldk1": 48610,
+      "ldk2": 55818,
+      "ldk3": 64528
     }
   },
   {
@@ -8352,9 +8340,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/komagane-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
-      "ldk1": 44000,
-      "ldk2": 60500,
+      "k1": 48000,
+      "ldk1": 45500,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -8364,9 +8352,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/nakano-city/",
     "rents": {
       "r1": null,
-      "k1": 55000,
+      "k1": 47500,
       "ldk1": 54000,
-      "ldk2": 54500,
+      "ldk2": 63000,
       "ldk3": null
     }
   },
@@ -8377,7 +8365,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 62750,
+      "ldk1": 70000,
       "ldk2": 83000,
       "ldk3": null
     }
@@ -8387,11 +8375,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "飯山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/iiyama-city/",
     "rents": {
-      "r1": null,
-      "k1": 43500,
-      "ldk1": 55875,
-      "ldk2": 59750,
-      "ldk3": null
+      "r1": 47456,
+      "k1": 48180,
+      "ldk1": 52989,
+      "ldk2": 58020,
+      "ldk3": 66293
     }
   },
   {
@@ -8402,7 +8390,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 49000,
       "ldk1": 52375,
-      "ldk2": 67000,
+      "ldk2": 60250,
       "ldk3": null
     }
   },
@@ -8411,11 +8399,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鹽尻市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/shiojiri-city/",
     "rents": {
-      "r1": 50500,
-      "k1": 42750,
-      "ldk1": 50500,
-      "ldk2": 61000,
-      "ldk3": 135000
+      "r1": 52250,
+      "k1": 43000,
+      "ldk1": 51250,
+      "ldk2": 58750,
+      "ldk3": 138000
     }
   },
   {
@@ -8423,11 +8411,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐久市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/saku-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 50750,
-      "ldk1": 43000,
-      "ldk2": 54700,
-      "ldk3": 125000
+      "r1": 36500,
+      "k1": 48500,
+      "ldk1": 43500,
+      "ldk2": 52600,
+      "ldk3": 120000
     }
   },
   {
@@ -8435,8 +8423,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千曲市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/chikuma-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 46000,
+      "r1": 47250,
+      "k1": 47000,
       "ldk1": 45000,
       "ldk2": 50000,
       "ldk3": null
@@ -8449,7 +8437,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 38000,
-      "ldk1": 49000,
+      "ldk1": 48000,
       "ldk2": 59000,
       "ldk3": null
     }
@@ -8459,10 +8447,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "安曇野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/azumino-city/",
     "rents": {
-      "r1": 44000,
+      "r1": 39000,
       "k1": 52000,
-      "ldk1": 55000,
-      "ldk2": 65500,
+      "ldk1": 53000,
+      "ldk2": 64750,
       "ldk3": 107500
     }
   },
@@ -8473,9 +8461,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 77500,
-      "ldk2": 190000,
-      "ldk3": 200000
+      "ldk1": 70000,
+      "ldk2": 189000,
+      "ldk3": 225000
     }
   },
   {
@@ -8484,10 +8472,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/kitasaku_miyota-city/",
     "rents": {
       "r1": null,
-      "k1": 64000,
-      "ldk1": 55000,
-      "ldk2": 61375,
-      "ldk3": null
+      "k1": 63000,
+      "ldk1": 57000,
+      "ldk2": 62350,
+      "ldk3": 180000
     }
   },
   {
@@ -8496,8 +8484,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/suwa_shimosuwa-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": null,
+      "k1": 48500,
+      "ldk1": 72000,
       "ldk2": null,
       "ldk3": null
     }
@@ -8508,7 +8496,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/suwa_fujimi-city/",
     "rents": {
       "r1": null,
-      "k1": 58500,
+      "k1": 59000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -8520,8 +8508,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/kamiina_tatsuno-city/",
     "rents": {
       "r1": null,
-      "k1": 37000,
-      "ldk1": 49750,
+      "k1": 36500,
+      "ldk1": 50000,
       "ldk2": null,
       "ldk3": null
     }
@@ -8531,11 +8519,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "上伊那郡箕輪町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/kamiina_minowa-city/",
     "rents": {
-      "r1": null,
-      "k1": 41000,
-      "ldk1": 45000,
-      "ldk2": 58500,
-      "ldk3": null
+      "r1": 38143,
+      "k1": 39301,
+      "ldk1": 47179,
+      "ldk2": 53430,
+      "ldk3": 65738
     }
   },
   {
@@ -8543,11 +8531,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "上伊那郡南箕輪村",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/kamiina_minamiminowa-city/",
     "rents": {
-      "r1": 30628,
-      "k1": 33521,
-      "ldk1": 48191,
-      "ldk2": 57018,
-      "ldk3": 80398
+      "r1": 30884,
+      "k1": 34143,
+      "ldk1": 48597,
+      "ldk2": 59205,
+      "ldk3": 82402
     }
   },
   {
@@ -8568,21 +8556,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/hanishina_sakaki-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
+      "k1": null,
       "ldk1": 39000,
       "ldk2": 50000,
-      "ldk3": null
-    }
-  },
-  {
-    "region": "長野",
-    "district": "上高井郡小布施町",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagano/kamitakai_obuse-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": null,
-      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -8592,10 +8568,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/nagasaki-city/",
     "rents": {
       "r1": 38000,
-      "k1": 45500,
+      "k1": 45000,
       "ldk1": 50000,
       "ldk2": 55000,
-      "ldk3": 58000
+      "ldk3": 56000
     }
   },
   {
@@ -8603,10 +8579,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐世保市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/sasebo-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 43375,
-      "ldk1": 49000,
-      "ldk2": 51950,
+      "r1": 45000,
+      "k1": 43500,
+      "ldk1": 48000,
+      "ldk2": 52700,
       "ldk3": 60000
     }
   },
@@ -8618,7 +8594,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 62500,
+      "ldk2": 57000,
       "ldk3": null
     }
   },
@@ -8628,9 +8604,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/isahaya-city/",
     "rents": {
       "r1": 43000,
-      "k1": 48500,
+      "k1": 47250,
       "ldk1": 50000,
-      "ldk2": 48000,
+      "ldk2": 49000,
       "ldk3": 70000
     }
   },
@@ -8639,11 +8615,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大村市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/omura-city/",
     "rents": {
-      "r1": 41500,
+      "r1": 41000,
       "k1": 40500,
-      "ldk1": 45000,
-      "ldk2": 49000,
-      "ldk3": 69500
+      "ldk1": 46000,
+      "ldk2": 48500,
+      "ldk3": 70000
     }
   },
   {
@@ -8654,7 +8630,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 51625,
-      "ldk2": 60000,
+      "ldk2": 59000,
       "ldk3": null
     }
   },
@@ -8664,8 +8640,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/unzen-city/",
     "rents": {
       "r1": null,
-      "k1": 46000,
-      "ldk1": 51500,
+      "k1": 59000,
+      "ldk1": 50875,
       "ldk2": 53000,
       "ldk3": null
     }
@@ -8675,11 +8651,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西彼杵郡長与町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/nishisonogi_nagayo-city/",
     "rents": {
-      "r1": 42000,
+      "r1": 43000,
       "k1": 47000,
-      "ldk1": 53500,
+      "ldk1": 53000,
       "ldk2": 55000,
-      "ldk3": 65000
+      "ldk3": 64500
     }
   },
   {
@@ -8688,10 +8664,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/nishisonogi_togitsu-city/",
     "rents": {
       "r1": 34250,
-      "k1": 52000,
+      "k1": 51000,
       "ldk1": 55000,
-      "ldk2": 59000,
-      "ldk3": 77500
+      "ldk2": 58000,
+      "ldk3": 80000
     }
   },
   {
@@ -8713,8 +8689,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 47500,
-      "ldk2": 53250,
+      "ldk1": 47375,
+      "ldk2": 51000,
       "ldk3": null
     }
   },
@@ -8725,7 +8701,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 47000,
+      "ldk1": 48250,
       "ldk2": 51000,
       "ldk3": null
     }
@@ -8735,11 +8711,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北松浦郡佐々町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nagasaki/kitamatsura_saza-city/",
     "rents": {
-      "r1": 48122,
-      "k1": 41827,
-      "ldk1": 49307,
-      "ldk2": 53800,
-      "ldk3": 57795
+      "r1": null,
+      "k1": null,
+      "ldk1": 53000,
+      "ldk2": 55350,
+      "ldk3": null
     }
   },
   {
@@ -8747,11 +8723,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "奈良市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/nara-city/",
     "rents": {
-      "r1": 40551,
-      "k1": 46649,
-      "ldk1": 59325,
-      "ldk2": 68739,
-      "ldk3": 86001
+      "r1": 37000,
+      "k1": 46250,
+      "ldk1": 47000,
+      "ldk2": 50000,
+      "ldk3": 75000
     }
   },
   {
@@ -8760,10 +8736,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/yamatotakada-city/",
     "rents": {
       "r1": 35000,
-      "k1": 38000,
+      "k1": 37500,
       "ldk1": 40000,
       "ldk2": 45000,
-      "ldk3": 51750
+      "ldk3": 52500
     }
   },
   {
@@ -8771,11 +8747,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大和郡山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/yamatokoriyama-city/",
     "rents": {
-      "r1": 47035,
-      "k1": 45949,
-      "ldk1": 54125,
-      "ldk2": 61332,
-      "ldk3": 72333
+      "r1": 47526,
+      "k1": 46839,
+      "ldk1": 54986,
+      "ldk2": 61757,
+      "ldk3": 73197
     }
   },
   {
@@ -8783,11 +8759,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "天理市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/tenri-city/",
     "rents": {
-      "r1": 37819,
-      "k1": 40007,
-      "ldk1": 49426,
-      "ldk2": 54939,
-      "ldk3": 63324
+      "r1": 30000,
+      "k1": 33500,
+      "ldk1": 47000,
+      "ldk2": 54500,
+      "ldk3": 65000
     }
   },
   {
@@ -8795,11 +8771,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "橿原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/kashihara-city/",
     "rents": {
-      "r1": 33500,
-      "k1": 44000,
-      "ldk1": 45000,
-      "ldk2": 50000,
-      "ldk3": 65000
+      "r1": 34000,
+      "k1": 44500,
+      "ldk1": 46000,
+      "ldk2": 49500,
+      "ldk3": 63250
     }
   },
   {
@@ -8807,10 +8783,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "櫻井市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/sakurai-city/",
     "rents": {
-      "r1": 32500,
+      "r1": 35000,
       "k1": 43000,
-      "ldk1": 45375,
-      "ldk2": 50750,
+      "ldk1": 45875,
+      "ldk2": 50500,
       "ldk3": 60000
     }
   },
@@ -8819,11 +8795,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "五條市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/gojo-city/",
     "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": 51000,
-      "ldk2": 55000,
-      "ldk3": null
+      "r1": 44453,
+      "k1": 42616,
+      "ldk1": 48982,
+      "ldk2": 52670,
+      "ldk3": 57962
     }
   },
   {
@@ -8833,8 +8809,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 45000,
-      "ldk1": 50500,
-      "ldk2": 50125,
+      "ldk1": 51000,
+      "ldk2": 50250,
       "ldk3": null
     }
   },
@@ -8843,11 +8819,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "生駒市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/ikoma-city/",
     "rents": {
-      "r1": 37000,
-      "k1": 39250,
-      "ldk1": 50000,
-      "ldk2": 64000,
-      "ldk3": 70000
+      "r1": 39000,
+      "k1": 40000,
+      "ldk1": 48000,
+      "ldk2": 63500,
+      "ldk3": 68000
     }
   },
   {
@@ -8856,10 +8832,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/kashiba-city/",
     "rents": {
       "r1": 47000,
-      "k1": 44750,
-      "ldk1": 50450,
-      "ldk2": 55500,
-      "ldk3": 63000
+      "k1": 44000,
+      "ldk1": 49625,
+      "ldk2": 54000,
+      "ldk3": 59550
     }
   },
   {
@@ -8867,11 +8843,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "葛城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/katsuragi-city/",
     "rents": {
-      "r1": null,
-      "k1": 45000,
-      "ldk1": 52500,
-      "ldk2": 52000,
-      "ldk3": 54000
+      "r1": 50438,
+      "k1": 42716,
+      "ldk1": 52249,
+      "ldk2": 55156,
+      "ldk3": 60256
     }
   },
   {
@@ -8881,7 +8857,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": null,
+      "ldk1": 50000,
       "ldk2": 62000,
       "ldk3": null
     }
@@ -8893,8 +8869,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 42000,
-      "ldk2": 61000,
+      "ldk1": null,
+      "ldk2": 59500,
       "ldk3": null
     }
   },
@@ -8903,11 +8879,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "生駒郡三鄉町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/ikoma_sango-city/",
     "rents": {
-      "r1": 30880,
-      "k1": 34804,
-      "ldk1": 42620,
-      "ldk2": 51319,
-      "ldk3": 56259
+      "r1": 30000,
+      "k1": 30000,
+      "ldk1": 46250,
+      "ldk2": 53000,
+      "ldk3": 57000
     }
   },
   {
@@ -8915,11 +8891,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "生駒郡斑鳩町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/ikoma_ikaruga-city/",
     "rents": {
-      "r1": 31500,
-      "k1": 47000,
-      "ldk1": 52500,
-      "ldk2": 58500,
-      "ldk3": 59000
+      "r1": 33000,
+      "k1": 43500,
+      "ldk1": 49750,
+      "ldk2": 57500,
+      "ldk3": 57500
     }
   },
   {
@@ -8929,8 +8905,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": null,
-      "ldk2": 54500,
+      "ldk1": 63000,
+      "ldk2": 52000,
       "ldk3": null
     }
   },
@@ -8952,10 +8928,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/shiki_tawaramoto-city/",
     "rents": {
       "r1": 36000,
-      "k1": 51500,
-      "ldk1": 56250,
-      "ldk2": 53000,
-      "ldk3": 77500
+      "k1": 45000,
+      "ldk1": 56000,
+      "ldk2": 55000,
+      "ldk3": 75000
     }
   },
   {
@@ -8965,8 +8941,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 55000,
-      "ldk2": 59000,
+      "ldk1": 45000,
+      "ldk2": 59500,
       "ldk3": null
     }
   },
@@ -8975,11 +8951,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北葛城郡王寺町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/nara/kitakatsuragi_oji-city/",
     "rents": {
-      "r1": 42355,
-      "k1": 42400,
-      "ldk1": 52967,
-      "ldk2": 60656,
-      "ldk3": 72892
+      "r1": 35000,
+      "k1": 48000,
+      "ldk1": 52500,
+      "ldk2": 62000,
+      "ldk3": 90000
     }
   },
   {
@@ -8989,9 +8965,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 55500,
-      "ldk2": 55250,
-      "ldk3": 82500
+      "ldk1": 57750,
+      "ldk2": 57500,
+      "ldk3": 82000
     }
   },
   {
@@ -9001,8 +8977,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 48750,
-      "ldk2": 45000,
+      "ldk1": 48500,
+      "ldk2": 54500,
       "ldk3": null
     }
   },
@@ -9013,8 +8989,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 41500,
-      "ldk2": 47375,
+      "ldk1": 41300,
+      "ldk2": 47500,
       "ldk3": null
     }
   },
@@ -9023,8 +8999,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新潟市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata-city/",
     "rents": {
-      "r1": 39500,
-      "k1": 42000,
+      "r1": 38000,
+      "k1": 42750,
       "ldk1": 50000,
       "ldk2": 55000,
       "ldk3": 65000
@@ -9036,8 +9012,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_kita-city/",
     "rents": {
       "r1": null,
-      "k1": 39750,
-      "ldk1": 48750,
+      "k1": 40250,
+      "ldk1": 49250,
       "ldk2": 57000,
       "ldk3": null
     }
@@ -9047,11 +9023,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新潟市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_higashi-city/",
     "rents": {
-      "r1": 40773,
-      "k1": 44385,
-      "ldk1": 53884,
-      "ldk2": 63220,
-      "ldk3": 88620
+      "r1": 44181,
+      "k1": 44272,
+      "ldk1": 53890,
+      "ldk2": 64725,
+      "ldk3": 75627
     }
   },
   {
@@ -9059,11 +9035,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新潟市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_chuo-city/",
     "rents": {
-      "r1": 43519,
-      "k1": 46280,
-      "ldk1": 57852,
-      "ldk2": 72835,
-      "ldk3": 85965
+      "r1": 43783,
+      "k1": 46959,
+      "ldk1": 58563,
+      "ldk2": 73389,
+      "ldk3": 87348
     }
   },
   {
@@ -9072,9 +9048,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_konan-city/",
     "rents": {
       "r1": null,
-      "k1": 40500,
-      "ldk1": 55000,
-      "ldk2": 60500,
+      "k1": 44011,
+      "ldk1": 53003,
+      "ldk2": 60061,
       "ldk3": null
     }
   },
@@ -9096,7 +9072,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_minami-city/",
     "rents": {
       "r1": null,
-      "k1": 43000,
+      "k1": 42500,
       "ldk1": 39000,
       "ldk2": null,
       "ldk3": null
@@ -9107,10 +9083,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新潟市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_nishi-city/",
     "rents": {
-      "r1": 30000,
+      "r1": 29000,
       "k1": 34000,
-      "ldk1": 48500,
-      "ldk2": 53750,
+      "ldk1": 49000,
+      "ldk2": 52000,
       "ldk3": 75000
     }
   },
@@ -9120,7 +9096,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/niigata_nishikan-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
+      "k1": 44500,
       "ldk1": 40000,
       "ldk2": null,
       "ldk3": null
@@ -9131,10 +9107,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "長岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/nagaoka-city/",
     "rents": {
-      "r1": 32500,
-      "k1": 42250,
+      "r1": 35000,
+      "k1": 42500,
       "ldk1": 45000,
-      "ldk2": 56750,
+      "ldk2": 57000,
       "ldk3": 89000
     }
   },
@@ -9143,11 +9119,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三条市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/sanjo-city/",
     "rents": {
-      "r1": 36500,
-      "k1": 41500,
+      "r1": 38000,
+      "k1": 41250,
       "ldk1": 45000,
-      "ldk2": 52500,
-      "ldk3": 70000
+      "ldk2": 53500,
+      "ldk3": null
     }
   },
   {
@@ -9156,7 +9132,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/kashiwazaki-city/",
     "rents": {
       "r1": null,
-      "k1": 69500,
+      "k1": 71000,
       "ldk1": 40000,
       "ldk2": null,
       "ldk3": null
@@ -9168,8 +9144,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/shibata-city/",
     "rents": {
       "r1": null,
-      "k1": 57000,
-      "ldk1": 37500,
+      "k1": 57500,
+      "ldk1": 38000,
       "ldk2": null,
       "ldk3": null
     }
@@ -9180,7 +9156,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/ojiya-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
+      "k1": 43000,
       "ldk1": 50250,
       "ldk2": 53000,
       "ldk3": null
@@ -9192,8 +9168,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/kamo-city/",
     "rents": {
       "r1": null,
-      "k1": 44000,
-      "ldk1": 50250,
+      "k1": 43500,
+      "ldk1": null,
       "ldk2": null,
       "ldk3": null
     }
@@ -9205,8 +9181,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 44000,
-      "ldk1": 48000,
-      "ldk2": 64000,
+      "ldk1": 47500,
+      "ldk2": 60750,
       "ldk3": null
     }
   },
@@ -9216,7 +9192,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/murakami-city/",
     "rents": {
       "r1": null,
-      "k1": 65500,
+      "k1": 66000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -9227,10 +9203,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "燕市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/tsubame-city/",
     "rents": {
-      "r1": 30000,
+      "r1": 29500,
       "k1": 52000,
-      "ldk1": 47625,
-      "ldk2": 54000,
+      "ldk1": 51000,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -9252,10 +9228,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/joetsu-city/",
     "rents": {
       "r1": null,
-      "k1": 41000,
-      "ldk1": 43500,
+      "k1": 41500,
+      "ldk1": 45000,
       "ldk2": 57000,
-      "ldk3": 70000
+      "ldk3": null
     }
   },
   {
@@ -9277,8 +9253,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 53750,
-      "ldk2": 58500,
+      "ldk1": 53000,
+      "ldk2": 60000,
       "ldk3": null
     }
   },
@@ -9288,8 +9264,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/niigata/minamiuonuma-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
-      "ldk1": 53250,
+      "k1": 48000,
+      "ldk1": 54000,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -9311,7 +9287,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大分市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/oita-city/",
     "rents": {
-      "r1": 39000,
+      "r1": 38500,
       "k1": 38500,
       "ldk1": 44000,
       "ldk2": 50000,
@@ -9323,11 +9299,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "別府市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/beppu-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 39500,
-      "ldk1": 47000,
-      "ldk2": 50000,
-      "ldk3": 59750
+      "r1": 36944,
+      "k1": 39531,
+      "ldk1": 49377,
+      "ldk2": 57722,
+      "ldk3": 66961
     }
   },
   {
@@ -9338,7 +9314,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 35000,
       "k1": 44500,
       "ldk1": 40000,
-      "ldk2": 43000,
+      "ldk2": 45000,
       "ldk3": 64000
     }
   },
@@ -9347,11 +9323,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "日田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/hita-city/",
     "rents": {
-      "r1": 39000,
-      "k1": 43600,
-      "ldk1": 43000,
+      "r1": 40000,
+      "k1": 45350,
+      "ldk1": 43500,
       "ldk2": 45000,
-      "ldk3": 55000
+      "ldk3": 56000
     }
   },
   {
@@ -9359,8 +9335,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐伯市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/saiki-city/",
     "rents": {
-      "r1": 39250,
-      "k1": 37250,
+      "r1": 42000,
+      "k1": 37500,
       "ldk1": 43000,
       "ldk2": 50000,
       "ldk3": 55000
@@ -9372,9 +9348,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/usuki-city/",
     "rents": {
       "r1": null,
-      "k1": 41000,
-      "ldk1": 44500,
-      "ldk2": 46500,
+      "k1": null,
+      "ldk1": 44000,
+      "ldk2": 45000,
       "ldk3": 60000
     }
   },
@@ -9385,7 +9361,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 44000,
+      "ldk1": 45250,
       "ldk2": 49500,
       "ldk3": null
     }
@@ -9396,7 +9372,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/taketa-city/",
     "rents": {
       "r1": null,
-      "k1": 34500,
+      "k1": 36000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -9419,11 +9395,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "杵築市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/kitsuki-city/",
     "rents": {
-      "r1": 17021,
-      "k1": 23725,
-      "ldk1": 32666,
-      "ldk2": 38528,
-      "ldk3": 49753
+      "r1": 16823,
+      "k1": 23976,
+      "ldk1": 33443,
+      "ldk2": 39542,
+      "ldk3": 49468
     }
   },
   {
@@ -9431,11 +9407,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宇佐市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/usa-city/",
     "rents": {
-      "r1": 38500,
-      "k1": 39000,
+      "r1": 37750,
+      "k1": 38575,
       "ldk1": 45500,
-      "ldk2": 47500,
-      "ldk3": 66800
+      "ldk2": 47000,
+      "ldk3": 70000
     }
   },
   {
@@ -9443,11 +9419,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐後大野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/bungoono-city/",
     "rents": {
-      "r1": null,
-      "k1": 34500,
-      "ldk1": 42500,
-      "ldk2": 47125,
-      "ldk3": null
+      "r1": 34924,
+      "k1": 34388,
+      "ldk1": 39747,
+      "ldk2": 46832,
+      "ldk3": 51187
     }
   },
   {
@@ -9455,11 +9431,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "由布市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/yufu-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 30000,
-      "ldk1": 49000,
-      "ldk2": 54500,
-      "ldk3": 82000
+      "r1": 40137,
+      "k1": 38518,
+      "ldk1": 48133,
+      "ldk2": 56115,
+      "ldk3": 71235
     }
   },
   {
@@ -9467,11 +9443,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "国東市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/kunisaki-city/",
     "rents": {
-      "r1": 20000,
+      "r1": 20500,
       "k1": 19500,
       "ldk1": 39000,
-      "ldk2": 43500,
-      "ldk3": null
+      "ldk2": 43250,
+      "ldk3": 38000
     }
   },
   {
@@ -9480,10 +9456,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/oita/hayami_hiji-city/",
     "rents": {
       "r1": null,
-      "k1": 27000,
-      "ldk1": 44750,
-      "ldk2": 48250,
-      "ldk3": 70000
+      "k1": 31000,
+      "ldk1": 44500,
+      "ldk2": 46750,
+      "ldk3": 76000
     }
   },
   {
@@ -9493,8 +9469,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 49000,
-      "ldk2": 54250,
+      "ldk1": 52000,
+      "ldk2": 55500,
       "ldk3": null
     }
   },
@@ -9503,11 +9479,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/okayama-city/",
     "rents": {
-      "r1": 41556,
-      "k1": 42206,
-      "ldk1": 52946,
-      "ldk2": 62934,
-      "ldk3": 76631
+      "r1": 44000,
+      "k1": 44000,
+      "ldk1": 45000,
+      "ldk2": 52000,
+      "ldk3": 65000
     }
   },
   {
@@ -9515,11 +9491,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡山市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/okayama_kita-city/",
     "rents": {
-      "r1": 43370,
-      "k1": 45350,
-      "ldk1": 56182,
-      "ldk2": 69151,
-      "ldk3": 86320
+      "r1": 43819,
+      "k1": 45467,
+      "ldk1": 56100,
+      "ldk2": 69597,
+      "ldk3": 88551
     }
   },
   {
@@ -9527,11 +9503,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡山市中區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/okayama_naka-city/",
     "rents": {
-      "r1": 38705,
-      "k1": 38087,
-      "ldk1": 49464,
-      "ldk2": 58170,
-      "ldk3": 71306
+      "r1": 38506,
+      "k1": 38506,
+      "ldk1": 50407,
+      "ldk2": 58788,
+      "ldk3": 72433
     }
   },
   {
@@ -9539,10 +9515,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡山市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/okayama_higashi-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 40000,
+      "r1": 43000,
+      "k1": 40500,
       "ldk1": 44000,
-      "ldk2": 47500,
+      "ldk2": 51500,
       "ldk3": 71000
     }
   },
@@ -9551,11 +9527,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岡山市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/okayama_minami-city/",
     "rents": {
-      "r1": 48000,
-      "k1": 43000,
+      "r1": 46000,
+      "k1": 42750,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 67000
+      "ldk3": 65900
     }
   },
   {
@@ -9563,11 +9539,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "倉敷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/kurashiki-city/",
     "rents": {
-      "r1": 41000,
-      "k1": 40500,
+      "r1": 42000,
+      "k1": 40750,
       "ldk1": 44000,
       "ldk2": 48000,
-      "ldk3": 68500
+      "ldk3": 69500
     }
   },
   {
@@ -9576,9 +9552,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/tsuyama-city/",
     "rents": {
       "r1": 41000,
-      "k1": 40500,
-      "ldk1": 46000,
-      "ldk2": 49250,
+      "k1": 46000,
+      "ldk1": 45500,
+      "ldk2": 49825,
       "ldk3": null
     }
   },
@@ -9588,9 +9564,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/tamano-city/",
     "rents": {
       "r1": null,
-      "k1": 48500,
-      "ldk1": 47750,
-      "ldk2": 53000,
+      "k1": 39000,
+      "ldk1": 48250,
+      "ldk2": 54250,
       "ldk3": null
     }
   },
@@ -9600,9 +9576,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/kasaoka-city/",
     "rents": {
       "r1": null,
-      "k1": 53000,
-      "ldk1": 48500,
-      "ldk2": 53875,
+      "k1": 54000,
+      "ldk1": 48625,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -9612,8 +9588,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/ibara-city/",
     "rents": {
       "r1": null,
-      "k1": 41500,
-      "ldk1": 47250,
+      "k1": null,
+      "ldk1": 47500,
       "ldk2": 53500,
       "ldk3": null
     }
@@ -9623,9 +9599,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "総社市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/soja-city/",
     "rents": {
-      "r1": 40000,
+      "r1": 38000,
       "k1": 38000,
-      "ldk1": 48000,
+      "ldk1": 52000,
       "ldk2": 56000,
       "ldk3": 64000
     }
@@ -9636,7 +9612,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/takahashi-city/",
     "rents": {
       "r1": null,
-      "k1": 43000,
+      "k1": 42500,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -9648,9 +9624,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/bizen-city/",
     "rents": {
       "r1": null,
-      "k1": 49000,
+      "k1": 48000,
       "ldk1": 42625,
-      "ldk2": 39000,
+      "ldk2": 47000,
       "ldk3": null
     }
   },
@@ -9660,9 +9636,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/setouchi-city/",
     "rents": {
       "r1": null,
-      "k1": 52000,
-      "ldk1": 46000,
-      "ldk2": 50000,
+      "k1": 50500,
+      "ldk1": 46500,
+      "ldk2": 53500,
       "ldk3": null
     }
   },
@@ -9673,8 +9649,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 46000,
-      "ldk1": 49000,
-      "ldk2": 52750,
+      "ldk1": 48000,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -9686,7 +9662,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 56000,
+      "ldk2": 58000,
       "ldk3": null
     }
   },
@@ -9696,9 +9672,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/asakuchi-city/",
     "rents": {
       "r1": null,
-      "k1": 38500,
-      "ldk1": 46125,
-      "ldk2": 54500,
+      "k1": 38000,
+      "ldk1": 45375,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -9709,8 +9685,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 39000,
-      "ldk2": 45000,
+      "ldk1": 44000,
+      "ldk2": 47500,
       "ldk3": null
     }
   },
@@ -9719,11 +9695,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "都窪郡早島町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okayama/tsukubo_hayashima-city/",
     "rents": {
-      "r1": 40571,
-      "k1": 36798,
-      "ldk1": 49540,
-      "ldk2": 59366,
-      "ldk3": 75933
+      "r1": null,
+      "k1": 39049,
+      "ldk1": 51803,
+      "ldk2": 61852,
+      "ldk3": 78222
     }
   },
   {
@@ -9745,8 +9721,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 47000,
-      "ldk2": 52000,
+      "ldk1": 46500,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -9756,10 +9732,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/naha-city/",
     "rents": {
       "r1": 50000,
-      "k1": 67000,
-      "ldk1": 48000,
+      "k1": 67500,
+      "ldk1": 48500,
       "ldk2": 83500,
-      "ldk3": 148500
+      "ldk3": 145000
     }
   },
   {
@@ -9767,11 +9743,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宜野湾市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/ginowan-city/",
     "rents": {
-      "r1": 31500,
-      "k1": 58250,
-      "ldk1": 56000,
+      "r1": 32000,
+      "k1": 56500,
+      "ldk1": 57000,
       "ldk2": 104000,
-      "ldk3": 90000
+      "ldk3": 95000
     }
   },
   {
@@ -9780,10 +9756,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/urasoe-city/",
     "rents": {
       "r1": 40000,
-      "k1": 64000,
-      "ldk1": 59500,
-      "ldk2": 93000,
-      "ldk3": 104000
+      "k1": 65000,
+      "ldk1": 60750,
+      "ldk2": 60500,
+      "ldk3": 100000
     }
   },
   {
@@ -9792,9 +9768,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/nago-city/",
     "rents": {
       "r1": null,
-      "k1": 69500,
-      "ldk1": 82000,
-      "ldk2": 76000,
+      "k1": 69000,
+      "ldk1": 81000,
+      "ldk2": 74000,
       "ldk3": null
     }
   },
@@ -9804,9 +9780,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/itoman-city/",
     "rents": {
       "r1": null,
-      "k1": 64000,
-      "ldk1": 56750,
-      "ldk2": 56750,
+      "k1": 66500,
+      "ldk1": 56000,
+      "ldk2": 57750,
       "ldk3": null
     }
   },
@@ -9816,10 +9792,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/okinawa-city/",
     "rents": {
       "r1": null,
-      "k1": 59500,
+      "k1": 60000,
       "ldk1": 64000,
-      "ldk2": 106000,
-      "ldk3": 108000
+      "ldk2": 101750,
+      "ldk3": null
     }
   },
   {
@@ -9828,10 +9804,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/tomigusuku-city/",
     "rents": {
       "r1": null,
-      "k1": 62000,
-      "ldk1": 71000,
-      "ldk2": 78000,
-      "ldk3": 160000
+      "k1": 64000,
+      "ldk1": 57250,
+      "ldk2": 72000,
+      "ldk3": 200000
     }
   },
   {
@@ -9840,10 +9816,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/uruma-city/",
     "rents": {
       "r1": null,
-      "k1": 62000,
-      "ldk1": 76000,
-      "ldk2": 94500,
-      "ldk3": null
+      "k1": 64500,
+      "ldk1": 77500,
+      "ldk2": 92500,
+      "ldk3": 116000
     }
   },
   {
@@ -9864,9 +9840,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/nanjo-city/",
     "rents": {
       "r1": null,
-      "k1": 53500,
+      "k1": null,
       "ldk1": 57000,
-      "ldk2": 72500,
+      "ldk2": 71000,
       "ldk3": null
     }
   },
@@ -9876,7 +9852,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/nakagami_yomitan-city/",
     "rents": {
       "r1": null,
-      "k1": null,
+      "k1": 70000,
       "ldk1": null,
       "ldk2": 93500,
       "ldk3": null
@@ -9888,9 +9864,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/nakagami_chatan-city/",
     "rents": {
       "r1": null,
-      "k1": 77500,
-      "ldk1": 98000,
-      "ldk2": 158000,
+      "k1": 78500,
+      "ldk1": null,
+      "ldk2": 170000,
       "ldk3": null
     }
   },
@@ -9900,9 +9876,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/okinawa_nakagami_kitanakagusuku-city/",
     "rents": {
       "r1": null,
-      "k1": 59000,
+      "k1": 62000,
       "ldk1": null,
-      "ldk2": 220000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -9912,7 +9888,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/okinawa_nakagami_nakagusuku-city/",
     "rents": {
       "r1": null,
-      "k1": 56000,
+      "k1": 59500,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -9924,8 +9900,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/okinawa/nakagami_nishihara-city/",
     "rents": {
       "r1": null,
-      "k1": 53000,
-      "ldk1": 55750,
+      "k1": 59000,
+      "ldk1": 66500,
       "ldk2": null,
       "ldk3": null
     }
@@ -9937,8 +9913,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 61000,
-      "ldk1": null,
-      "ldk2": null,
+      "ldk1": 45000,
+      "ldk2": 90000,
       "ldk3": null
     }
   },
@@ -9950,7 +9926,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 65000,
+      "ldk2": null,
       "ldk3": 86000
     }
   },
@@ -9959,11 +9935,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka-city/",
     "rents": {
-      "r1": 65213,
-      "k1": 73631,
-      "ldk1": 96647,
-      "ldk2": 130831,
-      "ldk3": 157626
+      "r1": 65855,
+      "k1": 73769,
+      "ldk1": 96080,
+      "ldk2": 130581,
+      "ldk3": 157275
     }
   },
   {
@@ -9971,11 +9947,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市都島區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_miyakojima-city/",
     "rents": {
-      "r1": 62496,
-      "k1": 72085,
-      "ldk1": 92476,
-      "ldk2": 141743,
-      "ldk3": 161229
+      "r1": 61442,
+      "k1": 72189,
+      "ldk1": 92481,
+      "ldk2": 140420,
+      "ldk3": 162393
     }
   },
   {
@@ -9983,11 +9959,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市福島區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_fukushima-city/",
     "rents": {
-      "r1": 78923,
-      "k1": 83948,
-      "ldk1": 118617,
-      "ldk2": 173013,
-      "ldk3": 183196
+      "r1": 77722,
+      "k1": 81955,
+      "ldk1": 117351,
+      "ldk2": 172236,
+      "ldk3": 182917
     }
   },
   {
@@ -9995,11 +9971,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市此花區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_konohana-city/",
     "rents": {
-      "r1": 53622,
-      "k1": 63908,
-      "ldk1": 82871,
-      "ldk2": 104971,
-      "ldk3": 130207
+      "r1": 53803,
+      "k1": 63396,
+      "ldk1": 85277,
+      "ldk2": 110416,
+      "ldk3": 134124
     }
   },
   {
@@ -10007,11 +9983,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_nishi-city/",
     "rents": {
-      "r1": 83155,
-      "k1": 83920,
-      "ldk1": 113452,
-      "ldk2": 170051,
-      "ldk3": 201413
+      "r1": 83938,
+      "k1": 83951,
+      "ldk1": 112630,
+      "ldk2": 169584,
+      "ldk3": 194480
     }
   },
   {
@@ -10019,11 +9995,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市港區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_minato-city/",
     "rents": {
-      "r1": 52000,
-      "k1": 69000,
-      "ldk1": 64000,
-      "ldk2": 102900,
-      "ldk3": 134000
+      "r1": 53500,
+      "k1": 68750,
+      "ldk1": 65000,
+      "ldk2": 99750,
+      "ldk3": 133000
     }
   },
   {
@@ -10031,11 +10007,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市大正區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_taisho-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 62375,
-      "ldk1": 60000,
-      "ldk2": 85000,
-      "ldk3": 120000
+      "r1": 50000,
+      "k1": 73300,
+      "ldk1": 59500,
+      "ldk2": 82500,
+      "ldk3": 108000
     }
   },
   {
@@ -10043,11 +10019,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市天王寺區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_tennoji-city/",
     "rents": {
-      "r1": 68743,
-      "k1": 79844,
-      "ldk1": 116308,
-      "ldk2": 151849,
-      "ldk3": 243385
+      "r1": 67686,
+      "k1": 79084,
+      "ldk1": 116745,
+      "ldk2": 155239,
+      "ldk3": 244724
     }
   },
   {
@@ -10055,11 +10031,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市浪速區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_naniwa-city/",
     "rents": {
-      "r1": 73983,
-      "k1": 81176,
-      "ldk1": 105626,
-      "ldk2": 157925,
-      "ldk3": 195812
+      "r1": 74074,
+      "k1": 81437,
+      "ldk1": 105581,
+      "ldk2": 156771,
+      "ldk3": 191064
     }
   },
   {
@@ -10067,11 +10043,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市西淀川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_nishiyodogawa-city/",
     "rents": {
-      "r1": 50250,
-      "k1": 67500,
+      "r1": 53500,
+      "k1": 70275,
       "ldk1": 65000,
-      "ldk2": 97000,
-      "ldk3": 140000
+      "ldk2": 92500,
+      "ldk3": 130000
     }
   },
   {
@@ -10079,11 +10055,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市東淀川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_higashiyodogawa-city/",
     "rents": {
-      "r1": 47645,
-      "k1": 55732,
-      "ldk1": 74085,
-      "ldk2": 100048,
-      "ldk3": 107153
+      "r1": 46921,
+      "k1": 55604,
+      "ldk1": 72887,
+      "ldk2": 98611,
+      "ldk3": 108252
     }
   },
   {
@@ -10091,11 +10067,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市東成區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_higashinari-city/",
     "rents": {
-      "r1": 59808,
-      "k1": 71805,
-      "ldk1": 90570,
-      "ldk2": 132344,
-      "ldk3": 160911
+      "r1": 60486,
+      "k1": 73126,
+      "ldk1": 88643,
+      "ldk2": 132523,
+      "ldk3": 158849
     }
   },
   {
@@ -10103,11 +10079,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市生野區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_ikuno-city/",
     "rents": {
-      "r1": 50994,
-      "k1": 60911,
-      "ldk1": 74505,
-      "ldk2": 102971,
-      "ldk3": 120051
+      "r1": 51874,
+      "k1": 61473,
+      "ldk1": 74820,
+      "ldk2": 102943,
+      "ldk3": 118834
     }
   },
   {
@@ -10115,11 +10091,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市旭區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_asahi-city/",
     "rents": {
-      "r1": 46094,
-      "k1": 55103,
-      "ldk1": 77282,
-      "ldk2": 95658,
-      "ldk3": 125739
+      "r1": 45928,
+      "k1": 55318,
+      "ldk1": 78700,
+      "ldk2": 97154,
+      "ldk3": 127381
     }
   },
   {
@@ -10127,11 +10103,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市城東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_joto-city/",
     "rents": {
-      "r1": 48985,
-      "k1": 62436,
-      "ldk1": 79964,
-      "ldk2": 113934,
-      "ldk3": 121617
+      "r1": 49009,
+      "k1": 62444,
+      "ldk1": 81647,
+      "ldk2": 111939,
+      "ldk3": 126409
     }
   },
   {
@@ -10139,11 +10115,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市阿倍野區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_abeno-city/",
     "rents": {
-      "r1": 56327,
-      "k1": 69006,
-      "ldk1": 92718,
-      "ldk2": 135162,
-      "ldk3": 147326
+      "r1": 57442,
+      "k1": 69603,
+      "ldk1": 93565,
+      "ldk2": 136051,
+      "ldk3": 146407
     }
   },
   {
@@ -10151,11 +10127,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市住吉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_sumiyoshi-city/",
     "rents": {
-      "r1": 40107,
-      "k1": 50659,
-      "ldk1": 68267,
-      "ldk2": 87003,
-      "ldk3": 85757
+      "r1": 40802,
+      "k1": 51662,
+      "ldk1": 69733,
+      "ldk2": 94345,
+      "ldk3": 93651
     }
   },
   {
@@ -10163,11 +10139,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市東住吉區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_higashisumiyoshi-city/",
     "rents": {
-      "r1": 46288,
-      "k1": 55471,
-      "ldk1": 75007,
-      "ldk2": 98015,
-      "ldk3": 119673
+      "r1": 45568,
+      "k1": 54399,
+      "ldk1": 72352,
+      "ldk2": 95867,
+      "ldk3": 118013
     }
   },
   {
@@ -10175,11 +10151,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市西成區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_nishinari-city/",
     "rents": {
-      "r1": 46959,
-      "k1": 55607,
-      "ldk1": 66451,
-      "ldk2": 89112,
-      "ldk3": 108718
+      "r1": 47821,
+      "k1": 56308,
+      "ldk1": 67202,
+      "ldk2": 88750,
+      "ldk3": 109889
     }
   },
   {
@@ -10187,11 +10163,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市淀川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_yodogawa-city/",
     "rents": {
-      "r1": 65007,
-      "k1": 72553,
-      "ldk1": 93846,
-      "ldk2": 126599,
-      "ldk3": 154946
+      "r1": 64279,
+      "k1": 71348,
+      "ldk1": 92884,
+      "ldk2": 123170,
+      "ldk3": 154054
     }
   },
   {
@@ -10199,11 +10175,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市鶴見區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_tsurumi-city/",
     "rents": {
-      "r1": 58001,
-      "k1": 59857,
-      "ldk1": 76177,
-      "ldk2": 100040,
-      "ldk3": 110558
+      "r1": 58182,
+      "k1": 59907,
+      "ldk1": 74445,
+      "ldk2": 99047,
+      "ldk3": 109023
     }
   },
   {
@@ -10212,10 +10188,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_suminoe-city/",
     "rents": {
       "r1": 40000,
-      "k1": 53000,
-      "ldk1": 55000,
-      "ldk2": 79850,
-      "ldk3": 110500
+      "k1": 54000,
+      "ldk1": 58000,
+      "ldk2": 80425,
+      "ldk3": 106750
     }
   },
   {
@@ -10223,11 +10199,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市平野區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_hirano-city/",
     "rents": {
-      "r1": 46497,
-      "k1": 50173,
-      "ldk1": 62604,
-      "ldk2": 83589,
-      "ldk3": 95026
+      "r1": 46625,
+      "k1": 50787,
+      "ldk1": 62515,
+      "ldk2": 83464,
+      "ldk3": 94792
     }
   },
   {
@@ -10235,11 +10211,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_kita-city/",
     "rents": {
-      "r1": 83398,
-      "k1": 87164,
-      "ldk1": 123512,
-      "ldk2": 175278,
-      "ldk3": 221559
+      "r1": 83041,
+      "k1": 88280,
+      "ldk1": 124574,
+      "ldk2": 174560,
+      "ldk3": 220610
     }
   },
   {
@@ -10247,11 +10223,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osaka_chuo-city/",
     "rents": {
-      "r1": 84309,
-      "k1": 90313,
-      "ldk1": 129209,
-      "ldk2": 178885,
-      "ldk3": 152581
+      "r1": 84787,
+      "k1": 90757,
+      "ldk1": 128497,
+      "ldk2": 177558,
+      "ldk3": 226215
     }
   },
   {
@@ -10261,9 +10237,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 50000,
       "k1": 57500,
-      "ldk1": 57000,
+      "ldk1": 56000,
       "ldk2": 58000,
-      "ldk3": 60000
+      "ldk3": 62500
     }
   },
   {
@@ -10271,11 +10247,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "堺市堺區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_sakai-city/",
     "rents": {
-      "r1": 59092,
-      "k1": 61563,
-      "ldk1": 78290,
-      "ldk2": 100469,
-      "ldk3": 120708
+      "r1": 58839,
+      "k1": 61640,
+      "ldk1": 77832,
+      "ldk2": 99894,
+      "ldk3": 119809
     }
   },
   {
@@ -10284,10 +10260,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_naka-city/",
     "rents": {
       "r1": 40000,
-      "k1": 50500,
+      "k1": 47000,
       "ldk1": 55000,
-      "ldk2": 64500,
-      "ldk3": 70000
+      "ldk2": 59500,
+      "ldk3": 63500
     }
   },
   {
@@ -10295,11 +10271,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "堺市東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_higashi-city/",
     "rents": {
-      "r1": 40690,
-      "k1": 45270,
-      "ldk1": 57371,
-      "ldk2": 67429,
-      "ldk3": 75616
+      "r1": 41272,
+      "k1": 45819,
+      "ldk1": 57554,
+      "ldk2": 68021,
+      "ldk3": 76235
     }
   },
   {
@@ -10307,11 +10283,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "堺市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_nishi-city/",
     "rents": {
-      "r1": 51267,
-      "k1": 52816,
-      "ldk1": 68464,
-      "ldk2": 82580,
-      "ldk3": 92335
+      "r1": 51899,
+      "k1": 53026,
+      "ldk1": 68920,
+      "ldk2": 83187,
+      "ldk3": 91515
     }
   },
   {
@@ -10320,10 +10296,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_minami-city/",
     "rents": {
       "r1": null,
-      "k1": 52500,
-      "ldk1": 55800,
-      "ldk2": 54100,
-      "ldk3": 76500
+      "k1": 49000,
+      "ldk1": 59775,
+      "ldk2": 54500,
+      "ldk3": 78000
     }
   },
   {
@@ -10331,11 +10307,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "堺市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_kita-city/",
     "rents": {
-      "r1": 52856,
-      "k1": 57913,
-      "ldk1": 76894,
-      "ldk2": 91110,
-      "ldk3": 98558
+      "r1": 53123,
+      "k1": 57809,
+      "ldk1": 76765,
+      "ldk2": 92767,
+      "ldk3": 106616
     }
   },
   {
@@ -10343,11 +10319,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "堺市美原區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sakai_mihara-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 50750,
-      "ldk1": 63000,
-      "ldk2": 69500,
-      "ldk3": 55000
+      "r1": 56000,
+      "k1": 51000,
+      "ldk1": 65000,
+      "ldk2": 63250,
+      "ldk3": 63000
     }
   },
   {
@@ -10357,9 +10333,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 39000,
       "k1": 46500,
-      "ldk1": 49000,
-      "ldk2": 53200,
-      "ldk3": 68000
+      "ldk1": 47000,
+      "ldk2": 53000,
+      "ldk3": 63500
     }
   },
   {
@@ -10367,11 +10343,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐中市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/toyonaka-city/",
     "rents": {
-      "r1": 47783,
-      "k1": 53620,
-      "ldk1": 73218,
-      "ldk2": 94373,
-      "ldk3": 117986
+      "r1": 48565,
+      "k1": 52997,
+      "ldk1": 73332,
+      "ldk2": 95769,
+      "ldk3": 118948
     }
   },
   {
@@ -10379,11 +10355,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "池田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/ikeda-city/",
     "rents": {
-      "r1": 47797,
-      "k1": 51854,
-      "ldk1": 71397,
-      "ldk2": 91546,
-      "ldk3": 110472
+      "r1": 46226,
+      "k1": 51270,
+      "ldk1": 69839,
+      "ldk2": 89124,
+      "ldk3": 107188
     }
   },
   {
@@ -10391,11 +10367,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "吹田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/suita-city/",
     "rents": {
-      "r1": 64336,
-      "k1": 68870,
-      "ldk1": 83379,
-      "ldk2": 111527,
-      "ldk3": 135274
+      "r1": 62090,
+      "k1": 67038,
+      "ldk1": 81220,
+      "ldk2": 109256,
+      "ldk3": 132330
     }
   },
   {
@@ -10403,11 +10379,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "泉大津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/izumiotsu-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 50250,
-      "ldk1": 54500,
-      "ldk2": 60000,
-      "ldk3": 86000
+      "r1": 51720,
+      "k1": 51972,
+      "ldk1": 63643,
+      "ldk2": 73199,
+      "ldk3": 84844
     }
   },
   {
@@ -10415,8 +10391,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高槻市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/takatsuki-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 53750,
+      "r1": 45750,
+      "k1": 54000,
       "ldk1": 59000,
       "ldk2": 65000,
       "ldk3": 87500
@@ -10429,9 +10405,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 46500,
       "k1": 45250,
-      "ldk1": 60425,
+      "ldk1": 59475,
       "ldk2": 56000,
-      "ldk3": 69000
+      "ldk3": 65000
     }
   },
   {
@@ -10439,11 +10415,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "守口市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/moriguchi-city/",
     "rents": {
-      "r1": 48274,
-      "k1": 52251,
-      "ldk1": 69645,
-      "ldk2": 81473,
-      "ldk3": 104555
+      "r1": 47062,
+      "k1": 52621,
+      "ldk1": 69754,
+      "ldk2": 80825,
+      "ldk3": 94457
     }
   },
   {
@@ -10451,11 +10427,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "枚方市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/hirakata-city/",
     "rents": {
-      "r1": 42375,
-      "k1": 48620,
-      "ldk1": 58647,
-      "ldk2": 74527,
-      "ldk3": 86297
+      "r1": 41854,
+      "k1": 47480,
+      "ldk1": 57897,
+      "ldk2": 73274,
+      "ldk3": 84340
     }
   },
   {
@@ -10463,11 +10439,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "茨木市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/ibaraki-city/",
     "rents": {
-      "r1": 52578,
-      "k1": 55783,
-      "ldk1": 70237,
-      "ldk2": 85809,
-      "ldk3": 98966
+      "r1": 52743,
+      "k1": 56042,
+      "ldk1": 70522,
+      "ldk2": 86222,
+      "ldk3": 99503
     }
   },
   {
@@ -10475,11 +10451,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八尾市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/yao-city/",
     "rents": {
-      "r1": 39900,
-      "k1": 53250,
-      "ldk1": 53000,
-      "ldk2": 60000,
-      "ldk3": 63500
+      "r1": 39800,
+      "k1": 50000,
+      "ldk1": 52500,
+      "ldk2": 62000,
+      "ldk3": 58000
     }
   },
   {
@@ -10487,11 +10463,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "泉佐野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/izumisano-city/",
     "rents": {
-      "r1": 49750,
-      "k1": 57500,
-      "ldk1": 58375,
-      "ldk2": 69000,
-      "ldk3": 72000
+      "r1": 47750,
+      "k1": 57000,
+      "ldk1": 61000,
+      "ldk2": 68000,
+      "ldk3": 75000
     }
   },
   {
@@ -10499,11 +10475,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "富田林市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/tondabayashi-city/",
     "rents": {
-      "r1": 32000,
-      "k1": 44500,
-      "ldk1": 52700,
-      "ldk2": 55000,
-      "ldk3": 62500
+      "r1": 34269,
+      "k1": 38050,
+      "ldk1": 49739,
+      "ldk2": 58538,
+      "ldk3": 71043
     }
   },
   {
@@ -10511,11 +10487,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "寝屋川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/neyagawa-city/",
     "rents": {
-      "r1": 36103,
-      "k1": 41979,
-      "ldk1": 52935,
-      "ldk2": 69270,
-      "ldk3": 78625
+      "r1": 35547,
+      "k1": 42053,
+      "ldk1": 52123,
+      "ldk2": 68984,
+      "ldk3": 77834
     }
   },
   {
@@ -10524,9 +10500,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/kawachinagano-city/",
     "rents": {
       "r1": 29000,
-      "k1": 36450,
-      "ldk1": 50750,
-      "ldk2": 62000,
+      "k1": 36500,
+      "ldk1": 51000,
+      "ldk2": 52000,
       "ldk3": 52500
     }
   },
@@ -10535,10 +10511,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "松原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/matsubara-city/",
     "rents": {
-      "r1": 37500,
-      "k1": 49500,
+      "r1": 39000,
+      "k1": 49000,
       "ldk1": 52000,
-      "ldk2": 54000,
+      "ldk2": 51000,
       "ldk3": 49000
     }
   },
@@ -10547,11 +10523,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大東市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/daito-city/",
     "rents": {
-      "r1": 41354,
-      "k1": 47412,
-      "ldk1": 59452,
-      "ldk2": 69640,
-      "ldk3": 81421
+      "r1": 41991,
+      "k1": 48711,
+      "ldk1": 59334,
+      "ldk2": 68688,
+      "ldk3": 83769
     }
   },
   {
@@ -10559,11 +10535,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "和泉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/izumi-city/",
     "rents": {
-      "r1": 51000,
-      "k1": 45000,
+      "r1": 52000,
+      "k1": 44650,
       "ldk1": 52000,
-      "ldk2": 53000,
-      "ldk3": 77000
+      "ldk2": 53850,
+      "ldk3": 76500
     }
   },
   {
@@ -10571,11 +10547,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "箕面市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/mino-city/",
     "rents": {
-      "r1": 45189,
-      "k1": 48174,
-      "ldk1": 63573,
-      "ldk2": 86488,
-      "ldk3": 116912
+      "r1": 44594,
+      "k1": 47637,
+      "ldk1": 62658,
+      "ldk2": 85829,
+      "ldk3": 116476
     }
   },
   {
@@ -10583,9 +10559,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柏原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/kashiwara-city/",
     "rents": {
-      "r1": 33500,
-      "k1": 45350,
-      "ldk1": 47000,
+      "r1": 32500,
+      "k1": 45300,
+      "ldk1": 49000,
       "ldk2": 55000,
       "ldk3": 55500
     }
@@ -10595,11 +10571,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "羽曳野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/habikino-city/",
     "rents": {
-      "r1": 36000,
-      "k1": 46000,
-      "ldk1": 50000,
-      "ldk2": 50000,
-      "ldk3": 63750
+      "r1": 40417,
+      "k1": 43897,
+      "ldk1": 53476,
+      "ldk2": 58967,
+      "ldk3": 68892
     }
   },
   {
@@ -10607,11 +10583,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "門真市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/kadoma-city/",
     "rents": {
-      "r1": 37951,
-      "k1": 45400,
-      "ldk1": 55729,
-      "ldk2": 70741,
-      "ldk3": 83181
+      "r1": 38121,
+      "k1": 45440,
+      "ldk1": 55048,
+      "ldk2": 72970,
+      "ldk3": 83465
     }
   },
   {
@@ -10620,10 +10596,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/settsu-city/",
     "rents": {
       "r1": 51000,
-      "k1": 58000,
+      "k1": 55000,
       "ldk1": 58000,
       "ldk2": 65000,
-      "ldk3": 85500
+      "ldk3": 85000
     }
   },
   {
@@ -10632,10 +10608,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/takaishi-city/",
     "rents": {
       "r1": 57000,
-      "k1": 52750,
-      "ldk1": 47000,
-      "ldk2": 67750,
-      "ldk3": 72000
+      "k1": 54250,
+      "ldk1": 57250,
+      "ldk2": 66250,
+      "ldk3": 66500
     }
   },
   {
@@ -10643,11 +10619,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "藤井寺市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/fujiidera-city/",
     "rents": {
-      "r1": 42000,
-      "k1": 48750,
+      "r1": 39000,
+      "k1": 49000,
       "ldk1": 50000,
-      "ldk2": 59250,
-      "ldk3": 67000
+      "ldk2": 59750,
+      "ldk3": 66500
     }
   },
   {
@@ -10655,11 +10631,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東大阪市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/higashiosaka-city/",
     "rents": {
-      "r1": 42998,
-      "k1": 51095,
-      "ldk1": 62909,
-      "ldk2": 80451,
-      "ldk3": 92799
+      "r1": 42595,
+      "k1": 50643,
+      "ldk1": 62464,
+      "ldk2": 81124,
+      "ldk3": 93641
     }
   },
   {
@@ -10667,9 +10643,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "泉南市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sennan-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 51000,
-      "ldk1": 51500,
+      "r1": 43000,
+      "k1": 50500,
+      "ldk1": 51250,
       "ldk2": 48000,
       "ldk3": 62000
     }
@@ -10679,11 +10655,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "四條畷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/shijonawate-city/",
     "rents": {
-      "r1": 32500,
+      "r1": 35000,
       "k1": 52750,
-      "ldk1": 54000,
-      "ldk2": 60250,
-      "ldk3": 70000
+      "ldk1": 55000,
+      "ldk2": 62750,
+      "ldk3": 75000
     }
   },
   {
@@ -10691,10 +10667,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "交野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/katano-city/",
     "rents": {
-      "r1": 59000,
-      "k1": 56750,
-      "ldk1": 62000,
-      "ldk2": 74000,
+      "r1": 61500,
+      "k1": 58250,
+      "ldk1": 63500,
+      "ldk2": 70000,
       "ldk3": 82000
     }
   },
@@ -10703,11 +10679,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大阪狭山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/osakasayama-city/",
     "rents": {
-      "r1": 41928,
-      "k1": 45687,
-      "ldk1": 56596,
-      "ldk2": 64288,
-      "ldk3": 77694
+      "r1": 41769,
+      "k1": 44890,
+      "ldk1": 55752,
+      "ldk2": 64443,
+      "ldk3": 77901
     }
   },
   {
@@ -10717,9 +10693,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 40000,
       "k1": 44000,
-      "ldk1": 50125,
-      "ldk2": 52500,
-      "ldk3": 62750
+      "ldk1": 43000,
+      "ldk2": 51500,
+      "ldk3": 58750
     }
   },
   {
@@ -10727,11 +10703,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三島郡島本町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/mishima_shimamoto-city/",
     "rents": {
-      "r1": null,
-      "k1": 53000,
-      "ldk1": 87000,
-      "ldk2": 116000,
-      "ldk3": 72500
+      "r1": 61000,
+      "k1": 57000,
+      "ldk1": 78000,
+      "ldk2": 120000,
+      "ldk3": 80100
     }
   },
   {
@@ -10740,9 +10716,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/semboku_tadaoka-city/",
     "rents": {
       "r1": null,
-      "k1": 48000,
-      "ldk1": 62000,
-      "ldk2": 59000,
+      "k1": 56000,
+      "ldk1": 62500,
+      "ldk2": 58000,
       "ldk3": 60000
     }
   },
@@ -10751,11 +10727,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "泉南郡熊取町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sennan_kumatori-city/",
     "rents": {
-      "r1": 27000,
-      "k1": 47500,
-      "ldk1": 65000,
-      "ldk2": 74500,
-      "ldk3": 70000
+      "r1": 37363,
+      "k1": 41947,
+      "ldk1": 57900,
+      "ldk2": 59613,
+      "ldk3": 74270
     }
   },
   {
@@ -10764,9 +10740,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/osaka/sennan_tajiri-city/",
     "rents": {
       "r1": null,
-      "k1": 65000,
+      "k1": 67500,
       "ldk1": null,
-      "ldk2": 73500,
+      "ldk2": 75000,
       "ldk3": null
     }
   },
@@ -10778,7 +10754,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 49000,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -10789,8 +10765,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 30000,
-      "ldk1": 51500,
-      "ldk2": 49000,
+      "ldk1": 35000,
+      "ldk2": 47000,
       "ldk3": null
     }
   },
@@ -10811,11 +10787,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐賀市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/saga-city/",
     "rents": {
-      "r1": 39448,
-      "k1": 39179,
-      "ldk1": 49374,
-      "ldk2": 59164,
-      "ldk3": 71024
+      "r1": 39708,
+      "k1": 39390,
+      "ldk1": 49155,
+      "ldk2": 58375,
+      "ldk3": 69434
     }
   },
   {
@@ -10824,10 +10800,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/karatsu-city/",
     "rents": {
       "r1": 43000,
-      "k1": 43250,
+      "k1": 42250,
       "ldk1": 44000,
-      "ldk2": 50000,
-      "ldk3": 67750
+      "ldk2": 49750,
+      "ldk3": 67125
     }
   },
   {
@@ -10836,9 +10812,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/tosu-city/",
     "rents": {
       "r1": 42000,
-      "k1": 43000,
-      "ldk1": 47000,
-      "ldk2": 54750,
+      "k1": 44000,
+      "ldk1": 48000,
+      "ldk2": 54000,
       "ldk3": 70000
     }
   },
@@ -10849,7 +10825,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 42500,
+      "ldk1": 45000,
       "ldk2": 50000,
       "ldk3": null
     }
@@ -10859,11 +10835,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊万里市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/imari-city/",
     "rents": {
-      "r1": 43500,
+      "r1": 45000,
       "k1": 46000,
-      "ldk1": 43000,
-      "ldk2": 48850,
-      "ldk3": 65000
+      "ldk1": 41500,
+      "ldk2": 48750,
+      "ldk3": 70000
     }
   },
   {
@@ -10872,10 +10848,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/takeo-city/",
     "rents": {
       "r1": 47000,
-      "k1": 46250,
-      "ldk1": 46500,
-      "ldk2": 49000,
-      "ldk3": 68000
+      "k1": 47750,
+      "ldk1": 46000,
+      "ldk2": 47000,
+      "ldk3": 66000
     }
   },
   {
@@ -10885,8 +10861,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 45500,
-      "ldk1": 47000,
-      "ldk2": 45000,
+      "ldk1": 47125,
+      "ldk2": 48500,
       "ldk3": 45000
     }
   },
@@ -10896,10 +10872,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/ogi-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
+      "k1": 41000,
       "ldk1": 42000,
       "ldk2": 48000,
-      "ldk3": 65000
+      "ldk3": 64500
     }
   },
   {
@@ -10908,10 +10884,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/ureshino-city/",
     "rents": {
       "r1": null,
-      "k1": 36500,
+      "k1": 35000,
       "ldk1": 48500,
-      "ldk2": 53000,
-      "ldk3": 75000
+      "ldk2": 46500,
+      "ldk3": null
     }
   },
   {
@@ -10920,10 +10896,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/kanzaki-city/",
     "rents": {
       "r1": null,
-      "k1": 39000,
-      "ldk1": 46250,
-      "ldk2": 47750,
-      "ldk3": 61500
+      "k1": 37000,
+      "ldk1": 45500,
+      "ldk2": 48500,
+      "ldk3": null
     }
   },
   {
@@ -10932,8 +10908,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/kanzaki_yoshinogari-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
-      "ldk1": 47750,
+      "k1": 39500,
+      "ldk1": 47250,
       "ldk2": 47500,
       "ldk3": 52000
     }
@@ -10944,9 +10920,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/miyaki_kiyama-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
-      "ldk1": 46750,
-      "ldk2": 61500,
+      "k1": 45500,
+      "ldk1": 46500,
+      "ldk2": 59000,
       "ldk3": null
     }
   },
@@ -10957,9 +10933,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 46750,
+      "ldk1": 50000,
       "ldk2": 49250,
-      "ldk3": 66500
+      "ldk3": 62500
     }
   },
   {
@@ -10968,10 +10944,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/miyaki_miyaki-city/",
     "rents": {
       "r1": null,
-      "k1": 32250,
-      "ldk1": 45500,
-      "ldk2": 51000,
-      "ldk3": 74500
+      "k1": 33526,
+      "ldk1": 45407,
+      "ldk2": 53751,
+      "ldk3": 64645
     }
   },
   {
@@ -10982,19 +10958,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 48500,
-      "ldk2": 53000,
-      "ldk3": null
-    }
-  },
-  {
-    "region": "佐賀",
-    "district": "杵島郡大町町",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/saga/kishima_omachi-city/",
-    "rents": {
-      "r1": null,
-      "k1": null,
-      "ldk1": 48500,
-      "ldk2": null,
+      "ldk2": 51000,
       "ldk3": null
     }
   },
@@ -11006,7 +10970,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 49250,
-      "ldk2": 52000,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -11018,7 +10982,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 52000,
-      "ldk2": 53750,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -11027,11 +10991,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama-city/",
     "rents": {
-      "r1": 56000,
-      "k1": 68000,
+      "r1": 57000,
+      "k1": 68375,
       "ldk1": 65000,
-      "ldk2": 76000,
-      "ldk3": 100000
+      "ldk2": 77000,
+      "ldk3": 99000
     }
   },
   {
@@ -11039,11 +11003,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市西區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_nishi-city/",
     "rents": {
-      "r1": 45000,
+      "r1": 47000,
       "k1": 62000,
-      "ldk1": 57500,
+      "ldk1": 58500,
       "ldk2": 64000,
-      "ldk3": 149500
+      "ldk3": 149000
     }
   },
   {
@@ -11051,11 +11015,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_kita-city/",
     "rents": {
-      "r1": 56512,
-      "k1": 63149,
-      "ldk1": 82206,
-      "ldk2": 101228,
-      "ldk3": 124671
+      "r1": 60137,
+      "k1": 63925,
+      "ldk1": 83566,
+      "ldk2": 103482,
+      "ldk3": 127009
     }
   },
   {
@@ -11063,11 +11027,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市大宮區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_omiya-city/",
     "rents": {
-      "r1": 69653,
-      "k1": 75502,
-      "ldk1": 100418,
-      "ldk2": 123209,
-      "ldk3": 153929
+      "r1": 69400,
+      "k1": 75118,
+      "ldk1": 98108,
+      "ldk2": 121876,
+      "ldk3": 164863
     }
   },
   {
@@ -11075,11 +11039,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市見沼區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_minuma-city/",
     "rents": {
-      "r1": 50500,
-      "k1": 63250,
+      "r1": 52000,
+      "k1": 63500,
       "ldk1": 57000,
-      "ldk2": 79000,
-      "ldk3": 114250
+      "ldk2": 70000,
+      "ldk3": 113500
     }
   },
   {
@@ -11087,11 +11051,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_chuo-city/",
     "rents": {
-      "r1": 66084,
-      "k1": 71929,
-      "ldk1": 94035,
-      "ldk2": 116340,
-      "ldk3": 141407
+      "r1": 66171,
+      "k1": 72272,
+      "ldk1": 95568,
+      "ldk2": 115774,
+      "ldk3": 137322
     }
   },
   {
@@ -11099,11 +11063,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市櫻區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_sakura-city/",
     "rents": {
-      "r1": 52402,
-      "k1": 60753,
-      "ldk1": 78441,
-      "ldk2": 95910,
-      "ldk3": 138581
+      "r1": 52247,
+      "k1": 62162,
+      "ldk1": 80658,
+      "ldk2": 97834,
+      "ldk3": 127485
     }
   },
   {
@@ -11111,11 +11075,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市浦和區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_urawa-city/",
     "rents": {
-      "r1": 66520,
-      "k1": 77000,
-      "ldk1": 105225,
-      "ldk2": 133183,
-      "ldk3": 165526
+      "r1": 65114,
+      "k1": 75945,
+      "ldk1": 105258,
+      "ldk2": 132740,
+      "ldk3": 168706
     }
   },
   {
@@ -11123,11 +11087,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市南區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_minami-city/",
     "rents": {
-      "r1": 59124,
-      "k1": 69706,
-      "ldk1": 96245,
-      "ldk2": 116248,
-      "ldk3": 135521
+      "r1": 59307,
+      "k1": 69118,
+      "ldk1": 95487,
+      "ldk2": 117571,
+      "ldk3": 135916
     }
   },
   {
@@ -11135,11 +11099,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市綠區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_midori-city/",
     "rents": {
-      "r1": 58990,
-      "k1": 65621,
-      "ldk1": 88264,
-      "ldk2": 103493,
-      "ldk3": 126298
+      "r1": 51000,
+      "k1": 68250,
+      "ldk1": 65000,
+      "ldk2": 97500,
+      "ldk3": 129000
     }
   },
   {
@@ -11147,11 +11111,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "埼玉市岩槻區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/saitama_iwatsuki-city/",
     "rents": {
-      "r1": 52000,
-      "k1": 56750,
-      "ldk1": 53000,
-      "ldk2": 71000,
-      "ldk3": 122500
+      "r1": 50101,
+      "k1": 56022,
+      "ldk1": 70089,
+      "ldk2": 84566,
+      "ldk3": 109912
     }
   },
   {
@@ -11159,11 +11123,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "川越市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kawagoe-city/",
     "rents": {
-      "r1": 39000,
-      "k1": 50500,
-      "ldk1": 57000,
-      "ldk2": 66500,
-      "ldk3": 101250
+      "r1": 39500,
+      "k1": 50250,
+      "ldk1": 56000,
+      "ldk2": 68000,
+      "ldk3": 104000
     }
   },
   {
@@ -11171,11 +11135,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "熊谷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kumagaya-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 47750,
+      "r1": 40000,
+      "k1": 47000,
       "ldk1": 47000,
-      "ldk2": 60500,
-      "ldk3": 73125
+      "ldk2": 59500,
+      "ldk3": 74000
     }
   },
   {
@@ -11184,10 +11148,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kawaguchi-city/",
     "rents": {
       "r1": 59000,
-      "k1": 70000,
+      "k1": 70900,
       "ldk1": 70000,
-      "ldk2": 84000,
-      "ldk3": 131500
+      "ldk2": 85000,
+      "ldk3": 136750
     }
   },
   {
@@ -11195,11 +11159,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "行田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/gyoda-city/",
     "rents": {
-      "r1": 34000,
-      "k1": 45000,
+      "r1": 39000,
+      "k1": 43000,
       "ldk1": 47000,
-      "ldk2": 55500,
-      "ldk3": 68000
+      "ldk2": 55750,
+      "ldk3": 61500
     }
   },
   {
@@ -11209,8 +11173,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 56125,
-      "ldk2": 68000,
+      "ldk1": 55750,
+      "ldk2": 73500,
       "ldk3": null
     }
   },
@@ -11221,9 +11185,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 41000,
       "k1": 57000,
-      "ldk1": 63000,
+      "ldk1": 62000,
       "ldk2": 75000,
-      "ldk3": 102500
+      "ldk3": 100750
     }
   },
   {
@@ -11231,11 +11195,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "飯能市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hanno-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 60000,
-      "ldk1": 53500,
-      "ldk2": 70500,
-      "ldk3": 72500
+      "r1": 44500,
+      "k1": 59500,
+      "ldk1": 51000,
+      "ldk2": 72500,
+      "ldk3": 75000
     }
   },
   {
@@ -11244,10 +11208,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kazo-city/",
     "rents": {
       "r1": 43500,
-      "k1": 49000,
+      "k1": 47500,
       "ldk1": 52750,
       "ldk2": 57000,
-      "ldk3": 83000
+      "ldk3": 74000
     }
   },
   {
@@ -11255,11 +11219,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "本庄市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/honjo-city/",
     "rents": {
-      "r1": 30000,
-      "k1": 43000,
-      "ldk1": 49000,
-      "ldk2": 54250,
-      "ldk3": 79500
+      "r1": 32000,
+      "k1": 44000,
+      "ldk1": 49250,
+      "ldk2": 54000,
+      "ldk3": 70000
     }
   },
   {
@@ -11267,11 +11231,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東松山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/higashimatsuyama-city/",
     "rents": {
-      "r1": 46024,
-      "k1": 46636,
-      "ldk1": 56747,
-      "ldk2": 63515,
-      "ldk3": 79161
+      "r1": 44260,
+      "k1": 44521,
+      "ldk1": 54991,
+      "ldk2": 62337,
+      "ldk3": 72336
     }
   },
   {
@@ -11279,11 +11243,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "春日部市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kasukabe-city/",
     "rents": {
-      "r1": 45591,
-      "k1": 48060,
-      "ldk1": 61613,
-      "ldk2": 72486,
-      "ldk3": 90198
+      "r1": 44875,
+      "k1": 48002,
+      "ldk1": 61200,
+      "ldk2": 72433,
+      "ldk3": 89553
     }
   },
   {
@@ -11292,10 +11256,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/sayama-city/",
     "rents": {
       "r1": 37000,
-      "k1": 54250,
+      "k1": 55750,
       "ldk1": 50000,
       "ldk2": 70000,
-      "ldk3": 102500
+      "ldk3": 120000
     }
   },
   {
@@ -11303,11 +11267,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "羽生市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hanyu-city/",
     "rents": {
-      "r1": 47991,
-      "k1": 51627,
-      "ldk1": 56976,
-      "ldk2": 64679,
-      "ldk3": 75762
+      "r1": null,
+      "k1": 54000,
+      "ldk1": 52000,
+      "ldk2": 55500,
+      "ldk3": 90000
     }
   },
   {
@@ -11315,11 +11279,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鴻巣市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/konosu-city/",
     "rents": {
-      "r1": 56000,
-      "k1": 52000,
-      "ldk1": 56250,
-      "ldk2": 61875,
-      "ldk3": 76750
+      "r1": 55000,
+      "k1": 55000,
+      "ldk1": 56500,
+      "ldk2": 62250,
+      "ldk3": 75700
     }
   },
   {
@@ -11328,10 +11292,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/fukaya-city/",
     "rents": {
       "r1": 46000,
-      "k1": 43000,
-      "ldk1": 45000,
-      "ldk2": 55650,
-      "ldk3": 67500
+      "k1": 40500,
+      "ldk1": 46000,
+      "ldk2": 57000,
+      "ldk3": 69250
     }
   },
   {
@@ -11339,11 +11303,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "上尾市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/ageo-city/",
     "rents": {
-      "r1": 53694,
-      "k1": 57798,
-      "ldk1": 70656,
-      "ldk2": 84485,
-      "ldk3": 103437
+      "r1": 55000,
+      "k1": 58000,
+      "ldk1": 55000,
+      "ldk2": 63000,
+      "ldk3": 125000
     }
   },
   {
@@ -11351,11 +11315,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "草加市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/soka-city/",
     "rents": {
-      "r1": 55703,
-      "k1": 61617,
-      "ldk1": 78920,
-      "ldk2": 91110,
-      "ldk3": 114879
+      "r1": 55861,
+      "k1": 62287,
+      "ldk1": 79588,
+      "ldk2": 92573,
+      "ldk3": 117254
     }
   },
   {
@@ -11363,11 +11327,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "越谷市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/koshigaya-city/",
     "rents": {
-      "r1": 63258,
-      "k1": 65710,
-      "ldk1": 81268,
-      "ldk2": 92908,
-      "ldk3": 116406
+      "r1": 58000,
+      "k1": 57000,
+      "ldk1": 58000,
+      "ldk2": 68000,
+      "ldk3": 106250
     }
   },
   {
@@ -11375,11 +11339,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "蕨市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/warabi-city/",
     "rents": {
-      "r1": 63011,
-      "k1": 71860,
-      "ldk1": 93423,
-      "ldk2": 117887,
-      "ldk3": 127822
+      "r1": 64325,
+      "k1": 71577,
+      "ldk1": 94057,
+      "ldk2": 117862,
+      "ldk3": 123701
     }
   },
   {
@@ -11387,11 +11351,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "戶田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/toda-city/",
     "rents": {
-      "r1": 65837,
-      "k1": 73700,
-      "ldk1": 94138,
-      "ldk2": 112355,
-      "ldk3": 131867
+      "r1": 66857,
+      "k1": 74566,
+      "ldk1": 94432,
+      "ldk2": 113586,
+      "ldk3": 133323
     }
   },
   {
@@ -11399,11 +11363,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "入間市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/iruma-city/",
     "rents": {
-      "r1": 57000,
-      "k1": 52250,
-      "ldk1": 52000,
-      "ldk2": 70000,
-      "ldk3": 100000
+      "r1": 52000,
+      "k1": 50500,
+      "ldk1": 52500,
+      "ldk2": 70750,
+      "ldk3": 85500
     }
   },
   {
@@ -11411,11 +11375,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "朝霞市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/asaka-city/",
     "rents": {
-      "r1": 51526,
-      "k1": 59393,
-      "ldk1": 81591,
-      "ldk2": 97407,
-      "ldk3": 113430
+      "r1": 50441,
+      "k1": 58623,
+      "ldk1": 80807,
+      "ldk2": 96632,
+      "ldk3": 112650
     }
   },
   {
@@ -11423,11 +11387,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "志木市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/shiki-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 62250,
-      "ldk1": 65500,
-      "ldk2": 82000,
-      "ldk3": 128000
+      "r1": 54044,
+      "k1": 60705,
+      "ldk1": 78564,
+      "ldk2": 94517,
+      "ldk3": 122665
     }
   },
   {
@@ -11435,11 +11399,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "和光市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/wako-city/",
     "rents": {
-      "r1": 61012,
-      "k1": 70917,
-      "ldk1": 92274,
-      "ldk2": 112972,
-      "ldk3": 131116
+      "r1": 61737,
+      "k1": 72590,
+      "ldk1": 92368,
+      "ldk2": 115411,
+      "ldk3": 129927
     }
   },
   {
@@ -11447,11 +11411,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新座市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/niiza-city/",
     "rents": {
-      "r1": 48771,
-      "k1": 58905,
-      "ldk1": 78558,
-      "ldk2": 98724,
-      "ldk3": 113751
+      "r1": 49804,
+      "k1": 59801,
+      "ldk1": 79138,
+      "ldk2": 99082,
+      "ldk3": 112990
     }
   },
   {
@@ -11460,10 +11424,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/okegawa-city/",
     "rents": {
       "r1": 62000,
-      "k1": 63500,
-      "ldk1": 51500,
-      "ldk2": 72500,
-      "ldk3": 96100
+      "k1": 65000,
+      "ldk1": 52500,
+      "ldk2": 73000,
+      "ldk3": 93200
     }
   },
   {
@@ -11471,11 +11435,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "久喜市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kuki-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 53500,
+      "r1": 37500,
+      "k1": 51500,
       "ldk1": 50000,
       "ldk2": 57000,
-      "ldk3": 86500
+      "ldk3": 76000
     }
   },
   {
@@ -11483,11 +11447,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北本市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kitamoto-city/",
     "rents": {
-      "r1": 41297,
-      "k1": 48459,
-      "ldk1": 59278,
-      "ldk2": 69525,
-      "ldk3": 81829
+      "r1": 42262,
+      "k1": 48139,
+      "ldk1": 57998,
+      "ldk2": 67492,
+      "ldk3": 80087
     }
   },
   {
@@ -11495,10 +11459,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八潮市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/yashio-city/",
     "rents": {
-      "r1": 60000,
-      "k1": 67000,
-      "ldk1": 60000,
-      "ldk2": 94000,
+      "r1": 65000,
+      "k1": 66500,
+      "ldk1": 59500,
+      "ldk2": 70000,
       "ldk3": 145000
     }
   },
@@ -11507,11 +11471,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "富士見市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/fujimi-city/",
     "rents": {
-      "r1": 51062,
-      "k1": 57691,
-      "ldk1": 76603,
-      "ldk2": 90672,
-      "ldk3": 104576
+      "r1": 52032,
+      "k1": 60344,
+      "ldk1": 76624,
+      "ldk2": 89188,
+      "ldk3": 103414
     }
   },
   {
@@ -11519,11 +11483,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三鄉市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/misato-city/",
     "rents": {
-      "r1": 68000,
-      "k1": 72250,
-      "ldk1": 63500,
-      "ldk2": 69000,
-      "ldk3": 113000
+      "r1": 68500,
+      "k1": 73500,
+      "ldk1": 61000,
+      "ldk2": 66500,
+      "ldk3": 110000
     }
   },
   {
@@ -11531,11 +11495,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "蓮田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hasuda-city/",
     "rents": {
-      "r1": 41000,
-      "k1": 64000,
-      "ldk1": 63000,
-      "ldk2": 71000,
-      "ldk3": 95000
+      "r1": 52000,
+      "k1": 65000,
+      "ldk1": 65500,
+      "ldk2": 69500,
+      "ldk3": 100000
     }
   },
   {
@@ -11543,7 +11507,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "坂戶市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/sakado-city/",
     "rents": {
-      "r1": 30000,
+      "r1": 31000,
       "k1": 44000,
       "ldk1": 49000,
       "ldk2": 68000,
@@ -11557,8 +11521,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 47000,
-      "ldk1": 50750,
-      "ldk2": 56000,
+      "ldk1": 44000,
+      "ldk2": 55500,
       "ldk3": 74500
     }
   },
@@ -11567,11 +11531,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鶴ヶ島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/tsurugashima-city/",
     "rents": {
-      "r1": 32760,
-      "k1": 38981,
-      "ldk1": 52956,
-      "ldk2": 65755,
-      "ldk3": 82448
+      "r1": 33725,
+      "k1": 40210,
+      "ldk1": 53265,
+      "ldk2": 65176,
+      "ldk3": 81377
     }
   },
   {
@@ -11580,9 +11544,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hidaka-city/",
     "rents": {
       "r1": null,
-      "k1": 56000,
-      "ldk1": 57125,
-      "ldk2": 74500,
+      "k1": 59000,
+      "ldk1": 56750,
+      "ldk2": 69000,
       "ldk3": 70000
     }
   },
@@ -11591,11 +11555,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "吉川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/yoshikawa-city/",
     "rents": {
-      "r1": 59500,
-      "k1": 68500,
+      "r1": 62500,
+      "k1": 61500,
       "ldk1": 58000,
-      "ldk2": 87000,
-      "ldk3": 156000
+      "ldk2": 75000,
+      "ldk3": 147000
     }
   },
   {
@@ -11603,11 +11567,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "ふじみ野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/fujimino-city/",
     "rents": {
-      "r1": 41120,
-      "k1": 53109,
-      "ldk1": 74119,
-      "ldk2": 84087,
-      "ldk3": 108172
+      "r1": 41456,
+      "k1": 53218,
+      "ldk1": 72963,
+      "ldk2": 86113,
+      "ldk3": 107110
     }
   },
   {
@@ -11616,10 +11580,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/shiraoka-city/",
     "rents": {
       "r1": 58000,
-      "k1": 60150,
+      "k1": 63500,
       "ldk1": 62000,
-      "ldk2": 68500,
-      "ldk3": 125000
+      "ldk2": 70000,
+      "ldk3": 117500
     }
   },
   {
@@ -11627,10 +11591,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北足立郡伊奈町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kitaadachi_ina-city/",
     "rents": {
-      "r1": 50500,
-      "k1": 57000,
-      "ldk1": 59000,
-      "ldk2": 64000,
+      "r1": 50000,
+      "k1": 60000,
+      "ldk1": 58500,
+      "ldk2": 63500,
       "ldk3": 100000
     }
   },
@@ -11639,11 +11603,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "入間郡三芳町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/iruma_miyoshi-city/",
     "rents": {
-      "r1": 38994,
-      "k1": 46819,
-      "ldk1": 63378,
-      "ldk2": 82150,
-      "ldk3": 98969
+      "r1": 38530,
+      "k1": 45178,
+      "ldk1": 66988,
+      "ldk2": 86318,
+      "ldk3": 84516
     }
   },
   {
@@ -11651,11 +11615,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "入間郡毛呂山町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/iruma_moroyama-city/",
     "rents": {
-      "r1": 25000,
-      "k1": 37500,
-      "ldk1": 44000,
-      "ldk2": 59750,
-      "ldk3": 61500
+      "r1": 29686,
+      "k1": 35494,
+      "ldk1": 45214,
+      "ldk2": 53508,
+      "ldk3": 64764
     }
   },
   {
@@ -11664,8 +11628,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/iruma_ogose-city/",
     "rents": {
       "r1": null,
-      "k1": 39500,
-      "ldk1": 40000,
+      "k1": 38500,
+      "ldk1": 41500,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -11676,9 +11640,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hiki_namegawa-city/",
     "rents": {
       "r1": null,
-      "k1": 59000,
-      "ldk1": 55750,
-      "ldk2": 65000,
+      "k1": 52000,
+      "ldk1": 54250,
+      "ldk2": 64500,
       "ldk3": null
     }
   },
@@ -11688,9 +11652,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hiki_ranzan-city/",
     "rents": {
       "r1": null,
-      "k1": 54000,
-      "ldk1": 53375,
-      "ldk2": 66000,
+      "k1": 53000,
+      "ldk1": 52500,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -11700,9 +11664,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hiki_ogawa-city/",
     "rents": {
       "r1": null,
-      "k1": 56500,
-      "ldk1": 53500,
-      "ldk2": 57000,
+      "k1": 57000,
+      "ldk1": 54000,
+      "ldk2": 58000,
       "ldk3": null
     }
   },
@@ -11714,7 +11678,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 61000,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -11724,9 +11688,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/hiki_yoshimi-city/",
     "rents": {
       "r1": null,
-      "k1": 46500,
-      "ldk1": 70500,
-      "ldk2": null,
+      "k1": 41500,
+      "ldk1": 75000,
+      "ldk2": 70000,
       "ldk3": null
     }
   },
@@ -11736,9 +11700,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kodama_kamisato-city/",
     "rents": {
       "r1": null,
-      "k1": 55500,
-      "ldk1": 44000,
-      "ldk2": 64000,
+      "k1": 43000,
+      "ldk1": 45000,
+      "ldk2": 58000,
       "ldk3": null
     }
   },
@@ -11748,10 +11712,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/osato_yorii-city/",
     "rents": {
       "r1": null,
-      "k1": 62000,
-      "ldk1": 47000,
-      "ldk2": 50000,
-      "ldk3": 47250
+      "k1": 61500,
+      "ldk1": 46750,
+      "ldk2": 51500,
+      "ldk3": 48250
     }
   },
   {
@@ -11759,11 +11723,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "南埼玉郡宮代町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/minamisaitama_miyashiro-city/",
     "rents": {
-      "r1": 36852,
-      "k1": 41862,
-      "ldk1": 50462,
-      "ldk2": 56228,
-      "ldk3": 79136
+      "r1": 30500,
+      "k1": 39000,
+      "ldk1": 47000,
+      "ldk2": 79000,
+      "ldk3": null
     }
   },
   {
@@ -11772,9 +11736,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kitakatsushika_sugito-city/",
     "rents": {
       "r1": null,
-      "k1": 49500,
-      "ldk1": 50250,
-      "ldk2": 63500,
+      "k1": 52000,
+      "ldk1": 53500,
+      "ldk2": 59750,
       "ldk3": null
     }
   },
@@ -11784,10 +11748,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/saitama/kitakatsushika_matsubushi-city/",
     "rents": {
       "r1": null,
-      "k1": 62500,
-      "ldk1": 59750,
-      "ldk2": 66375,
-      "ldk3": null
+      "k1": 65500,
+      "ldk1": 62000,
+      "ldk2": 70250,
+      "ldk3": 146000
     }
   },
   {
@@ -11795,11 +11759,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/otsu-city/",
     "rents": {
-      "r1": 40000,
-      "k1": 55000,
+      "r1": 43000,
+      "k1": 54500,
       "ldk1": 50000,
       "ldk2": 57000,
-      "ldk3": 71250
+      "ldk3": 72000
     }
   },
   {
@@ -11807,11 +11771,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "彦根市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/hikone-city/",
     "rents": {
-      "r1": 46055,
-      "k1": 44883,
-      "ldk1": 53094,
-      "ldk2": 58642,
-      "ldk3": 66799
+      "r1": 46253,
+      "k1": 45087,
+      "ldk1": 53455,
+      "ldk2": 58807,
+      "ldk3": 66909
     }
   },
   {
@@ -11820,10 +11784,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/nagahama-city/",
     "rents": {
       "r1": 44000,
-      "k1": 40000,
-      "ldk1": 47500,
+      "k1": 40650,
+      "ldk1": 47250,
       "ldk2": 48000,
-      "ldk3": 60500
+      "ldk3": 65000
     }
   },
   {
@@ -11831,11 +11795,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "近江八幡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/omihachiman-city/",
     "rents": {
-      "r1": 51250,
-      "k1": 61000,
-      "ldk1": 55500,
+      "r1": 49000,
+      "k1": 52250,
+      "ldk1": 56000,
       "ldk2": 61250,
-      "ldk3": 73000
+      "ldk3": 68250
     }
   },
   {
@@ -11843,11 +11807,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "草津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/kusatsu-city/",
     "rents": {
-      "r1": 57000,
+      "r1": 58000,
       "k1": 54500,
       "ldk1": 53000,
-      "ldk2": 79000,
-      "ldk3": 97000
+      "ldk2": 79500,
+      "ldk3": 105000
     }
   },
   {
@@ -11856,10 +11820,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/moriyama-city/",
     "rents": {
       "r1": 55000,
-      "k1": 54000,
-      "ldk1": 57000,
-      "ldk2": 60000,
-      "ldk3": 85500
+      "k1": 53250,
+      "ldk1": 56000,
+      "ldk2": 66000,
+      "ldk3": 89000
     }
   },
   {
@@ -11868,10 +11832,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/ritto-city/",
     "rents": {
       "r1": null,
-      "k1": 56500,
-      "ldk1": 61000,
+      "k1": 49500,
+      "ldk1": 60500,
       "ldk2": 64000,
-      "ldk3": 81000
+      "ldk3": 85000
     }
   },
   {
@@ -11879,11 +11843,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "甲賀市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/koka-city/",
     "rents": {
-      "r1": 49900,
-      "k1": 44500,
+      "r1": 49400,
+      "k1": 47000,
       "ldk1": 49000,
-      "ldk2": 55000,
-      "ldk3": 74500
+      "ldk2": 54350,
+      "ldk3": 71500
     }
   },
   {
@@ -11891,10 +11855,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "野洲市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/yasu-city/",
     "rents": {
-      "r1": 60000,
-      "k1": 65000,
+      "r1": 60500,
+      "k1": 62000,
       "ldk1": 52000,
-      "ldk2": 62750,
+      "ldk2": 63500,
       "ldk3": 60000
     }
   },
@@ -11904,10 +11868,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/konan-city/",
     "rents": {
       "r1": 45500,
-      "k1": 54500,
-      "ldk1": 48500,
-      "ldk2": 58500,
-      "ldk3": 64400
+      "k1": 55000,
+      "ldk1": 49000,
+      "ldk2": 58250,
+      "ldk3": 62000
     }
   },
   {
@@ -11916,8 +11880,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/takashima-city/",
     "rents": {
       "r1": null,
-      "k1": 50750,
-      "ldk1": 48000,
+      "k1": 55000,
+      "ldk1": 49000,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -11927,11 +11891,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東近江市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/higashiomi-city/",
     "rents": {
-      "r1": 36500,
-      "k1": 43500,
-      "ldk1": 47000,
-      "ldk2": 54500,
-      "ldk3": 80000
+      "r1": 39500,
+      "k1": 43250,
+      "ldk1": 52250,
+      "ldk2": 54875,
+      "ldk3": 73500
     }
   },
   {
@@ -11940,9 +11904,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/maibara-city/",
     "rents": {
       "r1": 44000,
-      "k1": 46000,
-      "ldk1": 53875,
-      "ldk2": 50000,
+      "k1": 45000,
+      "ldk1": 53250,
+      "ldk2": 51500,
       "ldk3": null
     }
   },
@@ -11952,8 +11916,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/gamo_hino-city/",
     "rents": {
       "r1": null,
-      "k1": 40000,
-      "ldk1": 49000,
+      "k1": 39000,
+      "ldk1": 50000,
       "ldk2": 54000,
       "ldk3": null
     }
@@ -11963,11 +11927,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "愛知郡愛荘町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shiga/echi_aisho-city/",
     "rents": {
-      "r1": null,
-      "k1": 40000,
-      "ldk1": 48000,
-      "ldk2": 48500,
-      "ldk3": null
+      "r1": 40662,
+      "k1": 42081,
+      "ldk1": 47982,
+      "ldk2": 53868,
+      "ldk3": 77532
     }
   },
   {
@@ -11978,7 +11942,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 39000,
       "ldk1": null,
-      "ldk2": 56500,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -11987,10 +11951,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "松江市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shimane/matsue-city/",
     "rents": {
-      "r1": 58500,
-      "k1": 51000,
-      "ldk1": 55000,
-      "ldk2": 73000,
+      "r1": 57000,
+      "k1": 49000,
+      "ldk1": 57000,
+      "ldk2": 66750,
       "ldk3": 78000
     }
   },
@@ -12000,7 +11964,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shimane/hamada-city/",
     "rents": {
       "r1": null,
-      "k1": 67000,
+      "k1": 62000,
       "ldk1": null,
       "ldk2": null,
       "ldk3": null
@@ -12012,10 +11976,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shimane/izumo-city/",
     "rents": {
       "r1": null,
-      "k1": 60778,
-      "ldk1": 60022,
-      "ldk2": 59278,
-      "ldk3": 58818
+      "k1": 62000,
+      "ldk1": null,
+      "ldk2": 61000,
+      "ldk3": null
     }
   },
   {
@@ -12035,11 +11999,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "靜岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/shizuoka-city/",
     "rents": {
-      "r1": 48634,
-      "k1": 49055,
-      "ldk1": 62864,
-      "ldk2": 74392,
-      "ldk3": 88085
+      "r1": 47882,
+      "k1": 48883,
+      "ldk1": 62720,
+      "ldk2": 74220,
+      "ldk3": 87447
     }
   },
   {
@@ -12047,11 +12011,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "靜岡市葵區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/shizuoka_aoi-city/",
     "rents": {
-      "r1": 50638,
-      "k1": 51929,
-      "ldk1": 66940,
-      "ldk2": 82269,
-      "ldk3": 113508
+      "r1": 50508,
+      "k1": 51828,
+      "ldk1": 67280,
+      "ldk2": 81637,
+      "ldk3": 111233
     }
   },
   {
@@ -12059,11 +12023,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "靜岡市駿河區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/shizuoka_suruga-city/",
     "rents": {
-      "r1": 49965,
-      "k1": 50629,
-      "ldk1": 64590,
-      "ldk2": 75912,
-      "ldk3": 88744
+      "r1": 49756,
+      "k1": 50571,
+      "ldk1": 64789,
+      "ldk2": 76810,
+      "ldk3": 89757
     }
   },
   {
@@ -12075,7 +12039,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "k1": 45000,
       "ldk1": 50000,
       "ldk2": 55000,
-      "ldk3": 79000
+      "ldk3": 76500
     }
   },
   {
@@ -12083,11 +12047,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "濱松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/hamamatsu-city/",
     "rents": {
-      "r1": 40004,
-      "k1": 39747,
-      "ldk1": 53242,
-      "ldk2": 63665,
-      "ldk3": 80508
+      "r1": 40214,
+      "k1": 39797,
+      "ldk1": 53234,
+      "ldk2": 63800,
+      "ldk3": 80443
     }
   },
   {
@@ -12095,11 +12059,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "濱松市中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/hamamatsu_chuo-city/",
     "rents": {
-      "r1": 39445,
-      "k1": 39441,
-      "ldk1": 53381,
-      "ldk2": 64656,
-      "ldk3": 82119
+      "r1": 39752,
+      "k1": 39423,
+      "ldk1": 53222,
+      "ldk2": 64806,
+      "ldk3": 81667
     }
   },
   {
@@ -12110,8 +12074,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": 45000,
       "k1": 41500,
       "ldk1": 45000,
-      "ldk2": 55000,
-      "ldk3": 62000
+      "ldk2": 54500,
+      "ldk3": 70000
     }
   },
   {
@@ -12121,8 +12085,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": null,
-      "ldk2": 57000,
+      "ldk1": 53000,
+      "ldk2": 56000,
       "ldk3": null
     }
   },
@@ -12131,11 +12095,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "沼津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/numazu-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 43500,
-      "ldk1": 46000,
+      "r1": 37000,
+      "k1": 43000,
+      "ldk1": 45500,
       "ldk2": 55000,
-      "ldk3": 63750
+      "ldk3": 71000
     }
   },
   {
@@ -12143,10 +12107,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "熱海市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/atami-city/",
     "rents": {
-      "r1": 72000,
-      "k1": 60000,
-      "ldk1": 61500,
-      "ldk2": 62500,
+      "r1": 73000,
+      "k1": 60750,
+      "ldk1": 60000,
+      "ldk2": 65000,
       "ldk3": 123000
     }
   },
@@ -12155,7 +12119,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/mishima-city/",
     "rents": {
-      "r1": 52000,
+      "r1": 51000,
       "k1": 47500,
       "ldk1": 50000,
       "ldk2": 58000,
@@ -12167,7 +12131,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "富士宮市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/fujinomiya-city/",
     "rents": {
-      "r1": 44250,
+      "r1": 44000,
       "k1": 43500,
       "ldk1": 43000,
       "ldk2": 50000,
@@ -12179,11 +12143,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊東市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/ito-city/",
     "rents": {
-      "r1": 43500,
-      "k1": 39000,
+      "r1": 45000,
+      "k1": 40000,
       "ldk1": 50000,
-      "ldk2": 55000,
-      "ldk3": 73000
+      "ldk2": 54900,
+      "ldk3": 65000
     }
   },
   {
@@ -12191,11 +12155,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "島田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/shimada-city/",
     "rents": {
-      "r1": 32900,
-      "k1": 47250,
-      "ldk1": 45000,
+      "r1": 39000,
+      "k1": 47500,
+      "ldk1": 43000,
       "ldk2": 56500,
-      "ldk3": 62000
+      "ldk3": 63000
     }
   },
   {
@@ -12203,11 +12167,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "富士市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/fuji-city/",
     "rents": {
-      "r1": 42000,
+      "r1": 42250,
       "k1": 43000,
       "ldk1": 45000,
       "ldk2": 50000,
-      "ldk3": 62500
+      "ldk3": 61000
     }
   },
   {
@@ -12215,11 +12179,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "磐田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/iwata-city/",
     "rents": {
-      "r1": 36151,
-      "k1": 34497,
-      "ldk1": 47256,
-      "ldk2": 56984,
-      "ldk3": 67038
+      "r1": 38031,
+      "k1": 34666,
+      "ldk1": 47645,
+      "ldk2": 57164,
+      "ldk3": 68613
     }
   },
   {
@@ -12227,11 +12191,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "焼津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/yaizu-city/",
     "rents": {
-      "r1": 38000,
-      "k1": 41500,
+      "r1": 37000,
+      "k1": 42000,
       "ldk1": 45000,
       "ldk2": 54500,
-      "ldk3": 63000
+      "ldk3": 62750
     }
   },
   {
@@ -12240,7 +12204,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/kakegawa-city/",
     "rents": {
       "r1": 42000,
-      "k1": 34750,
+      "k1": 35750,
       "ldk1": 38000,
       "ldk2": 52250,
       "ldk3": 75000
@@ -12251,11 +12215,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "藤枝市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/fujieda-city/",
     "rents": {
-      "r1": 41000,
+      "r1": 40000,
       "k1": 47000,
       "ldk1": 47000,
-      "ldk2": 60750,
-      "ldk3": 73500
+      "ldk2": 59375,
+      "ldk3": 74000
     }
   },
   {
@@ -12263,11 +12227,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "御殿場市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/gotemba-city/",
     "rents": {
-      "r1": 62000,
-      "k1": 53000,
-      "ldk1": 50000,
+      "r1": 52000,
+      "k1": 60000,
+      "ldk1": 49500,
       "ldk2": 60000,
-      "ldk3": 83500
+      "ldk3": 77000
     }
   },
   {
@@ -12276,10 +12240,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/fukuroi-city/",
     "rents": {
       "r1": 45000,
-      "k1": 37000,
+      "k1": 36500,
       "ldk1": 40000,
-      "ldk2": 53500,
-      "ldk3": 67500
+      "ldk2": 51500,
+      "ldk3": 69000
     }
   },
   {
@@ -12289,8 +12253,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 50500,
-      "ldk2": 60000,
+      "ldk1": 51500,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -12299,11 +12263,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "裾野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/susono-city/",
     "rents": {
-      "r1": 42000,
+      "r1": 44000,
       "k1": 49000,
-      "ldk1": 49000,
-      "ldk2": 61500,
-      "ldk3": 72000
+      "ldk1": 50000,
+      "ldk2": 62000,
+      "ldk3": 73000
     }
   },
   {
@@ -12311,9 +12275,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "湖西市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/kosai-city/",
     "rents": {
-      "r1": 37000,
+      "r1": 38000,
       "k1": 42000,
-      "ldk1": 42000,
+      "ldk1": 48000,
       "ldk2": 52500,
       "ldk3": 63000
     }
@@ -12325,7 +12289,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 56000,
+      "ldk1": 54000,
       "ldk2": 64000,
       "ldk3": null
     }
@@ -12336,7 +12300,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/omaezaki-city/",
     "rents": {
       "r1": null,
-      "k1": 30500,
+      "k1": 32500,
       "ldk1": 40000,
       "ldk2": 50000,
       "ldk3": 45000
@@ -12347,11 +12311,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "菊川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/kikugawa-city/",
     "rents": {
-      "r1": 40246,
-      "k1": 36065,
-      "ldk1": 47066,
-      "ldk2": 54238,
-      "ldk3": 65257
+      "r1": 41208,
+      "k1": 37076,
+      "ldk1": 47070,
+      "ldk2": 54572,
+      "ldk3": 64113
     }
   },
   {
@@ -12359,11 +12323,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "伊豆の国市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/izunokuni-city/",
     "rents": {
-      "r1": null,
-      "k1": 47000,
-      "ldk1": 54500,
+      "r1": 33500,
+      "k1": 48000,
+      "ldk1": 54000,
       "ldk2": 60500,
-      "ldk3": null
+      "ldk3": 70000
     }
   },
   {
@@ -12372,9 +12336,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/makinohara-city/",
     "rents": {
       "r1": null,
-      "k1": 30305,
-      "ldk1": 41817,
-      "ldk2": 46843,
+      "k1": 30321,
+      "ldk1": 41828,
+      "ldk2": 46851,
       "ldk3": null
     }
   },
@@ -12385,7 +12349,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 55000,
+      "ldk1": 52500,
       "ldk2": null,
       "ldk3": null
     }
@@ -12395,11 +12359,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "田方郡函南町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/tagata_kannami-city/",
     "rents": {
-      "r1": 44000,
-      "k1": 48000,
-      "ldk1": 56375,
-      "ldk2": 60000,
-      "ldk3": 74000
+      "r1": 43293,
+      "k1": 43886,
+      "ldk1": 53819,
+      "ldk2": 61379,
+      "ldk3": 73462
     }
   },
   {
@@ -12407,10 +12371,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "駿東郡清水町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/sunto_shimizu-city/",
     "rents": {
-      "r1": 45250,
-      "k1": 51000,
-      "ldk1": 55500,
-      "ldk2": 59000,
+      "r1": 43750,
+      "k1": 50000,
+      "ldk1": 49000,
+      "ldk2": 58500,
       "ldk3": 70000
     }
   },
@@ -12419,8 +12383,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "駿東郡長泉町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/sunto_nagaizumi-city/",
     "rents": {
-      "r1": 53000,
-      "k1": 51250,
+      "r1": 54500,
+      "k1": 51000,
       "ldk1": 55000,
       "ldk2": 69250,
       "ldk3": 85000
@@ -12434,7 +12398,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 58000,
       "ldk1": null,
-      "ldk2": 56500,
+      "ldk2": 56750,
       "ldk3": null
     }
   },
@@ -12444,10 +12408,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/shizuoka/haibara_yoshida-city/",
     "rents": {
       "r1": null,
-      "k1": 43000,
-      "ldk1": 46000,
-      "ldk2": 52000,
-      "ldk3": null
+      "k1": 40750,
+      "ldk1": 45750,
+      "ldk2": 51500,
+      "ldk3": 75000
     }
   },
   {
@@ -12457,7 +12421,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 33000,
-      "ldk1": 35000,
+      "ldk1": 34000,
       "ldk2": 58000,
       "ldk3": null
     }
@@ -12467,11 +12431,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宇都宮市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/utsunomiya-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 44000,
+      "r1": 49000,
+      "k1": 44500,
       "ldk1": 45000,
       "ldk2": 52000,
-      "ldk3": 87000
+      "ldk3": 84250
     }
   },
   {
@@ -12479,11 +12443,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "足利市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/ashikaga-city/",
     "rents": {
-      "r1": 34552,
-      "k1": 35108,
-      "ldk1": 42924,
-      "ldk2": 49369,
-      "ldk3": 62656
+      "r1": 34000,
+      "k1": 34000,
+      "ldk1": 40000,
+      "ldk2": 45000,
+      "ldk3": 58500
     }
   },
   {
@@ -12491,11 +12455,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "栃木市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/tochigi-city/",
     "rents": {
-      "r1": 41500,
-      "k1": 44000,
+      "r1": 43000,
+      "k1": 45500,
       "ldk1": 40000,
       "ldk2": 54500,
-      "ldk3": 66000
+      "ldk3": 63000
     }
   },
   {
@@ -12503,11 +12467,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "佐野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/sano-city/",
     "rents": {
-      "r1": 33500,
-      "k1": 37750,
+      "r1": 35500,
+      "k1": 37500,
       "ldk1": 38000,
       "ldk2": 45000,
-      "ldk3": 70000
+      "ldk3": 65000
     }
   },
   {
@@ -12516,9 +12480,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/kanuma-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
+      "k1": 54000,
       "ldk1": 42000,
-      "ldk2": 51000,
+      "ldk2": 49750,
       "ldk3": null
     }
   },
@@ -12527,10 +12491,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "日光市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/nikko-city/",
     "rents": {
-      "r1": 45000,
-      "k1": 33000,
-      "ldk1": 42000,
-      "ldk2": 48750,
+      "r1": null,
+      "k1": 30000,
+      "ldk1": 43000,
+      "ldk2": 49250,
       "ldk3": null
     }
   },
@@ -12539,11 +12503,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/oyama-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 45750,
+      "r1": 44000,
+      "k1": 46250,
       "ldk1": 45000,
-      "ldk2": 54500,
-      "ldk3": 78000
+      "ldk2": 54000,
+      "ldk3": 76000
     }
   },
   {
@@ -12552,9 +12516,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/moka-city/",
     "rents": {
       "r1": null,
-      "k1": 52000,
-      "ldk1": 48125,
-      "ldk2": 54000,
+      "k1": 49500,
+      "ldk1": 46000,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -12564,10 +12528,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/otawara-city/",
     "rents": {
       "r1": 35000,
-      "k1": 33000,
-      "ldk1": 44250,
-      "ldk2": 53750,
-      "ldk3": 78000
+      "k1": 30000,
+      "ldk1": 45500,
+      "ldk2": 55000,
+      "ldk3": 80000
     }
   },
   {
@@ -12576,9 +12540,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/yaita-city/",
     "rents": {
       "r1": null,
-      "k1": 43000,
-      "ldk1": 38000,
-      "ldk2": null,
+      "k1": 44000,
+      "ldk1": 39000,
+      "ldk2": 56500,
       "ldk3": null
     }
   },
@@ -12587,11 +12551,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "那須鹽原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/nasushiobara-city/",
     "rents": {
-      "r1": 41000,
-      "k1": 54000,
-      "ldk1": 35500,
-      "ldk2": 52250,
-      "ldk3": 89000
+      "r1": 43000,
+      "k1": 41000,
+      "ldk1": 37000,
+      "ldk2": 53500,
+      "ldk3": 78000
     }
   },
   {
@@ -12601,7 +12565,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 43000,
-      "ldk1": 52000,
+      "ldk1": 46750,
       "ldk2": 62500,
       "ldk3": null
     }
@@ -12614,8 +12578,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 46000,
       "ldk1": 55000,
-      "ldk2": 60500,
-      "ldk3": 123000
+      "ldk2": 61500,
+      "ldk3": 121500
     }
   },
   {
@@ -12624,10 +12588,22 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/kawachi_kaminokawa-city/",
     "rents": {
       "r1": null,
-      "k1": 43239,
-      "ldk1": 51033,
-      "ldk2": 55858,
-      "ldk3": 67664
+      "k1": 44393,
+      "ldk1": 50834,
+      "ldk2": 54950,
+      "ldk3": 75125
+    }
+  },
+  {
+    "region": "栃木",
+    "district": "芳賀郡益子町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/haga_mashiko-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": 47000,
+      "ldk2": null,
+      "ldk3": null
     }
   },
   {
@@ -12638,8 +12614,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 44000,
       "ldk1": 42500,
-      "ldk2": 57250,
-      "ldk3": 132000
+      "ldk2": 56500,
+      "ldk3": 136000
     }
   },
   {
@@ -12648,9 +12624,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/shimotsuga_nogi-city/",
     "rents": {
       "r1": null,
-      "k1": 47500,
-      "ldk1": 40000,
-      "ldk2": 53500,
+      "k1": 49000,
+      "ldk1": 47000,
+      "ldk2": 59000,
       "ldk3": null
     }
   },
@@ -12660,10 +12636,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tochigi/shioya_takanezawa-city/",
     "rents": {
       "r1": null,
-      "k1": 46751,
-      "ldk1": 51469,
-      "ldk2": 55877,
-      "ldk3": 62523
+      "k1": 47500,
+      "ldk1": 47500,
+      "ldk2": 63000,
+      "ldk3": null
     }
   },
   {
@@ -12671,11 +12647,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "德島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/tokushima-city/",
     "rents": {
-      "r1": 35650,
-      "k1": 36565,
-      "ldk1": 48562,
-      "ldk2": 55673,
-      "ldk3": 66361
+      "r1": 35560,
+      "k1": 36467,
+      "ldk1": 48634,
+      "ldk2": 55835,
+      "ldk3": 67253
     }
   },
   {
@@ -12683,11 +12659,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鳴門市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/naruto-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 30250,
-      "ldk1": 39500,
-      "ldk2": 44500,
-      "ldk3": 58000
+      "r1": 30000,
+      "k1": 30500,
+      "ldk1": 38500,
+      "ldk2": 44250,
+      "ldk3": 60000
     }
   },
   {
@@ -12695,11 +12671,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小松島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/komatsushima-city/",
     "rents": {
-      "r1": 38634,
-      "k1": 36897,
-      "ldk1": 43606,
-      "ldk2": 49867,
-      "ldk3": 52570
+      "r1": 37000,
+      "k1": 35000,
+      "ldk1": 40000,
+      "ldk2": 47500,
+      "ldk3": 57500
     }
   },
   {
@@ -12707,8 +12683,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "阿南市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/anan-city/",
     "rents": {
-      "r1": 40250,
-      "k1": 36750,
+      "r1": 41000,
+      "k1": 37250,
       "ldk1": 42000,
       "ldk2": 48000,
       "ldk3": 59000
@@ -12721,8 +12697,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 32500,
-      "ldk1": 43500,
-      "ldk2": 43725,
+      "ldk1": 44000,
+      "ldk2": 43600,
       "ldk3": null
     }
   },
@@ -12732,7 +12708,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/awa-city/",
     "rents": {
       "r1": null,
-      "k1": 32000,
+      "k1": null,
       "ldk1": 45000,
       "ldk2": 47000,
       "ldk3": null
@@ -12744,7 +12720,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/mima-city/",
     "rents": {
       "r1": null,
-      "k1": null,
+      "k1": 48000,
       "ldk1": 44500,
       "ldk2": 50000,
       "ldk3": null
@@ -12756,9 +12732,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/miyoshi-city/",
     "rents": {
       "r1": null,
-      "k1": 35000,
-      "ldk1": 44875,
-      "ldk2": 51500,
+      "k1": null,
+      "ldk1": 45750,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -12767,11 +12743,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "名西郡石井町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/myozai_ishii-city/",
     "rents": {
-      "r1": 40000,
-      "k1": 34500,
-      "ldk1": 44000,
-      "ldk2": 52000,
-      "ldk3": 70000
+      "r1": 40200,
+      "k1": 37777,
+      "ldk1": 46680,
+      "ldk2": 52217,
+      "ldk3": 77002
     }
   },
   {
@@ -12779,11 +12755,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "板野郡松茂町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/itano_matsushige-city/",
     "rents": {
-      "r1": 31004,
-      "k1": 36397,
-      "ldk1": 46781,
-      "ldk2": 57027,
-      "ldk3": 66475
+      "r1": null,
+      "k1": 34000,
+      "ldk1": 47500,
+      "ldk2": 47250,
+      "ldk3": 76500
     }
   },
   {
@@ -12791,11 +12767,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "板野郡北島町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/itano_kitajima-city/",
     "rents": {
-      "r1": 39058,
-      "k1": 36480,
-      "ldk1": 45977,
-      "ldk2": 51969,
-      "ldk3": 62137
+      "r1": 38928,
+      "k1": 36307,
+      "ldk1": 45447,
+      "ldk2": 52366,
+      "ldk3": 63230
     }
   },
   {
@@ -12804,10 +12780,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/itano_aizumi-city/",
     "rents": {
       "r1": 41000,
-      "k1": 35750,
-      "ldk1": 46000,
+      "k1": 36750,
+      "ldk1": 44750,
       "ldk2": 48500,
-      "ldk3": 54000
+      "ldk3": 55000
     }
   },
   {
@@ -12817,8 +12793,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 29000,
-      "ldk1": 47500,
-      "ldk2": 50000,
+      "ldk1": 49000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -12828,10 +12804,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokushima/itano_kamiita-city/",
     "rents": {
       "r1": null,
-      "k1": 29909,
-      "ldk1": 39831,
-      "ldk2": 46085,
-      "ldk3": 76218
+      "k1": null,
+      "ldk1": 41000,
+      "ldk2": 44500,
+      "ldk3": null
     }
   },
   {
@@ -12842,7 +12818,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 46000,
-      "ldk2": 52500,
+      "ldk2": 51750,
       "ldk3": null
     }
   },
@@ -12851,11 +12827,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "千代田區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/chiyoda-city/",
     "rents": {
-      "r1": 136155,
-      "k1": 151384,
-      "ldk1": 232752,
-      "ldk2": 336281,
-      "ldk3": 517522
+      "r1": 136390,
+      "k1": 151710,
+      "ldk1": 233016,
+      "ldk2": 338033,
+      "ldk3": 516316
     }
   },
   {
@@ -12863,11 +12839,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "中央區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/chuo-city/",
     "rents": {
-      "r1": 134728,
-      "k1": 142125,
-      "ldk1": 206959,
-      "ldk2": 282699,
-      "ldk3": 345512
+      "r1": 134823,
+      "k1": 142872,
+      "ldk1": 208772,
+      "ldk2": 285021,
+      "ldk3": 349682
     }
   },
   {
@@ -12875,11 +12851,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "港區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/minato-city/",
     "rents": {
-      "r1": 142847,
-      "k1": 151719,
-      "ldk1": 268294,
-      "ldk2": 339639,
-      "ldk3": 564888
+      "r1": 141851,
+      "k1": 153746,
+      "ldk1": 275553,
+      "ldk2": 370982,
+      "ldk3": 567803
     }
   },
   {
@@ -12887,11 +12863,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "新宿區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/shinjuku-city/",
     "rents": {
-      "r1": 102839,
-      "k1": 129244,
-      "ldk1": 179704,
-      "ldk2": 235847,
-      "ldk3": 339666
+      "r1": 102293,
+      "k1": 129717,
+      "ldk1": 180674,
+      "ldk2": 238607,
+      "ldk3": 340142
     }
   },
   {
@@ -12899,11 +12875,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "文京區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/bunkyo-city/",
     "rents": {
-      "r1": 100981,
-      "k1": 118545,
-      "ldk1": 177813,
-      "ldk2": 224724,
-      "ldk3": 304112
+      "r1": 100284,
+      "k1": 119344,
+      "ldk1": 177764,
+      "ldk2": 225034,
+      "ldk3": 302364
     }
   },
   {
@@ -12911,11 +12887,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "台東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/taito-city/",
     "rents": {
-      "r1": 117745,
-      "k1": 131695,
-      "ldk1": 184463,
-      "ldk2": 235028,
-      "ldk3": 322603
+      "r1": 117499,
+      "k1": 129430,
+      "ldk1": 182606,
+      "ldk2": 221259,
+      "ldk3": 321321
     }
   },
   {
@@ -12923,11 +12899,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "墨田區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/sumida-city/",
     "rents": {
-      "r1": 107448,
-      "k1": 121695,
-      "ldk1": 171306,
-      "ldk2": 203698,
-      "ldk3": 282755
+      "r1": 107019,
+      "k1": 121956,
+      "ldk1": 171365,
+      "ldk2": 207606,
+      "ldk3": 295626
     }
   },
   {
@@ -12935,11 +12911,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "江東區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/koto-city/",
     "rents": {
-      "r1": 115981,
-      "k1": 122444,
-      "ldk1": 166196,
-      "ldk2": 216076,
-      "ldk3": 292619
+      "r1": 113051,
+      "k1": 122671,
+      "ldk1": 166373,
+      "ldk2": 217529,
+      "ldk3": 295604
     }
   },
   {
@@ -12947,11 +12923,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "品川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/shinagawa-city/",
     "rents": {
-      "r1": 99300,
-      "k1": 116396,
-      "ldk1": 174131,
-      "ldk2": 230632,
-      "ldk3": 274164
+      "r1": 99444,
+      "k1": 116733,
+      "ldk1": 173863,
+      "ldk2": 228836,
+      "ldk3": 279862
     }
   },
   {
@@ -12959,11 +12935,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "目黑區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/meguro-city/",
     "rents": {
-      "r1": 102645,
-      "k1": 123462,
-      "ldk1": 185505,
-      "ldk2": 247771,
-      "ldk3": 377502
+      "r1": 101245,
+      "k1": 123592,
+      "ldk1": 186161,
+      "ldk2": 241851,
+      "ldk3": 380459
     }
   },
   {
@@ -12971,11 +12947,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "大田區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/ota-city/",
     "rents": {
-      "r1": 81482,
-      "k1": 96047,
-      "ldk1": 136424,
-      "ldk2": 173429,
-      "ldk3": 228318
+      "r1": 81656,
+      "k1": 96725,
+      "ldk1": 136981,
+      "ldk2": 175646,
+      "ldk3": 237663
     }
   },
   {
@@ -12983,11 +12959,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "世田谷區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/setagaya-city/",
     "rents": {
-      "r1": 79167,
-      "k1": 99512,
-      "ldk1": 148138,
-      "ldk2": 189193,
-      "ldk3": 283800
+      "r1": 80207,
+      "k1": 100065,
+      "ldk1": 148560,
+      "ldk2": 189215,
+      "ldk3": 283450
     }
   },
   {
@@ -12995,11 +12971,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "澀谷區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/shibuya-city/",
     "rents": {
-      "r1": 119674,
-      "k1": 140037,
-      "ldk1": 211973,
-      "ldk2": 300165,
-      "ldk3": 520452
+      "r1": 118981,
+      "k1": 139142,
+      "ldk1": 211982,
+      "ldk2": 287527,
+      "ldk3": 519027
     }
   },
   {
@@ -13007,11 +12983,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "中野區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/nakano-city/",
     "rents": {
-      "r1": 76668,
-      "k1": 101479,
-      "ldk1": 145414,
-      "ldk2": 187196,
-      "ldk3": 236714
+      "r1": 77485,
+      "k1": 101500,
+      "ldk1": 145287,
+      "ldk2": 187596,
+      "ldk3": 241785
     }
   },
   {
@@ -13019,11 +12995,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "杉並區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/suginami-city/",
     "rents": {
-      "r1": 72675,
-      "k1": 92553,
-      "ldk1": 137020,
-      "ldk2": 175638,
-      "ldk3": 231638
+      "r1": 72168,
+      "k1": 92132,
+      "ldk1": 136024,
+      "ldk2": 174457,
+      "ldk3": 239944
     }
   },
   {
@@ -13031,11 +13007,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "豐島區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/toshima-city/",
     "rents": {
-      "r1": 87006,
-      "k1": 107733,
-      "ldk1": 149366,
-      "ldk2": 190363,
-      "ldk3": 282937
+      "r1": 87537,
+      "k1": 107816,
+      "ldk1": 147531,
+      "ldk2": 189963,
+      "ldk3": 258060
     }
   },
   {
@@ -13043,11 +13019,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/kita-city/",
     "rents": {
-      "r1": 79129,
-      "k1": 99762,
-      "ldk1": 137976,
-      "ldk2": 177414,
-      "ldk3": 212914
+      "r1": 76889,
+      "k1": 97917,
+      "ldk1": 135768,
+      "ldk2": 174891,
+      "ldk3": 210425
     }
   },
   {
@@ -13055,11 +13031,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "荒川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/arakawa-city/",
     "rents": {
-      "r1": 82986,
-      "k1": 105312,
-      "ldk1": 144070,
-      "ldk2": 177485,
-      "ldk3": 205761
+      "r1": 84322,
+      "k1": 105134,
+      "ldk1": 146598,
+      "ldk2": 177198,
+      "ldk3": 204324
     }
   },
   {
@@ -13067,11 +13043,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "板橋區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/itabashi-city/",
     "rents": {
-      "r1": 74485,
-      "k1": 91513,
-      "ldk1": 121328,
-      "ldk2": 157458,
-      "ldk3": 192145
+      "r1": 74681,
+      "k1": 91442,
+      "ldk1": 119987,
+      "ldk2": 156329,
+      "ldk3": 190844
     }
   },
   {
@@ -13079,11 +13055,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "練馬區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/nerima-city/",
     "rents": {
-      "r1": 69773,
-      "k1": 85250,
-      "ldk1": 118687,
-      "ldk2": 148326,
-      "ldk3": 177374
+      "r1": 69934,
+      "k1": 86025,
+      "ldk1": 119029,
+      "ldk2": 149670,
+      "ldk3": 186194
     }
   },
   {
@@ -13091,11 +13067,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "足立區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/adachi-city/",
     "rents": {
-      "r1": 70460,
-      "k1": 84288,
-      "ldk1": 113274,
-      "ldk2": 140169,
-      "ldk3": 168509
+      "r1": 70297,
+      "k1": 84298,
+      "ldk1": 113803,
+      "ldk2": 141060,
+      "ldk3": 170413
     }
   },
   {
@@ -13103,11 +13079,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "葛飾區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/katsushika-city/",
     "rents": {
-      "r1": 68320,
-      "k1": 81292,
-      "ldk1": 109662,
-      "ldk2": 139294,
-      "ldk3": 165405
+      "r1": 68694,
+      "k1": 81202,
+      "ldk1": 111103,
+      "ldk2": 142570,
+      "ldk3": 163313
     }
   },
   {
@@ -13115,11 +13091,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "江戶川區",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/edogawa-city/",
     "rents": {
-      "r1": 62111,
-      "k1": 77548,
-      "ldk1": 107473,
-      "ldk2": 133880,
-      "ldk3": 164932
+      "r1": 63206,
+      "k1": 77524,
+      "ldk1": 106732,
+      "ldk2": 132822,
+      "ldk3": 163700
     }
   },
   {
@@ -13127,11 +13103,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "八王子市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/hachioji-city/",
     "rents": {
-      "r1": 46209,
-      "k1": 54173,
-      "ldk1": 73205,
-      "ldk2": 87712,
-      "ldk3": 116050
+      "r1": 45945,
+      "k1": 54444,
+      "ldk1": 73257,
+      "ldk2": 88642,
+      "ldk3": 113842
     }
   },
   {
@@ -13139,11 +13115,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "立川市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/tachikawa-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 72000,
-      "ldk1": 76000,
-      "ldk2": 80000,
-      "ldk3": 149000
+      "r1": 61359,
+      "k1": 71478,
+      "ldk1": 95629,
+      "ldk2": 114150,
+      "ldk3": 136774
     }
   },
   {
@@ -13151,11 +13127,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "武藏野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/musashino-city/",
     "rents": {
-      "r1": 70007,
-      "k1": 87435,
-      "ldk1": 132628,
-      "ldk2": 172775,
-      "ldk3": 254789
+      "r1": 69987,
+      "k1": 84205,
+      "ldk1": 133982,
+      "ldk2": 175123,
+      "ldk3": 260753
     }
   },
   {
@@ -13163,11 +13139,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "三鷹市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/mitaka-city/",
     "rents": {
-      "r1": 58319,
-      "k1": 70479,
-      "ldk1": 107823,
-      "ldk2": 143692,
-      "ldk3": 177334
+      "r1": 58076,
+      "k1": 70148,
+      "ldk1": 105774,
+      "ldk2": 135983,
+      "ldk3": 175302
     }
   },
   {
@@ -13175,11 +13151,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "青梅市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/ome-city/",
     "rents": {
-      "r1": 47000,
-      "k1": 53000,
+      "r1": 45500,
+      "k1": 52500,
       "ldk1": 57000,
-      "ldk2": 69000,
-      "ldk3": 74500
+      "ldk2": 70000,
+      "ldk3": 74000
     }
   },
   {
@@ -13187,11 +13163,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "府中市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/tokyo_fuchu-city/",
     "rents": {
-      "r1": 54996,
-      "k1": 64972,
-      "ldk1": 94422,
-      "ldk2": 119561,
-      "ldk3": 153677
+      "r1": 55445,
+      "k1": 66471,
+      "ldk1": 94188,
+      "ldk2": 119936,
+      "ldk3": 154660
     }
   },
   {
@@ -13199,11 +13175,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "昭島市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/akishima-city/",
     "rents": {
-      "r1": 56539,
-      "k1": 61704,
-      "ldk1": 77592,
-      "ldk2": 94788,
-      "ldk3": 114567
+      "r1": 54290,
+      "k1": 59388,
+      "ldk1": 75660,
+      "ldk2": 92842,
+      "ldk3": 116170
     }
   },
   {
@@ -13211,11 +13187,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "調布市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/chofu-city/",
     "rents": {
-      "r1": 58835,
-      "k1": 72095,
-      "ldk1": 104611,
-      "ldk2": 133060,
-      "ldk3": 163707
+      "r1": 58466,
+      "k1": 71619,
+      "ldk1": 103799,
+      "ldk2": 132852,
+      "ldk3": 165133
     }
   },
   {
@@ -13223,11 +13199,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "町田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/machida-city/",
     "rents": {
-      "r1": 50000,
-      "k1": 59250,
+      "r1": 49000,
+      "k1": 63000,
       "ldk1": 65000,
       "ldk2": 73000,
-      "ldk3": 119750
+      "ldk3": 119500
     }
   },
   {
@@ -13235,11 +13211,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小金井市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/koganei-city/",
     "rents": {
-      "r1": 55322,
-      "k1": 66578,
-      "ldk1": 101483,
-      "ldk2": 131255,
-      "ldk3": 164741
+      "r1": 55012,
+      "k1": 68151,
+      "ldk1": 101493,
+      "ldk2": 133570,
+      "ldk3": 168034
     }
   },
   {
@@ -13247,11 +13223,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "小平市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/kodaira-city/",
     "rents": {
-      "r1": 44717,
-      "k1": 54928,
-      "ldk1": 82044,
-      "ldk2": 102518,
-      "ldk3": 118902
+      "r1": 44736,
+      "k1": 55461,
+      "ldk1": 83291,
+      "ldk2": 102635,
+      "ldk3": 110432
     }
   },
   {
@@ -13259,11 +13235,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "日野市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/hino-city/",
     "rents": {
-      "r1": 47310,
-      "k1": 54764,
-      "ldk1": 77775,
-      "ldk2": 98925,
-      "ldk3": 127948
+      "r1": 47766,
+      "k1": 55544,
+      "ldk1": 79802,
+      "ldk2": 101255,
+      "ldk3": 130813
     }
   },
   {
@@ -13271,11 +13247,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東村山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/higashimurayama-city/",
     "rents": {
-      "r1": 46810,
-      "k1": 55403,
-      "ldk1": 69634,
-      "ldk2": 88515,
-      "ldk3": 111509
+      "r1": 45000,
+      "k1": 62750,
+      "ldk1": 65000,
+      "ldk2": 90000,
+      "ldk3": 105000
     }
   },
   {
@@ -13283,11 +13259,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "国分寺市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/kokubunji-city/",
     "rents": {
-      "r1": 47378,
-      "k1": 58881,
-      "ldk1": 92338,
-      "ldk2": 119783,
-      "ldk3": 160790
+      "r1": 48027,
+      "k1": 59917,
+      "ldk1": 91069,
+      "ldk2": 115397,
+      "ldk3": 164407
     }
   },
   {
@@ -13295,11 +13271,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "国立市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/kunitachi-city/",
     "rents": {
-      "r1": 57845,
-      "k1": 67789,
-      "ldk1": 97407,
-      "ldk2": 118870,
-      "ldk3": 175029
+      "r1": 52634,
+      "k1": 63132,
+      "ldk1": 93565,
+      "ldk2": 115893,
+      "ldk3": 169340
     }
   },
   {
@@ -13308,9 +13284,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/fussa-city/",
     "rents": {
       "r1": 45000,
-      "k1": 57000,
-      "ldk1": 58000,
-      "ldk2": 79500,
+      "k1": 58375,
+      "ldk1": 59000,
+      "ldk2": 78750,
       "ldk3": 95000
     }
   },
@@ -13319,11 +13295,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "狛江市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/komae-city/",
     "rents": {
-      "r1": 49756,
-      "k1": 66672,
-      "ldk1": 100062,
-      "ldk2": 138859,
-      "ldk3": 186802
+      "r1": 50971,
+      "k1": 66768,
+      "ldk1": 98913,
+      "ldk2": 134677,
+      "ldk3": 181520
     }
   },
   {
@@ -13331,11 +13307,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東大和市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/higashiyamato-city/",
     "rents": {
-      "r1": 58000,
+      "r1": 59000,
       "k1": 57000,
-      "ldk1": 58500,
-      "ldk2": 77750,
-      "ldk3": 150000
+      "ldk1": 59000,
+      "ldk2": 78750,
+      "ldk3": 147500
     }
   },
   {
@@ -13343,11 +13319,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "清瀬市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/kiyose-city/",
     "rents": {
-      "r1": 50519,
-      "k1": 60284,
-      "ldk1": 76528,
-      "ldk2": 95265,
-      "ldk3": 125839
+      "r1": 46500,
+      "k1": 63500,
+      "ldk1": 65000,
+      "ldk2": 92000,
+      "ldk3": 131500
     }
   },
   {
@@ -13355,11 +13331,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "東久留米市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/higashikurume-city/",
     "rents": {
-      "r1": 47513,
-      "k1": 51891,
-      "ldk1": 73047,
-      "ldk2": 94439,
-      "ldk3": 115589
+      "r1": 45680,
+      "k1": 52190,
+      "ldk1": 72831,
+      "ldk2": 92305,
+      "ldk3": 114884
     }
   },
   {
@@ -13367,11 +13343,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "武藏村山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/musashimurayama-city/",
     "rents": {
-      "r1": 46860,
-      "k1": 52818,
-      "ldk1": 70025,
-      "ldk2": 85586,
-      "ldk3": 113932
+      "r1": 43000,
+      "k1": 48750,
+      "ldk1": 56500,
+      "ldk2": 76500,
+      "ldk3": 101750
     }
   },
   {
@@ -13379,11 +13355,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "多摩市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/tama-city/",
     "rents": {
-      "r1": 41266,
-      "k1": 50676,
-      "ldk1": 73663,
-      "ldk2": 92572,
-      "ldk3": 120444
+      "r1": 42025,
+      "k1": 51618,
+      "ldk1": 74573,
+      "ldk2": 93744,
+      "ldk3": 128466
     }
   },
   {
@@ -13391,11 +13367,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "稻城市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/inagi-city/",
     "rents": {
-      "r1": 49486,
-      "k1": 62205,
-      "ldk1": 90796,
-      "ldk2": 115400,
-      "ldk3": 139771
+      "r1": 50530,
+      "k1": 64180,
+      "ldk1": 92314,
+      "ldk2": 116032,
+      "ldk3": 145147
     }
   },
   {
@@ -13404,10 +13380,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/hamura-city/",
     "rents": {
       "r1": 52000,
-      "k1": 52875,
-      "ldk1": 57500,
-      "ldk2": 70250,
-      "ldk3": 89000
+      "k1": 52500,
+      "ldk1": 56500,
+      "ldk2": 73500,
+      "ldk3": 87000
     }
   },
   {
@@ -13416,10 +13392,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/akiruno-city/",
     "rents": {
       "r1": 45000,
-      "k1": 57500,
+      "k1": 59250,
       "ldk1": 53000,
       "ldk2": 63500,
-      "ldk3": 95000
+      "ldk3": 90000
     }
   },
   {
@@ -13427,11 +13403,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西東京市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/nishitokyo-city/",
     "rents": {
-      "r1": 50836,
-      "k1": 64107,
-      "ldk1": 90322,
-      "ldk2": 116401,
-      "ldk3": 143641
+      "r1": 50911,
+      "k1": 64209,
+      "ldk1": 90055,
+      "ldk2": 114948,
+      "ldk3": 145468
     }
   },
   {
@@ -13439,11 +13415,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "西多摩郡瑞穗町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tokyo/nishitama_mizuho-city/",
     "rents": {
-      "r1": 52072,
-      "k1": 46882,
-      "ldk1": 62049,
-      "ldk2": 77037,
-      "ldk3": 83131
+      "r1": null,
+      "k1": 57000,
+      "ldk1": 59500,
+      "ldk2": 76000,
+      "ldk3": 92000
     }
   },
   {
@@ -13453,8 +13429,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 65000,
-      "ldk2": 74000,
+      "ldk1": 63500,
+      "ldk2": 71500,
       "ldk3": null
     }
   },
@@ -13464,10 +13440,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tottori/tottori-city/",
     "rents": {
       "r1": 40000,
-      "k1": 39000,
-      "ldk1": 45500,
-      "ldk2": 54500,
-      "ldk3": 99000
+      "k1": 39250,
+      "ldk1": 45000,
+      "ldk2": 54000,
+      "ldk3": 79000
     }
   },
   {
@@ -13475,11 +13451,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "米子市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/tottori/yonago-city/",
     "rents": {
-      "r1": 28000,
-      "k1": 40500,
+      "r1": 29000,
+      "k1": 41000,
       "ldk1": 47000,
-      "ldk2": 48650,
-      "ldk3": 84000
+      "ldk2": 48400,
+      "ldk3": 87000
     }
   },
   {
@@ -13489,8 +13465,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 41000,
-      "ldk1": 48750,
-      "ldk2": 55000,
+      "ldk1": 48250,
+      "ldk2": 55750,
       "ldk3": null
     }
   },
@@ -13501,7 +13477,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 54500,
-      "ldk1": 47000,
+      "ldk1": 49000,
       "ldk2": null,
       "ldk3": null
     }
@@ -13513,9 +13489,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 45000,
       "k1": 36500,
-      "ldk1": 43000,
+      "ldk1": 44250,
       "ldk2": 48000,
-      "ldk3": 62500
+      "ldk3": 62000
     }
   },
   {
@@ -13523,11 +13499,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "高岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/takaoka-city/",
     "rents": {
-      "r1": 43000,
-      "k1": 38750,
+      "r1": 40000,
+      "k1": 39500,
       "ldk1": 44000,
-      "ldk2": 47000,
-      "ldk3": 58750
+      "ldk2": 48000,
+      "ldk3": 60000
     }
   },
   {
@@ -13535,10 +13511,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "魚津市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/uozu-city/",
     "rents": {
-      "r1": null,
-      "k1": 43000,
-      "ldk1": 43000,
-      "ldk2": 42500,
+      "r1": 36000,
+      "k1": 44000,
+      "ldk1": 45000,
+      "ldk2": 51000,
       "ldk3": null
     }
   },
@@ -13549,8 +13525,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 57000,
-      "ldk2": 51500,
+      "ldk1": null,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -13560,10 +13536,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/namerikawa-city/",
     "rents": {
       "r1": null,
-      "k1": 40561,
-      "ldk1": 47268,
-      "ldk2": 51306,
-      "ldk3": 66440
+      "k1": 40814,
+      "ldk1": 47142,
+      "ldk2": 51853,
+      "ldk3": 76684
     }
   },
   {
@@ -13571,10 +13547,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "黑部市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/kurobe-city/",
     "rents": {
-      "r1": null,
+      "r1": 45500,
       "k1": 61000,
-      "ldk1": 46500,
-      "ldk2": 65000,
+      "ldk1": 46000,
+      "ldk2": 62000,
       "ldk3": null
     }
   },
@@ -13584,9 +13560,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/tonami-city/",
     "rents": {
       "r1": null,
-      "k1": 65000,
-      "ldk1": 53500,
-      "ldk2": 63000,
+      "k1": 63500,
+      "ldk1": 62000,
+      "ldk2": 64000,
       "ldk3": null
     }
   },
@@ -13597,8 +13573,20 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 51000,
-      "ldk1": 47500,
-      "ldk2": 56000,
+      "ldk1": 42875,
+      "ldk2": 54250,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "富山",
+    "district": "南砺市",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/nanto-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": 53500,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -13608,9 +13596,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/imizu-city/",
     "rents": {
       "r1": 45000,
-      "k1": 43250,
-      "ldk1": 54500,
-      "ldk2": 50000,
+      "k1": 44000,
+      "ldk1": 53500,
+      "ldk2": 49000,
       "ldk3": null
     }
   },
@@ -13621,8 +13609,20 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 39000,
-      "ldk2": 55000,
+      "ldk1": 39500,
+      "ldk2": 53000,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "富山",
+    "district": "中新川郡立山町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/toyama/nakaniikawa_tateyama-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": 44000,
+      "ldk2": 54000,
       "ldk3": null
     }
   },
@@ -13631,11 +13631,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "和歌山市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/wakayama-city/",
     "rents": {
-      "r1": 39000,
-      "k1": 41000,
-      "ldk1": 42000,
-      "ldk2": 42500,
-      "ldk3": 60500
+      "r1": 36000,
+      "k1": 40500,
+      "ldk1": 42500,
+      "ldk2": 43500,
+      "ldk3": 59250
     }
   },
   {
@@ -13643,11 +13643,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "海南市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/kainan-city/",
     "rents": {
-      "r1": 39000,
+      "r1": 43000,
       "k1": 42000,
-      "ldk1": 47650,
+      "ldk1": 48000,
       "ldk2": 47000,
-      "ldk3": 54000
+      "ldk3": null
     }
   },
   {
@@ -13656,9 +13656,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/hashimoto-city/",
     "rents": {
       "r1": 40500,
-      "k1": 39000,
+      "k1": 42000,
       "ldk1": 40000,
-      "ldk2": 47250,
+      "ldk2": 46125,
       "ldk3": 65000
     }
   },
@@ -13668,10 +13668,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/arida-city/",
     "rents": {
       "r1": null,
-      "k1": 53500,
-      "ldk1": 45750,
-      "ldk2": 45500,
-      "ldk3": 48500
+      "k1": 50000,
+      "ldk1": 47500,
+      "ldk2": 44500,
+      "ldk3": 47000
     }
   },
   {
@@ -13681,8 +13681,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 39000,
       "k1": 43500,
-      "ldk1": 42000,
-      "ldk2": 51250,
+      "ldk1": 43000,
+      "ldk2": 50000,
       "ldk3": null
     }
   },
@@ -13692,8 +13692,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/tanabe-city/",
     "rents": {
       "r1": null,
-      "k1": 65000,
-      "ldk1": 54000,
+      "k1": 64500,
+      "ldk1": 53500,
       "ldk2": null,
       "ldk3": null
     }
@@ -13705,9 +13705,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 32000,
-      "ldk1": 48000,
-      "ldk2": 45500,
-      "ldk3": 52500
+      "ldk1": 48500,
+      "ldk2": 47000,
+      "ldk3": 55000
     }
   },
   {
@@ -13715,10 +13715,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岩出市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/iwade-city/",
     "rents": {
-      "r1": null,
-      "k1": 35500,
-      "ldk1": 45250,
-      "ldk2": 49500,
+      "r1": 45000,
+      "k1": 35000,
+      "ldk1": 45500,
+      "ldk2": 50500,
       "ldk3": 56000
     }
   },
@@ -13729,8 +13729,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 37750,
-      "ldk2": 54750,
+      "ldk1": 35000,
+      "ldk2": 54000,
       "ldk3": null
     }
   },
@@ -13741,8 +13741,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 42500,
-      "ldk2": 51000,
+      "ldk1": 44500,
+      "ldk2": 49000,
       "ldk3": null
     }
   },
@@ -13765,8 +13765,20 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 51125,
+      "ldk1": 51250,
       "ldk2": 57000,
+      "ldk3": null
+    }
+  },
+  {
+    "region": "和歌山",
+    "district": "日高郡美濱町",
+    "sourceUrl": "https://www.athome.co.jp/chintai/souba/wakayama/hidaka_mihama-city/",
+    "rents": {
+      "r1": null,
+      "k1": null,
+      "ldk1": 43000,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -13777,7 +13789,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 46500,
+      "ldk1": 47250,
       "ldk2": 59000,
       "ldk3": null
     }
@@ -13787,11 +13799,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "山形市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/yamagata-city/",
     "rents": {
-      "r1": 47974,
-      "k1": 46895,
-      "ldk1": 56362,
-      "ldk2": 64718,
-      "ldk3": 77925
+      "r1": 45000,
+      "k1": 43000,
+      "ldk1": 51000,
+      "ldk2": 55000,
+      "ldk3": 67500
     }
   },
   {
@@ -13799,11 +13811,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "米澤市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/yonezawa-city/",
     "rents": {
-      "r1": 34503,
-      "k1": 36499,
-      "ldk1": 43157,
-      "ldk2": 49402,
-      "ldk3": 67599
+      "r1": 48000,
+      "k1": 37000,
+      "ldk1": 45000,
+      "ldk2": 45000,
+      "ldk3": 67000
     }
   },
   {
@@ -13811,8 +13823,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "鶴岡市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/tsuruoka-city/",
     "rents": {
-      "r1": 42000,
-      "k1": 51000,
+      "r1": 43000,
+      "k1": 54000,
       "ldk1": 45000,
       "ldk2": 57000,
       "ldk3": null
@@ -13824,10 +13836,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/sakata-city/",
     "rents": {
       "r1": null,
-      "k1": 41000,
-      "ldk1": 52250,
-      "ldk2": 58000,
-      "ldk3": null
+      "k1": 36765,
+      "ldk1": 42986,
+      "ldk2": 51477,
+      "ldk3": 54734
     }
   },
   {
@@ -13837,7 +13849,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 64000,
-      "ldk1": 42000,
+      "ldk1": 46000,
       "ldk2": null,
       "ldk3": null
     }
@@ -13848,8 +13860,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/sagae-city/",
     "rents": {
       "r1": null,
-      "k1": 41000,
-      "ldk1": 41000,
+      "k1": 43000,
+      "ldk1": 40000,
       "ldk2": 55000,
       "ldk3": null
     }
@@ -13861,7 +13873,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 64000,
-      "ldk1": 53000,
+      "ldk1": 48000,
       "ldk2": 59500,
       "ldk3": null
     }
@@ -13873,7 +13885,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 52000,
-      "ldk1": 44000,
+      "ldk1": 43000,
       "ldk2": null,
       "ldk3": null
     }
@@ -13884,9 +13896,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/nagai-city/",
     "rents": {
       "r1": null,
-      "k1": 48500,
-      "ldk1": 47000,
-      "ldk2": 57000,
+      "k1": 47375,
+      "ldk1": 48000,
+      "ldk2": 57250,
       "ldk3": null
     }
   },
@@ -13896,9 +13908,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/tendo-city/",
     "rents": {
       "r1": null,
-      "k1": 48000,
-      "ldk1": 48500,
-      "ldk2": 50000,
+      "k1": 47000,
+      "ldk1": 48550,
+      "ldk2": null,
       "ldk3": null
     }
   },
@@ -13908,9 +13920,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamagata/higashine-city/",
     "rents": {
       "r1": null,
-      "k1": 47000,
+      "k1": 48000,
       "ldk1": 46500,
-      "ldk2": 55000,
+      "ldk2": 52500,
       "ldk3": null
     }
   },
@@ -13922,7 +13934,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 35000,
       "ldk1": 40000,
-      "ldk2": null,
+      "ldk2": 44400,
       "ldk3": null
     }
   },
@@ -13933,7 +13945,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 45500,
+      "ldk1": 42000,
       "ldk2": null,
       "ldk3": null
     }
@@ -13946,7 +13958,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": 39000,
       "ldk1": 43000,
-      "ldk2": 51500,
+      "ldk2": 53000,
       "ldk3": null
     }
   },
@@ -13955,11 +13967,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "下関市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/shimonoseki-city/",
     "rents": {
-      "r1": 35000,
-      "k1": 33500,
+      "r1": 34000,
+      "k1": 33000,
       "ldk1": 42000,
       "ldk2": 48000,
-      "ldk3": 57000
+      "ldk3": 56000
     }
   },
   {
@@ -13967,11 +13979,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "宇部市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/ube-city/",
     "rents": {
-      "r1": 30000,
+      "r1": 33000,
       "k1": 35500,
-      "ldk1": 43000,
+      "ldk1": 42500,
       "ldk2": 44500,
-      "ldk3": 62000
+      "ldk3": 60000
     }
   },
   {
@@ -13979,11 +13991,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "山口市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/yamaguchi-city/",
     "rents": {
-      "r1": 42326,
-      "k1": 40354,
-      "ldk1": 49578,
-      "ldk2": 57233,
-      "ldk3": 72300
+      "r1": 42339,
+      "k1": 38790,
+      "ldk1": 49163,
+      "ldk2": 57597,
+      "ldk3": 71533
     }
   },
   {
@@ -13991,11 +14003,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "防府市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/hofu-city/",
     "rents": {
-      "r1": 42609,
-      "k1": 39659,
-      "ldk1": 47822,
-      "ldk2": 54732,
-      "ldk3": 63775
+      "r1": 44703,
+      "k1": 42176,
+      "ldk1": 47926,
+      "ldk2": 52753,
+      "ldk3": 58400
     }
   },
   {
@@ -14003,11 +14015,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "下松市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/kudamatsu-city/",
     "rents": {
-      "r1": 46000,
-      "k1": 57000,
-      "ldk1": 59500,
-      "ldk2": 60500,
-      "ldk3": 74000
+      "r1": 48000,
+      "k1": 58500,
+      "ldk1": 61750,
+      "ldk2": 61500,
+      "ldk3": null
     }
   },
   {
@@ -14015,11 +14027,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "岩国市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/iwakuni-city/",
     "rents": {
-      "r1": 42000,
-      "k1": 42500,
+      "r1": 41000,
+      "k1": 42750,
       "ldk1": 45000,
-      "ldk2": 54000,
-      "ldk3": 63500
+      "ldk2": 52750,
+      "ldk3": 60625
     }
   },
   {
@@ -14027,11 +14039,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "光市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/hikari-city/",
     "rents": {
-      "r1": 42500,
-      "k1": 57000,
-      "ldk1": 44000,
-      "ldk2": 52750,
-      "ldk3": 67000
+      "r1": 42250,
+      "k1": 58000,
+      "ldk1": 43000,
+      "ldk2": 51750,
+      "ldk3": 60000
     }
   },
   {
@@ -14039,23 +14051,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "柳井市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/yanai-city/",
     "rents": {
-      "r1": 45291,
-      "k1": 46252,
-      "ldk1": 53216,
-      "ldk2": 61078,
-      "ldk3": 70747
-    }
-  },
-  {
-    "region": "山口",
-    "district": "美祢市",
-    "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/mine-city/",
-    "rents": {
-      "r1": null,
-      "k1": 53000,
-      "ldk1": null,
-      "ldk2": null,
-      "ldk3": null
+      "r1": 44671,
+      "k1": 45402,
+      "ldk1": 51879,
+      "ldk2": 60622,
+      "ldk3": 72997
     }
   },
   {
@@ -14063,11 +14063,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "周南市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/shunan-city/",
     "rents": {
-      "r1": 44500,
-      "k1": 48000,
-      "ldk1": 50000,
-      "ldk2": 57750,
-      "ldk3": 79000
+      "r1": 48000,
+      "k1": 44500,
+      "ldk1": 49500,
+      "ldk2": 58500,
+      "ldk3": 75000
     }
   },
   {
@@ -14076,10 +14076,10 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/sanyoonoda-city/",
     "rents": {
       "r1": null,
-      "k1": 41000,
-      "ldk1": 45000,
-      "ldk2": 50000,
-      "ldk3": 69000
+      "k1": 41900,
+      "ldk1": 45500,
+      "ldk2": 50500,
+      "ldk3": 70000
     }
   },
   {
@@ -14088,9 +14088,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamaguchi/kuga_waki-city/",
     "rents": {
       "r1": null,
-      "k1": 45000,
-      "ldk1": 52750,
-      "ldk2": 55250,
+      "k1": null,
+      "ldk1": 51500,
+      "ldk2": 55000,
       "ldk3": null
     }
   },
@@ -14102,7 +14102,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": 47000,
-      "ldk2": 48500,
+      "ldk2": 48000,
       "ldk3": null
     }
   },
@@ -14114,7 +14114,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
       "r1": null,
       "k1": null,
       "ldk1": null,
-      "ldk2": 46250,
+      "ldk2": 45500,
       "ldk3": null
     }
   },
@@ -14123,11 +14123,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "甲府市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/kofu-city/",
     "rents": {
-      "r1": 41014,
-      "k1": 44035,
-      "ldk1": 54420,
-      "ldk2": 63630,
-      "ldk3": 80502
+      "r1": 40937,
+      "k1": 44764,
+      "ldk1": 54883,
+      "ldk2": 63906,
+      "ldk3": 78527
     }
   },
   {
@@ -14135,11 +14135,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "富士吉田市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/fujiyoshida-city/",
     "rents": {
-      "r1": 52800,
-      "k1": 53578,
-      "ldk1": 63432,
-      "ldk2": 71018,
-      "ldk3": 73313
+      "r1": 48000,
+      "k1": 60000,
+      "ldk1": 64000,
+      "ldk2": 75500,
+      "ldk3": null
     }
   },
   {
@@ -14147,9 +14147,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "都留市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/tsuru-city/",
     "rents": {
-      "r1": 61000,
-      "k1": 55000,
-      "ldk1": 59500,
+      "r1": 59750,
+      "k1": 54500,
+      "ldk1": 58500,
       "ldk2": 74250,
       "ldk3": null
     }
@@ -14161,7 +14161,7 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 39000,
-      "ldk1": 49500,
+      "ldk1": 47000,
       "ldk2": 61000,
       "ldk3": null
     }
@@ -14173,9 +14173,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": 35500,
       "k1": null,
-      "ldk1": 46500,
+      "ldk1": 45000,
       "ldk2": null,
-      "ldk3": 65000
+      "ldk3": null
     }
   },
   {
@@ -14183,11 +14183,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "韮崎市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/nirasaki-city/",
     "rents": {
-      "r1": null,
-      "k1": 69500,
-      "ldk1": 55000,
-      "ldk2": 74000,
-      "ldk3": null
+      "r1": 54699,
+      "k1": 55349,
+      "ldk1": 62893,
+      "ldk2": 70214,
+      "ldk3": 83711
     }
   },
   {
@@ -14195,11 +14195,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "南アルプス市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/minamiarupusu-city/",
     "rents": {
-      "r1": 41655,
-      "k1": 43629,
-      "ldk1": 53414,
-      "ldk2": 58253,
-      "ldk3": 69548
+      "r1": 43634,
+      "k1": 44416,
+      "ldk1": 54670,
+      "ldk2": 59614,
+      "ldk3": 75426
     }
   },
   {
@@ -14207,11 +14207,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "北杜市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/hokuto-city/",
     "rents": {
-      "r1": 51000,
-      "k1": null,
-      "ldk1": 65750,
-      "ldk2": 90000,
-      "ldk3": 95000
+      "r1": 59000,
+      "k1": 45000,
+      "ldk1": 65000,
+      "ldk2": 80000,
+      "ldk3": null
     }
   },
   {
@@ -14219,9 +14219,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "甲斐市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/kai-city/",
     "rents": {
-      "r1": 37500,
-      "k1": 44000,
-      "ldk1": 50000,
+      "r1": 36000,
+      "k1": 43500,
+      "ldk1": 49500,
       "ldk2": 55000,
       "ldk3": 67500
     }
@@ -14231,11 +14231,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "笛吹市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/fuefuki-city/",
     "rents": {
-      "r1": 38500,
-      "k1": 45000,
-      "ldk1": 47500,
-      "ldk2": 61250,
-      "ldk3": 83500
+      "r1": 40000,
+      "k1": 47250,
+      "ldk1": 49750,
+      "ldk2": 59000,
+      "ldk3": 70000
     }
   },
   {
@@ -14243,9 +14243,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "上野原市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/uenohara-city/",
     "rents": {
-      "r1": 29500,
+      "r1": 30000,
       "k1": 38000,
-      "ldk1": null,
+      "ldk1": 50000,
       "ldk2": null,
       "ldk3": null
     }
@@ -14257,8 +14257,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": null,
-      "ldk1": 49500,
-      "ldk2": 60000,
+      "ldk1": 43000,
+      "ldk2": 61000,
       "ldk3": null
     }
   },
@@ -14267,11 +14267,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "中央市",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/chuo-city/",
     "rents": {
-      "r1": 46250,
-      "k1": 42000,
-      "ldk1": 45750,
-      "ldk2": 54000,
-      "ldk3": 84500
+      "r1": 44697,
+      "k1": 45093,
+      "ldk1": 53488,
+      "ldk2": 60921,
+      "ldk3": 63900
     }
   },
   {
@@ -14292,9 +14292,9 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/minamikoma_fujikawa-city/",
     "rents": {
       "r1": null,
-      "k1": null,
-      "ldk1": 50500,
-      "ldk2": 60000,
+      "k1": 55000,
+      "ldk1": 54500,
+      "ldk2": 59500,
       "ldk3": null
     }
   },
@@ -14303,11 +14303,11 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "district": "中巨摩郡昭和町",
     "sourceUrl": "https://www.athome.co.jp/chintai/souba/yamanashi/nakakoma_showa-city/",
     "rents": {
-      "r1": 47266,
-      "k1": 47938,
-      "ldk1": 59170,
-      "ldk2": 71792,
-      "ldk3": 89137
+      "r1": 49766,
+      "k1": 50266,
+      "ldk1": 60200,
+      "ldk2": 70361,
+      "ldk3": 85113
     }
   },
   {
@@ -14317,8 +14317,8 @@ export const atHomeNationwideRentSnapshots: AtHomeNationwideRentSnapshotRow[] = 
     "rents": {
       "r1": null,
       "k1": 48000,
-      "ldk1": 64000,
-      "ldk2": 75000,
+      "ldk1": 66500,
+      "ldk2": 76500,
       "ldk3": null
     }
   }
