@@ -60,7 +60,9 @@ for (const row of atHomeNationwideRentSnapshots) {
   for (const value of Object.values(row.rents)) assert.ok(value === null || (Number.isInteger(value) && value > 0));
 }
 const matsumoto = getNationwideRentBenchmark("長野", "松本市", "k1");
-assert.equal(matsumoto?.medianRentYen, 48_273);
+// 行情每月滾動更新，不寫死數值；只確認有值且落在地方都市 1K 的合理區間。
+assert.ok(matsumoto && matsumoto.medianRentYen >= 30_000 && matsumoto.medianRentYen <= 80_000,
+  `松本市 1K rent out of plausible range: ${matsumoto?.medianRentYen}`);
 assert.match(matsumoto?.sourceUrl || "", /athome\.co\.jp\/chintai\/souba\/nagano\/matsumoto-city/);
 assert.equal(getNationwideRentBenchmark("沖繩", "石垣市", "k1"), null);
 
