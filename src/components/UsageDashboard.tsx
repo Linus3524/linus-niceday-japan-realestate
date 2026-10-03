@@ -24,6 +24,7 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { QuizStatsSection } from "./QuizStatsSection";
 import { dailyRows, monthlyFeatureTotals, monthOptions, type UsageSummary } from '../lib/analytics/usageSummary';
 export { ADMIN_METRICS_START_MONTH, monthlyFeatureTotals, monthOptions } from '../lib/analytics/usageSummary';
 
@@ -1240,6 +1241,9 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
           </section>
+
+            {/* 心理測驗（/quiz/） */}
+            <QuizStatsSection quiz={data.quiz} />
 
             {/* 8. 次要外部對照：Vercel Web Analytics */}
             {traffic && (

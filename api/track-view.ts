@@ -1,5 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { recordQuizEvent } from "../src/lib/quizMetrics.js";
 import { isTrackableAction, isTrackableView, normalizeSource, recordAction, recordSource, recordView } from "../src/lib/usageMetrics.js";
 
 /**
@@ -12,6 +13,9 @@ import { isTrackableAction, isTrackableView, normalizeSource, recordAction, reco
  *   3. 一律回 204，不回傳任何資料，也不透露是否被限流；這支端點沒有讀取用途。
  *
  * 不做的事：不存 IP、不存 session、不做跨頁追蹤，只把某個分頁的計數加一。
+ *
+ * 心理測驗（/quiz/，見 src/lib/quizMetrics.ts）也共用這支端點：帶 quiz 欄位的請求
+ * 只記測驗計數。共用而不另開一支，是為了不多佔一個 Serverless Function 名額。
  */
 
 const VIEW_RATE_LIMIT = 40;
@@ -40,7 +44,9 @@ export default async function handler(req: any, res: any) {
   const action = req.body?.action;
   const hasView = isTrackableView(view);
   const hasAction = isTrackableAction(action);
-  if (!hasView && !source && !hasAction) {
+  const quiz = req.body?.quiz;
+  const hasQuiz = Boolean(quiz && typeof quiz === "object");
+  if (!hasView && !source && !hasAction && !hasQuiz) {
     return res.status(400).json({ error: "Nothing to record." });
   }
 
@@ -57,6 +63,7 @@ export default async function handler(req: any, res: any) {
     if (hasView) await recordView(view);
     if (source) await recordSource(source);
     if (hasAction) await recordAction(action);
+    if (hasQuiz) await recordQuizEvent(quiz);
   } catch (error) {
     console.error("track-view failed (ignored):", error);
   }

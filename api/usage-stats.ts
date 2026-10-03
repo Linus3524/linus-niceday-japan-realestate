@@ -1,3 +1,4 @@
+import { getQuizSummary } from "../src/lib/quizMetrics.js";
 import { getUsageSummary, usageMetricsConfigured } from "../src/lib/usageMetrics.js";
 import { getMonthlyVisitorCount, getVisitorCount, visitorCounterConfigured } from "../src/lib/visitorCounter.js";
 
@@ -53,7 +54,15 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    return res.json({ ...summary, monthlyVisitors, cumulativeVisitors });
+    // 心理測驗的統計放在同一份回應裡；讀取失敗只讓測驗那一區空白，不影響其他數字。
+    let quiz = null;
+    try {
+      quiz = await getQuizSummary(summary.month);
+    } catch (error) {
+      console.error("quiz summary failed (ignored):", error);
+    }
+
+    return res.json({ ...summary, monthlyVisitors, cumulativeVisitors, quiz });
   } catch (error) {
     console.error("usage-stats error:", error);
     return res.status(500).json({ error: "Unable to read usage metrics." });

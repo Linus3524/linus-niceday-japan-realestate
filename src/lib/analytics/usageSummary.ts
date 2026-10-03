@@ -1,3 +1,4 @@
+import type { QuizSummary } from "../quizMetrics";
 
 export interface UsageSummary {
   month: string;
@@ -14,6 +15,8 @@ export interface UsageSummary {
    */
   monthlyVisitors: number | null;
   cumulativeVisitors: number | null;
+  /** 心理測驗（/quiz/）的月統計；null 代表讀取失敗或尚未設定。 */
+  quiz?: QuizSummary | null;
 }
 
 

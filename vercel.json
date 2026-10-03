@@ -39,6 +39,17 @@
     {
       "source": "/api/listing-location",
       "destination": "/api/listing-location"
+    },
+    {
+      "source": "/quiz/:path*",
+      "destination": "https://tokyo-living-persona.vercel.app/:path*"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/quiz",
+      "destination": "/quiz/",
+      "permanent": true
     }
   ]
 }
