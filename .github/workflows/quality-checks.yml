@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  # 排程機器人用預設 GITHUB_TOKEN 開的 PR 不會觸發 pull_request 事件（GitHub 為防遞迴觸發的限制），
+  # 只能由 update-mlit-buy-data.yml 開完 PR 後手動派發這個 workflow。
+  workflow_dispatch:
 
 jobs:
   verify:

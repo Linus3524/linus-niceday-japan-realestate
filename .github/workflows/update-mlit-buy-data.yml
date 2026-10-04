@@ -13,6 +13,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write # 開完 PR 後要派發 Quality checks（見最後一步）
 
 jobs:
   update-snapshot:
@@ -79,6 +80,7 @@ jobs:
           npm run test:buy-market
           npm run test:market-sources
           npm run test:athome-rent
+          npm run test:market-location
           npm run test:requirement-verdict
           npm run build
 
@@ -111,3 +113,13 @@ jobs:
           統計視窗滑動所致，而非行情真的劇烈變動。" \
             --base main \
             --head "$BRANCH"
+
+      # 預設 GITHUB_TOKEN 開的 PR 不會自動跑 CI（顯示 action_required／根本沒有檢查），
+      # 手動派發同一個 Quality checks：它跑在 PR 分支的最新 commit 上，結果會掛在 PR 頁面。
+      - name: Run quality checks on the PR branch
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="data/sale-market-snapshots-$(date -u +%Y%m%d)"
+          gh workflow run quality-checks.yml --ref "$BRANCH"
