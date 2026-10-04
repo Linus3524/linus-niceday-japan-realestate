@@ -10,7 +10,8 @@ import type { QuizSummary } from "../lib/quizMetrics";
  */
 
 interface AreaInfo { name: string; family: string }
-interface QuestionInfo { id: string; prompt: string; options: { id: string; label: string }[] }
+interface OptionInfo { id: string; label: string }
+interface QuestionInfo { id: string; prompt: string; options: OptionInfo[]; variants?: { id: string; prompt: string; options: OptionInfo[] }[] }
 
 const RATING_LABEL: Record<string, string> = { "2": "超準", "1": "有點像", "0": "不太像" };
 const REASON_LABEL: Record<string, string> = {
@@ -25,6 +26,30 @@ const CTA_LABEL: Record<string, string> = {
 const sum = (record: Record<string, number> | undefined) =>
   Object.values(record ?? {}).reduce((total, value) => total + (Number(value) || 0), 0);
 const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
+
+/** 一題（或追問題的一個版本）的 A–D 選項比例色條；滑鼠移上去看選項內容。 */
+function OptionBar({ counts, options }: { counts: Record<string, number>; options: OptionInfo[] }) {
+  const total = sum(counts);
+  return (
+    <div className="flex h-5 w-full overflow-hidden bg-[#EEF2F0]">
+      {["a", "b", "c", "d"].map((option, k) => {
+        const share = pct(counts[option] ?? 0, total);
+        if (!share) return null;
+        const label = options.find(o => o.id === option)?.label;
+        return (
+          <span
+            key={option}
+            title={`${option.toUpperCase()}${label ? `　${label}` : ""}：${counts[option]} 次`}
+            className="flex items-center justify-center font-jost text-[10px] font-bold text-white"
+            style={{ width: `${share}%`, backgroundColor: ["#00A174", "#0284C7", "#9333EA", "#E94E2B"][k] }}
+          >
+            {share >= 8 ? `${option.toUpperCase()} ${share}%` : ""}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function useQuizMeta() {
   const [areas, setAreas] = useState<Record<string, AreaInfo>>({});
@@ -46,6 +71,9 @@ function useQuizMeta() {
         id: q.id,
         prompt: q.type === "followup" ? "（追問題：依前面答案分成不同版本）" : q.prompt,
         options: q.type === "followup" ? [] : q.options.map((o: any) => ({ id: o.id, label: String(o.label).split("\n")[0] })),
+        variants: q.type === "followup"
+          ? q.variants.map((v: any) => ({ id: v.variant_id, prompt: v.prompt, options: v.options.map((o: any) => ({ id: o.id, label: String(o.label).split("\n")[0] })) }))
+          : undefined,
       })));
     }).catch(() => {});
     return () => { alive = false; };
@@ -184,7 +212,6 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
           <ul className="space-y-3">
             {Array.from({ length: Math.max(12, questions.length) }, (_, index) => {
               const counts = quiz.options[String(index + 1)] ?? {};
-              const total = sum(counts);
               const q = questions[index];
               return (
                 <li key={index} className="text-xs">
@@ -192,23 +219,29 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
                     <span className="shrink-0 font-jost font-bold text-[#1A2A22]">Q{index + 1}</span>
                     <span className="truncate" title={q?.prompt}>{q?.prompt ?? ""}</span>
                   </div>
-                  <div className="flex h-5 w-full overflow-hidden bg-[#EEF2F0]">
-                    {["a", "b", "c", "d"].map((option, k) => {
-                      const share = pct(counts[option] ?? 0, total);
-                      if (!share) return null;
-                      const label = q?.options.find(o => o.id === option)?.label;
-                      return (
-                        <span
-                          key={option}
-                          title={`${option.toUpperCase()}${label ? `　${label}` : ""}：${counts[option]} 次`}
-                          className="flex items-center justify-center font-jost text-[10px] font-bold text-white"
-                          style={{ width: `${share}%`, backgroundColor: ["#00A174", "#0284C7", "#9333EA", "#E94E2B"][k] }}
-                        >
-                          {share >= 8 ? `${option.toUpperCase()} ${share}%` : ""}
-                        </span>
-                      );
-                    })}
-                  </div>
+                  {q?.variants ? (
+                    <>
+                      <OptionBar counts={counts} options={[]} />
+                      <p className="mt-1 text-[10px] text-[#8A9590]">↑ 各版本合計（字母在不同版本代表不同內容，僅供參考）；題庫 0.9.0 起依版本分開：</p>
+                      <ul className="mt-1 space-y-1.5 border-l-2 border-[#ECEFEC] pl-2">
+                        {q.variants.map(v => {
+                          const vc = quiz.branches?.[String(index + 1)]?.[v.id] ?? {};
+                          return (
+                            <li key={v.id}>
+                              <div className="mb-0.5 flex gap-2 text-[11px] text-[#3F5147]">
+                                <span className="shrink-0 font-jost font-bold">{v.id}</span>
+                                <span className="truncate" title={v.prompt}>{v.prompt}</span>
+                                <span className="ml-auto shrink-0 font-jost text-[#8A9590]">{sum(vc)} 人</span>
+                              </div>
+                              <OptionBar counts={vc} options={v.options} />
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  ) : (
+                    <OptionBar counts={counts} options={q?.options ?? []} />
+                  )}
                 </li>
               );
             })}

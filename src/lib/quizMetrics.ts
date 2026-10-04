@@ -26,6 +26,7 @@ const MAX_CODES = 5000;
 const AREA_ID = /^[a-z]{2,16}$/;
 const ANSWER_CODE = /^[a-d]{8,16}$/;
 const VERSION = /^\d+\.\d+\.\d+$/;
+const VARIANT_ID = /^[a-z_]{2,20}$/;
 const RATE_REASONS = ["rent", "vibe", "commute", "stereo"] as const;
 const SHARE_METHODS = ["native", "copy", "image"] as const;
 const CTA_KINDS = ["line", "wechat", "threads", "instagram", "facebook", "email", "site"] as const;
@@ -56,6 +57,11 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
       if (typeof e.code === "string" && ANSWER_CODE.test(e.code)) {
         code = e.code;
         [...e.code].forEach((option, index) => fields.push(`o:${index + 1}:${option}`));
+        // 追問題：同一個選項字母在不同版本代表不同內容，另外依版本記一份
+        const fq = Number(e.fq);
+        if (Number.isInteger(fq) && fq >= 1 && fq <= e.code.length && typeof e.fv === "string" && VARIANT_ID.test(e.fv)) {
+          fields.push(`ob:${fq}:${e.fv}:${e.code[fq - 1]}`);
+        }
       }
     }
     if (e.e === "shared_view" && top1) fields.push(`sv:${top1}`);
@@ -120,6 +126,8 @@ export interface QuizSummary {
   reasons: Record<string, Record<string, number>>;
   /** 每題選項分布：{ "3": { a: 10, b: 4 } } */
   options: Record<string, Record<string, number>>;
+  /** 追問題依版本的選項分布：{ "11": { weekend: { a: 3 } } }（題庫 0.9.0 起才有） */
+  branches: Record<string, Record<string, Record<string, number>>>;
   share: Record<string, number>;
   cta: Record<string, number>;
   sharedViews: Record<string, number>;
@@ -135,7 +143,7 @@ export async function getQuizSummary(month: string): Promise<QuizSummary> {
     redis.hlen(`${CODES_PREFIX}${month}`),
   ]);
   const summary: QuizSummary = {
-    month, funnel: {}, results: {}, ratings: {}, claims: {}, reasons: {}, options: {},
+    month, funnel: {}, results: {}, ratings: {}, claims: {}, reasons: {}, options: {}, branches: {},
     share: {}, cta: {}, sharedViews: {}, versions: {}, distinctCodes,
   };
   const nested = (target: Record<string, Record<string, number>>, outer: string, inner: string, n: number) => {
@@ -151,6 +159,7 @@ export async function getQuizSummary(month: string): Promise<QuizSummary> {
     else if (kind === "claim") { const [from, to] = tail.split(">"); nested(summary.claims, from, to, n); }
     else if (kind === "why") nested(summary.reasons, rest[0], rest[1], n);
     else if (kind === "o") nested(summary.options, rest[0], rest[1], n);
+    else if (kind === "ob") nested((summary.branches[rest[0]] ||= {}), rest[1], rest[2], n);
     else if (kind === "share") summary.share[tail] = n;
     else if (kind === "cta") summary.cta[tail] = n;
     else if (kind === "sv") summary.sharedViews[tail] = n;
