@@ -80,6 +80,9 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
       const why = Array.isArray(e.why) ? e.why : [];
       for (const reason of new Set(why)) if (oneOf(RATE_REASONS, reason)) fields.push(`why:${top1}:${reason}`);
     }
+  } else if (e.e === "prefer" && top1 && typeof e.claimed === "string" && AREA_ID.test(e.claimed) && e.claimed !== top1) {
+    // 在結果頁點開第 2、3 名後，按「我覺得這個更像我」
+    fields.push(`prefer:${top1}>${e.claimed}`);
   } else if (e.e === "share" && oneOf(SHARE_METHODS, e.method)) {
     fields.push(`share:${e.method}`);
   } else if (e.e === "cta" && oneOf(CTA_KINDS, e.kind)) {
@@ -136,6 +139,8 @@ export interface QuizSummary {
   ratings: Record<string, Record<string, number>>;
   /** 判成 A 但自認 B：{ sumida: { taito: 2 } } */
   claims: Record<string, Record<string, number>>;
+  /** 點開第 2、3 名後覺得更像：{ sumida: { taito: 3 } } */
+  prefers: Record<string, Record<string, number>>;
   /** 不太像的原因：{ sumida: { rent: 1 } } */
   reasons: Record<string, Record<string, number>>;
   /** 每題選項分布：{ "3": { a: 10, b: 4 } } */
@@ -154,7 +159,7 @@ export interface QuizSummary {
 
 function parseSummary(month: string, raw: Record<string, number> | null, distinctCodes: number | null): QuizSummary {
   const summary: QuizSummary = {
-    month, funnel: {}, results: {}, ratings: {}, claims: {}, reasons: {}, options: {}, branches: {},
+    month, funnel: {}, results: {}, ratings: {}, claims: {}, prefers: {}, reasons: {}, options: {}, branches: {},
     share: {}, cta: {}, sharedViews: {}, versions: {}, distinctCodes,
   };
   const nested = (target: Record<string, Record<string, number>>, outer: string, inner: string, n: number) => {
@@ -168,6 +173,7 @@ function parseSummary(month: string, raw: Record<string, number> | null, distinc
     else if (kind === "r") summary.results[tail] = n;
     else if (kind === "rate") nested(summary.ratings, rest[0], rest[1], n);
     else if (kind === "claim") { const [from, to] = tail.split(">"); nested(summary.claims, from, to, n); }
+    else if (kind === "prefer") { const [from, to] = tail.split(">"); nested(summary.prefers, from, to, n); }
     else if (kind === "why") nested(summary.reasons, rest[0], rest[1], n);
     else if (kind === "o") nested(summary.options, rest[0], rest[1], n);
     else if (kind === "ob") nested((summary.branches[rest[0]] ||= {}), rest[1], rest[2], n);

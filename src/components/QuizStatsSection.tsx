@@ -178,6 +178,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
       const rated = sum(rating);
       const topClaim = Object.entries(quiz.claims[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
       const topReason = Object.entries(quiz.reasons[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
+      const topPrefer = Object.entries(quiz.prefers?.[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
       return {
         id,
         count: quiz.results[id] ?? 0,
@@ -189,6 +190,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         hit: pct((rating["2"] ?? 0) + (rating["1"] ?? 0), rated),
         topClaim,
         topReason,
+        topPrefer,
       };
     }).sort((a, b) => b.count - a.count || b.rated - a.rated);
   }, [quiz]);
@@ -227,7 +229,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
           <Target className="h-4 w-4 text-[#00A174]" /> 各區結果與準確度
         </h3>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-xs">
+          <table className="w-full min-w-[820px] text-xs">
             <thead>
               <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
                 <th className="px-3 py-2">結果</th>
@@ -237,6 +239,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                 <th className="px-3 py-2 text-right">覺得準</th>
                 <th className="px-3 py-2">不準時自認像</th>
                 <th className="px-3 py-2">最常見原因</th>
+                <th className="px-3 py-2">看了第 2、3 名改選</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F5F8F6]">
@@ -265,16 +268,19 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                   <td className="px-3 py-2 text-[#3F5147]">
                     {row.topReason ? `${REASON_LABEL[row.topReason[0]] ?? row.topReason[0]}（${row.topReason[1]}）` : <span className="text-[#8A9590]">—</span>}
                   </td>
+                  <td className="px-3 py-2 text-[#3F5147]">
+                    {row.topPrefer ? `${nameOf(row.topPrefer[0])}（${row.topPrefer[1]}）` : <span className="text-[#8A9590]">—</span>}
+                  </td>
                 </tr>
               ))}
               {!rows.length && (
-                <tr><td colSpan={7} className="px-3 py-8 text-center text-[#8A9590]">這個月還沒有人完成測驗</td></tr>
+                <tr><td colSpan={8} className="px-3 py-8 text-center text-[#8A9590]">這個月還沒有人完成測驗</td></tr>
               )}
             </tbody>
           </table>
         </div>
         <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-          「覺得準」＝超準＋有點像。紅字代表回饋裡覺得準的不到一半；「不準時自認像」是玩家覺得自己其實比較像的地方，是調整計分最直接的依據。
+          「覺得準」＝超準＋有點像。紅字代表回饋裡覺得準的不到一半；「不準時自認像」是玩家覺得自己其實比較像的地方，是調整計分最直接的依據；「看了第 2、3 名改選」是玩家點開另外兩個推薦後，按「我覺得這個更像我」最多的地方。
         </p>
       </div>
 
