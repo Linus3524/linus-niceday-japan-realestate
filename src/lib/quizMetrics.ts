@@ -14,10 +14,16 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
  *   linus:quiz:2026-10        → { "f:start": 120, "r:sumida": 9, "rate:sumida:2": 4,
  *                                 "claim:sumida>taito": 1, "why:sumida:rent": 1, "o:3:b": 40, ... }
  *   linus:quiz:codes:2026-10  → { "abcdabcbabcd": 2 }   （完整答案碼，之後可離線重算）
+ *   linus:quiz:ja:2026-10     → 同上欄位格式，只記日文介面作答的事件（zh 同理）
+ *
+ * 語言是「開始作答時選的語言」（測驗端記在本機），在結果頁切換語言不會改變歸屬。
+ * 語言分組從 2026-10-05 起才有；之前的資料只有合計。
  */
 
 const QUIZ_PREFIX = "linus:quiz:";
 const CODES_PREFIX = "linus:quiz:codes:";
+export const QUIZ_LANGS = ["zh", "ja"] as const;
+export type QuizLang = (typeof QUIZ_LANGS)[number];
 // 地區代號只用格式檢查（測驗增減地區時網站不必跟著改），
 // 所以要限制欄位總數，避免有人亂填代號把 hash 撐大。
 const MAX_FIELDS = 4000;
@@ -95,12 +101,20 @@ export async function recordQuizEvent(raw: unknown) {
       redis.hlen(key),
       code ? redis.hlen(codesKey) : Promise.resolve(0),
     ]);
+    const raw0 = raw as Record<string, unknown>;
+    const lang = oneOf(QUIZ_LANGS, raw0?.lang) ? raw0.lang : null;
+    const langKey = lang ? `${QUIZ_PREFIX}${lang}:${month}` : null;
     const pipe = redis.pipeline();
     // 超過上限時只累加既有欄位不再新增：用 HINCRBY 前先確認欄位存在太貴，
     // 所以直接整筆略過——到這個量級代表被灌水，少記幾筆可以接受。
     if (fieldCount < MAX_FIELDS) {
       for (const field of fields) pipe.hincrby(key, field, 1);
       pipe.expire(key, MONTH_TTL_SECONDS);
+      // 依語言另記一份（欄位相同），後台可以切換「全部／中文／日文」
+      if (langKey) {
+        for (const field of fields) pipe.hincrby(langKey, field, 1);
+        pipe.expire(langKey, MONTH_TTL_SECONDS);
+      }
     }
     if (code && codeCount < MAX_CODES) {
       pipe.hincrby(codesKey, code, 1);
@@ -133,15 +147,12 @@ export interface QuizSummary {
   sharedViews: Record<string, number>;
   versions: Record<string, number>;
   /** 本月不同答案組合的數量 */
-  distinctCodes: number;
+  distinctCodes: number | null;
+  /** 依作答語言分開的同一份統計（distinctCodes 只有合計才有，分語言時為 null） */
+  byLang?: Partial<Record<QuizLang, QuizSummary>>;
 }
 
-export async function getQuizSummary(month: string): Promise<QuizSummary> {
-  if (!redis) throw new Error("Usage metrics storage is not configured.");
-  const [raw, distinctCodes] = await Promise.all([
-    redis.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${month}`),
-    redis.hlen(`${CODES_PREFIX}${month}`),
-  ]);
+function parseSummary(month: string, raw: Record<string, number> | null, distinctCodes: number | null): QuizSummary {
   const summary: QuizSummary = {
     month, funnel: {}, results: {}, ratings: {}, claims: {}, reasons: {}, options: {}, branches: {},
     share: {}, cta: {}, sharedViews: {}, versions: {}, distinctCodes,
@@ -165,5 +176,17 @@ export async function getQuizSummary(month: string): Promise<QuizSummary> {
     else if (kind === "sv") summary.sharedViews[tail] = n;
     else if (kind === "v") summary.versions[tail] = n;
   }
+  return summary;
+}
+
+export async function getQuizSummary(month: string): Promise<QuizSummary> {
+  if (!redis) throw new Error("Usage metrics storage is not configured.");
+  const [raw, distinctCodes, ...langRaw] = await Promise.all([
+    redis.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${month}`),
+    redis.hlen(`${CODES_PREFIX}${month}`),
+    ...QUIZ_LANGS.map(lang => redis.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${lang}:${month}`)),
+  ]);
+  const summary = parseSummary(month, raw as Record<string, number> | null, distinctCodes as number);
+  summary.byLang = Object.fromEntries(QUIZ_LANGS.map((lang, k) => [lang, parseSummary(month, langRaw[k] as Record<string, number> | null, null)]));
   return summary;
 }

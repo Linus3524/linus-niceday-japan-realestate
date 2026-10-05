@@ -1,5 +1,5 @@
 import { Brain, Share2, Target } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import type { QuizSummary } from "../lib/quizMetrics";
 
 /**
@@ -81,7 +81,91 @@ function useQuizMeta() {
   return { areas, questions };
 }
 
+const LANG_TABS = [["all", "全部"], ["zh", "中文介面"], ["ja", "日文介面"]] as const;
+type LangTab = (typeof LANG_TABS)[number][0];
+
+/**
+ * 外層：語言切換＋中日對照。語言是玩家「開始作答時」選的介面語言；
+ * 2026-10-05 之前的資料沒有分語言，只會出現在「全部」。
+ */
 export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefined }) {
+  const [tab, setTab] = useState<LangTab>("all");
+  if (!quiz) {
+    return (
+      <section className="mb-8">
+        <Heading month="" />
+        <div className="border border-[#DDE3DF] bg-white p-5 text-xs text-[#66736C] shadow-sm">心理測驗統計讀取失敗。</div>
+      </section>
+    );
+  }
+  const view = tab === "all" ? quiz : quiz.byLang?.[tab] ?? null;
+  const heading = (
+    <>
+      <Heading month={quiz.month} />
+      <LangCompare quiz={quiz} tab={tab} onTab={setTab} />
+    </>
+  );
+  return view
+    ? <QuizStatsBody quiz={view} heading={heading} />
+    : <section className="mb-8">{heading}<p className="text-xs text-[#8A9590]">這個月還沒有分語言的資料。</p></section>;
+}
+
+function LangCompare({ quiz, tab, onTab }: { quiz: QuizSummary; tab: LangTab; onTab: (t: LangTab) => void }) {
+  const stat = (q: QuizSummary | undefined) => {
+    const f = q?.funnel ?? {};
+    const ratings = Object.values(q?.ratings ?? {});
+    const rated = ratings.reduce((t, r) => t + sum(r), 0);
+    const good = ratings.reduce((t, r) => t + (r["2"] ?? 0) + (r["1"] ?? 0), 0);
+    return { start: f.start ?? 0, finish: f.finish ?? 0, rated, good, share: sum(q?.share), line: q?.cta?.line ?? 0 };
+  };
+  const rows = [["中文介面", stat(quiz.byLang?.zh)], ["日文介面", stat(quiz.byLang?.ja)]] as const;
+  return (
+    <div className="mb-4 border border-[#DDE3DF] bg-white p-4 shadow-sm">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-bold text-[#1A2A22]">作答語言</span>
+        <div className="inline-flex border border-[#1A2A22]">
+          {LANG_TABS.map(([id, label]) => (
+            <button key={id} type="button" onClick={() => onTab(id)}
+              className={`px-3 py-1 text-[11px] ${tab === id ? "bg-[#1A2A22] text-white" : "bg-white text-[#1A2A22]"}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <span className="text-[10px] text-[#8A9590]">以開始作答時的介面語言計；切換後，下方所有數字都只看該語言</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[560px] text-xs">
+          <thead>
+            <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
+              <th className="px-3 py-1.5">語言</th>
+              <th className="px-3 py-1.5 text-right">開始</th>
+              <th className="px-3 py-1.5 text-right">完成</th>
+              <th className="px-3 py-1.5 text-right">完成率</th>
+              <th className="px-3 py-1.5 text-right">覺得準</th>
+              <th className="px-3 py-1.5 text-right">分享率</th>
+              <th className="px-3 py-1.5 text-right">加 LINE</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F5F8F6]">
+            {rows.map(([label, r]) => (
+              <tr key={label}>
+                <td className="px-3 py-1.5 font-medium text-[#1A2A22]">{label}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.start.toLocaleString()}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.finish.toLocaleString()}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.start ? `${pct(r.finish, r.start)}%` : "—"}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.rated ? `${pct(r.good, r.rated)}%（${r.rated}）` : "—"}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.finish ? `${pct(r.share, r.finish)}%` : "—"}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums">{r.line.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNode }) {
   const { areas, questions } = useQuizMeta();
   const nameOf = (id: string) => areas[id]?.name ?? id;
 
@@ -109,15 +193,6 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
     }).sort((a, b) => b.count - a.count || b.rated - a.rated);
   }, [quiz]);
 
-  if (!quiz) {
-    return (
-      <section className="mb-8">
-        <Heading month="" />
-        <div className="border border-[#DDE3DF] bg-white p-5 text-xs text-[#66736C] shadow-sm">心理測驗統計讀取失敗。</div>
-      </section>
-    );
-  }
-
   const f = quiz.funnel;
   const start = f.start ?? 0;
   const finish = f.finish ?? 0;
@@ -134,7 +209,7 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
 
   return (
     <section className="mb-8">
-      <Heading month={quiz.month} />
+      {heading}
 
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {funnelCards.map(([label, value, note]) => (
@@ -263,7 +338,7 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
               "重新測驗": f.retake ?? 0,
               "出現隱藏結果入口": f.secret_offer ?? 0,
               "翻開隱藏結果": f.secret_open ?? 0,
-              "不同答案組合": quiz.distinctCodes,
+              ...(quiz.distinctCodes != null ? { "不同答案組合": quiz.distinctCodes } : {}),
             }}
             labels={{}}
           />
