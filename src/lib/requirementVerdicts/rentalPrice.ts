@@ -15,11 +15,16 @@ export function buildListingPriceVerdict(
     };
   }
 
-  const allNotes = `${context?.specialNotes || ""} ${context?.otherConditions || ""} ${context?.freeRent || ""} ${context?.facilities || ""}`.toLowerCase();
+  // NFKC 先把全形英數（ｂｔ）、半形片假名中點（･）統一，圖紙上的寫法才比得到。
+  const allNotes = `${context?.specialNotes || ""} ${context?.otherConditions || ""} ${context?.freeRent || ""} ${context?.facilities || ""}`
+    .normalize("NFKC")
+    .toLowerCase();
   const hasFreeInternet = /インターネット無料|ネット無料|wifi無料|シーファイブ|高速ネット無料|光ネット無料/.test(allNotes);
   const hasAutoLock = /オートロック|自動ロック/.test(allNotes);
-  const hasSeparateBathToilet = /バス・トイレ別|バストイレ別|ｂｔ別|風呂トイレ別/.test(allNotes);
-  const hasIndependentWashbasin = /独立洗面|洗面化粧台|洗面所独立/.test(allNotes);
+  // ATBB 等圖紙常寫「B・T別」「BT別」；設備欄單寫「洗面台」即指獨立洗面台。
+  const hasSeparateBathToilet = /バス・?トイレ別|b・?t別|風呂・?トイレ別/.test(allNotes);
+  const hasIndependentWashbasin = /独立洗面|洗面化粧台|洗面所独立|シャンプードレッサー|洗面台/.test(allNotes);
+  const hasCornerUnit = /角部屋|角住戸|2面採光|二面採光|3面採光|三面採光/.test(allNotes);
   const hasBathroomDryer = /浴室乾燥|浴室暖房/.test(allNotes);
   const hasDeliveryBox = /宅配box|宅配ボックス|宅配ロッカー|宅配ｂｏｘ/.test(allNotes);
   const rawStructure = `${context?.structure || ""}`
@@ -87,7 +92,8 @@ export function buildListingPriceVerdict(
   let areaText: string | null = null;
   const areaSqm = context?.areaSqm;
   const roomType = context?.roomType;
-  if (areaSqm !== null && areaSqm !== undefined) {
+  // 行情已依面積換算時，面積差異已經反映在基準裡，不再重複加成。
+  if (areaSqm !== null && areaSqm !== undefined && !context?.sizeAdjusted) {
     if (roomType === "ldk1") {
       if (areaSqm >= 45) {
         areaPremiumRate = 0.10;
@@ -183,6 +189,10 @@ export function buildListingPriceVerdict(
     amenitiesRate += 0.025;
     amenitiesList.push("防盜自動門鎖");
   }
+  if (hasCornerUnit) {
+    amenitiesRate += 0.02;
+    amenitiesList.push("角間雙面採光");
+  }
   if (hasDeliveryBox) {
     amenitiesList.push("宅配箱");
   }
@@ -190,6 +200,10 @@ export function buildListingPriceVerdict(
     amenitiesList.push("浴室暖風乾燥機");
   }
   const internetText = hasFreeInternet ? "附免費光纖網路" : null;
+
+  const benchmarkLabel = range.sizeAdjustment
+    ? `同區依 ${range.sizeAdjustment.areaSqm}㎡ 面積換算行情（${range.sizeAdjustment.equivalentLabel}）`
+    : "同區同房型行情";
 
   // 綜合調整後的合理上限
   const totalJustifiedPremiumRate = agePremiumRate + walkPremiumRate + areaPremiumRate + floorPremiumRate + structureRate + renovationRate + amenitiesRate;
@@ -343,6 +357,16 @@ export function buildListingPriceVerdict(
     });
   }
 
+  if (hasCornerUnit) {
+    factors.push({
+      label: "角間雙面採光",
+      ratePercent: 2.0,
+      note: "角部屋多一面開窗，採光通風較好，與鄰戶共用牆也較少",
+      level: 2,
+      category: "amenity",
+    });
+  }
+
   if (hasFreeInternet) {
     factors.push({
       label: "附免費光纖網路",
@@ -393,7 +417,7 @@ export function buildListingPriceVerdict(
     return {
       status: "超值",
       headline: `每月總負擔 ${man(totalMonthlyCost)} 低於同區行情約 ${gapPercent}%，價格優勢顯著。`,
-      detail: `同區同房型行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。價格明顯親民實惠，建議留意確認是否有特殊解約約定、朝向日照限制或周邊環境等取捨。`,
+      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。價格明顯親民實惠，建議留意確認是否有特殊解約約定、朝向日照限制或周邊環境等取捨。`,
       factors,
       positiveFactorsSumPercent,
       negativeFactorsSumPercent,
@@ -411,7 +435,7 @@ export function buildListingPriceVerdict(
       headline: nearMedian
         ? `每月總負擔 ${man(totalMonthlyCost)} 貼近同區行情中位數，定價合宜健康。`
         : `每月總負擔 ${man(totalMonthlyCost)} 落在周邊市場正常行情區間（偏${belowMedian ? "實惠" : "高端"}），符合行情。`,
-      detail: `同區同房型行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。當前月額負擔與區域行情相符。`,
+      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。當前月額負擔與區域行情相符。`,
       factors,
       positiveFactorsSumPercent,
       negativeFactorsSumPercent,
@@ -439,7 +463,7 @@ export function buildListingPriceVerdict(
     return {
       status: "條件反映",
       headline: `每月總負擔 ${man(totalMonthlyCost)} 雖略高於同區行情均值，但綜合屋齡、站距與規格，屬於符合品質的「合理溢價」。`,
-      detail: `同區同房型基礎行情約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。${comparisonText}`,
+      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。${comparisonText}`,
       factors,
       positiveFactorsSumPercent,
       negativeFactorsSumPercent,

@@ -1,4 +1,5 @@
 import type { AuditFields, ListingAudit } from '../listingAudit.js';
+import type { RentSizeAdjustment } from '../requirementVerdicts/rentSizeEquivalence.js';
 import type { NetYieldBreakdown, calculateSaleInitialCosts } from '../listingExtraction.js';
 import type { RentalConditionFields } from '../rentalConditions.js';
 import type { CommuteRouteDetails } from '../rentAnalysis.js';
@@ -236,6 +237,7 @@ export interface AnalyzeListingResult {
     sourceUrl?: string;
     sourceLabel?: string;
     sourceDate?: string;
+    sizeAdjustment?: RentSizeAdjustment;
   } | null;
   verdict: {
     status: string;

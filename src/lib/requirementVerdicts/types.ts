@@ -1,3 +1,4 @@
+import type { RentSizeAdjustment } from './rentSizeEquivalence.js';
 import type { SaleListingBenchmark } from "../../data/saleListingMarket.js";
 
 
@@ -69,6 +70,8 @@ export interface RequestedRentRange {
   sourceUrl?: string;
   sourceLabel?: string;
   sourceDate?: string;
+  /** 面積明顯偏離格局代表面積時，改以面積換算行情的說明（見 rentSizeEquivalence）。 */
+  sizeAdjustment?: RentSizeAdjustment;
 }
 
 export interface RentSegment {
@@ -99,6 +102,8 @@ export interface ListingPriceVerdictContext {
   otherConditions?: string;
   freeRent?: string;
   facilities?: string;
+  /** 行情已依面積換算時為 true：面積差異已反映在基準裡，不再重複給面積加成。 */
+  sizeAdjusted?: boolean;
 }
 
 export interface RentalPriceFactor {

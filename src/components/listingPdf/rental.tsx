@@ -67,7 +67,7 @@ export function RentSections({ result }: { result: AnalyzeListingResult }) {
   return (
     <>
       {verdict ? (
-        <Card title="租金行情診斷" tag={range ? `同區同房型行情 ${yen(range.low)}～${yen(range.high)}（中位 ${yen(range.median)}）` : undefined}>
+        <Card title="租金行情診斷" tag={range ? `${range.sizeAdjustment ? `同區依 ${range.sizeAdjustment.areaSqm}㎡ 換算行情` : "同區同房型行情"} ${yen(range.low)}～${yen(range.high)}（中位 ${yen(range.median)}）` : undefined}>
           <View style={styles.bigNumberRow}>
             <Text style={styles.bigNumber}>{yen(monthly)}</Text>
             <Text style={styles.bigNumberNote}>／月（租金＋管理費）</Text>

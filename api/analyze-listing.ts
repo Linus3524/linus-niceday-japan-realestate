@@ -22,8 +22,9 @@ import {
 import { reconcileRentalListingText } from "../src/lib/rentalListingReconciliation.js";
 import { isPlausibleStationToken } from "../src/lib/transitPatterns.js";
 import { parseTransitAccessLegs, parseTransitStations, serializeTransitLegs, transitLegTotalMinutes, type TransitLeg } from "../src/lib/transitParser.js";
-import { type RentSearchCriteria } from "../src/lib/rentAnalysis.js";
+import { type RentSearchCriteria, type RoomType } from "../src/lib/rentAnalysis.js";
 import { buildListingPriceVerdict, estimateRequestedRent, type RequestedRentRange } from "../src/lib/requirementVerdict.js";
+import { buildSizeEquivalentRange } from "../src/lib/requirementVerdicts/rentSizeEquivalence.js";
 import {
   normalizeAddressText,
   normalizeStation,
@@ -1469,62 +1470,75 @@ export default async function handler(req: any, res: any) {
         );
       });
 
-      const criteria: Partial<RentSearchCriteria> = {
-        roomType: roomType ?? "k1",
-        district: district || undefined,
-        districts: district ? [district] : undefined,
-        station: validStations[0] ?? null,
-        stations: validStations.length > 0 ? validStations : undefined,
-      };
+      // 同一套來源順序（全國 At Home 公開行情 → 站內估價 → 行政區快照）取任一格局的行情，
+      // 面積換算時也要拿相鄰格局的行情，所以抽成函式重複使用。
+      const rangeForRoomType = (rt: RoomType | null): RequestedRentRange | null => {
+        if (!rt) return null;
+        const criteria: Partial<RentSearchCriteria> = {
+          roomType: rt,
+          district: district || undefined,
+          districts: district ? [district] : undefined,
+          station: validStations[0] ?? null,
+          stations: validStations.length > 0 ? validStations : undefined,
+        };
 
-      const nationwideRent = locationInfo && roomType
-        ? getNationwideRentBenchmark(locationInfo.region, locationInfo.district, roomType)
-        : null;
-      range = nationwideRent
-        ? {
-            low: nationwideRent.lowRentYen,
-            median: nationwideRent.medianRentYen,
-            high: nationwideRent.highRentYen,
-            sampleCount: 1,
-            basis: `${nationwideRent.district}・At Home 公開刊登行情`,
-            segments: [{
-              district: nationwideRent.district,
+        const nationwideRent = locationInfo
+          ? getNationwideRentBenchmark(locationInfo.region, locationInfo.district, rt)
+          : null;
+        let result: RequestedRentRange | null = nationwideRent
+          ? {
               low: nationwideRent.lowRentYen,
               median: nationwideRent.medianRentYen,
               high: nationwideRent.highRentYen,
-            }],
-            spread: false,
-            sourceUrl: nationwideRent.sourceUrl,
-            sourceLabel: nationwideRent.sourceLabel,
-            sourceDate: nationwideRent.capturedAt,
-          }
-        : roomType ? estimateRequestedRent(criteria as RentSearchCriteria) : null;
-
-      // 3. Fallback 防護網：若 estimateRequestedRent 仍為 null，但我們已知行政區與房型，直接由 rentRates / At Home 快照推估
-      if (!range && district && roomType) {
-        const normDist = normalizeAddressText(district);
-        const rate = rentRates.find(r => {
-          const rDist = normalizeAddressText(r.district);
-          return rDist.includes(normDist) || normDist.includes(rDist);
-        });
-        if (rate) {
-          const rentValMan = parseFloat((rate as any)[roomType] || rate.k1 || "0");
-          if (rentValMan > 0) {
-            const median = Math.round(rentValMan * 10000);
-            const low = Math.round(median * 0.88 / 1000) * 1000;
-            const high = Math.round(median * 1.12 / 1000) * 1000;
-            range = {
-              low,
-              median,
-              high,
               sampleCount: 1,
-              basis: `${rate.district} 行情基準`,
-              segments: [{ district: rate.district, low, median, high }],
+              basis: `${nationwideRent.district}・At Home 公開刊登行情`,
+              segments: [{
+                district: nationwideRent.district,
+                low: nationwideRent.lowRentYen,
+                median: nationwideRent.medianRentYen,
+                high: nationwideRent.highRentYen,
+              }],
               spread: false,
-            } as RequestedRentRange;
+              sourceUrl: nationwideRent.sourceUrl,
+              sourceLabel: nationwideRent.sourceLabel,
+              sourceDate: nationwideRent.capturedAt,
+            }
+          : estimateRequestedRent(criteria as RentSearchCriteria);
+
+        // Fallback 防護網：若 estimateRequestedRent 仍為 null，但我們已知行政區與房型，直接由 rentRates / At Home 快照推估
+        if (!result && district) {
+          const normDist = normalizeAddressText(district);
+          const rate = rentRates.find(r => {
+            const rDist = normalizeAddressText(r.district);
+            return rDist.includes(normDist) || normDist.includes(rDist);
+          });
+          if (rate) {
+            const rentValMan = parseFloat((rate as any)[rt] || rate.k1 || "0");
+            if (rentValMan > 0) {
+              const median = Math.round(rentValMan * 10000);
+              const low = Math.round(median * 0.88 / 1000) * 1000;
+              const high = Math.round(median * 1.12 / 1000) * 1000;
+              result = {
+                low,
+                median,
+                high,
+                sampleCount: 1,
+                basis: `${rate.district} 行情基準`,
+                segments: [{ district: rate.district, low, median, high }],
+                spread: false,
+              } as RequestedRentRange;
+            }
           }
         }
-      }
+        return result;
+      };
+
+      range = rangeForRoomType(roomType);
+
+      // 面積明顯偏離格局代表面積（例如 55㎡ 的 1LDK）時，格局行情對應不到實際規模，
+      // 改用相鄰格局行情依面積換算，避免「大 1LDK 一律判偏貴」。
+      const sizeEquivalent = buildSizeEquivalentRange(roomType, area, range, rangeForRoomType);
+      if (sizeEquivalent) range = sizeEquivalent.range;
 
       // 計算最短徒步分鐘數與建築屋齡（供多因子行情校準）
       const minWalkMinutes = (() => {
@@ -1548,6 +1562,7 @@ export default async function handler(req: any, res: any) {
         walkMinutes: minWalkMinutes,
         areaSqm: area,
         roomType,
+        sizeAdjusted: Boolean(sizeEquivalent),
         structure: extracted.structure,
         floor: floorInfo.floor,
         totalFloors: floorInfo.totalFloors,

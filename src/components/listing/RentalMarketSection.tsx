@@ -60,7 +60,11 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
             <div className="mt-3 flex flex-col gap-2.5 border border-[#DDE3DF] bg-[#F5F8F6] p-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[#66736C]">同區同房型公開行情：</span>
+                  <span className="text-[#66736C]">
+                    {result.range.sizeAdjustment
+                      ? `同區依面積換算行情（${result.range.sizeAdjustment.areaSqm}㎡，${result.range.sizeAdjustment.equivalentLabel}）：`
+                      : "同區同房型公開行情："}
+                  </span>
                   <span className="font-mono font-bold text-[#1A2A22]">
                     {formatYen(result.range.low)} ～ {formatYen(result.range.high)}
                   </span>
@@ -71,6 +75,13 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                     {formatYen(result.range.median)}
                   </span>
                 </div>
+                {result.range.sizeAdjustment && (
+                  <p className="w-full text-[11px] leading-relaxed text-[#66736C]">
+                    {result.range.sizeAdjustment.direction === "oversize"
+                      ? `一般 ${result.range.sizeAdjustment.layoutLabel} 約 ${result.range.sizeAdjustment.layoutTypicalAreaSqm}㎡（同區中位 ${formatYen(result.range.sizeAdjustment.layoutMedian)}），本案面積明顯較大，改依面積換算；房間數較同面積格局少，已扣 ${Math.abs(result.range.sizeAdjustment.layoutAdjustPercent)}%。`
+                      : `一般 ${result.range.sizeAdjustment.layoutLabel} 約 ${result.range.sizeAdjustment.layoutTypicalAreaSqm}㎡（同區中位 ${formatYen(result.range.sizeAdjustment.layoutMedian)}），本案面積明顯較小，改依面積換算。`}
+                  </p>
+                )}
               </div>
 
               {result.range?.sourceUrl && (

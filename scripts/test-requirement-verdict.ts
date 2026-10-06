@@ -5,6 +5,7 @@ import {
   axisImpactLevel,
   buildAxisVerdicts,
   buildOverallVerdict,
+  buildListingPriceVerdict,
   buildSalePriceVerdict,
   hasKnownCommuteStations,
   resolveSearchScope
@@ -20,6 +21,8 @@ import {
   reinsNewListingPremiumRate,
 } from "../src/data/reinsSaleMarket";
 import { getSaleListingBenchmark } from "../src/data/saleListingMarket";
+import { buildSizeEquivalentRange } from "../src/lib/requirementVerdicts/rentSizeEquivalence";
+import type { RequestedRentRange } from "../src/lib/requirementVerdicts/types";
 import { resolveDistrictAndRegion } from "../api/analyze-listing";
 
 const base: RentSearchCriteria = {
@@ -620,6 +623,54 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       const petFactor = verdict.factors.find(f => f.label === "寵物飼育");
       assert.ok(petFactor, "寵物飼育可應列入因子");
       assert.equal(petFactor?.ratePercent, 2);
+    }
+  },
+  {
+    name: "大坪數 1LDK 依面積換算行情，不因格局判偏貴",
+    run: () => {
+      // 固定行情數字，不吃每月更新的快照（避免行情一動測試就壞）
+      const mk = (median: number): RequestedRentRange => ({
+        low: Math.round(median * 0.94), median, high: Math.round(median * 1.04),
+        sampleCount: 1, basis: "測試區", segments: [{ district: "測試區", low: median, median, high: median }], spread: false,
+      });
+      const table: Record<string, RequestedRentRange> = { k1: mk(108_000), ldk1: mk(154_000), ldk2: mk(195_000), ldk3: mk(283_000) };
+      const rangeFor = (rt: string) => table[rt] ?? null;
+      const ctx = { ageYears: 14, walkMinutes: 10, roomType: "ldk1", structure: "RC", floor: 6, totalFloors: 10,
+        facilities: "B・T別,シャワー,追焚機能,洗面台,オートロック,宅配BOX,角部屋,2面採光" };
+
+      // 55㎡ 的 1LDK（池袋ユニブール案例）：換算到 2LDK～3LDK 之間並扣格局 4%
+      const sized = buildSizeEquivalentRange("ldk1", 55.28, table.ldk1, rangeFor);
+      assert.ok(sized, "55㎡ 1LDK 應啟用面積換算");
+      assert.equal(sized!.adjustment.direction, "oversize");
+      assert.ok(sized!.range.median > table.ldk2.median, `換算中位應高於 2LDK 中位，實得 ${sized!.range.median}`);
+      const verdict = buildListingPriceVerdict(200_000, sized!.range, { ...ctx, areaSqm: 55.28, sizeAdjusted: true });
+      assert.doesNotMatch(verdict.status, /偏高/, `55㎡ 1LDK 20 萬不應判偏高：${verdict.headline}`);
+      assert.ok(!verdict.factors?.some(f => f.category === "space"), "已依面積換算就不可再重複給面積加成");
+
+      // 對照：沿用格局行情會判偏高（這就是要修的誤判）
+      const naive = buildListingPriceVerdict(200_000, table.ldk1, { ...ctx, facilities: "", areaSqm: 55.28 });
+      assert.match(naive.status, /偏高/);
+
+      // 正常大小（40㎡）的 1LDK 不換算
+      assert.equal(buildSizeEquivalentRange("ldk1", 40, table.ldk1, rangeFor), null);
+
+      // 反方向：38㎡ 的 2LDK 面積偏小，換算中位要低於 2LDK 中位且不扣格局折讓
+      const small = buildSizeEquivalentRange("ldk2", 38, table.ldk2, rangeFor);
+      assert.ok(small && small.adjustment.direction === "undersize");
+      assert.ok(small!.range.median < table.ldk2.median);
+      assert.equal(small!.adjustment.layoutAdjustPercent, 0);
+    }
+  },
+  {
+    name: "圖紙設備寫法 B・T別／洗面台／角部屋 都要算到加成",
+    run: () => {
+      const range: RequestedRentRange = { low: 90_000, median: 100_000, high: 105_000, sampleCount: 1, basis: "測試區", segments: [], spread: false };
+      for (const facilities of ["B・T別,洗面台,角部屋", "ＢＴ別、独立洗面台、2面採光", "b･t別 シャンプードレッサー 角住戸"]) {
+        const labels = buildListingPriceVerdict(100_000, range, { facilities }).factors?.map(f => f.label) ?? [];
+        assert.ok(labels.includes("乾濕分離（BT別）"), `${facilities} 應辨識乾濕分離`);
+        assert.ok(labels.includes("獨立洗面台"), `${facilities} 應辨識獨立洗面台`);
+        assert.ok(labels.includes("角間雙面採光"), `${facilities} 應辨識角間`);
+      }
     }
   }
 ];
