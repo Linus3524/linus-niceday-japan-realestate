@@ -16,6 +16,10 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
  *   linus:quiz:codes:2026-10  → { "abcdabcbabcd": 2 }   （完整答案碼，之後可離線重算）
  *   linus:quiz:ja:2026-10     → 同上欄位格式，只記日文介面作答的事件（zh 同理）
  *
+ * 計分版本（sr）：測驗調整各區判定方式時會換一個日期代號（例如 2026-10-11），完成與回饋事件帶著它，
+ * 另記 "sr:<版本>"（完成數）、"srr:<版本>:<區>"（各區次數）、"srate:<版本>:<區>:<評分>"（回饋），
+ * 後台可以比較調整前後各區的出現比例與準確度。2026-10-11 之前的事件沒有版本，後台顯示為「未標記」。
+ *
  * 語言是「開始作答時選的語言」（測驗端記在本機），在結果頁切換語言不會改變歸屬。
  * 語言分組從 2026-10-05 起才有；之前的資料只有合計。
  */
@@ -33,6 +37,7 @@ const AREA_ID = /^[a-z]{2,16}$/;
 const ANSWER_CODE = /^[a-d]{8,16}$/;
 const VERSION = /^\d+\.\d+\.\d+$/;
 const VARIANT_ID = /^[a-z_]{2,20}$/;
+const SCORING_REV = /^\d{4}-\d{2}-\d{2}[a-z]?$/;
 const RATE_REASONS = ["rent", "vibe", "commute", "stereo"] as const;
 const SHARE_METHODS = ["native", "copy", "image"] as const;
 const CTA_KINDS = ["line", "wechat", "threads", "instagram", "facebook", "email", "site"] as const;
@@ -53,11 +58,13 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
   const fields: string[] = [];
   let code: string | null = null;
   const top1 = typeof e.top1 === "string" && (AREA_ID.test(e.top1)) ? e.top1 : null;
+  const rev = typeof e.sr === "string" && SCORING_REV.test(e.sr) ? e.sr : null;
 
   if (oneOf(FUNNEL_EVENTS, e.e)) {
     fields.push(`f:${e.e}`);
     if (e.e === "finish") {
       if (top1) fields.push(`r:${top1}`);
+      if (rev) { fields.push(`sr:${rev}`); if (top1) fields.push(`srr:${rev}:${top1}`); }
       if (e.secret_offer === true) fields.push("f:secret_offer");
       if (typeof e.ver === "string" && VERSION.test(e.ver)) fields.push(`v:${e.ver}`);
       if (typeof e.code === "string" && ANSWER_CODE.test(e.code)) {
@@ -73,6 +80,7 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
     if (e.e === "shared_view" && top1) fields.push(`sv:${top1}`);
   } else if (e.e === "rate" && top1 && (e.v === 0 || e.v === 1 || e.v === 2)) {
     fields.push(`rate:${top1}:${e.v}`);
+    if (rev) fields.push(`srate:${rev}:${top1}:${e.v}`);
     if (e.v === 0) {
       if (typeof e.claimed === "string" && AREA_ID.test(e.claimed) && e.claimed !== top1) {
         fields.push(`claim:${top1}>${e.claimed}`);
@@ -151,6 +159,8 @@ export interface QuizSummary {
   cta: Record<string, number>;
   sharedViews: Record<string, number>;
   versions: Record<string, number>;
+  /** 計分版本：{ "2026-10-11": { finish: 120, results: { koto: 9 }, ratings: { koto: { "2": 1 } } } } */
+  scoring: Record<string, { finish: number; results: Record<string, number>; ratings: Record<string, Record<string, number>> }>;
   /** 本月不同答案組合的數量 */
   distinctCodes: number | null;
   /** 依作答語言分開的同一份統計（distinctCodes 只有合計才有，分語言時為 null） */
@@ -160,7 +170,7 @@ export interface QuizSummary {
 function parseSummary(month: string, raw: Record<string, number> | null, distinctCodes: number | null): QuizSummary {
   const summary: QuizSummary = {
     month, funnel: {}, results: {}, ratings: {}, claims: {}, prefers: {}, reasons: {}, options: {}, branches: {},
-    share: {}, cta: {}, sharedViews: {}, versions: {}, distinctCodes,
+    share: {}, cta: {}, sharedViews: {}, versions: {}, scoring: {}, distinctCodes,
   };
   const nested = (target: Record<string, Record<string, number>>, outer: string, inner: string, n: number) => {
     (target[outer] ||= {})[inner] = n;
@@ -181,6 +191,12 @@ function parseSummary(month: string, raw: Record<string, number> | null, distinc
     else if (kind === "cta") summary.cta[tail] = n;
     else if (kind === "sv") summary.sharedViews[tail] = n;
     else if (kind === "v") summary.versions[tail] = n;
+    else if (kind === "sr" || kind === "srr" || kind === "srate") {
+      const rev = (summary.scoring[rest[0]] ||= { finish: 0, results: {}, ratings: {} });
+      if (kind === "sr") rev.finish = n;
+      else if (kind === "srr") rev.results[rest[1]] = n;
+      else nested(rev.ratings, rest[1], rest[2], n);
+    }
   }
   return summary;
 }

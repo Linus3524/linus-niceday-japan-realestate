@@ -281,6 +281,8 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         </p>
       </div>
 
+      <ScoringCompare quiz={quiz} nameOf={nameOf} />
+
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
         {/* 每題選項分布 */}
         <div className="border border-[#DDE3DF] bg-white p-5 shadow-sm">
@@ -351,6 +353,90 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * 計分版本比較：測驗每次調整各區判定方式會換一個日期代號，這裡並排看各版本的出現比例與「覺得準」。
+ * 「未標記」＝當月總數扣掉有版本的部分（2026-10-11 之前的事件沒有帶版本）。
+ */
+function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: string) => string }) {
+  const revs = Object.keys(quiz.scoring ?? {}).sort();
+  if (!revs.length) return null;
+  const minus = (a: Record<string, number>, bs: Record<string, number>[]) =>
+    Object.fromEntries(Object.entries(a).map(([k, v]) => [k, Math.max(0, v - bs.reduce((t, b) => t + (b[k] ?? 0), 0))]));
+  const tagged = revs.map(r => quiz.scoring[r]);
+  const untaggedResults = minus(quiz.results, tagged.map(t => t.results));
+  const ratingKeys = new Set(Object.keys(quiz.ratings));
+  const untaggedRatings = Object.fromEntries([...ratingKeys].map(id =>
+    [id, minus(quiz.ratings[id] ?? {}, tagged.map(t => t.ratings[id] ?? {}))]));
+  const cols = [
+    ...(sum(untaggedResults) > 0 ? [{ key: "untagged", label: "未標記（10/11 前）", results: untaggedResults, ratings: untaggedRatings }] : []),
+    ...revs.map(r => ({ key: r, label: r, results: quiz.scoring[r].results, ratings: quiz.scoring[r].ratings })),
+  ];
+  const latest = cols[cols.length - 1];
+  const ids = [...new Set(cols.flatMap(c => Object.keys(c.results)))]
+    .sort((a, b) => (latest.results[b] ?? 0) - (latest.results[a] ?? 0) || (cols[0].results[b] ?? 0) - (cols[0].results[a] ?? 0));
+  const share = (c: (typeof cols)[number], id: string) => { const total = sum(c.results); return total ? ((c.results[id] ?? 0) / total) * 100 : 0; };
+  const prev = cols.length > 1 ? cols[cols.length - 2] : null;
+  const shown = [...cols].reverse(); // 最新版本放最左邊
+  const MIN_RATED = 5; // 回饋太少時「準」沒有參考價值，不顯示百分比
+  const cell = (c: (typeof cols)[number], id: string) => {
+    const n = c.results[id] ?? 0, r = c.ratings[id] ?? {}, rated = sum(r);
+    const good = (r["2"] ?? 0) + (r["1"] ?? 0);
+    return (
+      <td key={c.key} className="px-3 py-1.5 text-right tabular-nums">
+        <div><span className="font-jost font-bold text-[#1A2A22]">{share(c, id).toFixed(1)}%</span><span className="ml-1 text-[10px] text-[#8A9590]">{n}</span></div>
+        <div className="text-[10px]">
+          {rated >= MIN_RATED
+            ? <span className={pct(good, rated) < 50 ? "text-[#E94E2B]" : "text-[#00A174]"}>準 {pct(good, rated)}%（{rated}）</span>
+            : <span className="text-[#B5BFBA]">{rated ? `回饋 ${rated} 筆` : "—"}</span>}
+        </div>
+      </td>
+    );
+  };
+  const diff = (id: string) => {
+    if (!prev) return null;
+    const d = share(latest, id) - share(prev, id);
+    const big = Math.abs(d) >= 1;
+    return (
+      <td className={`px-3 py-1.5 text-right font-jost tabular-nums ${!big ? "text-[#B5BFBA]" : d > 0 ? "text-[#0284C7]" : "text-[#E94E2B]"}`}>
+        {d > 0 ? "▲" : d < 0 ? "▼" : ""}{Math.abs(d).toFixed(1)}
+      </td>
+    );
+  };
+  return (
+    <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+      <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
+        <Target className="h-4 w-4 text-[#0284C7]" /> 計分版本比較（各區出現比例）
+      </h3>
+      <div className="max-h-[560px] overflow-auto">
+        <table className="w-full min-w-[480px] text-xs">
+          <thead className="sticky top-0 z-10 bg-white">
+            <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
+              <th className="px-3 py-1.5 align-bottom">結果</th>
+              {shown.map((c, k) => [(
+                <th key={c.key} className="px-3 py-1.5 text-right align-bottom">
+                  <div className="whitespace-nowrap">{c.label}</div>
+                  <div className="font-normal text-[10px] text-[#8A9590]">{sum(c.results).toLocaleString()} 人</div>
+                </th>
+              ), k === 0 && prev ? <th key="diff" className="whitespace-nowrap px-3 py-1.5 text-right align-bottom">變化<div className="font-normal text-[10px] text-[#8A9590]">比前一版</div></th> : null])}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F5F8F6]">
+            {ids.map(id => (
+              <tr key={id}>
+                <td className="w-[28%] whitespace-nowrap px-3 py-1.5 text-[#3F5147]">{nameOf(id)}</td>
+                {shown.map((c, k) => [cell(c, id), k === 0 ? diff(id) : null])}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+        測驗每次調整各區判定方式會換一個版本代號（日期）。比較同一區在不同版本的出現比例，看調整有沒有達到效果；最新版本在最左邊；「變化」是最新版本減前一版的百分點，▲變多、▼變少（差 1 以上才上色）。「準」是該版本玩家回饋覺得準的比例，括號是回饋人數，少於 5 筆不算百分比。依最新版本的出現比例排序。
+      </p>
+    </div>
   );
 }
 
