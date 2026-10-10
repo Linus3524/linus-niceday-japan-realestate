@@ -6,7 +6,7 @@ import type { QuizSummary } from "../lib/quizMetrics";
  * 後台「心理測驗」區塊（你是哪種東京區民？，網址 /quiz/）。
  *
  * 地區名稱與「系」不寫死在網站裡：測驗是另一個專案，增減地區時網站不必跟著改。
- * 直接讀 /quiz/data/*.json（經 rewrite 轉接，與後台同源）；讀不到就顯示地區代號。
+ * 讀測驗 API 的公開資料 /quiz/api/quiz?op=public（經 rewrite 轉接，與後台同源）；讀不到就顯示地區代號。
  */
 
 interface AreaInfo { name: string; family: string }
@@ -56,18 +56,15 @@ function useQuizMeta() {
   const [questions, setQuestions] = useState<QuestionInfo[]>([]);
   useEffect(() => {
     let alive = true;
-    Promise.all([
-      fetch("/quiz/data/areas.json").then(r => r.json()),
-      fetch("/quiz/data/families.json").then(r => r.json()),
-      fetch("/quiz/data/questions.json").then(r => r.json()),
-    ]).then(([areaDoc, famDoc, qDoc]) => {
+    // 測驗的公開資料（地名、系、題目文字）：計分與結果文案不公開後，data/*.json 已不在網站上，改讀測驗 API
+    fetch("/quiz/api/quiz?op=public&lang=zh").then(r => r.json()).then(pub => {
       if (!alive) return;
       const familyOf = (id: string) =>
-        (famDoc.families as { name: string; members: string[] }[]).find(f => f.members.includes(id))?.name ?? "";
+        (pub.families as { name: string; members: string[] }[]).find(f => f.members.includes(id))?.name ?? "";
       const map: Record<string, AreaInfo> = { secret: { name: "隱藏結果", family: "" } };
-      for (const area of areaDoc.areas ?? areaDoc) map[area.id] = { name: area.name_zh, family: familyOf(area.id) };
+      for (const area of pub.areas) map[area.id] = { name: area.name_zh, family: familyOf(area.id) };
       setAreas(map);
-      setQuestions((qDoc.questions as any[]).map(q => ({
+      setQuestions((pub.questions as any[]).map(q => ({
         id: q.id,
         prompt: q.type === "followup" ? "（追問題：依前面答案分成不同版本）" : q.prompt,
         options: q.type === "followup" ? [] : q.options.map((o: any) => ({ id: o.id, label: String(o.label).split("\n")[0] })),
