@@ -282,6 +282,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
       </div>
 
       <SourceTable quiz={quiz} />
+      <ResidencyTable quiz={quiz} nameOf={nameOf} />
       <ScoringCompare quiz={quiz} nameOf={nameOf} />
 
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
@@ -361,6 +362,73 @@ const SOURCE_LABEL: Record<string, string> = {
   threads: "Threads", instagram: "Instagram", facebook: "Facebook", line: "LINE", x: "X（Twitter）", google: "Google 搜尋",
   share: "朋友分享的結果連結", site: "住好日官網", direct: "直接進入（無來源）", other: "其他網站", ig: "Instagram（?from=ig）",
 };
+
+const LIVE_GROUPS = [["jp", "住在日本"], ["plan", "打算搬去日本"], ["none", "沒有計畫"]] as const;
+
+/** 玩家居住狀況：各族群人數、整體覺得準，以及各區在不同族群的「覺得準」。2026-10-11 起才有資料。 */
+function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: string) => string }) {
+  const res = quiz.residency ?? {};
+  const answered = LIVE_GROUPS.reduce((t, [k]) => t + (res[k]?.count ?? 0), 0);
+  if (!answered) return null;
+  const MIN = 5;
+  const hit = (r: Record<string, number> | undefined) => {
+    const rated = sum(r), good = (r?.["2"] ?? 0) + (r?.["1"] ?? 0);
+    return { rated, good, text: rated >= MIN ? `${pct(good, rated)}%` : rated ? `${rated} 筆` : "—", ok: rated >= MIN, low: rated >= MIN && pct(good, rated) < 50 };
+  };
+  const groupAll = (k: string) => {
+    const merged: Record<string, number> = {};
+    for (const r of Object.values(res[k]?.ratings ?? {})) for (const [v, n] of Object.entries(r)) merged[v] = (merged[v] ?? 0) + n;
+    return merged;
+  };
+  // 各區：至少一個族群有 5 筆以上回饋才列出，依回饋總數排序
+  const areaIds = [...new Set(LIVE_GROUPS.flatMap(([k]) => Object.keys(res[k]?.ratings ?? {})))]
+    .filter(id => LIVE_GROUPS.some(([k]) => sum(res[k]?.ratings?.[id]) >= MIN))
+    .sort((a, b) => LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[b]), 0) - LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[a]), 0));
+  const cellCls = (h: ReturnType<typeof hit>) => `px-3 py-1.5 text-right tabular-nums ${!h.ok ? "text-[#B5BFBA]" : h.low ? "font-bold text-[#E94E2B]" : "text-[#1A2A22]"}`;
+  return (
+    <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+      <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
+        <Target className="h-4 w-4 text-[#9333EA]" /> 玩家居住狀況
+      </h3>
+      <div className="mb-4 grid grid-cols-3 gap-2">
+        {LIVE_GROUPS.map(([k, label]) => {
+          const n = res[k]?.count ?? 0, h = hit(groupAll(k));
+          return (
+            <div key={k} className="border border-[#ECEFEC] p-3">
+              <div className="text-[11px] text-[#66736C]">{label}</div>
+              <div className="mt-0.5 font-jost text-xl font-bold tabular-nums text-[#1A2A22]">{n.toLocaleString()}<span className="ml-1 text-[11px] font-normal text-[#8A9590]">{pct(n, answered)}%</span></div>
+              <div className="text-[10px] text-[#8A9590]">覺得準 {h.ok ? `${pct(h.good, h.rated)}%（${h.rated}）` : h.rated ? `回饋 ${h.rated} 筆` : "—"}</div>
+            </div>
+          );
+        })}
+      </div>
+      {areaIds.length > 0 && (
+        <div className="max-h-[360px] overflow-auto">
+          <table className="w-full text-xs">
+            <thead className="sticky top-0 bg-white">
+              <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
+                <th className="whitespace-nowrap px-3 py-1.5">各區覺得準</th>
+                {LIVE_GROUPS.map(([k, label]) => <th key={k} className="whitespace-nowrap px-3 py-1.5 text-right">{label}</th>)}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#F5F8F6]">
+              {areaIds.map(id => (
+                <tr key={id}>
+                  <td className="whitespace-nowrap px-3 py-1.5 text-[#3F5147]">{nameOf(id)}</td>
+                  {LIVE_GROUPS.map(([k]) => { const h = hit(res[k]?.ratings?.[id]); return <td key={k} className={cellCls(h)}>{h.text}</td>; })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+        玩家在結果頁評分後、或分享前的小視窗裡自選（每台裝置問一次，可略過），所以只代表有回答的人。住在日本的人比較懂各區實際樣子：他們覺得不準的區，是計分最該調整的地方。
+        各區只列出某個族群有 5 筆以上回饋的；少於 5 筆只顯示筆數、紅字是覺得準不到一半。2026-10-11 起才有這項資料。
+      </p>
+    </div>
+  );
+}
 
 /** 作答從哪裡進來：開始、完成與完成率。2026-10-11 之後才有資料。 */
 function SourceTable({ quiz }: { quiz: QuizSummary }) {

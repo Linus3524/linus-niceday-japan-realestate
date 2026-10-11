@@ -18,6 +18,8 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
  *
  * 進入來源（src）：開始作答記 "src:<來源>"、完成記 "srcf:<來源>"（threads、instagram、share＝朋友分享的連結、site＝官網、direct…；
  *   也接受網址上的 ?from= 自訂標記），後台看哪個管道帶來的玩家多、完成率高。
+ * 居住狀況（live）：玩家自選「住在日本 jp／打算搬去 plan／沒有計畫 none」（每台裝置問一次，可略過）。
+ *   回答時記 "live:<k>"、"liver:<k>:<區>"；評分（不論先後）記 "liverate:<k>:<區>:<評分>"，後台比較不同族群覺得準不準。
  * 計分版本（sr）：測驗調整各區判定方式時會換一個日期代號（例如 2026-10-11），完成與回饋事件帶著它，
  * 另記 "sr:<版本>"（完成數）、"srr:<版本>:<區>"（各區次數）、"srate:<版本>:<區>:<評分>"（回饋），
  * 後台可以比較調整前後各區的出現比例與準確度。2026-10-11 之前的事件沒有版本，後台顯示為「未標記」。
@@ -41,6 +43,7 @@ const VERSION = /^\d+\.\d+\.\d+$/;
 const VARIANT_ID = /^[a-z_]{2,20}$/;
 const SCORING_REV = /^\d{4}-\d{2}-\d{2}[a-z]?$/;
 const SOURCE_ID = /^[a-z0-9_-]{1,20}$/;
+const LIVE_KINDS = ["jp", "plan", "none"] as const;
 const RATE_REASONS = ["rent", "vibe", "commute", "stereo"] as const;
 const SHARE_METHODS = ["native", "copy", "image"] as const;
 const CTA_KINDS = ["line", "wechat", "threads", "instagram", "facebook", "email", "site"] as const;
@@ -84,8 +87,14 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
       }
     }
     if (e.e === "shared_view" && top1) fields.push(`sv:${top1}`);
+  } else if (e.e === "live" && oneOf(LIVE_KINDS, e.k)) {
+    // 居住狀況：先評分再回答時帶著評分（v），交叉統計
+    fields.push(`live:${e.k}`);
+    if (top1) fields.push(`liver:${e.k}:${top1}`);
+    if (top1 && (e.v === 0 || e.v === 1 || e.v === 2)) fields.push(`liverate:${e.k}:${top1}:${e.v}`);
   } else if (e.e === "rate" && top1 && (e.v === 0 || e.v === 1 || e.v === 2)) {
     fields.push(`rate:${top1}:${e.v}`);
+    if (oneOf(LIVE_KINDS, e.live)) fields.push(`liverate:${e.live}:${top1}:${e.v}`);
     if (rev) fields.push(`srate:${rev}:${top1}:${e.v}`);
     if (e.v === 0) {
       if (typeof e.claimed === "string" && AREA_ID.test(e.claimed) && e.claimed !== top1) {
@@ -166,6 +175,8 @@ export interface QuizSummary {
   sharedViews: Record<string, number>;
   versions: Record<string, number>;
   /** 計分版本：{ "2026-10-11": { finish: 120, results: { koto: 9 }, ratings: { koto: { "2": 1 } } } } */
+  /** 居住狀況：{ jp: { count: 30, results: { koto: 3 }, ratings: { koto: { "2": 1 } } } } */
+  residency: Record<string, { count: number; results: Record<string, number>; ratings: Record<string, Record<string, number>> }>;
   /** 進入來源：{ threads: { start: 120, finish: 98 } } */
   sources: Record<string, { start: number; finish: number }>;
   scoring: Record<string, { finish: number; results: Record<string, number>; ratings: Record<string, Record<string, number>> }>;
@@ -178,7 +189,7 @@ export interface QuizSummary {
 function parseSummary(month: string, raw: Record<string, number> | null, distinctCodes: number | null): QuizSummary {
   const summary: QuizSummary = {
     month, funnel: {}, results: {}, ratings: {}, claims: {}, prefers: {}, reasons: {}, options: {}, branches: {},
-    share: {}, cta: {}, sharedViews: {}, versions: {}, sources: {}, scoring: {}, distinctCodes,
+    share: {}, cta: {}, sharedViews: {}, versions: {}, sources: {}, residency: {}, scoring: {}, distinctCodes,
   };
   const nested = (target: Record<string, Record<string, number>>, outer: string, inner: string, n: number) => {
     (target[outer] ||= {})[inner] = n;
@@ -199,6 +210,12 @@ function parseSummary(month: string, raw: Record<string, number> | null, distinc
     else if (kind === "cta") summary.cta[tail] = n;
     else if (kind === "sv") summary.sharedViews[tail] = n;
     else if (kind === "v") summary.versions[tail] = n;
+    else if (kind === "live" || kind === "liver" || kind === "liverate") {
+      const g = (summary.residency[rest[0]] ||= { count: 0, results: {}, ratings: {} });
+      if (kind === "live") g.count = n;
+      else if (kind === "liver") g.results[rest[1]] = n;
+      else nested(g.ratings, rest[1], rest[2], n);
+    }
     else if (kind === "src" || kind === "srcf") {
       const row = (summary.sources[tail] ||= { start: 0, finish: 0 });
       if (kind === "src") row.start = n; else row.finish = n;
