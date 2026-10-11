@@ -281,6 +281,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         </p>
       </div>
 
+      <SourceTable quiz={quiz} />
       <ScoringCompare quiz={quiz} nameOf={nameOf} />
 
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
@@ -353,6 +354,58 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         </div>
       </div>
     </section>
+  );
+}
+
+const SOURCE_LABEL: Record<string, string> = {
+  threads: "Threads", instagram: "Instagram", facebook: "Facebook", line: "LINE", x: "X（Twitter）", google: "Google 搜尋",
+  share: "朋友分享的結果連結", site: "住好日官網", direct: "直接進入（無來源）", other: "其他網站", ig: "Instagram（?from=ig）",
+};
+
+/** 作答從哪裡進來：開始、完成與完成率。2026-10-11 之後才有資料。 */
+function SourceTable({ quiz }: { quiz: QuizSummary }) {
+  const rows = Object.entries(quiz.sources ?? {}).sort((a, b) => b[1].start - a[1].start || b[1].finish - a[1].finish);
+  if (!rows.length) return null;
+  const totalStart = rows.reduce((t, [, r]) => t + r.start, 0);
+  const max = Math.max(...rows.map(([, r]) => r.start), 1);
+  return (
+    <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
+      <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
+        <Share2 className="h-4 w-4 text-[#E94E2B]" /> 作答從哪裡進來
+      </h3>
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
+              <th className="px-3 py-1.5">來源</th>
+              <th className="px-3 py-1.5">開始作答</th>
+              <th className="whitespace-nowrap px-3 py-1.5 text-right">完成</th>
+              <th className="whitespace-nowrap px-3 py-1.5 text-right">完成率</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#F5F8F6]">
+            {rows.map(([id, r]) => (
+              <tr key={id}>
+                <td className="whitespace-nowrap px-3 py-1.5 text-[#3F5147]">{SOURCE_LABEL[id] ?? `?from=${id}`}</td>
+                <td className="px-3 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="hidden h-2 shrink-0 bg-[#E94E2B]/70 sm:block" style={{ width: `max(2px, calc(min(140px, 18vw) * ${r.start / max}))` }} />
+                    <span className="font-jost font-bold tabular-nums text-[#1A2A22]">{r.start.toLocaleString()}</span>
+                    <span className="text-[10px] text-[#8A9590]">{pct(r.start, totalStart)}%</span>
+                  </div>
+                </td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums text-[#1A2A22]">{r.finish.toLocaleString()}</td>
+                <td className="px-3 py-1.5 text-right font-jost tabular-nums text-[#3F5147]">{r.start ? `${pct(r.finish, r.start)}%` : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+        每次造訪第一次打開測驗時判斷一次：先看網址上的 ?from= 標記（例如 /quiz/?from=threads_post），再看是不是朋友分享的結果連結、是否在 Threads／IG／FB／LINE 的內建瀏覽器，最後看來源網址。
+        沒有任何線索的歸「直接進入」。2026-10-11 起才有這項資料。
+      </p>
+    </div>
   );
 }
 
