@@ -74,6 +74,22 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DFC34p4zNId" },
       { url: "https://www.threads.com/@linus3524/post/DFNOWSzTnYg" },
       { url: "https://www.threads.com/@linus3524/post/DWVdbguk44F" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DeJS224kaIX",
+        keywords: [
+          "東京新築",
+          "新築租屋",
+          "2LDK",
+          "格局縮水",
+          "面積縮水",
+          "小坪數兩房",
+          "冰箱尺寸",
+          "雙薪家庭",
+          "都心租金",
+          "屋齡取捨",
+          "淺築"
+        ]
+      },
     ],
   },
   {
@@ -147,6 +163,35 @@ export const threadCategories: ThreadCategory[] = [
           "敷金全額退還",
           "原狀回復免除",
           "法律諮詢"
+        ]
+      },
+      {
+        url: "https://www.threads.com/@linus3524/post/DeI0bg6kcPY",
+        keywords: [
+          "日本仲介",
+          "房東住樓上",
+          "惡房東",
+          "訂金不退",
+          "簽約前取消",
+          "預約金",
+          "取消退款",
+          "生活規則",
+          "提前解約",
+          "宅建法"
+        ]
+      },
+      {
+        url: "https://www.threads.com/@linus3524/post/DeHLzwKEzxE",
+        keywords: [
+          "外國籍條件",
+          "外國人租屋",
+          "日本企業",
+          "代表取締役",
+          "管理公司審查",
+          "入居條件",
+          "在日企業",
+          "租客條件",
+          "外國籍相談"
         ]
       },
     ],
@@ -314,6 +359,22 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DaKY3lnE-NX" },
       { url: "https://www.threads.com/@linus3524/post/Da5ZFqrkyIZ" },
       { url: "https://www.threads.com/@linus3524/post/Da79czTE8H1" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DeY0AVlkx2i",
+        keywords: [
+          "連棟住宅",
+          "テラスハウス",
+          "リムテラス",
+          "透天厝",
+          "一戶建",
+          "中古公寓",
+          "マンション",
+          "大田區",
+          "大森",
+          "自住買房",
+          "修繕分攤"
+        ]
+      },
     ],
   },
   {
@@ -359,6 +420,20 @@ export const threadCategories: ThreadCategory[] = [
           "多家仲介",
           "管理公司",
           "入居申込"
+        ]
+      },
+      {
+        url: "https://www.threads.com/@linus3524/post/DeTWuNhEwUb",
+        keywords: [
+          "心理測驗",
+          "居住人格診斷",
+          "適合住哪",
+          "東京分區",
+          "區域推薦",
+          "人格測驗",
+          "吉祥寺",
+          "東京生活",
+          "測驗"
         ]
       },
     ],
