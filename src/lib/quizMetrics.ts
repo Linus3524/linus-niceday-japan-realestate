@@ -15,6 +15,8 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
  *                                 "claim:sumida>taito": 1, "why:sumida:rent": 1, "o:3:b": 40, ... }
  *   linus:quiz:codes:2026-10  → { "abcdabcbabcd": 2 }   （完整答案碼，之後可離線重算）
  *   linus:quiz:ja:2026-10     → 同上欄位格式，只記日文介面作答的事件（zh 同理）
+ *   linus:quiz:day:2026-10-12 → 日本時間每日聚合；語言另存 day:zh:<日期> / day:ja:<日期>
+ *   linus:quiz:daily-since   → 首次啟用逐日記錄的日期；沒有逐日歷史的日期不補零
  *
  * 進入來源（src）：開始作答記 "src:<來源>"、完成記 "srcf:<來源>"（threads、instagram、share＝朋友分享的連結、site＝官網、direct…；
  *   也接受網址上的 ?from= 自訂標記），後台看哪個管道帶來的玩家多、完成率高。
@@ -30,6 +32,8 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
 
 const QUIZ_PREFIX = "linus:quiz:";
 const CODES_PREFIX = "linus:quiz:codes:";
+const DAILY_PREFIX = "linus:quiz:day:";
+const DAILY_SINCE_KEY = "linus:quiz:daily-since";
 export const QUIZ_LANGS = ["zh", "ja"] as const;
 export type QuizLang = (typeof QUIZ_LANGS)[number];
 // 地區代號只用格式檢查（測驗增減地區時網站不必跟著改），
@@ -41,7 +45,7 @@ const AREA_ID = /^[a-z]{2,16}$/;
 const ANSWER_CODE = /^[a-d]{8,16}$/;
 const VERSION = /^\d+\.\d+\.\d+$/;
 const VARIANT_ID = /^[a-z_]{2,20}$/;
-const SCORING_REV = /^\d{4}-\d{2}-\d{2}[a-z]?$/;
+const SCORING_REV = /^\d{4}-\d{2}-\d{2}(?:[a-z]|-[a-z0-9-]{1,40})?$/;
 const SOURCE_ID = /^[a-z0-9_-]{1,20}$/;
 const LIVE_KINDS = ["jp", "tokyo", "plan", "none"] as const; // tokyo：日文版問「住在東京嗎」，和中文版的「住在日本」分開統計
 const RATE_REASONS = ["rent", "vibe", "commute", "stereo"] as const;
@@ -115,22 +119,22 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
 }
 
 /** 記一筆測驗事件。與其他統計一樣，失敗一律吞掉。 */
-export async function recordQuizEvent(raw: unknown) {
-  if (!redis) return;
+export async function recordQuizEvent(raw: unknown, store: Redis | null = redis, now = new Date()) {
+  if (!store) return;
   const { fields, code } = quizFields(raw);
   if (!fields.length) return;
   try {
-    const { month } = tokyoParts();
+    const { month, day } = tokyoParts(now);
     const key = `${QUIZ_PREFIX}${month}`;
     const codesKey = `${CODES_PREFIX}${month}`;
     const [fieldCount, codeCount] = await Promise.all([
-      redis.hlen(key),
-      code ? redis.hlen(codesKey) : Promise.resolve(0),
+      store.hlen(key),
+      code ? store.hlen(codesKey) : Promise.resolve(0),
     ]);
     const raw0 = raw as Record<string, unknown>;
     const lang = oneOf(QUIZ_LANGS, raw0?.lang) ? raw0.lang : null;
     const langKey = lang ? `${QUIZ_PREFIX}${lang}:${month}` : null;
-    const pipe = redis.pipeline();
+    const pipe = store.pipeline();
     // 超過上限時只累加既有欄位不再新增：用 HINCRBY 前先確認欄位存在太貴，
     // 所以直接整筆略過——到這個量級代表被灌水，少記幾筆可以接受。
     if (fieldCount < MAX_FIELDS) {
@@ -141,6 +145,14 @@ export async function recordQuizEvent(raw: unknown) {
         for (const field of fields) pipe.hincrby(langKey, field, 1);
         pipe.expire(langKey, MONTH_TTL_SECONDS);
       }
+      // Daily buckets use the same validated fields and server-side Tokyo date.
+      // No visitor identifier is stored: counts include repeat attempts.
+      const dailyKey = `${DAILY_PREFIX}${month}-${day}`;
+      for (const daily of [dailyKey, ...(lang ? [`${DAILY_PREFIX}${lang}:${month}-${day}`] : [])]) {
+        for (const field of fields) pipe.hincrby(daily, field, 1);
+        pipe.expire(daily, MONTH_TTL_SECONDS);
+      }
+      pipe.set(DAILY_SINCE_KEY, `${month}-${day}`, { nx: true });
     }
     if (code && codeCount < MAX_CODES) {
       pipe.hincrby(codesKey, code, 1);
@@ -184,6 +196,13 @@ export interface QuizSummary {
   distinctCodes: number | null;
   /** 依作答語言分開的同一份統計（distinctCodes 只有合計才有，分語言時為 null） */
   byLang?: Partial<Record<QuizLang, QuizSummary>>;
+  /** Daily data starts at dailySince; older dates must not be shown as zero. */
+  dailySince?: string | null;
+  daily?: Record<string, QuizSummary>;
+  /** Cross-month aggregate of retained monthly data, not unique people. */
+  cumulative?: QuizSummary;
+  cumulativeFrom?: string;
+  cumulativeThrough?: string;
 }
 
 function parseSummary(month: string, raw: Record<string, number> | null, distinctCodes: number | null): QuizSummary {
@@ -230,14 +249,67 @@ function parseSummary(month: string, raw: Record<string, number> | null, distinc
   return summary;
 }
 
-export async function getQuizSummary(month: string): Promise<QuizSummary> {
-  if (!redis) throw new Error("Usage metrics storage is not configured.");
+export function mergeQuizFields(rows: (Record<string, number> | null)[]): Record<string, number> {
+  const merged: Record<string, number> = {};
+  for (const row of rows) for (const [key, value] of Object.entries(row ?? {})) {
+    const n = Number(value);
+    if (Number.isFinite(n) && n >= 0) merged[key] = (merged[key] ?? 0) + n;
+  }
+  return merged;
+}
+
+export function quizRetainedMonths(now = new Date()): string[] {
+  const { month } = tokyoParts(now);
+  const [year, m] = month.split("-").map(Number);
+  const end = year * 12 + m - 1;
+  const start = Math.max(2026 * 12 + 7, end - 24); // Within the 760-day retention window.
+  return Array.from({ length: Math.max(0, end - start + 1) }, (_, i) => {
+    const n = start + i;
+    return `${Math.floor(n / 12)}-${String(n % 12 + 1).padStart(2, "0")}`;
+  });
+}
+
+export async function getQuizSummary(month: string, store: Redis | null = redis, now = new Date()): Promise<QuizSummary> {
+  if (!store) throw new Error("Usage metrics storage is not configured.");
   const [raw, distinctCodes, ...langRaw] = await Promise.all([
-    redis.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${month}`),
-    redis.hlen(`${CODES_PREFIX}${month}`),
-    ...QUIZ_LANGS.map(lang => redis.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${lang}:${month}`)),
+    store.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${month}`),
+    store.hlen(`${CODES_PREFIX}${month}`),
+    ...QUIZ_LANGS.map(lang => store.hgetall<Record<string, number>>(`${QUIZ_PREFIX}${lang}:${month}`)),
   ]);
   const summary = parseSummary(month, raw as Record<string, number> | null, distinctCodes as number);
   summary.byLang = Object.fromEntries(QUIZ_LANGS.map((lang, k) => [lang, parseSummary(month, langRaw[k] as Record<string, number> | null, null)]));
+  const since = await store.get<string>(DAILY_SINCE_KEY);
+  const today = tokyoParts(now);
+  const todayDate = `${today.month}-${today.day}`;
+  const retention = tokyoParts(new Date(now.getTime() - MONTH_TTL_SECONDS * 1000));
+  const expiredThrough = `${retention.month}-${retention.day}`;
+  const [year, m] = month.split("-").map(Number);
+  const days = new Date(Date.UTC(year, m, 0)).getUTCDate();
+  const dates = Array.from({ length: days }, (_, i) => `${month}-${String(i + 1).padStart(2, "0")}`)
+    .filter(date => since && date >= since && date > expiredThrough && date <= todayDate);
+  const months = quizRetainedMonths(now);
+  const scopes = ["all", ...QUIZ_LANGS] as const;
+  // Batch reads: at most 93 daily + 75 monthly hashes, in two HTTP requests.
+  const dailyPipe = store.pipeline();
+  for (const date of dates) for (const lang of scopes) dailyPipe.hgetall(`${DAILY_PREFIX}${lang === "all" ? "" : `${lang}:`}${date}`);
+  const otherMonths = months.filter(m => m !== month);
+  const monthPipe = store.pipeline();
+  for (const m of otherMonths) for (const lang of scopes) monthPipe.hgetall(`${QUIZ_PREFIX}${lang === "all" ? "" : `${lang}:`}${m}`);
+  const [dailyData, monthData] = await Promise.all([
+    dates.length ? dailyPipe.exec<(Record<string, number> | null)[]>() : Promise.resolve([]),
+    otherMonths.length ? monthPipe.exec<(Record<string, number> | null)[]>() : Promise.resolve([]),
+  ]);
+  const dailyRaw = dates.map((_, d) => scopes.map((_, i) => dailyData[d * scopes.length + i]));
+  const monthlyRaw = months.map(m => scopes.map((lang, i) => m === month
+    ? (lang === "all" ? raw : langRaw[QUIZ_LANGS.indexOf(lang)])
+    : monthData[otherMonths.indexOf(m) * scopes.length + i]));
+  for (const [i, lang] of scopes.entries()) {
+    const target = lang === "all" ? summary : summary.byLang![lang]!;
+    target.dailySince = since;
+    target.daily = Object.fromEntries(dates.map((date, d) => [date, parseSummary(month, dailyRaw[d][i], null)]));
+    target.cumulative = parseSummary(month, mergeQuizFields(monthlyRaw.map(row => row[i] as Record<string, number> | null)), null);
+    target.cumulativeFrom = months[0];
+    target.cumulativeThrough = today.month;
+  }
   return summary;
 }

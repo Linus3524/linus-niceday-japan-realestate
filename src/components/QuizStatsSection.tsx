@@ -25,7 +25,8 @@ const CTA_LABEL: Record<string, string> = {
 
 const sum = (record: Record<string, number> | undefined) =>
   Object.values(record ?? {}).reduce((total, value) => total + (Number(value) || 0), 0);
-const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
+const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 1000) / 10 : 0);
+const BRANCH_LABEL: Record<string, string> = { direction: "電車方向", street: "街區日常", evening: "下班夜晚", weekend: "週末生活", hub: "都會大站", shitamachi: "下町日常" };
 
 /** 一題（或追問題的一個版本）的 A–D 選項比例色條；滑鼠移上去看選項內容。 */
 function OptionBar({ counts, options }: { counts: Record<string, number>; options: OptionInfo[] }) {
@@ -40,7 +41,7 @@ function OptionBar({ counts, options }: { counts: Record<string, number>; option
           <span
             key={option}
             title={`${option.toUpperCase()}${label ? `　${label}` : ""}：${counts[option]} 次`}
-            className="flex items-center justify-center font-jost text-[10px] font-bold text-white"
+            className="flex items-center justify-center font-jost text-xs font-bold text-white"
             style={{ width: `${share}%`, backgroundColor: ["#00A174", "#0284C7", "#9333EA", "#E94E2B"][k] }}
           >
             {share >= 8 ? `${option.toUpperCase()} ${share}%` : ""}
@@ -87,6 +88,8 @@ type LangTab = (typeof LANG_TABS)[number][0];
  */
 export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefined }) {
   const [tab, setTab] = useState<LangTab>("all");
+  const [period, setPeriod] = useState<"day" | "month" | "cumulative">("month");
+  const [date, setDate] = useState("");
   if (!quiz) {
     return (
       <section className="mb-8">
@@ -95,16 +98,77 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
       </section>
     );
   }
-  const view = tab === "all" ? quiz : quiz.byLang?.[tab] ?? null;
+  const monthly = tab === "all" ? quiz : quiz.byLang?.[tab] ?? null;
+  const dates = Object.keys(monthly?.daily ?? {}).sort();
+  const selectedDate = dates.includes(date) ? date : dates.at(-1) ?? "";
+  const view = period === "day" ? monthly?.daily?.[selectedDate] : period === "cumulative" ? monthly?.cumulative : monthly;
+  const periodLabel = period === "day" ? `${selectedDate || "每日"} · 日本時間`
+    : period === "month" ? `${quiz.month} · 本月`
+    : `${monthly?.cumulativeFrom ?? "—"} 至 ${monthly?.cumulativeThrough ?? "—"} · 跨月累計`;
   const heading = (
     <>
       <Heading month={quiz.month} />
-      <LangCompare quiz={quiz} tab={tab} onTab={setTab} />
+      <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1 rounded-lg bg-[#F0F4F1] p-1" aria-label="統計期間">
+            {([["day", "每日"], ["month", "本月"], ["cumulative", "跨月累計"]] as const).map(([id, label]) => (
+              <button key={id} type="button" aria-pressed={period === id} onClick={() => setPeriod(id)}
+                className={`rounded-md px-4 py-2 text-sm font-semibold ${period === id ? "bg-[#1A2A22] text-white" : "text-[#526359] hover:bg-white"}`}>{label}</button>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="sr-only" htmlFor="quiz-language">作答語言</label>
+            <select id="quiz-language" value={tab} onChange={e => setTab(e.target.value as LangTab)} className="rounded-md border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
+              {LANG_TABS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+            </select>
+            {period === "day" && dates.length > 0 && <>
+              <label className="sr-only" htmlFor="quiz-date">測驗日期</label>
+              <select id="quiz-date" value={selectedDate} onChange={e => setDate(e.target.value)} className="rounded-md border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
+                {[...dates].reverse().map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </>}
+          </div>
+        </div>
+        <p className="mt-3 text-sm font-semibold text-[#1A2A22]">正在查看：{periodLabel} · {LANG_TABS.find(([id]) => id === tab)?.[1]}</p>
+        <p className="mt-1 text-xs leading-relaxed text-[#66736C]">開始、完成皆為人次，包含重測；不是去重人數。跨月累計為保留月份的合計，語言以開始作答時為準。</p>
+      </div>
+      <div className="mb-5 grid grid-cols-2 gap-3">
+        {([[`${quiz.month} 完成人次`, monthly], ["跨月累計完成人次", monthly?.cumulative]] as const).map(([label, summary]) => (
+          <div key={String(label)} className="rounded-xl border border-[#DDE3DF] bg-[#F7FAF8] p-4">
+            <div className="text-sm text-[#526359]">{label}</div>
+            <div className="mt-1 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">{summary ? Number(summary.funnel.finish ?? 0).toLocaleString() : "—"}</div>
+          </div>
+        ))}
+      </div>
+      <DailyQuizTrend quiz={monthly} selectedDate={selectedDate} onDate={d => { setDate(d); setPeriod("day"); }} />
     </>
   );
   return view
-    ? <QuizStatsBody quiz={view} heading={heading} />
-    : <section className="mb-8">{heading}<p className="text-xs text-[#8A9590]">這個月還沒有分語言的資料。</p></section>;
+    ? <QuizStatsBody quiz={view} monthly={monthly!} heading={heading} periodLabel={periodLabel} languageCompare={<LangCompare quiz={quiz} tab={tab} onTab={setTab} />} />
+    : <section className="mb-8">{heading}<p className="rounded-xl border border-[#DDE3DF] bg-white p-5 text-sm text-[#66736C]">{period === "day" ? "這個月份沒有可用的逐日紀錄；可切換本月或跨月累計查看既有統計。" : "此期間的資料尚未提供。"}</p></section>;
+}
+
+function DailyQuizTrend({ quiz, selectedDate, onDate }: { quiz: QuizSummary | null; selectedDate: string; onDate: (date: string) => void }) {
+  const days = Object.entries(quiz?.daily ?? {}).sort(([a], [b]) => b.localeCompare(a));
+  const max = Math.max(1, ...days.map(([, q]) => q.funnel.finish ?? 0));
+  return <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+      <h3 className="font-serif text-base font-bold text-[#1A2A22]">每日測驗人次</h3>
+      <span className="text-xs text-[#66736C]">{quiz?.month} · 日本時間（UTC+9）</span>
+    </div>
+    <p className="mb-3 text-xs leading-relaxed text-[#66736C]">{quiz?.dailySince ? `逐日紀錄自 ${quiz.dailySince} 起；首日可能不完整，較早日期沒有逐日資料。點日期可查看當天各區比例。` : "逐日紀錄將從新版上線後第一筆測驗事件開始；既有月統計無法還原到每日。"}</p>
+    {days.length ? <div className="max-h-64 overflow-auto">
+      <table className="w-full text-sm">
+        <thead className="sticky top-0 bg-[#F7FAF8] text-xs text-[#66736C]"><tr><th className="px-3 py-2 text-left">日期</th><th className="px-3 py-2 text-right">開始人次</th><th className="px-3 py-2 text-right">完成人次</th><th className="hidden whitespace-nowrap px-3 py-2 text-right sm:table-cell">完成／開始</th><th className="hidden w-24 px-3 py-2 text-left sm:table-cell">完成趨勢</th></tr></thead>
+        <tbody className="divide-y divide-[#EEF2F0]">{days.map(([d, q]) => <tr key={d} className={selectedDate === d ? "bg-[#EAF6F0]" : "hover:bg-[#FAFCFB]"}>
+          <td className="whitespace-nowrap px-3 py-2"><button className="font-jost font-semibold text-[#007B58] underline underline-offset-4" onClick={() => onDate(d)}>{d}</button></td>
+          <td className="px-3 py-2 text-right font-jost tabular-nums">{q.funnel.start ?? 0}</td><td className="px-3 py-2 text-right font-jost font-bold tabular-nums">{q.funnel.finish ?? 0}</td>
+          <td className="hidden px-3 py-2 text-right font-jost tabular-nums sm:table-cell">{q.funnel.start ? `${pct(q.funnel.finish ?? 0, q.funnel.start)}%` : "—"}</td>
+          <td className="hidden px-3 py-2 sm:table-cell"><div className="h-2 rounded bg-[#EEF2F0]"><div className="h-full rounded bg-[#00A174]" style={{ width: `${100 * (q.funnel.finish ?? 0) / max}%` }} /></div></td>
+        </tr>)}</tbody>
+      </table>
+    </div> : <p className="py-3 text-sm text-[#8A9590]">此月份尚無可用的逐日紀錄。</p>}
+  </div>;
 }
 
 function LangCompare({ quiz, tab, onTab }: { quiz: QuizSummary; tab: LangTab; onTab: (t: LangTab) => void }) {
@@ -123,12 +187,12 @@ function LangCompare({ quiz, tab, onTab }: { quiz: QuizSummary; tab: LangTab; on
         <div className="inline-flex border border-[#1A2A22]">
           {LANG_TABS.map(([id, label]) => (
             <button key={id} type="button" onClick={() => onTab(id)}
-              className={`px-3 py-1 text-[11px] ${tab === id ? "bg-[#1A2A22] text-white" : "bg-white text-[#1A2A22]"}`}>
+              className={`px-3 py-1 text-sm ${tab === id ? "bg-[#1A2A22] text-white" : "bg-white text-[#1A2A22]"}`}>
               {label}
             </button>
           ))}
         </div>
-        <span className="text-[10px] text-[#8A9590]">以開始作答時的介面語言計；切換後，下方所有數字都只看該語言</span>
+        <span className="text-xs text-[#8A9590]">以開始作答時的介面語言計；切換後，下方所有數字都只看該語言</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] text-xs">
@@ -162,9 +226,17 @@ function LangCompare({ quiz, tab, onTab }: { quiz: QuizSummary; tab: LangTab; on
   );
 }
 
-function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNode }) {
+function QuizStatsBody({ quiz, monthly, heading, periodLabel, languageCompare }: { quiz: QuizSummary; monthly: QuizSummary; heading: ReactNode; periodLabel: string; languageCompare: ReactNode }) {
   const { areas, questions } = useQuizMeta();
   const nameOf = (id: string) => areas[id]?.name ?? id;
+  const [search, setSearch] = useState("");
+  const distribution = [...new Set([...Object.keys(areas), ...Object.keys(quiz.results), ...Object.keys(monthly.results), ...Object.keys(monthly.cumulative?.results ?? {})])]
+    .filter(id => nameOf(id).toLowerCase().includes(search.trim().toLowerCase()))
+    .sort((a, b) => (quiz.results[b] ?? 0) - (quiz.results[a] ?? 0) || nameOf(a).localeCompare(nameOf(b), "zh-Hant"));
+  const shareOf = (id: string, q: QuizSummary | undefined) => {
+    const total = sum(q?.results);
+    return total ? `${pct(q?.results[id] ?? 0, total)}%` : "—";
+  };
 
   const rows = useMemo(() => {
     if (!quiz) return [];
@@ -200,8 +272,8 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
   const funnelCards = [
     ["開始作答", start, ""],
     ["做到一半", f.mid ?? 0, start ? `${pct(f.mid ?? 0, start)}% 的開始者` : ""],
-    ["完成測驗", finish, start ? `完成率 ${pct(finish, start)}%` : ""],
-    ["回饋覺得準", goodTotal, ratedTotal ? `${pct(goodTotal, ratedTotal)}%（${ratedTotal} 人回饋）` : "還沒有回饋"],
+    ["完成測驗", finish, start ? `完成／開始 ${pct(finish, start)}%` : ""],
+    ["回饋覺得準", goodTotal, ratedTotal ? `${pct(goodTotal, ratedTotal)}%（${ratedTotal} 次回饋）` : "還沒有回饋"],
     ["分享", sum(quiz.share), finish ? `${pct(sum(quiz.share), finish)}% 的完成者` : ""],
     ["點加 LINE", quiz.cta.line ?? 0, finish ? `${pct(quiz.cta.line ?? 0, finish)}% 的完成者` : ""],
   ] as const;
@@ -210,15 +282,43 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
     <section className="mb-8">
       {heading}
 
+      <h3 className="mb-3 text-sm font-bold text-[#1A2A22]">{periodLabel} · 作答與回饋</h3>
+
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {funnelCards.map(([label, value, note]) => (
           <div key={label} className="border border-[#DDE3DF] bg-white p-3.5 shadow-sm">
-            <div className="text-[11px] text-[#66736C]">{label}</div>
+            <div className="text-sm text-[#66736C]">{label}</div>
             <div className="mt-1 font-jost text-2xl font-bold tabular-nums text-[#1A2A22]">{value.toLocaleString()}</div>
-            {note && <div className="mt-0.5 text-[10px] text-[#8A9590]">{note}</div>}
+            {note && <div className="mt-0.5 text-xs text-[#8A9590]">{note}</div>}
           </div>
         ))}
       </div>
+
+      <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <h3 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]"><Target className="h-4 w-4 text-[#00A174]" />各區結果比例</h3>
+          <input aria-label="搜尋地區結果" placeholder="搜尋地區" value={search} onChange={e => setSearch(e.target.value)} className="w-40 rounded-md border border-[#DDE3DF] px-3 py-2 text-sm" />
+        </div>
+        <p className="mb-3 text-xs leading-relaxed text-[#66736C]">所選期間：{periodLabel}。各欄比例分母為該期間有地區結果的完成次數；本月與累計分開計算。</p>
+        <div className="max-h-[440px] overflow-auto">
+          <table className="w-full min-w-[560px] text-sm">
+            <thead className="sticky top-0 z-10 bg-[#F7FAF8] text-xs text-[#66736C]"><tr><th className="sticky left-0 z-20 bg-[#F7FAF8] px-3 py-3 text-left">結果</th><th className="px-3 py-3 text-right">所選期間次數</th><th className="px-3 py-3 text-right">所選期間比例</th><th className="px-3 py-3 text-right">本月比例</th><th className="px-3 py-3 text-right">累計比例</th></tr></thead>
+            <tbody className="divide-y divide-[#EEF2F0]">{distribution.map(id => <tr key={id} className="hover:bg-[#FAFCFB]">
+              <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-3 font-medium text-[#1A2A22]">{nameOf(id)}{areas[id]?.family && <small className="block text-xs font-normal text-[#8A9590]">{areas[id].family}</small>}</td>
+              <td className="px-3 py-3 text-right font-jost font-bold tabular-nums">{(quiz.results[id] ?? 0).toLocaleString()}</td>
+              <td className="px-3 py-3 text-right font-jost font-bold tabular-nums text-[#007B58]">{shareOf(id, quiz)}</td>
+              <td className="px-3 py-3 text-right font-jost tabular-nums">{shareOf(id, monthly)}</td>
+              <td className="px-3 py-3 text-right font-jost tabular-nums">{shareOf(id, monthly.cumulative)}</td>
+            </tr>)}</tbody>
+          </table>
+          {!distribution.length && <p className="py-6 text-center text-sm text-[#8A9590]">{search ? "沒有符合的地區" : "此期間尚無地區結果"}</p>}
+        </div>
+      </div>
+
+      <details className="mb-5 rounded-xl border border-[#DDE3DF] bg-[#F7FAF8] p-4 sm:p-5">
+        <summary className="cursor-pointer text-sm font-semibold text-[#1A2A22]">詳細回饋與計分診斷 <span className="font-normal text-[#66736C]">· 展開查看各區回饋、來源、追問與版本</span></summary>
+        <div className="mt-4">
+      <details className="mb-4"><summary className="mb-3 cursor-pointer text-sm font-semibold">本月中文／日文對照</summary>{languageCompare}</details>
 
       {/* 各區結果與準確度 */}
       <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
@@ -244,12 +344,12 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                 <tr key={row.id} className="hover:bg-[#FAFCFB]">
                   <td className="px-3 py-2 font-medium text-[#1A2A22]">
                     {nameOf(row.id)}
-                    {areas[row.id]?.family && <span className="ml-1.5 text-[10px] font-normal text-[#8A9590]">{areas[row.id].family}</span>}
+                    {areas[row.id]?.family && <span className="ml-1.5 text-xs font-normal text-[#8A9590]">{areas[row.id].family}</span>}
                   </td>
                   <td className="px-3 py-2 text-right font-jost font-bold tabular-nums">{row.count.toLocaleString()}</td>
                   <td className="px-3 py-2">
                     <span className="flex items-center gap-2">
-                      <span className="h-2 w-24 overflow-hidden bg-[#EEF2F0]"><span className="block h-full bg-[#00A174]" style={{ width: `${Math.min(100, row.share * 4)}%` }} /></span>
+                      <span className="h-2 w-24 overflow-hidden bg-[#EEF2F0]"><span className="block h-full bg-[#00A174]" style={{ width: `${Math.min(100, row.share)}%` }} /></span>
                       <span className="font-jost tabular-nums text-[#3F5147]">{row.share}%</span>
                     </span>
                   </td>
@@ -271,12 +371,12 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                 </tr>
               ))}
               {!rows.length && (
-                <tr><td colSpan={8} className="px-3 py-8 text-center text-[#8A9590]">這個月還沒有人完成測驗</td></tr>
+                <tr><td colSpan={8} className="px-3 py-8 text-center text-[#8A9590]">此期間尚無測驗結果</td></tr>
               )}
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+        <p className="mt-3 text-xs leading-relaxed text-[#8A9590]">
           「覺得準」＝超準＋有點像。紅字代表回饋裡覺得準的不到一半；「不準時自認像」是玩家覺得自己其實比較像的地方，是調整計分最直接的依據；「看了第 2、3 名改選」是玩家點開另外兩個推薦後，按「我覺得這個更像我」最多的地方。
         </p>
       </div>
@@ -304,16 +404,16 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                   {q?.variants ? (
                     <>
                       <OptionBar counts={counts} options={[]} />
-                      <p className="mt-1 text-[10px] text-[#8A9590]">↑ 各版本合計（字母在不同版本代表不同內容，僅供參考）；題庫 0.9.0 起依版本分開：</p>
+                      <p className="mt-1 text-xs text-[#8A9590]">↑ 各版本合計（字母在不同版本代表不同內容，僅供參考）；題庫 0.9.0 起依版本分開：</p>
                       <ul className="mt-1 space-y-1.5 border-l-2 border-[#ECEFEC] pl-2">
                         {q.variants.map(v => {
                           const vc = quiz.branches?.[String(index + 1)]?.[v.id] ?? {};
                           return (
                             <li key={v.id}>
-                              <div className="mb-0.5 flex gap-2 text-[11px] text-[#3F5147]">
-                                <span className="shrink-0 font-jost font-bold">{v.id}</span>
+                              <div className="mb-0.5 flex gap-2 text-sm text-[#3F5147]">
+                                <span className="shrink-0 font-bold">{BRANCH_LABEL[v.id] ?? v.id}</span>
                                 <span className="truncate" title={v.prompt}>{v.prompt}</span>
-                                <span className="ml-auto shrink-0 font-jost text-[#8A9590]">{sum(vc)} 人</span>
+                                <span className="ml-auto shrink-0 font-jost text-[#8A9590]">{sum(vc)} 人次</span>
                               </div>
                               <OptionBar counts={vc} options={v.options} />
                             </li>
@@ -328,7 +428,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
               );
             })}
           </ul>
-          <p className="mt-3 text-[10px] text-[#8A9590]">滑鼠移到色塊上可看選項內容。某一題有選項長期低於 10%，代表那個選項不吸引人或寫得太極端。</p>
+          <p className="mt-3 text-xs leading-relaxed text-[#8A9590]">選項比例偏低時，先確認樣本量、追問分支及題庫版本，再評估文案是否需要調整。歷史選項顯示目前題庫文字，跨版本字母不一定代表同一內容。</p>
         </div>
 
         {/* 分享與聯絡 */}
@@ -354,6 +454,8 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
           )}
         </div>
       </div>
+        </div>
+      </details>
     </section>
   );
 }
@@ -395,9 +497,9 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
           const n = res[k]?.count ?? 0, h = hit(groupAll(k));
           return (
             <div key={k} className="border border-[#ECEFEC] p-3">
-              <div className="text-[11px] text-[#66736C]">{label}</div>
-              <div className="mt-0.5 font-jost text-xl font-bold tabular-nums text-[#1A2A22]">{n.toLocaleString()}<span className="ml-1 text-[11px] font-normal text-[#8A9590]">{pct(n, answered)}%</span></div>
-              <div className="text-[10px] text-[#8A9590]">覺得準 {h.ok ? `${pct(h.good, h.rated)}%（${h.rated}）` : h.rated ? `回饋 ${h.rated} 筆` : "—"}</div>
+              <div className="text-sm text-[#66736C]">{label}</div>
+              <div className="mt-0.5 font-jost text-xl font-bold tabular-nums text-[#1A2A22]">{n.toLocaleString()}<span className="ml-1 text-sm font-normal text-[#8A9590]">{pct(n, answered)}%</span></div>
+              <div className="text-xs text-[#8A9590]">覺得準 {h.ok ? `${pct(h.good, h.rated)}%（${h.rated}）` : h.rated ? `回饋 ${h.rated} 筆` : "—"}</div>
             </div>
           );
         })}
@@ -422,7 +524,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
           </table>
         </div>
       )}
-      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+      <p className="mt-3 text-xs leading-relaxed text-[#8A9590]">
         玩家在結果頁評分後、或分享前的小視窗裡自選（每台裝置問一次，可略過），所以只代表有回答的人。住在日本的人比較懂各區實際樣子：他們覺得不準的區，是計分最該調整的地方。
         各區只列出某個族群有 5 筆以上回饋的；少於 5 筆只顯示筆數、紅字是覺得準不到一半。2026-10-11 起才有這項資料。
       </p>
@@ -459,7 +561,7 @@ function SourceTable({ quiz }: { quiz: QuizSummary }) {
                   <div className="flex items-center gap-2">
                     <span className="hidden h-2 shrink-0 bg-[#E94E2B]/70 sm:block" style={{ width: `max(2px, calc(min(140px, 18vw) * ${r.start / max}))` }} />
                     <span className="font-jost font-bold tabular-nums text-[#1A2A22]">{r.start.toLocaleString()}</span>
-                    <span className="text-[10px] text-[#8A9590]">{pct(r.start, totalStart)}%</span>
+                    <span className="text-xs text-[#8A9590]">{pct(r.start, totalStart)}%</span>
                   </div>
                 </td>
                 <td className="px-3 py-1.5 text-right font-jost tabular-nums text-[#1A2A22]">{r.finish.toLocaleString()}</td>
@@ -469,7 +571,7 @@ function SourceTable({ quiz }: { quiz: QuizSummary }) {
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
+      <p className="mt-3 text-xs leading-relaxed text-[#8A9590]">
         每次造訪第一次打開測驗時判斷一次：先看網址上的 ?from= 標記（例如 /quiz/?from=threads_post），再看是不是朋友分享的結果連結、是否在 Threads／IG／FB／LINE 的內建瀏覽器，最後看來源網址。
         沒有任何線索的歸「直接進入」。2026-10-11 起才有這項資料。
       </p>
@@ -507,8 +609,8 @@ function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
     const good = (r["2"] ?? 0) + (r["1"] ?? 0);
     return (
       <td key={c.key} className="px-3 py-1.5 text-right tabular-nums">
-        <div><span className="font-jost font-bold text-[#1A2A22]">{share(c, id).toFixed(1)}%</span><span className="ml-1 text-[10px] text-[#8A9590]">{n}</span></div>
-        <div className="text-[10px]">
+        <div><span className="font-jost font-bold text-[#1A2A22]">{share(c, id).toFixed(1)}%</span><span className="ml-1 text-xs text-[#8A9590]">{n}</span></div>
+        <div className="text-xs">
           {rated >= MIN_RATED
             ? <span className={pct(good, rated) < 50 ? "text-[#E94E2B]" : "text-[#00A174]"}>準 {pct(good, rated)}%（{rated}）</span>
             : <span className="text-[#B5BFBA]">{rated ? `回饋 ${rated} 筆` : "—"}</span>}
@@ -539,9 +641,9 @@ function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
               {shown.map((c, k) => [(
                 <th key={c.key} className="px-3 py-1.5 text-right align-bottom">
                   <div className="whitespace-nowrap">{c.label}</div>
-                  <div className="font-normal text-[10px] text-[#8A9590]">{sum(c.results).toLocaleString()} 人</div>
+                  <div className="font-normal text-xs text-[#8A9590]">{sum(c.results).toLocaleString()} 人次</div>
                 </th>
-              ), k === 0 && prev ? <th key="diff" className="whitespace-nowrap px-3 py-1.5 text-right align-bottom">變化<div className="font-normal text-[10px] text-[#8A9590]">比前一版</div></th> : null])}
+              ), k === 0 && prev ? <th key="diff" className="whitespace-nowrap px-3 py-1.5 text-right align-bottom">變化<div className="font-normal text-xs text-[#8A9590]">比前一版</div></th> : null])}
             </tr>
           </thead>
           <tbody className="divide-y divide-[#F5F8F6]">
@@ -554,8 +656,8 @@ function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-        測驗每次調整各區判定方式會換一個版本代號（日期）。比較同一區在不同版本的出現比例，看調整有沒有達到效果；最新版本在最左邊；「變化」是最新版本減前一版的百分點，▲變多、▼變少（差 1 以上才上色）。「準」是該版本玩家回饋覺得準的比例，括號是回饋人數，少於 5 筆不算百分比。依最新版本的出現比例排序。
+      <p className="mt-3 text-xs leading-relaxed text-[#8A9590]">
+        測驗每次調整各區判定方式會換一個版本代號（日期）。比較同一區在不同版本的出現比例，看調整有沒有達到效果；最新版本在最左邊；「變化」是最新版本減前一版的百分點，▲變多、▼變少（差 1 以上才上色）。「準」是該版本玩家回饋覺得準的比例，括號是回饋次數，少於 5 筆不算百分比。依最新版本的出現比例排序。
       </p>
     </div>
   );
@@ -563,11 +665,11 @@ function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
 
 function Heading({ month }: { month: string }) {
   return (
-    <div className="mb-3 flex items-center gap-2">
-      <Brain className="h-4.5 w-4.5 text-[#00A174]" />
+    <div className="mb-3 flex flex-wrap items-center gap-2">
+      <Brain className="h-4.5 w-4.5 shrink-0 text-[#00A174]" />
       <h2 className="font-serif text-base font-bold text-[#1A2A22]">心理測驗：你是哪種東京區民？</h2>
-      <span className="text-xs text-[#8A9590]">{month}</span>
-      <a href="/quiz/" target="_blank" rel="noopener" className="ml-auto text-[11px] text-[#00A174] underline">開啟測驗</a>
+      <span className="whitespace-nowrap text-xs text-[#8A9590]">{month}</span>
+      <a href="/quiz/" target="_blank" rel="noopener" className="ml-auto whitespace-nowrap text-sm text-[#00A174] underline">開啟測驗</a>
     </div>
   );
 }
@@ -576,7 +678,7 @@ function List({ title, record, labels }: { title: string; record: Record<string,
   const entries = Object.entries(record).sort((a, b) => b[1] - a[1]);
   return (
     <div className="mb-4 last:mb-0">
-      <h4 className="mb-1 text-[11px] font-bold text-[#66736C]">{title}</h4>
+      <h4 className="mb-1 text-sm font-bold text-[#66736C]">{title}</h4>
       {entries.length ? (
         <ul className="divide-y divide-[#F5F8F6]">
           {entries.map(([key, value]) => (
