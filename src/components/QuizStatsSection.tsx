@@ -108,22 +108,22 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
   const heading = (
     <>
       <Heading month={quiz.month} />
-      <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+      <div className="mb-5 rounded-none border border-[#DDE3DF] bg-white p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-1 rounded-lg bg-[#F0F4F1] p-1" aria-label="統計期間">
+          <div className="flex flex-wrap gap-1 rounded-none bg-[#F0F4F1] p-1" aria-label="統計期間">
             {([["day", "每日"], ["month", "本月"], ["cumulative", "跨月累計"]] as const).map(([id, label]) => (
               <button key={id} type="button" aria-pressed={period === id} onClick={() => setPeriod(id)}
-                className={`rounded-md px-4 py-2 text-sm font-semibold ${period === id ? "bg-[#1A2A22] text-white" : "text-[#526359] hover:bg-white"}`}>{label}</button>
+                className={`rounded-none px-4 py-2 text-sm font-semibold ${period === id ? "bg-[#1A2A22] text-white" : "text-[#526359] hover:bg-white"}`}>{label}</button>
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <label className="sr-only" htmlFor="quiz-language">作答語言</label>
-            <select id="quiz-language" value={tab} onChange={e => setTab(e.target.value as LangTab)} className="rounded-md border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
+            <select id="quiz-language" value={tab} onChange={e => setTab(e.target.value as LangTab)} className="rounded-none border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
               {LANG_TABS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
             </select>
             {period === "day" && dates.length > 0 && <>
               <label className="sr-only" htmlFor="quiz-date">測驗日期</label>
-              <select id="quiz-date" value={selectedDate} onChange={e => setDate(e.target.value)} className="rounded-md border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
+              <select id="quiz-date" value={selectedDate} onChange={e => setDate(e.target.value)} className="rounded-none border border-[#DDE3DF] bg-white px-3 py-2 text-sm">
                 {[...dates].reverse().map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </>}
@@ -134,7 +134,7 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
       </div>
       <div className="mb-5 grid grid-cols-2 gap-3">
         {([[`${quiz.month} 完成人次`, monthly], ["跨月累計完成人次", monthly?.cumulative]] as const).map(([label, summary]) => (
-          <div key={String(label)} className="rounded-xl border border-[#DDE3DF] bg-[#F7FAF8] p-4">
+          <div key={String(label)} className="rounded-none border border-[#DDE3DF] bg-[#F7FAF8] p-4">
             <div className="text-sm text-[#526359]">{label}</div>
             <div className="mt-1 font-jost text-3xl font-bold tabular-nums text-[#1A2A22]">{summary ? Number(summary.funnel.finish ?? 0).toLocaleString() : "—"}</div>
           </div>
@@ -145,13 +145,13 @@ export function QuizStatsSection({ quiz }: { quiz: QuizSummary | null | undefine
   );
   return view
     ? <QuizStatsBody quiz={view} monthly={monthly!} heading={heading} periodLabel={periodLabel} languageCompare={<LangCompare quiz={quiz} tab={tab} onTab={setTab} />} />
-    : <section className="mb-8">{heading}<p className="rounded-xl border border-[#DDE3DF] bg-white p-5 text-sm text-[#66736C]">{period === "day" ? "這個月份沒有可用的逐日紀錄；可切換本月或跨月累計查看既有統計。" : "此期間的資料尚未提供。"}</p></section>;
+    : <section className="mb-8">{heading}<p className="rounded-none border border-[#DDE3DF] bg-white p-5 text-sm text-[#66736C]">{period === "day" ? "這個月份沒有可用的逐日紀錄；可切換本月或跨月累計查看既有統計。" : "此期間的資料尚未提供。"}</p></section>;
 }
 
 function DailyQuizTrend({ quiz, selectedDate, onDate }: { quiz: QuizSummary | null; selectedDate: string; onDate: (date: string) => void }) {
   const days = Object.entries(quiz?.daily ?? {}).sort(([a], [b]) => b.localeCompare(a));
   const max = Math.max(1, ...days.map(([, q]) => q.funnel.finish ?? 0));
-  return <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+  return <div className="mb-5 rounded-none border border-[#DDE3DF] bg-white p-4 sm:p-5">
     <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
       <h3 className="font-serif text-base font-bold text-[#1A2A22]">每日測驗人次</h3>
       <span className="text-xs text-[#66736C]">{quiz?.month} · 日本時間（UTC+9）</span>
@@ -164,7 +164,7 @@ function DailyQuizTrend({ quiz, selectedDate, onDate }: { quiz: QuizSummary | nu
           <td className="whitespace-nowrap px-3 py-2"><button className="font-jost font-semibold text-[#007B58] underline underline-offset-4" onClick={() => onDate(d)}>{d}</button></td>
           <td className="px-3 py-2 text-right font-jost tabular-nums">{q.funnel.start ?? 0}</td><td className="px-3 py-2 text-right font-jost font-bold tabular-nums">{q.funnel.finish ?? 0}</td>
           <td className="hidden px-3 py-2 text-right font-jost tabular-nums sm:table-cell">{q.funnel.start ? `${pct(q.funnel.finish ?? 0, q.funnel.start)}%` : "—"}</td>
-          <td className="hidden px-3 py-2 sm:table-cell"><div className="h-2 rounded bg-[#EEF2F0]"><div className="h-full rounded bg-[#00A174]" style={{ width: `${100 * (q.funnel.finish ?? 0) / max}%` }} /></div></td>
+          <td className="hidden px-3 py-2 sm:table-cell"><div className="h-2 rounded-none bg-[#EEF2F0]"><div className="h-full rounded-none bg-[#00A174]" style={{ width: `${100 * (q.funnel.finish ?? 0) / max}%` }} /></div></td>
         </tr>)}</tbody>
       </table>
     </div> : <p className="py-3 text-sm text-[#8A9590]">此月份尚無可用的逐日紀錄。</p>}
@@ -294,10 +294,10 @@ function QuizStatsBody({ quiz, monthly, heading, periodLabel, languageCompare }:
         ))}
       </div>
 
-      <div className="mb-5 rounded-xl border border-[#DDE3DF] bg-white p-4 sm:p-5">
+      <div className="mb-5 rounded-none border border-[#DDE3DF] bg-white p-4 sm:p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h3 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22]"><Target className="h-4 w-4 text-[#00A174]" />各區結果比例</h3>
-          <input aria-label="搜尋地區結果" placeholder="搜尋地區" value={search} onChange={e => setSearch(e.target.value)} className="w-40 rounded-md border border-[#DDE3DF] px-3 py-2 text-sm" />
+          <input aria-label="搜尋地區結果" placeholder="搜尋地區" value={search} onChange={e => setSearch(e.target.value)} className="w-40 rounded-none border border-[#DDE3DF] px-3 py-2 text-sm" />
         </div>
         <p className="mb-3 text-xs leading-relaxed text-[#66736C]">所選期間：{periodLabel}。各欄比例分母為該期間有地區結果的完成次數；本月與累計分開計算。</p>
         <div className="max-h-[440px] overflow-auto">
@@ -315,7 +315,7 @@ function QuizStatsBody({ quiz, monthly, heading, periodLabel, languageCompare }:
         </div>
       </div>
 
-      <details className="mb-5 rounded-xl border border-[#DDE3DF] bg-[#F7FAF8] p-4 sm:p-5">
+      <details className="mb-5 rounded-none border border-[#DDE3DF] bg-[#F7FAF8] p-4 sm:p-5">
         <summary className="cursor-pointer text-sm font-semibold text-[#1A2A22]">詳細回饋與計分診斷 <span className="font-normal text-[#66736C]">· 展開查看各區回饋、來源、追問與版本</span></summary>
         <div className="mt-4">
       <details className="mb-4"><summary className="mb-3 cursor-pointer text-sm font-semibold">本月中文／日文對照</summary>{languageCompare}</details>
