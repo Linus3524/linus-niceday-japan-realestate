@@ -18,7 +18,7 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
  *
  * 進入來源（src）：開始作答記 "src:<來源>"、完成記 "srcf:<來源>"（threads、instagram、share＝朋友分享的連結、site＝官網、direct…；
  *   也接受網址上的 ?from= 自訂標記），後台看哪個管道帶來的玩家多、完成率高。
- * 居住狀況（live）：玩家自選「住在日本 jp／打算搬去 plan／沒有計畫 none」（每台裝置問一次，可略過）。
+ * 居住狀況（live）：玩家自選「住在日本 jp（中文版）／住在東京 tokyo（日文版）／打算搬去 plan／沒有計畫 none」（每台裝置問一次，可略過）。
  *   回答時記 "live:<k>"、"liver:<k>:<區>"；評分（不論先後）記 "liverate:<k>:<區>:<評分>"，後台比較不同族群覺得準不準。
  * 計分版本（sr）：測驗調整各區判定方式時會換一個日期代號（例如 2026-10-11），完成與回饋事件帶著它，
  * 另記 "sr:<版本>"（完成數）、"srr:<版本>:<區>"（各區次數）、"srate:<版本>:<區>:<評分>"（回饋），
@@ -43,7 +43,7 @@ const VERSION = /^\d+\.\d+\.\d+$/;
 const VARIANT_ID = /^[a-z_]{2,20}$/;
 const SCORING_REV = /^\d{4}-\d{2}-\d{2}[a-z]?$/;
 const SOURCE_ID = /^[a-z0-9_-]{1,20}$/;
-const LIVE_KINDS = ["jp", "plan", "none"] as const;
+const LIVE_KINDS = ["jp", "tokyo", "plan", "none"] as const; // tokyo：日文版問「住在東京嗎」，和中文版的「住在日本」分開統計
 const RATE_REASONS = ["rent", "vibe", "commute", "stereo"] as const;
 const SHARE_METHODS = ["native", "copy", "image"] as const;
 const CTA_KINDS = ["line", "wechat", "threads", "instagram", "facebook", "email", "site"] as const;

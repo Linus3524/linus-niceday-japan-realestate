@@ -363,7 +363,7 @@ const SOURCE_LABEL: Record<string, string> = {
   share: "朋友分享的結果連結", site: "住好日官網", direct: "直接進入（無來源）", other: "其他網站", ig: "Instagram（?from=ig）",
 };
 
-const LIVE_GROUPS = [["jp", "住在日本"], ["plan", "打算搬去日本"], ["none", "沒有計畫"]] as const;
+const LIVE_GROUPS = [["jp", "住在日本"], ["tokyo", "住在東京（日文版）"], ["plan", "打算搬去日本"], ["none", "沒有計畫"]] as const;
 
 /** 玩家居住狀況：各族群人數、整體覺得準，以及各區在不同族群的「覺得準」。2026-10-11 起才有資料。 */
 function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: string) => string }) {
@@ -390,7 +390,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
       <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
         <Target className="h-4 w-4 text-[#9333EA]" /> 玩家居住狀況
       </h3>
-      <div className="mb-4 grid grid-cols-3 gap-2">
+      <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {LIVE_GROUPS.map(([k, label]) => {
           const n = res[k]?.count ?? 0, h = hit(groupAll(k));
           return (
