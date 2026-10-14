@@ -191,6 +191,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
       };
     }).sort((a, b) => b.count - a.count || b.rated - a.rated);
   }, [quiz]);
+  const maxShare = Math.max(1, ...rows.map(r => r.share));
 
   const f = quiz.funnel;
   const start = f.start ?? 0;
@@ -232,7 +233,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                 <th className="px-3 py-2">結果</th>
                 <th className="px-3 py-2 text-right">次數</th>
                 <th className="px-3 py-2">佔比</th>
-                <th className="px-3 py-2 text-center">超準／有點像／不太像</th>
+                <th className="px-3 py-2">玩家回饋</th>
                 <th className="px-3 py-2 text-right">覺得準</th>
                 <th className="px-3 py-2">不準時自認像</th>
                 <th className="px-3 py-2">最常見原因</th>
@@ -249,12 +250,21 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                   <td className="px-3 py-2 text-right font-jost font-bold tabular-nums">{row.count.toLocaleString()}</td>
                   <td className="px-3 py-2">
                     <span className="flex items-center gap-2">
-                      <span className="h-2 w-24 overflow-hidden bg-[#EEF2F0]"><span className="block h-full bg-[#00A174]" style={{ width: `${Math.min(100, row.share * 4)}%` }} /></span>
+                      <span className="h-2 w-24 overflow-hidden bg-[#EEF2F0]"><span className="block h-full bg-[#00A174]" style={{ width: `${(row.share / maxShare) * 100}%` }} /></span>
                       <span className="font-jost tabular-nums text-[#3F5147]">{row.share}%</span>
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-center font-jost tabular-nums text-[#3F5147]">
-                    {row.rated ? `${row.great}／${row.ok}／${row.bad}` : <span className="text-[#8A9590]">—</span>}
+                  <td className="px-3 py-2">
+                    {row.rated ? (
+                      <div title={`超準 ${row.great}　有點像 ${row.ok}　不太像 ${row.bad}`}>
+                        <div className="flex h-2 w-28 overflow-hidden bg-[#EEF2F0]">
+                          <span className="bg-[#00A174]" style={{ width: `${(row.great / row.rated) * 100}%` }} />
+                          <span className="bg-[#9ADBC4]" style={{ width: `${(row.ok / row.rated) * 100}%` }} />
+                          <span className="bg-[#E94E2B]" style={{ width: `${(row.bad / row.rated) * 100}%` }} />
+                        </div>
+                        <div className="mt-0.5 text-[10px] text-[#8A9590]">{row.rated} 筆（深綠超準・淺綠有點像・紅不太像）</div>
+                      </div>
+                    ) : <span className="text-[#8A9590]">—</span>}
                   </td>
                   <td className={`px-3 py-2 text-right font-jost font-bold tabular-nums ${row.rated && row.hit < 50 ? "text-[#E94E2B]" : "text-[#1A2A22]"}`}>
                     {row.rated ? `${row.hit}%` : <span className="font-normal text-[#8A9590]">—</span>}
@@ -277,7 +287,7 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
           </table>
         </div>
         <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-          「覺得準」＝超準＋有點像。紅字代表回饋裡覺得準的不到一半；「不準時自認像」是玩家覺得自己其實比較像的地方，是調整計分最直接的依據；「看了第 2、3 名改選」是玩家點開另外兩個推薦後，按「我覺得這個更像我」最多的地方。
+          覺得準＝超準＋有點像，紅字＝不到一半。「不準時自認像」是調整計分最直接的依據；「看了第 2、3 名改選」是玩家點開另外兩個推薦後按「更像我」最多的地方。
         </p>
       </div>
 
@@ -303,8 +313,6 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                   </div>
                   {q?.variants ? (
                     <>
-                      <OptionBar counts={counts} options={[]} />
-                      <p className="mt-1 text-[10px] text-[#8A9590]">↑ 各版本合計（字母在不同版本代表不同內容，僅供參考）；題庫 0.9.0 起依版本分開：</p>
                       <ul className="mt-1 space-y-1.5 border-l-2 border-[#ECEFEC] pl-2">
                         {q.variants.map(v => {
                           const vc = quiz.branches?.[String(index + 1)]?.[v.id] ?? {};
@@ -344,8 +352,6 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
               "朋友打開分享頁": f.shared_view ?? 0,
               "重新測驗": f.retake ?? 0,
               "命中隱藏結果": f.secret_hit ?? 0,
-              ...(f.secret_offer ? { "（舊）出現隱藏結果入口": f.secret_offer } : {}),
-              ...(f.secret_open ? { "（舊）翻開隱藏結果": f.secret_open } : {}),
               ...(quiz.distinctCodes != null ? { "不同答案組合": quiz.distinctCodes } : {}),
             }}
             labels={{}}
@@ -424,8 +430,8 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
         </div>
       )}
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-        玩家在結果頁評分後、或分享前的小視窗裡自選（每台裝置問一次，可略過），所以只代表有回答的人。住在日本的人比較懂各區實際樣子：他們覺得不準的區，是計分最該調整的地方。
-        各區只列出某個族群有 5 筆以上回饋的；少於 5 筆只顯示筆數、紅字是覺得準不到一半。2026-10-11 起才有這項資料。
+        只代表有回答的人（每台裝置問一次、可略過）。住在日本的人最懂各區實際樣子，他們覺得不準的區最該調整。
+        少於 5 筆只顯示筆數，紅字＝覺得準不到一半。2026-10-11 起才有資料。
       </p>
     </div>
   );
@@ -471,8 +477,7 @@ function SourceTable({ quiz }: { quiz: QuizSummary }) {
         </table>
       </div>
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-        每次造訪第一次打開測驗時判斷一次：先看網址上的 ?from= 標記（例如 /quiz/?from=threads_post），再看是不是朋友分享的結果連結、是否在 Threads／IG／FB／LINE 的內建瀏覽器，最後看來源網址。
-        沒有任何線索的歸「直接進入」。2026-10-11 起才有這項資料。
+        判斷順序：網址的 ?from= 標記 → 朋友分享的結果連結 → Threads／IG／FB／LINE 內建瀏覽器 → 來源網址；都沒有就是「直接進入」。2026-10-11 起才有資料。
       </p>
     </div>
   );
@@ -556,7 +561,7 @@ function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
         </table>
       </div>
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-        測驗每次調整各區判定方式會換一個版本代號（日期）。比較同一區在不同版本的出現比例，看調整有沒有達到效果；最新版本在最左邊；「變化」是最新版本減前一版的百分點，▲變多、▼變少（差 1 以上才上色）。「準」是該版本玩家回饋覺得準的比例，括號是回饋人數，少於 5 筆不算百分比。依最新版本的出現比例排序。
+        每次調整計分會換一個版本代號（日期），最新的在最左邊。「變化」＝最新版減前一版的百分點（差 1 以上才上色）；「準」括號內是回饋人數，少於 5 筆不算百分比。
       </p>
     </div>
   );
