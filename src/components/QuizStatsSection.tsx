@@ -343,8 +343,9 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
             record={{
               "朋友打開分享頁": f.shared_view ?? 0,
               "重新測驗": f.retake ?? 0,
-              "出現隱藏結果入口": f.secret_offer ?? 0,
-              "翻開隱藏結果": f.secret_open ?? 0,
+              "命中隱藏結果": f.secret_hit ?? 0,
+              ...(f.secret_offer ? { "（舊）出現隱藏結果入口": f.secret_offer } : {}),
+              ...(f.secret_open ? { "（舊）翻開隱藏結果": f.secret_open } : {}),
               ...(quiz.distinctCodes != null ? { "不同答案組合": quiz.distinctCodes } : {}),
             }}
             labels={{}}

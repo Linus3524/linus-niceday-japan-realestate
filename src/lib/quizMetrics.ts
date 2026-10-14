@@ -79,6 +79,8 @@ export function quizFields(raw: unknown): { fields: string[]; code: string | nul
       if (top1) fields.push(`r:${top1}`);
       if (rev) { fields.push(`sr:${rev}`); if (top1) fields.push(`srr:${rev}:${top1}`); }
       if (e.secret_offer === true) fields.push("f:secret_offer");
+      // 隱藏結果改為直接顯示（10/3 起）：finish 帶 secret:true 才算命中；secret_offer／secret_open 是舊版入口，之後不會再增加
+      if (e.secret === true) fields.push("f:secret_hit");
       if (typeof e.ver === "string" && VERSION.test(e.ver)) fields.push(`v:${e.ver}`);
       if (typeof e.code === "string" && ANSWER_CODE.test(e.code)) {
         code = e.code;
@@ -166,7 +168,7 @@ export async function recordQuizEvent(raw: unknown, store: Redis | null = redis,
 
 export interface QuizSummary {
   month: string;
-  /** 漏斗：start / mid / finish / secret_offer / secret_open / shared_view / retake */
+  /** 漏斗：start / mid / finish / secret_hit / shared_view / retake（secret_offer、secret_open 為 10/3 前的舊入口） */
   funnel: Record<string, number>;
   /** 各區被判定的次數 */
   results: Record<string, number>;
