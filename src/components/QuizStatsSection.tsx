@@ -387,9 +387,8 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
     for (const r of Object.values(res[k]?.ratings ?? {})) for (const [v, n] of Object.entries(r)) merged[v] = (merged[v] ?? 0) + n;
     return merged;
   };
-  // 各區：至少一個族群有 5 筆以上回饋才列出，依回饋總數排序
+  // 各區：有任何回饋就列出（不到 5 筆只顯示筆數、灰字），依回饋總數排序
   const areaIds = [...new Set(LIVE_GROUPS.flatMap(([k]) => Object.keys(res[k]?.ratings ?? {})))]
-    .filter(id => LIVE_GROUPS.some(([k]) => sum(res[k]?.ratings?.[id]) >= MIN))
     .sort((a, b) => LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[b]), 0) - LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[a]), 0));
   const cellCls = (h: ReturnType<typeof hit>) => `px-3 py-1.5 text-right tabular-nums ${!h.ok ? "text-[#B5BFBA]" : h.low ? "font-bold text-[#E94E2B]" : "text-[#1A2A22]"}`;
   return (
@@ -431,7 +430,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
       )}
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
         只代表有回答的人（每台裝置問一次、可略過）。住在日本的人最懂各區實際樣子，他們覺得不準的區最該調整。
-        少於 5 筆只顯示筆數，紅字＝覺得準不到一半。2026-10-11 起才有資料。
+        各區依回饋總數排序；少於 5 筆只顯示筆數（灰字），5 筆以上才算百分比，紅字＝覺得準不到一半。2026-10-11 起才有資料。
       </p>
     </div>
   );
