@@ -177,7 +177,7 @@ export const initialFees: InitialFeeItem[] = [
     category: "fee"
   },
   {
-    name: "連帶保證人",
+    name: "連帯保証人",
     jpName: "連帶保證人",
     description: "用來保障租賃期間的履約信用。在日本，連帶保證人需負擔相同的清償責任；目前多數物件均已改用保證公司替代個人連帶保證人。",
     category: "term",
