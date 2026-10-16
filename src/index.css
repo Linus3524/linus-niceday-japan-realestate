@@ -1743,6 +1743,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     transition-delay: 260ms;
   }
   .stage-character--orange {
+    left: 62%;
     /* 再往下 12px：腳和狗更貼近播放列上緣，人物不會浮在畫面中間 */
     bottom: calc(var(--stage-bar-h) - 6px);
     height: min(54vh, 540px);
