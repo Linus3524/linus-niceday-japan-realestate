@@ -1684,10 +1684,13 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     /* 延伸到底部播放列下方，毛玻璃播放列才透得出插畫 */
     left: 50%;
     bottom: 0;
+    /* 高度一律撐滿首屏、寬度仍是畫面約 84%，用 cover 裁左右。
+       原本高度由 16:9 的 aspect-ratio 推得，螢幕比 16:9 更高（16:10、筆電常見的
+       1440×900、2000×1287）時圖只有 84vw/1.78 高，上方就空出一整塊白底。 */
     width: min(84vw, calc(100vh * 1.7778));
-    height: auto;
-    aspect-ratio: 2400 / 1350;
+    height: 100%;
     object-fit: cover;
+    object-position: 50% 100%;
     margin-left: calc(min(84vw, calc(100vh * 1.7778)) / -2);
     /* 左側本來就疊了白色 veil，看起來淡出範圍較長；右側遮罩拉長並分段漸變，兩邊才自然對稱 */
     --stage-bg-mask: linear-gradient(
