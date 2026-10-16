@@ -2252,9 +2252,10 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
 
   .stage-weather {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: baseline;
+    gap: 4px 12px;
     padding-top: 10px;
     border-top: 1px solid var(--stage-line);
     font-family: var(--font-jp-sans);
@@ -2267,6 +2268,20 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     font-weight: 600;
     font-size: 18px;
     color: #66736C;
+  }
+  .stage-weather-temp {
+    font-family: var(--font-jost);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .stage-weather-desc {
+    grid-column: 1 / -1;
+    text-align: right;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #7D8982;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
   }
   .stage-contact {
     margin-top: 2px;

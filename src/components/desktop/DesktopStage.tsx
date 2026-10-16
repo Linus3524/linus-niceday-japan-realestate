@@ -362,7 +362,8 @@ export function DesktopStage({
           </button>
           <div key={`wx-${city}`} className="stage-weather stage-swap-in">
             <span className="stage-weather-place">{CITIES[city].en}</span>
-            <span>{weather ? `${weather.temp}℃ ${weather.desc}` : "--℃"}</span>
+            <span className="stage-weather-temp">{weather ? `${weather.temp}℃` : "--℃"}</span>
+            {weather && <span className="stage-weather-desc">{weather.desc}</span>}
           </div>
         </div>
       </aside>
