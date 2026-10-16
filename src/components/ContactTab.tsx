@@ -332,7 +332,7 @@ export function ContactTab(props: ContactTabProps) {
                 </div>
 
                 {/* Company Details (Right 7 Columns) */}
-                <div className="md:col-span-7 border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
+                <div className="contact-company-card md:col-span-7 border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
                   <div>
                     <h4 className="mb-4 border-b border-[#DDE3DF] pb-2 text-base font-bold text-[#1A2A22] flex items-center gap-2">
                       <Building2 className="w-5 h-5 text-[#00a174] shrink-0" />
@@ -373,7 +373,7 @@ export function ContactTab(props: ContactTabProps) {
                     </div>
                   </div>
 
-                  <div className="border-t border-[#DDE3DF] pt-4 space-y-4">
+                  <div className="contact-office-location border-t border-[#DDE3DF] pt-4 space-y-4">
                     <div>
                       <h4 className="font-bold text-sm text-[#1A2A22] mb-2 font-sans uppercase tracking-wider flex items-center gap-1.5">
                         <MapPin className="w-4 h-4 text-[#00a174] shrink-0" />
@@ -385,7 +385,7 @@ export function ContactTab(props: ContactTabProps) {
                     </div>
 
                     {/* Google Maps Embed Iframe */}
-                    <div className="border border-[#DDE3DF] bg-[#F5F8F6] p-2 relative">
+                    <div className="contact-map-card border border-[#DDE3DF] bg-[#F5F8F6] p-2 relative">
                       <iframe 
                         title="Seika Office Google Map"
                         src="https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E6%9D%B1%E7%A5%9E%E7%94%B02-6-2&t=&z=15&ie=UTF8&iwloc=&output=embed"

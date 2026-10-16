@@ -1,6 +1,6 @@
 import { ArrowRight, Lightbulb, ReceiptText, Search, Smile, X } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 buyHouseCashSteps, buyHouseLoanSteps,
 BuyHouseQAItem,
@@ -21,6 +21,20 @@ import { BuyTermsSection } from './guides/BuyTermsSection';
 import { PageIntroCard } from "./PageIntroCard";
 import { QACard } from "./QACard";
 import { SectionHeading } from "./SectionHeading";
+import { ChapterPager, type Chapter } from "./desktop/ChapterPager";
+import { SectionTabs } from "./desktop/SectionTabs";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+
+// 桌機章節翻頁：沿用原本的分類，一章對應一個分類
+const BUY_CHAPTERS: Chapter[] = [
+  { id: "intro", label: "前言", en: "Preface" },
+  { id: "steps", label: "台日稅務與流程差異", en: "Process", desc: "台日 5 大差異、交易流程、文件與持有稅務" },
+  { id: "drawing", label: "圖紙與物件術語", en: "Listing terms", desc: "販售圖紙上的物件資訊與專有名詞" },
+  { id: "fee", label: "交易與費用術語", en: "Costs", desc: "仲介費、登記費、取得稅等交易費用" },
+  { id: "loans", label: "在日貸款條件", en: "Loans", desc: "外國人在日本申請房貸的條件比較" },
+  { id: "minpaku", label: "民宿與旅館法規", en: "Lodging", desc: "民泊與旅館業的各區規範" },
+  { id: "qa", label: "常見問題 Q&A", en: "Questions", desc: "買房與投資的常見疑問" },
+];
 
 interface BuyGuideTabProps {
   buyCategory: string;
@@ -127,6 +141,24 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
     ? searchThreads(buySearchQuery, { context: "buy", limit: 3 })
     : { results: [], total: 0 };
 
+  // 桌機：一次只看一章；搜尋時攤開全部，結果才不會被章節切掉
+  const isDesktop = useIsDesktop();
+  const [chapter, setChapter] = useState("intro");
+  const [processTopic, setProcessTopic] = useState("concepts");
+  const processTabs = [
+    { id: "concepts", label: "台日差異" },
+    { id: "flow", label: "交易流程" },
+    { id: "documents", label: "簽約文件" },
+    { id: "tax", label: "稅務與持有成本" },
+  ];
+  // 搜尋時也維持章節版型（搜尋框在左欄，不能因為切版而失去焦點），內容區改顯示搜尋結果
+  const pagerOn = isDesktop;
+  const isIntroChapter = pagerOn && chapter === "intro" && !isBuySearchActive;
+  useEffect(() => {
+    if (!isDesktop) return;
+    setBuyCategory((isBuySearchActive || chapter === "intro" ? "all" : chapter) as BuyGuideCategory);
+  }, [isDesktop, isBuySearchActive, chapter, setBuyCategory]);
+
   return (
             <motion.div
               key="buyHouse"
@@ -137,7 +169,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               className="space-y-8"
               id="pane-buy-house"
             >
+              {(() => {
+                const inner = (<>
               {/* Preface Section */}
+              {(!pagerOn || chapter === "intro") && (
               <PageIntroCard
                 id="buy-house-preface"
                 icon="real_estate_agent"
@@ -185,10 +220,13 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   為了協助您更有方向地了解日本房市，我整理了物件資料與費用術語、現金與貸款買房流程、金融機構方案示例，以及民宿與旅館業的確認重點。無論是想自住還是置產規劃，都歡迎直接查閱或透過 AI 顧問向我諮詢！❀
                 </p>
               </PageIntroCard>
+              )}
  
-              {/* Grid Control & Search Block */}
+              {/* Grid Control & Search Block（桌機前言章節不顯示搜尋列） */}
+              {!pagerOn && (
               <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="buy-filter-bar">
-                {/* Horizontal Category selectors */}
+                {/* Horizontal Category selectors（桌機改用左側章節目錄） */}
+                {!pagerOn && (
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
                     { id: "all", label: "全部內容" },
@@ -215,9 +253,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                     </button>
                   ))}
                 </div>
- 
+                )}
+
                 {/* Filter Search Field */}
-                <div className="relative w-full md:w-72 font-sans">
+                <div className={`relative w-full font-sans ${pagerOn ? "md:w-full" : "md:w-72"}`}>
                   <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#8A9590]" />
                   <input
                     type="text"
@@ -242,6 +281,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   )}
                 </div>
               </div>
+              )}
 
               {buySearchQuery.trim() && !isBuySearchActive && (
                 <div className="border-l-4 border-[#FDE047] bg-[#FEF9C3] px-4 py-3 text-sm text-[#854D0E] font-sans">
@@ -251,10 +291,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
               <BuySearchResults isBuySearchActive={isBuySearchActive} buySearchQuery={buySearchQuery} searchResultCount={searchResultCount} threadMatches={threadMatches} setBuySearchQuery={setBuySearchQuery} buyFiltered={buyFiltered} setSelectedFee={setSelectedFee} staticBuySearchItems={staticBuySearchItems} />
 
+              {!isIntroChapter && (<>
               {/* SECTION: TERMS */}
               <BuyTermsSection isBuySearchActive={isBuySearchActive} buyCategory={buyCategory} buyFiltered={buyFiltered} setSelectedFee={setSelectedFee} />
 
-              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
+              {pagerOn && chapter === "steps" && !isBuySearchActive && <SectionTabs tabs={processTabs} active={processTopic} onChange={id => { setProcessTopic(id); setOpenSteps(current => new Set([...current, id])); }} />}
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (!pagerOn || processTopic === "concepts") && (
                 <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
                   <SectionHeading
                     icon={Lightbulb}
@@ -306,9 +348,9 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               )}
 
               {/* SECTION: STEPS & FLOWS */}
-              <BuyProcessSection isBuySearchActive={isBuySearchActive} buyCategory={buyCategory} isStepOpen={isStepOpen} toggleStep={toggleStep} setSelectedFlowType={setSelectedFlowType} selectedFlowType={selectedFlowType} />
+              <BuyProcessSection isBuySearchActive={isBuySearchActive} buyCategory={buyCategory} topic={pagerOn ? processTopic : undefined} isStepOpen={isStepOpen} toggleStep={toggleStep} setSelectedFlowType={setSelectedFlowType} selectedFlowType={selectedFlowType} />
 
-              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
+              {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (!pagerOn || processTopic === "tax") && (
                 <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
                   <SectionHeading
                     icon={ReceiptText}
@@ -378,7 +420,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               {/* SECTION: QA */}
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "qa") && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                  <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見日本買房與投資問題 Q&A</span>
                     <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.qa.length} 問</span>
                   </h3>
@@ -394,6 +436,27 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                   )}
                 </section>
               )}
+              </>)}
+
+                </>);
+                return pagerOn
+                  ? <ChapterPager search={
+                      <label className="chapter-search">
+                        <Search className="chapter-search-icon" aria-hidden="true" />
+                        <input type="text" placeholder="搜尋買房知識（如：貸款）" value={buySearchQuery} onChange={(e) => setBuySearchQuery(e.target.value)} aria-label="搜尋買房知識（如：貸款）" />
+                        {buySearchQuery && <button type="button" onClick={() => setBuySearchQuery("")} aria-label="清除搜尋"><X className="w-3.5 h-3.5" /></button>}
+                      </label>
+                    } prefaceAside={
+                      <div className="preface-feature preface-feature--buy">
+                        <p className="preface-feature-en">Before you buy</p>
+                        <h3 className="preface-feature-title">看物件之前，<br />先算清楚預算</h3>
+                        <img className="preface-feature-art" src="/hero-character-grape.webp" alt="" aria-hidden="true" />
+                        <p className="preface-feature-text">用「買房資金試算」估算頭期款、貸款與每月負擔；已經看中物件的話，上傳販售圖紙做「圖紙健檢」，一次看懂開價合不合理。</p>
+                        <button type="button" className="preface-feature-btn" onClick={() => handleTabChange("calculator")}>前往試算與圖紙健檢 →</button>
+                      </div>
+                    } guideEn="Buy" guideLabel="買房置產" guideIcon={<span className="material-symbols-rounded">real_estate_agent</span>} chapters={BUY_CHAPTERS} active={chapter} onChange={setChapter}>{inner}</ChapterPager>
+                  : inner;
+              })()}
             </motion.div>
   );
 }

@@ -13,7 +13,7 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                   {/* Drawing terms */}
                   {buyFiltered.drawing.length > 0 && (
                     <section className="space-y-4">
-                      <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                      <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>圖紙與物件術語</span>
                         <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.drawing.length} 項</span>
                       </h3>
@@ -53,7 +53,7 @@ export function BuyTermsSection({ isBuySearchActive, buyCategory, buyFiltered, s
                   {/* Fee terms */}
                   {buyFiltered.fee.length > 0 && (
                     <section className="space-y-4">
-                      <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                      <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                         <span>交易與費用術語</span>
                         <span className="text-xs text-[#66736C] font-normal font-sans">共 {buyFiltered.fee.length} 項</span>
                       </h3>

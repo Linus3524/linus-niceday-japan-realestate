@@ -1,13 +1,21 @@
 import {
 ArrowUp,
+Calculator,
 ExternalLink,
-MousePointerClick
+MessageCircle,
+MousePointerClick,
+Smile,
+Sparkles
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, type ReactNode } from "react";
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
+import { AboutPage } from "./components/desktop/AboutPage";
+import { DesktopStage, type StagePage } from "./components/desktop/DesktopStage";
+import { useIsDesktop } from "./hooks/useIsDesktop";
+import { OPEN_QUIZ_EVENT, QUIZ_URL } from "./lib/quizUrl";
 import { ContactTab } from "./components/ContactTab";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
@@ -68,6 +76,16 @@ const HERO_SETS = [
   },
 ];
 const HERO_ROTATE_MS = 15000;
+
+// 桌機內容面板的頁首（租屋、買房用章節翻頁自帶頁首，這裡只列其他分頁）
+// icon 沿用原本各頁介紹卡的圖示
+const DESK_PAGE_HEADS: Partial<Record<StagePage, { en: string; title: string; ghost: string; icon: ReactNode }>> = {
+  calculator: { en: "Calculate", title: "費用試算與圖紙分析", ghost: "Calc", icon: <Calculator /> },
+  chat: { en: "Ask AI", title: "24 小時 AI 顧問", ghost: "Chat", icon: <span className="material-symbols-rounded">smart_toy</span> },
+  contact: { en: "Contact", title: "聯絡 Linus", ghost: "Contact", icon: <Smile /> },
+  threads: { en: "Threads", title: "Threads 精選文章", ghost: "Threads", icon: <MessageCircle /> },
+  quiz: { en: "Quiz", title: "東京居住人格診斷", ghost: "Quiz", icon: <Sparkles /> },
+};
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
 const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer", "cookie"];
 
@@ -242,12 +260,15 @@ export default function App() {
 
   // 首圖場景輪播索引
   const [heroSet, setHeroSet] = useState(0);
+  // 桌機首屏的播放列可以暫停；手動切換後重新計時，進度條才會從頭跑
+  const [heroPaused, setHeroPaused] = useState(false);
   useEffect(() => {
-    const id = window.setInterval(() => {
+    if (heroPaused) return;
+    const id = window.setTimeout(() => {
       setHeroSet(prev => (prev + 1) % HERO_SETS.length);
     }, HERO_ROTATE_MS);
-    return () => window.clearInterval(id);
-  }, []);
+    return () => window.clearTimeout(id);
+  }, [heroSet, heroPaused]);
 
   // 剛載入的第一張場景直接顯示，不跑 1.2 秒的淡入。
   // 背景圖其實在 30ms 就下載完了，慢的是我們自己的淡入動畫，
@@ -495,10 +516,50 @@ export default function App() {
   }, []);
 
 
+  // 桌機是單頁應用：不往下捲，左側選單左右切換「頁面」，長內容在中間面板裡捲動
+  const isDesktop = useIsDesktop();
+  const [deskPage, setDeskPage] = useState<StagePage>("home");
+  const [quizOpened, setQuizOpened] = useState(false);
+  // 測驗封面在 568px 寬度下約 1140px 高，依面板高度縮放，避免開始按鈕被裁掉。
+  useEffect(() => {
+    if (!isDesktop || deskPage !== "quiz") return;
+    const sheet = document.getElementById("desk-sheet");
+    if (!sheet) return;
+    const root = document.documentElement;
+    const fit = () => root.style.setProperty("--quiz-scale", String(Math.min(0.9, sheet.clientHeight / 1140)));
+    const observer = new ResizeObserver(fit);
+    observer.observe(sheet);
+    fit();
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty("--quiz-scale");
+    };
+  }, [isDesktop, deskPage]);
+  const showDeskPage = (page: StagePage) => {
+    if (page === "quiz") setQuizOpened(true);
+    setDeskPage(page);
+    requestAnimationFrame(() => {
+      document.getElementById("desk-sheet")?.scrollTo({ top: 0 });
+      // 回首頁時從首屏開始看
+      if (page === "home") document.querySelector(".desktop-stage")?.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
+
+  // 其他元件（前言推薦卡、關於 Linus）要在桌機面板裡開測驗時，發這個事件
+  useEffect(() => {
+    const open = () => showDeskPage("quiz");
+    window.addEventListener(OPEN_QUIZ_EVENT, open);
+    return () => window.removeEventListener(OPEN_QUIZ_EVENT, open);
+  }, []);
+
   // Keep the tab navigation visible and move to the selected content, not the site header.
   const handleTabChange = (tab: AppTab) => {
     setIsMobileHome(false);
     setActiveTab(tab);
+    if (isDesktop) {
+      showDeskPage(tab);
+      return;
+    }
     requestAnimationFrame(() => {
       document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -738,8 +799,54 @@ export default function App() {
     return <PolicyPage page={policyPage} onBack={returnHome} />;
   }
 
+  // 頁尾：手機在每頁底部；桌機只出現在首頁往下捲的「關於 Linus」最底部
+  const renderFooter = (id: string) => (
+      <footer className="mt-12 border-t border-[#1A2A22] bg-[#F5F8F6]" id={id}>
+        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
+          <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+            <div>
+              <strong className="font-serif text-base font-semibold tracking-[0.04em] text-[#1A2A22]">LINUS 住好日</strong>
+              <p className="mt-1 font-sans text-xs text-[#66736C]">
+                日本租屋・買房與在日生活的實務整理
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-3 md:items-end">
+              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#1A2A22]">
+                <a
+                  href="https://www.threads.com/@linus3524"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 transition-colors hover:text-[#009670]"
+                >
+                  Threads
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
+                <span className="h-3 w-px bg-[#C9D2CD]" aria-hidden="true" />
+                <a
+                  href={`mailto:${linusContact.email}`}
+                  className="transition-colors hover:text-[#009670]"
+                >
+                  聯絡信箱
+                </a>
+              </div>
+              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#66736C]" aria-label="網站政策">
+                <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
+                <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
+                <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
+                <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
+              </nav>
+            </div>
+          </div>
+
+          <p className="mt-6 border-t border-[#DDE3DF] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#8A9590] md:text-left">
+            © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
+          </p>
+        </div>
+      </footer>
+  );
+
   return (
-    <div className={`min-h-screen flex flex-col font-serif select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
+    <div className={`desk-app min-h-screen flex flex-col font-serif select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
       {/* Reading Progress Bar */}
       <div 
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] transition-all duration-75"
@@ -750,6 +857,28 @@ export default function App() {
       />
 
       <MobileSceneHero heroSet={heroSet} booting={heroBooting} />
+
+      <DesktopStage
+        scenes={HERO_SETS}
+        current={heroSet}
+        paused={heroPaused}
+        rotateMs={HERO_ROTATE_MS}
+        booting={heroBooting}
+        visitorDisplay={visitorDisplay}
+        onSelectScene={setHeroSet}
+        onTogglePause={() => setHeroPaused(prev => !prev)}
+        page={deskPage}
+        onNavigate={handleTabChange}
+        onHome={() => showDeskPage("home")}
+        onShowThreads={() => showDeskPage("threads")}
+        onShowQuiz={() => showDeskPage("quiz")}
+        below={
+          <>
+            <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} />
+            {renderFooter("stage-footer")}
+          </>
+        }
+      />
 
       {/* Top sticky header */}
       <header className="site-header sticky top-0 z-50 border-b border-[#DDE3DF] bg-white py-3 px-6 select-none" id="app-header">
@@ -922,7 +1051,26 @@ export default function App() {
       </section>
 
       {/* Featured Threads posts carousel */}
-      <div className="desktop-threads-section">
+      {/* 桌機：以下全部收進中間的內容面板（desk-sheet），依 deskPage 只顯示一頁；手機照常往下排 */}
+      <div id="desk-sheet" className={`desk-sheet desk-page--${deskPage}`}>
+      {isDesktop && deskPage !== "home" && (
+        <>
+          {DESK_PAGE_HEADS[deskPage] && (
+            <header className="chapter-head desk-page-head">
+              <span className="chapter-ghost" aria-hidden="true">{DESK_PAGE_HEADS[deskPage]!.ghost}</span>
+              <span className="desk-page-icon" aria-hidden="true">{DESK_PAGE_HEADS[deskPage]!.icon}</span>
+              <h2 className="chapter-title">{DESK_PAGE_HEADS[deskPage]!.title}</h2>
+              <span className="chapter-en">{DESK_PAGE_HEADS[deskPage]!.en}</span>
+            </header>
+          )}
+        </>
+      )}
+
+      {/* 首次打開才載入；切換其他分頁只隱藏，保留 iframe 的作答進度與結果。 */}
+      {quizOpened && (
+        <iframe className="desk-quiz-frame" style={{ display: isDesktop && deskPage === "quiz" ? "block" : "none" }} src={QUIZ_URL} title="東京居住人格診斷" allow="clipboard-write; web-share" />
+      )}
+      <div className="desktop-threads-section" id="threads-section">
         <ThreadsCarousel />
       </div>
 
@@ -1029,55 +1177,21 @@ export default function App() {
 
         </AnimatePresence>
       </main>
+
+      {renderFooter("app-footer")}
+      </div>
+      {/* 關閉鈕放在內容面板外側（右上角外面），不擋到面板內容 */}
+      {isDesktop && deskPage !== "home" && (
+        <button type="button" className={`desk-sheet-close desk-sheet-close--${deskPage}`} onClick={() => showDeskPage("home")} aria-label="關閉分頁，回到首頁">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" /></svg>
+        </button>
+      )}
       <TermModal
         selectedFee={selectedFee}
         setSelectedFee={setSelectedFee}
         handleTabChange={handleTabChange}
         handleSendMessage={handleSendMessage}
       />
-
-      <footer className="mt-12 border-t border-[#1A2A22] bg-[#F5F8F6]" id="app-footer">
-        <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
-          <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
-            <div>
-              <strong className="font-serif text-base font-semibold tracking-[0.04em] text-[#1A2A22]">LINUS 住好日</strong>
-              <p className="mt-1 font-sans text-xs text-[#66736C]">
-                日本租屋・買房與在日生活的實務整理
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-3 md:items-end">
-              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#1A2A22]">
-                <a
-                  href="https://www.threads.com/@linus3524"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 transition-colors hover:text-[#009670]"
-                >
-                  Threads
-                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                </a>
-                <span className="h-3 w-px bg-[#C9D2CD]" aria-hidden="true" />
-                <a
-                  href={`mailto:${linusContact.email}`}
-                  className="transition-colors hover:text-[#009670]"
-                >
-                  聯絡信箱
-                </a>
-              </div>
-              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#66736C]" aria-label="網站政策">
-                <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
-                <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
-                <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
-                <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
-              </nav>
-            </div>
-          </div>
-
-          <p className="mt-6 border-t border-[#DDE3DF] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#8A9590] md:text-left">
-            © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
-          </p>
-        </div>
-      </footer>
 
       {showToTop && (
         <button

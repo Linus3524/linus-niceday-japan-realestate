@@ -25,7 +25,7 @@ interface Props {
 export function RentProcessSection({ isSearchActive, showProcessSection, showSop, showDocuments, setDocumentsExpanded, isDocumentSearchResult, isDocumentsOpen, searchQuery, showRoutes, filtered, showReminders, VisaDocumentMatrix }: Props) {
   return (<>{!isSearchActive && showProcessSection && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3">
+                  <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3">
                     <span>日本租屋正式申請與交屋流程 SOP</span>
                   </h3>
 
@@ -177,7 +177,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                   {/* Application route comparison */}
                   {showRoutes && (
-                  <div className="border border-[#DDE3DF] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
+                  <div className="rent-routes border border-[#DDE3DF] bg-white p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <div className="mb-4 flex flex-col gap-1 border-b border-[#DDE3DF] pb-3 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <h4 className="text-base font-bold text-[#1A2A22]">申請前，先確認是哪一種流程</h4>
@@ -185,9 +185,10 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       </div>
                       <span className="text-xs font-bold text-[#00a174] font-sans">三種申請方式</span>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3 font-sans">
+                    <div className="rent-route-grid grid grid-cols-1 gap-3 md:grid-cols-3 font-sans">
                       {applicationRoutes.map((route, index) => (
-                        <div key={route.title} className="border border-[#DDE3DF] p-4">
+                        <div key={route.title} className={`rent-route-card border border-[#DDE3DF] p-4 ${index === 2 ? "is-caution" : ""}`}>
+                          <span className="rent-route-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                           <div className="mb-3 flex items-start justify-between gap-2">
                             <h5 className="text-sm font-bold text-[#1A2A22]">{route.title}</h5>
                             <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#e6f6f1] text-[#00a174]"}`}>{route.condition}</span>
@@ -248,13 +249,13 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                   )}
 
                   {showReminders && (
-                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] text-xs text-[#3F5147] leading-relaxed font-sans space-y-2">
+                    <div className="rent-reminders bg-[#F5F8F6] p-4 border border-[#DDE3DF] text-xs text-[#3F5147] leading-relaxed font-sans space-y-2">
                       <span className="font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
                       <ul className="space-y-1.5">
-                        {processReminders.map(reminder => (
-                          <li key={reminder} className="flex gap-2">
-                            <span className="shrink-0 text-[#00a174]">•</span>
-                            <span>{reminder}</span>
+                        {processReminders.map((reminder, index) => (
+                          <li key={reminder} className="rent-reminder-card flex gap-2">
+                            <span className="rent-reminder-number shrink-0 text-[#00a174]">{String(index + 1).padStart(2, "0")}</span>
+                            <div><h4 className="rent-reminder-title">{["什麼時候開始找房", "住址與銀行開戶", "生活服務代辦聯繫", "初期費用的最終確認", "第一次房租怎麼繳"][index]}</h4><p>{reminder}</p></div>
                           </li>
                         ))}
                       </ul>

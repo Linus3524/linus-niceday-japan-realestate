@@ -48,7 +48,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
               id="pane-calculator"
             >
               {/* Rent vs Buy vs Listing switcher */}
-              <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1" id="calc-mode-switcher font-sans">
+              <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans" id="calc-mode-switcher">
                 <button
                   onClick={() => setCalcMode("rent")}
                   className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${

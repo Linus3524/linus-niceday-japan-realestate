@@ -66,10 +66,10 @@ export function PageIntroCard({
   return (
     <div
       id={id}
-      className="border border-[#DDE3DF] bg-white p-6 md:p-8 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft font-sans"
+      className="page-intro-card border border-[#DDE3DF] bg-white p-6 md:p-8 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft font-sans"
     >
       {/* 標題列：左側圖示 + 主標題 */}
-      <h3 className="border-b border-[#DDE3DF] pb-3.5 mb-4 flex items-center gap-2.5 text-lg md:text-xl font-bold text-[#1A2A22]">
+      <h3 className="page-intro-title border-b border-[#DDE3DF] pb-3.5 mb-4 flex items-center gap-2.5 text-lg md:text-xl font-bold text-[#1A2A22]">
         {icon && (
           <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[#00a174]" aria-hidden="true">
             {renderIcon()}
@@ -79,7 +79,7 @@ export function PageIntroCard({
       </h3>
 
       {/* 內文區域：統一字級、字色、行高與多段落間距 */}
-      <div className="text-xs md:text-[13.5px] leading-relaxed md:leading-7 text-[#3F5147] text-justify space-y-3">
+      <div className="page-intro-body text-xs md:text-[13.5px] leading-relaxed md:leading-7 text-[#3F5147] text-justify space-y-3">
         {children}
         {sourceNote && (
           <p className="pt-1 text-[11px] leading-normal text-[#8A9590]">
@@ -90,7 +90,7 @@ export function PageIntroCard({
 
       {/* 底部快捷操作卡片（若有） */}
       {actions && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-[#DDE3DF]">
+        <div className="page-intro-actions grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-dashed border-[#DDE3DF]">
           {actions}
         </div>
       )}

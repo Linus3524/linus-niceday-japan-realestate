@@ -5,6 +5,7 @@ buyHouseCashSteps, buyHouseLoanSteps, signingDocuments
 import { SectionHeading } from "../SectionHeading";
 
 interface Props {
+  topic?: string;
   isBuySearchActive: boolean;
   buyCategory: string;
   isStepOpen: (key: string) => boolean;
@@ -12,10 +13,10 @@ interface Props {
   setSelectedFlowType: (t: "cash" | "loan") => void;
   selectedFlowType: "cash" | "loan";
 }
-export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, toggleStep, setSelectedFlowType, selectedFlowType }: Props) {
+export function BuyProcessSection({ topic, isBuySearchActive, buyCategory, isStepOpen, toggleStep, setSelectedFlowType, selectedFlowType }: Props) {
   return (<>{!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
                 <div className="space-y-6">
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                  {(!topic || topic === "flow") && <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={MapPin}
                       title="日本買房交易完整流程"
@@ -105,10 +106,10 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                       )}
                     </div>
                     )}
-                  </section>
+                  </section>}
 
                   {/* Signing documents requirements */}
-                  <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
+                  {(!topic || topic === "documents") && <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={FileText}
                       title={signingDocuments.title}
@@ -150,7 +151,7 @@ export function BuyProcessSection({ isBuySearchActive, buyCategory, isStepOpen, 
                       </div>
                     </div>
                     )}
-                  </section>
+                  </section>}
                 </div>
               )}</>);
 }

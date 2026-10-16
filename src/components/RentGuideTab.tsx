@@ -1,6 +1,6 @@
 import { ArrowRight, Search, X } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InitialFeeItem, ProcessStep, QAItem, SpecialTermItem } from "../data/rentGuideData";
 import {
 applicationRoutes,
@@ -18,6 +18,19 @@ import { RentSearchResults } from './guides/RentSearchResults';
 import { JapaneseRuby } from "./JapaneseRuby";
 import { PageIntroCard } from "./PageIntroCard";
 import { QACard } from "./QACard";
+import { ChapterPager, type Chapter } from "./desktop/ChapterPager";
+import { SectionTabs } from "./desktop/SectionTabs";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import { QUIZ_URL, openQuizInline } from "../lib/quizUrl";
+
+// 桌機章節翻頁的章節順序：前言 → 流程 → 費用 → 格局設備 → 問答
+const RENT_CHAPTERS: Chapter[] = [
+  { id: "intro", label: "前言", en: "Preface" },
+  { id: "steps", label: "申請與交屋流程", en: "Process", desc: "從申請、審查到簽約入住的完整 SOP 與準備文件" },
+  { id: "initial", label: "初期費用與契約術語", en: "Costs & Contract", desc: "禮金、敷金、保證公司⋯⋯每一筆費用代表什麼" },
+  { id: "terms", label: "格局與設備術語", en: "Layout & Equipment", desc: "看懂圖紙上的格局縮寫與設備標示" },
+  { id: "qa", label: "常見問題 Q&A", en: "Questions", desc: "審查、簽證、短租、合租等常見疑問" },
+];
 
 interface RentGuideTabProps {
   kbCategory: string;
@@ -82,6 +95,26 @@ export function RentGuideTab(props: RentGuideTabProps) {
     ? searchThreads(searchQuery, { context: "rent", limit: 3 })
     : { results: [], total: 0 };
 
+  // 桌機：一次只看一章；搜尋時改回全部攤開，搜尋結果才不會被章節切掉
+  const isDesktop = useIsDesktop();
+  const [chapter, setChapter] = useState("intro");
+  const [processTopic, setProcessTopic] = useState("sop");
+  const processTabs = [
+    { id: "sop", label: "申請流程" },
+    { id: "documents", label: "準備文件" },
+    { id: "routes", label: "申請方式" },
+    { id: "steps", label: "簽約交屋" },
+    { id: "reminders", label: "實務提醒" },
+  ];
+  const topicVisible = (id: string) => !isDesktop || processTopic === id;
+  // 搜尋時也維持章節版型（搜尋框在左欄，不能因為切版而失去焦點），內容區改顯示搜尋結果
+  const pagerOn = isDesktop;
+  const isIntroChapter = pagerOn && chapter === "intro" && !isSearchActive;
+  useEffect(() => {
+    if (!isDesktop) return;
+    setKbCategory((isSearchActive || chapter === "intro" ? "all" : chapter) as RentGuideCategory);
+  }, [isDesktop, isSearchActive, chapter, setKbCategory]);
+
   return (
             <motion.div
               key="cards"
@@ -92,7 +125,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
               className="space-y-8"
               id="pane-cards"
             >
+              {(() => {
+                const inner = (<>
               {/* Preface Section */}
+              {(!pagerOn || chapter === "intro") && (
               <PageIntroCard
                 id="cards-preface"
                 icon="key"
@@ -118,7 +154,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] hover:border-[#00a174] transition-colors">
                       <h4 className="font-bold text-[#00a174] flex items-center gap-2 text-sm">
                         <span className="material-symbols-rounded shrink-0 select-none text-[18px] leading-none" aria-hidden="true">smart_toy</span>
-                        <span>有特定的疑難雜症想直接問 AI 嗎？</span>
+                        <span>有疑難雜症想直接問 AI 嗎？</span>
                       </h4>
                       <p className="text-xs text-[#3F5147] mt-1">
                         本系統已將完整大補帖融入 AI 顧問，支援多輪對話，能快速精準解答。
@@ -140,10 +176,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   日本租屋有許多和台灣不同的一次性費用，例如禮金、保證公司費用與鑰匙更換費；契約條款也會因物件與管理公司而不同。希望這份租屋知識整理、租金預算計算機與 AI 顧問，能幫您在申請前看懂條件、做好預算。祝您在日本的生活一切順利！❀
                 </p>
               </PageIntroCard>
+              )}
 
-              {/* Grid Control & Search Block */}
+              {/* Grid Control & Search Block（桌機前言章節不顯示搜尋列） */}
+              {!pagerOn && (
               <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 flex flex-col md:flex-row gap-4 justify-between items-center transition-all duration-300 hover:shadow-colored-soft" id="kb-filter-bar">
-                {/* Horizontal Category selectors */}
+                {/* Horizontal Category selectors（桌機改用左側章節目錄） */}
+                {!pagerOn && (
                 <div className="flex flex-wrap gap-2 w-full md:w-auto font-sans">
                   {[
                     { id: "all", label: "全部內容" },
@@ -165,9 +204,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     </button>
                   ))}
                 </div>
+                )}
 
                 {/* Filter Search Field */}
-                <div className="relative w-full md:w-72 font-sans">
+                <div className={`relative w-full font-sans ${pagerOn ? "md:w-full" : "md:w-72"}`}>
                   <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#8A9590]" />
                   <input
                     type="text"
@@ -187,6 +227,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   )}
                 </div>
               </div>
+              )}
 
               {/* Search results message */}
               {searchQuery.trim() && !isSearchActive && (
@@ -196,10 +237,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
               <RentSearchResults isSearchActive={isSearchActive} searchQuery={searchQuery} rentSearchResultCount={rentSearchResultCount} threadMatches={threadMatches} setSearchQuery={setSearchQuery} hasNoResults={hasNoResults} filtered={filtered} setSelectedFee={setSelectedFee} staticRentSearchItems={staticRentSearchItems} />
 
+              {!isIntroChapter && (<>
               {/* CARD SECTOR: INITIAL FEES */}
               {!isSearchActive && filtered.fees.length > 0 && (
                 <section className="space-y-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                  <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>初期費用與契約術語</span>
                     <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.fees.length} 項</span>
                   </h3>
@@ -207,13 +249,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     {filtered.fees.map((fee, idx) => (
                       <div
                         key={idx}
-                        className="border border-[#DDE3DF] bg-white p-5 flex flex-col justify-between transition-all duration-300 relative"
+                        className="fee-card border border-[#DDE3DF] bg-white p-5 flex flex-col justify-between transition-all duration-300 relative"
                       >
                         <div>
-                          <div className="flex justify-between items-start gap-2 mb-2">
-                            <h4 className="font-bold text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={fee.name} /></h4>
+                          <div className="fee-card-head flex justify-between items-start gap-2 mb-2">
+                            <h4 className="fee-card-title font-bold text-base leading-[1.8] text-[#1A2A22]"><JapaneseRuby text={fee.name} /></h4>
                             {fee.jpName && (
-                              <span className="text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{fee.jpName}</span>
+                              <span className="fee-card-tag text-xs bg-[#F5F8F6] px-1.5 py-0.5 border border-[#DDE3DF] text-[#3F5147] font-sans font-medium">{fee.jpName}</span>
                             )}
                           </div>
                           <p className="text-sm text-[#3F5147] leading-relaxed line-clamp-3">
@@ -245,7 +287,7 @@ export function RentGuideTab(props: RentGuideTabProps) {
               {/* CARD SECTOR: SPECIAL TERMS */}
               {!isSearchActive && filtered.terms.length > 0 && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                  <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>格局與設備術語</span>
                     <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.terms.length} 項</span>
                   </h3>
@@ -265,12 +307,13 @@ export function RentGuideTab(props: RentGuideTabProps) {
               )}
 
               {/* CARD SECTOR: PROCESS STEPS */}
-              <RentProcessSection isSearchActive={isSearchActive} showProcessSection={showProcessSection} showSop={showSop} showDocuments={showDocuments} setDocumentsExpanded={setDocumentsExpanded} isDocumentSearchResult={isDocumentSearchResult} isDocumentsOpen={isDocumentsOpen} searchQuery={searchQuery} showRoutes={showRoutes} filtered={filtered} showReminders={showReminders} VisaDocumentMatrix={VisaDocumentMatrix} />
+              {pagerOn && chapter === "steps" && !isSearchActive && <SectionTabs tabs={processTabs} active={processTopic} onChange={setProcessTopic} />}
+              <RentProcessSection isSearchActive={isSearchActive} showProcessSection={showProcessSection} showSop={showSop && topicVisible("sop")} showDocuments={showDocuments && topicVisible("documents")} setDocumentsExpanded={setDocumentsExpanded} isDocumentSearchResult={isDocumentSearchResult} isDocumentsOpen={isDocumentsOpen || (pagerOn && processTopic === "documents")} searchQuery={searchQuery} showRoutes={showRoutes && topicVisible("routes")} filtered={{ ...filtered, steps: topicVisible("steps") ? filtered.steps : [] }} showReminders={showReminders && topicVisible("reminders")} VisaDocumentMatrix={VisaDocumentMatrix} />
 
               {/* CARD SECTOR: Q&A */}
               {!isSearchActive && filtered.qa.length > 0 && (
                 <section className="space-y-4 pt-4">
-                  <h3 className="text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
+                  <h3 className="chapter-section-title text-lg font-bold border-l-4 border-[#00a174] pl-3 flex items-center justify-between">
                     <span>常見租屋問題 Q&A</span>
                     <span className="text-xs text-[#66736C] font-normal font-sans">共 {filtered.qa.length} 問</span>
                   </h3>
@@ -279,6 +322,27 @@ export function RentGuideTab(props: RentGuideTabProps) {
                   </div>
                 </section>
               )}
+              </>)}
+
+                </>);
+                return pagerOn
+                  ? <ChapterPager search={
+                      <label className="chapter-search">
+                        <Search className="chapter-search-icon" aria-hidden="true" />
+                        <input type="text" placeholder="搜尋租屋知識（如：敷金）" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} aria-label="搜尋租屋知識（如：敷金）" />
+                        {searchQuery && <button type="button" onClick={() => setSearchQuery("")} aria-label="清除搜尋"><X className="w-3.5 h-3.5" /></button>}
+                      </label>
+                    } prefaceAside={
+                      <div className="preface-feature preface-feature--rent">
+                        <p className="preface-feature-en">New in Tokyo?</p>
+                        <h3 className="preface-feature-title">先測測看，<br />你適合住在東京哪一區</h3>
+                        <img className="preface-feature-art" src="/hero-character-lemon.webp" alt="" aria-hidden="true" />
+                        <p className="preface-feature-text">「東京居住人格診斷」用 12 道生活情境題，從你喜歡的街景、通勤習慣到假日怎麼過，找出最適合你的東京生活圈。剛來日本、還不知道該從哪裡找房的人，可以先從這裡開始。</p>
+                        <a className="preface-feature-btn" href={QUIZ_URL} onClick={openQuizInline}>開始測驗 →</a>
+                      </div>
+                    } guideEn="Rent" guideLabel="租屋指南" guideIcon={<span className="material-symbols-rounded">key</span>} chapters={RENT_CHAPTERS} active={chapter} onChange={setChapter}>{inner}</ChapterPager>
+                  : inner;
+              })()}
             </motion.div>
   );
 }
