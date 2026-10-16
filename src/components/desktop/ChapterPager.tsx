@@ -68,7 +68,7 @@ export function ChapterPager({
       <div className="chapter-main">
         <header className="chapter-head">
           <span className="chapter-ghost" aria-hidden="true">{guideEn}</span>
-          <span className="chapter-kicker">Chapter {num(index)}</span>
+          <span className="chapter-kicker">{num(index)}</span>
           <h2 className="chapter-title">{current.label}</h2>
           <span className="chapter-en">{current.en}</span>
         </header>

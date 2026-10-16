@@ -83,7 +83,7 @@ const DESK_PAGE_HEADS: Partial<Record<StagePage, { en: string; title: string; gh
   calculator: { en: "Calculate", title: "費用試算與圖紙分析", ghost: "Calc", icon: <Calculator /> },
   chat: { en: "Ask AI", title: "24 小時 AI 顧問", ghost: "Chat", icon: <span className="material-symbols-rounded">smart_toy</span> },
   contact: { en: "Contact", title: "聯絡 Linus", ghost: "Contact", icon: <Smile /> },
-  threads: { en: "Threads", title: "Threads 精選文章", ghost: "Threads", icon: <MessageCircle /> },
+  threads: { en: "Threads", title: "在 Threads，繼續住好日", ghost: "Threads", icon: <MessageCircle /> },
   quiz: { en: "Quiz", title: "東京居住人格診斷", ghost: "Quiz", icon: <Sparkles /> },
 };
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
@@ -520,23 +520,39 @@ export default function App() {
   const isDesktop = useIsDesktop();
   const [deskPage, setDeskPage] = useState<StagePage>("home");
   const [quizOpened, setQuizOpened] = useState(false);
-  // 測驗封面在 568px 寬度下約 1140px 高，依面板高度縮放，避免開始按鈕被裁掉。
+  // 測驗內嵌兩種版面：手機版（預設，縮成測驗本身的寬度）／寬版（與其他分頁同寬）。記在瀏覽器，下次打開沿用。
+  const [quizWide, setQuizWide] = useState(() => {
+    try { return localStorage.getItem("linus:quiz-wide") === "1"; } catch { return false; }
+  });
+  const toggleQuizWide = () => setQuizWide(prev => {
+    const next = !prev;
+    try { localStorage.setItem("linus:quiz-wide", next ? "1" : "0"); } catch { /* 無痕或停用儲存時只在本次有效 */ }
+    return next;
+  });
+  // 測驗封面在 520px 寬度下約 1200px 高，依面板高度縮放，避免開始按鈕被裁掉。
   useEffect(() => {
-    if (!isDesktop || deskPage !== "quiz") return;
+    if (!isDesktop || deskPage !== "quiz" || quizWide) return;
     const sheet = document.getElementById("desk-sheet");
     if (!sheet) return;
     const root = document.documentElement;
-    const fit = () => root.style.setProperty("--quiz-scale", String(Math.min(0.9, sheet.clientHeight / 1140)));
+    const fit = () => root.style.setProperty("--quiz-scale", String(Math.min(0.9, sheet.clientHeight / 1200)));
     const observer = new ResizeObserver(fit);
     observer.observe(sheet);
     fit();
-    return () => {
-      observer.disconnect();
-      root.style.removeProperty("--quiz-scale");
-    };
-  }, [isDesktop, deskPage]);
+    // 不清除 --quiz-scale：關閉面板的滑出動畫還在用它算寬度，清掉會讓面板在滑出途中跳寬。
+    // :root 本來就有預設值，沒有其他地方使用這個變數。
+    return () => observer.disconnect();
+  }, [isDesktop, deskPage, quizWide]);
+  // 關閉測驗面板時，面板要滑出去的這段時間內容必須維持測驗的樣子：
+  // 否則 deskPage 一變成 home，測驗專用的樣式（隱藏 #main-content、顯示 iframe）立刻失效，
+  // 面板滑出途中會閃出底下那個分頁（前言／租屋指南）的卡片。
+  const [quizLingering, setQuizLingering] = useState(false);
   const showDeskPage = (page: StagePage) => {
     if (page === "quiz") setQuizOpened(true);
+    if (page === "home" && deskPage === "quiz") {
+      setQuizLingering(true);
+      window.setTimeout(() => setQuizLingering(false), 800);
+    }
     setDeskPage(page);
     requestAnimationFrame(() => {
       document.getElementById("desk-sheet")?.scrollTo({ top: 0 });
@@ -1052,7 +1068,7 @@ export default function App() {
 
       {/* Featured Threads posts carousel */}
       {/* 桌機：以下全部收進中間的內容面板（desk-sheet），依 deskPage 只顯示一頁；手機照常往下排 */}
-      <div id="desk-sheet" className={`desk-sheet desk-page--${deskPage}`}>
+      <div id="desk-sheet" className={`desk-sheet desk-page--${deskPage}${deskPage === "home" && quizLingering ? " desk-page--quiz" : ""}${(deskPage === "quiz" || quizLingering) && quizWide ? " is-quiz-wide" : ""}`}>
       {isDesktop && deskPage !== "home" && (
         <>
           {DESK_PAGE_HEADS[deskPage] && (
@@ -1068,7 +1084,7 @@ export default function App() {
 
       {/* 首次打開才載入；切換其他分頁只隱藏，保留 iframe 的作答進度與結果。 */}
       {quizOpened && (
-        <iframe className="desk-quiz-frame" style={{ display: isDesktop && deskPage === "quiz" ? "block" : "none" }} src={QUIZ_URL} title="東京居住人格診斷" allow="clipboard-write; web-share" />
+        <iframe className="desk-quiz-frame" style={{ display: isDesktop && (deskPage === "quiz" || quizLingering) ? "block" : "none" }} src={QUIZ_URL} title="東京居住人格診斷" allow="clipboard-write; web-share" />
       )}
       <div className="desktop-threads-section" id="threads-section">
         <ThreadsCarousel />
@@ -1182,8 +1198,24 @@ export default function App() {
       </div>
       {/* 關閉鈕放在內容面板外側（右上角外面），不擋到面板內容 */}
       {isDesktop && deskPage !== "home" && (
-        <button type="button" className={`desk-sheet-close desk-sheet-close--${deskPage}`} onClick={() => showDeskPage("home")} aria-label="關閉分頁，回到首頁">
+        <button type="button" className={`desk-sheet-close desk-sheet-close--${deskPage === "quiz" && quizWide ? "quizwide" : deskPage}`} onClick={() => showDeskPage("home")} aria-label="關閉分頁，回到首頁">
           <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" /></svg>
+        </button>
+      )}
+      {isDesktop && deskPage === "quiz" && (
+        <button
+          type="button"
+          className={`desk-quiz-mode${quizWide ? " desk-quiz-mode--wide" : ""}`}
+          onClick={toggleQuizWide}
+          aria-pressed={quizWide}
+          title={quizWide ? "改回手機版（窄欄、整頁放得進畫面）" : "改成寬版（與其他分頁同寬）"}
+          aria-label={quizWide ? "切換為手機版" : "切換為寬版"}
+        >
+          <svg viewBox="0 0 12 12" aria-hidden="true">
+            {quizWide
+              ? <path d="M1.5 1.5l3 3M4.5 2.5v2h-2M10.5 1.5l-3 3M7.5 2.5v2h2M1.5 10.5l3-3M4.5 9.5v-2h-2M10.5 10.5l-3-3M7.5 9.5v-2h2" />
+              : <path d="M4.5 4.5l-3-3M1.5 4v-2.5H4M7.5 4.5l3-3M10.5 4v-2.5H8M4.5 7.5l-3 3M1.5 8v2.5H4M7.5 7.5l3 3M10.5 8v2.5H8" />}
+          </svg>
         </button>
       )}
       <TermModal
