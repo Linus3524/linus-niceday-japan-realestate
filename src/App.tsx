@@ -956,7 +956,7 @@ export default function App() {
               <span>HAVE A NICE DAY IN JAPAN</span>
             </div>
 
-            <h1 className="font-serif font-extrabold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
+            <h1 className="font-serif font-bold text-4xl md:text-5xl leading-tight text-[#1A2A22] mt-2">
               <span className="hero-title-first-line">
                 日本での<span className="hero-marker relative inline-block px-1 z-10 after:content-[''] after:absolute after:left-0 after:bottom-1 after:w-full after:h-3.5 after:-z-10">暮らしを</span>、
               </span>
@@ -964,14 +964,14 @@ export default function App() {
               <span className="hero-accent-text">好日へ。</span>
             </h1>
 
-            <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-bold leading-normal">
+            <h2 className="font-serif text-lg md:text-xl text-[#3F5147] tracking-wide pt-4 font-semibold leading-normal">
               台灣人仲介帶你看懂日本租屋、買房與置產。
             </h2>
 
             {/* 限制寬度讓長句提早換行，避免文字延伸過去壓到人物 */}
             <div className="max-w-[30rem] text-xs md:text-sm text-[#66736C] font-sans tracking-wide leading-relaxed space-y-1 mt-4">
               <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
-              <p>分享日本租屋、買房、貸款規劃與在日生活的經驗實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
+              <p>分享日本租屋、買房、貸款與生活資訊，提供 24 小時 AI 顧問及線上諮詢。</p>
               <p>從找房到安居，希望成為你在日本最值得信賴的夥伴。</p>
               <p>Linus 住好日，一起在日本住好日！</p>
             </div>

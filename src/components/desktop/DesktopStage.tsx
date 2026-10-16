@@ -278,7 +278,7 @@ export function DesktopStage({
         <h2 className="stage-subtitle">台灣人仲介帶你看懂日本租屋、買房與置產。</h2>
         <div className="stage-intro">
           <p>我是 Linus，在東京從事不動產仲介，也是一名來自台灣的平面設計師。</p>
-          <p>分享日本租屋、買房、貸款規劃與在日生活的經驗實務，並提供 24 小時 AI 顧問與線上諮詢。</p>
+          <p>分享日本租屋、買房、貸款與生活資訊，提供 24 小時 AI 顧問及線上諮詢。</p>
           <p>從找房到安居，希望成為你在日本最值得信賴的夥伴。</p>
           <p>Linus 住好日，一起在日本住好日！</p>
         </div>
@@ -327,15 +327,17 @@ export function DesktopStage({
       <aside className="stage-panel stage-panel--right" aria-label="東京時間與天氣">
         <EdgeToggle side="right" open={panels.right} onToggle={() => togglePanel("right")} label="時鐘" />
         <div className="stage-panel-body">
-          {/* 日期：雜誌刊頭式排法 —— 斜體英文月份（場景色）／細長大字日期＋星期方框／細線上的西元與年號 */}
+          {/* 日期：大字日期搭配右側月份與曜日，底列保留西元及年號。 */}
           <div key={`date-${city}`} className="stage-date stage-swap-in" aria-label={`${now.year}年${now.month}月${now.day}日（${now.weekday}）`}>
-            <div className="stage-date-row">
-              <span className="stage-date-month">{now.enMonth}.</span>
-              <span className="stage-date-enweek">{now.enWeekday}</span>
-            </div>
             <div className="stage-date-row stage-date-row--main">
               <span className="stage-date-day">{String(now.day).padStart(2, "0")}</span>
-              <span className="stage-date-week">{now.weekday}</span>
+              <div className="stage-date-details">
+                <span className="stage-date-month">{now.enMonth}.</span>
+                <div className="stage-date-weekday">
+                  <span className="stage-date-week">{now.weekday}</span>
+                  <span className="stage-date-enweek">{now.enWeekday}</span>
+                </div>
+              </div>
             </div>
             <div className="stage-date-foot">
               <span>{now.year}</span>

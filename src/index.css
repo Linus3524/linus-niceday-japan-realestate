@@ -1818,7 +1818,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .stage-title {
     margin-top: 22px;
     font-family: var(--font-serif);
-    font-weight: 800;
+    font-weight: 700;
     font-size: clamp(36px, 3.4vw, 64px);
     line-height: 1.42;
     white-space: nowrap;
@@ -2075,7 +2075,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .stage-subtitle {
     margin-top: 28px;
     font-family: var(--font-serif);
-    font-weight: 700;
+    font-weight: 600;
     font-size: clamp(18px, 1.4vw, 26px);
     letter-spacing: 0.04em;
     line-height: 1.7;
@@ -4103,83 +4103,101 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
 }
 
-/* ---- 右側面板日期 v3：刊頭式排版 ---- */
+/* ---- 右側日期：日曆式雙欄，月份與曜日收在大日期右側 ---- */
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   .stage-date {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding-bottom: 10px;
+    align-items: stretch;
+    gap: 14px;
+    padding: 4px 0 14px;
     border-bottom: 1px solid var(--stage-line);
   }
-  .stage-date-row {
-    display: flex;
-    align-items: baseline;
+  .stage-date-row--main {
+    display: grid;
+    grid-template-columns: auto auto;
     justify-content: space-between;
+    align-items: center;
+    column-gap: 10px;
+    width: 100%;
+  }
+  .stage-date-day {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(60px, 4.7vw, 72px);
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: #58685F;
+  }
+  .stage-date-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
   .stage-date-month {
     font-family: var(--font-display);
     font-style: italic;
-    font-weight: 600;
-    font-size: 22px;
+    font-weight: 500;
+    font-size: 24px;
     line-height: 1;
     color: var(--hero-accent);
     transition: color 800ms ease;
   }
-  .stage-date-enweek {
-    font-family: var(--font-jost);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    color: #8A9590;
-  }
-  .stage-date-row--main {
-    align-items: flex-end;
-  }
-  /* 細長的大字日期：Jost 細體、等高數字 */
-  .stage-date-day {
-    font-family: var(--font-jost);
-    font-weight: 300;
-    font-size: 62px;
-    line-height: 0.92;
-    letter-spacing: -0.02em;
-    font-variant-numeric: lining-nums tabular-nums;
-    color: #58685F;
+  .stage-date-weekday {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .stage-date-week {
-    margin-bottom: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
-    border: 1px solid #8A9590;
-    color: #58685F;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    background: var(--hero-accent);
+    color: #fff;
     font-family: var(--font-jp-serif);
-    font-weight: 700;
-    font-size: 13px;
+    font-weight: 800;
+    font-size: 12px;
     line-height: 1;
+    transition: background-color 1.2s ease;
+  }
+  .stage-date-enweek {
+    font-family: var(--font-jost);
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: #8A9590;
   }
   .stage-date-foot {
-    margin-top: 6px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    width: 100%;
+    margin-top: 0;
     font-family: var(--font-jost);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    color: #66736C;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    color: #7D8982;
   }
   .stage-date-foot span:last-child {
-    font-family: var(--font-jp-serif);
-    letter-spacing: 0.08em;
+    font-family: var(--font-jp-sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
   }
   .stage-date-rule {
     flex: 1;
     height: 1px;
     background: var(--hero-accent);
-    opacity: 0.6;
+    opacity: 0.3;
     transition: background-color 800ms ease;
   }
 }
@@ -4195,26 +4213,6 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     transform: none;
     font-size: 4.6rem;
     line-height: 1;
-  }
-}
-/* 日期：每一排撐滿面板寬（舊規則殘留的 align-items:center 會讓各排縮成內容寬、擠在中間） */
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
-  .stage-date {
-    align-items: stretch;
-    gap: 4px;
-  }
-  .stage-date-row {
-    width: 100%;
-  }
-  .stage-date-row--main {
-    margin-top: 2px;
-  }
-  .stage-date-week {
-    margin-bottom: 8px;
-  }
-  .stage-date-foot {
-    width: 100%;
-    margin-top: 8px;
   }
 }
 /* 背景裝飾字往上移：分隔線只切到字腳一點點 */
@@ -4243,23 +4241,6 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     border-top: 0;
   }
 }
-/* 日期底列：令和改黑體，與 2026 同字級、同一條中線對齊 */
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
-  .stage-date-foot {
-    align-items: center;
-    line-height: 1;
-  }
-  .stage-date-foot span:first-child,
-  .stage-date-foot span:last-child {
-    font-size: 11px;
-    line-height: 1;
-  }
-  .stage-date-foot span:last-child {
-    font-family: var(--font-jp-sans);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-  }
-}
 /* 右側面板內容變多（刊頭式日期），面板加高並把時鐘稍微縮小，天氣列才不會被裁掉 */
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   :root {
@@ -4270,9 +4251,6 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .stage-clock--sm {
     width: 40%;
-  }
-  .stage-date-day {
-    font-size: 56px;
   }
 }
 /* 關閉鈕改在面板外：放在內容面板右上角的正上方（面板上緣與畫面頂端之間的空隙），不擋內容也不碰右側把手 */
