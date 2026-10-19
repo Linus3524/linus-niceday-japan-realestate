@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>LINUS 住好日 介紹影片</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=Jost:wght@500;600&family=Cormorant+Garamond:ital,wght@1,600&display=block" rel="stylesheet">
+<style>
+  :root {
+    --g: #00A174; --g-deep: #007D5A; --g-soft: #E6F6F1; --ink: #1A2A22; --ink2: #3F5147; --mute: #66736C;
+    --line: #DDE3DF; --paper: #F7FAF8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); font-family: "Noto Sans TC", sans-serif; color: var(--ink); }
+  .scene { position: absolute; inset: 0; visibility: hidden; }
+  .scene.green { background: var(--g); color: #fff; }
+  .scene.paper { background: var(--paper); }
+  /* 細方格底紋，增加質感 */
+  .scene.paper::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 90px 90px; opacity: .45; }
+  .scene.green::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px); background-size: 90px 90px; }
+
+  .text { position: absolute; left: 90px; right: 90px; }
+  .mask { overflow: hidden; display: block; padding-bottom: .08em; }
+  .mask > span { display: inline-block; will-change: transform; }
+  .kicker { font-family: "Jost", sans-serif; font-weight: 600; font-size: 26px; letter-spacing: .24em; text-transform: uppercase; color: var(--g); }
+  .green .kicker { color: rgba(255,255,255,.85); }
+  .italic { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 600; font-size: 52px; letter-spacing: .01em; text-transform: none; }
+  .h1 { font-family: "Noto Serif TC", serif; font-weight: 900; font-size: 94px; line-height: 1.24; letter-spacing: .02em; }
+  .h1 em { font-style: normal; color: var(--g); }
+  .green .h1 em { color: #FFE9B8; }
+  .sub { font-family: "Noto Sans TC", sans-serif; font-weight: 500; font-size: 36px; line-height: 1.75; color: var(--ink2); letter-spacing: .03em; }
+  .green .sub { color: rgba(255,255,255,.92); }
+  .rule { height: 6px; width: 140px; background: var(--g); transform-origin: left center; }
+  .green .rule { background: #fff; }
+
+  /* 電腦框 */
+  .desk { position: absolute; left: 40px; width: 1000px; background: #fff; border: 2px solid var(--ink); box-shadow: 0 40px 90px rgba(26,42,34,.20); }
+  .desk-bar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--line); background: #F5F8F6; }
+  .desk-bar i { width: 11px; height: 11px; border: 1.5px solid var(--ink2); display: block; }
+  .desk-bar b { margin-left: 14px; flex: 1; height: 26px; border: 1px solid var(--line); background: #fff; font: 500 15px "Jost", sans-serif; color: var(--mute); display: flex; align-items: center; padding: 0 12px; letter-spacing: .04em; }
+  .screen { position: relative; overflow: hidden; background: #fff; }
+  .desk .screen { width: 996px; height: 560px; }
+  .screen img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; will-change: transform, opacity; }
+
+  /* 手機框（直角，延續網站的方角設計） */
+  .phone { position: absolute; width: 510px; left: 285px; background: var(--ink); padding: 14px 12px 18px; box-shadow: 0 40px 90px rgba(26,42,34,.25); }
+  .phone::before { content: ""; display: block; width: 90px; height: 6px; background: #3F5147; margin: 0 auto 10px; }
+  .phone .screen { width: 486px; height: 1052px; }
+
+  .chips { position: absolute; left: 90px; right: 90px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .chip { border: 2px solid var(--g); color: var(--g-deep); background: #fff; font: 700 30px "Noto Sans TC", sans-serif; padding: 10px 22px; letter-spacing: .04em; }
+
+  .cap { position: absolute; left: 90px; right: 90px; }
+  .cap > div { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: baseline; gap: 22px; }
+  .cap .n { font: italic 600 64px "Cormorant Garamond", serif; color: var(--g); line-height: 1; }
+  .cap .t { font: 900 50px "Noto Serif TC", serif; color: var(--ink); }
+  .cap .d { position: absolute; top: 78px; left: 0; right: 0; font: 500 34px "Noto Sans TC", sans-serif; color: var(--ink2); line-height: 1.6; }
+  .cap.small .t { font-size: 36px; }
+
+  .tool-index { position: absolute; left: 90px; right: 90px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .tool-index > div { display: flex; align-items: baseline; gap: 14px; padding: 16px 20px; border: 2px solid var(--line); background: #fff; font: 700 32px "Noto Sans TC", sans-serif; color: var(--mute); transition: none; }
+  .tool-index > div b { font: italic 600 40px "Cormorant Garamond", serif; color: var(--line); }
+  .tool-index > div.on { border-color: var(--g); background: var(--g); color: #fff; }
+  .tool-index > div.on b { color: #fff; }
+  .chars { position: absolute; left: 0; right: 0; bottom: 170px; height: 640px; }
+  .chars img { position: absolute; bottom: 0; height: 600px; width: auto; transform-origin: bottom center; }
+
+  .logo-mask { display: block; background: currentColor; -webkit-mask: url("../../public/logo-text.svg") no-repeat left center / contain; mask: url("../../public/logo-text.svg") no-repeat left center / contain; }
+
+  /* 全片共用：頂部進度條與底部品牌列 */
+  #progress { position: absolute; left: 0; top: 0; height: 8px; width: 0; background: var(--g); z-index: 20; }
+  #footer { position: absolute; left: 0; right: 0; bottom: 0; height: 130px; display: flex; align-items: center; justify-content: space-between; padding: 0 90px; z-index: 15; border-top: 1px solid var(--line); background: rgba(247,250,248,.94); }
+  #footer .logo-mask { width: 260px; height: 39px; color: var(--g); }
+  #footer span { font: 500 22px "Jost", sans-serif; letter-spacing: .08em; color: var(--mute); }
+  #wipe { position: absolute; inset: 0; z-index: 30; background: var(--g); transform: translateX(-101%); }
+  #wipe::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 26px; background: var(--ink); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="progress"></div>
+
+  <!-- S1 開場 -->
+  <section class="scene green" data-start="0" data-end="4.6">
+    <div class="text" style="top:150px"><span class="logo-mask" data-a="fade" data-d="0.1" style="width:340px;height:51px;color:#fff"></span></div>
+    <div class="text" style="top:380px">
+      <div class="mask kicker italic"><span data-a="up" data-d="0.25">Have a nice day in Japan</span></div>
+      <div style="height:34px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.45">在日本找房、</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.58">買房，</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.71">先<em>看懂</em>再出發。</span></div>
+      <div style="height:40px"></div>
+      <div class="rule" data-a="line" data-d="1.0"></div>
+      <div style="height:34px"></div>
+      <div class="mask sub"><span data-a="up" data-d="1.15">日本租屋・買房知識大補帖</span></div>
+    </div>
+    <div class="chars"><img src="../../public/hero-character.webp" style="right:40px;height:760px" data-a="char" data-d="0.8" data-dur="1.0"></div>
+  </section>
+
+  <!-- S2 我是誰 -->
+  <section class="scene paper" data-start="4.6" data-end="9.4">
+    <div class="text" style="top:230px">
+      <div class="mask kicker"><span data-a="up" data-d="0.15">Who is Linus</span></div>
+      <div style="height:30px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.3">台灣人仲介</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.42"><em>Linus</em> 帶你看懂</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.54">日本的房子。</span></div>
+      <div style="height:36px"></div>
+      <div class="rule" data-a="line" data-d="0.85"></div>
+      <div style="height:30px"></div>
+      <div class="mask sub"><span data-a="up" data-d="0.95">東京不動產仲介 × 平面設計師</span></div>
+      <div class="mask sub"><span data-a="up" data-d="1.05">租屋、買房、置產，中文一對一</span></div>
+    </div>
+    <div class="chars">
+      <img src="../../public/hero-character.webp" style="left:0px;height:560px" data-a="char" data-d="1.3">
+      <img src="../../public/hero-character-lemon.webp" style="left:235px;height:520px" data-a="char" data-d="1.45">
+      <img src="../../public/hero-character-apple.webp" style="left:490px;height:540px" data-a="char" data-d="1.6">
+      <img src="../../public/hero-character-grape.webp" style="left:705px;height:510px" data-a="char" data-d="1.75">
+    </div>
+  </section>
+
+  <!-- S3 電腦版首頁 -->
+  <section class="scene paper" data-start="9.4" data-end="16.2">
+    <div class="text" style="top:200px">
+      <div class="mask kicker"><span data-a="up" data-d="0.1">01 — Desktop</span></div>
+      <div style="height:26px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.22"><em>電腦版</em></span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.34">一頁式場景首頁</span></div>
+    </div>
+    <div class="desk" style="top:600px" data-a="rise" data-d="0.45" data-dur="0.9">
+      <div class="desk-bar"><i></i><i></i><i></i><b>linus-niceday-japan-realestate.vercel.app</b></div>
+      <div class="screen seq" data-mode="fade">
+        <img src="shots/d_home_lemon.png" data-t0="0" data-kb>
+        <img src="shots/d_home_apple.png" data-t0="2.0" data-kb>
+        <img src="shots/d_home_grape.png" data-t0="3.4" data-kb>
+        <img src="shots/d_home_orange.png" data-t0="4.8" data-kb>
+      </div>
+    </div>
+    <div class="chips" style="top:1250px">
+      <span class="chip" data-a="pop" data-d="1.2">四季場景輪播</span>
+      <span class="chip" data-a="pop" data-d="1.35">東京／台北雙時鐘</span>
+      <span class="chip" data-a="pop" data-d="1.5">左右切換分頁</span>
+    </div>
+    <div class="text" style="top:1420px">
+      <div class="mask sub"><span data-a="up" data-d="1.8">左邊選單、右邊時鐘，</span></div>
+      <div class="mask sub"><span data-a="up" data-d="1.9">內容在中間一頁一頁翻。</span></div>
+    </div>
+  </section>
+
+  <!-- S4 租屋・買房知識 -->
+  <section class="scene paper" data-start="16.2" data-end="22.8">
+    <div class="text" style="top:200px">
+      <div class="mask kicker"><span data-a="up" data-d="0.1">02 — Guides</span></div>
+      <div style="height:26px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.22">租屋・買房知識</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.34">章節<em>左右翻頁</em></span></div>
+    </div>
+    <div class="desk" style="top:600px" data-a="rise" data-d="0.4" data-dur="0.9">
+      <div class="desk-bar"><i></i><i></i><i></i><b>linus-niceday-japan-realestate.vercel.app</b></div>
+      <div class="screen seq" data-mode="slide">
+        <img src="shots/d_rent_preface.png" data-t0="0">
+        <img src="shots/d_rent_routes.png" data-t0="1.9">
+        <img src="shots/d_rent_fees.png" data-t0="3.3">
+        <img src="shots/d_buy_process.png" data-t0="4.7">
+      </div>
+    </div>
+    <div class="cap small seqtext" style="top:1250px">
+      <div data-t0="0.5" data-t1="1.9"><span class="n">01</span><span class="t">先讀前言，掌握全貌</span></div>
+      <div data-t0="1.9" data-t1="3.3"><span class="n">02</span><span class="t">三種申請方式一次比較</span></div>
+      <div data-t0="3.3" data-t1="4.7"><span class="n">03</span><span class="t">初期費用術語，每張一看就懂</span></div>
+      <div data-t0="4.7" data-t1="99"><span class="n">04</span><span class="t">台日買房的稅務與流程差異</span></div>
+    </div>
+    <div class="text" style="top:1400px">
+      <div class="mask sub"><span data-a="up" data-d="1.0">禮金、敷金、保證公司⋯⋯</span></div>
+      <div class="mask sub"><span data-a="up" data-d="1.1">每一筆費用代表什麼，都整理好了。</span></div>
+    </div>
+  </section>
+
+  <!-- S5 免費工具 -->
+  <section class="scene paper" data-start="22.8" data-end="34.4">
+    <div class="text" style="top:200px">
+      <div class="mask kicker"><span data-a="up" data-d="0.1">03 — Free tools</span></div>
+      <div style="height:26px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.22"><em>免費工具</em></span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.34">先幫你查清楚</span></div>
+    </div>
+    <div class="desk" style="top:600px" data-a="rise" data-d="0.4" data-dur="0.9">
+      <div class="desk-bar"><i></i><i></i><i></i><b>linus-niceday-japan-realestate.vercel.app</b></div>
+      <div class="screen seq" data-mode="fade">
+        <img src="shots/d_calc_listing.png" data-t0="0" data-kb data-zoom="1.75" data-origin="50% 18%">
+        <img src="shots/d_calc_rent.png" data-t0="3.0" data-kb data-zoom="1.35" data-origin="50% 22%">
+        <img src="shots/d_chat.png" data-t0="5.6" data-kb data-zoom="1.8" data-origin="35% 18%">
+        <img src="shots/d_quiz.png" data-t0="8.2" data-kb data-zoom="1.7" data-origin="50% 45%">
+      </div>
+    </div>
+    <div class="cap seqtext" style="top:1250px">
+      <div data-t0="0.6" data-t1="3.0"><span class="n">01</span><span class="t">圖紙分析</span><p class="d">上傳物件圖紙，看租金行情、初期費用、通勤與治安。</p></div>
+      <div data-t0="3.0" data-t1="5.6"><span class="n">02</span><span class="t">預算試算</span><p class="d">輸入條件，估算合理的房租與初期費用。</p></div>
+      <div data-t0="5.6" data-t1="8.2"><span class="n">03</span><span class="t">AI 顧問</span><p class="d">24 小時回答日本租屋、買房的問題。</p></div>
+      <div data-t0="8.2" data-t1="99"><span class="n">04</span><span class="t">東京居住人格診斷</span><p class="d">12 題，找出最適合你的東京生活圈。</p></div>
+    </div>
+    <div class="tool-index" style="top:1530px">
+      <div data-a="pop" data-d="0.9" data-t0="0" data-t1="3.0"><b>01</b>圖紙分析</div>
+      <div data-a="pop" data-d="1.0" data-t0="3.0" data-t1="5.6"><b>02</b>預算試算</div>
+      <div data-a="pop" data-d="1.1" data-t0="5.6" data-t1="8.2"><b>03</b>AI 顧問</div>
+      <div data-a="pop" data-d="1.2" data-t0="8.2" data-t1="99"><b>04</b>居住人格診斷</div>
+    </div>
+  </section>
+
+  <!-- S6 手機版 -->
+  <section class="scene paper" data-start="34.4" data-end="41.4">
+    <div class="text" style="top:170px">
+      <div class="mask kicker"><span data-a="up" data-d="0.1">04 — Mobile</span></div>
+      <div style="height:22px"></div>
+      <div class="mask h1" style="font-size:84px"><span data-a="up" data-d="0.22"><em>手機版</em>，滑著看</span></div>
+      <div class="mask sub"><span data-a="up" data-d="0.45">底部導覽一鍵切換，通勤路上也能讀。</span></div>
+    </div>
+    <div class="phone" style="top:470px" data-a="rise" data-d="0.35" data-dur="0.9">
+      <div class="screen seq" data-mode="vslide">
+        <img src="shots/m_home.png" data-t0="0">
+        <img src="shots/m_rent.png" data-t0="2.2">
+        <img src="shots/m_rent_2.png" data-t0="3.5">
+        <img src="shots/m_calc.png" data-t0="4.8">
+      </div>
+    </div>
+  </section>
+
+  <!-- S7 收尾 -->
+  <section class="scene green" data-start="41.4" data-end="48">
+    <div class="text" style="top:230px">
+      <div class="mask kicker italic"><span data-a="up" data-d="0.15">Let's talk</span></div>
+      <div style="height:30px"></div>
+      <div class="mask h1"><span data-a="up" data-d="0.3">日本的生活，</span></div>
+      <div class="mask h1"><span data-a="up" data-d="0.42">從<em>住好日</em>開始。</span></div>
+      <div style="height:44px"></div>
+      <div class="rule" data-a="line" data-d="0.7"></div>
+      <div style="height:44px"></div>
+      <div class="mask sub" style="font-size:34px"><span data-a="up" data-d="0.85">搜尋　LINUS 住好日</span></div>
+      <div class="mask sub" style="font:600 30px 'Jost',sans-serif;letter-spacing:.04em"><span data-a="up" data-d="0.95">linus-niceday-japan-realestate.vercel.app</span></div>
+      <div style="height:26px"></div>
+      <div class="mask sub"><span data-a="up" data-d="1.1">LINE｜Linus0922</span></div>
+      <div class="mask sub"><span data-a="up" data-d="1.2">Threads｜@linus3524</span></div>
+    </div>
+    <div class="text" style="top:1040px"><span class="logo-mask" data-a="fade" data-d="1.4" style="width:400px;height:60px;color:#fff"></span></div>
+    <div class="chars" style="bottom:120px;height:560px">
+      <img src="../../public/hero-character-lemon.webp" style="right:250px;height:470px" data-a="char" data-d="1.3">
+      <img src="../../public/hero-character-grape.webp" style="right:20px;height:500px" data-a="char" data-d="1.45">
+    </div>
+  </section>
+
+  <div id="footer"><span class="logo-mask"></span><span>LINUS-NICEDAY-JAPAN-REALESTATE.VERCEL.APP</span></div>
+  <div id="wipe"></div>
+</div>
+
+<script>
+  const TOTAL = 48;
+  const clamp = x => Math.max(0, Math.min(1, x));
+  const easeOut = x => 1 - Math.pow(1 - x, 4);
+  const easeInOut = x => x < .5 ? 8 * x ** 4 : 1 - Math.pow(-2 * x + 2, 4) / 2;
+  const back = x => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+
+  const scenes = [...document.querySelectorAll('.scene')].map(el => ({ el, start: +el.dataset.start, end: +el.dataset.end }));
+  const footer = document.getElementById('footer');
+  const wipe = document.getElementById('wipe');
+  const progress = document.getElementById('progress');
+
+  function animate(e, local) {
+    const d = +(e.dataset.d || 0), dur = +(e.dataset.dur || 0.8);
+    const p = clamp((local - d) / dur), k = easeOut(p);
+    switch (e.dataset.a) {
+      case 'up': e.style.transform = `translateY(${(1 - k) * 115}%)`; break;
+      case 'fade': e.style.opacity = k; break;
+      case 'rise': e.style.opacity = k; e.style.transform = `translateY(${(1 - k) * 90}px) scale(${0.96 + 0.04 * k})`; break;
+      case 'pop': e.style.opacity = k; e.style.transform = `scale(${p === 0 ? 0.6 : 0.6 + 0.4 * back(p)})`; if (e.classList.contains('chip')) e.style.display = 'inline-block'; break;
+      case 'line': e.style.transform = `scaleX(${k})`; break;
+      case 'char': e.style.opacity = clamp(p * 2.5); e.style.transform = `translateY(${(1 - back(p)) * 220}px)`; break;
+    }
+  }
+
+  function seq(box, local) {
+    const mode = box.dataset.mode;
+    const imgs = [...box.children];
+    const T = 0.6;
+    imgs.forEach((img, i) => {
+      const t0 = +img.dataset.t0, t1 = i < imgs.length - 1 ? +imgs[i + 1].dataset.t0 : 999;
+      const zoom = +(img.dataset.zoom || 1);
+      const kb = (img.hasAttribute('data-kb') ? 1 + 0.07 * clamp((local - t0) / 6) : 1) * zoom;
+      if (img.dataset.origin) img.style.transformOrigin = img.dataset.origin;
+      img.style.zIndex = i;
+      if (mode === 'fade') {
+        const p = i === 0 ? 1 : easeInOut(clamp((local - t0) / T));
+        img.style.opacity = local < t0 && i ? 0 : p;
+        img.style.transform = `scale(${kb})`;
+      } else {
+        const axis = mode === 'vslide' ? 'Y' : 'X';
+        let pos;
+        if (i > 0 && local < t0) pos = 100;
+        else if (i > 0 && local < t0 + T) pos = 100 * (1 - easeInOut((local - t0) / T));
+        else if (local >= t1 + T) pos = -100;
+        else if (local >= t1) pos = -100 * easeInOut((local - t1) / T);
+        else pos = 0;
+        img.style.transform = `translate${axis}(${pos}%)`;
+        img.style.opacity = 1;
+      }
+    });
+  }
+
+  function seqtext(box, local) {
+    [...box.children].forEach(row => {
+      const t0 = +row.dataset.t0, t1 = +row.dataset.t1;
+      const inP = easeOut(clamp((local - t0) / 0.6));
+      const outP = clamp((local - t1) / 0.3);
+      const on = local >= t0 && local < t1 + 0.3;
+      row.style.visibility = on ? 'visible' : 'hidden';
+      row.style.opacity = inP * (1 - outP);
+      row.style.transform = `translateY(${(1 - inP) * 40 - outP * 20}px)`;
+    });
+  }
+
+  window.render = function (t) {
+    for (const sc of scenes) {
+      const on = t >= sc.start && t < sc.end;
+      sc.el.style.visibility = on ? 'visible' : 'hidden';
+      if (!on) continue;
+      const local = t - sc.start;
+      sc.el.querySelectorAll('[data-a]').forEach(e => animate(e, local));
+      sc.el.querySelectorAll('.seq').forEach(b => seq(b, local));
+      sc.el.querySelectorAll('.seqtext').forEach(b => seqtext(b, local));
+      sc.el.querySelectorAll('.tool-index > div').forEach(d => d.classList.toggle('on', local >= +d.dataset.t0 && local < +d.dataset.t1));
+    }
+    // 開場與收尾是綠底整頁，不顯示底部品牌列
+    const showFooter = t >= 4.6 && t < 41.4;
+    footer.style.opacity = showFooter ? 1 : 0;
+    // 場景交界：綠色掃場（帶一條墨色邊）從左掃過去
+    let x = -101;
+    for (const sc of scenes.slice(1)) {
+      const b = sc.start;
+      if (t >= b - 0.35 && t < b) x = -101 + 101 * easeInOut((t - (b - 0.35)) / 0.35);
+      else if (t >= b && t < b + 0.35) x = 101 * easeInOut((t - b) / 0.35);
+    }
+    wipe.style.transform = `translateX(${x}%)`;
+    progress.style.width = `${clamp(t / TOTAL) * 100}%`;
+  };
+  window.TOTAL = TOTAL;
+  render(0);
+</script>
+</body>
+</html>

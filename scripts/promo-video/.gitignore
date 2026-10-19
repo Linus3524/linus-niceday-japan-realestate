@@ -1,0 +1,7 @@
+# 產生出來的大檔案不進 git
+shots/
+frames/
+preview/
+encode
+encode_small
+*.mp4
