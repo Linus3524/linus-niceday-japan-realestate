@@ -4716,3 +4716,193 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     right: calc(var(--stage-handle) + 8px + 32px);
   }
 }
+
+/* 電腦版不顯示「★ Linus 實務小提醒：」這句標題（平板、手機版保留） */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-reminders-label {
+    display: none;
+  }
+}
+
+
+/* 申請方式：每張卡片加上「流程順序」小時間軸（電腦版） */
+.rent-route-steps {
+  display: none;
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-steps {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
+    counter-reset: route-step;
+  }
+  .rent-route-steps li {
+    position: relative;
+    padding: 0 0 20px 34px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1A2A22;
+    counter-increment: route-step;
+  }
+  .rent-route-steps li:last-child {
+    padding-bottom: 0;
+    font-weight: 700;
+  }
+  /* 方形編號點（維持方角設計）與連接線 */
+  .rent-route-steps li::before {
+    content: counter(route-step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E6F6F1;
+    border: 1px solid #9EE2CF;
+    font-family: var(--font-jost);
+    font-size: 11px;
+    font-weight: 600;
+    color: #007D5A;
+  }
+  .rent-route-steps li::after {
+    content: "";
+    position: absolute;
+    left: 10.5px;
+    top: 24px;
+    bottom: 2px;
+    width: 1px;
+    background: #C9D2CD;
+  }
+  .rent-route-steps li:last-child::after {
+    display: none;
+  }
+  .rent-route-steps li:last-child::before {
+    background: #00A174;
+    border-color: #00A174;
+    color: #fff;
+  }
+  .rent-route-card.is-caution .rent-route-steps li::before {
+    background: #FEE2E2;
+    border-color: #F5B8A8;
+    color: #B13818;
+  }
+  .rent-route-card.is-caution .rent-route-steps li:last-child::before {
+    background: #B13818;
+    border-color: #B13818;
+    color: #fff;
+  }
+}
+
+/* 申請方式：收緊卡片內部間距，加了流程時間軸後仍能在常見螢幕高度一屏放下 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-card {
+    padding: 20px 24px 18px;
+  }
+  .rent-route-number {
+    font-size: 42px;
+    margin-bottom: 12px;
+  }
+  .rent-route-card > p:first-of-type {
+    margin-bottom: 16px;
+  }
+  .rent-route-steps {
+    margin-bottom: 14px;
+  }
+  .rent-route-steps li {
+    padding-bottom: 13px;
+    line-height: 1.5;
+  }
+  .rent-route-card > p:last-child {
+    padding-top: 12px;
+  }
+}
+
+
+/* 申請方式：情境例子（電腦版） */
+.rent-route-example {
+  display: none;
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-card > p.rent-route-example {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    background: rgba(0, 161, 116, 0.07);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #3F5147;
+  }
+  .rent-route-card.is-caution > p.rent-route-example {
+    background: rgba(177, 56, 24, 0.07);
+  }
+  .rent-route-example span {
+    flex-shrink: 0;
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: 12px;
+    color: #00A174;
+  }
+  .rent-route-card.is-caution .rent-route-example span {
+    color: #B13818;
+  }
+}
+
+
+/* 申請方式：大編號改成小標籤（避免和下面的步驟編號混淆），整頁一屏放得下 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-number {
+    font-family: var(--font-jost);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    margin-bottom: 10px;
+  }
+  .rent-route-number::before {
+    content: "方式 ";
+    font-family: var(--font-serif);
+    letter-spacing: 0.08em;
+  }
+  .rent-route-card {
+    padding: 18px 24px 16px;
+  }
+  .rent-route-steps li {
+    padding-bottom: 11px;
+  }
+  .rent-route-card > p.rent-route-example {
+    margin-bottom: 14px;
+  }
+}
+
+/* 申請方式：外框與卡片說明再收緊一點，確保一屏放得下 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-routes {
+    padding: 18px 24px 20px;
+  }
+  .rent-route-card > p:first-of-type {
+    font-size: 13.5px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-steps li { padding-bottom: 8px; }
+  .rent-route-steps { margin-bottom: 10px; }
+  .rent-route-card > p.rent-route-example { padding: 8px 12px; }
+}
+
+/* 準備文件、實務提醒：電腦版改白底（平板、手機維持原本的淺灰） */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-documents,
+  .rent-reminders {
+    background: #fff;
+  }
+}

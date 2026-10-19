@@ -82,7 +82,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                   {/* Required Documents Section for Overseas vs Domestic Screenings */}
                   {showDocuments && (
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
+                  <div className="rent-documents border border-[#DDE3DF] hover:border-[#00a174] bg-[#F5F8F6] p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <button
                       type="button"
                       onClick={() => setDocumentsExpanded(current => !current)}
@@ -194,6 +194,11 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                             <span className={`shrink-0 px-1.5 py-0.5 text-[10px] font-bold ${index === 2 ? "bg-[#FEE2E2] text-[#B13818]" : "bg-[#e6f6f1] text-[#00a174]"}`}>{route.condition}</span>
                           </div>
                           <p className="text-xs leading-relaxed text-[#3F5147]">{route.body}</p>
+                          {/* 例子與流程順序：整理自上面的說明，只在電腦版顯示 */}
+                          <p className="rent-route-example"><span>例</span>{route.example}</p>
+                          <ol className="rent-route-steps" aria-label={`${route.title}的流程順序`}>
+                            {route.steps.map(step => <li key={step}>{step}</li>)}
+                          </ol>
                           <p className={`mt-3 border-t border-[#ECEFEC] pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
                         </div>
                       ))}
@@ -250,7 +255,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                   {showReminders && (
                     <div className="rent-reminders bg-[#F5F8F6] p-4 border border-[#DDE3DF] text-xs text-[#3F5147] leading-relaxed font-sans space-y-2">
-                      <span className="font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
+                      <span className="rent-reminders-label font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
                       <ul className="space-y-1.5">
                         {processReminders.map((reminder, index) => (
                           <li key={reminder} className="rent-reminder-card flex gap-2">
