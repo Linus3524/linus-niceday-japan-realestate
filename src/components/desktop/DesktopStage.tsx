@@ -370,10 +370,17 @@ export function DesktopStage({
 
       {/* 底部細播放列 */}
       <div className="stage-bar">
+        <div className="stage-bar-left">
+          {/* 品牌 logo：當成遮罩形狀，用場景主題色填滿，換場景會跟著變色；點一下回首頁 */}
+          <button type="button" className="stage-bar-logo" onClick={onHome} aria-label="LINUS 住好日，回到首頁">
+            <span className="stage-bar-logo-mark" role="img" aria-label="LINUS 住好日" />
+          </button>
+          <span className="stage-bar-sep" aria-hidden="true" />
         <div className="stage-tags">
           <button type="button" onClick={() => onNavigate("cards")}>#租屋</button>
           <button type="button" onClick={() => onNavigate("buyHouse")}>#買房</button>
           <button type="button" className={page === "threads" ? "is-active" : ""} onClick={page === "threads" ? onHome : onShowThreads}>#Threads精選</button>
+        </div>
         </div>
         <div className="stage-player">
           <div className="stage-progress" aria-hidden="true">

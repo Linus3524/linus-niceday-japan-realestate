@@ -4906,3 +4906,53 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     background: #fff;
   }
 }
+
+/* 播放列左側：品牌 logo（跟著場景主題色）＋ 分隔線 ＋ hashtag */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .stage-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+  .stage-bar-logo {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transition: opacity 200ms ease;
+  }
+  .stage-bar-logo:hover {
+    opacity: 0.75;
+  }
+  /* 原圖是 591×88 的雙色向量；用它的形狀當遮罩，整個 logo 單色填主題色 */
+  .stage-bar-logo-mark {
+    display: block;
+    width: 130px;
+    height: 19.4px;
+    background-color: var(--hero-accent);
+    -webkit-mask: url("/logo-text.svg") no-repeat center / contain;
+    mask: url("/logo-text.svg") no-repeat center / contain;
+    transition: background-color 800ms ease;
+  }
+  .stage-bar-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--stage-line);
+  }
+}
+
+/* 播放列 hashtag 框縮小：內距與字級各小一級，間距也收緊 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .stage-tags {
+    gap: 6px;
+  }
+  .stage-tags button {
+    padding: 1px 7px;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+}
