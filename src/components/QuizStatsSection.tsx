@@ -221,6 +221,8 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
         ))}
       </div>
 
+      <DailyTrend quiz={quiz} />
+
       {/* 各區結果與準確度 */}
       <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
         <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
@@ -293,7 +295,6 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
 
       <SourceTable quiz={quiz} />
       <ResidencyTable quiz={quiz} nameOf={nameOf} />
-      <ScoringCompare quiz={quiz} nameOf={nameOf} />
 
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
         {/* 每題選項分布 */}
@@ -483,84 +484,70 @@ function SourceTable({ quiz }: { quiz: QuizSummary }) {
 }
 
 /**
- * 計分版本比較：測驗每次調整各區判定方式會換一個日期代號，這裡並排看各版本的出現比例與「覺得準」。
- * 「未標記」＝當月總數扣掉有版本的部分（2026-10-11 之前的事件沒有帶版本）。
+ * 每日測驗趨勢（日本時間）：每天開始／完成的人數、分享與朋友點開分享頁，看哪天的貼文帶來人潮。
+ * 逐日記錄從 dailySince 起才有；之前的日期不顯示，避免誤以為是 0。
  */
-function ScoringCompare({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: string) => string }) {
-  const revs = Object.keys(quiz.scoring ?? {}).sort();
-  if (!revs.length) return null;
-  const minus = (a: Record<string, number>, bs: Record<string, number>[]) =>
-    Object.fromEntries(Object.entries(a).map(([k, v]) => [k, Math.max(0, v - bs.reduce((t, b) => t + (b[k] ?? 0), 0))]));
-  const tagged = revs.map(r => quiz.scoring[r]);
-  const untaggedResults = minus(quiz.results, tagged.map(t => t.results));
-  const ratingKeys = new Set(Object.keys(quiz.ratings));
-  const untaggedRatings = Object.fromEntries([...ratingKeys].map(id =>
-    [id, minus(quiz.ratings[id] ?? {}, tagged.map(t => t.ratings[id] ?? {}))]));
-  const cols = [
-    ...(sum(untaggedResults) > 0 ? [{ key: "untagged", label: "未標記（10/11 前）", results: untaggedResults, ratings: untaggedRatings }] : []),
-    ...revs.map(r => ({ key: r, label: r, results: quiz.scoring[r].results, ratings: quiz.scoring[r].ratings })),
+function DailyTrend({ quiz }: { quiz: QuizSummary }) {
+  const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const rows = Object.entries(quiz.daily ?? {})
+    .filter(([d]) => (!quiz.dailySince || d >= quiz.dailySince) && d <= today)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, s]) => {
+      const top = Object.entries(s.sources ?? {}).sort((a, b) => b[1].start - a[1].start)[0];
+      return {
+        date, start: s.funnel.start ?? 0, finish: s.funnel.finish ?? 0,
+        shares: Object.values(s.share ?? {}).reduce((t, n) => t + n, 0), friends: s.funnel.shared_view ?? 0,
+        top: top && top[1].start ? SOURCE_LABEL[top[0]] ?? top[0] : null,
+      };
+    });
+  if (!rows.length) return null;
+  const max = Math.max(1, ...rows.map(r => r.start));
+  const last = rows[rows.length - 1], prev = rows[rows.length - 2];
+  const week = rows.slice(-7);
+  const avg = Math.round((week.reduce((t, r) => t + r.finish, 0) / week.length) * 10) / 10;
+  const finished = rows.reduce((t, r) => t + r.finish, 0), friends = rows.reduce((t, r) => t + r.friends, 0);
+  const cards: [string, string, string][] = [
+    [last.date === today ? "今天完成" : `${last.date.slice(5)} 完成`, last.finish.toLocaleString(), `開始 ${last.start}`],
+    ["前一天完成", prev ? prev.finish.toLocaleString() : "—", prev ? `開始 ${prev.start}` : ""],
+    [`近 ${week.length} 天平均`, `${avg}`, "完成人數／天"],
+    ["每 100 位完成者", `${finished ? Math.round((friends / finished) * 100) : 0}`, "帶來幾位朋友點開分享頁"],
   ];
-  const latest = cols[cols.length - 1];
-  const ids = [...new Set(cols.flatMap(c => Object.keys(c.results)))]
-    .sort((a, b) => (latest.results[b] ?? 0) - (latest.results[a] ?? 0) || (cols[0].results[b] ?? 0) - (cols[0].results[a] ?? 0));
-  const share = (c: (typeof cols)[number], id: string) => { const total = sum(c.results); return total ? ((c.results[id] ?? 0) / total) * 100 : 0; };
-  const prev = cols.length > 1 ? cols[cols.length - 2] : null;
-  const shown = [...cols].reverse(); // 最新版本放最左邊
-  const MIN_RATED = 5; // 回饋太少時「準」沒有參考價值，不顯示百分比
-  const cell = (c: (typeof cols)[number], id: string) => {
-    const n = c.results[id] ?? 0, r = c.ratings[id] ?? {}, rated = sum(r);
-    const good = (r["2"] ?? 0) + (r["1"] ?? 0);
-    return (
-      <td key={c.key} className="px-3 py-1.5 text-right tabular-nums">
-        <div><span className="font-jost font-bold text-[#1A2A22]">{share(c, id).toFixed(1)}%</span><span className="ml-1 text-[10px] text-[#8A9590]">{n}</span></div>
-        <div className="text-[10px]">
-          {rated >= MIN_RATED
-            ? <span className={pct(good, rated) < 50 ? "text-[#E94E2B]" : "text-[#00A174]"}>準 {pct(good, rated)}%（{rated}）</span>
-            : <span className="text-[#B5BFBA]">{rated ? `回饋 ${rated} 筆` : "—"}</span>}
-        </div>
-      </td>
-    );
-  };
-  const diff = (id: string) => {
-    if (!prev) return null;
-    const d = share(latest, id) - share(prev, id);
-    const big = Math.abs(d) >= 1;
-    return (
-      <td className={`px-3 py-1.5 text-right font-jost tabular-nums ${!big ? "text-[#B5BFBA]" : d > 0 ? "text-[#0284C7]" : "text-[#E94E2B]"}`}>
-        {d > 0 ? "▲" : d < 0 ? "▼" : ""}{Math.abs(d).toFixed(1)}
-      </td>
-    );
-  };
   return (
     <div className="mb-4 border border-[#DDE3DF] bg-white p-5 shadow-sm">
       <h3 className="mb-3 flex items-center gap-1.5 border-b border-[#ECEFEC] pb-2.5 font-serif text-sm font-bold text-[#1A2A22]">
-        <Target className="h-4 w-4 text-[#0284C7]" /> 計分版本比較（各區出現比例）
+        <Target className="h-4 w-4 text-[#00A174]" /> 每日測驗人數
       </h3>
-      <div className="max-h-[560px] overflow-auto">
-        <table className="w-full min-w-[480px] text-xs">
-          <thead className="sticky top-0 z-10 bg-white">
-            <tr className="border-b border-[#ECEFEC] text-left font-semibold text-[#66736C]">
-              <th className="px-3 py-1.5 align-bottom">結果</th>
-              {shown.map((c, k) => [(
-                <th key={c.key} className="px-3 py-1.5 text-right align-bottom">
-                  <div className="whitespace-nowrap">{c.label}</div>
-                  <div className="font-normal text-[10px] text-[#8A9590]">{sum(c.results).toLocaleString()} 人</div>
-                </th>
-              ), k === 0 && prev ? <th key="diff" className="whitespace-nowrap px-3 py-1.5 text-right align-bottom">變化<div className="font-normal text-[10px] text-[#8A9590]">比前一版</div></th> : null])}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#F5F8F6]">
-            {ids.map(id => (
-              <tr key={id}>
-                <td className="w-[28%] whitespace-nowrap px-3 py-1.5 text-[#3F5147]">{nameOf(id)}</td>
-                {shown.map((c, k) => [cell(c, id), k === 0 ? diff(id) : null])}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {cards.map(([label, value, note]) => (
+          <div key={label} className="border border-[#ECEFEC] p-3">
+            <div className="text-[11px] text-[#66736C]">{label}</div>
+            <div className="mt-0.5 font-jost text-xl font-bold tabular-nums text-[#1A2A22]">{value}</div>
+            <div className="text-[10px] text-[#8A9590]">{note}</div>
+          </div>
+        ))}
+      </div>
+      <div className="flex h-40 items-end gap-[3px] border-b border-[#ECEFEC]">
+        {rows.map(r => (
+          <div
+            key={r.date}
+            className="relative h-full flex-1"
+            title={`${r.date}\n開始 ${r.start}・完成 ${r.finish}\n分享 ${r.shares}・朋友點開 ${r.friends}${r.top ? `\n最多來自：${r.top}` : ""}`}
+          >
+            <div className="absolute inset-x-0 bottom-0 bg-[#00A174]/20" style={{ height: `${(r.start / max) * 100}%` }} />
+            <div className="absolute inset-x-0 bottom-0 bg-[#00A174]" style={{ height: `${(r.finish / max) * 100}%` }} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-1 flex gap-[3px]">
+        {rows.map((r, i) => (
+          <div key={r.date} className="flex-1 text-center font-jost text-[9px] tabular-nums text-[#8A9590]">
+            {i === 0 || r.date.endsWith("01") || i === rows.length - 1 || Number(r.date.slice(8)) % 5 === 0 ? Number(r.date.slice(8)) : ""}
+          </div>
+        ))}
       </div>
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
-        每次調整計分會換一個版本代號（日期），最新的在最左邊。「變化」＝最新版減前一版的百分點（差 1 以上才上色）；「準」括號內是回饋人數，少於 5 筆不算百分比。
+        日本時間計算。深綠＝完成、淺綠＝開始，滑鼠移到長條上可看分享數、朋友點開數與當天最多人從哪裡進來。每日記錄從 {quiz.dailySince ?? rows[0].date} 開始，之前的日期不顯示。
+        「每 100 位完成者帶來幾位朋友」是自然擴散的力道：低於 100 代表人數會慢慢停下來，需要持續發文或新的曝光。
       </p>
     </div>
   );
