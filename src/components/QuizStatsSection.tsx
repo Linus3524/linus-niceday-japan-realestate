@@ -168,7 +168,10 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
 
   const rows = useMemo(() => {
     if (!quiz) return [];
-    const ids = new Set([...Object.keys(quiz.results), ...Object.keys(quiz.ratings)]);
+    // 隱藏結果：10/23 前 finish 的 top1 送的是底下那一區，r:secret 一直是 0；人數改看 secret_hit（每次顯示隱藏結果都會記）
+    const results = { ...quiz.results, secret: Math.max(quiz.results.secret ?? 0, quiz.funnel.secret_hit ?? 0) };
+    if (!results.secret) delete results.secret;
+    const ids = new Set([...Object.keys(results), ...Object.keys(quiz.ratings)]);
     const finished = sum(quiz.results);
     return [...ids].map(id => {
       const rating = quiz.ratings[id] ?? {};
@@ -178,8 +181,8 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
       const topPrefer = Object.entries(quiz.prefers?.[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
       return {
         id,
-        count: quiz.results[id] ?? 0,
-        share: pct(quiz.results[id] ?? 0, finished),
+        count: results[id] ?? 0,
+        share: pct(results[id] ?? 0, finished),
         rated,
         great: rating["2"] ?? 0,
         ok: rating["1"] ?? 0,
@@ -381,14 +384,14 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
   const MIN = 5;
   const hit = (r: Record<string, number> | undefined) => {
     const rated = sum(r), good = (r?.["2"] ?? 0) + (r?.["1"] ?? 0);
-    return { rated, good, text: rated >= MIN ? `${pct(good, rated)}%` : rated ? `${rated} 筆` : "—", ok: rated >= MIN, low: rated >= MIN && pct(good, rated) < 50 };
+    return { rated, good, text: rated ? `${pct(good, rated)}%` : "—", ok: rated >= MIN, low: rated >= MIN && pct(good, rated) < 50 };
   };
   const groupAll = (k: string) => {
     const merged: Record<string, number> = {};
     for (const r of Object.values(res[k]?.ratings ?? {})) for (const [v, n] of Object.entries(r)) merged[v] = (merged[v] ?? 0) + n;
     return merged;
   };
-  // 各區：有任何回饋就列出（不到 5 筆只顯示筆數、灰字），依回饋總數排序
+  // 各區：有任何回饋就列出（一律顯示「百分比（筆數）」，不到 5 筆灰字），依回饋總數排序
   const areaIds = [...new Set(LIVE_GROUPS.flatMap(([k]) => Object.keys(res[k]?.ratings ?? {})))]
     .sort((a, b) => LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[b]), 0) - LIVE_GROUPS.reduce((t, [k]) => t + sum(res[k]?.ratings?.[a]), 0));
   const cellCls = (h: ReturnType<typeof hit>) => `px-3 py-1.5 text-right tabular-nums ${!h.ok ? "text-[#B5BFBA]" : h.low ? "font-bold text-[#E94E2B]" : "text-[#1A2A22]"}`;
@@ -404,7 +407,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
             <div key={k} className="border border-[#ECEFEC] p-3">
               <div className="text-[11px] text-[#66736C]">{label}</div>
               <div className="mt-0.5 font-jost text-xl font-bold tabular-nums text-[#1A2A22]">{n.toLocaleString()}<span className="ml-1 text-[11px] font-normal text-[#8A9590]">{pct(n, answered)}%</span></div>
-              <div className="text-[10px] text-[#8A9590]">覺得準 {h.ok ? `${pct(h.good, h.rated)}%（${h.rated}）` : h.rated ? `回饋 ${h.rated} 筆` : "—"}</div>
+              <div className="text-[10px] text-[#8A9590]">覺得準 {h.rated ? `${h.text}（${h.rated} 筆）` : "—"}</div>
             </div>
           );
         })}
@@ -422,7 +425,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
               {areaIds.map(id => (
                 <tr key={id}>
                   <td className="whitespace-nowrap px-3 py-1.5 text-[#3F5147]">{nameOf(id)}</td>
-                  {LIVE_GROUPS.map(([k]) => { const h = hit(res[k]?.ratings?.[id]); return <td key={k} className={cellCls(h)}>{h.text}</td>; })}
+                  {LIVE_GROUPS.map(([k]) => { const h = hit(res[k]?.ratings?.[id]); return <td key={k} className={cellCls(h)}>{h.text}{h.rated > 0 && <span className="ml-1 text-[10px] font-normal text-[#B5BFBA]">({h.rated})</span>}</td>; })}
                 </tr>
               ))}
             </tbody>
@@ -431,7 +434,7 @@ function ResidencyTable({ quiz, nameOf }: { quiz: QuizSummary; nameOf: (id: stri
       )}
       <p className="mt-3 text-[10px] leading-relaxed text-[#8A9590]">
         只代表有回答的人（每台裝置問一次、可略過）。住在日本的人最懂各區實際樣子，他們覺得不準的區最該調整。
-        各區依回饋總數排序；少於 5 筆只顯示筆數（灰字），5 筆以上才算百分比，紅字＝覺得準不到一半。2026-10-11 起才有資料。
+        各區依回饋總數排序；每格是「覺得準的比例（回饋筆數）」；少於 5 筆是灰字（參考就好），紅字＝5 筆以上且覺得準不到一半。2026-10-11 起才有資料。
       </p>
     </div>
   );
