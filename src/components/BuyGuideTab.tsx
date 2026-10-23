@@ -13,6 +13,7 @@ import { getMinpakuAreaLabel, getMinpakuLimitLabel, minpakuWardOrder, taiwanJapa
 import { matchesAllTokens, tokenizeQuery } from "../lib/search";
 import { searchThreads } from "../lib/threadSearch";
 import type { AppTab, BuyGuideCategory, SelectTerm } from "../lib/uiTypes";
+import { ConceptsVsDesk, TaxLifecycleDesk } from './guides/BuyDeskViews';
 import { BuyLoanSection } from './guides/BuyLoanSection';
 import { BuyLodgingSection } from './guides/BuyLodgingSection';
 import { BuyProcessSection } from './guides/BuyProcessSection';
@@ -20,6 +21,7 @@ import { BuySearchResults } from './guides/BuySearchResults';
 import { BuyTermsSection } from './guides/BuyTermsSection';
 import { PageIntroCard } from "./PageIntroCard";
 import { QACard } from "./QACard";
+import { AdviceNote } from "./AdviceNote";
 import { SectionHeading } from "./SectionHeading";
 import { ChapterPager, type Chapter } from "./desktop/ChapterPager";
 import { SectionTabs } from "./desktop/SectionTabs";
@@ -243,9 +245,10 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                         setBuyCategory(cat.id as BuyGuideCategory);
                         setBuySearchQuery("");
                       }}
+                      aria-pressed={buyCategory === cat.id}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
-                        buyCategory === cat.id 
-                          ? "bg-[#00a174] text-white border-[#00a174]" 
+                        buyCategory === cat.id
+                          ? "bg-[#00a174] text-white border-[#00a174]"
                           : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#00a174]"
                       }`}
                     >
@@ -297,7 +300,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
               {pagerOn && chapter === "steps" && !isBuySearchActive && <SectionTabs tabs={processTabs} active={processTopic} onChange={id => { setProcessTopic(id); setOpenSteps(current => new Set([...current, id])); }} />}
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (!pagerOn || processTopic === "concepts") && (
-                <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                <section className="buy-reference-section border border-[#DDE3DF] bg-white p-4 md:p-6">
                   <SectionHeading
                     icon={Lightbulb}
                     title="台日買房5大差異"
@@ -308,10 +311,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                   {/* 用站內既有的卡片語彙：灰底卡片 + 白色子欄位 + 小方塊綠標題 + 左側綠條提醒，
                       與「簽約文件」「流程步驟」等區塊同一套寫法。 */}
+                  {isStepOpen("concepts") && <ConceptsVsDesk />}
                   {isStepOpen("concepts") && (
-                  <div className="space-y-4">
+                  <div className="buy-concepts-cards space-y-4">
                     {taiwanJapanComparisons.map((item) => (
-                      <article key={item.id} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5">
+                      <article key={item.id} className="border border-[#DDE3DF] bg-white p-5">
                         <h4 className="mb-4 flex items-center gap-2 border-b border-[#C9D2CD] pb-3 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
                           <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
                             {item.number.replace(/^0/, "")}
@@ -336,10 +340,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           </div>
                         </div>
 
-                        <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
-                          <strong className="mr-2 text-[#00a174]">Linus 實務提醒</strong>
-                          {item.advice}
-                        </p>
+                        <AdviceNote className="mt-4">{item.advice}</AdviceNote>
                       </article>
                     ))}
                   </div>
@@ -351,7 +352,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
               <BuyProcessSection isBuySearchActive={isBuySearchActive} buyCategory={buyCategory} topic={pagerOn ? processTopic : undefined} isStepOpen={isStepOpen} toggleStep={toggleStep} setSelectedFlowType={setSelectedFlowType} selectedFlowType={selectedFlowType} />
 
               {!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (!pagerOn || processTopic === "tax") && (
-                <section className="border border-[#DDE3DF] bg-white p-4 transition-all duration-300 hover:border-[#00a174] hover:shadow-colored-soft md:p-6">
+                <section className="buy-reference-section border border-[#DDE3DF] bg-white p-4 md:p-6">
                   <SectionHeading
                     icon={ReceiptText}
                     title="日本房產稅務與持有成本整理"
@@ -362,10 +363,11 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
 
                   {isStepOpen("tax") && (
                   <>
+                  <TaxLifecycleDesk />
                   {/* 與上面「五個觀念」比較表同一套卡片語彙 */}
-                  <div className="space-y-4">
+                  <div className="buy-tax-cards-mobile space-y-4">
                     {taxLifecycle.map((item, index) => (
-                      <article key={item.stage} className="border border-[#DDE3DF] bg-[#F5F8F6] p-5">
+                      <article key={item.stage} className="border border-[#DDE3DF] bg-white p-5">
                         <div className="mb-4 border-b border-[#C9D2CD] pb-3">
                           <h4 className="flex items-center gap-2 font-serif text-base font-bold text-[#1A2A22] md:text-lg">
                             <span className="inline-flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-[#00a174] pb-px font-sans text-xs font-bold leading-none text-white">
@@ -395,10 +397,7 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
                           ))}
                         </div>
 
-                        <p className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-4 font-sans text-xs leading-relaxed text-[#3F5147] md:text-sm">
-                          <strong className="mr-2 text-[#00a174]">Linus 實務提醒</strong>
-                          {item.note}
-                        </p>
+                        <AdviceNote className="mt-4">{item.note}</AdviceNote>
                       </article>
                     ))}
                   </div>

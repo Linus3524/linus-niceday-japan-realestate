@@ -265,7 +265,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
         <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#ECEFEC] pb-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded bg-[#EAF5F0] px-2 py-0.5 text-[11px] font-bold text-[#00A174]">
+              <span className="inline-flex items-center gap-1 rounded bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#00A174]">
                 <TrendingUp className="w-3 h-3" />
                 國土交通省成約行情
               </span>
@@ -371,7 +371,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                       isLast ? "col-span-2 sm:col-span-1" : ""
                     } ${
                       isSelected
-                        ? "border-[#00A174] bg-[#EAF5F0] ring-1 ring-[#00A174]/30 shadow-xs"
+                        ? "border-[#00A174] bg-[#E6F6F1] ring-1 ring-[#00A174]/30 shadow-xs"
                         : "border-[#DDE3DF] bg-[#FAFCFB] hover:border-[#AEB8B2] hover:bg-white"
                     }`}
                   >
@@ -438,7 +438,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                   : "基準 100%";
 
                 const diffColor = tier.diffPercent > 0
-                  ? "text-[#00A174] bg-[#EAF5F0]"
+                  ? "text-[#00A174] bg-[#E6F6F1]"
                   : tier.diffPercent < 0
                   ? "text-[#B13818] bg-[#FFF0ED]"
                   : "text-[#3F5147] bg-[#F5F8F6]";

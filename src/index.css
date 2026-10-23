@@ -62,6 +62,24 @@
     U+FEFF, U+FFFD;
 }
 
+/* 桌面數字僅兩種字形；限定數字碼位，不改動中日文字體或英文排版。 */
+@font-face {
+  font-family: 'Linus Numerals Sans';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/jost-latin.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+}
+@font-face {
+  font-family: 'Linus Numerals Serif';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+}
+
 /* Material Symbols Rounded：自架字型，不依賴 Google CDN。
    檔案是用專案實際使用的 4 個圖示 (calculate / key / real_estate_agent / smart_toy)
    subset 過的可變字型，只有 16KB。改用/新增圖示時要重新 subset，做法見 docs/FONTS.md。
@@ -103,8 +121,12 @@
 
   /* Brand Colors from Specifications */
   --color-primary: #00a174;
-  --color-primary-deep: #007d5a;
+  --color-primary-deep: #00A174;
   --color-primary-soft: #9ee2cf;
+  --color-control-hover: #F4F5F5;
+  /* 一般實務提醒使用品牌亮綠，沒有表頭強調線。 */
+  --color-advice-accent: var(--color-primary);
+  --color-advice-line: var(--color-primary);
   
   --color-orange: #D97706;
   --color-orange-deep: #B13818;
@@ -157,6 +179,23 @@
    手機網址列收合時不會變動;JS 未執行前退回 1svh。 */
 :root {
   --app-vh: 1svh;
+}
+
+/* 只收斂滑鼠桌面版的數字；手機、平板及中日文字形維持原設定。
+   一般黑體／試算等寬數字 → Jost；襯線標題／裝飾編號 → Cormorant。
+   數字專用 font-face 不含其他字元，因此不會把內文也換成英文字型。 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  body {
+    --font-sans: "Linus Numerals Sans", "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+    --font-jp-sans: "Linus Numerals Sans", "Noto Sans JP", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Linus Numerals Serif", "Noto Serif TC", "Noto Serif JP", serif;
+    --font-jp-serif: "Linus Numerals Serif", "Noto Serif JP", "Noto Serif TC", serif;
+    --font-mono: "Linus Numerals Sans", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+  .font-mono, .stage-mono, .chapter-progress-count,
+  input[inputmode="numeric"], input[inputmode="decimal"], input[type="number"] {
+    font-variant-numeric: lining-nums tabular-nums;
+  }
 }
 
 html {
@@ -453,7 +492,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   text-decoration: none;
 }
 .threads-read-more:hover {
-  color: #00895d;
+  color: #00A174;
 }
 
 /* 桌機滑鼠可直接在卡片內上下捲動；觸控裝置維持單一頁面捲動，避免 scroll trap。 */
@@ -566,7 +605,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   cursor: pointer !important;
 }
 .threads-fallback-btn:hover {
-  background-color: #008761 !important;
+  background-color: #00A174 !important;
   transform: translateY(-1px);
   box-shadow: 0 5px 12px rgba(0, 161, 116, 0.35) !important;
 }
@@ -1068,7 +1107,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     left: clamp(28px, 9vw, 48px);
     height: min(calc(var(--app-vh) * 44), 370px);
     margin: 0;
-    color: #008761; /* 🍊 橘子場景：對標色票指南「深翡翠綠」#008761 */
+    color: #00A174; /* 🍊 橘子場景：對標色票指南「深翡翠綠」#00A174 */
     font-family: var(--font-jp-serif);
     font-size: clamp(17px, 4.7vw, 23px);
     font-weight: 600;
@@ -1954,7 +1993,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     background: none;
     text-align: left;
     cursor: pointer;
-    color: #58685F;
+    color: #3F5147;
     text-decoration: none;
     transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
   }
@@ -1991,7 +2030,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     outline: none;
   }
   .stage-menu-item.is-active {
-    background: color-mix(in srgb, var(--hero-accent) 6%, white);
+    background: rgba(255, 255, 255, 0.7);
   }
   .stage-menu-num {
     grid-row: span 2;
@@ -2047,7 +2086,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     letter-spacing: 0.08em;
     writing-mode: vertical-rl;
     white-space: pre;
-    color: #008761;
+    color: #00A174;
     opacity: 0;
     transform: translateY(12px);
     /* 淡出不延遲；新標語等舊標語退場後再浮現。 */
@@ -2212,7 +2251,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .stage-clock-tick.is-major::before {
     height: 9px;
-    background: #58685F;
+    background: #3F5147;
   }
   .stage-clock--sm .stage-clock-tick {
     top: 4px;
@@ -2235,7 +2274,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     left: 50%;
     bottom: 50%;
     transform-origin: 50% 100%;
-    background: #58685F;
+    background: #3F5147;
   }
   .stage-clock--lg .stage-clock-hand--hour { width: 2.5px; height: 25%; margin-left: -1.25px; }
   .stage-clock--lg .stage-clock-hand--minute { width: 1.5px; height: 37%; margin-left: -0.75px; }
@@ -2249,7 +2288,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     width: 5px;
     height: 5px;
     margin: -2.5px 0 0 -2.5px;
-    background: #58685F;
+    background: #3F5147;
   }
 
   .stage-weather {
@@ -2497,7 +2536,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .chapter-rail-item.is-active {
     border-left-color: #00A174;
     background: #E6F6F1;
-    color: #007D5A;
+    color: #00A174;
     font-weight: 700;
   }
   .chapter-rail-num {
@@ -2828,7 +2867,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     text-decoration: none;
     transition: background-color 200ms ease;
   }
-  .about-profile-line:hover { background: #007D5A; }
+  .about-profile-line:hover { background: #00A174; }
   .about-profile-copy {
     margin-top: 8px;
     padding: 0;
@@ -3286,7 +3325,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     padding: 2.25rem 1.5rem 1.5rem;
     border-top: 0;
     border-right: 1px solid #DDE3DF;
-    background: rgba(245, 248, 246, 0.7);
+    background: rgba(255, 255, 255, 0.86);
   }
   .chapter-rail-en {
     font-size: 1.5rem;
@@ -3740,7 +3779,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .chapter-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2E3F36;
+    color: #1A2A22;
   }
   .chapter-en {
     font-size: 1rem;
@@ -3754,7 +3793,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .chapter-rail-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #2E3F36;
+    color: #1A2A22;
   }
   .chapter-rail-en {
     font-size: 1.15rem;
@@ -3763,7 +3802,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .chapter-preface-main .page-intro-title {
     font-size: clamp(1.4rem, 1.6vw, 1.9rem);
     font-weight: 600;
-    color: #2E3F36;
+    color: #1A2A22;
     border-bottom-color: #C9D2CD;
   }
   .preface-feature-en {
@@ -3773,7 +3812,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .preface-feature-title {
     font-size: clamp(1.15rem, 1.3vw, 1.5rem);
     font-weight: 600;
-    color: #2E3F36;
+    color: #1A2A22;
     border-bottom-color: #C9D2CD;
   }
   /* 角色插圖縮小，文字收窄，兩者不再重疊 */
@@ -3793,7 +3832,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .about-reasons h3,
   .about-steps h3 {
     font-weight: 600;
-    color: #2E3F36;
+    color: #1A2A22;
   }
   .about-lead {
     font-size: 1.35rem;
@@ -4144,7 +4183,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     line-height: 0.85;
     letter-spacing: -0.045em;
     font-variant-numeric: lining-nums tabular-nums;
-    color: #58685F;
+    color: #3F5147;
   }
   .stage-date-details {
     display: flex;
@@ -4491,10 +4530,10 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .chapter-rail-item.is-active {
     border-left-color: #00A174;
-    background: #E6F6F1;
+    background: rgba(230, 246, 241, 0.45);
   }
   .chapter-rail-item:hover:not(.is-active) {
-    background: rgba(230, 246, 241, 0.45);
+    background: var(--color-control-hover);
   }
   .chapter-rail-search {
     padding: 1rem 1.25rem 0;
@@ -4547,7 +4586,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .rent-reminders { padding: 0; background: transparent; border: 0; }
   .rent-reminders > span { font-size: 15px; margin-bottom: 20px; }
   .rent-reminders > ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .rent-reminder-card { margin-top: 0; padding: 24px; gap: 20px; border: 1px solid #DDE3DF; background: #FAFCFB; align-items: flex-start; }
+  .rent-reminder-card { margin-top: 0; padding: 24px; gap: 20px; border: 1px solid #DDE3DF; background: #fff; align-items: flex-start; }
   .rent-reminder-number { font-family: var(--font-display); font-size: 40px; line-height: 1; }
   .rent-reminder-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #1A2A22; }
   .rent-reminder-card p { font-size: 14px; line-height: 1.9; }
@@ -4607,12 +4646,12 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .section-tab-num { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1; color: #A5B1AA; font-variant-numeric: tabular-nums; transition: color 180ms ease; }
   .section-tab-label { font-size: 13px; font-weight: 600; letter-spacing: .04em; }
-  .section-tab.is-active { background: linear-gradient(0deg, #E6F6F1, transparent); border-bottom-color: #00A174; color: #007D5A; }
+  .section-tab.is-active { background: linear-gradient(0deg, #E6F6F1, transparent); border-bottom-color: #00A174; color: #00A174; }
   .section-tab.is-active .section-tab-num { color: #00A174; }
-  .section-tab:hover:not(.is-active) { background: #F5F8F6; color: #007D5A; }
+  .section-tab:hover:not(.is-active) { background: #F5F8F6; color: #00A174; }
   .section-tab-arrow { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #C9D2CD; border-radius: 50%; background: #fff; }
   .section-tab-arrow svg { width: 16px; height: 16px; stroke-width: 1.5; }
-  .section-tab-arrow:hover:not(:disabled) { background: #E6F6F1; border-color: #00A174; color: #007D5A; }
+  .section-tab-arrow:hover:not(:disabled) { background: #E6F6F1; border-color: #00A174; color: #00A174; }
   .section-tab-arrow:disabled { opacity: .25; cursor: default; }
   .section-tab:focus-visible, .section-tab-arrow:focus-visible { outline: 2px solid #00A174; outline-offset: -2px; }
   .desk-page--calculator #calc-mode-switcher { position: sticky; top: 0; z-index: 8; }
@@ -4767,7 +4806,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     font-family: var(--font-jost);
     font-size: 11px;
     font-weight: 600;
-    color: #007D5A;
+    color: #00A174;
   }
   .rent-route-steps li::after {
     content: "";
@@ -5214,4 +5253,568 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     line-height: 1.7;
     color: #66736C;
   }
+}
+
+
+/* =====================================================================
+   簽約交屋 9 步驟（電腦版）：上方集章進度＋時程甘特圖，下方電車路線圖（小電車跟著捲動、每站可蓋章）
+   ===================================================================== */
+.rent-steps-desk { display: none; }
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-steps-desk { display: block; }
+  .rent-steps-timeline { display: none; }
+  .rent-steps { padding: 0; border: 0; background: transparent; }
+  .rent-steps:hover { box-shadow: none; }
+  .rent-steps > h4 { font-size: 15px; }
+
+  /* ---- 總覽 ---- */
+  .rent-steps-overview { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 16px; margin-bottom: 28px; }
+  .rent-steps-progress-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .rent-steps-progress-head span { font-size: 12px; font-weight: 700; color: #66736C; }
+  .rent-steps-progress-head strong { font-family: var(--font-jost); font-size: 22px; color: #1A2A22; }
+  .rent-steps-progress-head small { font-size: 13px; color: #8A9590; }
+  .rent-steps-progress-bar { height: 4px; margin-bottom: 14px; background: #ECEFEC; }
+  .rent-steps-progress-bar i { display: block; height: 100%; background: #00A174; transition: width 300ms ease; }
+  .rent-steps-stampcard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .rent-steps-stampcard button {
+    display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border: 1px dashed #C9D2CD; border-radius: 9999px;
+    background: #fff; font-family: var(--font-jost); font-size: 13px; color: #8A9590; cursor: pointer;
+  }
+  .rent-steps-stampcard button:hover { border-color: #00A174; color: #00A174; }
+  .rent-steps-stampcard button.is-stamped { border: 0; background: none; }
+  .rent-stamp-mini { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border: 2px solid #E94E2B; border-radius: 9999px; font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #E94E2B; transform: rotate(-12deg); }
+  .rent-steps-progress p { margin-top: 12px; font-size: 11px; line-height: 1.6; color: #8A9590; }
+
+  /* 甘特圖：一步一列，左邊步驟名、右邊一條橫條（深色＝通常天數、淺色＝可能拖到），天數直接寫在條的右邊；不畫格線和刻度 */
+  .rent-steps-gantt { display: flex; flex-direction: column; padding: 16px 18px 14px; border: 1px solid #DDE3DF; border-top: 3px solid #00A174; background: #FAFCFB; }
+  .rent-steps-gantt-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .rent-steps-gantt-head > span:first-child { font-size: 12px; font-weight: 700; color: #66736C; }
+  .rent-steps-gantt-head strong { margin-left: 6px; font-family: var(--font-jost); font-size: 16px; color: #00A174; }
+  .rent-steps-gantt-head strong { transition: color 200ms ease; }
+  .rent-steps-gantt-head strong.is-slow { color: #C2492B; }
+  .rent-steps-gantt-head strong.is-fast { color: #0284C7; }
+  .rent-gantt-mode { display: flex; border: 1px solid #DDE3DF; }
+  .rent-gantt-mode button { padding: 3px 10px; border: 0; background: #fff; font-family: var(--font-sans); font-size: 11px; font-weight: 700; color: #66736C; cursor: pointer; }
+  .rent-gantt-mode button + button { border-left: 1px solid #DDE3DF; }
+  .rent-gantt-mode button[aria-pressed="true"] { background: #00A174; color: #fff; }
+  .rent-gantt-mode button.is-fast[aria-pressed="true"] { background: #0284C7; }
+  .rent-gantt-mode button.is-slow[aria-pressed="true"] { background: #C2492B; }
+  .rent-gantt-bar, .rent-gantt-after { transition: left 400ms cubic-bezier(.4, 0, .2, 1); }
+  .rent-gantt-legend i { display: inline-block; width: 12px; height: 8px; margin-left: 8px; }
+  .rent-gantt-legend i.is-min { background: #00A174; }
+  .rent-gantt-legend i.is-max { background: #CDEFE4; }
+  .rent-gantt-wrap { --label: 104px; position: relative; flex: 1; display: flex; flex-direction: column; }
+  .rent-gantt-grid { position: absolute; top: 0; bottom: 20px; left: var(--label); right: 0; pointer-events: none; }
+  .rent-gantt-grid i { position: absolute; top: 0; bottom: 0; border-left: 1px dashed #E1E8E4; }
+  .rent-gantt-axis { position: relative; height: 20px; margin-left: var(--label); border-top: 1px solid #C9D2CD; }
+  .rent-gantt-axis span { position: absolute; top: 5px; transform: translateX(-50%); font-family: var(--font-sans); font-size: 10px; color: #A9B4AE; white-space: nowrap; }
+  .rent-gantt-axis span:first-child { transform: none; }
+  .rent-gantt-axis span.is-end { transform: translateX(-100%); }
+  .rent-gantt { position: relative; flex: 1; display: grid; grid-auto-rows: 1fr; margin: 0; padding: 0; list-style: none; }
+  .rent-gantt li + li { border-top: 1px solid #EEF2EF; }
+  .rent-gantt li button { display: grid; grid-template-columns: var(--label) minmax(0, 1fr); align-items: center; width: 100%; height: 100%; min-height: 22px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .rent-gantt-label { display: flex; align-items: baseline; gap: 6px; overflow: hidden; font-family: var(--font-sans); font-size: 11.5px; color: #66736C; white-space: nowrap; text-overflow: ellipsis; text-align: left; }
+  .rent-gantt-label b { font-family: var(--font-jost); font-size: 11px; font-weight: 600; color: #A9B4AE; }
+  .rent-gantt li.is-current .rent-gantt-label, .rent-gantt li button:hover .rent-gantt-label { color: #1A2A22; font-weight: 700; }
+  .rent-gantt li.is-current .rent-gantt-label b { color: #00A174; }
+  .rent-gantt-track { position: relative; height: 10px; }
+  .rent-gantt-bar { position: absolute; top: 0; bottom: 0; background: #CDEFE4; }
+  /* 0 天（免房東審查）：只畫一條細短線標出位置 */
+  .rent-gantt-bar.is-zero { border-left: 2px solid #0284C7; background: none; }
+  .rent-gantt-bar.is-zero em { color: #0284C7; font-weight: 700; }
+  .rent-gantt-bar i { position: absolute; left: 0; top: 0; bottom: 0; background: #66C9AC; }
+  .rent-gantt li.is-current .rent-gantt-bar i, .rent-gantt li button:hover .rent-gantt-bar i { background: #00A174; }
+  .rent-gantt-bar em { position: absolute; left: 100%; top: 50%; margin-left: 6px; transform: translateY(-50%); font-style: normal; font-family: var(--font-sans); font-size: 10.5px; color: #8A9590; white-space: nowrap; }
+  .rent-gantt-after {
+    position: absolute; right: 0; top: -2px; bottom: -2px; display: flex; align-items: center; padding-left: 6px;
+    background: linear-gradient(90deg, #F9D3C7, rgba(249, 211, 199, 0.25)); font-family: var(--font-sans); font-size: 10.5px; font-weight: 700; color: #C2492B; white-space: nowrap;
+  }
+
+  /* 集章帳：外框跟甘特圖同一套（淡底、上緣綠線），只有蓋上的章是紅色 */
+  .rent-steps-overview { align-items: stretch; }
+  .rent-stampbook { display: flex; flex-direction: column; padding: 16px 18px; border: 1px solid #DDE3DF; border-top: 3px solid #00A174; background: #FAFCFB; }
+  .rent-stampbook-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .rent-stampbook-en { display: none; }
+  .rent-stampbook-title { font-size: 12px; font-weight: 700; color: #66736C; }
+  .rent-stampbook-head strong { font-family: var(--font-jost); font-size: 16px; color: #1A2A22; }
+  .rent-stampbook-head small { font-size: 12px; color: #8A9590; }
+  .rent-stampbook-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); align-content: space-between; gap: 6px 4px; }
+  .rent-stampbook-grid button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .rent-stampbook-slot { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px dashed #C9D2CD; border-radius: 9999px; background: #fff; transition: border-color 200ms ease; }
+  .rent-stampbook-grid button:hover .rent-stampbook-slot, .rent-stampbook-grid button.is-current .rent-stampbook-slot { border-color: #00A174; }
+  .rent-stampbook-no { font-family: var(--font-jost); font-size: 12px; color: #8A9590; }
+  .rent-stampbook-grid button.is-stamped .rent-stampbook-slot { border: 0; background: none; }
+  .rent-stampbook-seal {
+    display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 2px solid #E94E2B; border-radius: 9999px;
+    color: #E94E2B; transform: rotate(-12deg); animation: rent-stamp-in 300ms cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .rent-stampbook-seal b { font-family: var(--font-display); font-size: 15px; line-height: 1; }
+  .rent-stampbook-seal small { display: none; }
+  .rent-stampbook-name { font-size: 10.5px; line-height: 1.3; text-align: center; color: #66736C; }
+  .rent-stampbook-foot { margin-top: 12px; }
+  .rent-stampbook-foot .rent-steps-progress-bar { margin-bottom: 6px; }
+  .rent-stampbook-foot p { font-size: 11px; line-height: 1.6; color: #8A9590; }
+
+
+
+  /* ---- 電車路線圖 ---- */
+  .rent-route { position: relative; margin: 0; padding: 0 0 0 44px; list-style: none; }
+  .rent-route::before { content: ""; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 6px; border-radius: 3px; background: #9EE2CF; }
+  .rent-route-train {
+    position: absolute; left: 6px; top: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 30px; border-radius: 7px 7px 4px 4px; background: #00A174; color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 161, 116, 0.35); transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .rent-route-station { position: relative; display: grid; grid-template-columns: 210px minmax(0, 1fr) 92px; gap: 24px; padding: 4px 0 30px; }
+  .rent-route-dot { position: absolute; left: -36px; top: 8px; width: 20px; height: 20px; border: 4px solid #00A174; border-radius: 9999px; background: #fff; }
+  .rent-route-station.is-stamped .rent-route-dot { background: #00A174; }
+  .rent-route-sign { align-self: start; padding: 10px 12px 12px; border: 1px solid #DDE3DF; border-top: 4px solid #00A174; background: #fff; transition: box-shadow 200ms ease; }
+  .rent-route-station.is-current .rent-route-sign { box-shadow: 0 4px 14px rgba(0, 161, 116, 0.18); }
+  .rent-route-no { font-family: var(--font-jost); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #00A174; }
+  .rent-route-sign h5 { margin: 2px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.5; color: #1A2A22; }
+  .rent-route-time { display: block; padding-top: 6px; border-top: 1px solid #ECEFEC; font-size: 11.5px; color: #66736C; }
+  /* 九站的說明內文用黑體（站名標題維持明體），長段落比較好讀 */
+  .rent-route-desc, .rent-route-body li, .rent-route-time, .rent-route-stamp { font-family: var(--font-sans); }
+  .rent-route-desc { font-size: 14px; line-height: 1.9; color: #3F5147; }
+  .rent-route-body ul { margin: 8px 0 0; padding: 8px 14px; list-style: none; background: #F5F8F6; }
+  .rent-route-body li { position: relative; padding-left: 16px; font-size: 13.5px; line-height: 1.85; color: #3F5147; }
+  .rent-route-body li + li { margin-top: 4px; }
+  .rent-route-body li::before { content: "•"; position: absolute; left: 0; color: #00A174; }
+  .rent-route-stamp { display: flex; flex-direction: column; align-items: center; gap: 6px; align-self: start; padding: 4px 0; border: 0; background: none; font-size: 11px; font-weight: 700; color: #8A9590; cursor: pointer; }
+  .rent-stamp {
+    display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border: 2px dashed #C9D2CD; border-radius: 9999px;
+    font-family: var(--font-display); font-size: 26px; font-weight: 700; color: #E94E2B; transition: all 200ms ease;
+  }
+  .rent-route-stamp:hover .rent-stamp { border-color: #E94E2B; }
+  .rent-route-station.is-stamped .rent-stamp { border: 3px solid #E94E2B; transform: rotate(-12deg); animation: rent-stamp-in 300ms cubic-bezier(.3, 1.6, .5, 1); }
+  .rent-route-station.is-stamped .rent-route-stamp { color: #E94E2B; }
+  @keyframes rent-stamp-in { from { transform: rotate(-12deg) scale(1.6); opacity: 0; } }
+}
+
+
+/* =====================================================================
+   買房「台日稅務與流程差異」（電腦版）：01 台日差異改成 VS 對照表、04 稅務改成買進→出售四欄
+   ===================================================================== */
+.buy-comparison-deck, .buy-tax-desk { display: none; }
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .buy-comparison-deck, .buy-tax-desk { display: block; }
+  .buy-concepts-cards, .buy-tax-cards-mobile { display: none; }
+
+  /* ---- 01 台日差異：一句話結論（台灣 → 日本），細節收在 details 裡 ---- */
+
+  /* ---- 04 稅務四欄 ---- */
+  /* 四欄之間用垂直細線分隔；下面的提醒列用同一套欄寬與分隔線，上下對齊 */
+  .buy-tax-stages, .buy-tax-notes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; }
+  .buy-tax-stages > li, .buy-tax-notes > div { padding: 0 14px; border-left: 1px solid #DDE3DF; }
+  .buy-tax-stages > li:first-child, .buy-tax-notes > div:first-child { padding-left: 0; border-left: 0; }
+  .buy-tax-stages > li:last-child, .buy-tax-notes > div:last-child { padding-right: 0; }
+  .buy-tax-stages > li { display: flex; flex-direction: column; }
+  .buy-tax-stage-head { position: relative; display: flex; align-items: baseline; gap: 8px; padding-bottom: 8px; border-bottom: 3px solid #00A174; }
+  .buy-tax-no { font-family: var(--font-jost); font-size: 12px; font-weight: 700; color: #00A174; }
+  .buy-tax-stage-head h4 { margin: 0; font-size: 18px; font-weight: 700; color: #1A2A22; }
+  .buy-tax-summary { min-height: 44px; margin: 8px 0 10px; font-family: var(--font-sans); font-size: 12px; line-height: 1.7; color: #66736C; }
+  .buy-tax-cards { display: flex; flex-direction: column; gap: 8px; }
+  .buy-tax-card { padding: 10px 12px 12px; border: 1px solid #DDE3DF; background: #FAFCFB; }
+  .buy-tax-card h5 { margin: 0; font-family: var(--font-sans); font-size: 12.5px; font-weight: 700; color: #3F5147; }
+  .buy-tax-key { display: block; margin: 2px 0 6px; font-family: var(--font-jost); font-size: 20px; font-weight: 600; line-height: 1.3; color: #00A174; }
+  .buy-tax-card ul { margin: 0; padding: 0; list-style: none; }
+  .buy-tax-card li { position: relative; padding-left: 10px; font-family: var(--font-sans); font-size: 11.5px; line-height: 1.7; color: #66736C; }
+  .buy-tax-card li::before { content: "·"; position: absolute; left: 0; color: #00A174; font-weight: 700; }
+  .buy-tax-notes { padding-top: 12px; }
+  .buy-tax-notes > div { display: flex; }
+  .buy-tax-note { flex: 1; display: flex; gap: 6px; margin-top: 0; padding: 8px 10px; border-top: 3px solid #E9B949; background: #FFF8E6; font-family: var(--font-sans); font-size: 11.5px; line-height: 1.7; color: #4A4030; }
+  .buy-tax-note svg { flex-shrink: 0; margin-top: 3px; color: #C58A12; }
+}
+
+/* 買房閱讀面板：方角、單層細線，讓比較與階段資訊有一致的閱讀起點。 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .buy-reference-section { padding: 24px 28px; }
+  .buy-tax-selector { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; border: 1px solid #C9D2CD; }
+  .buy-tax-selector button { display: grid; grid-template-columns: minmax(0, 1fr); align-items: baseline; gap: 5px 12px; padding: 18px 20px; text-align: left; border-bottom: 3px solid transparent; color: #66736C; background: #fff; transition: background-color 180ms ease; }
+  .buy-tax-selector button + button { border-left: 1px solid #DDE3DF; }
+  .buy-tax-selector button[aria-pressed="true"] { background: #E6F6F1; color: var(--color-primary); border-bottom-color: var(--color-primary); }
+  .buy-tax-selector button:hover { background: #F0FAF6; }
+  .buy-tax-no { font: 500 30px/1 var(--font-display); color: inherit; }
+  .buy-tax-selector-label { font-size: 16px; font-weight: 700; }
+  .buy-tax-selector-label { display: flex; align-items: center; gap: 8px; }
+  .buy-tax-selector-label svg { width: 18px; height: 18px; stroke-width: 1.5; }
+  .buy-tax-selector small { grid-column: 1 / -1; font: 11px/1.7 var(--font-sans); }
+  .buy-tax-panel { padding-top: 26px; }
+  .buy-tax-panel-intro { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 18px; }
+  .buy-tax-panel-intro > span { font: 700 12px var(--font-sans); color: var(--color-primary); }
+  .buy-tax-panel-intro p { font: 13px/1.9 var(--font-sans); color: #66736C; }
+  .buy-tax-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .buy-tax-card { padding: 22px; border: 1px solid #DDE3DF; background: #fff; border-radius: 0; }
+  .buy-tax-card h5 { font-size: 14px; color: #1A2A22; }
+  .buy-tax-card h5 { display: flex; align-items: center; gap: 8px; }
+  .buy-tax-card h5 svg { width: 17px; height: 17px; color: var(--color-primary); stroke-width: 1.5; }
+  .buy-tax-basis-label { margin: 0 0 10px; padding-top: 14px; border-top: 1px solid #DDE3DF; font: 500 10px/1.5 var(--font-sans); letter-spacing: .06em; color: #8A9590; }
+  .buy-tax-key { margin: 16px 0 18px; font: 600 clamp(22px, 2vw, 32px)/1.4 var(--font-jost); overflow-wrap: anywhere; color: var(--color-primary); }
+  .buy-tax-card li { font-size: 12px; line-height: 1.9; padding-left: 12px; }
+  .buy-tax-card li + li { margin-top: 8px; }
+  .buy-tax-note { margin-top: 20px; padding: 16px 18px; border-top: 0; border-left: 2px solid var(--color-primary); background: #E6F6F1; color: #3F5147; gap: 12px; font-size: 12px; line-height: 1.9; }
+  .buy-tax-note svg { width: 16px; height: 16px; color: var(--color-primary); }
+  .buy-tax-note strong { display: block; margin-bottom: 4px; color: var(--color-primary); }
+  .buy-tax-selector button:focus-visible { outline: 2px solid #00A174; outline-offset: -3px; }
+  @container desk-content (max-width: 1050px) {
+    .buy-tax-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .buy-tax-selector button:nth-child(3) { border-left: 0; }
+    .buy-tax-selector button:nth-child(n + 3) { border-top: 1px solid #DDE3DF; }
+    .buy-tax-selector button { padding: 14px 12px; }
+    .buy-tax-selector small { display: none; }
+    .buy-tax-cards { grid-template-columns: 1fr; }
+  }
+}
+
+/* 桌機買房差異：逐項白底對照卡，不再用密集表格或額外整行的展開列。 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .buy-comparison-deck { margin-top: 24px; }
+  .buy-comparison-list { display: grid; gap: 14px; list-style: none; padding: 0; margin: 0; }
+  .buy-comparison-card { border: 1px solid var(--color-line); background: #fff; border-radius: 0; }
+  .buy-comparison-card > summary { display: grid; grid-template-columns: minmax(200px, .95fr) minmax(0, 1fr) 20px minmax(0, 1.2fr) 30px; align-items: center; gap: 22px; padding: 20px; min-height: 108px; list-style: none; cursor: pointer; }
+  .buy-comparison-card > summary::-webkit-details-marker { display: none; }
+  .buy-comparison-topic { display: flex; align-items: center; gap: 14px; color: var(--color-ink); font: 600 16px/1.7 var(--font-serif); }
+  .buy-comparison-icon { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border: 1px solid var(--color-line); color: var(--color-primary); }
+  .buy-comparison-icon svg { width: 24px; height: 24px; stroke-width: 1.6; }
+  .buy-comparison-fact { min-width: 0; font-family: var(--font-sans); }
+  .buy-comparison-fact small { display: block; margin-bottom: 6px; color: var(--color-ink-note); font-size: 11px; line-height: 1.7; letter-spacing: .04em; }
+  .buy-comparison-fact strong { display: block; color: var(--color-ink-soft); font-size: 16px; line-height: 1.7; font-weight: 600; overflow-wrap: anywhere; }
+  .buy-comparison-fact.is-japan strong { color: var(--color-primary); }
+  .buy-comparison-bridge { color: var(--color-ink-mute); }
+  .buy-comparison-bridge svg { width: 18px; height: 18px; stroke-width: 1.4; }
+  .buy-comparison-toggle { display: flex; flex-direction: column; align-items: center; gap: 6px; font: 500 10px/1.5 var(--font-sans); color: var(--color-ink-note); }
+  .buy-comparison-toggle svg { width: 15px; height: 15px; transition: transform 180ms ease; }
+  .buy-comparison-toggle .when-open { display: none; }
+  .buy-comparison-card[open] .when-closed { display: none; }
+  .buy-comparison-card[open] .when-open { display: inline; }
+  .buy-comparison-card[open] .buy-comparison-toggle svg { transform: rotate(180deg); }
+  .buy-comparison-card > summary:hover { background: #FAFCFB; }
+  .buy-comparison-card > summary:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+  .buy-comparison-content { padding: 24px; border-top: 1px solid var(--color-line-soft); }
+  .buy-comparison-explanation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-bottom: 24px; font-family: var(--font-sans); }
+  .buy-comparison-explanation h4 { margin: 0 0 10px; font: 600 12px/1.7 var(--font-sans); color: var(--color-ink-note); }
+  .buy-comparison-explanation .is-japan h4 { color: var(--color-primary); }
+  .buy-comparison-explanation p { margin: 0; font-size: 14px; line-height: 1.95; color: var(--color-ink-soft); }
+  @container desk-content (max-width: 1050px) {
+    .buy-comparison-card > summary { grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr) 30px; gap: 14px; padding: 18px; }
+    .buy-comparison-topic { grid-column: 1 / 4; font-size: 16px; }
+    .buy-comparison-icon { width: 32px; height: 32px; }
+    .buy-comparison-icon svg { width: 21px; height: 21px; }
+    .buy-comparison-toggle { grid-column: 4; grid-row: 1 / 3; }
+    .buy-comparison-fact strong { font-size: 15px; }
+    .buy-comparison-content { padding: 20px; }
+    .buy-comparison-explanation { grid-template-columns: 1fr; gap: 20px; }
+  }
+}
+
+/* Finance reference: desktop reading desk, with the existing touch layout retained. */
+/* 全站實務提醒：品牌亮綠＋淡綠底；無表頭色線或側邊粗色條。 */
+.advice-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--color-advice-line);
+  border-radius: 0;
+  background: #F2FBF7;
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  text-align: left;
+}
+.advice-note-icon { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; color: var(--color-advice-accent); }
+.advice-note-icon > svg { width: 20px; height: 20px; }
+.advice-note-content { flex: 1; min-width: 0; }
+.advice-note-title { display: block; margin: 2px 0 8px; color: var(--color-advice-accent); font-size: 13px; line-height: 1.7; font-weight: 600; }
+.advice-note-body { font-size: 13px; line-height: 1.95; overflow-wrap: anywhere; }
+.advice-note-body p { margin: 0; }
+.advice-note-body ul { list-style: none; padding: 0; margin: 0; }
+.advice-note-body li + li { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--color-advice-line); }
+.advice-note--compact { padding: 12px 14px; gap: 10px; }
+.advice-note--compact .advice-note-icon { width: 20px; height: 20px; }
+.advice-note--compact .advice-note-icon > svg { width: 18px; height: 18px; }
+.advice-note--compact .advice-note-title { font-size: 12px; margin-bottom: 5px; }
+.advice-note--compact .advice-note-body { font-size: 12px; }
+.advice-caption { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--color-advice-line); border-radius: 0; background: #F2FBF7; color: var(--color-advice-accent); font: 600 11px/1.7 var(--font-sans); }
+.advice-caption svg { color: var(--color-advice-accent); }
+.rent-advice-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; }
+.rent-advice-list .advice-note { height: 100%; }
+@media (max-width: 639px) {
+  .advice-note { padding: 16px; gap: 10px; }
+  .advice-note-icon { width: 24px; height: 24px; }
+  .advice-note-title, .advice-note-body { font-size: 12px; }
+  .advice-note--compact { padding: 12px; }
+}
+.finance-desk { display: none; }
+.buy-journey-desk { display: none; }
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .buy-journey-mobile { display: none; }
+  .buy-journey-desk { display: block; padding: 24px 28px; border: 1px solid var(--color-line); background: #fff; font-family: var(--font-sans); }
+  .buy-journey-desk + .buy-journey-desk { margin-top: 24px; }
+  .buy-journey-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--color-line); margin: 22px 0; }
+  .buy-journey-switch button { display: flex; align-items: center; gap: 14px; padding: 18px 22px; border-bottom: 3px solid transparent; text-align: left; }
+  .buy-journey-switch button + button { border-left: 1px solid var(--color-line); }
+  .buy-journey-switch button[aria-pressed="true"] { border-bottom-color: var(--color-primary); }
+  .buy-journey-switch button > svg { width: 24px; height: 24px; flex-shrink: 0; stroke-width: 1.6; color: var(--color-primary); }
+  .buy-journey-switch button > svg:last-child { width: 17px; height: 17px; margin-left: auto; }
+  .buy-journey-switch strong { display: block; font-size: 16px; font-weight: 600; }
+  .buy-journey-switch small { display: block; margin-top: 5px; color: var(--color-ink-note); font-size: 11px; line-height: 1.8; }
+  .buy-journey-overview { padding: 8px 0 24px; margin-bottom: 26px; border-bottom: 1px solid var(--color-line); }
+  .buy-journey-route-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .buy-journey-route-heading > div { display: flex; align-items: baseline; gap: 12px; }
+  .buy-journey-route-heading span, .buy-journey-route-heading p { font-size: 12px; color: var(--color-ink-note); }
+  .buy-journey-route-heading strong { font: 600 17px/1.7 var(--font-sans); color: var(--color-primary); }
+  .buy-journey-route-scroll { overflow-x: auto; scrollbar-width: thin; padding: 4px 4px 10px; }
+  .buy-journey-overview ol { display: grid; list-style: none; margin: 0; padding: 0; }
+  .buy-journey-overview li { position: relative; min-width: 0; text-align: center; }
+  .buy-journey-overview li:not(:last-child)::after { content: ''; position: absolute; top: 24px; left: calc(50% + 32px); right: calc(-50% + 32px); height: 1px; background: var(--color-line); pointer-events: none; }
+  .buy-journey-route-button { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 4px; background: transparent; color: var(--color-ink-soft); font-size: 13px; line-height: 1.8; cursor: pointer; transition: color 160ms ease; }
+  .buy-journey-route-icon { display: grid; place-items: center; position: relative; width: 48px; height: 48px; border: 1px solid var(--color-line); background: #fff; color: var(--color-primary); transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+  .buy-journey-route-icon svg { width: 23px; height: 23px; stroke-width: 1.7; }
+  .buy-journey-route-button[aria-current="step"] { color: var(--color-primary); font-weight: 600; }
+  .buy-journey-route-button[aria-current="step"] .buy-journey-route-icon, .buy-journey-marker[aria-current="step"] { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+  .buy-journey-timeline { margin: 0; padding: 0; list-style: none; }
+  .buy-journey-timeline > li { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 20px; padding-bottom: 22px; }
+  .buy-journey-timeline > li:not(:last-child)::before { content: ""; position: absolute; left: 23px; top: 48px; bottom: 0; width: 1px; background: var(--color-line); }
+  .buy-journey-timeline > li:last-child { padding-bottom: 0; }
+  .buy-journey-marker { display: grid; place-items: center; align-self: start; height: 48px; border: 1px solid var(--color-line); background: #fff; color: var(--color-primary); font: 500 28px/1 var(--font-display); font-variant-numeric: lining-nums; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
+  .buy-journey-route-button:hover:not([aria-current="step"]) .buy-journey-route-icon, .buy-journey-marker:hover:not([aria-current="step"]) { background: var(--color-control-hover); }
+  .buy-journey-route-button:focus-visible, .buy-journey-marker:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .buy-journey-step { min-width: 0; padding: 22px; border: 1px solid var(--color-line); background: #fff; }
+  .buy-journey-step.is-selected { border-color: var(--color-primary); }
+  .buy-journey-step > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .buy-journey-step h4 { display: flex; align-items: flex-start; gap: 9px; font: 600 17px/1.7 var(--font-serif); color: var(--color-ink); }
+  .buy-journey-step h4 svg { width: 20px; height: 20px; margin-top: 4px; color: var(--color-primary); flex-shrink: 0; stroke-width: 1.6; }
+  .buy-journey-time { display: inline-flex; align-items: flex-start; gap: 6px; padding: 5px 9px; max-width: 240px; flex-shrink: 0; font-size: 11px; line-height: 1.8; color: var(--color-ink-note); background: #FAFCFB; }
+  .buy-journey-time svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 3px; }
+  .buy-journey-description { margin: 0; color: var(--color-ink-soft); font-size: 14px; line-height: 1.95; }
+  .buy-journey-prep { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 16px; margin-top: 18px; border-top: 1px solid var(--color-line-soft); }
+  .buy-journey-prep dt { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 11px; font-weight: 600; color: var(--color-primary); }
+  .buy-journey-prep dt svg { width: 15px; height: 15px; stroke-width: 1.7; }
+  .buy-journey-prep dd { margin: 0; font-size: 12px; line-height: 1.9; color: var(--color-ink-soft); }
+  .buy-journey-warning { display: flex; align-items: flex-start; gap: 10px; padding: 14px; margin-top: 18px; border: 1px solid #FDE047; background: #FEF9C3; color: #854D0E; font-size: 12px; line-height: 1.9; }
+  .buy-journey-warning > svg { width: 17px; height: 17px; margin-top: 3px; flex-shrink: 0; }
+  .buy-document-context { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 18px; margin: 24px 0 18px; }
+  .buy-document-context h4 { color: var(--color-ink); font: 600 17px/1.8 var(--font-serif); }
+  .buy-document-context > span { font-size: 11px; color: var(--color-ink-note); }
+  .buy-document-list { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; }
+  .buy-document-list > li { display: grid; grid-template-columns: 42px minmax(180px, .9fr) minmax(0, 1.8fr); align-items: start; gap: 18px; border: 1px solid var(--color-line); background: #fff; padding: 20px; }
+  .buy-document-icon { display: grid; place-items: center; height: 42px; border: 1px solid var(--color-line); color: var(--color-primary); }
+  .buy-document-icon svg { width: 23px; height: 23px; stroke-width: 1.6; }
+  .buy-document-name h4 { color: var(--color-ink); font-size: 16px; font-weight: 600; line-height: 1.8; }
+  .buy-document-name > span { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 7px; border: 1px solid var(--color-line); color: var(--color-ink-note); font-size: 10px; line-height: 1.7; }
+  .buy-document-name > span svg { width: 12px; height: 12px; }
+  .buy-document-list > li > p { min-width: 0; margin: 0; color: var(--color-ink-soft); font-size: 15px; line-height: 1.95; }
+  @container desk-content (max-width: 1050px) {
+    .buy-journey-desk { padding: 20px; }
+    .buy-journey-switch button { padding: 14px; gap: 9px; }
+    .buy-journey-switch strong { font-size: 14px; }
+    .buy-journey-switch small { font-size: 10px; }
+    .buy-journey-switch button > svg { width: 20px; height: 20px; }
+    .buy-journey-route-heading { flex-wrap: wrap; gap: 6px 16px; }
+    .buy-journey-route-button { font-size: 12px; }
+    .buy-journey-timeline > li { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+    .buy-journey-marker { height: 34px; font-size: 22px; }
+    .buy-journey-timeline > li:not(:last-child)::before { left: 16px; top: 34px; }
+    .buy-journey-step { padding: 18px; }
+    .buy-journey-step > header { flex-direction: column; gap: 10px; }
+    .buy-journey-time { max-width: none; }
+    .buy-journey-prep { grid-template-columns: 1fr; gap: 14px; }
+    .buy-document-list > li { grid-template-columns: 32px minmax(0, 1fr); gap: 10px 14px; padding: 18px; }
+    .buy-document-icon { height: 32px; grid-row: span 2; }
+    .buy-document-icon svg { width: 20px; height: 20px; }
+    .buy-document-list > li > p { grid-column: 2; }
+  }
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .finance-mobile { display: none; }
+  .finance-desk { display: block; color: #1A2A22; font-family: var(--font-sans); }
+  .finance-intro { margin-bottom: 22px; }
+  .finance-intro > span { font: 600 24px/1.6 var(--font-serif); }
+  .finance-intro p { margin-top: 6px; color: #66736C; font-size: 13px; line-height: 1.9; }
+  .finance-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 26px; border: 1px solid #DDE3DF; }
+  .finance-switch button { display: flex; align-items: center; gap: 16px; padding: 20px 24px; text-align: left; border-bottom: 3px solid transparent; background: #fff; transition: background .2s; }
+  .finance-switch button + button { border-left: 1px solid #DDE3DF; }
+  .finance-switch button[aria-pressed="true"] { background: #E6F6F1; border-bottom-color: var(--color-primary); }
+  .finance-switch button > svg:first-child { width: 26px; height: 26px; color: var(--color-primary); stroke-width: 1.5; flex-shrink: 0; }
+  .finance-switch button > svg:last-child { width: 18px; margin-left: auto; color: var(--color-primary); }
+  .finance-switch strong { display: block; font-size: 16px; line-height: 1.7; }
+  .finance-switch small { display: block; font-size: 11px; line-height: 1.8; color: #66736C; margin-top: 4px; }
+  .finance-workspace { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+  .finance-eyebrow { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--color-primary); }
+  .finance-bank-list > p { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #DDE3DF; }
+  .finance-bank-list > p span { color: #66736C; font-weight: 400; }
+  .finance-bank-list button { position: relative; display: block; width: 100%; padding: 18px 32px 18px 16px; border-bottom: 1px solid #DDE3DF; border-left: 3px solid transparent; text-align: left; background: #fff; }
+  .finance-bank-list button strong { display: block; font-size: 13px; line-height: 1.7; }
+  .finance-bank-list button small { display: block; margin-top: 6px; font-size: 11px; line-height: 1.8; color: #66736C; }
+  .finance-bank-list button > svg { position: absolute; right: 12px; top: 22px; width: 14px; height: 14px; color: var(--color-primary); }
+  .finance-bank-list button[aria-pressed="true"] { background: #F0FAF6; border-left-color: var(--color-primary); }
+  .finance-bank-list button[aria-pressed="true"] strong { color: var(--color-primary); }
+  .finance-bank-detail { border: 1px solid #DDE3DF; padding: 26px; min-width: 0; background: #fff; }
+  .finance-bank-detail > header { padding-bottom: 22px; }
+  .finance-bank-detail h3 { margin-top: 10px; font: 600 24px/1.6 var(--font-serif); overflow-wrap: anywhere; }
+  .finance-bank-detail header > small { display: block; color: #66736C; font-size: 11px; line-height: 1.8; margin-top: 8px; }
+  .finance-rate { margin-top: 12px; font-size: 20px; font-weight: 600; line-height: 1.7; color: var(--color-primary); }
+  .finance-facts { margin: 0; }
+  .finance-facts > div { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid #E5EBE7; }
+  .finance-facts dt { color: #66736C; font-size: 12px; line-height: 1.9; }
+  .finance-facts dd { color: #3F5147; font-size: 13px; line-height: 1.95; margin: 0; overflow-wrap: anywhere; }
+  .finance-keyfacts { padding: 0 18px; background: #fff; border: 1px solid #DDE3DF; border-top: 2px solid var(--color-primary); margin-bottom: 24px; }
+  .finance-keyfacts .finance-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .finance-keyfacts .finance-facts > div { display: block; padding: 18px 16px; border-bottom: 0; }
+  .finance-keyfacts .finance-facts > div + div { border-left: 1px solid #DDE3DF; }
+  .finance-keyfacts .finance-facts dd { margin-top: 8px; font-weight: 600; }
+  .finance-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .finance-detail-grid h4, .finance-eligibility h4, .lodging-permit-grid h3 { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 600; padding-bottom: 12px; border-bottom: 1px solid #DDE3DF; }
+  .finance-detail-grid h4 svg, .finance-eligibility h4 svg, .lodging-permit-grid h3 svg { width: 18px; height: 18px; color: var(--color-primary); stroke-width: 1.5; }
+  .finance-detail-grid .finance-facts > div { display: block; }
+  .finance-detail-grid dd { margin-top: 6px; }
+  .finance-note { display: flex; align-items: flex-start; gap: 12px; margin-top: 24px; padding: 18px 20px; border-left: 2px solid var(--color-primary); background: #E6F6F1; }
+  .finance-note > svg { width: 18px; height: 18px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px; }
+  .finance-note strong { display: block; margin-bottom: 8px; font-size: 12px; color: var(--color-primary); }
+  .finance-note ul { list-style: none; margin: 0; padding: 0; }
+  .finance-note li { font-size: 12px; line-height: 1.95; color: #3F5147; }
+  .finance-note li + li { margin-top: 10px; padding-top: 10px; border-top: 1px solid #CCE9DE; }
+  .lodging-overview { display: grid; grid-template-columns: 290px minmax(0, 1fr); border: 1px solid var(--color-line); margin-bottom: 28px; background: #fff; font-family: var(--font-sans); }
+  .lodging-annual-limit { padding: 24px 28px; background: #F0FAF6; }
+  .lodging-annual-limit small { display: block; font-size: 12px; font-weight: 500; color: var(--color-primary); line-height: 1.8; }
+  .lodging-annual-limit strong { display: flex; align-items: baseline; gap: 14px; margin-top: 8px; font: 500 64px/1.1 var(--font-jost); letter-spacing: -.03em; color: var(--color-primary); font-variant-numeric: tabular-nums; }
+  .lodging-annual-limit strong span { font: 500 15px/1.8 var(--font-sans); letter-spacing: 0; white-space: nowrap; }
+  .lodging-overview-copy { align-self: center; padding: 24px 32px; }
+  .lodging-overview-copy h3 { font: 600 19px/1.8 var(--font-sans); color: var(--color-ink); margin-bottom: 10px; }
+  .lodging-overview-copy p { font-size: 14px; line-height: 1.95; color: var(--color-ink-soft); }
+  .lodging-overview-copy .lodging-overview-caption { margin-top: 8px; font-size: 13px; color: var(--color-ink-note); }
+  .lodging-workspace { grid-template-columns: minmax(220px, .65fr) minmax(0, 1.8fr); }
+  .lodging-search { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid #DDE3DF; background: #fff; }
+  .lodging-search > svg { width: 16px; height: 16px; color: var(--color-primary); }
+  .lodging-search input { min-width: 0; width: 100%; background: transparent; font-size: 13px; outline: none; }
+  .lodging-search:focus-within { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .lodging-ward-list > div { max-height: 560px; overflow-y: auto; overscroll-behavior: contain; margin-top: 12px; border-top: 1px solid #DDE3DF; }
+  .lodging-ward-list button { display: grid; width: 100%; grid-template-columns: 65px minmax(0, 1fr) 14px; gap: 10px; align-items: center; padding: 15px 12px; border-bottom: 1px solid #DDE3DF; border-left: 3px solid transparent; text-align: left; background: #fff; }
+  .lodging-ward-list button strong { font-size: 13px; }
+  .lodging-ward-list button small { font-size: 11px; color: #66736C; }
+  .lodging-ward-list button svg { width: 14px; height: 14px; color: var(--color-primary); }
+  .lodging-ward-list button[aria-pressed="true"] { background: #F0FAF6; border-left-color: var(--color-primary); color: var(--color-primary); }
+  .lodging-ward-detail { padding: 28px 32px; font-family: var(--font-sans); }
+  .lodging-ward-detail > header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 24px; border-bottom: 1px solid var(--color-line); }
+  .lodging-ward-detail h3 { display: flex; align-items: center; gap: 8px; font: 600 25px/1.7 var(--font-sans); }
+  .lodging-ward-detail h3 svg { width: 24px; color: var(--color-primary); }
+  .lodging-limit { border-left: 1px solid var(--color-line); padding-left: 24px; }
+  .lodging-limit > span { display: block; margin-bottom: 6px; font-size: 11px; color: var(--color-ink-note); }
+  .lodging-limit > strong { font-size: 14px; line-height: 1.8; font-weight: 600; color: var(--color-primary); }
+  .lodging-rule-facts > div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--color-line-soft); }
+  .lodging-rule-facts dt { font-size: 13px; font-weight: 600; color: var(--color-primary); line-height: 2.1; }
+  .lodging-rule-facts dd { margin: 0; color: var(--color-ink-soft); font-size: 15px; line-height: 1.95; overflow-wrap: anywhere; }
+  .lodging-rule-facts p + p { margin-top: 10px; }
+  .lodging-area { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 22px; padding: 12px 16px; background: #F7F9F8; font-size: 12px; color: var(--color-ink-note); }
+  .lodging-area svg { width: 14px; height: 14px; color: var(--color-primary); }
+  .lodging-area strong { color: var(--color-ink-soft); font-weight: 500; }
+  .lodging-empty { padding: 24px 12px; color: #66736C; font-size: 13px; line-height: 1.8; }
+  .lodging-permit-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; }
+  .lodging-timeline { list-style: none; margin: 22px 0 0 10px; padding: 0; border-left: 1px solid #B9E3D2; }
+  .lodging-timeline li { position: relative; padding: 0 0 24px 28px; }
+  .lodging-timeline li:last-child { padding-bottom: 0; }
+  .lodging-step-dot { position: absolute; left: -11px; top: 0; width: 21px; height: 21px; display: grid; place-items: center; background: #E6F6F1; color: var(--color-primary); }
+  .lodging-step-dot svg { width: 13px; height: 13px; }
+  .lodging-timeline h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .lodging-timeline li > div { font-size: 13px; line-height: 1.95; color: #3F5147; }
+  .lodging-requirements ul { padding: 0; margin-top: 16px; list-style: none; border: 1px solid #DDE3DF; background: #fff; }
+  .lodging-requirements li { display: flex; align-items: flex-start; gap: 12px; padding: 18px; font-size: 13px; line-height: 1.95; color: #3F5147; }
+  .lodging-requirements li + li { border-top: 1px solid #DDE3DF; }
+  .lodging-requirements li svg { flex-shrink: 0; width: 15px; height: 15px; margin-top: 5px; color: var(--color-primary); }
+  .finance-desk button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -3px; }
+  .finance-bank-list button:hover:not([aria-pressed="true"]),
+  .lodging-ward-list button:hover:not([aria-pressed="true"]) { background: var(--color-control-hover); }
+  @container desk-content (max-width: 1050px) {
+    .finance-workspace { grid-template-columns: minmax(180px, .8fr) minmax(0, 1.7fr); gap: 16px; }
+    .finance-switch button { padding: 16px; gap: 10px; }
+    .finance-switch strong { font-size: 14px; }
+    .finance-switch small { font-size: 10px; }
+    .finance-bank-detail { padding: 20px; }
+    .finance-bank-detail h3 { font-size: 21px; }
+    .finance-rate { font-size: 17px; }
+    .finance-keyfacts { padding: 0 14px; }
+    .finance-keyfacts .finance-facts { grid-template-columns: 1fr; }
+    .finance-keyfacts .finance-facts > div { padding: 12px 0; }
+    .finance-keyfacts .finance-facts > div + div { border-left: 0; border-top: 1px solid #DDE3DF; }
+    .finance-detail-grid, .lodging-permit-grid { grid-template-columns: 1fr; }
+    .finance-facts > div { grid-template-columns: 1fr; gap: 5px; }
+    .lodging-ward-list button { grid-template-columns: minmax(0, 1fr) 14px; gap: 5px; }
+    .lodging-ward-list button small { grid-column: 1; }
+    .lodging-ward-list button svg { grid-column: 2; grid-row: 1 / 3; }
+    .lodging-overview { grid-template-columns: 230px minmax(0, 1fr); }
+    .lodging-annual-limit, .lodging-overview-copy { padding: 22px 24px; }
+    .lodging-ward-detail > header { align-items: flex-start; flex-direction: column; gap: 14px; }
+    .lodging-limit { border-left: 0; padding-left: 0; }
+    .lodging-rule-facts > div { grid-template-columns: 1fr; gap: 8px; }
+  }
+  @container desk-content (max-width: 1050px) {
+    .lodging-overview { grid-template-columns: 1fr; }
+    .lodging-workspace { grid-template-columns: 1fr; }
+    .lodging-ward-list > div { max-height: 240px; }
+  }
+}
+
+
+/* 旅館業／簡易宿所：品牌綠標示閱讀層級，全文直接可讀。 */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .ryokan-reading { color: var(--color-ink-soft); font-family: var(--font-sans); }
+  .ryokan-reading-intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; border: 1px solid var(--color-line); background: #fff; }
+  .ryokan-reading-window { padding: 24px 28px; background: #F0FAF6; }
+  .ryokan-reading-window > span { font-size: 12px; font-weight: 600; color: var(--color-primary); letter-spacing: .06em; }
+  .ryokan-reading-window .lodging-authority { display: block; margin-top: 6px; font: 600 24px/1.65 var(--font-sans); color: var(--color-primary); }
+  .ryokan-reading-window > p { margin-top: 4px; font-size: 13px; color: var(--color-ink-note); }
+  .ryokan-reading-contacts { display: flex; align-items: center; gap: 32px; padding: 24px 28px; }
+  .ryokan-reading-contacts dt { color: var(--color-ink-note); font-size: 11px; line-height: 1.8; }
+  .ryokan-reading-contacts dd { margin-top: 6px; color: var(--color-primary); font-size: 17px; font-weight: 600; }
+  .ryokan-reading-cost { grid-column: 1 / -1; padding: 14px 28px; border-top: 1px solid var(--color-line-soft); font-size: 13px; line-height: 1.95; color: var(--color-ink-note); }
+  .ryokan-reading-section { margin-top: 36px; }
+  .ryokan-reading-section > header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px 20px; padding-bottom: 14px; border-bottom: 1px solid var(--color-line); }
+  .ryokan-reading-section h3 { font: 600 19px/1.7 var(--font-sans); color: var(--color-primary); }
+  .ryokan-reading-section > header > span { font-size: 12px; color: var(--color-ink-note); }
+  .ryokan-reading-steps { padding: 0; margin: 0; list-style: none; }
+  .ryokan-reading-steps > li { display: grid; grid-template-columns: 40px 146px minmax(0, 1fr); gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--color-line-soft); }
+  .ryokan-reading-order { color: var(--color-primary); font: 500 26px/1.15 var(--font-jost); font-variant-numeric: tabular-nums; }
+  .ryokan-reading-steps h4 { font: 600 15px/1.95 var(--font-sans); color: var(--color-ink); }
+  .ryokan-reading-steps p { font-size: 15px; line-height: 1.95; margin: 0; }
+  .ryokan-reading-requirements > div { display: grid; grid-template-columns: 206px minmax(0, 1fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--color-line-soft); }
+  .ryokan-reading-requirements dt { display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: start; gap: 20px; font-size: 15px; line-height: 1.95; font-weight: 600; color: var(--color-ink); }
+  .ryokan-reading-requirements dt > svg { width: 28px; height: 28px; margin-top: 0; stroke-width: 1.8; color: var(--color-primary); }
+  .ryokan-reading-requirements dd { margin: 0; font-size: 15px; line-height: 1.95; }
+  @container desk-content (max-width: 1050px) {
+    .ryokan-reading-intro { grid-template-columns: 1fr; }
+    .ryokan-reading-contacts { gap: 24px; margin: 0; padding: 20px 24px; }
+    .ryokan-reading-window { padding: 20px 24px; }
+    .ryokan-reading-cost { padding: 14px 24px; }
+    .ryokan-reading-steps > li { grid-template-columns: 40px minmax(0, 1fr); gap: 6px 14px; padding: 24px 0; }
+    .ryokan-reading-order { grid-row: span 2; }
+    .ryokan-reading-steps p { grid-column: 2; }
+    .ryokan-reading-requirements > div { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+    .ryokan-reading-requirements dt { column-gap: 14px; }
+    .ryokan-reading-requirements dd { padding-left: 54px; }
+  }
+}
+
+/* 僅內容上排的大型切換鈕使用半漸層；清單／小按鈕保留各自原樣。 */
+button.ui-switch-large {
+  background: #fff;
+  color: var(--color-ink-soft);
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+button.ui-switch-large:is(.is-active, [aria-current="page"], [aria-pressed="true"]) {
+  background: linear-gradient(to top, #E6F6F1 0%, transparent 68%);
+  color: var(--color-primary);
+}
+button.ui-switch-large:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  button.ui-switch-large:hover:not(:is(.is-active, [aria-current="page"], [aria-pressed="true"])) {
+    background: var(--color-control-hover);
+    color: var(--color-ink-soft);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button.ui-switch-large { transition: none; }
+  .buy-journey-route-button, .buy-journey-route-icon, .buy-journey-marker { transition: none; }
 }

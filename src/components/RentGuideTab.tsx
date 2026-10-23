@@ -194,9 +194,10 @@ export function RentGuideTab(props: RentGuideTabProps) {
                     <button
                       key={cat.id}
                       onClick={() => setKbCategory(cat.id as RentGuideCategory)}
+                      aria-pressed={kbCategory === cat.id}
                       className={`px-3 py-1.5 text-xs font-medium cursor-pointer border transition-colors ${
-                        kbCategory === cat.id 
-                          ? "bg-[#00a174] text-white border-[#00a174]" 
+                        kbCategory === cat.id
+                          ? "bg-[#00a174] text-white border-[#00a174]"
                           : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#00a174]"
                       }`}
                     >

@@ -1,4 +1,5 @@
 import type { CalculatorViewModel } from "../../hooks/useCalculatorController";
+import { AdviceNote } from "../AdviceNote";
 
 type Props = Pick<CalculatorViewModel, "setGuidedApplicationChannel" | "guidedApplicationChannel" | "guidedVisaType">;
 export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApplicationChannel, guidedVisaType }: Props) {
@@ -33,8 +34,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
             </button>
           </div>
           {guidedApplicationChannel === "overseas" && (
-            <div className="mt-2 border-l-4 border-[#00A174] bg-[#F5F8F6] p-2.5 text-[10px] leading-relaxed text-[#1A2A22]">
-              <strong className="text-[#00A174]">Linus 實務提醒：</strong>
+            <AdviceNote className="mt-2" compact>
               {!guidedVisaType ? (
                 <span>人在海外申請租屋時，管理公司需先確認在留資格種類才能判定受理審查；建議先於上方選擇您的身分／簽證種類。</span>
               ) : guidedVisaType.includes("打工度假") ? (
@@ -46,7 +46,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
               ) : (
                 <span>人在海外需挑選支援「線上 IT 重說、接受 COE 審查、海外匯款初期費用」之管理公司。可申請房源相對受限，建議由顧問直接協助篩選可海審物件。</span>
               )}
-            </div>
+            </AdviceNote>
           )}
         </fieldset></>);
 }

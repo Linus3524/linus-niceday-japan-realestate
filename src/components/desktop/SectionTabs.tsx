@@ -33,7 +33,7 @@ export function SectionTabs({ tabs, active, onChange }: { tabs: SectionTab[]; ac
           key={t.id}
           type="button"
           aria-current={i === index ? "page" : undefined}
-          className={`section-tab ${i === index ? "is-active" : ""}`}
+          className={`section-tab ui-switch-large ${i === index ? "is-active" : ""}`}
           onClick={event => selectTopic(t.id, event.currentTarget)}
         >
           <span className="section-tab-num">{String(i + 1).padStart(2, "0")}</span>

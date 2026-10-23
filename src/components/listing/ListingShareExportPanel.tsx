@@ -78,7 +78,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
             onClick={() => { setShareTitle(reportHeading.slice(0, 60)); setShareError(null); }}
             disabled={!reportHeading || shareTitle.trim() === reportHeading.slice(0, 60)}
             title={`帶入圖紙解析出的物件名稱與房號：${reportHeading}`}
-            className="flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3 py-2.5 text-xs font-bold text-[#00A174] transition-colors hover:bg-[#E6F6F1] disabled:cursor-not-allowed disabled:border-[#DDE3DF] disabled:text-[#8A9590] disabled:hover:bg-white"
+            className="flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3 py-2.5 text-xs font-bold text-[#00A174] transition-colors hover:bg-[#e6f6f1] disabled:cursor-not-allowed disabled:border-[#DDE3DF] disabled:text-[#8A9590] disabled:hover:bg-white"
           >
             <Wand2 className="h-3.5 w-3.5" />
             帶入物件名稱
@@ -101,7 +101,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
         <button
           type="button"
           onClick={copyShareUrl}
-          className="flex shrink-0 items-center gap-1 border border-[#00A174] bg-white px-2.5 py-1.5 text-xs font-bold text-[#00A174] hover:bg-[#E6F6F1]"
+          className="flex shrink-0 items-center gap-1 border border-[#00A174] bg-white px-2.5 py-1.5 text-xs font-bold text-[#00A174] hover:bg-[#e6f6f1]"
         >
           {shareCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {shareCopied ? "已複製" : "複製"}
@@ -110,7 +110,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex shrink-0 items-center gap-1 bg-[#00A174] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#00895D]"
+          className="flex shrink-0 items-center gap-1 bg-[#00A174] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#00A174]"
         >
           <ExternalLink className="h-3.5 w-3.5" />
           前往

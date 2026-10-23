@@ -282,7 +282,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
           <button
             type="button"
             onClick={onBack}
-            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#009670]"
+            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#00A174]"
           >
             <span aria-hidden="true">←</span> 返回網站
           </button>
@@ -293,7 +293,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
       </header>
 
       <main className="mx-auto max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
-        <div className="border-l-2 border-[#009670] pl-5 sm:pl-7">
+        <div className="border-l-2 border-[#00A174] pl-5 sm:pl-7">
           <p className="font-jost text-[11px] font-semibold tracking-[0.18em] text-[#66736C]">
             {content.eyebrow}
           </p>
@@ -316,7 +316,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
                 className={`px-3.5 py-1.5 font-sans text-xs font-semibold transition-colors ${
                   isActive
                     ? "bg-[#1A2A22] text-white shadow-sm"
-                    : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#009670] hover:text-[#009670]"
+                    : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#00A174] hover:text-[#00A174]"
                 }`}
               >
                 {link.label}
@@ -332,7 +332,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
               className={`py-7 sm:py-9 ${index > 0 ? "border-t border-[#DDE3DF]" : ""}`}
             >
               <div className="grid gap-4 sm:grid-cols-[3rem_1fr] sm:gap-5">
-                <span className="font-jost text-xs font-semibold tracking-[0.12em] text-[#009670]">
+                <span className="font-jost text-xs font-semibold tracking-[0.12em] text-[#00A174]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div>
@@ -374,7 +374,7 @@ export function PolicyPage({ page, onBack }: { page: PolicyPageId; onBack: () =>
                 key={link.id}
                 href={`#${link.id}`}
                 aria-current={page === link.id ? "page" : undefined}
-                className={page === link.id ? "font-semibold text-[#009670]" : "transition-colors hover:text-[#009670]"}
+                className={page === link.id ? "font-semibold text-[#00A174]" : "transition-colors hover:text-[#00A174]"}
               >
                 {link.label}
               </a>

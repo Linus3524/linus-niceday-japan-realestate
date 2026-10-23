@@ -1,6 +1,5 @@
 import {
 ChevronDown,
-Lightbulb,
 Receipt,
 Smile,
 Sparkles
@@ -25,6 +24,7 @@ ROOM_TYPE_LABEL
 } from "../../lib/rentAnalysis";
 import { toJapaneseStationName } from "../../lib/transit";
 import { NumericInput } from "./NumericInput";
+import { AdviceNote } from "../AdviceNote";
 
 interface AdvancedCalculatorResultsProps {
   model: Pick<
@@ -452,10 +452,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                     <span>申請貸款購置 (約總價 9%):</span>
                     <span className="font-mono text-[#1A2A22]">{(getCalculatedBuyPrice() * 0.09 / 10000).toFixed(0)} 萬日圓</span>
                   </div>
-                  <p className="mt-1 flex items-start gap-1 border-t border-[#DDE3DF] pt-1.5 text-justify text-[10px] text-[#66736C]">
-                    <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
-                    <span>先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。</span>
-                  </p>
+                  <AdviceNote className="mt-2" title="費用怎麼看" compact>先以總價比例快速準備預算；展開後可查看費用組成與大致付款時間。</AdviceNote>
                 </div>
                 <button
                   type="button"

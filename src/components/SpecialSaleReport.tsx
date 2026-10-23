@@ -345,7 +345,7 @@ export function SpecialSaleReport({ fields: sourceFields }: { fields: SpecialSal
                   </ul>
                 </div>
                 <a
-                  className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3.5 py-2 text-xs font-bold text-[#00A174] shadow-2xs transition-colors hover:bg-[#E6F6F1]"
+                  className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3.5 py-2 text-xs font-bold text-[#00A174] shadow-2xs transition-colors hover:bg-[#e6f6f1]"
                   href="https://www.mlit.go.jp/kankocho/minpaku/overview/minpaku/index.html"
                   target="_blank"
                   rel="noreferrer"

@@ -10,7 +10,7 @@ import { Font } from "@react-pdf/renderer";
  * 版面規則：
  * - 每一張卡片都是 wrap={false} 的 View，保證不會被切到兩頁；一頁塞不下就整張換頁。
  * - 最後一頁固定是聯絡頁（LINE／WeChat QR、社群與 email）。
- * - 配色、字型與網站一致（品牌綠 #00A174／#007D5A、墨色 #1A2A22、線 #DDE3DF、淺底 #F5F8F6）。
+ * - 配色、字型與網站一致（品牌綠 #00A174／#00A174、墨色 #1A2A22、線 #DDE3DF、淺底 #F5F8F6）。
  *
  * 字型只在建立 PDF 時才註冊與下載（見 ListingHealthCheck 的下載流程），
  * 主字型兩個檔各約 7MB、補字型各 0.9MB，不放進主 bundle，瀏覽器會快取。

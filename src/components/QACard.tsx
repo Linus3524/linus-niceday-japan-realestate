@@ -1,4 +1,5 @@
-import { ChevronDown, Lightbulb } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { AdviceBulbIcon } from "./AdviceNote";
 import { renderFormattedText } from "../lib/format";
 import { NorthEastIcon } from "./NorthEastIcon";
 
@@ -101,8 +102,8 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
         </summary>
         <div className="border-t border-dashed border-[#DDE3DF] bg-[#F5F8F6] px-4 pb-5 pt-4 md:px-5">
           <div className="mb-4 flex">
-            <span className="inline-flex items-center gap-1 font-serif text-[11px] font-medium tracking-wide bg-[#e6f6f1] border border-[#9ee2cf] text-[#00a174] px-2.5 py-0.5 select-none">
-              <Lightbulb className="h-3.5 w-3.5 shrink-0" /> LINUS 實務說明
+            <span className="advice-caption">
+              <AdviceBulbIcon className="h-4 w-4 shrink-0" /> LINUS 實務說明
             </span>
           </div>
           <div className="font-sans text-xs text-justify md:text-sm">
@@ -115,9 +116,9 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
                 <table className="min-w-[900px] w-full table-fixed border-collapse text-left text-[11px] leading-relaxed">
                   <thead>
                     <tr className="bg-[#E6F6F1] text-[#1A2A22]">
-                      <th className="w-[180px] whitespace-normal break-words border-b border-r border-[#BFD8CF] px-3 py-2.5">{table.cornerLabel || "項目"}</th>
+                      <th className="w-[180px] whitespace-normal break-words border-b border-r border-[#9EE2CF] px-3 py-2.5">{table.cornerLabel || "項目"}</th>
                       {table.columns.map(column => (
-                        <th key={column} className="whitespace-normal break-words border-b border-r border-[#BFD8CF] px-3 py-2.5 last:border-r-0">{column}</th>
+                        <th key={column} className="whitespace-normal break-words border-b border-r border-[#9EE2CF] px-3 py-2.5 last:border-r-0">{column}</th>
                       ))}
                     </tr>
                   </thead>
@@ -135,7 +136,7 @@ export function QACard({ question, summary, answer, number, sources, table }: QA
                                 limited
                                   ? "bg-[#FFFFFF] text-[#3F5147]"
                                   : worldwide
-                                    ? "bg-[#DDF4EB] font-bold text-[#006B4E]"
+                                    ? "bg-[#E6F6F1] font-bold text-[#00A174]"
                                     : "text-[#3F5147]"
                               }`}
                             >

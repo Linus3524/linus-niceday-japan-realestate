@@ -15,7 +15,7 @@ export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack
           <button
             type="button"
             onClick={onBack}
-            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#009670]"
+            className="font-sans text-sm font-semibold text-[#1A2A22] transition-colors hover:text-[#00A174]"
           >
             <span aria-hidden="true">←</span> 前往 LINUS 住好日
           </button>
@@ -38,10 +38,10 @@ export function SharedListingPage({ shareId, onBack }: { shareId: string; onBack
             © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-medium text-[#3F5147]" aria-label="政策頁面">
-            <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
-            <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
-            <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
-            <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
+            <a href="#site-policy" className="transition-colors hover:text-[#00A174]">網站使用條款</a>
+            <a href="#privacy" className="transition-colors hover:text-[#00A174]">隱私權政策</a>
+            <a href="#disclaimer" className="transition-colors hover:text-[#00A174]">資訊免責聲明</a>
+            <a href="#cookie" className="transition-colors hover:text-[#00A174]">Cookie 政策</a>
           </nav>
         </div>
       </footer>

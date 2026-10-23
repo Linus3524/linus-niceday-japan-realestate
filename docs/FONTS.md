@@ -6,10 +6,24 @@
 | --- | --- | --- |
 | Material Symbols Rounded（圖示） | 自架 | `public/fonts/material-symbols-rounded-subset.woff2`（16KB，只含 4 個圖示） |
 | Jost（英文標題／標籤） | 自架 | `public/fonts/jost-latin.woff2`（26KB）、`jost-latin-ext.woff2`（17KB） |
-| JetBrains Mono（LINE ID／數字） | 自架 | `public/fonts/jetbrains-mono-latin.woff2`（31KB） |
+| JetBrains Mono（識別碼／手機版等寬數字） | 自架 | `public/fonts/jetbrains-mono-latin.woff2`（31KB） |
+| Cormorant Garamond（桌面襯線英文／數字） | 自架 | `public/fonts/cormorant-garamond-latin.woff2`、`cormorant-garamond-italic-latin.woff2` |
 | Noto Sans TC / Noto Sans JP / Noto Serif TC / Noto Serif JP（中日文） | Google Fonts | `index.html` 的 `<link rel="stylesheet">` |
 
 `@font-face` 宣告集中在 `src/index.css` 最上方，載入標籤集中在 `index.html` `<head>`。
+
+## 桌面數字只用兩種字形
+
+1280px 以上、滑鼠操作的桌面版統一為：
+
+- **黑體數字：Jost**，用於金額、百分比、一般內文、統計、表單和進度。
+- **襯線數字：Cormorant Garamond**，用於日期、襯線標題和裝飾性章節編號。
+
+`Linus Numerals Sans` / `Linus Numerals Serif` 是上述現有字型的數字專用別名，
+`unicode-range` 僅涵蓋 `0–9`，不是新增第三、第四種字型。桌面覆寫共用字型變數，
+讓 Noto 內文和 JetBrains Mono 容器的數字也收斂至這兩種；中日文字與識別碼的非數字字元不變。
+金額、進度和數值輸入保留 `tabular-nums`，避免改成黑體後數字無法對齊。
+手機／平板不套用桌面覆寫；PDF 的獨立字型系統也不受影響。
 
 ## 為什麼這樣分
 

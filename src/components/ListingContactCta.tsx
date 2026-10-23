@@ -75,7 +75,7 @@ export function ListingContactCta() {
           <h3 className="text-[15px] sm:text-[17px] md:text-lg lg:text-[19px] font-bold text-[#1A2A22] tracking-tight leading-snug">
             看完分析有疑問？直接找 Linus 聊聊
           </h3>
-          <p className="text-xs sm:text-[13px] md:text-[13.5px] lg:text-[14px] leading-relaxed text-[#526359] max-w-2xl">
+          <p className="text-xs sm:text-[13px] md:text-[13.5px] lg:text-[14px] leading-relaxed text-[#3F5147] max-w-2xl">
             想確認物件細節、安排實地看房，或需要日本買房與租屋的全程諮詢，用你最習慣的方式聯繫即可。全程中文溝通、日本現地專業服務。
           </p>
         </div>
@@ -108,7 +108,7 @@ export function ListingContactCta() {
           <h3 className="text-[14.5px] font-bold text-[#1A2A22] tracking-tight leading-snug">
             看完分析有疑問？直接找 Linus 聊聊
           </h3>
-          <p className="text-[11.5px] leading-relaxed text-[#526359] line-clamp-2">
+          <p className="text-[11.5px] leading-relaxed text-[#3F5147] line-clamp-2">
             想確認物件細節、安排實地看房，或需要日本買房與租屋諮詢，用習慣方式聯繫即可。
           </p>
         </div>
@@ -214,7 +214,7 @@ export function ListingContactCta() {
                 </span>
               </div>
               <h4 className="text-base font-bold text-[#1A2A22]">WeChat「掃一掃」加好友</h4>
-              <p className="text-xs text-[#526359] leading-relaxed">
+              <p className="text-xs text-[#3F5147] leading-relaxed">
                 打開 WeChat 掃描左側 QR Code，或直接搜尋 ID 加我。
               </p>
               <div className="mt-2 flex items-center justify-center md:justify-start gap-2 border border-[#DDE3DF] bg-white p-1.5 max-w-sm">

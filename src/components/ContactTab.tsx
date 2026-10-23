@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { trackAction } from "../lib/trackView";
-import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList, AlertCircle, Lightbulb } from "lucide-react";
+import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList, AlertCircle } from "lucide-react";
+import { AdviceNote } from "./AdviceNote";
 import { linusContact } from "../data/rentGuideData";
 import { PageIntroCard } from "./PageIntroCard";
 
@@ -141,7 +142,7 @@ export function ContactTab(props: ContactTabProps) {
                         href={`https://line.me/ti/p/~${linusContact.lineId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-1 items-center justify-center gap-2 bg-[#00a174] hover:bg-[#007d5a] text-white pl-[46px] pr-4 py-2.5 font-bold cursor-pointer transition-colors"
+                        className="flex flex-1 items-center justify-center gap-2 bg-[#00a174] hover:bg-[#00A174] text-white pl-[46px] pr-4 py-2.5 font-bold cursor-pointer transition-colors"
                         id="add-line-btn-contact"
                         onClick={() => trackAction("line-add")}
                       >
@@ -161,7 +162,7 @@ export function ContactTab(props: ContactTabProps) {
                         aria-label={showLineQr ? "收合 LINE QR Code" : "展開 LINE QR Code 掃碼加好友"}
                         /* 分隔線用 before 偽元素而不是 border-l：border 會從上切到下，
                            視覺上像把按鈕剖成兩半；偽元素可以只佔中間一段。 */
-                        className="relative flex shrink-0 items-center justify-center bg-[#00a174] px-3.5 text-white transition-colors hover:bg-[#007d5a] cursor-pointer before:absolute before:left-0 before:top-1/2 before:h-1/2 before:w-[2px] before:-translate-y-1/2 before:bg-white/45 before:content-['']"
+                        className="relative flex shrink-0 items-center justify-center bg-[#00a174] px-3.5 text-white transition-colors hover:bg-[#00A174] cursor-pointer before:absolute before:left-0 before:top-1/2 before:h-1/2 before:w-[2px] before:-translate-y-1/2 before:bg-white/45 before:content-['']"
                       >
                         <QrCode className="h-4 w-4" aria-hidden="true" />
                       </button>
@@ -188,10 +189,9 @@ export function ContactTab(props: ContactTabProps) {
                         {copiedLine ? "已複製" : "複製"}
                       </button>
                     </div>
-                    <p className="text-[10px] text-[#66736C] leading-relaxed text-justify flex items-start gap-1">
-                      <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
+                    <AdviceNote title="LINE 加入方式" compact>
                       <span>手機點擊上方綠色按鈕可直接開啟 LINE 添加好友；或複製 Line ID 後在 LINE 中搜尋添加。若加不到好友，可點按鈕右側的 QR 圖示展開掃碼加入。</span>
-                    </p>
+                    </AdviceNote>
                   </div>
 
                   {/* Copy WeChat block */}
@@ -208,7 +208,7 @@ export function ContactTab(props: ContactTabProps) {
                       }}
                       aria-expanded={showWechatQr}
                       aria-controls="wechat-qr-panel"
-                      className="flex w-full items-center justify-center gap-2 bg-[#00a174] px-4 py-2.5 font-bold text-white transition-colors hover:bg-[#007d5a] cursor-pointer"
+                      className="flex w-full items-center justify-center gap-2 bg-[#00a174] px-4 py-2.5 font-bold text-white transition-colors hover:bg-[#00A174] cursor-pointer"
                       id="wechat-qr-btn-contact"
                     >
                       <QrCode className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -236,10 +236,9 @@ export function ContactTab(props: ContactTabProps) {
                         {copiedWechat ? "已複製" : "複製"}
                       </button>
                     </div>
-                    <p className="text-[10px] text-[#66736C] leading-relaxed text-justify flex items-start gap-1">
-                      <Lightbulb className="w-3.5 h-3.5 text-[#00a174] shrink-0 mt-0.5" />
+                    <AdviceNote title="WeChat 加入方式" compact>
                       <span>點擊上方綠色按鈕可展開 QR Code，用微信掃碼加好友；或複製 WeChat ID 後在微信中搜尋並添加 Linus。</span>
-                    </p>
+                    </AdviceNote>
                   </div>
 
                   {/* Submission Info Checklist Table with Toggle Switch */}
@@ -341,7 +340,7 @@ export function ContactTab(props: ContactTabProps) {
 
                     <div className="overflow-hidden border border-[#C9D2CD] font-sans text-xs leading-relaxed text-[#3F5147]">
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold tracking-wide text-[#315E50]">商号</span>
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold tracking-wide text-[#00A174]">商号</span>
                         <strong className="px-4 py-3 text-sm text-[#1A2A22]">{linusContact.companyName}</strong>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
@@ -349,7 +348,7 @@ export function ContactTab(props: ContactTabProps) {
                         <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.licenseNo}</strong>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">営業時間</span>
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">営業時間</span>
                         <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.workingHours}</strong>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
@@ -357,7 +356,7 @@ export function ContactTab(props: ContactTabProps) {
                         <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.closedDays}</strong>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">電話／FAX</span>
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">電話／FAX</span>
                         <strong className="px-4 py-3 font-mono text-[#1A2A22]">{linusContact.companyPhone}／{linusContact.fax}</strong>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
@@ -367,7 +366,7 @@ export function ContactTab(props: ContactTabProps) {
                         </div>
                       </div>
                       <div className="grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#315E50]">保証協會</span>
+                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">保証協會</span>
                         <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.guaranteeAssociation}</strong>
                       </div>
                     </div>

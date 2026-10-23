@@ -1,4 +1,5 @@
-import { ChevronDown, FileText } from "lucide-react";
+import { ChevronDown, FileText, TrainFront } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type * as React from 'react';
 import {
 applicationRoutes,
@@ -22,6 +23,188 @@ interface Props {
   showReminders: boolean;
   VisaDocumentMatrix: ({ searchQuery }: { searchQuery?: string; }) => React.JSX.Element;
 }
+const stepTitle = (name: string) => name.replace(/^[①②③④⑤⑥⑦⑧⑨]\s*/, "");
+
+// 作業天數 → 天數範圍（甘特圖用）：「2 - 5 工作日」→ [2, 5]；入住後才做的步驟回傳 null，另外標在入住日之後
+const dayRange = (duration: string): [number, number] | null => {
+  if (/入住後/.test(duration)) return null;
+  const n = duration.replace(/[（(].*$/, "").match(/\d+/g)?.map(Number) ?? [1];
+  return [n[0], n[1] ?? n[0]];
+};
+const STAMP_KEY = "rent-steps-stamps";
+const readStamps = (): string[] => { try { return JSON.parse(localStorage.getItem(STAMP_KEY) ?? "[]"); } catch { return []; } };
+
+/** 電腦版：上方「集章進度＋時程甘特圖」總覽，下方「電車路線圖」——小電車跟著捲動停在讀到的那一站，每站可以蓋章（手機版仍是直式時間軸） */
+function StepsDesk({ steps }: { steps: Props["filtered"]["steps"] }) {
+  const [stamps, setStamps] = useState<string[]>(readStamps);
+  const [current, setCurrent] = useState(steps[0]?.id ?? "1");
+  const [trainTop, setTrainTop] = useState(0);
+  // 時程估算：fast＝免房東審查（直接跳過那一步）、normal＝一般（每步照最快天數）、slow＝每步都拖到最慢
+  const [mode, setMode] = useState<"fast" | "normal" | "slow">("normal");
+  const slow = mode === "slow";
+  const isSkipped = (name: string) => mode === "fast" && /房東/.test(name);
+  const stations = useRef<Record<string, HTMLLIElement | null>>({});
+
+  const toggle = (id: string) => setStamps(prev => {
+    const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
+    try { localStorage.setItem(STAMP_KEY, JSON.stringify(next)); } catch { /* 無痕模式等：只是不記住 */ }
+    return next;
+  });
+  const goTo = (id: string) => stations.current[id]?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // 讀到哪一站：站牌頂端已經過了判定線的最後一站
+  const root = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    // 捲動容器：往上找第一個真的能捲動的祖先（只看 overflow 不夠：overflow-x: hidden 會讓 overflow-y 變成 auto）
+    const findScroller = () => {
+      let el = root.current?.parentElement ?? null;
+      while (el && !(/(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1)) el = el.parentElement;
+      return el;
+    };
+    const update = () => {
+      const scroller = findScroller();
+      const view = scroller ? scroller.getBoundingClientRect() : { top: 0, height: window.innerHeight };
+      // 判定線平常在畫面 40% 高；快捲到底時慢慢往下移到畫面底部，最後幾站（領鑰匙、屋況檢查）才輪得到、不會被跳過
+      const remaining = scroller ? scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight : document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+      const near = Math.min(1, Math.max(0, 1 - remaining / (view.height * 1.4)));
+      const line = view.top + view.height * (0.4 + 0.55 * near);
+      let pick = steps[0]?.id ?? "1";
+      for (const st of steps) {
+        const el = stations.current[st.id];
+        if (el && el.getBoundingClientRect().top <= line) pick = st.id;
+      }
+      setCurrent(pick);
+    };
+    update();
+    // scroll 事件不會冒泡，用捕獲階段在 document 上一次接住所有容器的捲動
+    document.addEventListener("scroll", update, { capture: true, passive: true });
+    window.addEventListener("resize", update);
+    return () => { document.removeEventListener("scroll", update, { capture: true }); window.removeEventListener("resize", update); };
+  }, [steps]);
+  useEffect(() => { setTrainTop(stations.current[current]?.offsetTop ?? 0); }, [current, steps]);
+
+  // 甘特圖：每一步接在前一步完成之後開始。「通常」照最快天數接下去；切到「如果都拖到」就照最慢天數接，後面每一步跟著往後推。
+  // 入住後才做的步驟（屋況檢查）從拿到鑰匙那天開始畫，淺紅色
+  let cursor = 0;
+  const pre = steps.map(step => {
+    const r = dayRange(step.duration);
+    if (!r) return null;
+    // 免房東審查：那一列保留，天數當 0（條的位置照樣接在前一步後面，只是沒有長度）
+    const bar = { id: step.id, r: (isSkipped(step.name) ? [0, 0] : r) as [number, number], start: cursor };
+    cursor += slow ? bar.r[1] : bar.r[0];
+    return bar;
+  });
+  const moveIn = cursor;
+  const after = steps.map(step => /入住後/.test(step.duration) ? (step.duration.match(/\d+/g)?.map(Number) ?? [14]) : null);
+  const total = pre.reduce((t, b) => t + (b ? (slow ? b.r[1] : b.r[0]) : 0), 0);
+  const bars = steps.map((step, k) => pre[k] ?? (after[k] ? { id: step.id, r: [after[k]![0], after[k]![1] ?? after[k]![0]] as [number, number], start: moveIn, after: true } : null));
+  // 時間軸長度固定用「全部步驟都拖到」算，三種模式切換時刻度不會跳
+  const high = steps.reduce((t, st) => t + (dayRange(st.duration)?.[1] ?? 0), 0);
+  // 時間軸固定用「全部拖到」的長度（兩種模式切換時刻度不會跳），右邊再留 8 天給天數文字和入住後那一段
+  const span = high + 8;
+  const pctOf = (d: number) => `${(d / span) * 100}%`;
+  // 橫軸刻度：每 5 天一格
+  const ticks = Array.from({ length: Math.floor(span / 5) + 1 }, (_, i) => i * 5);
+  const done = steps.filter(s => stamps.includes(s.id)).length;
+
+  return (
+    <div className="rent-steps-desk" ref={root}>
+      <div className="rent-steps-overview">
+        <div className="rent-stampbook">
+          <div className="rent-stampbook-head">
+            <div>
+              <span className="rent-stampbook-en">RENT STAMP RALLY</span>
+              <span className="rent-stampbook-title">租屋集章帳</span>
+            </div>
+            <strong>{done}<small> / {steps.length}</small></strong>
+          </div>
+          <div className="rent-stampbook-grid">
+            {steps.map(s => {
+              const on = stamps.includes(s.id);
+              return (
+                <button key={s.id} type="button" onClick={() => goTo(s.id)} className={`${on ? "is-stamped" : ""}${current === s.id ? " is-current" : ""}`} aria-label={`${stepTitle(s.name)}${on ? "（已完成）" : ""}`}>
+                  <span className="rent-stampbook-slot">
+                    {on ? <span className="rent-stampbook-seal"><b>済</b><small>{s.id.padStart(2, "0")}</small></span> : <span className="rent-stampbook-no">{s.id.padStart(2, "0")}</span>}
+                  </span>
+                  <span className="rent-stampbook-name">{stepTitle(s.name).replace(/\s*[（(].*$/, "").replace(/^(房東／管理公司審查)$/, "房東審查").replace(/^(精算書與契約書發送)$/, "精算書發送")}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="rent-stampbook-foot">
+            <div className="rent-steps-progress-bar"><i style={{ width: `${(done / steps.length) * 100}%` }} /></div>
+            <p>{done === steps.length ? "全部蓋滿了，恭喜順利入住 🎉" : done ? `再 ${steps.length - done} 站就完成，加油！` : "每完成一步，就到下面的車站蓋章。進度只記在這台裝置。"}</p>
+          </div>
+        </div>
+        <div className="rent-steps-gantt">
+          <div className="rent-steps-gantt-head">
+            <span>從申請到拿鑰匙 <strong className={`is-${mode}`}>約 {total} 天</strong></span>
+            <span className="rent-gantt-mode" role="group" aria-label="時程估算">
+              {([["fast", "免房東審查"], ["normal", "一般"], ["slow", "都拖到"]] as const).map(([m, label]) => (
+                <button key={m} type="button" className={`is-${m}`} aria-pressed={mode === m} onClick={() => setMode(m)}>{label}</button>
+              ))}
+            </span>
+          </div>
+          <div className="rent-gantt-wrap">
+          <div className="rent-gantt-grid" aria-hidden="true">{ticks.map(d => <i key={d} style={{ left: pctOf(d) }} />)}</div>
+          <ol className="rent-gantt">
+            {steps.map((step, k) => {
+              const b = bars[k];
+              const isAfter = !!b && "after" in b;
+              return (
+                <li key={step.id} className={current === step.id ? "is-current" : ""}>
+                  <button type="button" onClick={() => goTo(step.id)} title={`${stepTitle(step.name)}：${step.duration}`}>
+                    <span className="rent-gantt-label"><b>{step.id.padStart(2, "0")}</b>{stepTitle(step.name).replace(/\s*[（(].*$/, "").replace("房東／管理公司審查", "房東審查").replace("精算書與契約書發送", "精算書發送")}</span>
+                    <span className="rent-gantt-track">
+                      {isAfter ? (
+                        <span className="rent-gantt-after" style={{ left: pctOf(b!.start) }}>入住後 {b!.r.join("–")} 天內</span>
+                      ) : b && (
+                        <span className={`rent-gantt-bar${b.r[1] === 0 ? " is-zero" : ""}`} style={{ left: pctOf(b.start), width: pctOf(b.r[1]) }}>
+                          <i style={{ width: b.r[1] ? `${(b.r[0] / b.r[1]) * 100}%` : 0 }} />
+                          <em>{b.r[0] === b.r[1] ? `${b.r[0]} 天` : `${b.r[0]}–${b.r[1]} 天`}</em>
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+          <div className="rent-gantt-axis" aria-hidden="true">
+            {ticks.map(d => <span key={d} className={d / span > 0.9 ? "is-end" : undefined} style={{ left: pctOf(d) }}>{d === 0 ? "申請日" : `第 ${d} 天`}</span>)}
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <ol className="rent-route">
+        <li className="rent-route-train" style={{ transform: `translateY(${trainTop}px)` }} aria-hidden="true"><TrainFront className="h-4 w-4" /></li>
+        {steps.map(step => {
+          const stamped = stamps.includes(step.id);
+          return (
+            <li key={step.id} data-step={step.id} ref={el => { stations.current[step.id] = el; }} className={`rent-route-station${current === step.id ? " is-current" : ""}${stamped ? " is-stamped" : ""}`}>
+              <span className="rent-route-dot" aria-hidden="true" />
+              <div className="rent-route-sign">
+                <span className="rent-route-no">{step.id.padStart(2, "0")}</span>
+                <h5>{stepTitle(step.name)}</h5>
+                <span className="rent-route-time">所要 {step.duration}</span>
+              </div>
+              <div className="rent-route-body">
+                <div className="rent-route-desc">{renderFormattedText(step.description)}</div>
+                {step.details && step.details.length > 0 && <ul>{step.details.map(d => <li key={d}>{d}</li>)}</ul>}
+              </div>
+              <button type="button" className="rent-route-stamp" onClick={() => toggle(step.id)} aria-pressed={stamped}>
+                <span className="rent-stamp">{stamped ? "済" : ""}</span>
+                {stamped ? "已完成" : "完成就蓋章"}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 export function RentProcessSection({ isSearchActive, showProcessSection, showSop, showDocuments, setDocumentsExpanded, isDocumentSearchResult, isDocumentsOpen, searchQuery, showRoutes, filtered, showReminders, VisaDocumentMatrix }: Props) {
   return (<>{!isSearchActive && showProcessSection && (
                 <section className="space-y-4 pt-4">
@@ -208,7 +391,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                   {/* Vertical Linear Steps Timeline */}
                   {filtered.steps.length > 0 && (
-                  <div className="border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
+                  <div className="rent-steps border border-[#DDE3DF] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft">
                     <div className="absolute top-0 right-6 bg-[#00a174] text-white px-2.5 py-0.5 text-xs tracking-widest font-sans font-medium uppercase">
                       租屋申請9步驟
                     </div>
@@ -217,7 +400,8 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C] font-sans">從送件到入住後屋況確認：每一步該確認什麼、通常要等多久，都整理在這裡。</span>
                     </h4>
 
-                    <div className="relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
+                    <StepsDesk steps={filtered.steps} />
+                    <div className="rent-steps-timeline relative border-l border-[#DDE3DF] ml-3 pl-6 space-y-8 py-2">
                       {filtered.steps.map((step, idx) => (
                         <div key={idx} className="relative group">
                           {/* Single numbered timeline node: the title itself no longer repeats the step number. */}
@@ -255,7 +439,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
 
                   {showReminders && (
                     <div className="rent-reminders bg-[#F5F8F6] p-4 border border-[#DDE3DF] text-xs text-[#3F5147] leading-relaxed font-sans space-y-2">
-                      <span className="rent-reminders-label font-bold text-[#00a174] block">★ Linus 實務小提醒：</span>
+                      <span className="rent-reminders-label font-bold text-[#00a174] block">Linus 實務小提醒</span>
                       <ul className="space-y-1.5">
                         {processReminders.map((reminder, index) => (
                           <li key={reminder} className="rent-reminder-card flex gap-2">

@@ -520,7 +520,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           href={`https://www.google.com/maps/search/?api=1&query=${coordinate.lat},${coordinate.lon}`}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-1 text-xs font-bold text-[#00a174] underline underline-offset-2 hover:text-[#00895d]"
+          className="flex items-center gap-1 text-xs font-bold text-[#00a174] underline underline-offset-2 hover:text-[#00A174]"
         >
           <span>開啟 Google 地圖</span>
           <ExternalLink className="h-3.5 w-3.5" />

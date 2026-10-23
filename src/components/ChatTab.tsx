@@ -135,7 +135,7 @@ export function ChatTab(props: ChatTabProps) {
                             : "bg-[#FFFFFF] border-[#DDE3DF] text-[#1A2A22] shadow-sm transition-colors"
                         }`}>
                           {msg.role === "model" && msg.relatedThreads && msg.relatedThreads.length > 0 && (
-                            <div className="mb-4 flex items-center justify-between gap-3 border border-[#B8D8CB] bg-[#EFF8F4] px-3 py-2.5 font-sans text-left text-[11px] leading-5 text-[#075E46]" role="status">
+                            <div className="mb-4 flex items-center justify-between gap-3 border border-[#9EE2CF] bg-[#E6F6F1] px-3 py-2.5 font-sans text-left text-[11px] leading-5 text-[#00A174]" role="status">
                               <span className="font-bold">這則回答附有 {msg.relatedThreads.length} 篇相關實務分享</span>
                               <span className="shrink-0" aria-hidden="true">往下看 ↓</span>
                             </div>
@@ -158,7 +158,7 @@ export function ChatTab(props: ChatTabProps) {
                               onClick={() => trackAction("line-add")}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#087154]"
+                                className="mt-4 flex w-fit items-center gap-2 border border-[#00a174] bg-[#00a174] px-3.5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#00A174]"
                                 aria-label={`開啟 LINE 並加入 ${linusContact.name} 為好友`}
                               >
                                 <span>LINE：{linusContact.lineId}・一鍵加好友</span>
@@ -244,7 +244,7 @@ export function ChatTab(props: ChatTabProps) {
                   <button
                     type="submit"
                     disabled={chatLoading || !chatInput.trim()}
-                    className="bg-[#00a174] hover:bg-[#007d5a] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-[#DDE3DF] disabled:text-[#8A9590] flex items-center gap-1 cursor-pointer shrink-0"
+                    className="bg-[#00a174] hover:bg-[#00A174] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-[#DDE3DF] disabled:text-[#8A9590] flex items-center gap-1 cursor-pointer shrink-0"
                     id="chat-submit-btn"
                   >
                     <span>發送</span>

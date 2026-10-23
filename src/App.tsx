@@ -832,7 +832,7 @@ export default function App() {
                   href="https://www.threads.com/@linus3524"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 transition-colors hover:text-[#009670]"
+                  className="flex items-center gap-1.5 transition-colors hover:text-[#00A174]"
                 >
                   Threads
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
@@ -840,16 +840,16 @@ export default function App() {
                 <span className="h-3 w-px bg-[#C9D2CD]" aria-hidden="true" />
                 <a
                   href={`mailto:${linusContact.email}`}
-                  className="transition-colors hover:text-[#009670]"
+                  className="transition-colors hover:text-[#00A174]"
                 >
                   聯絡信箱
                 </a>
               </div>
               <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#66736C]" aria-label="網站政策">
-                <a href="#site-policy" className="transition-colors hover:text-[#009670]">網站使用條款</a>
-                <a href="#privacy" className="transition-colors hover:text-[#009670]">隱私權政策</a>
-                <a href="#disclaimer" className="transition-colors hover:text-[#009670]">資訊免責聲明</a>
-                <a href="#cookie" className="transition-colors hover:text-[#009670]">Cookie 政策</a>
+                <a href="#site-policy" className="transition-colors hover:text-[#00A174]">網站使用條款</a>
+                <a href="#privacy" className="transition-colors hover:text-[#00A174]">隱私權政策</a>
+                <a href="#disclaimer" className="transition-colors hover:text-[#00A174]">資訊免責聲明</a>
+                <a href="#cookie" className="transition-colors hover:text-[#00A174]">Cookie 政策</a>
               </nav>
             </div>
           </div>
@@ -1036,7 +1036,7 @@ export default function App() {
                   href={`https://line.me/ti/p/~${linusContact.lineId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-[#00a174] hover:bg-[#007d5a] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
+                  className="w-full bg-[#00a174] hover:bg-[#00A174] text-white py-2 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-colors cursor-pointer border-none text-center"
                   id="add-line-btn-hero"
                   onClick={() => trackAction("line-add")}
                 >
@@ -1104,6 +1104,7 @@ export default function App() {
               <button 
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
+                aria-current={activeTab === tab.id ? "page" : undefined}
                 className={`primary-nav-tab relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap cursor-pointer transition-colors duration-200 select-none group border-none bg-transparent shrink-0 ${
                   activeTab === tab.id ? "is-active text-[#00a174]" : "text-[#1A2A22] hover:text-[#00a174]"
                 }`}
@@ -1228,7 +1229,7 @@ export default function App() {
       {showToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#00a174] hover:bg-[#007d5a] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
+          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#00a174] hover:bg-[#00A174] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
           aria-label="Back to Top"
         >
           <ArrowUp className="w-5 h-5" />

@@ -4,6 +4,8 @@ japaneseBanks,
 taiwaneseBanks
 } from "../../data/buyHouseData";
 import { SectionHeading } from "../SectionHeading";
+import { BuyLoanDesk } from "./BuyFinanceDesk";
+import { AdviceNote } from "../AdviceNote";
 
 interface Props {
   isBuySearchActive: boolean;
@@ -13,7 +15,7 @@ interface Props {
 }
 export function BuyLoanSection({ isBuySearchActive, buyCategory, toggleBank, expandedBanks }: Props) {
   return (<>{!isBuySearchActive && (buyCategory === "all" || buyCategory === "loans") && (
-                <div className="space-y-6">
+                <><BuyLoanDesk /><div className="finance-mobile space-y-6">
                   <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={Landmark}
@@ -75,15 +77,13 @@ export function BuyLoanSection({ isBuySearchActive, buyCategory, toggleBank, exp
                             </div>
                           </div>
 
-                          <div className="border-t border-[#FDE047] bg-[#FEF9C3] p-4 font-sans text-xs space-y-1.5">
-                            <span className="block font-bold text-[#854D0E]">實務提醒</span>
+                          <AdviceNote className="m-4">
+                            <ul>
                             {bank.others.map((other, oIdx) => (
-                              <div key={oIdx} className="flex items-start gap-1.5 text-[#854D0E] leading-relaxed text-justify">
-                                <span className="font-bold text-[#854D0E]">•</span>
-                                <span>{other}</span>
-                              </div>
+                              <li key={oIdx}>{other}</li>
                             ))}
-                          </div>
+                            </ul>
+                          </AdviceNote>
                           </>)}
                         </div>
                       ))}
@@ -127,23 +127,22 @@ export function BuyLoanSection({ isBuySearchActive, buyCategory, toggleBank, exp
                               <p><strong>放貸額度：</strong>{bank.amountLimit}</p>
                               <p><strong>年齡限制：</strong>{bank.ageLimit}</p>
                             </div>
-                            <div className="mt-4 pt-3 border-t border-dashed border-[#C9D2CD] text-[11px] text-[#66736C] leading-relaxed text-justify space-y-2">
+                            <AdviceNote className="mt-4" compact>
+                            <ul>
                             {bank.note.split('\n').filter(line => line.trim()).map((line, lIdx) => {
                               const cleanedLine = line.replace(/^[•·\-\s\*\u2022\u00b7]+/, '').trim();
                               return (
-                                <div key={lIdx} className="flex items-start gap-2">
-                                  <span className="text-[#00a174] text-[7px] mt-[4.5px] shrink-0 select-none">●</span>
-                                  <span className="flex-1">{cleanedLine}</span>
-                                </div>
+                                <li key={lIdx}>{cleanedLine}</li>
                               );
                             })}
-                            </div>
+                            </ul>
+                            </AdviceNote>
                           </div>
                           )}
                         </article>
                       ))}
                     </div>
                   </section>
-                </div>
+                </div></>
               )}</>);
 }

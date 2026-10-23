@@ -160,7 +160,7 @@ export function TermModal(props: TermModalProps) {
                   </button>
                   <button
                     onClick={() => setSelectedFee(null)}
-                    className="w-full px-4 py-2 bg-[#00a174] hover:bg-[#007d5a] text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
+                    className="w-full px-4 py-2 bg-[#00a174] hover:bg-[#00A174] text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors sm:w-auto"
                   >
                     關閉視窗
                   </button>

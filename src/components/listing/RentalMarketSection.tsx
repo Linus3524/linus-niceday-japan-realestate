@@ -91,7 +91,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                     href={result.range.sourceUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-[#00A174] underline underline-offset-2 hover:text-[#00895D]"
+                    className="font-medium text-[#00A174] underline underline-offset-2 hover:text-[#00A174]"
                   >
                     {result.range.sourceLabel || "At Home 刊登物件直近 3 個月租金平均"}
                   </a>

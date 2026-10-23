@@ -5,6 +5,8 @@ minpakuRules, ryokanRules
 } from "../../data/buyHouseData";
 import { renderFormattedText } from "../../lib/format";
 import { SectionHeading } from "../SectionHeading";
+import { BuyLodgingDesk } from "./BuyFinanceDesk";
+import { AdviceNote } from "../AdviceNote";
 
 interface Props {
   isBuySearchActive: boolean;
@@ -19,7 +21,7 @@ interface Props {
 }
 export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpakuWard, expandedMinpakuWards, setRyokanExpanded, ryokanExpanded, minpakuWardOrder, getMinpakuLimitLabel, getMinpakuAreaLabel }: Props) {
   return (<>{!isBuySearchActive && (buyCategory === "all" || buyCategory === "minpaku") && (
-                <div className="space-y-6">
+                <><BuyLodgingDesk minpakuWardOrder={minpakuWardOrder} getMinpakuLimitLabel={getMinpakuLimitLabel} getMinpakuAreaLabel={getMinpakuAreaLabel} /><div className="finance-mobile space-y-6">
                   {/* Minpaku District Rules */}
                   <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 space-y-3 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
@@ -53,7 +55,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                             className="grid min-h-[58px] w-full grid-cols-[minmax(72px,auto)_1fr_auto] items-center gap-3 bg-[#F5F8F6] hover:bg-[#e6f6f1] px-4 py-2.5 text-left border-none cursor-pointer transition-colors"
                           >
                             <h4 className="text-base font-bold text-[#1A2A22]">{item.district}</h4>
-                            <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#DDF3EA] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#087154]">
+                            <span className="min-w-0 justify-self-end whitespace-nowrap bg-[#E6F6F1] px-2.5 py-1 text-[11px] font-bold leading-4 text-[#00A174]">
                               {getMinpakuLimitLabel(item.daysLimit)}
                             </span>
                             <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#66736C]">
@@ -64,7 +66,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                           {expandedMinpakuWards.has(item.district) && (
                           <dl className="divide-y divide-[#DDE3DF] border-t border-[#DDE3DF] text-xs leading-relaxed">
                             <div className="grid grid-cols-[76px_1fr] gap-3 bg-[#F5F8F6] px-4 py-3">
-                              <dt className="font-bold text-[#087154]">營業天數</dt>
+                              <dt className="font-bold text-[#00A174]">營業天數</dt>
                               <dd className="font-medium text-[#3F5147]">{item.daysLimit}</dd>
                             </div>
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3">
@@ -74,7 +76,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                             <div className="grid grid-cols-[76px_1fr] gap-3 px-4 py-3 bg-[#FAFCFB]">
                               <dt className="font-bold text-[#3F5147]">受限區域</dt>
                               <dd className="min-w-0 text-[#3F5147]">
-                                <span className="inline-flex bg-[#E9F3EE] px-2 py-1 font-bold leading-none text-[#315E50]">
+                                <span className="inline-flex bg-[#E6F6F1] px-2 py-1 font-bold leading-none text-[#00A174]">
                                   {getMinpakuAreaLabel(item.areaLimit)}
                                 </span>
                                 <p className="mt-2 leading-relaxed">{item.areaLimit}</p>
@@ -90,9 +92,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       ))}
                     </div>
 
-                    <div className="border border-[#FDBA74] bg-[#FFF7ED] p-4 text-xs leading-relaxed text-[#1A2A22] font-sans">
-                      <strong className="text-[#D97706]">投資前必查：</strong>最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。
-                    </div>
+                    <AdviceNote title="投資前必查">最新區條例、用途地域、建築與消防條件、管理規約及管理體制。上方內容是快速篩選用摘要，不能取代自治體就個別物件作出的確認。</AdviceNote>
                   </section>
 
                   {/* Ryokan requirements */}
@@ -160,6 +160,6 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                     </div>
                     </>)}
                   </section>
-                </div>
+                </div></>
               )}</>);
 }

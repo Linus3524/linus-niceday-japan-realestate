@@ -3,6 +3,8 @@ import {
 buyHouseCashSteps, buyHouseLoanSteps, signingDocuments
 } from "../../data/buyHouseData";
 import { SectionHeading } from "../SectionHeading";
+import { BuyDocumentsDesk, BuyFlowDesk } from "./BuyJourneyDesk";
+import { getSigningDocumentParts } from "../../lib/guides/buyReference";
 
 interface Props {
   topic?: string;
@@ -15,7 +17,10 @@ interface Props {
 }
 export function BuyProcessSection({ topic, isBuySearchActive, buyCategory, isStepOpen, toggleStep, setSelectedFlowType, selectedFlowType }: Props) {
   return (<>{!isBuySearchActive && (buyCategory === "all" || buyCategory === "steps") && (
-                <div className="space-y-6">
+                <>
+                {(!topic || topic === "flow") && <BuyFlowDesk open={isStepOpen("flow")} onToggle={() => toggleStep("flow")} flowType={selectedFlowType} setFlowType={setSelectedFlowType} />}
+                {(!topic || topic === "documents") && <BuyDocumentsDesk open={isStepOpen("documents")} onToggle={() => toggleStep("documents")} />}
+                <div className="buy-journey-mobile space-y-6">
                   {(!topic || topic === "flow") && <section className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 md:p-6 transition-all duration-300 hover:shadow-colored-soft">
                     <SectionHeading
                       icon={MapPin}
@@ -125,13 +130,16 @@ export function BuyProcessSection({ topic, isBuySearchActive, buyCategory, isSte
                           <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.residenceGroup.title}</span>
                         </h4>
-                        <ul className="space-y-2 text-xs text-[#3F5147]">
-                          {signingDocuments.residenceGroup.items.map((item, idx) => (
+                        <ul className="space-y-4 text-sm leading-[1.9] text-[#3F5147]">
+                          {signingDocuments.residenceGroup.items.map((item, idx) => {
+                            const { title, description } = getSigningDocumentParts(item);
+                            return (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
                               <span className="text-[#00a174] font-bold">✓</span>
-                              <span>{item}</span>
+                              <div><strong className="block font-semibold text-[#1A2A22]">{title}</strong>{description && <p className="mt-1 leading-[1.9]">{description}</p>}</div>
                             </li>
-                          ))}
+                            );
+                          })}
                         </ul>
                       </div>
 
@@ -140,18 +148,21 @@ export function BuyProcessSection({ topic, isBuySearchActive, buyCategory, isSte
                           <span className="w-2 h-2 bg-[#00a174]"></span>
                           <span>{signingDocuments.nonResidenceGroup.title}</span>
                         </h4>
-                        <ul className="space-y-2 text-xs text-[#3F5147]">
-                          {signingDocuments.nonResidenceGroup.items.map((item, idx) => (
+                        <ul className="space-y-4 text-sm leading-[1.9] text-[#3F5147]">
+                          {signingDocuments.nonResidenceGroup.items.map((item, idx) => {
+                            const { title, description } = getSigningDocumentParts(item);
+                            return (
                             <li key={idx} className="flex items-start gap-2 leading-relaxed">
                               <span className="text-[#00a174] font-bold">✓</span>
-                              <span>{item}</span>
+                              <div><strong className="block font-semibold text-[#1A2A22]">{title}</strong>{description && <p className="mt-1 leading-[1.9]">{description}</p>}</div>
                             </li>
-                          ))}
+                            );
+                          })}
                         </ul>
                       </div>
                     </div>
                     )}
                   </section>}
-                </div>
+                </div></>
               )}</>);
 }

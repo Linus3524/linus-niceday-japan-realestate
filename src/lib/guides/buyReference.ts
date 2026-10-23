@@ -1,5 +1,21 @@
 
 
+/** 將原始清單的外層括號改為說明段落；括號外的文件名稱不會被吞入說明。 */
+export function getSigningDocumentParts(item: string): { title: string; description: string } {
+  const start = item.indexOf("（");
+  if (start === -1) return { title: item, description: "" };
+  let depth = 0;
+  for (let index = start; index < item.length; index += 1) {
+    if (item[index] === "（") depth += 1;
+    if (item[index] === "）") depth -= 1;
+    if (depth === 0) return {
+      title: item.slice(0, start).trim() + item.slice(index + 1).trim(),
+      description: item.slice(start + 1, index).trim()
+    };
+  }
+  return { title: item, description: "" };
+}
+
 export const minpakuWardOrder = [
   "千代田區", "中央區", "港區", "新宿區", "文京區", "台東區", "墨田區", "江東區", "品川區", "目黑區", "大田區", "世田谷區",
   "澀谷區", "中野區", "杉並區", "豐島區", "北區", "荒川區", "板橋區", "練馬區", "足立區", "葛飾區", "江戶川區"
@@ -26,6 +42,8 @@ export const getMinpakuAreaLabel = (areaLimit: string) => {
 export const taiwanJapanComparisons = [
   {
     id: "area",
+    taiwanShort: "權狀含公設、陽台",
+    japanShort: "只算專有面積",
     number: "01",
     title: "房屋面積怎麼算",
     taiwan: "權狀總面積通常包含主建物、附屬建物及共有部分；看房時還會再用公設比推算實際室內空間。",
@@ -34,6 +52,8 @@ export const taiwanJapanComparisons = [
   },
   {
     id: "price",
+    taiwanShort: "用「坪」比價",
+    japanShort: "用㎡，×0.3025 才是坪",
     number: "02",
     title: "坪數與單價怎麼換算",
     taiwan: "市場習慣直接使用「坪」與每坪單價比較房價。",
@@ -42,6 +62,8 @@ export const taiwanJapanComparisons = [
   },
   {
     id: "condition",
+    taiwanShort: "毛胚或客變，要再裝修",
+    japanShort: "內裝做好，可直接入住",
     number: "03",
     title: "新屋交屋時有什麼",
     taiwan: "建案可能採毛胚、標準配備或客變後交屋，室內裝修通常需要另外確認。",
@@ -50,6 +72,8 @@ export const taiwanJapanComparisons = [
   },
   {
     id: "management",
+    taiwanShort: "一筆管理費",
+    japanShort: "管理費＋修繕積立金分開收",
     number: "04",
     title: "管理費與修繕積立金",
     taiwan: "社區通常按月收取管理費，大型修繕的基金籌措與收費方式由各社區決定。",
@@ -58,6 +82,8 @@ export const taiwanJapanComparisons = [
   },
   {
     id: "transaction",
+    taiwanShort: "斡旋或要約出價",
+    japanShort: "出價免付款，簽約才付手付金",
     number: "05",
     title: "出價、訂金與仲介費",
     taiwan: "常透過斡旋或要約提出價格，訂金的金額與支付方式依交易及仲介契約而定。仲介服務費依《不動產經紀業管理條例》規定，買賣雙方合計不得超過成交價的 6%，實務上多為賣方 4%、買方 1%～2%。",
@@ -74,14 +100,17 @@ export const taxLifecycle = [
     details: [
       {
         title: "印紙稅",
+        key: "1～6萬日圓",
         points: ["1,000萬～5,000萬日圓：1萬日圓", "5,000萬～1億日圓：3萬日圓", "1億～5億日圓：6萬日圓"]
       },
       {
         title: "登錄免許稅",
+        key: "0.1～2%",
         points: ["土地移轉：固定資產稅評價額 × 1.5%", "建物一般移轉：評價額 × 2%", "住宅特例：移轉0.3%／保存0.15%／抵押權設定0.1%"]
       },
       {
         title: "不動產取得稅",
+        key: "3%",
         points: ["住宅建物：固定資產稅評價額 × 3%", "土地：評價額 × 1/2 × 3%", "符合條件的新築住宅：課稅標準扣除1,200萬日圓"]
       }
     ],
@@ -94,14 +123,17 @@ export const taxLifecycle = [
     details: [
       {
         title: "固定資產稅",
+        key: "1.4%",
         points: ["固定資產稅評價額 × 1.4%", "納稅人：每年1月1日的登記所有權人", "稅單通常於4～6月寄出"]
       },
       {
         title: "都市計畫稅",
+        key: "最高 0.3%",
         points: ["固定資產稅評價額 × 最高0.3%", "僅課徵於市街化區域等適用範圍", "通常與固定資產稅一併繳納"]
       },
       {
         title: "管理費與修繕積立金",
+        key: "每月固定",
         points: ["管理費：日常管理與公共設備運作", "修繕積立金：大型修繕準備金", "兩項皆非稅金，但屬每月固定持有成本"]
       }
     ],
@@ -109,19 +141,22 @@ export const taxLifecycle = [
   },
   {
     stage: "出租",
-    tone: "bg-[#DCEFE8] text-[#16634D]",
+    tone: "bg-[#E6F6F1] text-[#00A174]",
     summary: "租金收入要扣除必要經費後，再依屋主身分申報。",
     details: [
       {
         title: "不動產所得",
+        key: "收入－經費",
         points: ["課稅所得＝租金等收入－必要經費", "常見經費：管理、修繕、稅金、保險、建物折舊與借款利息", "土地不能提列折舊"]
       },
       {
         title: "海外房東的20.42%源泉扣繳",
+        key: "20.42%",
         points: ["法人租客：租金先扣20.42%", "個人供本人或親屬居住：免辦租金扣繳", "20.42%是預繳，不是最終稅率"]
       },
       {
         title: "確定申告與納稅管理人",
+        key: "多退少補",
         points: ["按實際所得重新計算稅額", "已扣20.42%可抵稅，超扣可退、不足須補", "海外屋主通常指定日本納稅管理人"]
       }
     ],
@@ -134,14 +169,17 @@ export const taxLifecycle = [
     details: [
       {
         title: "出售利益",
+        key: "售價－成本",
         points: ["讓渡所得＝售價－取得費－出售費用－適用控除", "建物取得費須扣除持有期間折舊", "不能只用售價減原始買價"]
       },
       {
         title: "持有期間與稅率",
+        key: "20.315%／39.63%",
         points: ["長期讓渡所得：20.315%", "短期讓渡所得：39.63%", "以出售年度1月1日是否持有超過5年判斷"]
       },
       {
         title: "海外賣方與繼承",
+        key: "10.21%",
         points: ["非居住者出售：成交總價原則先扣10.21%", "之後以確定申告按實際利益結算", "相續稅申報期限：得知繼承開始翌日起10個月"]
       }
     ],
