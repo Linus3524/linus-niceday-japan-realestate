@@ -4956,3 +4956,262 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     letter-spacing: 0.02em;
   }
 }
+
+/* =====================================================================
+   準備文件（電腦版）：身份 × 文件對照表；字級、顏色沿用「申請方式」「實務提醒」
+   ===================================================================== */
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 分頁本來就展開，標題列的展開／收合在電腦版沒有作用 */
+  .rent-documents > button[aria-controls="screening-document-matrix"] {
+    display: none;
+  }
+  .rent-documents {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .rent-documents:hover {
+    border: 0;
+    box-shadow: none;
+  }
+
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 審查地點切換：字級粗細同「申請方式」標題列右側的小標 */
+  .doc-matrix-modes {
+    display: flex;
+    flex-shrink: 0;
+    border: 1px solid #DDE3DF;
+  }
+  .doc-matrix-modes button {
+    padding: 6px 14px;
+    border: 0;
+    background: #fff;
+    font-size: 12.4875px;
+    font-weight: 700;
+    color: #3F5147;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .doc-matrix-modes button + button { border-left: 1px solid #DDE3DF; }
+  .doc-matrix-modes button:hover { background: #F5F8F6; }
+  .doc-matrix-modes button.is-active { background: #00A174; color: #fff; }
+
+  /* 共同必備：同「申請方式」的情境例子條 */
+  .doc-matrix-notice {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin: 0 0 14px;
+    padding: 8px 12px;
+    background: rgba(0, 161, 116, 0.07);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #3F5147;
+  }
+  .doc-matrix-notice span {
+    flex-shrink: 0;
+    font-family: var(--font-serif);
+    font-size: 12px;
+    font-weight: 800;
+    color: #00A174;
+  }
+
+  .doc-matrix-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .doc-matrix-layout.has-aside { grid-template-columns: minmax(0, 1fr) 260px; }
+
+  .doc-matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  .doc-matrix-table th,
+  .doc-matrix-table td {
+    border-bottom: 1px solid #ECEFEC;
+    transition: background-color 200ms ease;
+  }
+  .doc-matrix-table thead th {
+    padding: 0;
+    border-top: 3px solid transparent;
+    border-bottom: 1px solid #DDE3DF;
+    vertical-align: bottom;
+  }
+  .doc-matrix-table thead th.is-active { border-top-color: #00A174; }
+  .doc-matrix-corner {
+    width: 26%;
+    padding: 0 0 10px !important;
+    text-align: left;
+    font-family: var(--font-jost);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: #00A174;
+  }
+  .doc-matrix-table thead button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px 6px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .doc-matrix-table thead button:hover .doc-matrix-name { color: #00A174; }
+  /* 身份名稱：同「實務提醒」卡片標題 */
+  .doc-matrix-name {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #1A2A22;
+    transition: color 200ms ease;
+  }
+  /* 房源量：同「申請方式」的條件小標籤 */
+  .doc-matrix-badge {
+    padding: 2px 6px;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  /* 文件名稱、勾選：同「申請方式」的流程步驟（14px） */
+  .doc-matrix-table tbody th {
+    padding: 7px 12px 7px 0;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1A2A22;
+  }
+  .doc-matrix-table tbody td {
+    padding: 7px 6px;
+    text-align: center;
+  }
+  .doc-matrix-table td.is-active,
+  .doc-matrix-table thead th.is-active { background: rgba(0, 161, 116, 0.06); }
+  .doc-matrix-table tbody tr:hover th,
+  .doc-matrix-table tbody tr:hover td { background: #F5F8F6; }
+  .doc-matrix-table tbody tr:hover td.is-active { background: rgba(0, 161, 116, 0.1); }
+
+  .doc-matrix-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .doc-matrix-mark.is-req { background: #00A174; color: #fff; }
+  .doc-matrix-mark.is-opt { border: 1px solid #B87333; color: #B87333; }
+  .doc-matrix-mark.is-case { padding: 0 6px; border: 1px solid #C9D2CD; font-size: 10px; color: #3F5147; }
+  .doc-matrix-mark sup {
+    margin-left: 1px;
+    font-size: 9px;
+    font-weight: 700;
+    vertical-align: super;
+  }
+  .doc-matrix-table td .doc-matrix-mark sup { position: absolute; transform: translate(14px, -6px); color: #00A174; }
+  .doc-matrix-table td .doc-matrix-mark { position: relative; }
+
+  /* 法人契約：同「申請方式」的卡片（綠色上框、淺底） */
+  .doc-matrix-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid #DDE3DF;
+    border-top: 3px solid #DDE3DF;
+    background: #FAFCFB;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+  .doc-matrix-aside:hover .doc-matrix-name { color: #00A174; }
+  .doc-matrix-aside.is-active { border-top-color: #00A174; background: rgba(0, 161, 116, 0.06); }
+  .doc-matrix-aside-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ECEFEC;
+  }
+  .doc-matrix-aside-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #1A2A22;
+  }
+  .doc-matrix-aside-list > span {
+    position: relative;
+    padding-left: 16px;
+  }
+  .doc-matrix-aside-list > span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    background: #00A174;
+  }
+  .doc-matrix-aside-list > span.is-optional::before {
+    background: none;
+    border: 1px solid #B87333;
+  }
+
+  /* 圖例＋補充說明：同「申請方式」卡片說明文字（13.5px、#3F5147） */
+  .doc-matrix-foot {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 14px;
+    align-items: start;
+  }
+  .doc-matrix-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 12px;
+    color: #3F5147;
+    white-space: nowrap;
+  }
+  .doc-matrix-legend .doc-matrix-mark + * { margin-left: 0; }
+  .doc-matrix-legend .doc-matrix-mark.is-opt { margin-left: 10px; }
+  .doc-matrix-notes {
+    padding-left: 16px;
+    border-left: 2px solid #9EE2CF;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #3F5147;
+  }
+  .doc-matrix-notes p { margin: 0; }
+  .doc-matrix-notes .doc-matrix-notes-title {
+    margin-bottom: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #00A174;
+  }
+  .doc-matrix-disclaimer {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid #ECEFEC;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #66736C;
+  }
+}

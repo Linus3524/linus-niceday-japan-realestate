@@ -6,11 +6,13 @@ domesticScreeningDocuments,
 domesticScreeningNotice,
 hasMinimumKnowledgeSearchLength,
 overseasScreeningDocuments,
-screeningDocumentDisclaimer
+screeningDocumentDisclaimer,
+type ScreeningDocumentProfile
 } from "../../data/rentStaticSearchData";
 import { renderFormattedText } from "../../lib/format";
 import { JapaneseRuby } from "../JapaneseRuby";
 import { TermDetailList } from "../TermDetailList";
+import { useIsDesktop } from "../../hooks/useIsDesktop";
 
 
 export const availabilityStyle = {
@@ -32,20 +34,125 @@ export function renderDocumentLabel(document: string) {
   );
 }
 
+// 對照表的橫列：各身份的文件名稱去掉 ※ 註記編號與（非必備）（視個案）後合併成同一列
+type DocumentCell = { kind: "req" | "opt" | "case"; note?: string };
+function buildDocumentRows(profiles: ScreeningDocumentProfile[]) {
+  const rows: { label: string; cells: (DocumentCell | null)[] }[] = [];
+  profiles.forEach((profile, col) => {
+    profile.documents.forEach(document => {
+      const note = document.match(/\*(\d+)$/)?.[1];
+      let label = document.replace(/\*\d+$/, "");
+      let kind: DocumentCell["kind"] = "req";
+      if (label.includes("（非必備）")) { kind = "opt"; label = label.replace("（非必備）", ""); }
+      else if (label.includes("（視個案）")) { kind = "case"; label = label.replace("（視個案）", ""); }
+      let row = rows.find(r => r.label === label);
+      if (!row) { row = { label, cells: profiles.map(() => null) }; rows.push(row); }
+      row.cells[col] = { kind, note };
+    });
+  });
+  return rows;
+}
+
 export function VisaDocumentMatrix({ searchQuery = "" }: { searchQuery?: string }) {
+  const isDesktop = useIsDesktop();
   const [screeningMode, setScreeningMode] = useState<"overseas" | "domestic">("overseas");
+  // 電腦版：對照表，橫列是文件、直欄是身份；點欄位標題看該身份的補充說明
+  const [selected, setSelected] = useState(0);
+  const profiles = screeningMode === "overseas" ? overseasScreeningDocuments : domesticScreeningDocuments;
+  useEffect(() => { setSelected(0); }, [screeningMode]);
   useEffect(() => {
     if (!hasMinimumKnowledgeSearchLength(searchQuery)) return;
-    const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-    const overseasText = overseasScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])]).join(" ").toLocaleLowerCase();
-    const domesticText = [domesticScreeningNotice, ...domesticScreeningDocuments.flatMap(profile => [profile.profile, ...profile.documents, ...(profile.notes ?? [])])].join(" ").toLocaleLowerCase();
-    if (domesticText.includes(normalizedQuery) && !overseasText.includes(normalizedQuery)) {
-      setScreeningMode("domestic");
-    } else if (overseasText.includes(normalizedQuery)) {
-      setScreeningMode("overseas");
-    }
-  }, [searchQuery]);
-  const profiles = screeningMode === "overseas" ? overseasScreeningDocuments : domesticScreeningDocuments;
+    const q = searchQuery.trim().toLocaleLowerCase();
+    const hit = profiles.findIndex(p => [p.profile, ...p.documents, ...(p.notes ?? [])].join(" ").toLocaleLowerCase().includes(q));
+    if (hit >= 0) setSelected(hit);
+  }, [searchQuery, profiles]);
+
+  if (isDesktop) {
+    // 法人契約的文件和個人身份完全不同，放在表格右側獨立一欄，表格只比較個人身份
+    const personal = profiles.filter(p => !p.profile.startsWith("法人"));
+    const corporate = profiles.find(p => p.profile.startsWith("法人"));
+    const rows = buildDocumentRows(personal);
+    const active = profiles[Math.min(selected, profiles.length - 1)];
+    const select = (profile: ScreeningDocumentProfile) => setSelected(profiles.indexOf(profile));
+    return (
+      <div className="rent-routes doc-matrix border border-[#DDE3DF] bg-white p-6 font-sans">
+        <div className="mb-4 flex flex-col gap-1 border-b border-[#DDE3DF] pb-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h4 className="text-base font-bold text-[#1A2A22]">依身份準備的文件</h4>
+            <p className="mt-1 text-xs leading-relaxed text-[#3F5147] font-sans">先選審查地點，再對照自己的身份那一欄；點身份名稱可看補充說明。</p>
+          </div>
+          <div className="doc-matrix-modes" role="tablist" aria-label="審查地點">
+            <button type="button" role="tab" aria-selected={screeningMode === "overseas"} className={screeningMode === "overseas" ? "is-active" : ""} onClick={() => setScreeningMode("overseas")}>海外審查</button>
+            <button type="button" role="tab" aria-selected={screeningMode === "domestic"} className={screeningMode === "domestic" ? "is-active" : ""} onClick={() => setScreeningMode("domestic")}>日本境內審查</button>
+          </div>
+        </div>
+
+        {screeningMode === "domestic" && <p className="doc-matrix-notice"><span>共同必備</span>{domesticScreeningNotice.replace(/^境內申請前必須準備：/, "")}</p>}
+
+        <div className={`doc-matrix-layout ${corporate ? "has-aside" : ""}`} key={screeningMode}>
+          <table className="doc-matrix-table">
+            <thead>
+              <tr>
+                <th scope="col" className="doc-matrix-corner">文件</th>
+                {personal.map(profile => (
+                  <th key={profile.profile} scope="col" className={profile === active ? "is-active" : ""}>
+                    <button type="button" aria-pressed={profile === active} onClick={() => select(profile)}>
+                      <span className="doc-matrix-name">{profile.profile}</span>
+                      <span className={`doc-matrix-badge ${availabilityStyle[profile.availability]}`}>房源量：{profile.availability}</span>
+                    </button>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  {row.cells.map((cell, col) => (
+                    <td key={personal[col].profile} className={personal[col] === active ? "is-active" : ""}>
+                      {cell && (
+                        <span className={`doc-matrix-mark is-${cell.kind}`} title={{ req: "需準備", opt: "非必備", case: "視個案" }[cell.kind]}>
+                          {{ req: "✓", opt: "＋", case: "視個案" }[cell.kind]}
+                          {cell.note && <sup>※{cell.note}</sup>}
+                        </span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {corporate && (
+            <button type="button" className={`doc-matrix-aside ${corporate === active ? "is-active" : ""}`} aria-pressed={corporate === active} onClick={() => select(corporate)}>
+              <span className="doc-matrix-aside-head">
+                <span className="doc-matrix-name">{corporate.profile}</span>
+                <span className={`doc-matrix-badge ${availabilityStyle[corporate.availability]}`}>房源量：{corporate.availability}</span>
+              </span>
+              <span className="doc-matrix-aside-list">
+                {corporate.documents.map(document => (
+                  <span key={document} className={document.includes("非必備") ? "is-optional" : ""}>{renderDocumentLabel(document)}</span>
+                ))}
+              </span>
+            </button>
+          )}
+        </div>
+
+        <div className="doc-matrix-foot">
+          <p className="doc-matrix-legend"><span className="doc-matrix-mark is-req">✓</span>需準備<span className="doc-matrix-mark is-opt">＋</span>非必備，有的話可附上</p>
+          <div className="doc-matrix-notes" aria-live="polite">
+            <p className="doc-matrix-notes-title">{active.profile}的補充說明</p>
+            {active.notes && active.notes.length > 0
+              ? active.notes.map(noteItem => <p key={noteItem}>{noteItem}</p>)
+              : <p>沒有額外補充。</p>}
+          </div>
+        </div>
+
+        <p className="doc-matrix-disclaimer">{screeningDocumentDisclaimer}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5 font-sans">
       <div className="grid grid-cols-2 border border-[#1A2A22] bg-white p-1">
