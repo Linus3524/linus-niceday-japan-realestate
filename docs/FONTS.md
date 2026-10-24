@@ -12,17 +12,19 @@
 
 `@font-face` 宣告集中在 `src/index.css` 最上方，載入標籤集中在 `index.html` `<head>`。
 
-## 桌面數字只用兩種字形
+## 桌面數字的字形
 
-1280px 以上、滑鼠操作的桌面版統一為：
+1280px 以上、滑鼠操作的桌面版：
 
-- **黑體數字：Jost**，用於金額、百分比、一般內文、統計、表單和進度。
-- **襯線數字：Cormorant Garamond**，用於日期、襯線標題和裝飾性章節編號。
+- **黑體數字：Jost**（`Linus Numerals Sans` 別名），用於金額、百分比、一般內文、統計、表單和進度。
+- **明體數字：思源宋體原生數字**。`--font-serif` 不再掛 Cormorant 數字別名——Cormorant 是位置偏低的古典數字（old-style），
+  混在中文標題、日期、金額裡很難讀（例如「24 小時」「1LDK」）。
+- **Cormorant Garamond（`--font-display`）只用在大標題前方的 01、02、03 這類編號**：章節編號 `.chapter-kicker`、
+  子主題分頁 `.section-tab-num`、章節總覽 `.chapter-overview-num`、`Step 01`、申請方式／實務提醒／稅務階段的大編號，
+  以及英文斜體標籤（Rent、Contact 等，不含數字）。其他數字一律不要用。
 
-`Linus Numerals Sans` / `Linus Numerals Serif` 是上述現有字型的數字專用別名，
-`unicode-range` 僅涵蓋 `0–9`，不是新增第三、第四種字型。桌面覆寫共用字型變數，
-讓 Noto 內文和 JetBrains Mono 容器的數字也收斂至這兩種；中日文字與識別碼的非數字字元不變。
-金額、進度和數值輸入保留 `tabular-nums`，避免改成黑體後數字無法對齊。
+`Linus Numerals Sans` 是 Jost 的數字專用別名，`unicode-range` 僅涵蓋 `0–9`。
+金額、進度和數值輸入保留 `tabular-nums`，避免數字無法對齊。
 手機／平板不套用桌面覆寫；PDF 的獨立字型系統也不受影響。
 
 ## 為什麼這樣分

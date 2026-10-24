@@ -50,7 +50,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
               <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
               {result.verdict.status}
             </span>
-            <h4 className="min-w-0 flex-1 text-sm font-bold leading-relaxed text-[#1A2A22] sm:text-base">
+            <h4 className="min-w-0 flex-1 font-sans text-sm font-bold leading-relaxed text-[#1A2A22] sm:text-base">
               {cleanVerdictHeadline}
             </h4>
           </div>

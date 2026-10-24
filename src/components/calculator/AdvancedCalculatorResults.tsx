@@ -353,7 +353,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 handleTabChange("chat");
                 handleSendMessage(undefined, messageText);
               }}
-              className="w-full bg-[#00A174] text-white py-3 px-4 font-serif font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
+              className="w-full bg-[#00A174] text-white py-3 px-4 font-sans font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
               id="calc-send-to-ai"
             >
               帶入此條件諮詢 AI 顧問 ➔
@@ -529,7 +529,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 handleTabChange("chat");
                 handleSendMessage(undefined, messageText);
               }}
-              className="w-full bg-[#00A174] text-white py-3 px-4 font-serif font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
+              className="w-full bg-[#00A174] text-white py-3 px-4 font-sans font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
               id="calc-send-to-ai"
             >
               帶入此條件諮詢 AI 顧問 ➔

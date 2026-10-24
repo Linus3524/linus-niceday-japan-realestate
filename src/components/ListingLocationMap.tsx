@@ -7,6 +7,7 @@ import {
   Info,
 } from "lucide-react";
 import type { ListingLocationContext, ListingAmenity, ListingStationWalk } from "../lib/listingLocation";
+import { buildLocationPinHtml, LOCATION_PIN_TIP_OFFSET } from "../lib/mapPins";
 
 interface ListingLocationMapProps {
   context: ListingLocationContext;
@@ -141,41 +142,11 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
     // 1. 本物件 Marker（醒目綠色房屋圖標）
     const propertyIcon = L.divIcon({
-      className: "custom-property-pin-wrapper",
-      html: `
-        <div style="
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          background: #00a174;
-          color: white;
-          border-radius: 50%;
-          border: 3px solid #ffffff;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-          font-size: 19px;
-          cursor: pointer;
-          transform: translate(-50%, -100%);
-        ">
-          🏠
-          <div style="
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 7px solid #00a174;
-          "></div>
-        </div>
-      `,
+      className: "custom-pin-container",
+      html: buildLocationPinHtml("🏠"),
       iconSize: [0, 0],
       iconAnchor: [0, 0],
-      popupAnchor: [0, -42],
+      popupAnchor: [0, -(42 + LOCATION_PIN_TIP_OFFSET)],
     });
 
     const propertyMarker = L.marker([coordinate.lat, coordinate.lon], { icon: propertyIcon })
@@ -429,55 +400,6 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
   return (
     <div className="space-y-3 font-sans">
-      <style>{`
-        .custom-pin-container {
-          background: transparent !important;
-          border: none !important;
-          width: 0 !important;
-          height: 0 !important;
-          overflow: visible !important;
-          pointer-events: none;
-        }
-        .custom-capsule-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          padding: 3px 8px;
-          border-radius: 9999px;
-          border: 1.5px solid #DDE3DF;
-          box-shadow: 0 2px 7px rgba(0,0,0,0.18);
-          font-size: 11px;
-          font-weight: 700;
-          white-space: nowrap;
-          max-width: 280px;
-          width: max-content;
-          pointer-events: auto;
-          cursor: pointer;
-          transform: translate(-50%, -50%);
-          transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        }
-        .custom-capsule-badge .pin-text {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          max-width: 240px;
-        }
-        .station-capsule {
-          background: #1A2A22;
-          color: #ffffff;
-          border-color: #ffffff;
-        }
-        .is-active-marker .custom-capsule-badge {
-          box-shadow: 0 0 0 3px #00a174, 0 6px 16px rgba(0,0,0,0.3) !important;
-          border-color: #00a174 !important;
-          z-index: 99999 !important;
-        }
-        .leaflet-popup-content-wrapper {
-          border-radius: 6px;
-          box-shadow: 0 4px 18px rgba(0,0,0,0.2);
-          border: 1px solid #DDE3DF;
-        }
-      `}</style>
 
       {/* 頂部地圖模式工具列 */}
       <div className="flex flex-wrap items-center justify-between gap-2 border border-[#DDE3DF] bg-[#FAFCFB] p-2.5">
@@ -485,24 +407,24 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           <button
             type="button"
             onClick={() => setMapMode("interactive")}
-            className={`px-3 py-1.5 font-serif text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold transition-all ${
               mapMode === "interactive"
                 ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]"
                 : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
-            📍 周邊設施地圖
+            周邊設施地圖
           </button>
           <button
             type="button"
             onClick={() => setMapMode("google")}
-            className={`px-3 py-1.5 font-serif text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 text-xs font-bold transition-all ${
               mapMode === "google"
                 ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]"
                 : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
-            🗺️ Google Maps 實景
+            Google Maps 實景
           </button>
           {mapMode === "interactive" && (
             <button
@@ -554,7 +476,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center gap-1 px-2.5 py-1 font-serif text-xs font-bold transition-all ${
+              className={`flex items-center gap-1 px-2.5 py-1 text-xs font-bold transition-all ${
                 activeCategory === cat.id
                   ? "border border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
                   : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"

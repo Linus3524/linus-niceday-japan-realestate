@@ -1,4 +1,4 @@
-import { ChevronDown, FileText, TrainFront } from "lucide-react";
+import { ChevronDown, FileText } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type * as React from 'react';
 import {
@@ -34,11 +34,10 @@ const dayRange = (duration: string): [number, number] | null => {
 const STAMP_KEY = "rent-steps-stamps";
 const readStamps = (): string[] => { try { return JSON.parse(localStorage.getItem(STAMP_KEY) ?? "[]"); } catch { return []; } };
 
-/** 電腦版：上方「集章進度＋時程甘特圖」總覽，下方「電車路線圖」——小電車跟著捲動停在讀到的那一站，每站可以蓋章（手機版仍是直式時間軸） */
+/** 電腦版：上方「集章進度＋時程甘特圖」總覽，下方直式步驟線——編號圓點跟手機版時間軸同款，讀到的那一站實心綠，每站可以蓋章 */
 function StepsDesk({ steps }: { steps: Props["filtered"]["steps"] }) {
   const [stamps, setStamps] = useState<string[]>(readStamps);
   const [current, setCurrent] = useState(steps[0]?.id ?? "1");
-  const [trainTop, setTrainTop] = useState(0);
   // 時程估算：fast＝免房東審查（直接跳過那一步）、normal＝一般（每步照最快天數）、slow＝每步都拖到最慢
   const [mode, setMode] = useState<"fast" | "normal" | "slow">("normal");
   const slow = mode === "slow";
@@ -81,7 +80,6 @@ function StepsDesk({ steps }: { steps: Props["filtered"]["steps"] }) {
     window.addEventListener("resize", update);
     return () => { document.removeEventListener("scroll", update, { capture: true }); window.removeEventListener("resize", update); };
   }, [steps]);
-  useEffect(() => { setTrainTop(stations.current[current]?.offsetTop ?? 0); }, [current, steps]);
 
   // 甘特圖：每一步接在前一步完成之後開始。「通常」照最快天數接下去；切到「如果都拖到」就照最慢天數接，後面每一步跟著往後推。
   // 入住後才做的步驟（屋況檢查）從拿到鑰匙那天開始畫，淺紅色
@@ -178,12 +176,11 @@ function StepsDesk({ steps }: { steps: Props["filtered"]["steps"] }) {
       </div>
 
       <ol className="rent-route">
-        <li className="rent-route-train" style={{ transform: `translateY(${trainTop}px)` }} aria-hidden="true"><TrainFront className="h-4 w-4" /></li>
         {steps.map(step => {
           const stamped = stamps.includes(step.id);
           return (
             <li key={step.id} data-step={step.id} ref={el => { stations.current[step.id] = el; }} className={`rent-route-station${current === step.id ? " is-current" : ""}${stamped ? " is-stamped" : ""}`}>
-              <span className="rent-route-dot" aria-hidden="true" />
+              <span className="rent-route-dot" aria-hidden="true">{step.id}</span>
               <div className="rent-route-sign">
                 <span className="rent-route-no">{step.id.padStart(2, "0")}</span>
                 <h5>{stepTitle(step.name)}</h5>
@@ -382,6 +379,12 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           <ol className="rent-route-steps" aria-label={`${route.title}的流程順序`}>
                             {route.steps.map(step => <li key={step}>{step}</li>)}
                           </ol>
+                          {route.market && (
+                            <div className="rent-route-market">
+                              <span className="rent-route-market-label">市場現況</span>
+                              <p className="rent-route-market-text">{route.market}</p>
+                            </div>
+                          )}
                           <p className={`mt-3 border-t border-[#ECEFEC] pt-2 text-[11px] font-bold ${index === 2 ? "text-[#B13818]" : "text-[#00a174]"}`}>{route.note}</p>
                         </div>
                       ))}

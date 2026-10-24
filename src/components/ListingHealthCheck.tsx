@@ -262,7 +262,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
             <button
               type="button" onClick={debouncedAnalyze}
               disabled={loading}
-              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#00A174] px-6 font-serif text-sm font-bold text-white transition-all hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
+              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#00A174] px-6 font-sans text-sm font-bold text-white transition-all hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
               {loading ? (
                 <>
                   <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -361,7 +361,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <span>LINUS {isSaleListing ? "買賣圖紙分析" : "租賃圖紙健檢"}</span>
             </div>
             <div className="mt-2">
-              <h3 className="text-xl font-bold text-[#1A2A22] md:text-2xl">
+              <h3 className="font-sans text-xl font-bold text-[#1A2A22] md:text-2xl">
                 {reportHeading}
               </h3>
             </div>
@@ -583,7 +583,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
               <button
                 type="button" onClick={debouncedAnalyzeCommute}
                 disabled={!commuteDestination.trim() || commuteLoading || locationLoading || (!locationContext?.stationWalks.length && !result.extracted.station)}
-                className="flex min-h-11 items-center justify-center gap-2 bg-[#00A174] px-5 font-serif text-xs font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45">
+                className="flex min-h-11 items-center justify-center gap-2 bg-[#00A174] px-5 font-sans text-xs font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45">
                 {commuteLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
                 {commuteLoading ? "計算中…" : "計算門到門通勤"}
               </button>

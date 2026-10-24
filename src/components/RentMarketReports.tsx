@@ -290,7 +290,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             <div className="max-w-xl">
               <p className="text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把地區、車站、格局與需求帶入下方計算器，繼續調整月租明細。</p>
             </div>
-            <button onClick={onApply} className="bg-[#00A174] text-white px-4 py-2.5 font-serif text-xs font-bold transition-colors hover:bg-[#008F67] whitespace-nowrap">套用此方案到下方計算器</button>
+            <button onClick={onApply} className="bg-[#00A174] text-white px-4 py-2.5 font-sans text-xs font-bold transition-colors hover:bg-[#008F67] whitespace-nowrap">套用此方案到下方計算器</button>
           </div>
         </div>
       )}

@@ -71,15 +71,6 @@
   src: url('/fonts/jost-latin.woff2') format('woff2');
   unicode-range: U+0030-0039;
 }
-@font-face {
-  font-family: 'Linus Numerals Serif';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('/fonts/cormorant-garamond-latin.woff2') format('woff2');
-  unicode-range: U+0030-0039;
-}
-
 /* Material Symbols Rounded：自架字型，不依賴 Google CDN。
    檔案是用專案實際使用的 4 個圖示 (calculate / key / real_estate_agent / smart_toy)
    subset 過的可變字型，只有 16KB。改用/新增圖示時要重新 subset，做法見 docs/FONTS.md。
@@ -182,14 +173,14 @@
 }
 
 /* 只收斂滑鼠桌面版的數字；手機、平板及中日文字形維持原設定。
-   一般黑體／試算等寬數字 → Jost；襯線標題／裝飾編號 → Cormorant。
+   黑體／試算等寬數字 → Jost。明體數字維持思源宋體原生數字（不再掛 Cormorant 別名：
+   Cormorant 是位置偏低的古典數字，混在中文標題、日期、金額裡很難讀）。
+   Cormorant 只留給大標題前方的 01、02、03 這類編號（--font-display，例如 .chapter-kicker、.section-tab-num）。
    數字專用 font-face 不含其他字元，因此不會把內文也換成英文字型。 */
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   body {
     --font-sans: "Linus Numerals Sans", "Noto Sans TC", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
     --font-jp-sans: "Linus Numerals Sans", "Noto Sans JP", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
-    --font-serif: "Linus Numerals Serif", "Noto Serif TC", "Noto Serif JP", serif;
-    --font-jp-serif: "Linus Numerals Serif", "Noto Serif JP", "Noto Serif TC", serif;
     --font-mono: "Linus Numerals Sans", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   }
   .font-mono, .stage-mono, .chapter-progress-count,
@@ -262,9 +253,9 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
 }
 
 /* 反向規則：明確宣告黑體者，日文字一律維持思源黑體。
-   必要性：App 根容器（App.tsx）帶 .font-serif，因此上面的 .font-serif :lang(ja)
-   實際上命中全站每一個 [lang="ja"]，連介面元件（如通勤路線圖的站名、線路徽章）
-   都會被拉成明體——那些是資訊元件不是閱讀內容，應該跟隨介面黑體。
+   App 根容器預設黑體（不再帶 .font-serif），明體只給標題與指定的導覽／大切換鈕；
+   若某個區塊包在 .font-serif 裡，上面的 .font-serif :lang(ja) 會把裡面所有 [lang="ja"] 拉成明體，
+   連介面元件（如通勤路線圖的站名、線路徽章）也會被波及——那些是資訊元件不是閱讀內容，應該跟隨介面黑體。
    .font-jp 與 .font-sans 都是「我要黑體」的明示意圖，必須贏過上面的繼承式明體規則；
    特異性刻意對齊 (0,2,0) 並排在後方，靠順序取勝，不動用 !important。
    .font-jp-serif 是刻意指定明體，排除在外。 */
@@ -2900,7 +2891,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .about-numbers span + span { border-left: 1px solid #DDE3DF; }
   .about-numbers strong {
-    font-family: var(--font-display);
+    font-family: var(--font-serif);
     font-weight: 700;
     font-size: 26px;
     line-height: 1.1;
@@ -4177,7 +4168,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     width: 100%;
   }
   .stage-date-day {
-    font-family: var(--font-display);
+    font-family: var(--font-serif);
     font-weight: 400;
     font-size: clamp(60px, 4.7vw, 72px);
     line-height: 0.85;
@@ -4645,7 +4636,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     white-space: nowrap;
   }
   .section-tab-num { font-family: var(--font-display); font-size: 28px; font-weight: 600; line-height: 1; color: #A5B1AA; font-variant-numeric: tabular-nums; transition: color 180ms ease; }
-  .section-tab-label { font-size: 13px; font-weight: 600; letter-spacing: .04em; }
+  .section-tab-label { font-family: var(--font-serif); font-size: 13px; font-weight: 600; letter-spacing: .04em; }
   .section-tab.is-active { background: linear-gradient(0deg, #E6F6F1, transparent); border-bottom-color: #00A174; color: #00A174; }
   .section-tab.is-active .section-tab-num { color: #00A174; }
   .section-tab:hover:not(.is-active) { background: #F5F8F6; color: #00A174; }
@@ -4894,6 +4885,55 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
 }
 
+/* 申請方式：市場現況 */
+.rent-route-market {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 8px;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8E4;
+  border-left: 3px solid #00A174;
+}
+.rent-route-card.is-caution .rent-route-market {
+  border-left-color: #B13818;
+  border-color: #F8E2DC;
+  background: #FFFDFC;
+}
+.rent-route-market-label {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: #00A174;
+  letter-spacing: 0.04em;
+}
+.rent-route-card.is-caution .rent-route-market-label {
+  color: #B13818;
+}
+.rent-route-market-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #4A5550;
+  text-align: justify;
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .rent-route-market {
+    margin: 4px 0 12px;
+    padding: 8px 12px;
+  }
+  .rent-route-market-label {
+    font-size: 11px;
+  }
+  .rent-route-market-text {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+}
 
 /* 申請方式：大編號改成小標籤（避免和下面的步驟編號混淆），整頁一屏放得下 */
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
@@ -5357,17 +5397,17 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
 
 
 
-  /* ---- 電車路線圖 ---- */
+  /* ---- 直式步驟線：細線＋編號圓點（跟手機版時間軸同款）＋站牌卡片＋蓋章。買房交易流程也共用這套 ---- */
   .rent-route { position: relative; margin: 0; padding: 0 0 0 44px; list-style: none; }
-  .rent-route::before { content: ""; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 6px; border-radius: 3px; background: #9EE2CF; }
-  .rent-route-train {
-    position: absolute; left: 6px; top: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
-    width: 24px; height: 30px; border-radius: 7px 7px 4px 4px; background: #00A174; color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 161, 116, 0.35); transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
-  }
+  .rent-route::before { content: ""; position: absolute; left: 14px; top: 14px; bottom: 30px; width: 1px; background: #DDE3DF; }
   .rent-route-station { position: relative; display: grid; grid-template-columns: 210px minmax(0, 1fr) 92px; gap: 24px; padding: 4px 0 30px; }
-  .rent-route-dot { position: absolute; left: -36px; top: 8px; width: 20px; height: 20px; border: 4px solid #00A174; border-radius: 9999px; background: #fff; }
-  .rent-route-station.is-stamped .rent-route-dot { background: #00A174; }
+  .rent-route-dot {
+    position: absolute; left: -44px; top: 4px; display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; padding: 0; border: 2px solid #00A174; border-radius: 9999px; background: #fff;
+    font-family: var(--font-sans); font-size: 12px; font-weight: 700; color: #00A174; transition: background-color 200ms ease, color 200ms ease;
+  }
+  .rent-route-station.is-stamped .rent-route-dot { background: #E6F6F1; }
+  .rent-route-station.is-current .rent-route-dot { background: #00A174; color: #fff; }
   .rent-route-sign { align-self: start; padding: 10px 12px 12px; border: 1px solid #DDE3DF; border-top: 4px solid #00A174; background: #fff; transition: box-shadow 200ms ease; }
   .rent-route-station.is-current .rent-route-sign { box-shadow: 0 4px 14px rgba(0, 161, 116, 0.18); }
   .rent-route-no { font-family: var(--font-jost); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #00A174; }
@@ -5435,7 +5475,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .buy-tax-selector button[aria-pressed="true"] { background: #E6F6F1; color: var(--color-primary); border-bottom-color: var(--color-primary); }
   .buy-tax-selector button:hover { background: #F0FAF6; }
   .buy-tax-no { font: 500 30px/1 var(--font-display); color: inherit; }
-  .buy-tax-selector-label { font-size: 16px; font-weight: 700; }
+  .buy-tax-selector-label { font-family: var(--font-serif); font-size: 16px; font-weight: 700; }
   .buy-tax-selector-label { display: flex; align-items: center; gap: 8px; }
   .buy-tax-selector-label svg { width: 18px; height: 18px; stroke-width: 1.5; }
   .buy-tax-selector small { grid-column: 1 / -1; font: 11px/1.7 var(--font-sans); }
@@ -5558,7 +5598,8 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .buy-journey-switch button > svg:last-child { width: 17px; height: 17px; margin-left: auto; }
   .buy-journey-switch strong { display: block; font-size: 16px; font-weight: 600; }
   .buy-journey-switch small { display: block; margin-top: 5px; color: var(--color-ink-note); font-size: 11px; line-height: 1.8; }
-  .buy-journey-overview { padding: 8px 0 24px; margin-bottom: 26px; border-bottom: 1px solid var(--color-line); }
+  /* 交易路線總覽：外框跟租屋流程的集章帳／甘特圖同一套（淡底、上緣綠線），圖示改成圓形跟步驟圓點呼應 */
+  .buy-journey-overview { padding: 16px 18px 18px; margin-bottom: 28px; border: 1px solid #DDE3DF; border-top: 3px solid #00A174; background: #FAFCFB; }
   .buy-journey-route-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
   .buy-journey-route-heading > div { display: flex; align-items: baseline; gap: 12px; }
   .buy-journey-route-heading span, .buy-journey-route-heading p { font-size: 12px; color: var(--color-ink-note); }
@@ -5568,25 +5609,12 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .buy-journey-overview li { position: relative; min-width: 0; text-align: center; }
   .buy-journey-overview li:not(:last-child)::after { content: ''; position: absolute; top: 24px; left: calc(50% + 32px); right: calc(-50% + 32px); height: 1px; background: var(--color-line); pointer-events: none; }
   .buy-journey-route-button { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; padding: 0 4px; background: transparent; color: var(--color-ink-soft); font-size: 13px; line-height: 1.8; cursor: pointer; transition: color 160ms ease; }
-  .buy-journey-route-icon { display: grid; place-items: center; position: relative; width: 48px; height: 48px; border: 1px solid var(--color-line); background: #fff; color: var(--color-primary); transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+  .buy-journey-route-icon { display: grid; place-items: center; position: relative; width: 48px; height: 48px; border: 2px solid #00A174; border-radius: 9999px; background: #fff; color: var(--color-primary); transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
   .buy-journey-route-icon svg { width: 23px; height: 23px; stroke-width: 1.7; }
   .buy-journey-route-button[aria-current="step"] { color: var(--color-primary); font-weight: 600; }
-  .buy-journey-route-button[aria-current="step"] .buy-journey-route-icon, .buy-journey-marker[aria-current="step"] { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
-  .buy-journey-timeline { margin: 0; padding: 0; list-style: none; }
-  .buy-journey-timeline > li { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 20px; padding-bottom: 22px; }
-  .buy-journey-timeline > li:not(:last-child)::before { content: ""; position: absolute; left: 23px; top: 48px; bottom: 0; width: 1px; background: var(--color-line); }
-  .buy-journey-timeline > li:last-child { padding-bottom: 0; }
-  .buy-journey-marker { display: grid; place-items: center; align-self: start; height: 48px; border: 1px solid var(--color-line); background: #fff; color: var(--color-primary); font: 500 28px/1 var(--font-display); font-variant-numeric: lining-nums; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
-  .buy-journey-route-button:hover:not([aria-current="step"]) .buy-journey-route-icon, .buy-journey-marker:hover:not([aria-current="step"]) { background: var(--color-control-hover); }
-  .buy-journey-route-button:focus-visible, .buy-journey-marker:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
-  .buy-journey-step { min-width: 0; padding: 22px; border: 1px solid var(--color-line); background: #fff; }
-  .buy-journey-step.is-selected { border-color: var(--color-primary); }
-  .buy-journey-step > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
-  .buy-journey-step h4 { display: flex; align-items: flex-start; gap: 9px; font: 600 17px/1.7 var(--font-serif); color: var(--color-ink); }
-  .buy-journey-step h4 svg { width: 20px; height: 20px; margin-top: 4px; color: var(--color-primary); flex-shrink: 0; stroke-width: 1.6; }
-  .buy-journey-time { display: inline-flex; align-items: flex-start; gap: 6px; padding: 5px 9px; max-width: 240px; flex-shrink: 0; font-size: 11px; line-height: 1.8; color: var(--color-ink-note); background: #FAFCFB; }
-  .buy-journey-time svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 3px; }
-  .buy-journey-description { margin: 0; color: var(--color-ink-soft); font-size: 14px; line-height: 1.95; }
+  .buy-journey-route-button[aria-current="step"] .buy-journey-route-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+  .buy-journey-route-button:hover:not([aria-current="step"]) .buy-journey-route-icon { background: var(--color-control-hover); }
+  .buy-journey-route-button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
   .buy-journey-prep { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 16px; margin-top: 18px; border-top: 1px solid var(--color-line-soft); }
   .buy-journey-prep dt { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 11px; font-weight: 600; color: var(--color-primary); }
   .buy-journey-prep dt svg { width: 15px; height: 15px; stroke-width: 1.7; }
@@ -5612,12 +5640,6 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     .buy-journey-switch button > svg { width: 20px; height: 20px; }
     .buy-journey-route-heading { flex-wrap: wrap; gap: 6px 16px; }
     .buy-journey-route-button { font-size: 12px; }
-    .buy-journey-timeline > li { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
-    .buy-journey-marker { height: 34px; font-size: 22px; }
-    .buy-journey-timeline > li:not(:last-child)::before { left: 16px; top: 34px; }
-    .buy-journey-step { padding: 18px; }
-    .buy-journey-step > header { flex-direction: column; gap: 10px; }
-    .buy-journey-time { max-width: none; }
     .buy-journey-prep { grid-template-columns: 1fr; gap: 14px; }
     .buy-document-list > li { grid-template-columns: 32px minmax(0, 1fr); gap: 10px 14px; padding: 18px; }
     .buy-document-icon { height: 32px; grid-row: span 2; }
@@ -5816,7 +5838,7 @@ button.ui-switch-large:focus-visible {
 }
 @media (prefers-reduced-motion: reduce) {
   button.ui-switch-large { transition: none; }
-  .buy-journey-route-button, .buy-journey-route-icon, .buy-journey-marker { transition: none; }
+  .buy-journey-route-button, .buy-journey-route-icon { transition: none; }
 }
 
 /* 費用試算：上排大型切換列（租屋／買房／圖紙、描述需求／選擇條件）。
@@ -5840,3 +5862,70 @@ button.ui-switch-large:focus-visible {
 
 /* 費用試算：左側條件表單欄。原本整欄淡綠色塊，改成上方一抹淡綠、往下漸白。 */
 .calc-form-pane { background: linear-gradient(to bottom, #F2FBF7 0%, #fff 260px); }
+
+/* 聯絡頁：電腦版改用 ContactDesk（QR 攤開、問卷可一鍵複製），手機／平板維持原本直排卡片。 */
+.contact-desk { display: none; }
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .contact-mobile { display: none; }
+  .contact-desk { display: grid; }
+}
+
+/* Leaflet 地圖標記（圖紙分析周邊地圖、聯絡頁公司地圖共用）：車站膠囊、目前選取高亮、氣泡外框。 */
+.custom-pin-container {
+  background: transparent !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: visible !important;
+  pointer-events: none;
+}
+.custom-capsule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1.5px solid #DDE3DF;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.18);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  max-width: 280px;
+  width: max-content;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.custom-capsule-badge .pin-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
+}
+.station-capsule {
+  background: #1A2A22;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+.is-active-marker .custom-capsule-badge {
+  box-shadow: 0 0 0 3px #00a174, 0 6px 16px rgba(0,0,0,0.3) !important;
+  border-color: #00a174 !important;
+  z-index: 99999 !important;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+  border: 1px solid #DDE3DF;
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 買房交易流程借用租屋的步驟線：沒有蓋章欄，只留站牌＋說明兩欄；圓點可點選 */
+  .rent-route--plain .rent-route-station { grid-template-columns: 210px minmax(0, 1fr); }
+  button.rent-route-dot { cursor: pointer; }
+  button.rent-route-dot:hover:not([aria-current="step"]) { background: #E6F6F1; }
+  button.rent-route-dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  .buy-route-title { display: flex; align-items: flex-start; gap: 6px; }
+  .buy-route-title svg { width: 17px; height: 17px; margin-top: 4px; flex-shrink: 0; color: var(--color-primary); stroke-width: 1.7; }
+  .rent-route--plain .buy-journey-prep { margin-top: 14px; }
+}

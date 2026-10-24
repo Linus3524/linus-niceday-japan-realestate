@@ -69,7 +69,7 @@ export function OtherConditionNotes({
                 <span className="border border-[#C9D2CD] bg-white px-2 py-0.5 text-[10px] font-bold text-[#3F5147]">
                   {item.category}
                 </span>
-                <h5 className="text-xs font-bold text-[#1A2A22]">{item.title}</h5>
+                <h5 className="font-sans text-xs font-bold text-[#1A2A22]">{item.title}</h5>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-[#3F5147]">{item.explanation}</p>
             </article>

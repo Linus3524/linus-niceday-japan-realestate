@@ -279,7 +279,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
             <h4 className="mt-1.5 text-sm sm:text-base font-bold text-[#1A2A22] flex items-center gap-1.5">
               <span lang="ja" className="font-jp">{jpDistrict}</span>
               <span className="text-[#8A9590] font-normal">·</span>
-              <span className="text-[#00A174]">{LAYOUT_NAMES[currentLayout]}</span>
+              <span className="font-sans text-[#00A174]">{LAYOUT_NAMES[currentLayout]}</span>
               <span className="font-normal text-xs text-[#66736C]">中古公寓實價成約指標</span>
             </h4>
           </div>
@@ -408,7 +408,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                 <h5 className="text-xs sm:text-sm font-bold text-[#1A2A22] flex items-center gap-1.5">
                   <Footprints className="w-4 h-4 text-[#00A174]" />
                   <span>{insight.stationWalkTitle}</span>
-                  <span className="text-xs font-normal text-[#66736C]">
+                  <span className="font-sans text-xs font-normal text-[#66736C]">
                     （依 {LAYOUT_NAMES[currentLayout]} 實價計算）
                   </span>
                 </h5>

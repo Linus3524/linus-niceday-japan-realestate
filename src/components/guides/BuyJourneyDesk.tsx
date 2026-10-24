@@ -1,5 +1,5 @@
 import { useId, useRef, useState } from "react";
-import { ArrowRight, Banknote, Building2, Clock3, FileText, Globe2, HandCoins, IdCard, KeyRound, Landmark, Languages, Search, Stamp, Target, TriangleAlert } from "lucide-react";
+import { ArrowRight, Banknote, Building2, FileText, Globe2, HandCoins, IdCard, KeyRound, Landmark, Languages, Search, Stamp, Target, TriangleAlert } from "lucide-react";
 import { buyHouseCashSteps, buyHouseLoanSteps, signingDocuments } from "../../data/buyHouseData";
 import { SectionHeading } from "../SectionHeading";
 import { getSigningDocumentParts } from "../../lib/guides/buyReference";
@@ -44,20 +44,26 @@ export function BuyFlowDesk({ open, onToggle, flowType, setFlowType }: SectionPr
           <button type="button" className="buy-journey-route-button" aria-label={`前往第 ${step.step} 步：${step.title}`} aria-current={selectedStep === step.step ? "step" : undefined} aria-controls={`${journeyId}-${flowType}-${step.step}`} onClick={() => selectStep(step.step)}><span className="buy-journey-route-icon"><Icon aria-hidden="true" /></span><span>{labels[index]}</span></button>
         </li>;
       })}</ol></div></nav>
-      <ol className="buy-journey-timeline" aria-label={isLoan ? "銀行貸款交易步驟" : "現金全款交易步驟"}>
+      {/* 步驟線跟租屋「申請與交屋流程」共用同一套：細線＋編號圓點、左側站牌卡（編號／標題／時程）、右側說明；買房沒有蓋章欄 */}
+      <ol className="rent-route rent-route--plain" aria-label={isLoan ? "銀行貸款交易步驟" : "現金全款交易步驟"}>
         {steps.map((step, index) => {
           const Icon = icons[index] ?? FileText;
-          return <li key={`${flowType}-${step.step}`} ref={element => { stepRefs.current[`${flowType}-${step.step}`] = element; }}>
-            <button type="button" className="buy-journey-marker" aria-label={`選取第 ${step.step} 步：${step.title}`} aria-current={selectedStep === step.step ? "step" : undefined} aria-controls={`${journeyId}-${flowType}-${step.step}`} onClick={() => selectStep(step.step)}><span>{step.step.padStart(2, "0")}</span></button>
-            <article id={`${journeyId}-${flowType}-${step.step}`} className={`buy-journey-step${selectedStep === step.step ? " is-selected" : ""}`}>
-              <header><h4><Icon aria-hidden="true" />{step.title}</h4>{step.timing && <span className="buy-journey-time"><Clock3 aria-hidden="true" />{step.timing}</span>}</header>
-              <p className="buy-journey-description">{step.description}</p>
-              <dl className="buy-journey-prep">
+          const isCurrent = selectedStep === step.step;
+          return <li key={`${flowType}-${step.step}`} ref={element => { stepRefs.current[`${flowType}-${step.step}`] = element; }} className={`rent-route-station${isCurrent ? " is-current" : ""}`}>
+            <button type="button" className="rent-route-dot" aria-label={`選取第 ${step.step} 步：${step.title}`} aria-current={isCurrent ? "step" : undefined} aria-controls={`${journeyId}-${flowType}-${step.step}`} onClick={() => selectStep(step.step)}>{step.step}</button>
+            <div className="rent-route-sign">
+              <span className="rent-route-no">{step.step.padStart(2, "0")}</span>
+              <h5 className="buy-route-title"><Icon aria-hidden="true" />{step.title}</h5>
+              {step.timing && <span className="rent-route-time">{step.timing}</span>}
+            </div>
+            <div id={`${journeyId}-${flowType}-${step.step}`} className="rent-route-body">
+              <p className="rent-route-desc">{step.description}</p>
+              {(step.payment || step.documents) && <dl className="buy-journey-prep">
                 {step.payment && <div><dt><HandCoins aria-hidden="true" />付款準備</dt><dd>{step.payment}</dd></div>}
                 {step.documents && <div><dt><FileText aria-hidden="true" />這一步的文件</dt><dd>{step.documents}</dd></div>}
-              </dl>
+              </dl>}
               {step.warning && <aside className="buy-journey-warning"><TriangleAlert aria-hidden="true" /><p>{step.warning}</p></aside>}
-            </article>
+            </div>
           </li>;
         })}
       </ol>

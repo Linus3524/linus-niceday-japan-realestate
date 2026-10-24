@@ -164,7 +164,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         role="tab"
         aria-selected={rentInputMode === "ai"}
         onClick={() => setRentInputMode("ai")}
-        className={`min-h-11 border-r border-[#DDE3DF] px-3 font-serif text-xs font-bold transition-colors ${rentInputMode === "ai" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+        className={`min-h-11 border-r border-[#DDE3DF] px-3 font-sans text-xs font-bold transition-colors ${rentInputMode === "ai" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
       >
         描述需求
       </button>
@@ -173,7 +173,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         role="tab"
         aria-selected={rentInputMode === "structured"}
         onClick={() => setRentInputMode("structured")}
-        className={`min-h-11 px-3 font-serif text-xs font-bold transition-colors ${rentInputMode === "structured" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+        className={`min-h-11 px-3 font-sans text-xs font-bold transition-colors ${rentInputMode === "structured" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
       >
         選擇條件
       </button>
@@ -257,7 +257,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
           type="button"
           onClick={analyzeStructuredRent}
           disabled={analysisLoading}
-          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#00A174] px-5 font-serif text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:bg-[#AEB8B2]"
+          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#00A174] px-5 font-sans text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:bg-[#AEB8B2]"
         >
           {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
           {analysisLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}

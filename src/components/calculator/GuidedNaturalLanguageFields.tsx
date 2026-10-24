@@ -31,7 +31,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
             type="button"
             onClick={analyzeNaturalLanguageRent}
             disabled={!aiPrompt.trim() || aiInputLoading}
-            className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#00A174] px-5 text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45 font-serif"
+            className="flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#00A174] px-5 text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45 font-sans"
           >
             {aiInputLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
             {aiInputLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}

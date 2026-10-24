@@ -862,7 +862,7 @@ export default function App() {
   );
 
   return (
-    <div className={`desk-app min-h-screen flex flex-col font-serif select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
+    <div className={`desk-app min-h-screen flex flex-col select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
       {/* Reading Progress Bar */}
       <div 
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] transition-all duration-75"
@@ -1229,7 +1229,7 @@ export default function App() {
       {showToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#00a174] hover:bg-[#00A174] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
+          className="font-sans fixed bottom-6 right-6 w-10 h-10 rounded-full bg-[#00a174] hover:bg-[#00A174] text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 transform scale-100 opacity-100 hover:scale-110 z-50 cursor-pointer"
           aria-label="Back to Top"
         >
           <ArrowUp className="w-5 h-5" />

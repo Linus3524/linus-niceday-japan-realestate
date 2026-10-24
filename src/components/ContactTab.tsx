@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { trackAction } from "../lib/trackView";
-import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList, AlertCircle } from "lucide-react";
+import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList } from "lucide-react";
 import { AdviceNote } from "./AdviceNote";
 import { linusContact } from "../data/rentGuideData";
 import { PageIntroCard } from "./PageIntroCard";
+import { BUY_QUESTIONNAIRE, BuyLoanNotice, ContactDesk, RENT_QUESTIONNAIRE } from "./ContactDesk";
 
 interface ContactTabProps {
   contactFormType: "rent" | "buy";
@@ -42,7 +43,16 @@ export function ContactTab(props: ContactTabProps) {
                 </p>
               </PageIntroCard>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start" id="contact-business-layout">
+              <ContactDesk
+                contactFormType={contactFormType}
+                setContactFormType={setContactFormType}
+                copiedLine={copiedLine}
+                handleCopyLine={handleCopyLine}
+                copiedWechat={copiedWechat}
+                handleCopyWechat={handleCopyWechat}
+              />
+
+              <div className="contact-mobile grid grid-cols-1 md:grid-cols-12 gap-8 items-start" id="contact-business-layout">
                 {/* Business Card (Left 5 Columns) */}
                 <div className="md:col-span-5 space-y-4">
                   {/* Elegant Business Card Front */}
@@ -142,7 +152,7 @@ export function ContactTab(props: ContactTabProps) {
                         href={`https://line.me/ti/p/~${linusContact.lineId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-1 items-center justify-center gap-2 bg-[#00a174] hover:bg-[#00A174] text-white pl-[46px] pr-4 py-2.5 font-bold cursor-pointer transition-colors"
+                        className="font-sans flex flex-1 items-center justify-center gap-2 bg-[#00a174] hover:bg-[#00A174] text-white pl-[46px] pr-4 py-2.5 font-bold cursor-pointer transition-colors"
                         id="add-line-btn-contact"
                         onClick={() => trackAction("line-add")}
                       >
@@ -280,13 +290,7 @@ export function ContactTab(props: ContactTabProps) {
                         </p>
                         
                         <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
-                          {`1. 期望入住日期：
-2. 入境日期（機票時間）或目前在日本何處：
-3. 在留資格種類（是否已領工作/留學COE、打工簽證貼紙，或預計何時）：
-4. 每月租屋預算範圍：
-5. 通勤目的地／可接受交通時間（學校或公司名稱、靠近的車站）：
-6. 是否為自己住／有無同居人（代問或代找請表明）：
-7. 其他對房子的核心條件（如：獨立洗面台、屋齡限制等）：`}
+                          {RENT_QUESTIONNAIRE}
                         </div>
                       </div>
                     ) : (
@@ -300,31 +304,10 @@ export function ContactTab(props: ContactTabProps) {
                         </p>
                         
                         <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
-                          {`1. 全款現金或貸款：
-2. 在日本有簽證／無簽證在台灣的話，有預計什麼時候來日本看房，或是線上看直接決定：
-3. 目標什麼時候買房：
-4. 預算範圍：
-5. 投資或自住：
-6. 地區／車站距離：
-7. 其他房子的要求／屋齡／大小／樓層：`}
+                          {BUY_QUESTIONNAIRE}
                         </div>
 
-                        <div className="border border-[#FDE047] bg-[#FEF9C3] p-3 text-[11px] leading-relaxed space-y-1.5 text-[#854D0E]">
-                          <span className="font-bold flex items-center gap-1.5">
-                            <AlertCircle className="w-3.5 h-3.5 text-[#854D0E] shrink-0" />
-                            <span>貸款注意事項</span>
-                          </span>
-                          <p className="text-justify text-[#854D0E]">
-                            在日本貸款實務上條件比較嚴格，請先幫我確認以下問卷是否有達到：
-                          </p>
-                          <ul className="list-disc pl-4 space-y-1.5 text-[#854D0E]">
-                            <li>在日本是否有工作簽證，且同一份工作超過 3 年、年薪 300 萬日圓以上？或來日一年以上、年收 400 萬日圓以上，任職公司在日本登記超過 5 年。</li>
-                            <li>如果沒有簽證，在台灣目前有沒有任何貸款？淨資產有無 3000 萬日圓以上？或去年年收入有沒有超過 1000 萬日圓？</li>
-                          </ul>
-                          <p className="text-justify text-[#854D0E]">
-                            如果這兩者條件都沒有，依目前實際台日系銀行的審查條件，貸款難度很高。建議採取在台灣完成增貸的方式，以現金購買日本房產，會是比較方便、容易的選擇。
-                          </p>
-                        </div>
+                        <BuyLoanNotice />
                       </div>
                     )}
                   </div>

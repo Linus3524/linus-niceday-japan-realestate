@@ -110,7 +110,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                   type="button"
                   onClick={() => void handleSaveAddress()}
                   disabled={locationLoading || !addressInput.trim()}
-                  className="inline-flex items-center gap-1 border border-[#00A174] bg-[#00A174] px-3 py-1.5 font-serif text-xs font-semibold text-white hover:bg-[#008F67] disabled:opacity-50 transition"
+                  className="inline-flex items-center gap-1 border border-[#00A174] bg-[#00A174] px-3 py-1.5 font-sans text-xs font-semibold text-white hover:bg-[#008F67] disabled:opacity-50 transition"
                 >
                   {locationLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
                   儲存並重新搜尋

@@ -9,7 +9,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
             <button
               type="button"
               onClick={() => setGuidedApplicationChannel("domestic")}
-              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-serif transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
+              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-sans transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
                   ? "border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
                   : "border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
                 }`}
@@ -22,7 +22,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
             <button
               type="button"
               onClick={() => setGuidedApplicationChannel("overseas")}
-              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-serif transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
+              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-sans transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
                   ? "border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
                   : "border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
                 }`}

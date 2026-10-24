@@ -399,7 +399,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
             type="button"
             disabled={!tokenInput.trim()}
             onClick={() => { sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenInput.trim()); setToken(tokenInput.trim()); }}
-            className="mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#00A174] disabled:opacity-40 cursor-pointer"
+            className="font-sans mt-3 h-11 w-full bg-[#1A2A22] text-sm font-bold text-white transition-colors hover:bg-[#00A174] disabled:opacity-40 cursor-pointer"
           >
             驗證進入
           </button>

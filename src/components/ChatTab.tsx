@@ -244,7 +244,7 @@ export function ChatTab(props: ChatTabProps) {
                   <button
                     type="submit"
                     disabled={chatLoading || !chatInput.trim()}
-                    className="bg-[#00a174] hover:bg-[#00A174] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-[#DDE3DF] disabled:text-[#8A9590] flex items-center gap-1 cursor-pointer shrink-0"
+                    className="font-sans bg-[#00a174] hover:bg-[#00A174] text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors disabled:bg-[#DDE3DF] disabled:text-[#8A9590] flex items-center gap-1 cursor-pointer shrink-0"
                     id="chat-submit-btn"
                   >
                     <span>發送</span>

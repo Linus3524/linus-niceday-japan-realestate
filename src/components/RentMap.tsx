@@ -286,7 +286,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                 <button
                   onClick={() => onSelectRoomType(type)}
                   title={ROOM_TYPE_DETAIL_LABEL[type]}
-                  className={`px-2.5 py-1 text-[11px] font-medium transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 font-sans text-[11px] font-medium transition-all cursor-pointer ${
                     roomType === type
                       ? "bg-white text-[#00a174] font-semibold border-b border-[#DDE3DF]"
                       : "text-[#66736C] hover:text-[#1A2A22]"
@@ -319,7 +319,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               const firstDistrict = rentRates.find(rate => rate.region === firstRegion);
               if (firstDistrict) onSelectDistrict(firstDistrict.district);
             }}
-            className={`min-h-9 px-2 font-serif text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]" : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+            className={`min-h-9 px-2 font-sans text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]" : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"}`}
           >
             {group}
           </button>

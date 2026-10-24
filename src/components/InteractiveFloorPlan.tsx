@@ -438,7 +438,7 @@ export function InteractiveFloorPlan() {
                   <span className="bg-[#00a174] text-white px-2 py-0.5 font-mono text-xs font-bold">
                     {currentItem.code}
                   </span>
-                  <h5 className="font-bold text-base text-[#1A2A22]">{currentItem.jpName || currentItem.nameZh}</h5>
+                  <h5 className="font-sans font-bold text-base text-[#1A2A22]">{currentItem.jpName || currentItem.nameZh}</h5>
                   <span className="bg-white border border-[#DDE3DF] px-2 py-0.5 text-xs font-medium text-[#3F5147] font-sans">
                     {currentItem.nameZh}
                   </span>
