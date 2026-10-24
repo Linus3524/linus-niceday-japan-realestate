@@ -672,6 +672,22 @@ const scenarios: Array<{ name: string; run: () => void }> = [
         assert.ok(labels.includes("角間雙面採光"), `${facilities} 應辨識角間`);
       }
     }
+  },
+  {
+    name: "租金判定只用一個標準：條件折減後超出就不能標合理",
+    run: () => {
+      const range: RequestedRentRange = { low: 90_000, median: 100_000, high: 110_000, sampleCount: 1, basis: "測試區", segments: [], spread: false };
+      // 築 35 年、徒步 18 分、木造：條件淨值明顯為負；月額 10.8 萬仍在原始行情區間內，以前上方會標「合理」
+      const old = buildListingPriceVerdict(108_000, range, { ageYears: 35, walkMinutes: 18, structure: "木造" });
+      assert.ok((old.netFactorsSumPercent ?? 0) < -20, `條件淨值應為大幅負值，實得 ${old.netFactorsSumPercent}`);
+      assert.match(old.status, /偏高/, `條件差卻開在區間高端應判偏高：${old.status} ${old.headline}`);
+      assert.match(old.detail, /合理行情約/, "說明要寫出條件調整後的合理行情");
+      // 同一間開 6.5 萬：落在條件調整後的行情內（淨值約 −37%，合理約 5.7～6.9 萬）
+      assert.equal(buildListingPriceVerdict(65_000, range, { ageYears: 35, walkMinutes: 18, structure: "木造" }).status, "合理");
+      // 新築、近站、RC、設備齊全（淨值約 +39%，合理約 12.5～15.3 萬）：開價 14 萬高於原始上限，但條件撐得起 → 條件反映
+      const premium = buildListingPriceVerdict(140_000, range, { ageYears: 2, walkMinutes: 3, structure: "RC", facilities: "B・T別,洗面台,オートロック" });
+      assert.equal(premium.status, "條件反映", `${premium.status} ${premium.headline}`);
+    }
   }
 ];
 

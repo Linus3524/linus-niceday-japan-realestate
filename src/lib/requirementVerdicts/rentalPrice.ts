@@ -34,9 +34,7 @@ export function buildListingPriceVerdict(
   const isRC = !isSRC && /rc|鉄筋コンクリート|鋼筋/.test(rawStructure);
   const isWooden = /木造|軽量鉄骨|軽鉄|木造アパート/.test(rawStructure);
 
-  // 1. 網路實質價值折抵（日本申辦個人光纖網路每月通常約 ¥4,000 ~ ¥5,000 円）
-  const internetMonthlyValue = hasFreeInternet ? 4500 : 0;
-  const effectiveMonthlyCost = Math.max(0, totalMonthlyCost - internetMonthlyValue);
+  // 1. 免費網路（日本申辦個人光纖每月約 ¥4,000～¥5,000）以「附免費光纖網路」加成計入下方條件清單，不另外從月額扣除，避免重複計算
 
   // 2. 屋齡優勢／折價量化（基準為市場平均庫存 20~25 年中古水準）
   let agePremiumRate = 0;
@@ -205,10 +203,6 @@ export function buildListingPriceVerdict(
     ? `同區依 ${range.sizeAdjustment.areaSqm}㎡ 面積換算行情（${range.sizeAdjustment.equivalentLabel}）`
     : "同區同房型行情";
 
-  // 綜合調整後的合理上限
-  const totalJustifiedPremiumRate = agePremiumRate + walkPremiumRate + areaPremiumRate + floorPremiumRate + structureRate + renovationRate + amenitiesRate;
-  const adjustedHigh = Math.round(range.high * (1 + Math.max(0, totalJustifiedPremiumRate)));
-
   // 整理租賃規格加減因子清單（供前端對照拆解卡使用）
   const factors: RentalPriceFactor[] = [];
 
@@ -241,7 +235,7 @@ export function buildListingPriceVerdict(
   // 屋齡新舊
   if (agePremiumRate !== 0 && ageYears !== null && ageYears !== undefined) {
     factors.push({
-      label: agePremiumRate > 0 ? (ageYears <= 3 ? "新築完工成屋" : "淺築新古屋") : "屋齡築古折讓",
+      label: agePremiumRate > 0 ? (ageYears <= 3 ? "新築完工成屋" : ageYears <= 5 ? "淺築新古屋" : "10年內次新房") : agePremiumRate <= -0.15 ? "屋齡築古折讓" : "屋齡中古折讓",
       ratePercent: Number((agePremiumRate * 100).toFixed(1)),
       note: agePremiumRate > 0
         ? `屋齡僅 ${ageYears} 年，建築外觀與設備維持頂尖健康水準`
@@ -411,90 +405,72 @@ export function buildListingPriceVerdict(
     ? Number((((totalMonthlyCost - range.median) / Math.max(1, range.median)) * 100).toFixed(1))
     : 0;
 
-  // 低於行情低端
-  if (effectiveMonthlyCost < range.low) {
-    const gapPercent = Math.round(((range.low - effectiveMonthlyCost) / range.low) * 100);
+  // ---------- 判定：只用一個標準 ----------
+  // 「條件調整後行情」＝同區行情 ×（1＋條件清單淨加減）。下方剖析卡顯示的就是同一份條件清單與同一個淨值，
+  // 上方標籤與剖析卡不會再各說各話（以前上方只看有沒有落在原始行情區間、而且只算加分不算扣分，
+  // 屋齡老、離站遠但開在區間高端的物件會上面寫「合理」、下面寫「超額溢價」）。
+  const conditionFactor = 1 + netFactorsSumPercent / 100;
+  const adjustedLow = Math.round(range.low * conditionFactor);
+  const adjustedMedian = Math.round(range.median * conditionFactor);
+  const adjustedHigh = Math.round(range.high * conditionFactor);
+  const conditionNote = netFactorsSumPercent === 0
+    ? ""
+    : `；依本案條件${netFactorsSumPercent > 0 ? "加成" : "折減"} ${netFactorsSumPercent > 0 ? "+" : "−"}${Math.abs(netFactorsSumPercent).toFixed(1)}% 後，合理行情約 ${man(adjustedLow)}～${man(adjustedHigh)}（中位 ${man(adjustedMedian)}）`;
+  const marketText = `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）${conditionNote}。`;
+  const shared = { factors, positiveFactorsSumPercent, negativeFactorsSumPercent, netFactorsSumPercent, nominalDiffPercent };
+
+  // 低於條件調整後行情的低端
+  if (totalMonthlyCost < adjustedLow) {
+    const gapPercent = Math.round(((adjustedLow - totalMonthlyCost) / adjustedLow) * 100);
     return {
       status: "超值",
-      headline: `每月總負擔 ${man(totalMonthlyCost)} 低於同區行情約 ${gapPercent}%，價格優勢顯著。`,
-      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。價格明顯親民實惠，建議留意確認是否有特殊解約約定、朝向日照限制或周邊環境等取捨。`,
-      factors,
-      positiveFactorsSumPercent,
-      negativeFactorsSumPercent,
-      netFactorsSumPercent,
-      nominalDiffPercent,
+      headline: `每月總負擔 ${man(totalMonthlyCost)} 比依條件調整後的行情低約 ${gapPercent}%，價格優勢顯著。`,
+      detail: `${marketText}價格明顯親民實惠，建議留意確認是否有特殊解約約定、朝向日照限制或周邊環境等取捨。`,
+      ...shared,
     };
   }
 
-  // 落在基準行情內
-  if (totalMonthlyCost <= range.high) {
-    const nearMedian = Math.abs(totalMonthlyCost - range.median) / Math.max(1, range.median) <= 0.05;
-    const belowMedian = totalMonthlyCost < range.median;
+  // 落在條件調整後行情內
+  if (totalMonthlyCost <= adjustedHigh) {
+    // 比原始行情上限還貴，但條件加成撐得住：標「條件反映」，說明貴在哪裡
+    if (totalMonthlyCost > range.high) {
+      const positiveReasons = factors.filter(f => f.ratePercent > 0).map(f => f.label);
+      return {
+        status: "條件反映",
+        headline: `每月總負擔 ${man(totalMonthlyCost)} 高於同區行情上限，但屋齡、站距與設備等條件撐得起，屬於符合品質的「合理溢價」。`,
+        detail: `${marketText}主要加分條件：${positiveReasons.join("、") || "建物規格較佳"}。`,
+        ...shared,
+      };
+    }
+    const nearMedian = Math.abs(totalMonthlyCost - adjustedMedian) / Math.max(1, adjustedMedian) <= 0.05;
+    const belowMedian = totalMonthlyCost < adjustedMedian;
     return {
       status: "合理",
       headline: nearMedian
-        ? `每月總負擔 ${man(totalMonthlyCost)} 貼近同區行情中位數，定價合宜健康。`
-        : `每月總負擔 ${man(totalMonthlyCost)} 落在周邊市場正常行情區間（偏${belowMedian ? "實惠" : "高端"}），符合行情。`,
-      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。當前月額負擔與區域行情相符。`,
-      factors,
-      positiveFactorsSumPercent,
-      negativeFactorsSumPercent,
-      netFactorsSumPercent,
-      nominalDiffPercent,
+        ? `每月總負擔 ${man(totalMonthlyCost)} 貼近依條件調整後的行情中位，定價合宜。`
+        : `每月總負擔 ${man(totalMonthlyCost)} 落在依條件調整後的行情區間內（偏${belowMedian ? "實惠" : "高端"}）。`,
+      detail: `${marketText}當前月額負擔與本案條件相符。`,
+      ...shared,
     };
   }
 
-  // 名目租金高於基準高端，但綜合條件（屋齡、距離、面積、設備）足以支撐
-  if (effectiveMonthlyCost <= adjustedHigh) {
-    const positiveReasons: string[] = [];
-    if (walkText && walkPremiumRate > 0) positiveReasons.push(walkText);
-    if (areaText && areaPremiumRate > 0) positiveReasons.push(areaText);
-    if (ageText && agePremiumRate > 0) positiveReasons.push(ageText);
-    if (internetText) positiveReasons.push(internetText);
-    amenitiesList.forEach(a => positiveReasons.push(a));
-
-    const areaNote = areaSqm && areaSqm >= 20 ? `（專有面積 ${areaSqm}㎡ 高於單身平均 17㎡）` : "";
-    const diffYen = totalMonthlyCost - range.median;
-    const netYen = Math.round(range.median * (netFactorsSumPercent / 100));
-    const comparisonText = netFactorsSumPercent >= nominalDiffPercent
-      ? `本案條件累計淨加成（+${netFactorsSumPercent.toFixed(1)}%，約 +${man(netYen)}）充分涵蓋當前月額相對中位數之溢價（+${nominalDiffPercent.toFixed(1)}%，+${man(diffYen)}）。考量硬體規格與生活便利性${areaNote}，當前租金溢價反映更好的居住品質，定價具備充分條件支撐與合理性。`
-      : `考量硬體規格與生活便利性${areaNote}，當前價格反映的是更好的居住品質，定價具合理性。`;
-
-    return {
-      status: "條件反映",
-      headline: `每月總負擔 ${man(totalMonthlyCost)} 雖略高於同區行情均值，但綜合屋齡、站距與規格，屬於符合品質的「合理溢價」。`,
-      detail: `${benchmarkLabel}約 ${man(range.low)}～${man(range.high)}（中位 ${man(range.median)}）。但此物件具備明顯優勢：${positiveReasons.join("；") || "建物規格較佳"}。${comparisonText}`,
-      factors,
-      positiveFactorsSumPercent,
-      negativeFactorsSumPercent,
-      netFactorsSumPercent,
-      nominalDiffPercent,
-    };
-  }
-
-  // 真的偏高
-  const gapPercent = Math.round(((effectiveMonthlyCost - adjustedHigh) / adjustedHigh) * 100);
+  // 高於條件調整後行情的上限
+  const gapPercent = Math.round(((totalMonthlyCost - adjustedHigh) / adjustedHigh) * 100);
+  const inRawRange = totalMonthlyCost <= range.high;
+  const rawNote = inRawRange ? "月額雖仍落在同區行情區間內，但以本案的屋齡、站距與設備條件來看，" : "";
   if (gapPercent <= 10) {
     return {
       status: "偏高",
-      headline: `每月總負擔 ${man(totalMonthlyCost)} 略高於同條件市場行情約 ${gapPercent}%，建議評估個人每月承擔能力。`,
-      detail: `考量屋齡、車站距離與空間大小後，推估同條件行情上限約為 ${man(adjustedHigh)}。目前月額負擔稍顯偏高，由於日本租屋月租多為固定定價、幾無議價談判空間，建議承租前務必衡量個人每月預算與承擔能力，亦可同步比較周邊其他同級房源。`,
-      factors,
-      positiveFactorsSumPercent,
-      negativeFactorsSumPercent,
-      netFactorsSumPercent,
-      nominalDiffPercent,
+      headline: `每月總負擔 ${man(totalMonthlyCost)} 比依條件調整後的行情上限高約 ${gapPercent}%，建議評估個人每月承擔能力。`,
+      detail: `${marketText}${rawNote}目前月額負擔稍顯偏高。日本租屋月租多為固定定價、幾無議價空間，建議衡量每月預算，並比較周邊同級房源或爭取免禮金等優惠。`,
+      ...shared,
     };
   }
 
   return {
     status: "明顯偏高",
-    headline: `每月總負擔 ${man(totalMonthlyCost)} 明顯高於周邊同條件行情約 ${gapPercent}%，建議審慎評估自身承擔能力。`,
-    detail: `此物件月額負擔超出周邊同等屋齡與距離之行情上限甚多。除非有特定不可替代之偏好（如特殊景觀或高品質裝潢），否則整體 CP 值偏低；考量日本租屋習慣無談判議價空間，建議謹慎衡量個人每月承受力，並優先多比較周邊同級房源。`,
-    factors,
-    positiveFactorsSumPercent,
-    negativeFactorsSumPercent,
-    netFactorsSumPercent,
-    nominalDiffPercent,
+    headline: `每月總負擔 ${man(totalMonthlyCost)} 比依條件調整後的行情上限高約 ${gapPercent}%，建議審慎評估。`,
+    detail: `${marketText}${rawNote}月額負擔超出同等條件行情甚多。除非有特定不可替代之偏好（如特殊景觀或高品質裝潢），整體 CP 值偏低；建議優先多比較周邊同級房源。`,
+    ...shared,
   };
 }

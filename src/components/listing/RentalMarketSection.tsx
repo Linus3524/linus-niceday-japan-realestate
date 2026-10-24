@@ -230,7 +230,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
 
                   {/* 條件累計與租金合理性對照（完全對齊買房體驗） */}
                   {(() => {
-                    const { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText, conclusionPoints } = buildRentalMarketConclusion({
+                    const { posFactorsCount, negFactorsCount, nominalDiffYen, netDiffYen, conditionMedianYen, vsConditionPercent, isWellSupported, isOverpriced, isDiscounted, verdictConclusionText, conclusionPoints } = buildRentalMarketConclusion({
                       result,
                       rentalFactors,
                       totalMonthlyCost,
@@ -319,7 +319,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                         ? "border-[#BAE6FD] bg-[#E0F2FE] text-[#0284C7]"
                                         : "border-[#DDE3DF] bg-white text-[#66736C]"
                                   }`}>
-                                  {isWellSupported ? "充分支撐" : isOverpriced ? "超額溢價" : isDiscounted ? "讓利優勢" : "合理區間"}
+                                  {isWellSupported ? "條件反映" : isOverpriced ? (result.verdict.status === "明顯偏高" ? "明顯偏高" : "偏高") : isDiscounted ? "超值" : "合理"}
                                 </span>
                               </div>
                               <span className={`block text-base font-black mt-1 tracking-tight ${isWellSupported
@@ -333,20 +333,17 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                                 {isWellSupported
                                   ? "✓ 租金有充分條件支撐"
                                   : isOverpriced
-                                    ? "⚠ 超出條件支撐（超額溢價）"
+                                    ? "⚠ 高於條件調整後的行情"
                                     : isDiscounted
-                                      ? "↓ 低於行情具價格優勢"
-                                      : "✓ 租金落在合理區間"}
+                                      ? "↓ 低於條件調整後的行情"
+                                      : "✓ 落在條件調整後的行情內"}
                               </span>
                             </div>
                             <span className="block text-[9px] text-[#66736C] mt-0.5 leading-relaxed">
-                              {isWellSupported
-                                ? `各項規格累計淨值（${netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}）充分支撐開價差距（溢價 ${nominalDiff >= 0 ? `+${nominalDiff.toFixed(1)}%` : `−${Math.abs(nominalDiff).toFixed(1)}%`}），屬高規格合理溢價。`
-                                : isOverpriced
-                                  ? `月租總額雖落在區域大盤區間內，但計入屋齡與站距等條件折減後，開價高於客觀規格支撐約 ${(nominalDiff - netFactorsSum).toFixed(1)}%，建議評估議價或爭取免禮金空間。`
-                                  : isDiscounted
-                                    ? `月額負擔低於同區中位數 ${Math.abs(nominalDiff).toFixed(1)}%，具備顯著讓利優勢。`
-                                    : "租金開價與條件規格加權後之行情落點相符。"}
+                              {/* 跟上方標籤同一個標準：同區中位 ×（1＋條件淨值）＝條件調整後的合理月租中位 */}
+                              {conditionMedianYen
+                                ? `計入條件（${netFactorsSum >= 0 ? `+${netFactorsSum.toFixed(1)}%` : `−${Math.abs(netFactorsSum).toFixed(1)}%`}）後合理月租中位約 ${formatYen(conditionMedianYen)}，本案${vsConditionPercent >= 0 ? `高 +${vsConditionPercent.toFixed(1)}%` : `低 −${Math.abs(vsConditionPercent).toFixed(1)}%`}。`
+                                : "租金開價與條件規格加權後之行情落點相符。"}
                             </span>
                           </div>
                         </div>
