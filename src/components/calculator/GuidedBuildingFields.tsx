@@ -10,7 +10,7 @@ export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOpti
           <label className="text-[11px] font-bold text-[#3F5147]">
             最低面積
             <div className="relative mt-1.5">
-              <select value={guidedMinArea} onChange={event => selectGuidedArea(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+              <select value={guidedMinArea} onChange={event => selectGuidedArea(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
                 <option value={0}>不限</option>
                 {areaOptions.map(area => <option key={area} value={area}>{area}㎡以上</option>)}
               </select>
@@ -20,7 +20,7 @@ export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOpti
           <label className="text-[11px] font-bold text-[#3F5147]">
             徒步到車站
             <div className="relative mt-1.5">
-              <select value={guidedWalkMinutes} onChange={event => selectGuidedWalk(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+              <select value={guidedWalkMinutes} onChange={event => selectGuidedWalk(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
                 <option value={0}>6～10 分／不限</option>
                 <option value={5}>5 分內</option>
                 <option value={15}>11～15 分</option>
@@ -32,7 +32,7 @@ export function GuidedBuildingFields({ guidedMinArea, selectGuidedArea, areaOpti
           <label className="text-[11px] font-bold text-[#3F5147]">
             屋齡上限
             <div className="relative mt-1.5">
-              <select value={guidedAgeMax} onChange={event => selectGuidedAge(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+              <select value={guidedAgeMax} onChange={event => selectGuidedAge(Number(event.target.value))} className="peer h-10 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
                 <option value={0}>不限</option>
                 <option value={3}>3 年內</option>
                 <option value={5}>5 年內</option>

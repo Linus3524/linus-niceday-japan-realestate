@@ -99,7 +99,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
   } = model;
   return (<div className="xl:col-span-7 space-y-6">
     {/* Step 1: Select District & Size */}
-    <div className="border border-[#1A2A22] bg-white p-6 space-y-4">
+    <div className="border border-[#DDE3DF] bg-white p-6 space-y-4">
       <h4 className="font-bold text-[#00a174] text-sm border-b border-[#DDE3DF] pb-2 font-sans">
         步驟一：選擇地區與格局
       </h4>
@@ -123,7 +123,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                 setCalcModifiers([]); // reset rent modifiers
                 setCalcBuyModifiers([]); // reset buy modifiers
               }}
-              className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
+              className="h-12 w-full appearance-none bg-white border border-[#C9D2CD] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
             >
               {Array.from(new Set(rentRates.map(r => r.region))).map(region => (
                 <optgroup key={region} label={toJapanesePrefectureName(region)} className="font-sans font-bold">
@@ -139,7 +139,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                 </optgroup>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1A2A22]" aria-hidden="true" />
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#3F5147]" aria-hidden="true" />
           </div>
         </div>
 
@@ -147,24 +147,24 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
         <div className="space-y-1.5 font-sans">
           <label className="text-xs font-bold text-[#3F5147]">選擇格局大小：</label>
           {/* Hover 時顯示每個格局群組的實際涵蓋範圍，維持按鈕視覺乾淨。 */}
-          <div className="grid h-12 grid-cols-5 border border-[#1A2A22]">
+          <div className="grid h-12 grid-cols-5 border border-[#C9D2CD]">
             {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((id, index) => {
               const includesText = ROOM_TYPE_INCLUDES_LABEL[id];
               return (
-                <div key={id} className={`group relative h-full ${index > 0 ? "border-l border-[#1A2A22]" : ""}`}>
+                <div key={id} className={`group relative h-full ${index > 0 ? "border-l border-[#DDE3DF]" : ""}`}>
                   <button
                     type="button"
                     onClick={() => selectGuidedRoomType(id)}
                     title={ROOM_TYPE_DETAIL_LABEL[id]}
-                    className={`h-full w-full text-xs font-medium cursor-pointer transition-colors ${calcRoomType === id
-                        ? "bg-[#1A2A22] text-white font-semibold"
+                    className={`h-full w-full font-sans text-xs font-medium cursor-pointer transition-colors ${calcRoomType === id
+                        ? "bg-[#F0FAF6] text-[#00A174] font-semibold shadow-[inset_0_-2px_0_#00A174]"
                         : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
                       }`}
                   >
                     {ROOM_TYPE_LABEL[id]}
                   </button>
                   {includesText && (
-                    <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-[#1A2A22] text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md rounded-xs">
+                    <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 whitespace-nowrap bg-[#1A2A22] text-white text-[10px] font-sans font-normal px-2 py-0.5 shadow-md">
                       {includesText}
                       <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1A2A22]" />
                     </div>
@@ -191,7 +191,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
               <select
                 value={calcStation}
                 onChange={(e) => selectGuidedStation(e.target.value)}
-                className="h-12 w-full appearance-none bg-white border border-[#1A2A22] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
+                className="h-12 w-full appearance-none bg-white border border-[#C9D2CD] px-3 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#00a174] rounded-none cursor-pointer font-sans"
               >
                 <option value="none">基準 (行政區平均行情基礎 — 適合廣域搜房)</option>
                 {majorStations.length > 0 && (
@@ -222,7 +222,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                   </optgroup>
                 )}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1A2A22]" aria-hidden="true" />
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#3F5147]" aria-hidden="true" />
             </div>
             <p className="text-[10px] text-[#66736C] leading-normal">
               ※ 車站行情為區域估算，實際租金依物件位置與步行距離而異。
@@ -271,14 +271,14 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
     />
 
     {/* Step 2: Modifiers checklist */}
-    <div className="border border-[#1A2A22] bg-white p-6 space-y-4">
+    <div className="border border-[#DDE3DF] bg-white p-6 space-y-4">
       <h4 className="font-bold text-[#00a174] text-sm border-b border-[#DDE3DF] pb-2 font-sans">
         {calcMode === "rent" ? "步驟二：租金加減價與房源篩選" : "步驟二：勾選想要的附加條件 (買房折溢價項目)"}
       </h4>
 
       {calcMode === "rent" ? (
         <div className="space-y-4 font-sans text-xs">
-          <div className="bg-[#F5F8F6] border-l-4 border-[#00a174] px-3 py-2.5">
+          <div className="bg-[#F2FBF7] px-3 py-2.5">
             <span className="font-bold text-[#1A2A22]">A. 會影響租金的加減價條件</span>
             <p className="mt-1 text-[10px] text-[#66736C]">依地區行情尺度換算後，直接反映在下方月租估算。</p>
           </div>
@@ -302,7 +302,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                     className={`p-2.5 border flex items-start gap-2.5 transition-all ${isDisabled
                         ? "opacity-45 bg-[#FAFCFB] border-[#ECEFEC] text-[#8A9590] pointer-events-none cursor-not-allowed select-none"
                         : isSelected
-                          ? "bg-[#FFFFFF] border-[#00a174] text-[#1A2A22] cursor-pointer"
+                          ? "bg-[#F0FAF6] border-[#00a174] text-[#1A2A22] cursor-pointer"
                           : "bg-white border-[#DDE3DF] text-[#3F5147] hover:border-[#AEB8B2] cursor-pointer"
                       }`}
                     title={isDisabled
@@ -324,7 +324,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                       <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                         <span className={isDisabled ? "text-[#8A9590] line-through decoration-[#C9D2CD]" : "text-[#1A2A22]"}>{mod.text}</span>
                         {isDisabled && (
-                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
+                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 flex-shrink-0 scale-90">
                             {isNoTower ? "此區無塔樓" : isNewBuildRenovationConflict ? "新屋免翻新" : "衝突鎖定"}
                           </span>
                         )}
@@ -351,7 +351,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                     className={`p-2.5 border flex items-start gap-2.5 transition-all ${isDisabled
                         ? "opacity-45 bg-[#FAFCFB] border-[#ECEFEC] text-[#8A9590] pointer-events-none cursor-not-allowed select-none"
                         : isSelected
-                          ? "bg-[#FFFFFF] border-[#1A2A22] text-[#1A2A22] cursor-pointer"
+                          ? "bg-[#F5F8F6] border-[#8A9590] text-[#1A2A22] cursor-pointer"
                           : "bg-white border-[#DDE3DF] text-[#3F5147] hover:border-[#AEB8B2] cursor-pointer"
                       }`}
                     title={isDisabled ? (isTowerFirstFloorConflict ? "超高層塔樓住宅 (タワーマンション) 基本上不會有第一樓住宅，已自動防呆鎖定" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
@@ -361,13 +361,13 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                       checked={isSelected}
                       disabled={isDisabled}
                       onChange={() => !isDisabled && toggleModifier(mod.id)}
-                      className="mt-0.5 accent-[#1A2A22]"
+                      className="mt-0.5 accent-[#66736C]"
                     />
                     <div className="flex-grow">
                       <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                         <span className={isDisabled ? "text-[#8A9590] line-through decoration-[#C9D2CD]" : "text-[#1A2A22]"}>{mod.text}</span>
                         {isDisabled && (
-                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
+                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 flex-shrink-0 scale-90">
                             {isTowerFirstFloorConflict ? "塔樓無一樓" : "衝突鎖定"}
                           </span>
                         )}
@@ -403,7 +403,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
               {rentSearchFilterOptions.map(option => {
                 const isSelected = rentSearchFilters.includes(option.key);
                 return (
-                  <label key={option.key} className={`p-2.5 border flex items-start gap-2.5 cursor-pointer transition-colors ${isSelected ? "border-[#00a174] bg-[#e6f6f1]" : "border-[#DDE3DF] bg-white hover:border-[#9ee2cf]"}`}>
+                  <label key={option.key} className={`p-2.5 border flex items-start gap-2.5 cursor-pointer transition-colors ${isSelected ? "border-[#00a174] bg-[#F0FAF6]" : "border-[#DDE3DF] bg-white hover:bg-[#F5F8F6]"}`}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleRentSearchFilter(option.key)} className="mt-0.5 accent-[#00a174]" />
                     <span>
                       <span className="block font-semibold text-[#1A2A22]">{option.label}</span>
@@ -432,7 +432,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                     className={`p-3 border flex items-start gap-2.5 transition-all h-full ${isDisabled
                         ? "opacity-45 bg-[#FAFCFB] border-[#ECEFEC] text-[#8A9590] pointer-events-none cursor-not-allowed select-none"
                         : isSelected
-                          ? "bg-[#FFFFFF] border-[#00a174] text-[#1A2A22] cursor-pointer"
+                          ? "bg-[#F0FAF6] border-[#00a174] text-[#1A2A22] cursor-pointer"
                           : "bg-white border-[#DDE3DF] text-[#3F5147] hover:border-[#AEB8B2] cursor-pointer"
                       }`}
                     title={isDisabled ? (isNoTower ? "該地區目前查無超高層塔樓住宅 (タワーマンション)，不開放勾選" : "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆") : undefined}
@@ -448,7 +448,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                       <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                         <span className={isDisabled ? "text-[#8A9590] line-through decoration-[#C9D2CD]" : "text-[#1A2A22]"}>{mod.text}</span>
                         {isDisabled && (
-                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">
+                          <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 flex-shrink-0 scale-90">
                             {isNoTower ? "此區無塔樓" : "衝突鎖定"}
                           </span>
                         )}
@@ -478,7 +478,7 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                     className={`p-3 border flex items-start gap-2.5 transition-all h-full ${isDisabled
                         ? "opacity-45 bg-[#FAFCFB] border-[#ECEFEC] text-[#8A9590] pointer-events-none cursor-not-allowed select-none"
                         : isSelected
-                          ? "bg-[#FFFFFF] border-[#1A2A22] text-[#1A2A22] cursor-pointer"
+                          ? "bg-[#F5F8F6] border-[#8A9590] text-[#1A2A22] cursor-pointer"
                           : "bg-white border-[#DDE3DF] text-[#3F5147] hover:border-[#AEB8B2] cursor-pointer"
                       }`}
                     title={isDisabled ? "此條件與您已勾選的其他條件有衝突，已自動鎖定防呆" : undefined}
@@ -488,12 +488,12 @@ export function AdvancedCalculatorInputs({ model }: AdvancedCalculatorInputsProp
                       checked={isSelected}
                       disabled={isDisabled}
                       onChange={() => !isDisabled && toggleBuyModifier(mod.id)}
-                      className="mt-1 accent-[#1A2A22]"
+                      className="mt-1 accent-[#66736C]"
                     />
                     <div className="flex-grow font-sans">
                       <div className="font-semibold leading-tight font-sans flex items-center justify-between gap-1">
                         <span className={isDisabled ? "text-[#8A9590] line-through decoration-[#C9D2CD]" : "text-[#1A2A22]"}>{mod.text}</span>
-                        {isDisabled && <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 rounded-sm flex-shrink-0 scale-90">衝突鎖定</span>}
+                        {isDisabled && <span className="text-[9px] bg-[#EEF2F0] text-[#66736C] font-bold font-sans px-1 flex-shrink-0 scale-90">衝突鎖定</span>}
                       </div>
                       <div className="text-[10px] text-[#66736C] mt-1 leading-normal font-sans">{mod.description}</div>
                       <div className="mt-1 font-mono text-[10px] font-bold text-[#B13818]">

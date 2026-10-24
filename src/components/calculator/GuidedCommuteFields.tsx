@@ -19,7 +19,7 @@ export function GuidedCommuteFields({ guidedCommuteStation, setGuidedCommuteStat
               }}
               onBlur={event => setLocationGuardNotice(validateCommuteCompatibility(event.target.value))}
               placeholder="例如：渋谷、新宿、東京"
-              className="mt-1.5 h-11 w-full border border-[#1A2A22] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-[#00a174]"
+              className="mt-1.5 h-11 w-full border border-[#C9D2CD] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-[#00a174]"
             />
             <datalist id="commute-station-options">
               {commuteStationOptions.map(station => <option key={station} value={station}>{toJapaneseStationName(station)}駅</option>)}
@@ -32,7 +32,7 @@ export function GuidedCommuteFields({ guidedCommuteStation, setGuidedCommuteStat
                 value={guidedCommuteMinutes}
                 onChange={event => setGuidedCommuteMinutes(Number(event.target.value))}
                 disabled={!guidedCommuteStation}
-                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
+                className="peer h-11 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:cursor-not-allowed disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
               >
                 <option value={15}>15 分內</option>
                 <option value={20}>20 分內</option>

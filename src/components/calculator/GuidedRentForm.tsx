@@ -157,14 +157,14 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
     aiInputLoading,
     aiInputError,
   } = model;
-  return (<div className="space-y-5 border-b border-[#1A2A22] bg-[#e6f6f1] p-6 font-sans lg:col-span-5 lg:border-b-0 lg:border-r md:p-8">
-    <div className="grid grid-cols-2 border border-[#9ee2cf] bg-white" role="tablist" aria-label="租屋需求輸入方式">
+  return (<div className="calc-form-pane space-y-5 border-b border-[#DDE3DF] p-6 font-sans lg:col-span-5 lg:border-b-0 lg:border-r md:p-8">
+    <div className="grid grid-cols-2 border border-[#DDE3DF] bg-white" role="tablist" aria-label="租屋需求輸入方式">
       <button
         type="button"
         role="tab"
         aria-selected={rentInputMode === "ai"}
         onClick={() => setRentInputMode("ai")}
-        className={`min-h-11 border-r border-[#9ee2cf] px-3 text-xs font-bold transition-colors ${rentInputMode === "ai" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+        className={`min-h-11 border-r border-[#DDE3DF] px-3 font-serif text-xs font-bold transition-colors ${rentInputMode === "ai" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
       >
         描述需求
       </button>
@@ -173,7 +173,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         role="tab"
         aria-selected={rentInputMode === "structured"}
         onClick={() => setRentInputMode("structured")}
-        className={`min-h-11 px-3 text-xs font-bold transition-colors ${rentInputMode === "structured" ? "bg-[#00a174] text-white" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+        className={`min-h-11 px-3 font-serif text-xs font-bold transition-colors ${rentInputMode === "structured" ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
       >
         選擇條件
       </button>
@@ -188,7 +188,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
             <legend className="text-xs font-bold text-[#3F5147]">在日身分／簽證種類</legend>
             <span className="text-[9px] text-[#66736C]">影響房東審查與可承租房源</span>
           </div>
-          <div className="relative mt-1.5 flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
+          <div className="relative mt-1.5 flex h-12 min-w-0 items-center border border-[#C9D2CD] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
             <select
               aria-label="在日身分／簽證種類"
               value={guidedVisaType}
@@ -220,13 +220,14 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
 
         <fieldset>
           <legend className="text-xs font-bold text-[#3F5147]">希望格局</legend>
-          <div className="mt-1.5 grid h-11 grid-cols-5 border border-[#1A2A22] bg-white">
+          <div className="mt-1.5 grid h-11 grid-cols-5 border border-[#C9D2CD] bg-white">
             {(["r1", "k1", "ldk1", "ldk2", "ldk3"] as const).map((type, index) => (
               <button
                 key={type}
                 type="button"
+                aria-pressed={calcRoomType === type}
                 onClick={() => selectGuidedRoomType(type)}
-                className={`${index > 0 ? "border-l border-[#1A2A22]" : ""} text-[11px] font-bold ${calcRoomType === type ? "bg-[#1A2A22] text-white" : "hover:bg-[#F5F8F6]"}`}
+                className={`${index > 0 ? "border-l border-[#DDE3DF]" : ""} font-sans text-[11px] font-bold transition-colors ${calcRoomType === type ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
               >
                 {ROOM_TYPE_LABEL[type]}
               </button>
@@ -239,7 +240,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         <label className="block text-[11px] font-bold text-[#3F5147]">
           建築結構
           <div className="relative mt-1.5">
-            <select value={guidedStructure} onChange={event => selectGuidedStructure(event.target.value)} className="peer h-10 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
+            <select value={guidedStructure} onChange={event => selectGuidedStructure(event.target.value)} className="peer h-10 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174]">
               <option value="">不限結構</option>
               <option value="木造">木造</option>
               <option value="鐵骨造">鐵骨造（S 造）</option>
@@ -256,7 +257,7 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
           type="button"
           onClick={analyzeStructuredRent}
           disabled={analysisLoading}
-          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#1A2A22] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3F5147] disabled:bg-[#AEB8B2] font-sans"
+          className="flex min-h-12 w-full items-center justify-center gap-2 bg-[#00A174] px-5 font-serif text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:bg-[#AEB8B2]"
         >
           {analysisLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Calculator className="h-4 w-4" />}
           {analysisLoading ? "正在對標市場與計算路線…" : aiResult ? "依目前條件重新分析" : "AI 分析可行性與推薦車站"}

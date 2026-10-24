@@ -352,7 +352,7 @@ export function RentalMarketSection({ model }: RentalMarketSectionProps) {
                         </div>
 
                         {/* 評定解析（綜合加總與租金比對之結論） */}
-                        <div className="border border-[#DDE3DF] border-l-4 border-l-[#00A174] bg-[#F5F8F6] p-3 text-xs text-[#1A2A22]">
+                        <div className="border border-[#DDE3DF] bg-[#F2FBF7] p-3 text-xs text-[#1A2A22]">
                           <div className="mb-2 flex items-center gap-1.5 font-bold text-[#00A174]">
                             <span>評定解析・重點摘要</span>
                           </div>

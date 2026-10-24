@@ -82,11 +82,11 @@ export function SaleSummarySection({ model }: SaleSummarySectionProps) {
               <div
                 key={card.key}
                 className={`p-3 sm:p-3.5 ${card.primary
-                  ? "border-2 border-[#00A174] bg-[#F5F8F6]"
+                  ? "border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-white"
                   : "border border-[#DDE3DF] bg-white"}`}
               >
                 <div className="flex items-center gap-2">
-                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center ${card.primary ? "bg-[#00A174] text-white" : "bg-[#E6F6F1] text-[#00A174]"}`}>
+                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center bg-[#E6F6F1] text-[#00A174]`}>
                     <Icon className="h-3.5 w-3.5" />
                   </span>
                   <p className={`text-[11px] font-bold ${card.primary ? "text-[#00A174]" : "text-[#66736C]"}`}>

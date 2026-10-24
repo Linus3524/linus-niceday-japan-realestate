@@ -290,7 +290,7 @@ function Report({ item, criteria, index, expanded, onToggle, onApply }: {
             <div className="max-w-xl">
               <p className="text-[10px] text-[#3F5147] leading-relaxed font-sans">套用後會把地區、車站、格局與需求帶入下方計算器，繼續調整月租明細。</p>
             </div>
-            <button onClick={onApply} className="bg-[#1A2A22] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#00a174] whitespace-nowrap">套用此方案到下方計算器</button>
+            <button onClick={onApply} className="bg-[#00A174] text-white px-4 py-2.5 font-serif text-xs font-bold transition-colors hover:bg-[#008F67] whitespace-nowrap">套用此方案到下方計算器</button>
           </div>
         </div>
       )}
@@ -380,7 +380,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
         <p className="text-[10px] font-bold text-[#66736C]">
           找到 {recommendations.length} 個合適車站・分布於 {groups.length} 個行政區
         </p>
-        <div className="inline-flex items-center border border-[#DDE3DF] bg-[#F5F8F6] p-1">
+        <div className="inline-flex items-center border border-[#DDE3DF] bg-white p-1">
           <span className="px-2 text-[9px] font-bold text-[#8A9590]">排序</span>
           {(Object.keys(SORT_LABEL) as SortMode[]).map(mode => (
             <button
@@ -392,8 +392,8 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
               }}
               aria-pressed={sortMode === mode}
               aria-label={mode === "rent" ? "依租金由低至高排序" : mode === "commute" ? "依通勤時間排序" : "依推薦度排序"}
-              className={`cursor-pointer px-3 py-1.5 text-[10px] font-bold transition-colors ${
-                sortMode === mode ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:text-[#00A174]"
+              className={`cursor-pointer px-3 py-1.5 font-serif text-[10px] font-bold transition-colors ${
+                sortMode === mode ? "bg-[#F0FAF6] text-[#00A174]" : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
               }`}
             >
               {SORT_LABEL[mode]}
@@ -410,7 +410,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
             <button
               type="button"
               onClick={() => toggleDistrict(district)}
-              className="flex w-full items-center justify-between gap-4 border-l-4 border-[#00A174] bg-[#F5F8F6] px-4 py-3 text-left transition-colors hover:bg-[#EAF4EF]"
+              className="flex w-full items-center justify-between gap-4 border-l-[3px] border-[#00A174] bg-[linear-gradient(to_right,#F2FBF7,#fff)] px-4 py-3 text-left transition-colors hover:bg-[#F5F8F6]"
               aria-expanded={districtExpanded}
             >
               <span>

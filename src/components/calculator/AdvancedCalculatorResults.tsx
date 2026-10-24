@@ -105,9 +105,9 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
   } = model;
   return (<div className="xl:col-span-5 xl:sticky xl:top-8 space-y-6">
     {/* Results Display */}
-    <div className="border border-[#1A2A22] bg-white p-6 relative">
-      <div className="absolute top-0 right-4 bg-[#00a174] text-white px-2.5 py-0.5 text-xs select-none font-sans flex items-center gap-1">
-        <Sparkles className="w-3 h-3 text-white" />
+    <div className="border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-white p-6 relative">
+      <div className="absolute top-0 right-4 bg-[#E6F6F1] text-[#00A174] px-2.5 py-0.5 text-xs font-bold select-none font-sans flex items-center gap-1">
+        <Sparkles className="w-3 h-3" />
         <span>精算結果</span>
       </div>
 
@@ -118,7 +118,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           </h4>
 
           {/* The Big Number */}
-          <div className="border-b border-[#1A2A22] pb-4 mb-4">
+          <div className="border-b border-[#DDE3DF] pb-4 mb-4">
             <div className="flex items-baseline gap-1 font-sans">
               <span className="text-3xl md:text-4xl font-extrabold text-[#00a174] tracking-tight font-mono">
                 {getCalculatedRent().toLocaleString()}
@@ -353,7 +353,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 handleTabChange("chat");
                 handleSendMessage(undefined, messageText);
               }}
-              className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#00a174] cursor-pointer text-xs uppercase transition-colors"
+              className="w-full bg-[#00A174] text-white py-3 px-4 font-serif font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
               id="calc-send-to-ai"
             >
               帶入此條件諮詢 AI 顧問 ➔
@@ -372,7 +372,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
           </h4>
 
           {/* The Big Number */}
-          <div className="border-b border-[#1A2A22] pb-4 mb-4">
+          <div className="border-b border-[#DDE3DF] pb-4 mb-4">
             <div className="flex items-baseline gap-1 font-sans">
               <span className="text-3xl md:text-4xl font-extrabold text-[#00a174] tracking-tight font-mono">
                 {(getCalculatedBuyPrice() / 10000).toLocaleString()}
@@ -529,7 +529,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 handleTabChange("chat");
                 handleSendMessage(undefined, messageText);
               }}
-              className="w-full bg-[#1A2A22] text-white py-3 px-4 font-bold tracking-wider hover:bg-[#00a174] cursor-pointer text-xs uppercase transition-colors"
+              className="w-full bg-[#00A174] text-white py-3 px-4 font-serif font-bold tracking-wider hover:bg-[#008F67] cursor-pointer text-xs uppercase transition-colors"
               id="calc-send-to-ai"
             >
               帶入此條件諮詢 AI 顧問 ➔
@@ -552,7 +552,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
     </div>
 
     {/* Calculator Guide Card */}
-    {(calcMode === "buy" || aiResult?.advisorAdvice) && <div className="bg-white border border-[#1A2A22] p-5 space-y-3 font-sans">
+    {(calcMode === "buy" || aiResult?.advisorAdvice) && <div className="bg-white border border-[#DDE3DF] p-5 space-y-3 font-sans">
       <h5 className="font-bold text-sm text-[#1A2A22] flex items-center gap-1.5">
         <Smile className="w-4.5 h-4.5 text-[#00a174]" />
         {calcMode === "rent" ? (

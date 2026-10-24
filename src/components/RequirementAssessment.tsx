@@ -34,7 +34,7 @@ export function RequirementAssessment({ criteria, recommendations }: {
 
   return (
     <div className="mt-6 space-y-4">
-      <section className="border border-[#1A2A22] bg-white p-4" aria-labelledby="requirement-assessment-title">
+      <section className="border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-white p-4" aria-labelledby="requirement-assessment-title">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">

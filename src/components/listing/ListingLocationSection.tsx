@@ -110,7 +110,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
                   type="button"
                   onClick={() => void handleSaveAddress()}
                   disabled={locationLoading || !addressInput.trim()}
-                  className="inline-flex items-center gap-1 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#00A174] disabled:opacity-50 transition"
+                  className="inline-flex items-center gap-1 border border-[#00A174] bg-[#00A174] px-3 py-1.5 font-serif text-xs font-semibold text-white hover:bg-[#008F67] disabled:opacity-50 transition"
                 >
                   {locationLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
                   儲存並重新搜尋
@@ -164,7 +164,7 @@ export function ListingLocationSection({ model }: ListingLocationSectionProps) {
             <button
               type="button"
               onClick={() => void loadLocationContext(result)}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-[#00A174] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#00A174]"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-[#00A174] bg-white px-3 py-1.5 font-serif text-xs font-semibold text-[#00A174] transition hover:bg-[#F0FAF6]"
             >
               <RefreshCw className="h-3.5 w-3.5" /> 重新載入設施與地圖
             </button>

@@ -48,40 +48,23 @@ export function CalculatorTab(props: CalculatorTabProps) {
               id="pane-calculator"
             >
               {/* Rent vs Buy vs Listing switcher */}
-              <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 font-sans" id="calc-mode-switcher">
-                <button
-                  onClick={() => setCalcMode("rent")}
-                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
-                    calcMode === "rent"
-                      ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
-                  }`}
-                >
-                  <Calculator className="w-4 h-4 shrink-0" />
-                  租屋預算健檢
-                </button>
-                <button
-                  onClick={() => setCalcMode("buy")}
-                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
-                    calcMode === "buy"
-                      ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
-                  }`}
-                >
-                  <Landmark className="w-4 h-4 shrink-0" />
-                  買房資金試算
-                </button>
-                <button
-                  onClick={() => setCalcMode("listing")}
-                  className={`flex-1 py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 md:gap-2 transition-all cursor-pointer font-sans ${
-                    calcMode === "listing"
-                      ? "bg-[#00a174] text-white"
-                      : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
-                  }`}
-                >
-                  <FileSearch className="w-4 h-4 shrink-0" />
-                  物件圖紙分析
-                </button>
+              <div className="calc-switch" id="calc-mode-switcher">
+                {([
+                  ["rent", Calculator, "租屋預算健檢"],
+                  ["buy", Landmark, "買房資金試算"],
+                  ["listing", FileSearch, "物件圖紙分析"],
+                ] as const).map(([mode, Icon, label]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    aria-pressed={calcMode === mode}
+                    onClick={() => setCalcMode(mode)}
+                    className="ui-switch-large flex min-h-12 items-center justify-center gap-1.5 px-2 py-3 font-serif text-xs font-bold cursor-pointer md:gap-2 md:text-sm"
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {label}
+                  </button>
+                ))}
               </div>
 
               {/* Preface Intro for Calc */}
@@ -146,9 +129,9 @@ export function CalculatorTab(props: CalculatorTabProps) {
               <div hidden={calcMode === "listing"}>
 
               {/* Quick budget health check */}
-              <section className="border border-[#1A2A22] bg-white" aria-label={calcMode === "rent" ? "租屋需求與市場分析" : "購屋預算快速試算"}>
+              <section className="border border-[#DDE3DF] bg-white" aria-label={calcMode === "rent" ? "租屋需求與市場分析" : "購屋預算快速試算"}>
                 {calcMode === "buy" && (
-                  <div className="border-b border-[#9ee2cf] bg-[#e6f6f1] px-5 py-4 text-[#1A2A22] md:px-6">
+                  <div className="calc-panel-head px-5 py-4 text-[#1A2A22] md:px-6">
                     <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00a174] font-sans">
                       <Calculator className="h-4 w-4" /> Quick Budget Check
                     </div>
@@ -165,7 +148,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                         !aiResult ? (
                           <div className="flex min-h-[360px] h-full items-center justify-center py-10 text-center">
                             <div className="max-w-sm">
-                              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center border border-[#9ee2cf] bg-[#F5F8F6]">
+                              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center bg-[#F0FAF6]">
                                 <MapPin className="h-5 w-5 text-[#00a174]" />
                               </div>
                               <p className="mb-2 font-bold text-[#1A2A22]">分析後會依符合度列出合適車站</p>
@@ -192,7 +175,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                           {!aiResult ? (
                             <div className="flex min-h-[360px] items-center justify-center py-10 text-center">
                               <div className="max-w-sm">
-                                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center border border-[#9ee2cf] bg-[#F5F8F6]">
+                                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center bg-[#F0FAF6]">
                                   <MapPin className="h-5 w-5 text-[#00a174]" />
                                 </div>
                                 <p className="mb-2 font-bold text-[#1A2A22]">分析後會依符合度列出合適車站</p>
@@ -221,7 +204,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                 )}
               </section>
 
-              <div className="flex flex-col gap-3 border border-[#DDE3DF] bg-[#FAFCFB] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 border border-[#DDE3DF] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs font-bold text-[#1A2A22]">
                     {calcMode === "rent" ? "查看租屋試算與詳細計算明細" : "查看買房試算與詳細計算明細"}
@@ -236,7 +219,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   type="button"
                   onClick={() => setShowAdvancedTools(current => !current)}
                   aria-expanded={showAdvancedTools}
-                  className="flex min-h-10 items-center justify-center gap-2 border border-[#1A2A22] bg-white px-4 text-xs font-bold text-[#1A2A22] hover:border-[#00a174] hover:text-[#00a174]"
+                  className="flex min-h-10 items-center justify-center gap-2 border border-[#C9D2CD] bg-white px-4 text-xs font-bold text-[#3F5147] transition-colors hover:border-[#00a174] hover:text-[#00a174]"
                 >
                   {showAdvancedTools ? "收起計算明細" : "展開計算明細"}
                   <ChevronDown className={`h-4 w-4 transition-transform ${showAdvancedTools ? "rotate-180" : ""}`} />

@@ -485,9 +485,9 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           <button
             type="button"
             onClick={() => setMapMode("interactive")}
-            className={`px-3 py-1.5 text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 font-serif text-xs font-bold transition-all ${
               mapMode === "interactive"
-                ? "bg-[#1A2A22] text-white shadow-sm"
+                ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]"
                 : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
@@ -496,9 +496,9 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           <button
             type="button"
             onClick={() => setMapMode("google")}
-            className={`px-3 py-1.5 text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 font-serif text-xs font-bold transition-all ${
               mapMode === "google"
-                ? "bg-[#1A2A22] text-white shadow-sm"
+                ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]"
                 : "bg-white text-[#66736C] hover:bg-[#F5F8F6]"
             }`}
           >
@@ -528,7 +528,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       </div>
 
       {/* 地圖主體容器 */}
-      <div className="relative h-72 w-full overflow-hidden border border-[#1A2A22] bg-[#EEF2F0] md:h-[400px]">
+      <div className="relative h-72 w-full overflow-hidden border border-[#DDE3DF] bg-[#EEF2F0] md:h-[400px]">
         {mapMode === "interactive" ? (
           <div ref={mapContainerRef} className="h-full w-full" style={{ zIndex: 1 }} />
         ) : (
@@ -554,14 +554,14 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center gap-1 px-2.5 py-1 text-xs font-bold transition-all ${
+              className={`flex items-center gap-1 px-2.5 py-1 font-serif text-xs font-bold transition-all ${
                 activeCategory === cat.id
-                  ? "bg-[#00a174] text-white"
+                  ? "border border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
                   : "border border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
               }`}
             >
               <span>{cat.label}</span>
-              <span className={`text-[10px] ${activeCategory === cat.id ? "text-white/80" : "text-[#66736C]"}`}>
+              <span className={`text-[10px] ${activeCategory === cat.id ? "text-[#00A174]/80" : "text-[#66736C]"}`}>
                 ({cat.count})
               </span>
             </button>

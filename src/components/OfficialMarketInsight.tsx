@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, TrendingUp, Building2, Footprints, BarChart3, Sparkles, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, TrendingUp, Building2, Footprints, BarChart3, Check } from "lucide-react";
 import type { LayoutCode } from "../data/housingMarket";
 import { getBuyMarketEstimate, getModeledBuyYieldRate } from "../data/buyMarket";
 import { rentRates } from "../data/housingMarket";
 import { toJapanesePlaceName } from "../lib/transit";
 import { TAMA_CITIES, getWalkTierMultipliers } from "../lib/calcRules";
+import { AdviceNote } from "./AdviceNote";
 import type { BuyModifierId } from "../data/buyHouseData";
 
 interface OfficialMarketInsightProps {
@@ -265,7 +266,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
         <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#ECEFEC] pb-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#00A174]">
+              <span className="inline-flex items-center gap-1 bg-[#E6F6F1] px-2 py-0.5 text-[11px] font-bold text-[#00A174]">
                 <TrendingUp className="w-3 h-3" />
                 國土交通省成約行情
               </span>
@@ -301,7 +302,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-[#3F5147]">成約價中位數</span>
                 {isOfficial && (
-                  <span className="text-[10px] bg-white border border-[#DDE3DF] px-1.5 py-0.5 rounded-xs text-[#00A174] font-medium font-mono shrink-0">
+                  <span className="text-[10px] bg-white border border-[#DDE3DF] px-1.5 py-0.5 text-[#00A174] font-medium font-mono shrink-0">
                     {currentEstimate.sampleCount.toLocaleString()} 筆樣本
                   </span>
                 )}
@@ -378,7 +379,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                     <div className="flex items-center justify-between text-[11px] font-bold">
                       <span className={isSelected ? "text-[#00A174]" : "text-[#3F5147]"}>{item.name}</span>
                       {isSelected && (
-                        <span className="text-[9px] bg-[#00A174] text-white px-1 py-0.2 rounded-xs">當前</span>
+                        <span className="text-[9px] bg-[#E6F6F1] text-[#00A174] font-bold px-1 py-0.2">當前</span>
                       )}
                     </div>
                     <div className="mt-1.5 font-jost text-base font-bold text-[#1A2A22]">
@@ -467,7 +468,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                         <span className={`font-bold ${isSelected ? "text-[#00A174]" : "text-[#1A2A22]"}`}>
                           {tier.label}
                         </span>
-                        <span className={`text-[9px] px-1.5 py-0.2 rounded-xs font-medium ${diffColor}`}>
+                        <span className={`text-[9px] px-1.5 py-0.2 font-medium ${diffColor}`}>
                           {diffLabel}
                         </span>
                       </div>
@@ -511,15 +512,9 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
           </div>
 
           {/* Linus 實務觀點提示（動態適配地區與當前數據） */}
-          <div className="border-l-4 border-[#00A174] bg-[#F5F8F6] p-3 text-xs leading-relaxed text-[#1A2A22]">
-            <div className="flex items-center gap-1.5 font-bold text-[#00A174] mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{insight.consultantTitle}</span>
-            </div>
-            <p className="text-[11px] text-[#3F5147] leading-relaxed">
-              {insight.consultantText}
-            </p>
-          </div>
+          <AdviceNote title={insight.consultantTitle} compact>
+            {insight.consultantText}
+          </AdviceNote>
         </div>
       )}
     </div>

@@ -12,7 +12,7 @@ export function GuidedBudgetFields({ rentMonthlyBudgetMin, setRentMonthlyBudgetM
   return (<><fieldset>
           <legend className="text-xs font-bold text-[#3F5147]">每月總預算（含管理費）</legend>
           <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-            <div className="relative flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
+            <div className="relative flex h-12 min-w-0 items-center border border-[#C9D2CD] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
               <select
                 aria-label="每月最低預算"
                 value={rentMonthlyBudgetMin}
@@ -32,7 +32,7 @@ export function GuidedBudgetFields({ rentMonthlyBudgetMin, setRentMonthlyBudgetM
               <ChevronDown className={guidedSelectChevronClass} />
             </div>
             <span aria-hidden="true" className="font-mono text-base font-bold text-[#66736C]">～</span>
-            <div className="relative flex h-12 min-w-0 items-center border border-[#1A2A22] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
+            <div className="relative flex h-12 min-w-0 items-center border border-[#C9D2CD] bg-white focus-within:ring-1 focus-within:ring-[#00a174]">
               <select
                 aria-label="每月最高預算"
                 value={rentMonthlyBudget}

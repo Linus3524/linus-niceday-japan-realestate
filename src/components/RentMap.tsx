@@ -234,7 +234,7 @@ export const RentMap: React.FC<RentMapProps> = ({
 
     if (isSelected) {
       // Keep selection emphasis inside the tile so edge items are never clipped by the scroll viewport.
-      border = "border-[#1A2A22] shadow-[2px_2px_0px_0px_rgba(26,42,34,1)] z-10 ring-2 ring-inset ring-[#1A2A22]";
+      border = "border-[#00A174] z-10 ring-2 ring-inset ring-[#00A174]";
     }
 
     return { bg, border, text };
@@ -256,7 +256,7 @@ export const RentMap: React.FC<RentMapProps> = ({
   const regionDisplayName = toJapanesePrefectureName;
 
   return (
-    <div className="border border-[#1A2A22] bg-white p-5 space-y-5" id="interactive-rent-map">
+    <div className="border border-[#DDE3DF] bg-white p-5 space-y-5" id="interactive-rent-map">
       {/* Map Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#DDE3DF] pb-3">
         <div className="space-y-1">
@@ -319,7 +319,7 @@ export const RentMap: React.FC<RentMapProps> = ({
               const firstDistrict = rentRates.find(rate => rate.region === firstRegion);
               if (firstDistrict) onSelectDistrict(firstDistrict.district);
             }}
-            className={`min-h-9 px-2 text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#1A2A22] text-white" : "bg-white text-[#3F5147] hover:bg-[#e6f6f1]"}`}
+            className={`min-h-9 px-2 font-serif text-[11px] font-bold transition-colors ${activeAreaGroup === group ? "bg-[#F0FAF6] text-[#00A174] shadow-[inset_0_-2px_0_#00A174]" : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"}`}
           >
             {group}
           </button>
@@ -343,8 +343,8 @@ export const RentMap: React.FC<RentMapProps> = ({
               lang="ja"
               className={`font-jp px-2.5 py-1.5 text-xs font-bold transition-all cursor-pointer border ${
                 isActive
-                  ? "bg-[#00a174] text-white border-[#00a174]"
-                  : "bg-white text-[#3F5147] border-[#C9D2CD] hover:border-[#AEB8B2] hover:text-[#1A2A22]"
+                  ? "bg-[#F0FAF6] text-[#00A174] border-[#00A174]"
+                  : "bg-white text-[#3F5147] border-[#DDE3DF] hover:bg-[#F5F8F6]"
               }`}
             >
               {displayName}
@@ -460,9 +460,9 @@ export const RentMap: React.FC<RentMapProps> = ({
                       <MapPin className="w-3.5 h-3.5 text-[#00a174] shrink-0" />
                       <span lang="ja" className="font-jp">{toJapanesePlaceName(activeWard.district)}</span>
                       {hoveredWard ? (
-                        <span className="text-[9px] bg-[#1A2A22] text-white px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
+                        <span className="text-[9px] bg-[#F5F8F6] text-[#3F5147] px-1 py-0.5 font-normal tracking-normal scale-90">預覽中</span>
                       ) : (
-                        <span className="text-[9px] bg-[#00a174] text-white px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
+                        <span className="text-[9px] bg-[#E6F6F1] text-[#00A174] px-1 py-0.5 font-normal tracking-normal scale-90">已選定</span>
                       )}
                     </span>
                     <span className="text-[10px] text-[#66736C] font-bold flex items-center gap-1.5">

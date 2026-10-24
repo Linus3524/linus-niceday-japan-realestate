@@ -51,7 +51,7 @@ export function RentalSummarySection({ model }: RentalSummarySectionProps) {
     {/* 3 大金額重點卡片 */}
     <div className="grid gap-3 sm:grid-cols-3">
       {/* 每月總額（核心重點） */}
-      <div className="border-2 border-[#1A2A22] bg-[#FFFFFF] p-4">
+      <div className="border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-[#FFFFFF] p-4">
         <p className="text-[11px] font-bold text-[#1A2A22]">每月總負擔（總賃料）</p>
         <p className="mt-1 text-2xl font-black text-[#00A174]">
           {formatYen(totalMonthlyCost)}

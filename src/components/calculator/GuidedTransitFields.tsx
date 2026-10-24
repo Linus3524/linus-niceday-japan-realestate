@@ -25,7 +25,7 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
                 value=""
                 onChange={event => addGuidedLine(event.target.value)}
                 disabled={!guidedDistrictSelections.length}
-                className="peer h-11 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
+                className="peer h-11 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-xs outline-none focus:ring-1 focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6] disabled:text-[#8A9590]"
               >
                 <option value="">＋ 新增希望線路</option>
                 {guidedLineOptions.map(line => <option key={line} value={line} disabled={guidedLineSelections.some(selected => sameGuidedLine(selected, line))}>{toJapaneseLineName(line)}</option>)}
@@ -66,13 +66,13 @@ export function GuidedTransitFields({ addGuidedLine, guidedDistrictSelections, g
                   }}
                   disabled={!guidedDistrictSelections.length}
                   placeholder="輸入站名"
-                  className="h-11 w-full border border-r-0 border-[#1A2A22] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-inset focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6]"
+                  className="h-11 w-full border border-r-0 border-[#C9D2CD] bg-white px-3 text-xs outline-none focus:ring-1 focus:ring-inset focus:ring-[#00a174] disabled:border-[#C9D2CD] disabled:bg-[#F5F8F6]"
                 />
                 <datalist id="guided-station-options">
                   {guidedLocationStationOptions.map(station => <option key={station.name} value={station.name}>{toJapaneseStationName(station.name)}駅</option>)}
                 </datalist>
               </div>
-              <button type="button" onClick={addGuidedStation} disabled={!guidedStationDraft.trim()} className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#1A2A22] bg-[#1A2A22] text-white hover:bg-[#008C68] disabled:cursor-not-allowed disabled:border-[#AEB8B2] disabled:bg-[#AEB8B2]" aria-label="加入希望車站">
+              <button type="button" onClick={addGuidedStation} disabled={!guidedStationDraft.trim()} className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#C9D2CD] bg-white text-[#00A174] transition-colors hover:bg-[#F0FAF6] disabled:cursor-not-allowed disabled:bg-[#F5F8F6] disabled:text-[#AEB8B2]" aria-label="加入希望車站">
                 <Plus className="h-4 w-4" />
               </button>
             </div>

@@ -43,10 +43,10 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
     buyFeeRate,
   } = model;
   return (<div className="grid grid-cols-1 lg:grid-cols-12">
-    <div className="space-y-5 border-b border-[#DDE3DF] bg-[#F5F8F6] p-5 lg:col-span-5 lg:border-b-0 lg:border-r md:p-6">
+    <div className="calc-form-pane space-y-5 border-b border-[#DDE3DF] p-5 lg:col-span-5 lg:border-b-0 lg:border-r md:p-6">
       <label className="block text-xs font-bold text-[#3F5147]">
         可準備的購屋現金
-        <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
+        <div className="mt-1.5 flex h-12 items-center border border-[#C9D2CD] bg-white px-3 focus-within:ring-1 focus-within:ring-[#00a174]">
           <NumericInput
             min={0}
             step={100}
@@ -61,7 +61,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
       </label>
       <label className="block text-xs font-bold text-[#3F5147]">
         每月可接受的本息還款
-        <div className="mt-1.5 flex h-12 items-center border border-[#1A2A22] bg-white px-3">
+        <div className="mt-1.5 flex h-12 items-center border border-[#C9D2CD] bg-white px-3 focus-within:ring-1 focus-within:ring-[#00a174]">
           <NumericInput
             min={0}
             step={1}
@@ -100,7 +100,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
         <p className={`mt-1 ${informationStyle.note}`}>依現金與月付能力取較低上限，並保留約 10% 緩衝。</p>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-px border border-[#DDE3DF] bg-[#DDE3DF] sm:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-px border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-[#DDE3DF] sm:grid-cols-3">
         <div className="bg-white p-4">
           <p className={informationStyle.label}>自備款概算</p>
           <p className="mt-1 font-mono text-lg font-bold text-[#1A2A22]">{formatManYen(affordableDownPayment, 0)}</p>
@@ -118,7 +118,7 @@ export function BuyBudgetPanel({ model }: BuyBudgetPanelProps) {
         </div>
       </div>
 
-      <div className="mt-4 border-l-4 border-[#00a174] bg-[#e6f6f1] p-3 text-xs leading-relaxed text-[#245746]">
+      <div className="mt-4 border border-[#DDE3DF] bg-[#F2FBF7] p-3 text-xs leading-relaxed text-[#3F5147]">
         這個結果只回答「資金上大致負擔得起多少」，尚未計入管理費、修繕積立金、固定資產稅與個別銀行審查。地區行情與物件條件可在下方進階工具繼續比較。
       </div>
     </div>

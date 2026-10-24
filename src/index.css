@@ -5818,3 +5818,25 @@ button.ui-switch-large:focus-visible {
   button.ui-switch-large { transition: none; }
   .buy-journey-route-button, .buy-journey-route-icon, .buy-journey-marker { transition: none; }
 }
+
+/* 費用試算：上排大型切換列（租屋／買房／圖紙、描述需求／選擇條件）。
+   沿用 ui-switch-large 的半漸層，外框只留一圈細線，選中加品牌綠底線，跟買房分頁的融資／民宿切換一致。 */
+.calc-switch {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  border: 1px solid #DDE3DF;
+  background: #fff;
+}
+.calc-switch > button { border-bottom: 2px solid transparent; }
+.calc-switch > button + button { border-left: 1px solid #DDE3DF; }
+.calc-switch > button:is(.is-active, [aria-current="page"], [aria-pressed="true"]) { border-bottom-color: var(--color-primary); }
+
+/* 費用試算：區塊標題列。取代原本整條淡綠／黑底的表頭，改白底到極淡綠的半漸層＋細分隔線。 */
+.calc-panel-head {
+  border-bottom: 1px solid #DDE3DF;
+  background: linear-gradient(to bottom, #F2FBF7 0%, #fff 100%);
+}
+
+/* 費用試算：左側條件表單欄。原本整欄淡綠色塊，改成上方一抹淡綠、往下漸白。 */
+.calc-form-pane { background: linear-gradient(to bottom, #F2FBF7 0%, #fff 260px); }

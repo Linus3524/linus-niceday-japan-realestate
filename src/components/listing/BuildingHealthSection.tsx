@@ -55,9 +55,9 @@ export function BuildingHealthSection({ model }: BuildingHealthSectionProps) {
             ))}
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
+          <div className="mt-3 flex items-center justify-between gap-3 border border-[#DDE3DF] bg-[#F2FBF7] p-3">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#1A2A22] text-white">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-[#E6F6F1] text-[#00A174]">
                 <Calculator className="h-3.5 w-3.5" />
               </span>
               <div>

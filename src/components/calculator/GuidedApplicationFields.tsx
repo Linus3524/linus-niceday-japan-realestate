@@ -9,26 +9,26 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
             <button
               type="button"
               onClick={() => setGuidedApplicationChannel("domestic")}
-              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
-                  ? "border-[#00A174] bg-[#00A174] text-white shadow-xs"
-                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-serif transition-all cursor-pointer ${guidedApplicationChannel === "domestic"
+                  ? "border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
+                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
                 }`}
             >
               <span className="text-xs font-bold">日本境內審查</span>
-              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "domestic" ? "text-white/80" : "text-[#8A9590]"}`}>
+              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "domestic" ? "text-[#3F5147]" : "text-[#8A9590]"}`}>
                 已在日 · 可看房／房源選擇較多
               </span>
             </button>
             <button
               type="button"
               onClick={() => setGuidedApplicationChannel("overseas")}
-              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
-                  ? "border-[#00A174] bg-[#00A174] text-white shadow-xs"
-                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#7DBEAA] hover:bg-[#F3FAF7]"
+              className={`flex min-h-12 flex-col items-center justify-center border px-3 py-2 text-center font-serif transition-all cursor-pointer ${guidedApplicationChannel === "overseas"
+                  ? "border-[#00A174] bg-[#F0FAF6] text-[#00A174]"
+                  : "border-[#DDE3DF] bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
                 }`}
             >
               <span className="text-xs font-bold">海外跨國審查</span>
-              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "overseas" ? "text-white/80" : "text-[#8A9590]"}`}>
+              <span className={`text-[9px] mt-0.5 ${guidedApplicationChannel === "overseas" ? "text-[#3F5147]" : "text-[#8A9590]"}`}>
                 人在海外 · 限支援海審／遠端簽約
               </span>
             </button>

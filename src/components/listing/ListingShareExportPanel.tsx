@@ -110,7 +110,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           href={shareUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex shrink-0 items-center gap-1 bg-[#00A174] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#00A174]"
+          className="flex shrink-0 items-center gap-1 bg-[#00A174] px-2.5 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#008F67]"
         >
           <ExternalLink className="h-3.5 w-3.5" />
           前往
@@ -124,7 +124,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
           type="button"
           onClick={createShareLink}
           disabled={shareLoading || !shareTitle.trim()}
-          className="flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45"
+          className="flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#00A174] px-5 font-serif text-sm font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {shareLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Link2 className="h-4 w-4" />}
           {shareUrl ? "重新建立連結" : "建立連結"}
@@ -134,7 +134,7 @@ export function ListingShareExportPanel({ model }: ListingShareExportPanelProps)
         type="button"
         onClick={downloadPdf}
         disabled={pdfLoading}
-        className="flex min-h-11 flex-1 items-center justify-center gap-2 border border-[#1A2A22] bg-white px-5 text-sm font-bold text-[#1A2A22] transition-colors hover:bg-[#F5F8F6] disabled:cursor-not-allowed disabled:opacity-45"
+        className="flex min-h-11 flex-1 items-center justify-center gap-2 border border-[#C9D2CD] bg-white px-5 font-serif text-sm font-bold text-[#3F5147] transition-colors hover:border-[#00A174] hover:text-[#00A174] disabled:cursor-not-allowed disabled:opacity-45"
       >
         {pdfLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
         {pdfLoading ? "產生 PDF 中…" : "下載 PDF"}

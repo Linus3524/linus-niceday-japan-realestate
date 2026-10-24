@@ -104,7 +104,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
   const debouncedAnalyze = useDebouncedCallback(analyze, 500);
   const debouncedAnalyzeCommute = useDebouncedCallback(analyzeCommute, 500);
   return (
-    <section className="border border-[#1A2A22] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
+    <section className="border border-[#DDE3DF] bg-white p-6 font-sans md:p-8" aria-label="物件圖紙分析">
       {/* 區塊頂部標題 */}
       <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00A174]">
         <FileSearch className="h-4 w-4" /> PROPERTY LISTING DIAGNOSTICS
@@ -164,7 +164,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
         </div>
       ) : (
         /* 檔案已選取之卡片狀態 */
-        <div className="border border-[#1A2A22] bg-[#F5F8F6] p-4 md:p-5">
+        <div className="calc-form-pane border border-[#DDE3DF] p-4 md:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3.5 overflow-hidden">
               {previewImageUrl ? (
@@ -262,7 +262,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
             <button
               type="button" onClick={debouncedAnalyze}
               disabled={loading}
-              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#1A2A22] px-6 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
+              className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#00A174] px-6 font-serif text-sm font-bold text-white transition-all hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer">
               {loading ? (
                 <>
                   <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -353,7 +353,7 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
           fallbackTitle="圖紙分析結果呈現異常"
           fallbackMessage="圖紙已成功辨識，但在排版渲染特定分析項目時遇到顯示問題。請點擊重新整理畫面。"
         >
-          <div className="listing-analysis-report mt-8 space-y-6 border-t-2 border-[#1A2A22] pt-6">
+          <div className="listing-analysis-report mt-8 space-y-6 border-t-2 border-[#00A174] pt-6">
           {/* 物件標題 */}
           <div className="border-b border-[#DDE3DF] pb-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#00A174]">
@@ -579,11 +579,11 @@ export function ListingHealthCheck({ sharedId }: ListingHealthCheckProps = {}) {
                 value={commuteDestination}
                 onChange={event => setCommuteDestination(event.target.value)}
                 onKeyDown={event => { if (event.key === "Enter") void analyzeCommute(); }}
-                placeholder="例如：新宿站、涩谷站、晴空塔、早稻田大學或完整地址" className="min-h-11 flex-1 border border-[#8A9590] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
+                placeholder="例如：新宿站、涩谷站、晴空塔、早稻田大學或完整地址" className="min-h-11 flex-1 border border-[#C9D2CD] px-3.5 text-sm text-[#1A2A22] outline-none transition-colors focus:border-[#00A174]"/>
               <button
                 type="button" onClick={debouncedAnalyzeCommute}
                 disabled={!commuteDestination.trim() || commuteLoading || locationLoading || (!locationContext?.stationWalks.length && !result.extracted.station)}
-                className="flex min-h-11 items-center justify-center gap-2 bg-[#1A2A22] px-5 text-xs font-bold text-white transition-colors hover:bg-[#3F5147] disabled:cursor-not-allowed disabled:opacity-45">
+                className="flex min-h-11 items-center justify-center gap-2 bg-[#00A174] px-5 font-serif text-xs font-bold text-white transition-colors hover:bg-[#008F67] disabled:cursor-not-allowed disabled:opacity-45">
                 {commuteLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
                 {commuteLoading ? "計算中…" : "計算門到門通勤"}
               </button>
@@ -677,8 +677,8 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
                     onClick={() => setSelectedRouteIndex(idx)}
                     className={`text-left p-3 transition-all border ${
                       isSelected
-                        ? "border-[#00A174] bg-[#E6F6F1] shadow-sm ring-1 ring-[#00A174]"
-                        : "border-[#DDE3DF] bg-white hover:border-[#AEB8B2] hover:bg-[#FAFCFB]"
+                        ? "border-[#00A174] bg-[#F0FAF6]"
+                        : "border-[#DDE3DF] bg-white hover:bg-[#F5F8F6]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1.5">
@@ -687,7 +687,7 @@ function ListingCommuteResultSection({ commute }: { commute: ListingCommuteResul
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 ${
                         isDirect
-                          ? "bg-[#00A174] text-white"
+                          ? "border border-[#00A174] bg-white text-[#00A174]"
                           : isLeastTransfers
                           ? "bg-[#E6F6F1] text-[#00A174]"
                           : "bg-[#EEF2F0] text-[#66736C]"

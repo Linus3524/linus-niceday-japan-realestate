@@ -19,7 +19,7 @@ export function GuidedDistrictFields({ addGuidedDistrict, guidedDistrictSelectio
               id="guided-district-add"
               value=""
               onChange={event => addGuidedDistrict(event.target.value)}
-              className="peer h-12 w-full appearance-none border border-[#1A2A22] bg-white px-3 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#00a174]"
+              className="peer h-12 w-full appearance-none border border-[#C9D2CD] bg-white px-3 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#00a174]"
             >
               <option value="">＋ 新增希望地區</option>
               {Array.from(new Set(rentRates.map(rate => rate.region))).map(region => (
@@ -37,9 +37,9 @@ export function GuidedDistrictFields({ addGuidedDistrict, guidedDistrictSelectio
           {guidedDistrictSelections.length > 0 && (
             <div className="flex flex-wrap gap-1.5" aria-label="已選希望地區">
               {guidedDistrictSelections.map(district => (
-                <span key={district} className="inline-flex items-center gap-1 bg-[#008C68] px-2.5 py-1.5 text-[10px] font-bold text-white">
+                <span key={district} className="inline-flex items-center gap-1 border border-[#8BCDB8] bg-[#E6F6F1] px-2.5 py-1.5 text-[10px] font-bold text-[#00A174]">
                   {toJapanesePlaceName(district)}
-                  <button type="button" onClick={() => removeGuidedDistrict(district)} className="ml-0.5 text-white/75 hover:text-white" aria-label={`移除${toJapanesePlaceName(district)}`}>
+                  <button type="button" onClick={() => removeGuidedDistrict(district)} className="ml-0.5 text-[#00A174]/70 hover:text-[#00A174]" aria-label={`移除${toJapanesePlaceName(district)}`}>
                     <X className="h-3 w-3" />
                   </button>
                 </span>
