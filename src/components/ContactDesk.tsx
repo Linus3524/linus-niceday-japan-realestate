@@ -79,20 +79,22 @@ interface QrCardProps {
 
 function QrCard({ app, qrSrc, scanHint, id, copied, onCopy, mobileLink }: QrCardProps) {
   return (
-    <div className="flex flex-col items-center border border-[#DDE3DF] bg-white px-5 pb-5 pt-4">
+    <div className="@container flex flex-col items-center border border-[#DDE3DF] bg-white px-4 pb-5 pt-4">
       <p className="self-stretch text-center text-sm font-bold text-[#1A2A22]">{app}</p>
-      <img src={qrSrc} alt={`${app} 加好友 QR Code`} className="mt-3 h-44 w-44" />
+      <img src={qrSrc} alt={`${app} 加好友 QR Code`} className="mt-3 aspect-square w-full max-w-44" />
       <p className="mt-2 text-[11px] text-[#66736C]">{scanHint}</p>
-      <div className="mt-4 flex w-full items-stretch border border-[#DDE3DF]">
-        <span className="flex flex-1 items-center justify-center px-3 py-2 text-[13px] font-semibold tracking-wide text-[#1A2A22]">{id}</span>
+      <div className="mt-4 flex w-full flex-col items-stretch border border-[#DDE3DF] @[13rem]:flex-row">
+        {/* 卡片夠寬時 ID 與「複製」同一行；太窄（小螢幕）改成上下兩行，按鈕不會被擠出框外 */}
+        <span className="flex min-w-0 flex-1 items-center justify-center px-2 py-2 text-[13px] font-semibold text-[#1A2A22]">{id}</span>
         <button
           type="button"
           onClick={onCopy}
-          className="flex shrink-0 items-center gap-1 border-l border-[#DDE3DF] px-3 text-[11px] font-bold text-[#3F5147] transition-colors hover:bg-[#F0FAF6] hover:text-[#00A174]"
+          className="flex shrink-0 items-center justify-center gap-1 whitespace-nowrap border-t border-[#DDE3DF] px-2.5 py-1.5 @[13rem]:border-l @[13rem]:border-t-0 @[13rem]:py-0 text-[11px] font-bold text-[#3F5147] transition-colors hover:bg-[#F0FAF6] hover:text-[#00A174]"
           aria-label={`複製 ${app} ID`}
+          title={`複製 ${app} ID`}
         >
           {copied ? <Check className="h-3.5 w-3.5 text-[#00A174]" /> : <Copy className="h-3.5 w-3.5" />}
-          {copied ? "已複製" : "複製"}
+          <span>{copied ? "已複製" : "複製"}</span>
         </button>
       </div>
       {mobileLink && (
