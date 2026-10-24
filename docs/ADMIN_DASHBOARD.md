@@ -96,7 +96,13 @@ AI 相關功能真正被使用的次數。
 
 ### 心理測驗：你是哪種東京區民？
 
-測驗網址是 `你的網域/quiz/`。測驗程式在另一個專案（tokyo-living-persona），網站只是把 `/quiz/` 轉接過去；測驗更新時網站不用重新部署。舊網址 `tokyo-living-persona.vercel.app` 會自動轉到這裡。
+測驗網址是 `https://quiz.linusniceday.com/`。測驗程式在另一個專案（tokyo-living-persona），統計事件跨網域送回本站 `/api/track-view`；測驗更新時網站不用重新部署。
+
+舊網址都會自動轉到新網址，玩家存在舊網址的作答與圖鑑會跟著搬過去：
+
+- `tokyo-living-persona.vercel.app`、`linusniceday.com/quiz/`、舊網站的 `/quiz/` → 測驗頁開頭的小程式把紀錄帶到 `quiz.linusniceday.com`（網址 `#import=`，只補不蓋）。
+- 舊網站 `linus-niceday-japan-realestate.vercel.app` 的其他網址 → 先暫時轉到舊網站的 `/quiz/?next=原路徑`，搬完紀錄再回到 `linusniceday.com` 的同一頁；之後再來就直接轉。圖片等檔案直接永久轉到新網域。
+- 舊網站仍保留 `/quiz/` 轉接（後台讀測驗公開資料也走這條）。過幾個月大部分人搬完後，可把暫時轉址改成永久轉址。
 
 | 名稱 | 意思 |
 |---|---|

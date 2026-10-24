@@ -1025,7 +1025,7 @@ const graph = {
   generatedAt: new Date().toISOString(),
   sourceUpdatedAt: new Date().toISOString(),
   attribution: "Japan Nationwide Metropolitan Rapid Transit Network © Linus-NiceDay",
-  sourceUrl: "https://linus-niceday-japan-realestate.vercel.app/",
+  sourceUrl: "https://linusniceday.com/",
   sources: [
     { id: "kansai", label: "Osaka Metro, JR西日本, 阪急, 京阪, 近鉄, 南海, 京都市営, 神戸市営", sourceUrl: "https://www.osakametro.co.jp/" },
     { id: "chubu", label: "名古屋市営地下鉄, JR東海, 名古屋鉄道, 近鉄", sourceUrl: "https://www.kotsu.city.nagoya.jp/" },

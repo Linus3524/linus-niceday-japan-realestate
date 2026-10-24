@@ -7,6 +7,12 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "quiz",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["/Users/user/東京居住人格診斷_心理測驗APP/scripts/serve.mjs", "5317"],
+      "port": 5317
     }
   ]
 }

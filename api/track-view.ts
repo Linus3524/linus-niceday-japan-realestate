@@ -14,11 +14,31 @@ import { isTrackableAction, isTrackableView, normalizeSource, recordAction, reco
  *
  * 不做的事：不存 IP、不存 session、不做跨頁追蹤，只把某個分頁的計數加一。
  *
- * 心理測驗（/quiz/，見 src/lib/quizMetrics.ts）也共用這支端點：帶 quiz 欄位的請求
+ * 心理測驗（quiz.linusniceday.com，見 src/lib/quizMetrics.ts）也共用這支端點：帶 quiz 欄位的請求
  * 只記測驗計數。共用而不另開一支，是為了不多佔一個 Serverless Function 名額。
+ * 測驗在子網域，事件是跨網域送來的：用 text/plain（sendBeacon 不觸發預檢），這裡自己解析 JSON。
  */
 
 const VIEW_RATE_LIMIT = 40;
+
+// 只回 CORS 標頭給自家測驗；Preview 部署的測驗網域會變動，所以放行 tokyo-living-persona 的 vercel.app 網域。
+function allowedQuizOrigin(origin: string | undefined): string | null {
+  if (!origin) return null;
+  try {
+    const { hostname, protocol } = new URL(origin);
+    if (protocol !== "https:") return null;
+    if (hostname === "quiz.linusniceday.com") return origin;
+    if (hostname.startsWith("tokyo-living-persona") && hostname.endsWith(".vercel.app")) return origin;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function parseBody(body: unknown): any {
+  if (typeof body !== "string") return body;
+  try { return JSON.parse(body); } catch { return null; }
+}
 
 const limiter =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -31,20 +51,28 @@ const limiter =
 
 export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
+  const quizOrigin = allowedQuizOrigin(req.headers?.origin);
+  if (quizOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", quizOrigin);
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Vary", "Origin");
+  }
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed. Use POST." });
   }
 
+  const body = parseBody(req.body);
   // 兩種回報各自獨立：切分頁時送 view，進站帶標記時送 source。
   // 來源必須能單獨送——手機停在首頁不算任何分頁，夾在 view 裡會整筆漏掉。
-  const view = req.body?.view;
-  const source = normalizeSource(req.body?.source);
-  const action = req.body?.action;
+  const view = body?.view;
+  const source = normalizeSource(body?.source);
+  const action = body?.action;
   const hasView = isTrackableView(view);
   const hasAction = isTrackableAction(action);
-  const quiz = req.body?.quiz;
+  const quiz = body?.quiz;
   const hasQuiz = Boolean(quiz && typeof quiz === "object");
   if (!hasView && !source && !hasAction && !hasQuiz) {
     return res.status(400).json({ error: "Nothing to record." });

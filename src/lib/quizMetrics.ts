@@ -4,8 +4,8 @@ import { MONTH_TTL_SECONDS, tokyoParts } from "./usageMetrics.js";
 /**
  * 心理測驗「你是哪種東京區民？」的計數。
  *
- * 測驗本身是另一個專案（tokyo-living-persona），網站用 Vercel rewrite 把 /quiz/ 轉接過去，
- * 所以測驗的事件與網站同源，直接打 /api/track-view（帶 quiz 欄位）就會進來這裡。
+ * 測驗本身是另一個專案（tokyo-living-persona），放在子網域 quiz.linusniceday.com，
+ * 事件跨網域送到本站 /api/track-view（帶 quiz 欄位，text/plain 避免預檢請求）就會進來這裡。
  *
  * 跟網站其他統計一樣只記聚合數字：哪一區出現幾次、準不準、每題選項分布。
  * 不存 IP、不存暱稱；答案碼只是 12 個 a–d 字母，對應的是選項，不是個人資料。

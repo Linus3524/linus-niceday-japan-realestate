@@ -1,9 +1,10 @@
 import { Brain, Share2, Target } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import type { QuizSummary } from "../lib/quizMetrics";
+import { QUIZ_URL } from "../lib/quizUrl";
 
 /**
- * 後台「心理測驗」區塊（你是哪種東京區民？，網址 /quiz/）。
+ * 後台「心理測驗」區塊（你是哪種東京區民？，網址 quiz.linusniceday.com）。
  *
  * 地區名稱與「系」不寫死在網站裡：測驗是另一個專案，增減地區時網站不必跟著改。
  * 讀測驗 API 的公開資料 /quiz/api/quiz?op=public（經 rewrite 轉接，與後台同源）；讀不到就顯示地區代號。
@@ -562,7 +563,7 @@ function Heading({ month }: { month: string }) {
       <Brain className="h-4.5 w-4.5 text-[#00A174]" />
       <h2 className="font-serif text-base font-bold text-[#1A2A22]">心理測驗：你是哪種東京區民？</h2>
       <span className="text-xs text-[#8A9590]">{month}</span>
-      <a href="/quiz/" target="_blank" rel="noopener" className="ml-auto text-[11px] text-[#00A174] underline">開啟測驗</a>
+      <a href={QUIZ_URL} target="_blank" rel="noopener" className="ml-auto text-[11px] text-[#00A174] underline">開啟測驗</a>
     </div>
   );
 }

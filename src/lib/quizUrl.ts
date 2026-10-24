@@ -1,7 +1,7 @@
 // 東京居住人格診斷的網址。
-// 正式站的 /quiz/ 由 vercel.json 轉寫到測驗專案（同網域），測驗的統計事件才會送進本站
-// /api/track-view、後台看得到；本機開發沒有這條轉寫，改連測驗專案的部署網址。
-export const QUIZ_URL = import.meta.env.DEV ? "https://tokyo-living-persona.vercel.app/" : "/quiz/";
+// 測驗有自己的子網域（測驗專案 tokyo-living-persona），統計事件由測驗跨網域送回本站 /api/track-view。
+// 跟本站同一個 linusniceday.com，桌機面板裡用 iframe 開時，瀏覽器也會跟直接開測驗共用同一份作答紀錄。
+export const QUIZ_URL = "https://quiz.linusniceday.com/";
 
 /** 桌機改在內容面板裡直接開測驗（App.tsx 監聽這個事件），手機照常跳轉 */
 export const OPEN_QUIZ_EVENT = "linus:open-quiz";

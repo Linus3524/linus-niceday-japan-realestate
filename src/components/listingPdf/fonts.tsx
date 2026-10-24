@@ -16,8 +16,8 @@ import { Font } from "@react-pdf/renderer";
  * 主字型兩個檔各約 7MB、補字型各 0.9MB，不放進主 bundle，瀏覽器會快取。
  */
 
-export const SITE_URL = "https://linus-niceday-japan-realestate.vercel.app";
-export const SITE_HOST = "linus-niceday-japan-realestate.vercel.app";
+export const SITE_URL = "https://linusniceday.com";
+export const SITE_HOST = "linusniceday.com";
 
 export let fontsRegistered = false;
 

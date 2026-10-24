@@ -51,6 +51,28 @@
   ],
   "redirects": [
     {
+      "source": "/:file((?!quiz(?:/|$)|api/|assets/).*\\.[a-zA-Z0-9]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "linus-niceday-japan-realestate.vercel.app"
+        }
+      ],
+      "destination": "https://linusniceday.com/:file",
+      "permanent": true
+    },
+    {
+      "source": "/:path((?!quiz(?:/|$)|api/|assets/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "linus-niceday-japan-realestate.vercel.app"
+        }
+      ],
+      "destination": "/quiz/?next=/:path",
+      "permanent": false
+    },
+    {
       "source": "/quiz",
       "destination": "/quiz/",
       "permanent": true

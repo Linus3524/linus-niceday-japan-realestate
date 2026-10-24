@@ -1229,7 +1229,7 @@ function resolveAllowedOrigin(origin: string | undefined): string | null {
     if (protocol !== "https:" && protocol !== "http:") return null;
     if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]") return origin;
     if (hostname.endsWith(".vercel.app")) return origin;
-    if (hostname === "linus-niceday-japan-realestate.vercel.app") return origin;
+    if (hostname === "linusniceday.com" || hostname === "www.linusniceday.com") return origin;
   } catch {
     return null;
   }

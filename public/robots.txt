@@ -33,4 +33,4 @@ Disallow: /quiz/
 User-agent: *
 Allow: /
 
-Sitemap: https://linus-niceday-japan-realestate.vercel.app/sitemap.xml
+Sitemap: https://linusniceday.com/sitemap.xml

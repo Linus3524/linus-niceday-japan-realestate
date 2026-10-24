@@ -2,7 +2,7 @@
 import asyncio, os
 from playwright.async_api import async_playwright
 
-URL = "https://linus-niceday-japan-realestate.vercel.app/"
+URL = "https://linusniceday.com/"
 OUT = os.path.join(os.path.dirname(__file__), "shots")
 
 async def shot(page, name, wait=1200):
