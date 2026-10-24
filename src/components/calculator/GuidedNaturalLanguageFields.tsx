@@ -39,7 +39,7 @@ export function GuidedNaturalLanguageFields({ aiPrompt, setAiPrompt, analyzeNatu
           <button
             type="button"
             onClick={() => setAiPrompt("簽證種類：技人國簽證，5年\n期望預算：¥20萬以下（含管理費）\n期望地區：目黑區／世田谷區、超市 10 分鐘內\n期望車站：東急東橫線沿線 (武蔵小杉、元住吉、日吉)、車站徒步 10 分鐘內\n房型設備：1LDK，RC/SRC造、25平米以上、一樓自動門、獨立洗面台、溫水清淨便器\n通勤地點：惠比壽車站\n其他條件：2 樓以上、陽台、瓦斯爐2個以上、可養貓")}
-            className="min-h-12 border border-[#C9D2CD] bg-white px-4 text-xs font-bold text-[#3F5147] transition-colors hover:border-[#00A174] hover:text-[#00A174] font-serif"
+            className="min-h-12 border border-[#C9D2CD] bg-white px-4 text-xs font-bold text-[#3F5147] transition-colors hover:border-[#00A174] hover:text-[#00A174]"
           >
             套用範例
           </button>

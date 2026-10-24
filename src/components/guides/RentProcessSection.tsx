@@ -274,7 +274,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                       <span className="flex min-w-0 items-start gap-3">
                         <FileText className="mt-0.5 h-4 w-4 shrink-0 text-[#00a174]" />
                         <span>
-                          <span className="block text-sm font-bold text-[#1A2A22] md:text-base">審查所需資料與準備文件對照</span>
+                          <span className="block font-serif text-sm font-bold text-[#1A2A22] md:text-base">審查所需資料與準備文件對照</span>
                           <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C]">依海外／日本境內審查與目前身份，查看建議先準備的文件</span>
                         </span>
                       </span>

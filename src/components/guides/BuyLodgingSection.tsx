@@ -106,7 +106,7 @@ export function BuyLodgingSection({ isBuySearchActive, buyCategory, toggleMinpak
                       <span className="flex items-start gap-2">
                         <Building className="mt-0.5 h-5 w-5 shrink-0 text-[#00a174]" />
                         <span>
-                          <span className="block text-xl font-bold text-[#1A2A22]">{ryokanRules.title}</span>
+                          <span className="block font-serif text-xl font-bold text-[#1A2A22]">{ryokanRules.title}</span>
                           <span className="mt-1 block text-xs font-normal leading-relaxed text-[#66736C] font-sans">全年經營所需的用途、建築、消防與許可確認重點</span>
                         </span>
                       </span>

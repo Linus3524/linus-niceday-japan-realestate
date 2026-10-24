@@ -193,7 +193,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
                 role="tab"
                 aria-selected={contactFormType === type}
                 onClick={() => setContactFormType(type)}
-                className={`flex min-h-10 items-center justify-center gap-1.5 px-4 font-serif text-xs font-bold transition-colors ${index > 0 ? "border-l border-[#DDE3DF]" : ""} ${contactFormType === type ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
+                className={`flex min-h-10 items-center justify-center gap-1.5 px-4 text-xs font-bold transition-colors ${index > 0 ? "border-l border-[#DDE3DF]" : ""} ${contactFormType === type ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147] hover:bg-[#F5F8F6]"}`}
               >
                 <Icon className="h-3.5 w-3.5" />{label}問卷
               </button>

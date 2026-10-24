@@ -219,7 +219,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                   type="button"
                   onClick={() => setShowAdvancedTools(current => !current)}
                   aria-expanded={showAdvancedTools}
-                  className="flex min-h-10 items-center justify-center gap-2 border border-[#C9D2CD] bg-white px-4 font-serif text-xs font-bold text-[#3F5147] transition-colors hover:border-[#00a174] hover:text-[#00a174]"
+                  className="flex min-h-10 items-center justify-center gap-2 border border-[#C9D2CD] bg-white px-4 text-xs font-bold text-[#3F5147] transition-colors hover:border-[#00a174] hover:text-[#00a174]"
                 >
                   {showAdvancedTools ? "收起計算明細" : "展開計算明細"}
                   <ChevronDown className={`h-4 w-4 transition-transform ${showAdvancedTools ? "rotate-180" : ""}`} />

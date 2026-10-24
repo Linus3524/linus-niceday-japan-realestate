@@ -73,6 +73,7 @@
     "test:controller-flows": "tsx scripts/test-controller-flows.ts",
     "test:ink-colors": "tsx scripts/test-ink-color-convergence.ts",
     "test:brand-colors": "tsx scripts/test-brand-colors.ts",
+    "test:font-roles": "tsx scripts/test-font-roles.ts",
     "test:flyer-transit-count": "tsx scripts/test-flyer-transit-count.ts",
     "test:lease-charges": "tsx scripts/test-lease-charge-verification.ts",
     "test:guarantee-fee": "tsx scripts/test-guarantee-fee.ts",

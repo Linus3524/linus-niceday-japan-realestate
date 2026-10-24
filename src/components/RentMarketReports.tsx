@@ -392,7 +392,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
               }}
               aria-pressed={sortMode === mode}
               aria-label={mode === "rent" ? "依租金由低至高排序" : mode === "commute" ? "依通勤時間排序" : "依推薦度排序"}
-              className={`cursor-pointer px-3 py-1.5 font-serif text-[10px] font-bold transition-colors ${
+              className={`cursor-pointer px-3 py-1.5 text-[10px] font-bold transition-colors ${
                 sortMode === mode ? "bg-[#F0FAF6] text-[#00A174]" : "bg-white text-[#3F5147] hover:bg-[#F5F8F6]"
               }`}
             >
