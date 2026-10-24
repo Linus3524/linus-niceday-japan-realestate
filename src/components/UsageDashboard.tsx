@@ -131,7 +131,7 @@ const VIEW_LABEL: Record<string, string> = {
   "contact": "聯絡諮詢",
   "threads": "精選 Threads 文",
   "policy": "條款與隱私",
-  "home": "手機首頁（未切分頁）",
+  "home": "首頁（未開分頁）",
 };
 
 interface AggregateRow { label: string; count: number; visitors: number }
@@ -535,7 +535,7 @@ export function UsageDashboard({ onBack }: { onBack: () => void }) {
                   {totalPageviews.toLocaleString()}
                 </div>
                 <div className="mt-1 text-[11px] text-[#8A9590]">
-                  各分頁與手機首頁累計
+                  各分頁與首頁累計
                 </div>
               </div>
 

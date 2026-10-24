@@ -334,22 +334,13 @@ export default function App() {
   // 直接用網址帶 hash 進站（例如有人把 #threads 分享出去）的情況。
   // 後台頁自己不列入統計。
   //
-  // isMobileHome 只有手機版有意義：它為 true 時手機只顯示主視覺，桌機版卻
-  // 早就把當前分頁的內容整頁攤開了。所以桌機一律回報分頁，手機停在首頁時
-  // 回報獨立的 "home"——原本這裡完全不送任何事件，導致「本月瀏覽次數」的
+  // isMobileHome 只有手機版有意義：它為 true 時手機只顯示主視覺。手機停在首頁時
+  // 回報獨立的 "home"（桌機的規則見 deskPage 宣告後的那段）——原本這裡完全不送任何事件，導致「本月瀏覽次數」的
   // 加總系統性漏掉「手機從 LINE／社群點開、看一眼首頁就關掉」這群人，而
   // 這正是社群導流最常見的情境。
   // 來源標記在進站時就送，與分頁回報分開：手機停在首頁不算「切到某個分頁」，
   // 綁在一起會讓上述這群人的來源也一起漏記。
   useEffect(() => { trackSource(); }, []);
-
-  useEffect(() => {
-    if (adminPage || sharedListingId) return;
-    if (policyPage) { trackView("policy"); return; }
-    if (isThreadsPage) { trackView("threads"); return; }
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    trackView(isDesktop || !isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
-  }, [adminPage, sharedListingId, policyPage, isThreadsPage, isMobileHome, activeTab]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -519,6 +510,24 @@ export default function App() {
   // 桌機是單頁應用：不往下捲，左側選單左右切換「頁面」，長內容在中間面板裡捲動
   const isDesktop = useIsDesktop();
   const [deskPage, setDeskPage] = useState<StagePage>("home");
+
+  // 分頁瀏覽統計（放在 deskPage 宣告之後，依賴陣列才讀得到它）。
+  // 桌機舞台（≥1024px）：停在首頁大圖記 "home"，打開面板才記那個分頁——原本一律記目前的 activeTab，
+  // 預設是租屋指南，看完首頁就走的人全被算成「租屋指南」。測驗面板由測驗自己統計，這裡不記。
+  // 平板（768～1023px）沒有首頁大圖，分頁內容直接攤開，照舊記分頁；手機停在主視覺時記 "home"。
+  useEffect(() => {
+    if (adminPage || sharedListingId) return;
+    if (policyPage) { trackView("policy"); return; }
+    if (isThreadsPage) { trackView("threads"); return; }
+    if (isDesktop) {
+      if (deskPage === "home") trackView("home");
+      else if (deskPage === "threads") trackView("threads");
+      else if (deskPage !== "quiz") trackView(TAB_VIEW_NAME[deskPage]);
+      return;
+    }
+    const isTablet = window.matchMedia("(min-width: 768px)").matches;
+    trackView(isTablet || !isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
+  }, [adminPage, sharedListingId, policyPage, isThreadsPage, isMobileHome, activeTab, isDesktop, deskPage]);
   const [quizOpened, setQuizOpened] = useState(false);
   // 測驗內嵌兩種版面：手機版（預設，縮成測驗本身的寬度）／寬版（與其他分頁同寬）。記在瀏覽器，下次打開沿用。
   const [quizWide, setQuizWide] = useState(() => {

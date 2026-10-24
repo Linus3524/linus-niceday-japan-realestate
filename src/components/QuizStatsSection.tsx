@@ -27,6 +27,8 @@ const CTA_LABEL: Record<string, string> = {
 const sum = (record: Record<string, number> | undefined) =>
   Object.values(record ?? {}).reduce((total, value) => total + (Number(value) || 0), 0);
 const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
+// 漏斗卡片的比例到小數點後一位：加 LINE 這種小比例四捨五入成 0% 會像完全沒人點
+const pct1 = (part: number, whole: number) => (whole > 0 ? ((part / whole) * 100).toFixed(1) : "0.0");
 
 /** 一題（或追問題的一個版本）的 A–D 選項比例色條；滑鼠移上去看選項內容。 */
 function OptionBar({ counts, options }: { counts: Record<string, number>; options: OptionInfo[] }) {
@@ -204,11 +206,11 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
   const goodTotal = rows.reduce((t, r) => t + r.great + r.ok, 0);
   const funnelCards = [
     ["開始作答", start, ""],
-    ["做到一半", f.mid ?? 0, start ? `${pct(f.mid ?? 0, start)}% 的開始者` : ""],
-    ["完成測驗", finish, start ? `完成率 ${pct(finish, start)}%` : ""],
-    ["回饋覺得準", goodTotal, ratedTotal ? `${pct(goodTotal, ratedTotal)}%（${ratedTotal} 人回饋）` : "還沒有回饋"],
-    ["分享", sum(quiz.share), finish ? `${pct(sum(quiz.share), finish)}% 的完成者` : ""],
-    ["點加 LINE", quiz.cta.line ?? 0, finish ? `${pct(quiz.cta.line ?? 0, finish)}% 的完成者` : ""],
+    ["做到一半", f.mid ?? 0, start ? `${pct1(f.mid ?? 0, start)}% 的開始者` : ""],
+    ["完成測驗", finish, start ? `完成率 ${pct1(finish, start)}%` : ""],
+    ["回饋覺得準", goodTotal, ratedTotal ? `${pct1(goodTotal, ratedTotal)}%（${ratedTotal} 人回饋）` : "還沒有回饋"],
+    ["分享", sum(quiz.share), finish ? `${pct1(sum(quiz.share), finish)}% 的完成者` : ""],
+    ["點加 LINE", quiz.cta.line ?? 0, finish ? `${pct1(quiz.cta.line ?? 0, finish)}% 的完成者` : ""],
   ] as const;
 
   return (
