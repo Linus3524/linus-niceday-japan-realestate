@@ -2890,10 +2890,12 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     color: #66736C;
   }
   .about-numbers span + span { border-left: 1px solid #DDE3DF; }
+  /* 數字用與「About me」同一款斜體英文字（Cormorant Garamond Italic） */
   .about-numbers strong {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    font-size: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 30px;
     line-height: 1.1;
     color: #00A174;
   }
