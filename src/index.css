@@ -5874,11 +5874,15 @@ button.ui-switch-large:focus-visible {
 /* 費用試算：左側條件表單欄。原本整欄淡綠色塊，改成上方一抹淡綠、往下漸白。 */
 .calc-form-pane { background: linear-gradient(to bottom, #F2FBF7 0%, #fff 260px); }
 
-/* 聯絡頁：電腦版改用 ContactDesk（QR 攤開、問卷可一鍵複製），手機／平板維持原本直排卡片。 */
+/* 聯絡頁：電腦版與平板用 ContactDesk（QR 攤開、名片與公司資料表、問卷可一鍵複製），手機維持原本直排卡片。
+   直式平板（<1024px）寬度不夠左右兩欄並排，改成上下排：先 QR 與問卷、再名片與公司資料；橫式平板照電腦版兩欄。 */
 .contact-desk { display: none; }
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 768px) {
   .contact-mobile { display: none; }
   .contact-desk { display: grid; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .contact-desk > div { grid-column: 1 / -1; }
 }
 
 /* Leaflet 地圖標記（圖紙分析周邊地圖、聯絡頁公司地圖共用）：車站膠囊、目前選取高亮、氣泡外框。 */
@@ -6148,6 +6152,9 @@ button.ui-switch-large:focus-visible {
 
 /* 直式平板首頁：場景框加高到 4:3，背景圖比框寬、像手機版一樣緩慢左右平移；聯絡卡不再拉滿整寬 */
 @media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+  /* 場景放最上面、貼齊頁首（跟手機首頁一樣先看到場景），文字與聯絡卡接在下方 */
+  .hero-banner { padding-top: 0; padding-bottom: 48px; }
+  .hero-media { order: -1; margin-top: 0; margin-bottom: 40px; }
   .hero-bg-layer { aspect-ratio: 4 / 3; overflow: hidden; }
   .hero-bg {
     inset: 0 auto 0 50%;
