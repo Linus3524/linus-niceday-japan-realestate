@@ -6160,11 +6160,11 @@ button.ui-switch-large:focus-visible {
     padding-bottom: 36px;
   }
   .hero-banner > .relative.z-10 { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 24px; }
-  .hero-banner > .relative.z-10 > div:first-child { max-width: 52%; }
+  .hero-banner > .relative.z-10 > div:first-child { max-width: 56%; }
   /* 文字小一號 */
-  .hero-banner h1 { font-size: 32px; }
-  .hero-banner h2 { font-size: 15px; padding-top: 6px; }
-  .hero-banner > .relative.z-10 > div:first-child .max-w-\[30rem\] { font-size: 12px; }
+  .hero-banner h1 { font-size: 30px; }
+  .hero-banner h2 { font-size: 14px; padding-top: 4px; }
+  .hero-banner > .relative.z-10 > div:first-child .max-w-\[30rem\] { font-size: 11px; letter-spacing: 0.02em; line-height: 1.8; }
   /* 背景放大（框不變）：圖高 135% 貼齊底部，畫面裡的街景與天空更大 */
   .hero-bg {
     inset: auto auto 0 50%;
