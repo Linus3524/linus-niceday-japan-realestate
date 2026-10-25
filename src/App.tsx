@@ -194,10 +194,10 @@ function MobileDock({
   onThreads: () => void;
 }) {
   const items: Array<{ id: AppTab; label: string; number: string }> = [
-    { id: "cards", label: "租屋指南", number: "01" },
-    { id: "buyHouse", label: "買房置產", number: "02" },
-    { id: "calculator", label: "費用試算", number: "03" },
-    { id: "chat", label: "AI 顧問", number: "04" },
+    { id: "cards", label: "租屋指南", number: "I" },
+    { id: "buyHouse", label: "買房置產", number: "II" },
+    { id: "calculator", label: "費用試算", number: "III" },
+    { id: "chat", label: "AI 顧問", number: "IV" },
   ];
 
   return (
