@@ -16,6 +16,7 @@ import { AboutPage } from "./components/desktop/AboutPage";
 import { DesktopStage, type StagePage } from "./components/desktop/DesktopStage";
 import { useIsDesktop } from "./hooks/useIsDesktop";
 import { OPEN_QUIZ_EVENT, QUIZ_URL, openQuizInline } from "./lib/quizUrl";
+import { toRoman } from "./lib/roman";
 import { ContactTab } from "./components/ContactTab";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
@@ -1134,7 +1135,7 @@ export default function App() {
                 }`}
                 id={`nav-tab-${tab.id.toLowerCase()}`}
               >
-                <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">{String(idx + 1).padStart(2, '0')}</span>
+                <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">{toRoman(idx + 1)}</span>
                 <span>{tab.label}</span>
               </button>
             ))}
@@ -1144,7 +1145,7 @@ export default function App() {
               onClick={openQuizInline}
               className="primary-nav-tab primary-nav-quiz relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap text-[#1A2A22] hover:text-[#00a174] no-underline shrink-0 group"
             >
-              <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">06</span>
+              <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">{toRoman(6)}</span>
               <span>人格診斷</span>
             </a>
           </div>

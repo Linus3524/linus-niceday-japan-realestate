@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { AppTab } from "../../lib/uiTypes";
+import { toRoman } from "../../lib/roman";
 
 // 桌機（≥1024px）首屏：場景插畫鋪滿畫面，左右是可收合的毛玻璃面板，
 // 底部是細的場景播放列。手機與平板仍走 App.tsx 原本的首圖，不受影響。
@@ -307,14 +308,14 @@ export function DesktopStage({
             {MENU.map((item, i) => (
               // 再點一次目前所在的分頁 = 關掉分頁回首頁
               <button key={item.id} type="button" className={`stage-menu-item ${page === item.id ? "is-active" : ""}`} aria-current={page === item.id ? "page" : undefined} onClick={() => (page === item.id ? onHome() : onNavigate(item.id))}>
-                <span className="stage-menu-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="stage-menu-num">{toRoman(i + 1)}</span>
                 <span className="stage-menu-label">{item.label}</span>
                 <span className="stage-menu-en">{item.en}</span>
               </button>
             ))}
             {/* 測驗直接在內容面板裡開，不跳出網站 */}
             <button type="button" className={`stage-menu-item ${page === "quiz" ? "is-active" : ""}`} aria-current={page === "quiz" ? "page" : undefined} onClick={page === "quiz" ? onHome : onShowQuiz}>
-              <span className="stage-menu-num">{String(MENU.length + 1).padStart(2, "0")}</span>
+              <span className="stage-menu-num">{toRoman(MENU.length + 1)}</span>
               <span className="stage-menu-label">居住人格診斷</span>
               <span className="stage-menu-en">Quiz</span>
             </button>
