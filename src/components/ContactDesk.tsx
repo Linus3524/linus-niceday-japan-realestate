@@ -210,7 +210,8 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
             {copyState === "copied" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             {copyState === "copied" ? "已複製，貼到 LINE 傳給 Linus" : copyState === "manual" ? "已選取全文，請按 ⌘C／Ctrl+C 複製" : "複製問卷"}
           </button>
-          <p className="mt-2 text-center text-[11px] text-[#8A9590]">代問或代找也歡迎，請在第 6 題註明。</p>
+          {/* 「第 6 題」指租屋問卷的題號，買房問卷沒有這題，切到買房時不顯示 */}
+          {contactFormType === "rent" && <p className="mt-2 text-center text-[11px] text-[#8A9590]">代問或代找也歡迎，請在第 6 題註明。</p>}
           {contactFormType === "buy" && <div className="mt-4"><BuyLoanNotice /></div>}
         </section>
       </div>
