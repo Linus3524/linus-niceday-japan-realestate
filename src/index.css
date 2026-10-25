@@ -5968,8 +5968,9 @@ button.ui-switch-large:focus-visible {
     position: sticky;
     top: var(--chapter-rail-top, 0px);
     z-index: 30;
-    margin: 0 -16px;
-    padding: 10px 16px 10px;
+    /* 貼齊頁首下緣（抵掉 #main-content 上方 32px 內距），不留一大段空白 */
+    margin: -32px -16px 0;
+    padding: 8px 16px;
     border-bottom: 1px solid #DDE3DF;
     background: rgba(255, 255, 255, 0.94);
     -webkit-backdrop-filter: blur(12px);
@@ -5990,10 +5991,11 @@ button.ui-switch-large:focus-visible {
     display: inline-flex;
     align-items: baseline;
     gap: 5px;
-    padding: 6px 12px;
+    padding: 6px 11px;
     border: 1px solid #DDE3DF;
     background: #fff;
-    font-family: var(--font-serif);
+    /* 小字用黑體比明體清楚 */
+    font-family: var(--font-sans);
     font-size: 13px;
     color: #3F5147;
     white-space: nowrap;
@@ -6006,15 +6008,15 @@ button.ui-switch-large:focus-visible {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 12px;
+    padding: 5px 10px;
     border: 1px solid #DDE3DF;
     background: #fff;
   }
   .chapter-rail-search .chapter-search-icon { width: 15px; height: 15px; flex: none; color: #8A9590; }
-  .chapter-rail-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 14px; color: #1A2A22; }
+  .chapter-rail-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 13px; color: #1A2A22; }
   .chapter-rail-search button { flex: none; border: 0; background: none; color: #8A9590; }
 
-  .chapter-head { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 22px 0 14px; }
+  .chapter-head { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 16px 0 12px; }
   .chapter-ghost { display: none; }
   .chapter-kicker { font-family: var(--font-jost, var(--font-sans)); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: #00A174; }
   .chapter-title { margin: 0; font-family: var(--font-serif); font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: #1A2A22; }
@@ -6022,38 +6024,8 @@ button.ui-switch-large:focus-visible {
 
   .chapter-preface { display: flex; flex-direction: column; gap: 16px; }
 
-  .chapter-foot {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 10px;
-    margin: 28px 0 8px;
-    padding-top: 16px;
-    border-top: 1px solid #DDE3DF;
-  }
-  .chapter-foot-btn {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    padding: 0;
-    border: 0;
-    background: none;
-    font-family: var(--font-jost, var(--font-sans));
-    font-size: 12px;
-    font-weight: 700;
-    color: #00A174;
-    cursor: pointer;
-    text-align: left;
-  }
-  .chapter-foot-btn--next { justify-self: end; align-items: flex-end; text-align: right; }
-  .chapter-foot-label { font-family: var(--font-serif); font-size: 14px; font-weight: 700; color: #1A2A22; }
-  .chapter-progress { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .chapter-progress-segs { display: flex; gap: 3px; }
-  .chapter-progress-segs span { width: 14px; height: 2px; background: #DDE3DF; }
-  .chapter-progress-segs span.is-done { background: #9EE2CF; }
-  .chapter-progress-segs span.is-active { background: #00A174; }
-  .chapter-progress-count { font-family: var(--font-jost, var(--font-sans)); font-size: 11px; color: #8A9590; }
+  /* 手機／平板不放上一章／下一章：章節膠囊列就在上方，底部再放一組只是多佔空間 */
+  .chapter-foot { display: none; }
 
   /* 前言推薦卡（居住人格診斷／買房試算）：手機平板也放，排在前言下方 */
   .preface-feature {
@@ -6106,8 +6078,8 @@ button.ui-switch-large:focus-visible {
 /* 平板主選單的「人格診斷」：手機有浮動膠囊、桌機有左側選單，這兩處不顯示 */
 @media (max-width: 767px) { .primary-nav-quiz { display: none !important; } }
 
-/* 手機：章節底部的上一章／下一章要高過浮動膠囊與下排導覽 */
-@media (max-width: 767px) { .chapter-layout { padding-bottom: 96px; } }
+/* 手機：內容最後一段要高過浮動膠囊與下排導覽 */
+@media (max-width: 767px) { .chapter-layout { padding-bottom: 72px; } }
 /* 手機／平板：章節裡的子主題分頁（例：申請流程／準備文件⋯）改成底線分頁，左右箭頭縮小 */
 @media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   .section-tabs { display: flex; align-items: stretch; gap: 4px; margin: 0 0 18px; border-bottom: 1px solid #DDE3DF; }
@@ -6138,4 +6110,29 @@ button.ui-switch-large:focus-visible {
 /* 平板：主選單多了第 6 項「人格診斷」，收窄左右內距讓六項在 768px 也排得下 */
 @media (min-width: 768px) and (max-width: 1279px) {
   #primary-nav .primary-nav-tab { padding-left: 10px; padding-right: 10px; letter-spacing: 0.08em; }
+}
+
+/* 手機首頁：居住人格診斷入口（右上日期天氣下方）。直角、半透明白底，跟桌機面板同一套輕量配色 */
+.mobile-scene-quiz { display: none; }
+@media (max-width: 767px) {
+  .mobile-scene-quiz {
+    position: absolute;
+    z-index: 5;
+    top: calc(200px + env(safe-area-inset-top));
+    right: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1px solid rgba(26, 42, 34, 0.12);
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    text-align: right;
+    text-decoration: none;
+  }
+  .mobile-scene-quiz-en { font-family: var(--font-display); font-style: italic; font-size: 13px; color: #00A174; }
+  .mobile-scene-quiz strong { font-family: var(--font-serif); font-size: 15px; font-weight: 700; letter-spacing: 0.04em; color: #1A2A22; }
+  .mobile-scene-quiz-cta { font-family: var(--font-sans); font-size: 11px; color: #3F5147; }
 }
