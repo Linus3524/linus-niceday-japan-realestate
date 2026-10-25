@@ -6152,13 +6152,19 @@ button.ui-switch-large:focus-visible {
    場景鋪滿整個首屏當背景、像手機版一樣緩慢左右平移；左側白色漸層壓住文字區，人物站在右下，
    加好友卡片縮小放在左下。原本 16:9 背景用 contain 只貼在底部、上半段整片留白。 */
 @media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+  /* 首屏高度跟著內容（文字＋卡片），人物站在文字右邊、跟整塊一樣高；文字欄限制寬度不壓到人物 */
   .hero-banner {
-    min-height: calc(100svh - 49px);
+    min-height: 0;
     align-items: stretch;
-    padding-top: 48px;
-    padding-bottom: 40px;
+    padding-top: 36px;
+    padding-bottom: 36px;
   }
-  .hero-banner > .relative.z-10 { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 32px; }
+  .hero-banner > .relative.z-10 { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 24px; }
+  .hero-banner > .relative.z-10 > div:first-child { max-width: 52%; }
+  /* 文字小一號 */
+  .hero-banner h1 { font-size: 38px; }
+  .hero-banner h2 { font-size: 17px; padding-top: 8px; }
+  .hero-banner > .relative.z-10 > div:first-child .max-w-\[30rem\] { font-size: 12.5px; }
   .hero-bg {
     inset: 0 auto 0 50%;
     width: auto;
@@ -6195,10 +6201,12 @@ button.ui-switch-large:focus-visible {
   .hero-char--grape,
   .hero-char--apple {
     left: auto;
-    right: 4%;
+    right: 2%;
     bottom: 0;
-    height: min(46vh, 480px);
+    height: 88%;
   }
+  /* 檸檬人物是奔跑姿勢、橫向較寬，縮小一點才不會伸到文字下面 */
+  .hero-char--lemon { height: 76%; }
   .hero-char--grape, .hero-char--apple { transform: translateY(26px) scale(0.97); }
   .hero-char--grape.is-active, .hero-char--apple.is-active { transform: translateY(0) scale(1); }
 }
