@@ -6201,17 +6201,22 @@ button.ui-switch-large:focus-visible {
   }
   .hero-char--grape, .hero-char--apple { transform: translateY(26px) scale(0.97); }
   .hero-char--grape.is-active, .hero-char--apple.is-active { transform: translateY(0) scale(1); }
-  /* 加好友卡片：小一號、靠左下 */
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg.is-active { animation: none !important; }
+}
+
+/* 手機與平板：加好友卡片一律是小而窄的固定尺寸、靠左，不跟著畫面寬度拉長（各尺寸只換位置） */
+@media (max-width: 1279px) {
   .hero-contact-card {
-    max-width: 340px;
-    margin: 0;
+    width: 340px;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: auto;
     grid-template-columns: 88px minmax(0, 1fr);
     gap: 12px;
     padding: 12px 14px;
     background: rgba(255, 255, 255, 0.92);
   }
   .hero-contact-card .contact-flip { width: 88px; height: 88px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg.is-active { animation: none !important; }
 }
