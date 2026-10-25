@@ -8,6 +8,7 @@ overseasSop,
 processReminders
 } from "../../data/rentStaticSearchData";
 import { renderFormattedText } from "../../lib/format";
+import { RouteTitleText } from "./RouteTitleText";
 
 interface Props {
   isSearchActive: boolean;
@@ -182,8 +183,8 @@ function StepsDesk({ steps }: { steps: Props["filtered"]["steps"] }) {
             <li key={step.id} data-step={step.id} ref={el => { stations.current[step.id] = el; }} className={`rent-route-station${current === step.id ? " is-current" : ""}${stamped ? " is-stamped" : ""}`}>
               <span className="rent-route-dot" aria-hidden="true">{step.id}</span>
               <div className="rent-route-sign">
-                <span className="rent-route-no">{step.id.padStart(2, "0")}</span>
-                <h5>{stepTitle(step.name)}</h5>
+                {/* 左側圓圈已有站號，卡片裡不再重複編號 */}
+                <h5><RouteTitleText text={stepTitle(step.name)} /></h5>
                 <span className="rent-route-time">所要 {step.duration}</span>
               </div>
               <div className="rent-route-body">

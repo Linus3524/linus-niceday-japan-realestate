@@ -3,6 +3,7 @@ import { ArrowRight, Banknote, Building2, FileText, Globe2, HandCoins, IdCard, K
 import { buyHouseCashSteps, buyHouseLoanSteps, signingDocuments } from "../../data/buyHouseData";
 import { SectionHeading } from "../SectionHeading";
 import { getSigningDocumentParts } from "../../lib/guides/buyReference";
+import { RouteTitleText } from "./RouteTitleText";
 
 type FlowType = "cash" | "loan";
 interface SectionProps { open: boolean; onToggle: () => void }
@@ -52,8 +53,7 @@ export function BuyFlowDesk({ open, onToggle, flowType, setFlowType }: SectionPr
           return <li key={`${flowType}-${step.step}`} ref={element => { stepRefs.current[`${flowType}-${step.step}`] = element; }} className={`rent-route-station${isCurrent ? " is-current" : ""}`}>
             <button type="button" className="rent-route-dot" aria-label={`選取第 ${step.step} 步：${step.title}`} aria-current={isCurrent ? "step" : undefined} aria-controls={`${journeyId}-${flowType}-${step.step}`} onClick={() => selectStep(step.step)}>{step.step}</button>
             <div className="rent-route-sign">
-              <span className="rent-route-no">{step.step.padStart(2, "0")}</span>
-              <h5 className="buy-route-title"><Icon aria-hidden="true" />{step.title}</h5>
+              <h5 className="buy-route-title"><Icon aria-hidden="true" /><span><RouteTitleText text={step.title} /></span></h5>
               {step.timing && <span className="rent-route-time">{step.timing}</span>}
             </div>
             <div id={`${journeyId}-${flowType}-${step.step}`} className="rent-route-body">

@@ -5414,7 +5414,9 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   .rent-route-sign { align-self: start; padding: 10px 12px 12px; border: 1px solid #DDE3DF; border-top: 4px solid #00A174; background: #fff; transition: box-shadow 200ms ease; }
   .rent-route-station.is-current .rent-route-sign { box-shadow: 0 4px 14px rgba(0, 161, 116, 0.18); }
   .rent-route-no { font-family: var(--font-jost); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #00A174; }
-  .rent-route-sign h5 { margin: 2px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.5; color: #1A2A22; }
+  /* 站號只放左側圓圈；卡片標題放大，括號補充說明另起一行 */
+  .rent-route-sign h5 { margin: 0 0 10px; font-size: 19px; font-weight: 700; line-height: 1.45; color: #1A2A22; }
+  .rent-route-title-note { display: block; margin-top: 2px; font-family: var(--font-sans); font-size: 13px; font-weight: 500; line-height: 1.5; color: #66736C; }
   .rent-route-time { display: block; padding-top: 6px; border-top: 1px solid #ECEFEC; font-size: 11.5px; color: #66736C; }
   /* 九站的說明內文用黑體（站名標題維持明體），長段落比較好讀 */
   .rent-route-desc, .rent-route-body li, .rent-route-time, .rent-route-stamp { font-family: var(--font-sans); }
@@ -5933,7 +5935,7 @@ button.ui-switch-large:focus-visible {
   button.rent-route-dot:hover:not([aria-current="step"]) { background: #E6F6F1; }
   button.rent-route-dot:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
   .buy-route-title { display: flex; align-items: flex-start; gap: 6px; }
-  .buy-route-title svg { width: 17px; height: 17px; margin-top: 4px; flex-shrink: 0; color: var(--color-primary); stroke-width: 1.7; }
+  .buy-route-title svg { width: 18px; height: 18px; margin-top: 6px; flex-shrink: 0; color: var(--color-primary); stroke-width: 1.7; }
   .rent-route--plain .buy-journey-prep { margin-top: 14px; }
 }
 
