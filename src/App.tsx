@@ -531,8 +531,8 @@ export default function App() {
       else if (deskPage !== "quiz") trackView(TAB_VIEW_NAME[deskPage]);
       return;
     }
-    const isTablet = window.matchMedia("(min-width: 768px)").matches;
-    trackView(isTablet || !isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
+    // 手機與平板都分「首頁」和「分頁」：停在首頁記 "home"，點進主選單才記那個分頁
+    trackView(!isMobileHome ? TAB_VIEW_NAME[activeTab] : "home");
   }, [adminPage, sharedListingId, policyPage, isThreadsPage, isMobileHome, activeTab, isDesktop, deskPage]);
   const [quizOpened, setQuizOpened] = useState(false);
   // 測驗內嵌兩種版面：手機版（預設，縮成測驗本身的寬度）／寬版（與其他分頁同寬）。記在瀏覽器，下次打開沿用。
@@ -1111,15 +1111,15 @@ export default function App() {
       {quizOpened && (
         <iframe className="desk-quiz-frame" style={{ display: isDesktop && (deskPage === "quiz" || quizLingering) ? "block" : "none" }} src={QUIZ_URL} title="東京居住人格診斷" allow="clipboard-write; web-share" />
       )}
-      {/* 手機／平板首頁：電腦版首頁往下捲的「關於 Linus」介紹也放進來（桌機已經在 DesktopStage 的 below 裡） */}
+      <div className="desktop-threads-section" id="threads-section">
+        <ThreadsCarousel />
+      </div>
+      {/* 手機／平板首頁：電腦版首頁往下捲的「關於 Linus」介紹也放進來，排在 Threads 精選文之後（桌機已經在 DesktopStage 的 below 裡） */}
       {!isDesktop && (
         <div className="about-flow">
           <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} />
         </div>
       )}
-      <div className="desktop-threads-section" id="threads-section">
-        <ThreadsCarousel />
-      </div>
 
       {/* Elegant Sticky Navigation Tabs Bar (Blog-styled) */}
       <nav className="sticky top-[53px] z-40 select-none" id="primary-nav">

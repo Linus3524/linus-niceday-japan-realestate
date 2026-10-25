@@ -6837,3 +6837,17 @@ button.ui-switch-large:focus-visible {
 @media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   .about-flow .about-profile { align-self: start; }
 }
+
+/* 平板（含沒有滑鼠的大平板）：跟手機一樣分「首頁」和「分頁」。
+   首頁＝首屏 → Threads 精選文 → 關於 Linus 介紹，不攤開租屋指南；點主選單進分頁後只看那一頁 */
+@media (min-width: 768px) and (max-width: 1279px), (min-width: 1280px) and (hover: none) {
+  .mobile-home-active #main-content { display: none; }
+  .mobile-subpage-active .hero-banner,
+  .mobile-subpage-active #threads-section,
+  .mobile-subpage-active .about-flow { display: none; }
+  /* 主選單在原始碼裡排在 Threads 之後；首頁多了 Threads 與介紹，要把它提到頁首正下方（外層是直向 flex） */
+  /* #desk-sheet 只是桌機內容面板的外框；平板讓它的子元素直接參與外層排序，主選單才能排到首屏之前 */
+  #desk-sheet { display: contents; }
+  #app-header { order: -2; }
+  #primary-nav { order: -1; }
+}
