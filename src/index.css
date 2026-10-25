@@ -6275,7 +6275,8 @@ button.ui-switch-large:focus-visible {
     transition: opacity 200ms ease, transform 200ms ease;
   }
   .hero-vslogan.is-active { opacity: 1; transform: translateY(0); transition: opacity 450ms ease 200ms, transform 450ms ease 200ms; }
-  .hero-vslogan--lemon { color: #FFFFFF; text-shadow: 0 1px 14px rgba(0, 85, 112, 0.4); }
+  /* 檸檬：手機版是白字，但平板標語旁邊有白色漸層，白字看不清楚，改用檸檬場景的藍 */
+  .hero-vslogan--lemon { color: #0099FF; text-shadow: 0 1px 12px rgba(255, 255, 255, 0.6); }
   .hero-vslogan--apple { color: #327509; }
   .hero-vslogan--grape { color: #3B1470; text-shadow: 0 1px 12px rgba(255, 255, 255, 0.5); }
 }
