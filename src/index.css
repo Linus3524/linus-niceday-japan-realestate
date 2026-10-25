@@ -6761,3 +6761,22 @@ button.ui-switch-large:focus-visible {
 @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
   .section-tab-icon { width: 22px; height: 22px; stroke-width: 1.6; color: #A5B1AA; }
 }
+
+/* 手機／平板首頁介紹區：跟電腦版一樣，第 2、5 段（我能幫你什麼、免費工具）鋪滿版的品牌淺綠底，段落相間 */
+@media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .about-flow { position: relative; z-index: 0; overflow: hidden; }
+  .about-flow .about-section { position: relative; }
+  .about-flow .about-page > .about-section:nth-of-type(2)::before,
+  .about-flow .about-page > .about-section:nth-of-type(5)::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -36px;
+    bottom: -36px;
+    left: -100vw;
+    right: -100vw;
+    background: #EEF7F3;
+    border-top: 1px solid #DCEFE7;
+    border-bottom: 1px solid #DCEFE7;
+  }
+}
