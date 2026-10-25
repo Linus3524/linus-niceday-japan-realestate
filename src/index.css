@@ -6828,3 +6828,8 @@ button.ui-switch-large:focus-visible {
   .about-flow .about-profile-line { display: block; }
   .about-flow .about-profile-copy { display: inline-block; }
 }
+/* 手機首頁：自我介紹與下面的名片連成一段，中間不再隔一條粗分隔線和一大段留白 */
+@media (max-width: 767px) {
+  #hero-banner { border-bottom: 0; padding-bottom: 8px; }
+  .about-flow { border-top: 0; padding-top: 16px; }
+}
