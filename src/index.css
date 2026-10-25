@@ -6819,3 +6819,12 @@ button.ui-switch-large:focus-visible {
   .about-flow .about-tools > li { grid-template-columns: 28px minmax(0, 1fr); align-items: start; }
   .about-flow .about-tool-link { grid-column: 2; justify-self: start; margin-top: 4px; }
 }
+
+/* 手機首頁：加好友只放一處——跟電腦版一樣放在介紹區的名片裡，首屏自我介紹下方那張加好友卡片不再重複 */
+@media (max-width: 767px) {
+  .hero-contact-card { display: none !important; }
+  .about-flow .about-profile-line,
+  .about-flow .about-profile-copy { display: revert; }
+  .about-flow .about-profile-line { display: block; }
+  .about-flow .about-profile-copy { display: inline-block; }
+}
