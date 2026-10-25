@@ -2,6 +2,7 @@
 // 左右切換一次看一個，不再把所有區塊疊成一條長長的捲動。
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { toRoman } from "../../lib/roman";
 
 export interface SectionTab {
   id: string;
@@ -36,7 +37,7 @@ export function SectionTabs({ tabs, active, onChange }: { tabs: SectionTab[]; ac
           className={`section-tab ui-switch-large ${i === index ? "is-active" : ""}`}
           onClick={event => selectTopic(t.id, event.currentTarget)}
         >
-          <span className="section-tab-num">{String(i + 1).padStart(2, "0")}</span>
+          <span className="section-tab-num">{toRoman(i + 1)}</span>
           <span className="section-tab-label">{t.label}</span>
         </button>
       ))}

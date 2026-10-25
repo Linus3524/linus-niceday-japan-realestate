@@ -6297,3 +6297,21 @@ button.ui-switch-large:focus-visible {
   .chapter-rail-item.is-active .chapter-rail-num { color: #00A174; opacity: 1; }
   .chapter-rail-search { flex: none; width: 220px; margin-top: 0; }
 }
+
+/* 章節與子主題分頁的編號：羅馬數字，用 Cormorant Garamond 斜體（跟「About me」同一款襯線體），所有尺寸一致 */
+.chapter-rail-num,
+.chapter-kicker,
+.section-tab-num {
+  font-family: var(--font-display) !important;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.02em !important;
+  font-variant-numeric: normal;
+}
+@media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .chapter-rail-num, .section-tab-num { font-size: 13px; opacity: 1; }
+  .chapter-kicker { font-size: 18px; }
+}
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .chapter-rail-num { font-size: 15px; }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { toRoman } from "../../lib/roman";
 
 // 桌機知識頁的「章節左右翻頁」版型，整頁剛好填滿內容面板的高度：
 //   左欄：指南名稱、章節目錄（含一句說明）、搜尋框
@@ -34,7 +35,7 @@ export function ChapterPager({
   const current = chapters[index];
   const prev = index > 0 ? chapters[index - 1] : null;
   const next = index < chapters.length - 1 ? chapters[index + 1] : null;
-  const num = (i: number) => String(i + 1).padStart(2, "0");
+  const num = (i: number) => toRoman(i + 1);
   const isPreface = index === 0;
 
   const layoutRef = useRef<HTMLDivElement>(null);
