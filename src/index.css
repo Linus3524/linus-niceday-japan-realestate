@@ -6251,3 +6251,31 @@ button.ui-switch-large:focus-visible {
   .hero-contact-card { width: 320px; grid-template-columns: 80px minmax(0, 1fr); }
   .hero-contact-card .contact-flip { width: 80px; height: 80px; }
 }
+
+/* 直式平板首頁：直書日文標語（同手機版文案與配色），位在左側文字與右側人物之間的天空 */
+.hero-vslogans { display: none; }
+@media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+  .hero-vslogans { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+  .hero-vslogan {
+    position: absolute;
+    top: 6%;
+    left: 57%;
+    margin: 0;
+    color: #00A174;
+    font-family: var(--font-jp-serif);
+    font-size: clamp(16px, 2.2vw, 24px);
+    font-weight: 600;
+    line-height: 1.85;
+    letter-spacing: 0.08em;
+    writing-mode: vertical-rl;
+    white-space: pre;
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .hero-vslogan.is-active { opacity: 1; transform: translateY(0); transition: opacity 450ms ease 200ms, transform 450ms ease 200ms; }
+  .hero-vslogan--lemon { color: #FFFFFF; text-shadow: 0 1px 14px rgba(0, 85, 112, 0.4); }
+  .hero-vslogan--apple { color: #327509; }
+  .hero-vslogan--grape { color: #3B1470; text-shadow: 0 1px 12px rgba(255, 255, 255, 0.5); }
+}

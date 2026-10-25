@@ -959,6 +959,16 @@ export default function App() {
               />
             ))}
           </div>
+          {/* 直式平板：手機版的直書日文標語，放在文字與人物之間的天空，顏色跟著場景換（其他尺寸隱藏） */}
+          <div className="hero-vslogans">
+            {HERO_SETS.map((set, i) => (
+              <p key={set.key} className={`hero-vslogan hero-vslogan--${set.key} ${i === heroSet ? "is-active" : ""}`}>
+                <span>{set.slogan[0]}</span>
+                <br />
+                <span>　　{set.slogan[1]}</span>
+              </p>
+            ))}
+          </div>
         </div>
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
