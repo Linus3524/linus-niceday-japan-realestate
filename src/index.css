@@ -5992,7 +5992,6 @@ button.ui-switch-large:focus-visible {
     gap: 5px;
     padding: 6px 12px;
     border: 1px solid #DDE3DF;
-    border-radius: 999px;
     background: #fff;
     font-family: var(--font-serif);
     font-size: 13px;
@@ -6009,7 +6008,6 @@ button.ui-switch-large:focus-visible {
     gap: 8px;
     padding: 7px 12px;
     border: 1px solid #DDE3DF;
-    border-radius: 999px;
     background: #fff;
   }
   .chapter-rail-search .chapter-search-icon { width: 15px; height: 15px; flex: none; color: #8A9590; }
@@ -6091,8 +6089,7 @@ button.ui-switch-large:focus-visible {
     align-self: flex-start;
     margin-top: 4px;
     padding: 7px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 999px;
+    border: 1px solid rgba(26, 42, 34, 0.25);
     background: rgba(255, 255, 255, 0.55);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
@@ -6109,29 +6106,6 @@ button.ui-switch-large:focus-visible {
 /* 平板主選單的「人格診斷」：手機有浮動膠囊、桌機有左側選單，這兩處不顯示 */
 @media (max-width: 767px) { .primary-nav-quiz { display: none !important; } }
 
-/* 手機：居住人格診斷膠囊，疊在「精選 Threads 文」膠囊上方，樣式相同、底色改品牌綠以示區別 */
-.mobile-quiz-shortcut { display: none; }
-@media (max-width: 767px) {
-  .mobile-quiz-shortcut {
-    position: fixed;
-    z-index: 89;
-    right: 12px;
-    bottom: calc(94px + 36px + env(safe-area-inset-bottom));
-    display: flex;
-    align-items: center;
-    border: 1px solid #00a174;
-    border-radius: 999px;
-    background: #00a174;
-    padding: 5px 11px;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 125, 90, 0.18);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-  }
-}
 /* 手機：章節底部的上一章／下一章要高過浮動膠囊與下排導覽 */
 @media (max-width: 767px) { .chapter-layout { padding-bottom: 96px; } }
 /* 手機／平板：章節裡的子主題分頁（例：申請流程／準備文件⋯）改成底線分頁，左右箭頭縮小 */

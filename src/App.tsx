@@ -196,10 +196,6 @@ function MobileDock({
 
   return (
     <>
-      {/* 居住人格診斷入口：疊在 Threads 膠囊上方，同一種小膠囊，不佔下排五個按鈕 */}
-      <a href={QUIZ_URL} className="mobile-quiz-shortcut" aria-label="開始東京居住人格診斷">
-        <span>測你是哪區人</span>
-      </a>
       {/* 「精選 ⟨Threads⟩ 文」——台灣讀者看到 Threads 標誌就知道是脆文 */}
       <button type="button" className="mobile-threads-shortcut" onClick={onThreads} aria-label="開啟精選 Threads 貼文">
         <span>精選</span>
