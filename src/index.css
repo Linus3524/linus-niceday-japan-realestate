@@ -751,7 +751,9 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   bottom: 46px;
 }
 
-@media (max-width: 767px) {
+/* 直式平板（iPad mini／iPad／iPad Pro 直拿）也用這套：內容比 16:9 背景高很多，
+   當背景只會貼在底部、上半段留白，改成跟手機一樣把場景排在聯絡卡下方、整寬顯示 */
+@media (max-width: 767px), (max-width: 1279px) and (orientation: portrait) {
   /* 手機是直式長版面，16:9 橫圖用 contain 只會在底部縮成一條窄帶，
      改用 cover 並錨定底部填滿，優先保住畫面下緣的斑馬線。
      （正解是另外做一張直式裁切圖，見 docs/HERO_BACKGROUND_GUIDE.md） */
@@ -6142,4 +6144,34 @@ button.ui-switch-large:focus-visible {
   }
   .mobile-scene-quiz strong { font-family: var(--font-serif); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
   .mobile-scene-quiz-cta { font-family: var(--font-sans); font-size: 10.5px; font-weight: 500; opacity: 0.85; }
+}
+
+/* 直式平板首頁：場景框加高到 4:3，背景圖比框寬、像手機版一樣緩慢左右平移；聯絡卡不再拉滿整寬 */
+@media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+  .hero-bg-layer { aspect-ratio: 4 / 3; overflow: hidden; }
+  .hero-bg {
+    inset: 0 auto 0 50%;
+    width: auto;
+    height: 100%;
+    max-width: none;
+    aspect-ratio: 2400 / 1350;
+    object-fit: cover;
+    transform: translateX(-46%);
+    transition: opacity 1.2s ease;
+  }
+  .hero-bg.is-active { transform: translateX(-46%); animation: tablet-scene-pan 15s linear both; }
+  .hero-media.is-booting .hero-bg.is-active { animation: none; }
+  @keyframes tablet-scene-pan {
+    from { transform: translateX(-54%); }
+    to { transform: translateX(-46%); }
+  }
+  .hero-character { height: 44vw; }
+  .hero-char--orange { height: 47vw; }
+  .hero-char--grape { height: 45vw; }
+  .hero-char--apple { height: 48vw; }
+  /* 加好友卡片：限制寬度靠左，按鈕不再被拉成 700px 長條 */
+  .hero-contact-card { max-width: 460px; margin-left: 0; margin-right: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg.is-active { animation: none !important; }
 }

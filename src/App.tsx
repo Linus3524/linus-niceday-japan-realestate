@@ -1010,7 +1010,7 @@ export default function App() {
           </div>
 
           {/* Right side: Contact Card */}
-          <div ref={contactCardRef} className="lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
+          <div ref={contactCardRef} className="hero-contact-card lg:col-span-4 mx-auto w-full bg-white border border-[#DDE3DF] p-5 hover:border-[#00a174] hover:shadow-colored-soft transition-all duration-300 grid grid-cols-[128px_minmax(0,1fr)] gap-4 items-center lg:w-fit lg:ml-auto lg:grid-cols-[auto_1fr] lg:gap-3 lg:py-4 lg:pr-4 lg:pl-2.5">
             {/* Left: Logo，點一下翻面顯示 LINE QR */}
             <div className="shrink-0">
               <button
