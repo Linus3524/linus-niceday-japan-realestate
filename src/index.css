@@ -6229,3 +6229,8 @@ button.ui-switch-large:focus-visible {
   }
   .hero-contact-card .contact-flip { width: 72px; height: 72px; }
 }
+
+/* Threads 區塊標題「在 Threads，繼續住好日」不換行（平板寬度時左欄被搜尋列擠窄，會斷成兩行） */
+@media (min-width: 640px) {
+  #threads-featured h2 { white-space: nowrap; }
+}
