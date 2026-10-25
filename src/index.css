@@ -4758,11 +4758,8 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
 }
 
 
-/* 申請方式：每張卡片加上「流程順序」小時間軸（電腦版） */
-.rent-route-steps {
-  display: none;
-}
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+/* 申請方式：每張卡片加上「流程順序」小時間軸（2026-10 起手機、平板也顯示，跟電腦版同一份內容） */
+@media all {
   .rent-route-steps {
     display: flex;
     flex-direction: column;
@@ -4856,11 +4853,8 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
 }
 
 
-/* 申請方式：情境例子（電腦版） */
-.rent-route-example {
-  display: none;
-}
-@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+/* 申請方式：情境例子（2026-10 起手機、平板也顯示） */
+@media all {
   .rent-route-card > p.rent-route-example {
     display: flex;
     gap: 10px;
