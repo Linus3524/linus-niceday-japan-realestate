@@ -6234,3 +6234,9 @@ button.ui-switch-large:focus-visible {
 @media (min-width: 640px) {
   #threads-featured h2 { white-space: nowrap; }
 }
+/* 平板：Threads 區塊標題列改上下兩排——標題＋說明一排、搜尋／追蹤／左右鍵一排，說明文字不再被擠成窄窄一欄 */
+@media (min-width: 640px) and (max-width: 1279px) {
+  #threads-featured > div > div:first-child { flex-direction: column; align-items: stretch; gap: 14px; }
+  #threads-featured > div > div:first-child > div:last-child { width: 100%; }
+  #threads-featured > div > div:first-child > div:last-child > div:first-child { flex: 1; width: auto; }
+}
