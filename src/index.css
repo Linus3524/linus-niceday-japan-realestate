@@ -6833,3 +6833,7 @@ button.ui-switch-large:focus-visible {
   #hero-banner { border-bottom: 0; padding-bottom: 8px; }
   .about-flow { border-top: 0; padding-top: 16px; }
 }
+/* 平板首頁介紹區：名片依內容高度，不跟右邊故事欄拉成齊底（拉長只會在下面留一大塊空白） */
+@media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .about-flow .about-profile { align-self: start; }
+}
