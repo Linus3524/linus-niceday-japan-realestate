@@ -6204,10 +6204,10 @@ button.ui-switch-large:focus-visible {
     left: auto;
     right: 3%;
     bottom: 0;
-    height: 76%;
+    height: 70%;
   }
   /* 檸檬人物是奔跑姿勢、橫向較寬，縮小一點才不會伸到文字下面 */
-  .hero-char--lemon { height: 66%; }
+  .hero-char--lemon { height: 61%; }
   .hero-char--grape, .hero-char--apple { transform: translateY(26px) scale(0.97); }
   .hero-char--grape.is-active, .hero-char--apple.is-active { transform: translateY(0) scale(1); }
 }
