@@ -61,6 +61,9 @@ export function OfficeStationMap({ stations, activeKey }: { stations: OfficeStat
     if (mapMode !== "interactive" || !containerRef.current) return;
     const map = L.map(containerRef.current, { center: OFFICE_COORD, zoom: 16, scrollWheelZoom: false });
     mapRef.current = map;
+    // 地圖框跟著版面變高變矮時，Leaflet 要重算尺寸，否則多出來的區域不會補圖磚
+    const resizeObserver = new ResizeObserver(() => map.invalidateSize());
+    resizeObserver.observe(containerRef.current);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -86,7 +89,7 @@ export function OfficeStationMap({ stations, activeKey }: { stations: OfficeStat
 
     // 切換到車站地圖時容器才剛掛上，Leaflet 量到的尺寸可能是 0，fitBounds 會失效；等一個影格再重新量、再全覽
     const frame = requestAnimationFrame(() => { map.invalidateSize(); fitAll(map); });
-    return () => { cancelAnimationFrame(frame); map.remove(); mapRef.current = null; markersRef.current.clear(); };
+    return () => { cancelAnimationFrame(frame); resizeObserver.disconnect(); map.remove(); mapRef.current = null; markersRef.current.clear(); };
   }, [stations, mapMode]);
 
   // 右側清單滑過：跟圖紙分析一樣用 is-active-marker 高亮並打開說明，不平移地圖
@@ -111,7 +114,8 @@ export function OfficeStationMap({ stations, activeKey }: { stations: OfficeStat
   );
 
   return (
-    <div className="space-y-2">
+    // 外框可以被父層拉高（聯絡頁桌機：跟右邊車站清單同高），沒有被拉高時地圖維持 288px
+    <div className="flex h-full flex-col gap-2">
       <div className="flex items-center justify-between gap-2 border border-[#DDE3DF] bg-[#FAFCFB] p-2">
         <div className="flex items-center gap-2">
           {modeButton("google", "Google Maps 實景")}
@@ -122,7 +126,7 @@ export function OfficeStationMap({ stations, activeKey }: { stations: OfficeStat
           <ExternalLink className="h-3.5 w-3.5" />
         </a>
       </div>
-      <div className="relative z-0 h-72 w-full overflow-hidden border border-[#DDE3DF] bg-[#EEF2F0]">
+      <div className="relative z-0 min-h-72 w-full flex-1 overflow-hidden border border-[#DDE3DF] bg-[#EEF2F0]">
         {mapMode === "interactive" ? (
           <>
             <div ref={containerRef} className="h-full w-full" />

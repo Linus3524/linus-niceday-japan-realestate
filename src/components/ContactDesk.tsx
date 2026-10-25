@@ -257,23 +257,14 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
             <InfoRow icon={MapPin} label="所在地">{linusContact.address}</InfoRow>
           </dl>
           <div className="mt-5 grid grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)] gap-5">
-            <div><OfficeStationMap stations={OFFICE_STATIONS} activeKey={activeStation} /></div>
-            {/* 車站卡跟左邊地圖同高：各站平均分配高度，路線名小字在上、站名與步行時間在下 */}
-            <div className="flex flex-col border border-[#DDE3DF]">
-              <p className="flex items-center gap-1.5 border-b border-[#DDE3DF] bg-[#F5F8F6] px-3 py-2.5 text-[13px] font-bold"><Train className="h-4 w-4 text-[#00A174]" />周邊車站步行時間</p>
-              <ul className="flex flex-1 flex-col divide-y divide-[#ECEFEC] text-[#3F5147]">
-                {linusContact.stations.map(station => {
-                  const [line, rest = ""] = station.split("／");
-                  const walkAt = rest.search(/\s*徒歩/);
-                  const name = walkAt >= 0 ? rest.slice(0, walkAt) : rest;
-                  const walk = walkAt >= 0 ? rest.slice(walkAt).trim() : "";
-                  return (
-                    <li key={station} lang="ja" onMouseEnter={() => setActiveStation(station)} onMouseLeave={() => setActiveStation(null)} className={`font-jp flex flex-1 cursor-default flex-col justify-center px-3 py-1.5 transition-colors ${activeStation === station ? "bg-[#F0FAF6] text-[#00A174]" : ""}`}>
-                      <span className="text-[11px] text-[#8A9590]">{line}</span>
-                      <span className="flex items-baseline justify-between gap-2 text-[13px] font-semibold"><span>{name}</span><span className="shrink-0 text-[12px] font-normal">{walk}</span></span>
-                    </li>
-                  );
-                })}
+            {/* 地圖跟右邊車站清單同高：欄位被 grid 拉齊，地圖框填滿（清單變長、欄寬變窄時地圖一起變高） */}
+            <div className="flex flex-col"><OfficeStationMap stations={OFFICE_STATIONS} activeKey={activeStation} /></div>
+            <div>
+              <p className="flex items-center gap-1.5 text-[13px] font-bold"><Train className="h-4 w-4 text-[#00A174]" />周邊車站步行時間</p>
+              <ul className="mt-2 divide-y divide-[#ECEFEC] text-[13px] leading-relaxed text-[#3F5147]">
+                {linusContact.stations.map(station => (
+                  <li key={station} lang="ja" onMouseEnter={() => setActiveStation(station)} onMouseLeave={() => setActiveStation(null)} className={`font-jp cursor-default py-2 transition-colors ${activeStation === station ? "text-[#00A174]" : ""}`}>{station}</li>
+                ))}
               </ul>
             </div>
           </div>
