@@ -24,6 +24,8 @@ const DISPLAY_FONT_ALLOW = new Set([
   ".stage-eyebrow", ".stage-menu-en", ".stage-md", ".stage-weather-place", ".stage-date-month",
   ".chapter-rail-en", ".chapter-ghost", ".chapter-kicker", ".chapter-en", ".chapter-overview-en", ".chapter-overview-num",
   ".about-section-en", ".about-card-no", ".about-card-head", ".about-step-no", ".preface-feature-en",
+  // 關於我的數字（年資、件數）：使用者指定用斜體襯線英文數字
+  ".about-numbers strong",
   ".section-tab-num", ".rent-route-number", ".rent-reminder-number", ".buy-tax-no",
   // 印章「済」：漢字，不是數字
   ".rent-stamp-mini", ".rent-stampbook-seal b", ".rent-stamp",
