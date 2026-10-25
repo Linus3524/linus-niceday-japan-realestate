@@ -6148,10 +6148,10 @@ button.ui-switch-large:focus-visible {
   .mobile-scene-quiz-cta { font-family: var(--font-sans); font-size: 10.5px; font-weight: 500; opacity: 0.85; }
 }
 
-/* 直式平板首頁（iPad mini／iPad／iPad Pro 直拿）：
+/* 平板與中間尺寸首頁（手機與桌機首屏之間的所有寬度，直拿、橫拿都一樣；≥1280 但沒有滑鼠的大平板也算）：
    場景鋪滿整個首屏當背景、像手機版一樣緩慢左右平移；左側白色漸層壓住文字區，人物站在右下，
    加好友卡片縮小放在左下。原本 16:9 背景用 contain 只貼在底部、上半段整片留白。 */
-@media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+@media (min-width: 768px) and (max-width: 1279px), (min-width: 1280px) and (hover: none) {
   /* 首屏高度跟著內容（文字＋卡片），人物站在文字右邊、跟整塊一樣高；文字欄限制寬度不壓到人物 */
   .hero-banner {
     min-height: 0;
@@ -6219,7 +6219,7 @@ button.ui-switch-large:focus-visible {
 }
 
 /* 手機與平板：加好友卡片一律是小而窄的固定尺寸、靠左，不跟著畫面寬度拉長（各尺寸只換位置） */
-@media (max-width: 1279px) {
+@media (max-width: 1279px), (min-width: 1280px) and (hover: none) {
   .hero-contact-card {
     width: 290px;
     max-width: 100%;
@@ -6244,17 +6244,17 @@ button.ui-switch-large:focus-visible {
   #threads-featured > div > div:first-child > div:last-child > div:first-child { flex: 1; width: auto; }
 }
 
-/* 大尺寸直式平板（iPad Pro 11／13 直拿，≥ 900px）：整頁左右留白加大，Threads 區塊與主內容跟首屏對齊 */
-@media (min-width: 900px) and (max-width: 1279px) and (orientation: portrait) {
+/* 較寬的平板（≥ 900px，含橫拿）：整頁左右留白加大，Threads 區塊與主內容跟首屏對齊 */
+@media (min-width: 900px) and (max-width: 1279px), (min-width: 1280px) and (hover: none) {
   #threads-featured > div,
   #main-content { padding-left: clamp(24px, 6vw, 72px); padding-right: clamp(24px, 6vw, 72px); max-width: none; }
   .hero-contact-card { width: 320px; grid-template-columns: 80px minmax(0, 1fr); }
   .hero-contact-card .contact-flip { width: 80px; height: 80px; }
 }
 
-/* 直式平板首頁：直書日文標語（同手機版文案與配色），位在左側文字與右側人物之間的天空 */
+/* 平板與中間尺寸首頁：直書日文標語（同手機版文案與配色），位在左側文字與右側人物之間的天空 */
 .hero-vslogans { display: none; }
-@media (min-width: 768px) and (max-width: 1279px) and (orientation: portrait) {
+@media (min-width: 768px) and (max-width: 1279px), (min-width: 1280px) and (hover: none) {
   .hero-vslogans { display: block; position: absolute; inset: 0; z-index: 3; pointer-events: none; }
   .hero-vslogan {
     position: absolute;
