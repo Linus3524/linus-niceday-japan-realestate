@@ -6780,3 +6780,42 @@ button.ui-switch-large:focus-visible {
     border-bottom: 1px solid #DCEFE7;
   }
 }
+
+/* 手機首頁介紹區：服務、理由、免費工具改成左右滑的卡片（一張約八成寬、露出下一張），不再一路往下排 */
+@media (max-width: 767px) {
+  .about-flow .about-services,
+  .about-flow .about-reasons,
+  .about-flow .about-tools {
+    display: flex;
+    gap: 12px;
+    margin: 0 -20px;
+    padding: 2px 20px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .about-flow .about-services::-webkit-scrollbar,
+  .about-flow .about-reasons::-webkit-scrollbar,
+  .about-flow .about-tools::-webkit-scrollbar { display: none; }
+  .about-flow .about-services > *,
+  .about-flow .about-reasons > li,
+  .about-flow .about-tools > li {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+  }
+  /* 理由與工具原本是一列列的清單，改成卡片外框 */
+  .about-flow .about-reasons > li,
+  .about-flow .about-tools > li,
+  .about-flow .about-reasons li:nth-last-child(-n + 2),
+  .about-flow .about-tools li:nth-last-child(-n + 2),
+  .about-flow .about-reasons li:last-child,
+  .about-flow .about-tools li:last-child {
+    padding: 18px 16px;
+    border: 1px solid #DDE3DF;
+    background: #fff;
+  }
+  .about-flow .about-tools > li { grid-template-columns: 28px minmax(0, 1fr); align-items: start; }
+  .about-flow .about-tool-link { grid-column: 2; justify-self: start; margin-top: 4px; }
+}
