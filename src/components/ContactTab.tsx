@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { trackAction } from "../lib/trackView";
-import { ExternalLink, Smile, Instagram, Facebook, AtSign, MousePointerClick, QrCode, MapPin, Train, Building2, Home, Building, ClipboardList } from "lucide-react";
-import { AdviceNote } from "./AdviceNote";
+import { CalendarX, Check, Smile, ClipboardList, Clock, Copy, Building, Home, Mail, MapPin, MessageCircle, MousePointerClick, Phone, QrCode, Train } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 import { PageIntroCard } from "./PageIntroCard";
-import { BUY_QUESTIONNAIRE, BuyLoanNotice, ContactDesk, RENT_QUESTIONNAIRE } from "./ContactDesk";
+import { BUY_QUESTIONNAIRE, BuyLoanNotice, COMPANY_ROWS, ContactDesk, InfoRow, OFFICE_STATIONS, RENT_QUESTIONNAIRE, SELLING_POINTS, SOCIALS } from "./ContactDesk";
+import { OfficeStationMap } from "./OfficeStationMap";
 
 interface ContactTabProps {
   contactFormType: "rent" | "buy";
@@ -14,6 +14,24 @@ interface ContactTabProps {
   handleCopyLine: () => void;
   copiedWechat: boolean;
   handleCopyWechat: () => void;
+}
+
+// ID＋複製按鈕：跟電腦版 QR 卡同一種細框樣式
+function IdCopyRow({ app, id, copied, onCopy, buttonId }: { app: string; id: string; copied: boolean; onCopy: () => void; buttonId: string }) {
+  return (
+    <div className="flex items-stretch border border-[#DDE3DF]">
+      <span className="flex min-w-0 flex-1 items-center justify-center px-3 py-2 text-[13px] font-semibold" aria-label={`${app} ID`}>{id}</span>
+      <button
+        type="button"
+        onClick={onCopy}
+        className="flex shrink-0 items-center gap-1 whitespace-nowrap border-l border-[#DDE3DF] px-3.5 text-[11px] font-bold text-[#3F5147] transition-colors hover:bg-[#F0FAF6] hover:text-[#00A174]"
+        id={buttonId}
+      >
+        {copied ? <Check className="h-3.5 w-3.5 text-[#00A174]" /> : <Copy className="h-3.5 w-3.5" />}
+        {copied ? "已複製" : "複製"}
+      </button>
+    </div>
+  );
 }
 
 export function ContactTab(props: ContactTabProps) {
@@ -52,368 +70,156 @@ export function ContactTab(props: ContactTabProps) {
                 handleCopyWechat={handleCopyWechat}
               />
 
-              <div className="contact-mobile grid grid-cols-1 md:grid-cols-12 gap-8 items-start" id="contact-business-layout">
-                {/* Business Card (Left 5 Columns) */}
-                <div className="md:col-span-5 space-y-4">
-                  {/* Elegant Business Card Front */}
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 relative transition-all duration-300 hover:shadow-colored-soft" id="meishi-card">
-                    {/* Double linear inner accent border */}
-                    <div className="absolute inset-1.5 border border-dashed border-[#DDE3DF] pointer-events-none" />
-
-                    <div className="space-y-5 mt-2 relative z-10">
-                      <div className="space-y-1">
-                        <div className="text-[10px] text-[#66736C] uppercase tracking-widest font-sans">株式会社世嘉 Seika</div>
-                        <div className="flex items-baseline gap-2">
-                          <h4 className="text-xl font-bold tracking-tight text-[#1A2A22]">{linusContact.name}</h4>
-                          <span className="text-xs font-bold text-[#00a174] font-sans">營業係長</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3.5 text-xs text-[#3F5147] font-sans border-t border-[#DDE3DF] pt-4">
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">LINE ID</span>
-                          <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.lineId}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">WECHAT</span>
-                          <span className="font-mono bg-[#F5F8F6] px-2 py-0.5 border border-[#DDE3DF] font-semibold">{linusContact.wechatId}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">EMAIL</span>
-                          <span className="font-mono text-[#3F5147]">{linusContact.email}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">PHONE</span>
-                          <span className="font-mono text-[#3F5147]">{linusContact.phone}</span>
-                        </div>
-                        
-                        {/* Wireframe Social Icons */}
-                        <div className="flex items-center gap-3 pt-3.5 border-t border-dashed border-[#C9D2CD]">
-                          <span className="font-bold text-[#00a174] w-20 shrink-0 tracking-wider">SOCIALS</span>
-                          <div className="flex items-center gap-4">
-                            <a 
-                              href="https://www.facebook.com/r352410/" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
-                              title="Facebook"
-                            >
-                              <Facebook className="w-5 h-5" />
-                            </a>
-                            <a 
-                              href="https://www.instagram.com/linus3524?igsh=ODVuNjRwMmtpdjJq&utm_source=qr" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
-                              title="Instagram"
-                            >
-                              <Instagram className="w-5 h-5" />
-                            </a>
-                            <a 
-                              href="https://www.threads.com/@linus3524" 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-[#3F5147] hover:text-[#00a174] hover:scale-110 transition-transform p-1"
-                              title="Threads"
-                            >
-                              <AtSign className="w-5 h-5" />
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-[10px] text-[#3F5147] font-sans pt-3 border-t border-dashed border-[#DDE3DF] leading-relaxed mt-4 space-y-1">
-                        <div className="font-bold text-[#00a174] mb-1">
-                          在日台灣人仲介 ╳ 租屋買房一條龍 🇹🇼
-                        </div>
-                        <div className="flex items-start gap-1">
-                          <span className="text-[#00a174] shrink-0">✔️</span>
-                          <span>誠實仲介 ╳ 專業把關，找我介紹物件最放心！</span>
-                        </div>
-                        <div className="flex items-start gap-1">
-                          <span className="text-[#00a174] shrink-0">✔️</span>
-                          <span>熟悉打工度假與外國人租屋審查／協助生活服務開通！</span>
-                        </div>
-                        <div className="flex items-start gap-1">
-                          <span className="text-[#00a174] shrink-0">✔️</span>
-                          <span>買房貸款協助、資料準備與總價議價完整支援！</span>
-                        </div>
-                      </div>
+              {/* 手機版（<768px）：上下順序照原本（名片 → LINE → WeChat → 問卷 → 公司資料與地圖），
+                  加好友仍是「按鈕＋展開 QR」；外觀改成跟電腦版同一套輕量樣式（直角、細框、白底、不做 hover 浮起）。 */}
+              <div className="contact-mobile space-y-4 font-sans text-[#1A2A22]" id="contact-business-layout">
+                <section className="border border-[#DDE3DF] bg-white p-4" id="meishi-card" aria-label="Linus 聯絡資訊">
+                  <p className="text-[11px] tracking-widest text-[#66736C]">株式会社世嘉 Seika</p>
+                  <div className="mt-1 flex items-baseline gap-2">
+                    <h4 className="text-xl font-bold">{linusContact.name}</h4>
+                    <span className="text-xs font-bold text-[#00A174]">營業係長</span>
+                  </div>
+                  <dl className="mt-3 border-t border-[#DDE3DF] text-[13px]">
+                    <InfoRow icon={MessageCircle} label="LINE ID">{linusContact.lineId}</InfoRow>
+                    <InfoRow icon={MessageCircle} label="WeChat">{linusContact.wechatId}</InfoRow>
+                    <InfoRow icon={Mail} label="Email"><a href={`mailto:${linusContact.email}`} className="break-all hover:text-[#00A174]">{linusContact.email}</a></InfoRow>
+                    <InfoRow icon={Phone} label="電話"><a href={`tel:${linusContact.phone.replace(/-/g, "")}`} className="hover:text-[#00A174]">{linusContact.phone}</a></InfoRow>
+                  </dl>
+                  <div className="mt-3 border-t border-[#DDE3DF] pt-3">
+                    <p className="text-[13px] font-bold text-[#00A174]">在日台灣人仲介・租屋買房一條龍</p>
+                    <ul className="mt-2 space-y-1.5 text-[13px] leading-relaxed text-[#3F5147]">
+                      {SELLING_POINTS.map(point => (
+                        <li key={point} className="flex items-start gap-2"><Check className="mt-1 h-3.5 w-3.5 shrink-0 text-[#00A174]" />{point}</li>
+                      ))}
+                    </ul>
+                    <div className="mt-2 flex items-center gap-1">
+                      {SOCIALS.map(({ href, label, Icon }) => (
+                        <a key={label} href={href} target="_blank" rel="noopener noreferrer" title={label} aria-label={label} className="p-1.5 text-[#3F5147] transition-colors hover:text-[#00A174]">
+                          <Icon className="h-5 w-5" />
+                        </a>
+                      ))}
                     </div>
                   </div>
+                </section>
 
-                  {/* Copy Line block */}
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 space-y-2 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
-                    <span className="font-bold text-[#1A2A22] block mb-1">直接添加 LINE 諮詢：</span>
-                    {/* 文字要對「整條按鈕」置中，不是對扣掉箭頭後的剩餘空間置中。
-                        作法：主連結內再放一層與箭頭同寬的補償間距，把視覺中心推回整排中央。 */}
-                    <div className="flex items-stretch">
-                      <a
-                        href={`https://line.me/ti/p/~${linusContact.lineId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-sans flex flex-1 items-center justify-center gap-2 bg-[#00a174] hover:bg-[#00A174] text-white pl-[46px] pr-4 py-2.5 font-bold cursor-pointer transition-colors"
-                        id="add-line-btn-contact"
-                        onClick={() => trackAction("line-add")}
-                      >
-                        點我加 LINE 好友
-                        <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const next = !showLineQr;
-                          setShowLineQr(next);
-                          // 只在展開時記一次；收合不是聯絡意圖。
-                          if (next) trackAction("line-qr");
-                        }}
-                        aria-expanded={showLineQr}
-                        aria-controls="line-qr-panel"
-                        aria-label={showLineQr ? "收合 LINE QR Code" : "展開 LINE QR Code 掃碼加好友"}
-                        /* 分隔線用 before 偽元素而不是 border-l：border 會從上切到下，
-                           視覺上像把按鈕剖成兩半；偽元素可以只佔中間一段。 */
-                        className="relative flex shrink-0 items-center justify-center bg-[#00a174] px-3.5 text-white transition-colors hover:bg-[#00A174] cursor-pointer before:absolute before:left-0 before:top-1/2 before:h-1/2 before:w-[2px] before:-translate-y-1/2 before:bg-white/45 before:content-['']"
-                      >
-                        <QrCode className="h-4 w-4" aria-hidden="true" />
-                      </button>
-                    </div>
-                    {showLineQr && (
-                      <div id="line-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
-                        <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" className="h-40 w-40" />
-                        <span className="text-[10px] text-[#66736C]">用 LINE 掃描這個 QR Code 加好友</span>
-                      </div>
-                    )}
-                    <div className="flex items-stretch font-sans text-xs">
-                      <input
-                        type="text"
-                        readOnly
-                        value={linusContact.lineId}
-                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-[#3F5147] focus:outline-none text-[12px] text-center"
-                        aria-label="LINE ID"
-                      />
-                      <button
-                        onClick={handleCopyLine}
-                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-[#3F5147] text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
-                        id="copy-line-btn-contact"
-                      >
-                        {copiedLine ? "已複製" : "複製"}
-                      </button>
-                    </div>
-                    <AdviceNote title="LINE 加入方式" compact>
-                      <span>手機點擊上方綠色按鈕可直接開啟 LINE 添加好友；或複製 Line ID 後在 LINE 中搜尋添加。若加不到好友，可點按鈕右側的 QR 圖示展開掃碼加入。</span>
-                    </AdviceNote>
-                  </div>
-
-                  {/* Copy WeChat block */}
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 space-y-2 font-sans text-xs transition-all duration-300 hover:shadow-colored-soft">
-                    <span className="font-bold text-[#1A2A22] block mb-1">直接添加 WeChat 諮詢：</span>
-                    {/* WeChat 沒有等同 LINE 的加好友連結，只能掃碼或搜尋 ID，
-                        所以整條按鈕就是展開 QR，不做左右分割。 */}
+                {/* LINE：主按鈕開 LINE 加好友，右側 QR 圖示展開掃碼（有些客人用連結加不到好友） */}
+                <section className="space-y-2.5 border border-[#DDE3DF] bg-white p-4 text-xs">
+                  <h4 className="text-[15px] font-bold">直接添加 LINE 諮詢</h4>
+                  {/* 文字要對「整條按鈕」置中：主連結左邊補一段與 QR 鈕同寬的間距 */}
+                  <div className="flex items-stretch">
+                    <a
+                      href={`https://line.me/ti/p/~${linusContact.lineId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-1 items-center justify-center gap-2 bg-[#00A174] py-2.5 pl-[46px] pr-4 text-[13px] font-bold text-white transition-colors hover:bg-[#008F67]"
+                      id="add-line-btn-contact"
+                      onClick={() => trackAction("line-add")}
+                    >
+                      點我加 LINE 好友
+                      <MousePointerClick className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    </a>
                     <button
                       type="button"
                       onClick={() => {
-                        const next = !showWechatQr;
-                        setShowWechatQr(next);
-                        if (next) trackAction("wechat-qr");
+                        const next = !showLineQr;
+                        setShowLineQr(next);
+                        // 只在展開時記一次；收合不是聯絡意圖。
+                        if (next) trackAction("line-qr");
                       }}
-                      aria-expanded={showWechatQr}
-                      aria-controls="wechat-qr-panel"
-                      className="flex w-full items-center justify-center gap-2 bg-[#00a174] px-4 py-2.5 font-bold text-white transition-colors hover:bg-[#00A174] cursor-pointer"
-                      id="wechat-qr-btn-contact"
+                      aria-expanded={showLineQr}
+                      aria-controls="line-qr-panel"
+                      aria-label={showLineQr ? "收合 LINE QR Code" : "展開 LINE QR Code 掃碼加好友"}
+                      className="relative flex shrink-0 items-center justify-center bg-[#00A174] px-3.5 text-white transition-colors hover:bg-[#008F67] before:absolute before:left-0 before:top-1/2 before:h-1/2 before:w-px before:-translate-y-1/2 before:bg-white/50 before:content-['']"
                     >
-                      <QrCode className="h-4 w-4 shrink-0" aria-hidden="true" />
-                      點我掃碼加好友
+                      <QrCode className="h-4 w-4" aria-hidden="true" />
                     </button>
-                    {showWechatQr && (
-                      <div id="wechat-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] bg-[#F5F8F6] p-3">
-                        <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR Code" className="h-40 w-40" />
-                        <span className="text-[10px] text-[#66736C]">用微信掃描這個 QR Code 加好友</span>
-                      </div>
-                    )}
-                    <div className="flex items-stretch font-sans text-xs">
-                      <input
-                        type="text"
-                        readOnly
-                        value={linusContact.wechatId}
-                        className="flex-1 bg-white border border-[#DDE3DF] px-3 py-2 font-mono text-[#3F5147] focus:outline-none text-[12px] text-center"
-                        aria-label="WeChat ID"
-                      />
+                  </div>
+                  {showLineQr && (
+                    <div id="line-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] p-3">
+                      <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" className="h-40 w-40" />
+                      <span className="text-[11px] text-[#66736C]">用 LINE 掃描這個 QR Code 加好友</span>
+                    </div>
+                  )}
+                  <IdCopyRow app="LINE" id={linusContact.lineId} copied={copiedLine} onCopy={handleCopyLine} buttonId="copy-line-btn-contact" />
+                  <p className="text-[11px] leading-relaxed text-[#66736C]">手機點綠色按鈕可直接開啟 LINE 加好友；或複製 LINE ID 後在 LINE 搜尋。加不到好友時，點按鈕右側的 QR 圖示展開掃碼。</p>
+                </section>
+
+                {/* WeChat 沒有等同 LINE 的加好友連結，只能掃碼或搜尋 ID，所以整條按鈕就是展開 QR */}
+                <section className="space-y-2.5 border border-[#DDE3DF] bg-white p-4 text-xs">
+                  <h4 className="text-[15px] font-bold">直接添加 WeChat 諮詢</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !showWechatQr;
+                      setShowWechatQr(next);
+                      if (next) trackAction("wechat-qr");
+                    }}
+                    aria-expanded={showWechatQr}
+                    aria-controls="wechat-qr-panel"
+                    className="flex w-full items-center justify-center gap-2 bg-[#00A174] px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#008F67]"
+                    id="wechat-qr-btn-contact"
+                  >
+                    <QrCode className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    點我掃碼加好友
+                  </button>
+                  {showWechatQr && (
+                    <div id="wechat-qr-panel" className="qr-panel flex flex-col items-center gap-2 border border-[#DDE3DF] p-3">
+                      <img src="/wechat-add-friend-qr-branded.svg" alt="WeChat 加好友 QR Code" className="h-40 w-40" />
+                      <span className="text-[11px] text-[#66736C]">用微信掃描這個 QR Code 加好友</span>
+                    </div>
+                  )}
+                  <IdCopyRow app="WeChat" id={linusContact.wechatId} copied={copiedWechat} onCopy={handleCopyWechat} buttonId="copy-wechat-btn-contact" />
+                  <p className="text-[11px] leading-relaxed text-[#66736C]">點綠色按鈕展開 QR Code 用微信掃碼；或複製 WeChat ID 後在微信搜尋並添加 Linus。</p>
+                </section>
+
+                <section className="border border-[#DDE3DF] bg-white p-4 text-xs">
+                  <h4 className="flex items-center gap-2 text-[15px] font-bold"><ClipboardList className="h-4 w-4 text-[#00A174]" />諮詢前先填好這幾題</h4>
+                  <p className="mt-1.5 leading-relaxed text-[#66736C]">
+                    {contactFormType === "rent"
+                      ? "為了更快幫您篩選房源並確認管理公司審查條件，歡迎複製以下租屋問卷，填好後傳給我。"
+                      : "為了精準篩選房源並評估貸款與購屋規劃，歡迎複製以下買房問卷，填好後傳給我。"}
+                  </p>
+                  <div className="mt-3 grid grid-cols-2 border border-[#DDE3DF]" role="tablist" aria-label="問卷類型">
+                    {([["rent", Home, "租屋"], ["buy", Building, "買房"]] as const).map(([type, Icon, label], index) => (
                       <button
-                        onClick={handleCopyWechat}
-                        className="bg-[#F5F8F6] border border-l-0 border-[#DDE3DF] hover:bg-[#e6f6f1] text-[#3F5147] text-[11px] px-4 py-2 cursor-pointer font-bold transition-colors select-none shrink-0"
-                        id="copy-wechat-btn-contact"
+                        key={type}
+                        type="button"
+                        role="tab"
+                        aria-selected={contactFormType === type}
+                        onClick={() => setContactFormType(type)}
+                        className={`flex min-h-10 items-center justify-center gap-1.5 text-xs font-bold transition-colors ${index > 0 ? "border-l border-[#DDE3DF]" : ""} ${contactFormType === type ? "bg-[#F0FAF6] text-[#00A174]" : "text-[#3F5147]"}`}
                       >
-                        {copiedWechat ? "已複製" : "複製"}
+                        <Icon className="h-3.5 w-3.5" />{label}問卷
                       </button>
-                    </div>
-                    <AdviceNote title="WeChat 加入方式" compact>
-                      <span>點擊上方綠色按鈕可展開 QR Code，用微信掃碼加好友；或複製 WeChat ID 後在微信中搜尋並添加 Linus。</span>
-                    </AdviceNote>
+                    ))}
                   </div>
-
-                  {/* Submission Info Checklist Table with Toggle Switch */}
-                  <div className="border border-[#DDE3DF] hover:border-[#00a174] bg-white p-4 font-sans text-xs space-y-4 transition-all duration-300 hover:shadow-colored-soft">
-                    {/* Toggle Selector */}
-                    <div className="flex border border-[#DDE3DF] bg-[#F5F8F6] p-1 gap-1 text-[11px] font-bold">
-                      <button
-                        onClick={() => setContactFormType("rent")}
-                        className={`flex-1 py-2 cursor-pointer transition-colors text-center flex items-center justify-center gap-1.5 ${
-                          contactFormType === "rent"
-                            ? "bg-[#00a174] text-white"
-                            : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
-                        }`}
-                      >
-                        <Home className="w-3.5 h-3.5 shrink-0" />
-                        <span>租屋諮詢問卷</span>
-                      </button>
-                      <button
-                        onClick={() => setContactFormType("buy")}
-                        className={`flex-1 py-2 cursor-pointer transition-colors text-center flex items-center justify-center gap-1.5 ${
-                          contactFormType === "buy"
-                            ? "bg-[#00a174] text-white"
-                            : "bg-transparent text-[#3F5147] hover:bg-[#EEF2F0]"
-                        }`}
-                      >
-                        <Building className="w-3.5 h-3.5 shrink-0" />
-                        <span>買房諮詢問卷</span>
-                      </button>
-                    </div>
-
-                    {contactFormType === "rent" ? (
-                      <div className="space-y-2">
-                        <span className="font-bold text-[#00a174] flex items-center gap-1.5">
-                          <ClipboardList className="w-4 h-4 text-[#00a174] shrink-0" />
-                          <span>諮詢租屋時建議先準備好以下資料：</span>
-                        </span>
-                        <p className="text-[#3F5147] leading-normal text-justify">
-                          為了讓 Linus 能更快速地協助您評估篩選合適房源並確認管理公司審查條件，歡迎直接複製並填寫以下租屋問卷傳送給我喔！
-                        </p>
-                        
-                        <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
-                          {RENT_QUESTIONNAIRE}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <span className="font-bold text-[#00a174] flex items-center gap-1.5">
-                          <ClipboardList className="w-4 h-4 text-[#00a174] shrink-0" />
-                          <span>諮詢買房時建議先準備好以下資料：</span>
-                        </span>
-                        <p className="text-[#3F5147] leading-normal text-justify">
-                          為了讓 Linus 能精準為您篩選優質日本房源並評估貸款與購屋規劃，歡迎直接複製並填寫以下買房問卷傳送給我喔！
-                        </p>
-                        
-                        <div className="bg-[#F5F8F6] text-[#1A2A22] p-4 text-[11px] leading-relaxed select-all border border-[#DDE3DF] font-mono whitespace-pre-line">
-                          {BUY_QUESTIONNAIRE}
-                        </div>
-
-                        <BuyLoanNotice />
-                      </div>
-                    )}
+                  <div className="mt-3 select-all whitespace-pre-line border border-[#DDE3DF] bg-[#FAFCFB] p-3.5 text-[13px] leading-7">
+                    {contactFormType === "rent" ? RENT_QUESTIONNAIRE : BUY_QUESTIONNAIRE}
                   </div>
-                </div>
+                  {contactFormType === "rent" && <p className="mt-2 text-center text-[11px] text-[#8A9590]">代問或代找也歡迎，請在第 6 題註明。</p>}
+                  {contactFormType === "buy" && <div className="mt-3"><BuyLoanNotice /></div>}
+                </section>
 
-                {/* Company Details (Right 7 Columns) */}
-                <div className="contact-company-card md:col-span-7 border border-[#DDE3DF] hover:border-[#00a174] bg-white p-6 space-y-6 transition-all duration-300 hover:shadow-colored-soft">
-                  <div>
-                    <h4 className="mb-4 border-b border-[#DDE3DF] pb-2 text-base font-bold text-[#1A2A22] flex items-center gap-2">
-                      <Building2 className="w-5 h-5 text-[#00a174] shrink-0" />
-                      <span>公司基本資料</span>
-                    </h4>
-
-                    <div className="overflow-hidden border border-[#C9D2CD] font-sans text-xs leading-relaxed text-[#3F5147]">
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold tracking-wide text-[#00A174]">商号</span>
-                        <strong className="px-4 py-3 text-sm text-[#1A2A22]">{linusContact.companyName}</strong>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold tracking-wide text-[#3F5147]">免許番号</span>
-                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.licenseNo}</strong>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">営業時間</span>
-                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.workingHours}</strong>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold text-[#3F5147]">定休日</span>
-                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.closedDays}</strong>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">電話／FAX</span>
-                        <strong className="px-4 py-3 font-mono text-[#1A2A22]">{linusContact.companyPhone}／{linusContact.fax}</strong>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] border-b border-[#DDE3DF] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#FAFCFB] px-3 py-3 font-bold text-[#3F5147]">所属団体</span>
-                        <div className="space-y-1 px-4 py-3 font-semibold text-[#1A2A22]">
-                          {linusContact.memberships.map((membership) => <p key={membership}>{membership}</p>)}
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-[88px_1fr] md:grid-cols-[120px_1fr]">
-                        <span className="bg-[#F5F8F6] px-3 py-3 font-bold text-[#00A174]">保証協會</span>
-                        <strong className="px-4 py-3 text-[#1A2A22]">{linusContact.guaranteeAssociation}</strong>
-                      </div>
-                    </div>
+                <section className="contact-company-card border border-[#DDE3DF] bg-white p-4" aria-label="公司資料與地址">
+                  <h4 className="text-[15px] font-bold">公司資料</h4>
+                  <dl className="mt-2 border-t border-[#DDE3DF] text-[13px]">
+                    {COMPANY_ROWS.map(([icon, label, value]) => (
+                      <InfoRow key={label} icon={icon} label={label}>{Array.isArray(value) ? value.map(v => <p key={v}>{v}</p>) : value}</InfoRow>
+                    ))}
+                    <InfoRow icon={Clock} label="營業時間">{linusContact.workingHours}</InfoRow>
+                    <InfoRow icon={CalendarX} label="定休日">{linusContact.closedDays}</InfoRow>
+                    <InfoRow icon={MapPin} label="所在地">{linusContact.address}</InfoRow>
+                  </dl>
+                  <div className="mt-4 flex flex-col">
+                    <OfficeStationMap stations={OFFICE_STATIONS} activeKey={null} />
                   </div>
-
-                  <div className="contact-office-location border-t border-[#DDE3DF] pt-4 space-y-4">
-                    <div>
-                      <h4 className="font-bold text-sm text-[#1A2A22] mb-2 font-sans uppercase tracking-wider flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-[#00a174] shrink-0" />
-                        <span>公司地址：</span>
-                      </h4>
-                      <p className="text-xs text-[#3F5147] mb-3 font-sans">
-                        {linusContact.address}
-                      </p>
-                    </div>
-
-                    {/* Google Maps Embed Iframe */}
-                    <div className="contact-map-card border border-[#DDE3DF] bg-[#F5F8F6] p-2 relative">
-                      <iframe 
-                        title="Seika Office Google Map"
-                        src="https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E6%9D%B1%E7%A5%9E%E7%94%B02-6-2&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                        width="100%" 
-                        height="260" 
-                        style={{ border: 0 }} 
-                        allowFullScreen={true} 
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        className="grayscale-20 brightness-95 contrast-100 border border-[#DDE3DF]"
-                        id="office-google-map"
-                      ></iframe>
-                      <div className="mt-2 flex justify-between items-center text-xs font-sans">
-                        <span className="text-[10px] text-[#66736C] flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-[#00a174] shrink-0" />
-                          <span>株式會社世嘉 Seika・タカラビル 9 階</span>
-                        </span>
-                        <a 
-                          href="https://maps.app.goo.gl/g8nHrYEdikTvvCLWA" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-[#00a174] hover:text-[#1A2A22] font-bold flex items-center gap-1 hover:underline transition-colors py-1 px-2 border border-[#DDE3DF] bg-white"
-                          id="open-google-map-btn"
-                        >
-                          <span>在 Google Maps 開啟</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-[#F5F8F6] p-4 border border-[#DDE3DF] space-y-2">
-                      <span className="font-bold text-xs text-[#1A2A22] flex items-center gap-1.5 font-sans">
-                        <Train className="w-4 h-4 text-[#00a174] shrink-0" />
-                        <span>周邊電車／地鐵站步行時間：</span>
-                      </span>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1.5 font-sans text-[11px] text-[#3F5147]">
-                        {linusContact.stations.map((station, sIdx) => (
-                          <div key={sIdx} className="flex items-center gap-1.5">
-                            <span className="text-[#00a174] font-bold">●</span>
-                            <span>{station}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  <p className="mt-4 flex items-center gap-1.5 text-[13px] font-bold"><Train className="h-4 w-4 text-[#00A174]" />周邊車站步行時間</p>
+                  <ul className="mt-1 divide-y divide-[#ECEFEC] text-[13px] leading-relaxed text-[#3F5147]">
+                    {linusContact.stations.map(station => (
+                      <li key={station} lang="ja" className="font-jp py-2">{station}</li>
+                    ))}
+                  </ul>
+                </section>
               </div>
             </motion.div>
   );

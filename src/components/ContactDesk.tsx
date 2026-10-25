@@ -1,4 +1,4 @@
-// 電腦版聯絡頁。手機版維持 ContactTab 原本的直排卡片；這裡只在 1280px 以上、滑鼠操作時顯示。
+// 電腦版與平板聯絡頁（768px 以上）。手機版維持 ContactTab 原本的直排順序，只共用這裡的公司資料表與名片列。
 // 電腦前的人最順的聯絡方式是「拿手機掃 QR」，所以 LINE／WeChat QR 直接攤開放第一屏，
 // 加好友連結（電腦多半沒裝 LINE）退為備用；問卷提供一鍵複製，方便貼到 LINE 傳給 Linus。
 import { useRef, useState } from "react";
@@ -10,7 +10,7 @@ import { linusContact } from "../data/rentGuideData";
 import { OfficeStationMap, parseOfficeStations } from "./OfficeStationMap";
 
 // 模組層級解析一次，參考不變，地圖才不會每次重繪
-const OFFICE_STATIONS = parseOfficeStations(linusContact.stations);
+export const OFFICE_STATIONS = parseOfficeStations(linusContact.stations);
 
 export const RENT_QUESTIONNAIRE = `1. 期望入住日期：
 2. 入境日期（機票時間）或目前在日本何處：
@@ -45,20 +45,20 @@ export function BuyLoanNotice() {
   );
 }
 
-const SELLING_POINTS = [
+export const SELLING_POINTS = [
   "誠實仲介、專業把關，介紹物件最放心",
   "熟悉打工度假與外國人租屋審查，協助生活服務開通",
   "買房貸款協助、資料準備與總價議價完整支援",
 ];
 
-const SOCIALS = [
+export const SOCIALS = [
   { href: "https://www.facebook.com/r352410/", label: "Facebook", Icon: Facebook },
   { href: "https://www.instagram.com/linus3524?igsh=ODVuNjRwMmtpdjJq&utm_source=qr", label: "Instagram", Icon: Instagram },
   { href: "https://www.threads.com/@linus3524", label: "Threads", Icon: AtSign },
 ];
 
 // 名片與公司資料兩張表共用同一種列：固定 100px 標題欄（圖示＋文字），兩張卡片上下的標題與內容才會對齊。
-function InfoRow({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: React.ReactNode }) {
+export function InfoRow({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[100px_minmax(0,1fr)] items-start gap-3 border-b border-[#ECEFEC] py-2.5 last:border-b-0">
       <dt className="flex items-center gap-1.5 text-[#66736C]"><Icon className="h-4 w-4 shrink-0 text-[#00A174]" />{label}</dt>
@@ -66,6 +66,15 @@ function InfoRow({ icon: Icon, label, children }: { icon: LucideIcon; label: str
     </div>
   );
 }
+
+// 公司資料表的列（電腦版 ContactDesk 與手機版 ContactTab 共用）
+export const COMPANY_ROWS: [LucideIcon, string, string | string[]][] = [
+  [Building2, "商号", linusContact.companyName],
+  [BadgeCheck, "免許番号", linusContact.licenseNo],
+  [Phone, "電話／FAX", `${linusContact.companyPhone}／${linusContact.fax}`],
+  [Users, "所属団体", linusContact.memberships],
+  [ShieldCheck, "保証協會", linusContact.guaranteeAssociation],
+];
 
 interface QrCardProps {
   app: "LINE" | "WeChat";
@@ -146,14 +155,6 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
     if (!navigator.clipboard) return selectForManualCopy();
     navigator.clipboard.writeText(questionnaire).then(() => showCopyState("copied"), selectForManualCopy);
   };
-
-  const companyRows: [LucideIcon, string, string | string[]][] = [
-    [Building2, "商号", linusContact.companyName],
-    [BadgeCheck, "免許番号", linusContact.licenseNo],
-    [Phone, "電話／FAX", `${linusContact.companyPhone}／${linusContact.fax}`],
-    [Users, "所属団体", linusContact.memberships],
-    [ShieldCheck, "保証協會", linusContact.guaranteeAssociation],
-  ];
 
   return (
     // 照原本的 5／7 骨架：左欄放「行動」（掃碼、問卷），右欄放資訊量大的名片與公司資料。
@@ -251,7 +252,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
         <section className="border border-[#DDE3DF] bg-white p-6" aria-label="公司資料與地址">
           <h3 className="text-lg font-bold">公司資料</h3>
           <dl className="mt-3 border-t border-[#DDE3DF] text-[13px]">
-            {companyRows.map(([icon, label, value]) => (
+            {COMPANY_ROWS.map(([icon, label, value]) => (
               <InfoRow key={label} icon={icon} label={label}>{Array.isArray(value) ? value.map(v => <p key={v}>{v}</p>) : value}</InfoRow>
             ))}
             {/* 地址併進公司資料表，跟上面各列同一種寫法 */}
