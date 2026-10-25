@@ -5869,12 +5869,17 @@ button.ui-switch-large:focus-visible {
 /* 聯絡頁：電腦版與平板用 ContactDesk（QR 攤開、名片與公司資料表、問卷可一鍵複製），手機維持原本直排卡片。
    直式平板（<1024px）寬度不夠左右兩欄並排，改成上下排：先 QR 與問卷、再名片與公司資料；橫式平板照電腦版兩欄。 */
 .contact-desk { display: none; }
-@media (min-width: 768px) {
-  .contact-mobile { display: none; }
-  .contact-desk { display: grid; }
-}
-@media (min-width: 768px) and (max-width: 1023px) {
+/* 2026-10 起手機也用 ContactDesk（跟電腦版同一套輕量設計），改成單欄 */
+.contact-mobile { display: none; }
+.contact-desk { display: grid; }
+@media (max-width: 1023px) {
   .contact-desk > div { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+  .contact-desk { gap: 16px; }
+  .contact-desk section { padding: 18px 16px; }
+  .contact-desk .contact-desk-split,
+  .contact-desk .contact-desk-map { grid-template-columns: minmax(0, 1fr); gap: 16px; }
 }
 
 /* Leaflet 地圖標記（圖紙分析周邊地圖、聯絡頁公司地圖共用）：車站膠囊、目前選取高亮、氣泡外框。 */

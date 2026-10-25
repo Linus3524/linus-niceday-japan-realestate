@@ -223,7 +223,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
             <h3 className="text-2xl font-bold">{linusContact.name}</h3>
             <span className="text-sm font-bold text-[#00A174]">營業係長</span>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-6 border-t border-[#DDE3DF] pt-4">
+          <div className="contact-desk-split mt-4 grid grid-cols-2 gap-6 border-t border-[#DDE3DF] pt-4">
             <dl className="text-[13px]">
               <InfoRow icon={Mail} label="Email"><a href={`mailto:${linusContact.email}`} className="hover:text-[#00A174]">{linusContact.email}</a></InfoRow>
               <InfoRow icon={Phone} label="電話"><a href={`tel:${linusContact.phone.replace(/-/g, "")}`} className="hover:text-[#00A174]">{linusContact.phone}</a></InfoRow>
@@ -257,7 +257,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
             {/* 地址併進公司資料表，跟上面各列同一種寫法 */}
             <InfoRow icon={MapPin} label="所在地">{linusContact.address}</InfoRow>
           </dl>
-          <div className="mt-5 grid grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)] gap-5">
+          <div className="contact-desk-map mt-5 grid grid-cols-[minmax(0,2.2fr)_minmax(0,1fr)] gap-5">
             {/* 地圖跟右邊車站清單同高：欄位被 grid 拉齊，地圖框填滿（清單變長、欄寬變窄時地圖一起變高） */}
             <div className="flex flex-col"><OfficeStationMap stations={OFFICE_STATIONS} activeKey={activeStation} /></div>
             <div>
