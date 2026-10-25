@@ -6298,3 +6298,9 @@ button.ui-switch-large:focus-visible {
   .chapter-rail-search { flex: none; width: 220px; margin-top: 0; }
 }
 
+
+/* 平板：前言推薦卡的人物放大、往上往左一點，不再縮在右下角 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .preface-feature { padding-bottom: 210px; }
+  .preface-feature-art { right: 9%; bottom: 18px; height: 240px; }
+}
