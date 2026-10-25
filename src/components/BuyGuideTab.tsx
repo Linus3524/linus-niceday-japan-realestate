@@ -25,7 +25,6 @@ import { AdviceNote } from "./AdviceNote";
 import { SectionHeading } from "./SectionHeading";
 import { ChapterPager, type Chapter } from "./desktop/ChapterPager";
 import { SectionTabs } from "./desktop/SectionTabs";
-import { useIsDesktop } from "../hooks/useIsDesktop";
 
 // 桌機章節翻頁：沿用原本的分類，一章對應一個分類
 const BUY_CHAPTERS: Chapter[] = [
@@ -144,7 +143,6 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
     : { results: [], total: 0 };
 
   // 桌機：一次只看一章；搜尋時攤開全部，結果才不會被章節切掉
-  const isDesktop = useIsDesktop();
   const [chapter, setChapter] = useState("intro");
   const [processTopic, setProcessTopic] = useState("concepts");
   const processTabs = [
@@ -154,12 +152,12 @@ export function BuyGuideTab(props: BuyGuideTabProps) {
     { id: "tax", label: "稅務與持有成本" },
   ];
   // 搜尋時也維持章節版型（搜尋框在左欄，不能因為切版而失去焦點），內容區改顯示搜尋結果
-  const pagerOn = isDesktop;
+  // 2026-10 起手機與平板也用章節翻頁（樣式見 index.css「手機／平板章節翻頁」），頁面不再一路長到底
+  const pagerOn = true;
   const isIntroChapter = pagerOn && chapter === "intro" && !isBuySearchActive;
   useEffect(() => {
-    if (!isDesktop) return;
     setBuyCategory((isBuySearchActive || chapter === "intro" ? "all" : chapter) as BuyGuideCategory);
-  }, [isDesktop, isBuySearchActive, chapter, setBuyCategory]);
+  }, [isBuySearchActive, chapter, setBuyCategory]);
 
   return (
             <motion.div

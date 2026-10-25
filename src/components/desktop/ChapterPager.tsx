@@ -37,13 +37,17 @@ export function ChapterPager({
   const num = (i: number) => String(i + 1).padStart(2, "0");
   const isPreface = index === 0;
 
+  const layoutRef = useRef<HTMLDivElement>(null);
   const go = (id: string) => {
     onChange(id);
+    // 桌機：內容區自己捲動，捲回頂端；手機／平板：整頁捲動，章節列已經捲過頭時回到章節開頭
     bodyRef.current?.scrollTo({ top: 0 });
+    const layout = layoutRef.current;
+    if (layout && layout.getBoundingClientRect().top < 0) layout.scrollIntoView({ block: "start" });
   };
 
   return (
-    <div className="chapter-layout">
+    <div className="chapter-layout" ref={layoutRef}>
       <aside className="chapter-rail" aria-label={`${guideLabel}章節`}>
         <p className="chapter-rail-en">{guideEn}</p>
         <p className="chapter-rail-title">{guideIcon && <span className="chapter-rail-icon" aria-hidden="true">{guideIcon}</span>}{guideLabel}</p>
@@ -85,7 +89,7 @@ export function ChapterPager({
         <nav className="chapter-foot" aria-label="章節切換">
           {prev ? (
             <button type="button" className="chapter-foot-btn" onClick={() => go(prev.id)} title={prev.label} aria-label={`上一章：${num(index - 1)} ${prev.label}`}>
-              <span aria-hidden="true">←</span> {num(index - 1)}
+              <span aria-hidden="true">←</span> {num(index - 1)}<span className="chapter-foot-label">{prev.label}</span>
             </button>
           ) : <span />}
           <div className="chapter-progress" aria-hidden="true">
@@ -96,7 +100,7 @@ export function ChapterPager({
           </div>
           {next ? (
             <button type="button" className="chapter-foot-btn chapter-foot-btn--next" onClick={() => go(next.id)} title={next.label} aria-label={`下一章：${num(index + 1)} ${next.label}`}>
-              {num(index + 1)} <span aria-hidden="true">→</span>
+              <span className="chapter-foot-label">{next.label}</span>{num(index + 1)} <span aria-hidden="true">→</span>
             </button>
           ) : <span />}
         </nav>

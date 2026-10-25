@@ -7,7 +7,8 @@ export const QUIZ_URL = "https://quiz.linusniceday.com/";
 export const OPEN_QUIZ_EVENT = "linus:open-quiz";
 
 export function openQuizInline(event: { preventDefault: () => void }) {
-  if (typeof window === "undefined" || !window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches) return;
+  // 與 useIsDesktop 同一個斷點：桌機首屏改到 ≥1280px 之後，1024～1279px 已經沒有內嵌面板，要照一般連結開測驗
+  if (typeof window === "undefined" || !window.matchMedia("(min-width: 1280px) and (hover: hover) and (pointer: fine)").matches) return;
   event.preventDefault();
   window.dispatchEvent(new Event(OPEN_QUIZ_EVENT));
 }

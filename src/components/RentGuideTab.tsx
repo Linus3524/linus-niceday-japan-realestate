@@ -20,7 +20,6 @@ import { PageIntroCard } from "./PageIntroCard";
 import { QACard } from "./QACard";
 import { ChapterPager, type Chapter } from "./desktop/ChapterPager";
 import { SectionTabs } from "./desktop/SectionTabs";
-import { useIsDesktop } from "../hooks/useIsDesktop";
 import { QUIZ_URL, openQuizInline } from "../lib/quizUrl";
 
 // 桌機章節翻頁的章節順序：前言 → 流程 → 費用 → 格局設備 → 問答
@@ -96,7 +95,6 @@ export function RentGuideTab(props: RentGuideTabProps) {
     : { results: [], total: 0 };
 
   // 桌機：一次只看一章；搜尋時改回全部攤開，搜尋結果才不會被章節切掉
-  const isDesktop = useIsDesktop();
   const [chapter, setChapter] = useState("intro");
   const [processTopic, setProcessTopic] = useState("sop");
   const processTabs = [
@@ -106,14 +104,14 @@ export function RentGuideTab(props: RentGuideTabProps) {
     { id: "steps", label: "簽約交屋" },
     { id: "reminders", label: "實務提醒" },
   ];
-  const topicVisible = (id: string) => !isDesktop || processTopic === id;
+  const topicVisible = (id: string) => processTopic === id;
   // 搜尋時也維持章節版型（搜尋框在左欄，不能因為切版而失去焦點），內容區改顯示搜尋結果
-  const pagerOn = isDesktop;
+  // 2026-10 起手機與平板也用章節翻頁（樣式見 index.css「手機／平板章節翻頁」），頁面不再一路長到底
+  const pagerOn = true;
   const isIntroChapter = pagerOn && chapter === "intro" && !isSearchActive;
   useEffect(() => {
-    if (!isDesktop) return;
     setKbCategory((isSearchActive || chapter === "intro" ? "all" : chapter) as RentGuideCategory);
-  }, [isDesktop, isSearchActive, chapter, setKbCategory]);
+  }, [isSearchActive, chapter, setKbCategory]);
 
   return (
             <motion.div

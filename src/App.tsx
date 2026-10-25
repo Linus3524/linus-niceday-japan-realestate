@@ -15,7 +15,7 @@ import { ChatTab } from "./components/ChatTab";
 import { AboutPage } from "./components/desktop/AboutPage";
 import { DesktopStage, type StagePage } from "./components/desktop/DesktopStage";
 import { useIsDesktop } from "./hooks/useIsDesktop";
-import { OPEN_QUIZ_EVENT, QUIZ_URL } from "./lib/quizUrl";
+import { OPEN_QUIZ_EVENT, QUIZ_URL, openQuizInline } from "./lib/quizUrl";
 import { ContactTab } from "./components/ContactTab";
 import HeaderInfoBar from "./components/HeaderInfoBar";
 import { PolicyPage, PolicyPageId } from "./components/PolicyPage";
@@ -196,6 +196,10 @@ function MobileDock({
 
   return (
     <>
+      {/* 居住人格診斷入口：疊在 Threads 膠囊上方，同一種小膠囊，不佔下排五個按鈕 */}
+      <a href={QUIZ_URL} className="mobile-quiz-shortcut" aria-label="開始東京居住人格診斷">
+        <span>測你是哪區人</span>
+      </a>
       {/* 「精選 ⟨Threads⟩ 文」——台灣讀者看到 Threads 標誌就知道是脆文 */}
       <button type="button" className="mobile-threads-shortcut" onClick={onThreads} aria-label="開啟精選 Threads 貼文">
         <span>精選</span>
@@ -1123,6 +1127,15 @@ export default function App() {
                 <span>{tab.label}</span>
               </button>
             ))}
+            {/* 平板：第 6 個項目直接開居住人格診斷（手機用浮動膠囊，桌機用左側選單） */}
+            <a
+              href={QUIZ_URL}
+              onClick={openQuizInline}
+              className="primary-nav-tab primary-nav-quiz relative py-2 px-3 sm:px-4 md:px-5.5 flex items-center gap-1 sm:gap-1.5 md:gap-2 font-serif text-[13px] sm:text-sm md:text-[15px] tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap text-[#1A2A22] hover:text-[#00a174] no-underline shrink-0 group"
+            >
+              <span className="primary-nav-num font-jost text-[8px] sm:text-[9px] md:text-[10px] group-hover:text-[#00a174] transition-colors">06</span>
+              <span>人格診斷</span>
+            </a>
           </div>
         </div>
       </nav>
