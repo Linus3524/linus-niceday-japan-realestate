@@ -6305,3 +6305,452 @@ button.ui-switch-large:focus-visible {
   .preface-feature { padding-bottom: 210px; }
   .preface-feature-art { right: 9%; bottom: 18px; height: 240px; }
 }
+
+
+/* =====================================================================
+   手機／平板首頁也放「關於 Linus」介紹（電腦版首頁往下捲那一整段）。
+   樣式沿用電腦版（下面是同一份規則複製到非桌機尺寸），再依寬度改欄數：
+   平板 4 欄→2 欄、5 步驟改直排；手機一律單欄。首屏已經有加好友卡片，這裡的名片不再重複放 LINE 按鈕。
+   ===================================================================== */
+.about-flow { display: none; }
+@media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .about-flow { display: block; padding: 56px clamp(20px, 6vw, 72px) 64px; border-top: 1px solid #DDE3DF; background: #fff; }
+  .mobile-subpage-active .about-flow { display: none; }
+  .about-page {
+    display: flex;
+    flex-direction: column;
+    gap: 88px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .about-section-head {
+    margin-bottom: 28px;
+  }
+  .about-section-en {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(30px, 2.6vw, 48px);
+    line-height: 1.1;
+    color: #00A174;
+  }
+  .about-section-title {
+    margin-top: 6px;
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: clamp(20px, 1.6vw, 28px);
+    letter-spacing: 0.06em;
+    color: #1A2A22;
+  }
+  .about-contact {
+    padding: 48px 0 8px;
+    border-top: 1px solid #1A2A22;
+    text-align: center;
+  }
+  .about-contact-btn {
+    margin-top: 22px;
+    padding: 12px 28px;
+    border: 1px solid #1A2A22;
+    background: #fff;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: #1A2A22;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .about-contact-btn:hover {
+    background: #1A2A22;
+    color: #fff;
+  }
+
+  /* ---- 關於 Linus ---- */
+  /* 左欄名片（頭像／姓名／加 LINE／數字），右欄故事＋四格基本資料；兩欄同高、上緣對齊 */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: clamp(36px, 4.5vw, 72px);
+    align-items: stretch;
+  }
+  .about-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 28px 28px;
+    border: 1px solid #DDE3DF;
+    background: #fff;
+    text-align: center;
+  }
+  /* 右欄間距一致：標題 → 引言 → 內文 → 基本資料，各段用同一套節奏 */
+  .about-section--me .about-section-head { margin-bottom: 10px; }
+  .about-section--me .about-lead { margin-bottom: 2px; }
+  .about-profile-avatar { width: 168px; height: 168px; }
+  .about-profile-name {
+    margin-top: 14px;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: #1A2A22;
+  }
+  .about-profile-name span {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66736C;
+  }
+  .about-profile-role {
+    margin-top: 4px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: #66736C;
+  }
+  .about-profile-line {
+    align-self: center;
+    margin-top: 20px;
+    padding: 7px 22px;
+    background: #00A174;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background-color 200ms ease;
+  }
+  .about-profile-line:hover { background: #00A174; }
+  .about-profile-copy {
+    margin-top: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: #8A9590;
+    cursor: pointer;
+  }
+  .about-profile-copy:hover { color: #00A174; }
+  .about-profile-copy { margin-bottom: 24px; }
+  .about-profile .about-numbers {
+    align-self: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #DDE3DF;
+  }
+  .about-numbers span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: #66736C;
+  }
+  .about-numbers span + span { border-left: 1px solid #DDE3DF; }
+  /* 數字用與「About me」同一款斜體英文字（Cormorant Garamond Italic） */
+  .about-numbers strong {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1.1;
+    color: #00A174;
+  }
+  .about-story {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.9;
+    letter-spacing: 0.03em;
+    color: #3F5147;
+  }
+  .about-lead {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: #1A2A22;
+  }
+  /* 基本資料：固定兩欄規格表（2×2），每格上下細線；整塊貼齊右欄底部，與左側名片底邊同一條線 */
+  .about-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    align-content: end;
+    column-gap: 48px;
+    margin-top: auto;
+  }
+  .about-story > p:last-of-type { margin-bottom: 32px; }
+  .about-motto {
+    margin-top: 6px;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    color: #1A2A22;
+  }
+  .about-facts > div {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid #DDE3DF;
+  }
+  .about-facts > div:nth-child(-n + 2) {
+    border-top: 1px solid #DDE3DF;
+  }
+  .about-facts dt {
+    flex: none;
+    width: 2.5em;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: #00A174;
+  }
+  .about-facts dd {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1A2A22;
+  }
+
+  .about-services {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .about-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 18px 16px;
+    border: 1px solid #DDE3DF;
+    background: #fff;
+    transition: border-color 200ms ease;
+  }
+  .about-card:hover {
+    border-color: var(--hero-accent);
+  }
+  .about-card-no {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 16px;
+    color: #66736C;
+  }
+  .about-card-no span {
+    font-style: normal;
+    font-weight: 700;
+    color: #00A174;
+  }
+  .about-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: #66736C;
+  }
+  .about-card-icon {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.5;
+    color: #00A174;
+  }
+  .about-card-title {
+    margin-bottom: 4px;
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    color: #1A2A22;
+  }
+  .about-card-label {
+    margin-top: 6px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #00A174;
+  }
+  .about-card-text {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.8;
+    color: #3F5147;
+  }
+  .about-card-link {
+    margin-top: auto;
+    padding: 10px 0 0;
+    border: 0;
+    border-top: 1px dashed #DDE3DF;
+    background: none;
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    color: #1A2A22;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .about-card-link:hover {
+    color: #00A174;
+  }
+
+  /* 為什麼找 Linus：2×2，每格圖示＋標題＋說明，不編號 */
+  .about-reasons {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+  }
+  .about-reasons li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding: 24px 0;
+    border-top: 1px solid #DDE3DF;
+  }
+  .about-reasons li:nth-last-child(-n + 2) {
+    border-bottom: 1px solid #DDE3DF;
+  }
+  .about-reason-icon {
+    width: 26px;
+    height: 26px;
+    margin-top: 2px;
+    stroke-width: 1.5;
+    color: #00A174;
+  }
+  .about-reasons h3,
+  .about-steps h3 {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: 0.05em;
+    color: #1A2A22;
+  }
+  .about-reasons p,
+  .about-steps p {
+    margin-top: 6px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.85;
+    color: #3F5147;
+  }
+
+  /* 免費工具：兩欄清單（圖示｜名稱與一句說明｜連結），比服務卡輕，不編號 */
+  .about-tools {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+  }
+  .about-tools li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid #DDE3DF;
+  }
+  .about-tools li:nth-last-child(-n + 2) {
+    border-bottom: 1px solid #DDE3DF;
+  }
+  .about-tool-icon {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.5;
+    color: #00A174;
+  }
+  .about-tools h3 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.05em;
+    color: #1A2A22;
+  }
+  .about-tools p {
+    margin-top: 2px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #66736C;
+  }
+  .about-tool-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1A2A22;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .about-tool-link:hover { color: #00A174; }
+
+  .about-steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid #1A2A22;
+  }
+  .about-steps li {
+    padding: 18px 16px 18px 0;
+    border-right: 1px solid #DDE3DF;
+  }
+  .about-steps li + li {
+    padding-left: 16px;
+  }
+  .about-steps li:last-child {
+    border-right: 0;
+  }
+  .about-step-no {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    color: #00A174;
+  }
+  .about-flow .about-profile-line, .about-flow .about-profile-copy { display: none; }
+  .about-flow .about-profile .about-numbers { margin-top: 20px; }
+  .about-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-steps { grid-template-columns: 1fr; }
+  /* 平板故事欄較窄，基本資料兩欄會擠成每格 160px，改單欄 */
+  .about-facts { grid-template-columns: 1fr; }
+  .about-facts > div:nth-child(-n + 2) { border-top: 0; }
+  .about-facts > div:first-child { border-top: 1px solid #DDE3DF; }
+  .about-steps li, .about-steps li + li { padding: 16px 0; border-right: 0; border-bottom: 1px solid #DDE3DF; }
+  .about-steps li:last-child { border-bottom: 0; }
+}
+@media (max-width: 767px) {
+  .about-flow { padding: 44px 20px 56px; }
+  .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .about-services, .about-reasons, .about-tools, .about-facts { grid-template-columns: 1fr; }
+  .about-reasons li:nth-last-child(-n + 2), .about-tools li:nth-last-child(-n + 2) { border-bottom: 0; }
+  .about-reasons li:last-child, .about-tools li:last-child { border-bottom: 1px solid #DDE3DF; }
+  .about-facts > div:nth-child(-n + 2) { border-top: 0; }
+  .about-facts > div:first-child { border-top: 1px solid #DDE3DF; }
+  .about-lead { font-size: 22px; }
+}
