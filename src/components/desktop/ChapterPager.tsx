@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 // 桌機知識頁的「章節左右翻頁」版型，整頁剛好填滿內容面板的高度：
 //   左欄：指南名稱、章節目錄（含一句說明）、搜尋框
@@ -38,6 +38,15 @@ export function ChapterPager({
   const isPreface = index === 0;
 
   const layoutRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+  // 手機／平板的章節列是橫向膠囊：切章節時把目前那顆捲到中間，下一章自然露出來（桌機是直排，不會捲動）
+  useEffect(() => {
+    const list = listRef.current;
+    const item = list?.querySelector<HTMLElement>(".chapter-rail-item.is-active");
+    if (!list || !item || list.scrollWidth <= list.clientWidth) return;
+    const left = item.offsetLeft - (list.clientWidth - item.offsetWidth) / 2;
+    list.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+  }, [active]);
   const go = (id: string) => {
     onChange(id);
     // 桌機：內容區自己捲動，捲回頂端；手機／平板：整頁捲動，章節列已經捲過頭時回到章節開頭
@@ -51,7 +60,7 @@ export function ChapterPager({
       <aside className="chapter-rail" aria-label={`${guideLabel}章節`}>
         <p className="chapter-rail-en">{guideEn}</p>
         <p className="chapter-rail-title">{guideIcon && <span className="chapter-rail-icon" aria-hidden="true">{guideIcon}</span>}{guideLabel}</p>
-        <ol className="chapter-rail-list">
+        <ol className="chapter-rail-list" ref={listRef}>
           {chapters.map((c, i) => (
             <li key={c.id}>
               <button

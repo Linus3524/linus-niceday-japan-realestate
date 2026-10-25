@@ -5987,6 +5987,8 @@ button.ui-switch-large:focus-visible {
     scrollbar-width: none;
   }
   .chapter-rail-list::-webkit-scrollbar { display: none; }
+  /* 右緣淡出：提示還有章節可以往右滑；尾端留白讓最後一顆能完整滑出淡出區 */
+  .chapter-rail-list { padding-right: 28px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
   .chapter-rail-item {
     display: inline-flex;
     align-items: baseline;
