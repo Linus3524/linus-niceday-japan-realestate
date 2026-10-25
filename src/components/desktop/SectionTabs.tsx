@@ -1,11 +1,13 @@
 // 章節裡的子主題分頁：內容較多的章節（例如申請流程）拆成幾個子主題，
 // 左右切換一次看一個，不再把所有區塊疊成一條長長的捲動。
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 export interface SectionTab {
   id: string;
   label: string;
+  /** 子主題的代表圖示；有給就取代 01、02 這類編號 */
+  icon?: LucideIcon;
 }
 
 export function SectionTabs({ tabs, active, onChange }: { tabs: SectionTab[]; active: string; onChange: (id: string) => void }) {
@@ -36,7 +38,7 @@ export function SectionTabs({ tabs, active, onChange }: { tabs: SectionTab[]; ac
           className={`section-tab ui-switch-large ${i === index ? "is-active" : ""}`}
           onClick={event => selectTopic(t.id, event.currentTarget)}
         >
-          <span className="section-tab-num">{String(i + 1).padStart(2, "0")}</span>
+          {t.icon ? <t.icon className="section-tab-icon" aria-hidden="true" /> : <span className="section-tab-num">{String(i + 1).padStart(2, "0")}</span>}
           <span className="section-tab-label">{t.label}</span>
         </button>
       ))}

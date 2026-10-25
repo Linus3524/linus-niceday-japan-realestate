@@ -1,4 +1,4 @@
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, FileText, KeyRound, Lightbulb, ListChecks, Search, Signpost, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { InitialFeeItem, ProcessStep, QAItem, SpecialTermItem } from "../data/rentGuideData";
@@ -98,11 +98,11 @@ export function RentGuideTab(props: RentGuideTabProps) {
   const [chapter, setChapter] = useState("intro");
   const [processTopic, setProcessTopic] = useState("sop");
   const processTabs = [
-    { id: "sop", label: "申請流程" },
-    { id: "documents", label: "準備文件" },
-    { id: "routes", label: "申請方式" },
-    { id: "steps", label: "簽約交屋" },
-    { id: "reminders", label: "實務提醒" },
+    { id: "sop", label: "申請流程", icon: ListChecks },
+    { id: "documents", label: "準備文件", icon: FileText },
+    { id: "routes", label: "申請方式", icon: Signpost },
+    { id: "steps", label: "簽約交屋", icon: KeyRound },
+    { id: "reminders", label: "實務提醒", icon: Lightbulb },
   ];
   const topicVisible = (id: string) => processTopic === id;
   // 搜尋時也維持章節版型（搜尋框在左欄，不能因為切版而失去焦點），內容區改顯示搜尋結果

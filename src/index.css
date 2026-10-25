@@ -6754,3 +6754,10 @@ button.ui-switch-large:focus-visible {
   .about-facts > div:first-child { border-top: 1px solid #DDE3DF; }
   .about-lead { font-size: 22px; }
 }
+
+/* 章節子主題分頁：編號改成對應圖示（申請流程、準備文件⋯），顏色跟原本編號一樣：未選灰、選中綠 */
+.section-tab-icon { flex: none; width: 15px; height: 15px; stroke-width: 1.8; color: #8A9590; align-self: center; transition: color 180ms ease; }
+.section-tab.is-active .section-tab-icon { color: #00A174; }
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .section-tab-icon { width: 22px; height: 22px; stroke-width: 1.6; color: #A5B1AA; }
+}
