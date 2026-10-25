@@ -6279,3 +6279,21 @@ button.ui-switch-large:focus-visible {
   .hero-vslogan--apple { color: #327509; }
   .hero-vslogan--grape { color: #3B1470; text-shadow: 0 1px 12px rgba(255, 255, 255, 0.5); }
 }
+
+/* 平板：章節列改成「第二層」的樣子，跟上方主選單區分——
+   無框的文字分頁、目前章節用綠色底線；搜尋框收進同一排右側。整列只剩一條細橫列，不再像兩排重複的按鈕。 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .chapter-rail { display: flex; align-items: center; gap: 16px; padding-top: 0; padding-bottom: 0; }
+  .chapter-rail-list { flex: 1; min-width: 0; gap: 4px; }
+  .chapter-rail-item {
+    padding: 13px 10px 11px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: #66736C;
+    font-size: 14px;
+  }
+  .chapter-rail-item.is-active { border-color: transparent; border-bottom-color: #00A174; background: none; color: #1A2A22; font-weight: 700; }
+  .chapter-rail-item.is-active .chapter-rail-num { color: #00A174; opacity: 1; }
+  .chapter-rail-search { flex: none; width: 220px; margin-top: 0; }
+}
