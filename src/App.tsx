@@ -166,9 +166,8 @@ function MobileSceneHero({ heroSet, booting }: { heroSet: number; booting: boole
         <HeaderInfoBar variant="hero" />
         {/* 居住人格診斷入口：放在右上日期天氣下方的天空留白，不跟下排導覽、Threads 膠囊擠在一起 */}
         <a className="mobile-scene-quiz" href={QUIZ_URL} aria-label="開始東京居住人格診斷">
-          <span className="mobile-scene-quiz-en">Which Tokyo are you?</span>
           <strong>你是哪種東京區民？</strong>
-          <span className="mobile-scene-quiz-cta">12 題居住人格診斷 →</span>
+          <span className="mobile-scene-quiz-cta">12 題人格診斷 →</span>
         </a>
         <div className="mobile-scene-count" aria-hidden="true">
           {HERO_SETS.map((set, index) => (

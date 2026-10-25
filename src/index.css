@@ -6114,9 +6114,13 @@ button.ui-switch-large:focus-visible {
   #primary-nav .primary-nav-tab { padding-left: 10px; padding-right: 10px; letter-spacing: 0.08em; }
 }
 
-/* 手機首頁：居住人格診斷入口（右上日期天氣下方）。直角、半透明白底，跟桌機面板同一套輕量配色 */
+/* 手機首頁：居住人格診斷入口（右上日期天氣下方）。直角、通透的毛玻璃，字色跟著四個場景的主題色換 */
 .mobile-scene-quiz { display: none; }
 @media (max-width: 767px) {
+  .mobile-scene-shell { --scene-accent: #00A174; }
+  .mobile-scene--lemon { --scene-accent: #0099FF; }
+  .mobile-scene--apple { --scene-accent: #327509; }
+  .mobile-scene--grape { --scene-accent: #3B1470; }
   .mobile-scene-quiz {
     position: absolute;
     z-index: 5;
@@ -6125,16 +6129,17 @@ button.ui-switch-large:focus-visible {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
-    padding: 10px 12px;
-    border: 1px solid rgba(26, 42, 34, 0.12);
-    background: rgba(255, 255, 255, 0.8);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    gap: 1px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.32);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
     text-align: right;
     text-decoration: none;
+    color: var(--scene-accent);
+    transition: color 600ms ease;
   }
-  .mobile-scene-quiz-en { font-family: var(--font-display); font-style: italic; font-size: 13px; color: #00A174; }
-  .mobile-scene-quiz strong { font-family: var(--font-serif); font-size: 15px; font-weight: 700; letter-spacing: 0.04em; color: #1A2A22; }
-  .mobile-scene-quiz-cta { font-family: var(--font-sans); font-size: 11px; color: #3F5147; }
+  .mobile-scene-quiz strong { font-family: var(--font-serif); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+  .mobile-scene-quiz-cta { font-family: var(--font-sans); font-size: 10.5px; font-weight: 500; opacity: 0.85; }
 }
