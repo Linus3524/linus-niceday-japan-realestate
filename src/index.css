@@ -2783,7 +2783,7 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
   }
   .about-contact {
     padding: 48px 0 8px;
-    border-top: 1px solid #1A2A22;
+    border-top: 0;
     text-align: center;
   }
   .about-contact-btn {
@@ -6309,7 +6309,7 @@ button.ui-switch-large:focus-visible {
    ===================================================================== */
 .about-flow { display: none; }
 @media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
-  .about-flow { display: block; padding: 56px clamp(20px, 6vw, 72px) 64px; border-top: 1px solid #DDE3DF; background: #fff; }
+  .about-flow { display: block; padding: 56px clamp(20px, 6vw, 72px) 24px; border-top: 1px solid #DDE3DF; background: #fff; }
   .mobile-subpage-active .about-flow { display: none; }
   .about-page {
     display: flex;
@@ -6338,9 +6338,13 @@ button.ui-switch-large:focus-visible {
     color: #1A2A22;
   }
   .about-contact {
-    padding: 48px 0 8px;
-    border-top: 1px solid #1A2A22;
+    padding: 0;
+    border-top: 0;
+    margin-top: -16px;
     text-align: center;
+  }
+  .mobile-home-active #app-footer {
+    margin-top: 16px;
   }
   .about-contact-btn {
     margin-top: 22px;
@@ -6740,7 +6744,7 @@ button.ui-switch-large:focus-visible {
   .about-steps li:last-child { border-bottom: 0; }
 }
 @media (max-width: 767px) {
-  .about-flow { padding: 44px 20px 56px; }
+  .about-flow { padding: 44px 20px 24px; }
   .about-grid { grid-template-columns: 1fr; gap: 28px; }
   .about-services, .about-reasons, .about-tools, .about-facts { grid-template-columns: 1fr; }
   .about-reasons li:nth-last-child(-n + 2), .about-tools li:nth-last-child(-n + 2) { border-bottom: 0; }
