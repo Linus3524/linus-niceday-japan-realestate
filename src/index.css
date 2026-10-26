@@ -6714,39 +6714,58 @@ button.ui-switch-large:focus-visible {
     border-top: 1px solid #1A2A22;
   }
   .about-steps li {
-    padding: 18px 16px 18px 0;
+    padding: 18px 8px 18px 0;
     border-right: 1px solid #DDE3DF;
   }
   .about-steps li + li {
-    padding-left: 16px;
+    padding-left: 8px;
   }
   .about-steps li:last-child {
     border-right: 0;
   }
   .about-step-no {
-    display: block;
-    margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 12px;
     font-family: var(--font-display);
     font-style: italic;
     font-weight: 700;
-    font-size: 18px;
     color: #00A174;
+  }
+  .about-step-no strong {
+    font-size: clamp(30px, 3.5vw, 44px);
+    font-style: normal;
+    line-height: 1.1;
+  }
+  .about-steps h3 {
+    font-size: clamp(13.5px, 1.4vw, 15px);
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    margin-bottom: 6px;
+  }
+  .about-steps p {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #66736C;
   }
   .about-flow .about-profile-line, .about-flow .about-profile-copy { display: none; }
   .about-flow .about-profile .about-numbers { margin-top: 20px; }
   .about-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .about-steps { grid-template-columns: 1fr; }
   /* 平板故事欄較窄，基本資料兩欄會擠成每格 160px，改單欄 */
   .about-facts { grid-template-columns: 1fr; }
   .about-facts > div:nth-child(-n + 2) { border-top: 0; }
   .about-facts > div:first-child { border-top: 1px solid #DDE3DF; }
-  .about-steps li, .about-steps li + li { padding: 16px 0; border-right: 0; border-bottom: 1px solid #DDE3DF; }
-  .about-steps li:last-child { border-bottom: 0; }
 }
 @media (max-width: 767px) {
   .about-flow { padding: 44px 20px 24px; }
   .about-grid { grid-template-columns: 1fr; gap: 28px; }
   .about-services, .about-reasons, .about-tools, .about-facts { grid-template-columns: 1fr; }
+  .about-steps { grid-template-columns: 1fr; }
+  .about-steps li, .about-steps li + li { padding: 16px 0; border-right: 0; border-bottom: 1px solid #DDE3DF; }
+  .about-steps li:last-child { border-bottom: 0; }
+  .about-step-no { margin-bottom: 4px; }
+  .about-step-no strong { font-size: 24px; }
   .about-reasons li:nth-last-child(-n + 2), .about-tools li:nth-last-child(-n + 2) { border-bottom: 0; }
   .about-reasons li:last-child, .about-tools li:last-child { border-bottom: 1px solid #DDE3DF; }
   .about-facts > div:nth-child(-n + 2) { border-top: 0; }
