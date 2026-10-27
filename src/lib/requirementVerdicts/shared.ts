@@ -1,4 +1,5 @@
 import { districtStations } from "../../data/housingMarket.js";
+import { isGraphStation } from "../localTransitRoute.js";
 import { toJapaneseStationName } from "../transit.js";
 
 
@@ -27,15 +28,21 @@ export const normalize = (value?: string | null) => (value || "")
 
 export const normalizeStation = (value?: string | null) => normalize(toJapaneseStationName(value || ""));
 
-/** 通勤路線查詢前先確認站名在本站交通資料中，避免無效站名觸發多輪外部查詢。 */
+/**
+ * 通勤路線查詢前先確認站名在本站交通資料中，避免無效站名觸發多輪外部查詢。
+ * 通勤目的地不一定是有租金行情的車站（例如銀座線虎ノ門只有路線資料），
+ * 所以路網圖認得的站也算；只看行情車站清單會把整份通勤查詢跳過。
+ */
 export function hasKnownCommuteStations(value?: string | null, alternatives: string[] = []): boolean {
   const targets = [...alternatives, ...((value || "").split(/[、,，/／或|・]/))]
-    .map(item => normalizeStation(item))
-    .filter(Boolean);
+    .map(item => item.trim())
+    .filter(item => normalizeStation(item));
   if (!targets.length) return false;
-  return targets.every(query => Object.values(districtStations).some(stations =>
-    stations.some(station => normalizeStation(station.name) === query)
-  ));
+  return targets.every(target => {
+    const query = normalizeStation(target);
+    return isGraphStation(toJapaneseStationName(target))
+      || Object.values(districtStations).some(stations => stations.some(station => normalizeStation(station.name) === query));
+  });
 }
 
 /** 路線名比對用：去掉營運商前綴與車種後綴，「西武池袋線」與「池袋線」才對得上。 */

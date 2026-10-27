@@ -111,6 +111,10 @@ const scenarios: Array<{ name: string; run: () => void }> = [
       assert.equal(hasKnownCommuteStations("池袋"), true);
       assert.equal(hasKnownCommuteStations("惠比壽"), true);
       assert.equal(hasKnownCommuteStations("恵比寿"), true);
+      // 沒有租金行情、只有路線資料的通勤目的地也要認得，否則整份通勤查詢會被跳過
+      assert.equal(hasKnownCommuteStations("虎ノ門"), true);
+      assert.equal(hasKnownCommuteStations("虎ノ門駅"), true);
+      assert.equal(hasKnownCommuteStations("公司"), false);
       const result = assess({ ...base, commuteStation: "火星站", commuteStations: ["火星站"] });
       assert.equal(result.axes.find(axis => axis.key === "commute")?.status, "待確認");
       assert.equal(result.overall.level, "資料不足");
