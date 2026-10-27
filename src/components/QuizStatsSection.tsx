@@ -44,7 +44,8 @@ function OptionBar({ counts, options }: { counts: Record<string, number>; option
             key={option}
             title={`${option.toUpperCase()}${label ? `　${label}` : ""}：${counts[option]} 次`}
             className="flex items-center justify-center font-jost text-[10px] font-bold text-white"
-            style={{ width: `${share}%`, backgroundColor: ["#00A174", "#0284C7", "#9333EA", "#E94E2B"][k] }}
+            // 寬度用精確比例（四捨五入的整數加起來可能只有 99%，右邊會露出灰底），文字才用整數
+            style={{ width: `${((counts[option] ?? 0) / total) * 100}%`, backgroundColor: ["#00A174", "#0284C7", "#9333EA", "#E94E2B"][k] }}
           >
             {share >= 8 ? `${option.toUpperCase()} ${share}%` : ""}
           </span>
@@ -179,9 +180,11 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
     return [...ids].map(id => {
       const rating = quiz.ratings[id] ?? {};
       const rated = sum(rating);
-      const topClaim = Object.entries(quiz.claims[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
-      const topReason = Object.entries(quiz.reasons[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
-      const topPrefer = Object.entries(quiz.prefers?.[id] ?? {}).sort((a, b) => b[1] - a[1])[0];
+      // 每格列出前 3 名（不只最多的那一個），避免把「只有 1、2 人選」誤看成固定配對
+      const top3 = (m: Record<string, number> | undefined) => Object.entries(m ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3);
+      const topClaim = top3(quiz.claims[id]);
+      const topReason = top3(quiz.reasons[id]);
+      const topPrefer = top3(quiz.prefers?.[id]);
       return {
         id,
         count: results[id] ?? 0,
@@ -278,13 +281,13 @@ function QuizStatsBody({ quiz, heading }: { quiz: QuizSummary; heading: ReactNod
                     {row.rated ? `${row.hit}%` : <span className="font-normal text-[#8A9590]">—</span>}
                   </td>
                   <td className="px-3 py-2 text-[#3F5147]">
-                    {row.topClaim ? `${nameOf(row.topClaim[0])}（${row.topClaim[1]}）` : <span className="text-[#8A9590]">—</span>}
+                    <TopList items={row.topClaim} label={nameOf} />
                   </td>
                   <td className="px-3 py-2 text-[#3F5147]">
-                    {row.topReason ? `${REASON_LABEL[row.topReason[0]] ?? row.topReason[0]}（${row.topReason[1]}）` : <span className="text-[#8A9590]">—</span>}
+                    <TopList items={row.topReason} label={k => REASON_LABEL[k] ?? k} />
                   </td>
                   <td className="px-3 py-2 text-[#3F5147]">
-                    {row.topPrefer ? `${nameOf(row.topPrefer[0])}（${row.topPrefer[1]}）` : <span className="text-[#8A9590]">—</span>}
+                    <TopList items={row.topPrefer} label={nameOf} />
                   </td>
                 </tr>
               ))}
@@ -376,6 +379,16 @@ const SOURCE_LABEL: Record<string, string> = {
   threads: "Threads", instagram: "Instagram", facebook: "Facebook", line: "LINE", x: "X（Twitter）", google: "Google 搜尋",
   share: "朋友分享的結果連結", site: "住好日官網", direct: "直接進入（無來源）", other: "其他網站", ig: "Instagram（?from=ig）",
 };
+
+/** 一格裡的前幾名：第一名正常字，其餘小一號灰字，各自一行 */
+function TopList({ items, label }: { items: [string, number][]; label: (k: string) => string }) {
+  if (!items.length) return <span className="text-[#8A9590]">—</span>;
+  return (
+    <span className="flex flex-col">
+      {items.map(([k, n], i) => <span key={k} className={i ? "text-[10.5px] text-[#8A9590]" : ""}>{label(k)}（{n}）</span>)}
+    </span>
+  );
+}
 
 const LIVE_GROUPS = [["jp", "住在日本"], ["tokyo", "住在東京（日文版）"], ["plan", "打算搬去日本"], ["none", "沒有計畫"]] as const;
 
