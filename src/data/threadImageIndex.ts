@@ -73,4 +73,6 @@ export const threadImageIndex: Record<string, string> = {
   "DeJS224kaIX": "/thread-images/DeJS224kaIX.jpg",
   "DeTWuNhEwUb": "/thread-images/DeTWuNhEwUb.jpg",
   "DeY0AVlkx2i": "/thread-images/DeY0AVlkx2i.jpg",
+  "DfOeTBSk1U3": "/thread-images/DfOeTBSk1U3.jpg",
+  "DfRiLgMk953": "/thread-images/DfRiLgMk953.jpg",
 };

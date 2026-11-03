@@ -118,6 +118,22 @@ export const threadCategories: ThreadCategory[] = [
           "鎌倉"
         ]
       },
+      {
+        url: "https://www.threads.com/@linus3524/post/DfOeTBSk1U3",
+        keywords: [
+          "寶藏車站",
+          "設計住宅",
+          "設計師公寓",
+          "清水模",
+          "中延",
+          "東高円寺",
+          "東高圓寺",
+          "武蔵小山",
+          "武藏小山",
+          "品川區",
+          "杉並區"
+        ]
+      },
     ],
   },
   {
@@ -221,6 +237,18 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DZB-BOuE5EN" },
       { url: "https://www.threads.com/@linus3524/post/Dac20-VExtv" },
       { url: "https://www.threads.com/@linus3524/post/DauNyUnk2z5" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DegfiqoEy3A",
+        keywords: [
+          "台日大不同",
+          "婚約者",
+          "情侶申請",
+          "情侶租房",
+          "情侶入居",
+          "申請身分",
+          "契約者變更"
+        ]
+      },
     ],
   },
   {
@@ -298,6 +326,20 @@ export const threadCategories: ThreadCategory[] = [
       { url: "https://www.threads.com/@linus3524/post/DV_T53FE3qK" },
       { url: "https://www.threads.com/@linus3524/post/Dafi2AHEyfF" },
       { url: "https://www.threads.com/@linus3524/post/Dawytmfk4Ot" },
+      {
+        url: "https://www.threads.com/@linus3524/post/DfRiLgMk953",
+        keywords: [
+          "入住與退租",
+          "漲租怎麼談",
+          "管理公司通知漲租",
+          "退房費用",
+          "退房被收費",
+          "退房不用付",
+          "日文回信範本",
+          "攻略指南",
+          "租屋20頁攻略"
+        ]
+      },
     ],
   },
   {
@@ -375,6 +417,22 @@ export const threadCategories: ThreadCategory[] = [
           "修繕分攤"
         ]
       },
+      {
+        url: "https://www.threads.com/@linus3524/post/De1Ese-jPhi",
+        keywords: [
+          "日本買房",
+          "新橫濱",
+          "新横浜",
+          "車站步行",
+          "站名陷阱",
+          "新築",
+          "中古新房",
+          "新築折價",
+          "買房選地點",
+          "新幹線",
+          "工業區"
+        ]
+      },
     ],
   },
   {
@@ -434,6 +492,19 @@ export const threadCategories: ThreadCategory[] = [
           "吉祥寺",
           "東京生活",
           "測驗"
+        ]
+      },
+      {
+        url: "https://www.threads.com/@linus3524/post/DfKX-4hE4tD",
+        keywords: [
+          "房仲日常",
+          "仲介為什麼不接",
+          "條件太多",
+          "客人條件",
+          "仲介費減免",
+          "成交才有收入",
+          "同時找多個仲介",
+          "篩選客人"
         ]
       },
     ],
