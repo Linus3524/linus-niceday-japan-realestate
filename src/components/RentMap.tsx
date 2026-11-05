@@ -4,7 +4,7 @@ import { rentRates } from "../data/housingMarket";
 import { MapPin, Info, Lightbulb, Layers } from "lucide-react";
 import { toJapanesePlaceName, toJapanesePrefectureName } from "../lib/transit";
 import { ROOM_TYPE_LABEL, ROOM_TYPE_DETAIL_LABEL, ROOM_TYPE_INCLUDES_LABEL, type RoomType } from "../lib/rentAnalysis";
-import { getBuyMarketEstimate } from "../data/buyMarket";
+import { describeMlitSample, getBuyMarketEstimate } from "../data/buyMarket";
 
 interface RentMapProps {
   selectedDistrict: string;
@@ -521,7 +521,7 @@ export const RentMap: React.FC<RentMapProps> = ({
                   {activeBuyEstimate && (
                     <div className="text-[9px] leading-relaxed text-[#66736C]">
                       {activeBuyEstimate.source === "official_transaction"
-                        ? `資料來源：國土交通省 不動產資訊資料庫｜近${activeBuyEstimate.windowQuarters === 4 ? "四" : "八"}季 ${activeBuyEstimate.periodStart}～${activeBuyEstimate.periodEnd}｜樣本 ${activeBuyEstimate.sampleCount.toLocaleString()} 筆`
+                        ? `資料來源：國土交通省 不動產資訊資料庫｜${describeMlitSample(activeBuyEstimate.windowQuarters, activeBuyEstimate.sampleCount).period} ${activeBuyEstimate.periodStart}～${activeBuyEstimate.periodEnd}｜樣本 ${activeBuyEstimate.sampleCount.toLocaleString()} 筆`
                         : "資料來源：租金收益率模型｜目前選定格局沒有足夠成交樣本"}
                     </div>
                   )}

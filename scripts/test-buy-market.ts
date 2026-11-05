@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { getBuyMarketEstimate, getModeledBuyYieldRate, getOfficialBuyEstimate } from "../src/data/buyMarket.js";
+import { describeMlitSample, getBuyMarketEstimate, getModeledBuyYieldRate, getOfficialBuyEstimate, MLIT_ROLLING_WINDOWS, selectMlitWindow } from "../src/data/buyMarket.js";
 import { rentRates, type LayoutCode } from "../src/data/housingMarket.js";
 import { mlitBuySnapshotMeta, mlitBuySnapshots } from "../src/data/mlitBuySnapshot.js";
 
@@ -30,7 +30,9 @@ for (const row of mlitBuySnapshots) {
   }
   assert.match(row.periodStart, /^\d{4}-Q[1-4]$/);
   assert.match(row.periodEnd, /^\d{4}-Q[1-4]$/);
-  assert.ok(row.windowQuarters === 4 || row.windowQuarters === 8);
+  assert.ok(MLIT_ROLLING_WINDOWS.includes(row.windowQuarters));
+  // 統計期間規則：除了已經用到最長期間的格子，每一格都要達到目標筆數。
+  assert.ok(row.windowQuarters === 16 || row.sampleCount >= 20, `${row.district}/${row.layout} 未達 20 筆卻沒有拉長統計期間`);
   assert.ok(
     periodOrdinal(row.periodStart) >= latestPeriodOrdinal - row.windowQuarters + 1,
     `${row.district}/${row.layout} must stay inside its rolling window`
@@ -105,6 +107,15 @@ assert.equal(
   fallbackEstimate.basePriceYen,
   monthlyRentYen * 12 / getModeledBuyYieldRate(fallback.rate.region, fallback.rate.district, fallback.layout)
 );
+
+// 統計期間選擇：樣本夠就用短期間，不夠才拉長。
+const counts = (values: Record<number, number>) => (window: number) => values[window] ?? 0;
+assert.equal(selectMlitWindow(counts({ 4: 20, 8: 40, 12: 60, 16: 80 })), 4);
+assert.equal(selectMlitWindow(counts({ 4: 7, 8: 20, 12: 30, 16: 40 })), 8, "足立區 1R 這類 7 筆的格子要拉長");
+assert.equal(selectMlitWindow(counts({ 4: 7, 8: 9, 12: 12, 16: 19 })), 16, "到最長仍不足 20 筆就用最長期間");
+assert.equal(selectMlitWindow(counts({ 4: 1, 8: 2, 12: 3, 16: 4 })), null, "4 年仍不到 5 筆就不提供行情");
+assert.deepEqual(describeMlitSample(8, 20), { period: "近 2 年", label: "近 2 年・20 筆", lowSample: false });
+assert.equal(describeMlitSample(16, 9).lowSample, true);
 
 const recentFourCount = mlitBuySnapshots.filter(row => row.windowQuarters === 4).length;
 const recentEightCount = mlitBuySnapshots.filter(row => row.windowQuarters === 8).length;

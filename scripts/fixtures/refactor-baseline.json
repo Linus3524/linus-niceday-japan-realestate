@@ -1414,9 +1414,9 @@
         "rent": 116000,
         "districtScale": 1.29,
         "modifierPrice": 13000,
-        "price": 15500000,
+        "price": 15000000,
         "monthlyPayment": 0,
-        "districtPrice": 1550,
+        "districtPrice": 1500,
         "availability": {
           "supply": {
             "label": "房源偏少",
@@ -1483,9 +1483,9 @@
         "rent": 82000,
         "districtScale": 0.6089999999999999,
         "modifierPrice": 6000,
-        "price": 18200000,
-        "monthlyPayment": 48374,
-        "districtPrice": 1500,
+        "price": 13300000,
+        "monthlyPayment": 35350,
+        "districtPrice": 1100,
         "availability": {
           "supply": {
             "label": "房源稀少",
@@ -1550,9 +1550,9 @@
         "rent": 66000,
         "districtScale": 0.72,
         "modifierPrice": 7000,
-        "price": 5700000,
-        "monthlyPayment": 19472,
-        "districtPrice": 880,
+        "price": 5900000,
+        "monthlyPayment": 20156,
+        "districtPrice": 910,
         "availability": {
           "supply": {
             "label": "選擇較多",
@@ -1616,9 +1616,9 @@
         "rent": 92000,
         "districtScale": 0.43499999999999994,
         "modifierPrice": 4000,
-        "price": 18400000,
-        "monthlyPayment": 1840000,
-        "districtPrice": 1840,
+        "price": 8100000,
+        "monthlyPayment": 810000,
+        "districtPrice": 810,
         "availability": {
           "supply": {
             "label": "房源偏少",
@@ -1815,9 +1815,9 @@
         "rent": 73000,
         "districtScale": 0.6089999999999999,
         "modifierPrice": 6000,
-        "price": 31500000,
-        "monthlyPayment": 75000,
-        "districtPrice": 3150,
+        "price": 24000000,
+        "monthlyPayment": 57142.857142857145,
+        "districtPrice": 2400,
         "availability": {
           "supply": {
             "label": "選擇較多",
@@ -2153,9 +2153,9 @@
         "rent": 147000,
         "districtScale": 0.6089999999999999,
         "modifierPrice": 6000,
-        "price": 13200000,
-        "monthlyPayment": 1335783,
-        "districtPrice": 2450,
+        "price": 19400000,
+        "monthlyPayment": 1963196,
+        "districtPrice": 3600,
         "availability": {
           "supply": {
             "label": "房源偏少",
