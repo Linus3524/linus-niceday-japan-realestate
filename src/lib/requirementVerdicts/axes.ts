@@ -83,7 +83,11 @@ export function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRan
     const rest = affordable.length - top.length;
     return top.join("、") + (rest > 0 ? `等 ${affordable.length} 個區` : "");
   })();
-  const cheapest = range.segments[0];
+  // 「起跳價」要講得出是哪一區的價位。range.low 是所有車站混在一起的第 15 百分位，
+  // 價差大時不屬於任何一區，掛上區名就會寫出「足立區起跳價 12.9 萬」這種錯誤的句子
+  // （足立區實際約 9.2 萬）。價差大時改用最便宜那一區自己的低端。
+  const cheapest = range.segments.reduce((best, seg) => (seg.low < best.low ? seg : best), range.segments[0]);
+  const floor = range.spread ? cheapest.low : range.low;
 
   if (range.median <= budget) {
     return {
@@ -92,7 +96,8 @@ export function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRan
       drivers, nextStep: feeStep, supplyImpact: 0
     };
   }
-  if (range.low <= budget) {
+  // 有區買得起就不能再說「低於起跳行情」，否則同一段話會同時講買得起與買不起。
+  if (range.low <= budget || (range.spread && affordable.length)) {
     const span = Math.max(1, range.high - range.low);
     const share = Math.round(((budget - range.low) / span) * 100);
     return {
@@ -114,7 +119,7 @@ export function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRan
   // 沒有這段的話 ¥70,000 對上低端 ¥71,000 會被判「需調整」，還建議使用者
   // 「提高到 7.1 萬」——為了 1,000 円叫人改預算，只會讓整份評估看起來不可信。
   // 同時這也消掉 range.low 上的斷崖（¥71,000 部分符合 / ¥70,999 需調整）。
-  const gapRatio = (range.low - budget) / budget;
+  const gapRatio = (floor - budget) / budget;
   if (gapRatio <= 0.05) {
     return {
       key: "budget", label: "預算", detail, status: "部分符合",
@@ -139,13 +144,15 @@ export function budgetAxis(criteria: RentSearchCriteria, range: RequestedRentRan
     // 低端來自哪個區要講清楚。只說「提高到 X 萬」而不說那是哪裡的價位，
     // 使用者會以為加錢就能留在原本想住的地方。
     nextStep: withinReach
-      ? `建議將月租上限微調至約 ${man(range.low)}${range.spread ? `（${cheapest.district}一帶的起跳價）` : ""}，或是考量周邊行情更親民的區域。`
-      : `若希望維持目前的預算，建議考慮調整搜尋區域；指定範圍內相對親民的起跳行情約為 ${man(range.low)}${range.spread ? `（${cheapest.district}）` : ""}。`,
+      ? `建議將月租上限微調至約 ${man(floor)}${range.spread ? `（${cheapest.district}一帶的起跳價）` : ""}，或是考量周邊行情更親民的區域。`
+      : `若希望維持目前的預算，建議考慮調整搜尋區域；指定範圍內相對親民的起跳行情約為 ${man(floor)}${range.spread ? `（${cheapest.district}）` : ""}。`,
     supplyImpact: withinReach ? 2 : 3
   };
 }
 
-export function commuteAxis(criteria: RentSearchCriteria, recommendations: RentRecommendation[]): AxisVerdict {
+export function commuteAxis(criteria: RentSearchCriteria, allRecommendations: RentRecommendation[]): AxisVerdict {
+  // 預算替代不在使用者指定的範圍內，不能拿來判斷他指定的範圍通勤行不行。
+  const recommendations = allRecommendations.filter(item => !item.isBudgetAlternative);
   const target = criteria.commuteStation;
   const detail = [
     target ? `通勤至 ${target}` : null,

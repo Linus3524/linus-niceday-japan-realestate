@@ -349,10 +349,16 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
 
     const baseRecommendations = buildRentRecommendations(criteria);
     const canResolveCommute = !criteria.commuteStation || hasKnownCommuteStations(criteria.commuteStation, criteria.commuteStations || []);
-    const [recommendations, marketReference] = await Promise.all([
+    const [routedRecommendations, marketReference] = await Promise.all([
       canResolveCommute ? attachCommuteRoutes(criteria, baseRecommendations) : Promise.resolve(baseRecommendations),
       requestedArea ? lookupMarketRate(requestedArea, criteria.roomType) : Promise.resolve(null)
     ]);
+    // 預算替代是系統主動補的，查到路線後超過通勤上限就不該再推薦。
+    // 使用者指定範圍內的車站則保留，由通勤判斷如實告知。
+    const recommendations = routedRecommendations.filter(item => !(
+      item.isBudgetAlternative && criteria.commuteMinutes && item.commuteRoute
+      && item.commuteRoute.totalDurationMinutes > criteria.commuteMinutes
+    ));
 
     let advisorAdvice: string | null = null;
     try {

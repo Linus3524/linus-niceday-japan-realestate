@@ -76,11 +76,14 @@ const StationSign: React.FC<{
           </div>
         )}
       </div>
-      <div className="w-16 -mx-3 flex justify-center pointer-events-none">
+      {/* 站名比站牌寬，靠負邊距往兩側各伸出 16px，由捲動容器的 px-4 接住。
+          伸出量不能超過 px-4：超過會被捲動容器裁切，還會憑空多出一條捲軸。
+          站名一律完整顯示，放不下就換行，不截斷。 */}
+      <div className={`${isWalk ? "w-[52px]" : "w-[72px]"} -mx-4 flex justify-center pointer-events-none`}>
         <TruncatedText
           text={cleanedName}
           japanese={!uiLabel}
-          className={`${uiLabel ? "" : "font-jp "}mt-1 block max-w-[64px] truncate text-center text-xs ${isWalk ? "font-medium" : "font-bold"} text-[#3F5147] pointer-events-auto`}
+          className={`${uiLabel ? "" : "font-jp "}mt-1 block max-w-full break-words text-center text-xs leading-tight ${isWalk ? "font-medium" : "font-bold"} text-[#3F5147] pointer-events-auto`}
         />
       </div>
     </div>
@@ -585,7 +588,7 @@ export function CommuteRouteCard({ route, embedded = false }: { route: CommuteRo
           全線所有連接線段皆設為同等 flex-1，確保所有方格卡片與標籤之間線段長度完全一致、無長短不均。 */}
       <div
         data-commute-scroll
-        className="w-full overflow-x-auto overscroll-x-contain touch-pan-x pb-1 [scrollbar-color:#C9D2CD_transparent] [scrollbar-width:thin]"
+        className="w-full overflow-x-auto overscroll-x-contain touch-pan-x px-4 pb-1 [scrollbar-color:#C9D2CD_transparent] [scrollbar-width:thin]"
         aria-label="通勤路線圖，可左右滑動查看完整路線"
         tabIndex={0}
       >

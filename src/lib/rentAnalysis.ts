@@ -132,6 +132,8 @@ export interface RentRecommendation {
   budgetGap: number | null;
   fit: "預算內" | "接近預算" | "需調整" | "預算未定";
   recommendationType: "指定車站" | "指定範圍" | "通勤優先" | "預算替代";
+  /** 指定範圍內沒有預算內車站時，由系統另外補上的範圍外方向。畫面與判斷都要和指定範圍分開。 */
+  isBudgetAlternative?: boolean;
   reasons: string[];
   commuteFit: "直達線路" | "需轉乘" | "需確認轉乘" | "未指定通勤地";
   commuteTimeFit: "路線已查詢" | "時間未驗證" | "未指定時間";
@@ -234,6 +236,8 @@ function matchStationsInText(text: string): string[] {
 /** 推薦結果的安全上限；實際筆數會依候選符合度動態縮短，不會為了達到上限硬補。 */
 export const RECOMMENDATION_LIMIT = 20;
 const DISTRICT_QUOTA = 3;
+const BUDGET_ALTERNATIVE_LIMIT = 3;
+const BUDGET_ALTERNATIVE_DISTRICT_QUOTA = 2;
 
 const NEGATION = /(?:不用|不需要|不必|不想|沒有需要|没有需要|無需|无需|不要)/;
 
@@ -846,7 +850,9 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       commuteFit,
       commuteTimeFit,
       cautions,
-      score
+      score,
+      lineMatch: requestedLineMatch,
+      directCommute
     };
   });
   // 地理範圍＝「指定的行政區」聯集「指定的車站」。
@@ -902,10 +908,29 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
 
   // 使用者明確點名的車站，以及每個明確選取行政區的最佳候選，是不可靜默省略的核心結果。
   // 先放進核心候選，再由符合度相近的結果補足；總數仍受安全上限控制。
+  //
+  // 有預算時，同一區先挑預算內或最接近預算的車站，再用符合度決定同價位的先後。
+  // 只看分數的話，路線與直達的加分遠大於預算，同區 12.9 萬的車站會輸給 17.2 萬的車站。
+  const overBudget = (item: typeof sorted[number]) =>
+    criteria.maxBudget ? Math.max(0, item.estimate - criteria.maxBudget) : 0;
+  const budgetFirst = (a: typeof sorted[number], b: typeof sorted[number]) =>
+    overBudget(a) - overBudget(b) || b.score - a.score;
+  const pickWithinDistrict = (items: typeof sorted) => {
+    if (!criteria.maxBudget) return items.slice(0, 1);
+    const top = [...items].sort(budgetFirst).slice(0, DISTRICT_QUOTA);
+    // 使用者選了路線，就至少留一站在線上，否則該區的結果會看起來像沒理會他選的路線。
+    if (wantedLines.length && !top.some(item => item.lineMatch)) {
+      const onLine = [...items].sort(budgetFirst).find(item => item.lineMatch);
+      if (onLine) top[top.length - 1] = onLine;
+    }
+    return top;
+  };
   const essentialCandidates = sorted.filter(item => item.recommendationType === "指定車站");
-  for (const districtQuery of districtQueries) {
-    const bestInDistrict = sorted.find(item => normalize(item.district) === districtQuery);
-    if (bestInDistrict && !essentialCandidates.includes(bestInDistrict)) essentialCandidates.push(bestInDistrict);
+  const districtPicks = districtQueries.map(districtQuery =>
+    pickWithinDistrict(sorted.filter(item => normalize(item.district) === districtQuery)));
+  // 先放每區第一名再放其餘，區數很多被總數上限截斷時，每一區仍至少有一站。
+  for (const item of [...districtPicks.map(picks => picks[0]), ...districtPicks.flatMap(picks => picks.slice(1))]) {
+    if (item && !essentialCandidates.includes(item)) essentialCandidates.push(item);
   }
   adaptiveCandidates = [
     ...essentialCandidates,
@@ -918,15 +943,52 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   // 則允許同區三站，方便比較該行政區內的不同車站。
   const hasExplicitResidenceSignals = Boolean(districtQueries.length || wantedStations.length || wantedLines.length);
   const districtQuota = hasExplicitResidenceSignals ? DISTRICT_QUOTA : 2;
-  for (const item of adaptiveCandidates) {
+  // 名額有限時先給核心候選，其餘依預算先後；決定完再還原原本的排列順序。
+  const pickOrder = criteria.maxBudget
+    ? [...adaptiveCandidates].sort((a, b) => {
+      const aEssential = essentialCandidates.includes(a);
+      const bEssential = essentialCandidates.includes(b);
+      if (aEssential || bEssential) return Number(bEssential) - Number(aEssential);
+      return budgetFirst(a, b);
+    })
+    : adaptiveCandidates;
+  for (const item of pickOrder) {
     const used = perDistrict.get(item.district) || 0;
     if (item.recommendationType === "指定車站" || used < districtQuota) {
       perDistrict.set(item.district, used + 1);
       picked.push(item);
     }
   }
+  const primary = adaptiveCandidates.filter(item => picked.includes(item));
 
-  return picked.map(({ score: _score, ...item }) => item);
+  // 指定範圍內一站都不在預算內時，另外補幾個預算內的方向，不混進指定範圍。
+  // 只看同地區，且選過路線或通勤地時必須同線或可直達，才不會推薦到通勤不到的地方。
+  const alternatives: typeof sorted = [];
+  if (criteria.maxBudget && requested.length && !primary.some(item => item.estimate <= criteria.maxBudget!)) {
+    const regions = new Set(requested.map(item => item.region));
+    const needsTransitLink = wantedLines.length > 0 || commuteTargets.length > 0;
+    const usedByDistrict = new Map<string, number>();
+    for (const item of sorted) {
+      if (alternatives.length >= BUDGET_ALTERNATIVE_LIMIT) break;
+      if (!item.station || requested.includes(item) || item.estimate > criteria.maxBudget) continue;
+      if (!regions.has(item.region) || (needsTransitLink && !item.lineMatch && !item.directCommute)) continue;
+      const used = usedByDistrict.get(item.district) || 0;
+      if (used >= BUDGET_ALTERNATIVE_DISTRICT_QUOTA) continue;
+      usedByDistrict.set(item.district, used + 1);
+      alternatives.push(item);
+    }
+  }
+
+  const strip = ({ score: _score, lineMatch: _lineMatch, directCommute: _directCommute, ...item }: typeof sorted[number]) => item;
+  return [
+    ...primary.map(strip),
+    ...alternatives.map(item => ({
+      ...strip(item),
+      recommendationType: "預算替代" as const,
+      isBudgetAlternative: true,
+      reasons: ["指定範圍內沒有預算內車站，列為替代方向", ...item.reasons]
+    }))
+  ].slice(0, RECOMMENDATION_LIMIT);
 }
 
 export type CriteriaSummaryCategory = "layout" | "equipment" | "transport" | "special" | "budget";
