@@ -3,6 +3,7 @@ import {
   getConditionPremium,
   getOfficialBuyEstimate,
   getTownPremium,
+  describeMlitSample,
 } from "../../../data/buyMarket.js";
 import type { LayoutCode } from "../../../data/housingMarket.js";
 import { mlitBuySnapshotMeta } from "../../../data/mlitBuySnapshot.js";
@@ -216,6 +217,15 @@ export function buildSaleAnalysis(params: {
         priceVerdict.cautions.push(
           `這個地區與房型的成交資料只涵蓋到 ${officialEstimate.periodEnd}（最新可得為 ${mlitBuySnapshotMeta.latestPeriod}），代表近期成交量少。若期間內行情有明顯變動，這個基準會偏離現況。`
         );
+      }
+
+      if (officialEstimate?.windowQuarters) {
+        const sample = describeMlitSample(officialEstimate.windowQuarters, officialEstimate.sampleCount);
+        if (sample.lowSample || officialEstimate.windowQuarters > 4) {
+          priceVerdict.cautions.push(
+            `這個基準統計${sample.label}${officialEstimate.windowQuarters > 4 ? "。期間拉長後樣本較穩定，但在上漲的市場可能偏低" : ""}${sample.lowSample ? "。樣本少，中位數容易被個別成交影響，僅供參考" : ""}。`
+          );
+        }
       }
 
       const walkNum = minWalkMinutes ?? 7;

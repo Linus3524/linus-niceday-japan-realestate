@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, TrendingUp, Building2, Footprints, BarChart3, Check } from "lucide-react";
 import type { LayoutCode } from "../data/housingMarket";
-import { getBuyMarketEstimate, getModeledBuyYieldRate } from "../data/buyMarket";
+import { describeMlitSample, getBuyMarketEstimate, getModeledBuyYieldRate } from "../data/buyMarket";
 import { rentRates } from "../data/housingMarket";
 import { toJapanesePlaceName } from "../lib/transit";
 import { TAMA_CITIES, getWalkTierMultipliers } from "../lib/calcRules";
@@ -303,7 +303,7 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
                 <span className="text-xs font-semibold text-[#3F5147]">成約價中位數</span>
                 {isOfficial && (
                   <span className="text-[10px] bg-white border border-[#DDE3DF] px-1.5 py-0.5 text-[#00A174] font-medium font-mono shrink-0">
-                    {currentEstimate.sampleCount.toLocaleString()} 筆樣本
+                    {describeMlitSample(currentEstimate.windowQuarters, currentEstimate.sampleCount).label}
                   </span>
                 )}
               </div>
@@ -315,7 +315,9 @@ export const OfficialMarketInsight: React.FC<OfficialMarketInsightProps> = ({
               </div>
             </div>
             <div className="mt-2 text-[11px] text-[#8A9590] pt-1.5 border-t border-[#ECEFEC]">
-              {isOfficial ? "國交省近 4 季實價登記統計" : "參考租金模型反推估算"}
+              {isOfficial
+                ? `國交省${describeMlitSample(currentEstimate.windowQuarters, currentEstimate.sampleCount).period}實價登記統計${describeMlitSample(currentEstimate.windowQuarters, currentEstimate.sampleCount).lowSample ? "・樣本少，僅供參考" : ""}`
+                : "參考租金模型反推估算"}
             </div>
           </div>
 

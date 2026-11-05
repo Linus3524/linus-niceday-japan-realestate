@@ -1,6 +1,37 @@
 import type { LayoutCode } from "./housingMarket.js";
 import { mlitConditionPremiums, mlitBuySnapshots, mlitTownPremiums } from "./mlitBuySnapshot.js";
 
+/**
+ * 統計期間：優先用近 1 年，不到目標筆數才依序拉長，最長 4 年。
+ *
+ * 回測（2023-Q2～2025-Q2）顯示這樣能把單季跳動 25% 以上的格子從 8.9% 降到 3.1%，
+ * 樣本充足的地區仍維持近 1 年。不一律拉長：全部用 4 年會讓行情上漲地區低估約 10%。
+ */
+export const MLIT_ROLLING_WINDOWS = [4, 8, 12, 16] as const;
+export type MlitWindowQuarters = (typeof MLIT_ROLLING_WINDOWS)[number];
+export const MLIT_TARGET_SAMPLE_COUNT = 20;
+export const MLIT_MIN_SAMPLE_COUNT = 5;
+/** 低於這個筆數時，中位數容易被個別成交拉動，畫面要標示僅供參考。 */
+export const MLIT_LOW_SAMPLE_COUNT = 10;
+
+/** 回傳要採用的統計季數。最長期間仍不到目標就用最長期間；連最低筆數都不到則不提供行情。 */
+export function selectMlitWindow(countWithin: (windowQuarters: MlitWindowQuarters) => number): MlitWindowQuarters | null {
+  const reached = MLIT_ROLLING_WINDOWS.find(window => countWithin(window) >= MLIT_TARGET_SAMPLE_COUNT);
+  if (reached) return reached;
+  const longest = MLIT_ROLLING_WINDOWS[MLIT_ROLLING_WINDOWS.length - 1];
+  return countWithin(longest) >= MLIT_MIN_SAMPLE_COUNT ? longest : null;
+}
+
+/** 畫面共用的統計期間與樣本說明，例如「近 2 年・20 筆」。 */
+export function describeMlitSample(windowQuarters: number, sampleCount: number) {
+  const period = `近 ${windowQuarters / 4} 年`;
+  return {
+    period,
+    label: `${period}・${sampleCount.toLocaleString("en-US")} 筆`,
+    lowSample: sampleCount < MLIT_LOW_SAMPLE_COUNT
+  };
+}
+
 export interface OfficialBuyEstimate {
   medianTradePriceYen: number;
   /** 優先為同屋齡帶、否則同區同房型的成交㎡單價中位數。 */
@@ -17,7 +48,7 @@ export interface OfficialBuyEstimate {
    */
   ageBandScope: "layout" | "area" | "adjacent_age" | "district" | null;
   sampleCount: number;
-  windowQuarters: 4 | 8 | 0;
+  windowQuarters: MlitWindowQuarters | 0;
   periodStart: string;
   periodEnd: string;
   sourceUrl: string;

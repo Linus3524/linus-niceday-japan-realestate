@@ -5,7 +5,7 @@ Smile,
 Sparkles
 } from "lucide-react";
 import { getBuyModifier } from "../../data/buyHouseData";
-import { getOfficialBuyEstimate } from "../../data/buyMarket";
+import { describeMlitSample, getOfficialBuyEstimate } from "../../data/buyMarket";
 import { districtStations } from "../../data/housingMarket";
 import { MLIT_API_CREDIT } from "../../data/marketDataSources";
 import { getBudgetModifier } from "../../data/rentGuideData";
@@ -399,7 +399,7 @@ export function AdvancedCalculatorResults({ model }: AdvancedCalculatorResultsPr
                 const estimate = getOfficialBuyEstimate(getSelectedDistrictData().region, calcDistrict, calcRoomType);
                 return estimate ? (
                   <span className="mt-1 block text-[9px] leading-relaxed text-[#8A9590]">
-                    近{estimate.windowQuarters === 4 ? "四" : "八"}季樣本 {estimate.sampleCount} 筆，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。
+                    {describeMlitSample(estimate.windowQuarters, estimate.sampleCount).label}，期間 {estimate.periodStart}～{estimate.periodEnd}；採中位數後再套用所選條件。{describeMlitSample(estimate.windowQuarters, estimate.sampleCount).lowSample ? "樣本少，僅供參考。" : ""}
                   </span>
                 ) : (
                   <span className="mt-1 block text-[9px] leading-relaxed text-[#8A9590]">
