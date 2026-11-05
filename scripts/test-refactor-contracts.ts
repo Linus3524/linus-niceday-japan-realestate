@@ -2,11 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { mock } from "node:test";
 import { requestRentAnalysis } from "../src/lib/calculator/apiClient.js";
-import { createAvailabilityAssessment, type AvailabilityInput } from "../src/lib/calculator/availability.js";
-import { calculateBuyAffordability, createBuyEstimator, type BuyAffordabilityInput, type BuyEstimateInput } from "../src/lib/calculator/buyBudget.js";
 import { buildStructuredRentCriteria, type StructuredRentForm } from "../src/lib/calculator/criteriaMapping.js";
 import { normalizeRentBudgetSelection, normalizeStructureOption, sameGuidedLine } from "../src/lib/calculator/options.js";
-import { createRentEstimator } from "../src/lib/calculator/rentEstimate.js";
 import { createListingShare, readListingShare, requestListingAnalysis, requestListingLocation } from "../src/lib/listing/apiClient.js";
 import { base64Bytes, canvasHasContent, withTimeout } from "../src/lib/listing/browser/fileUtils.js";
 import { buildClientInitialCost } from "../src/lib/listing/clientInitialCost.js";
@@ -15,9 +12,14 @@ import { buildRentalMarketFactors } from "../src/lib/listing/rentalMarketPresent
 import { buildListingReportModel } from "../src/lib/listing/reportModel.js";
 import { buildAgeBandPriceScale, layoutSalePriceMarks } from "../src/lib/listing/saleMarketPresentation.js";
 import type { AnalyzeListingResult } from "../src/lib/listing/types.js";
-
-type CalculatorInput = Omit<AvailabilityInput, "getSelectedDistrictData">
-  & Omit<BuyEstimateInput, "getSelectedDistrictData"> & BuyAffordabilityInput;
+import {
+  applyPriceOnlyUpdate,
+  assertOnlySnapshotsChanged,
+  buildDataChangeReport,
+  computeCalculatorContract,
+  snapshot,
+  type CalculatorInput
+} from "./lib/refactorBaseline.js";
 
 // Expected values were captured from 78ea857 before extraction, not recalculated
 // from the new modules. Include complete fee items and explanations, not only totals.
@@ -26,8 +28,6 @@ const fixtures = JSON.parse(readFileSync(new URL("./fixtures/refactor-baseline.j
   listing: Array<{ name: string; input: AnalyzeListingResult; expected: unknown }>;
   calculator: Array<{ name: string; input: CalculatorInput; expected: unknown }>;
 };
-const snapshot = (value: unknown): unknown => JSON.parse(JSON.stringify(value, (_key, item) =>
-  typeof item === "number" && !Number.isFinite(item) ? String(item) : item));
 
 mock.timers.enable({ apis: ["Date"], now: Date.parse(fixtures.clock) });
 try {
@@ -38,21 +38,39 @@ try {
     }), expected, name);
   }
   for (const { name, input, expected } of fixtures.calculator) {
-    const rent = createRentEstimator(input);
-    const buy = createBuyEstimator({ ...input, getSelectedDistrictData: rent.getSelectedDistrictData });
-    const availability = createAvailabilityAssessment({ ...input, getSelectedDistrictData: rent.getSelectedDistrictData });
-    const price = buy.getCalculatedBuyPrice();
-    assert.deepEqual(snapshot({
-      rent: rent.getCalculatedRent(),
-      districtScale: rent.getDistrictScale(),
-      modifierPrice: rent.getModifierPrice(10000),
-      price,
-      monthlyPayment: buy.getMonthlyPayment(price),
-      districtPrice: buy.getDistrictBuyPrice(input.calcDistrict, input.calcRoomType),
-      availability: availability(),
-      affordable: calculateBuyAffordability(input),
-    }), expected, name);
+    assert.deepEqual(computeCalculatorContract(input), expected, name);
   }
+
+  // 機器人更新基準的防呆：只要不是純行情變動，就不能自動更新。
+  assert.doesNotThrow(() => assertOnlySnapshotsChanged(["src/data/mlitBuySnapshot.ts", "scripts/fixtures/refactor-baseline.json"]));
+  assert.throws(() => assertOnlySnapshotsChanged(["src/data/mlitBuySnapshot.ts", "src/lib/calculator/buyBudget.ts"]), /不是純資料更新/);
+  const priceOnly = applyPriceOnlyUpdate("case", { price: 1, rent: 2 }, { price: 3, rent: 2 });
+  assert.deepEqual(priceOnly, { updated: { price: 3, rent: 2 }, changed: ["price"] });
+  assert.throws(() => applyPriceOnlyUpdate("case", { price: 1, rent: 2 }, { price: 1, rent: 9 }), /價格以外/);
+
+  const reportText = buildDataChangeReport(
+    {
+      mlit: [
+        { region: "東京都", district: "武藏野市", layout: "k1", medianTradePriceYen: 26_000_000, sampleCount: 12 },
+        { region: "東京都", district: "武藏野市", layout: "ldk1", medianTradePriceYen: 36_000_000, sampleCount: 9 }
+      ],
+      sale: [{ region: "東京都", district: "武藏野市", values: { k1: 100 } }],
+      rent: []
+    },
+    {
+      mlit: [
+        { region: "東京都", district: "武藏野市", layout: "k1", medianTradePriceYen: 31_500_000, sampleCount: 14 },
+        { region: "東京都", district: "武藏野市", layout: "ldk1", medianTradePriceYen: 24_500_000, sampleCount: 8 }
+      ],
+      sale: [{ region: "東京都", district: "武藏野市", values: { k1: null } }],
+      rent: []
+    },
+    [{ name: "calculator-11", district: "武藏野市", layout: "ldk1", before: 19_400_000, after: 13_200_000 }]
+  );
+  assert.match(reportText, /武藏野市 1LDK：3,600 萬 → 2,450 萬（-32%，樣本 8 筆，樣本少）/);
+  assert.match(reportText, /1LDK 比 1K 便宜（共 1 區）/);
+  assert.match(reportText, /calculator-11（武藏野市 1LDK）：1,940 萬 → 1,320 萬/);
+  assert.match(reportText, /\| 公開開價 \| 1 → 1 \| 0 \| 1 \| 0 \|/);
 
   const base = fixtures.listing[0].input;
   const titled = { ...base, extracted: { ...base.extracted, buildingName: "テストマンション", floor: "3階" } };

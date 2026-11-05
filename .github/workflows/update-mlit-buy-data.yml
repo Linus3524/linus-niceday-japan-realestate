@@ -72,6 +72,13 @@ jobs:
             } >> "$GITHUB_OUTPUT"
           fi
 
+      # 行情一變，試算基準裡的買房金額就會對不上。這一步只更新價格相關欄位：
+      # 腳本會確認這次只動到行情資料，其他欄位有差異就失敗，交給人看。
+      # 同時產生變動報告，放進 PR 內文，合併前一眼就看得到異常。
+      - name: Refresh calculator baseline and write change report
+        if: steps.diff.outputs.changed == 'true'
+        run: npm run data:refresh-baseline -- --base HEAD --report "$RUNNER_TEMP/data-change-report.md"
+
       # 資料變動後要確認整個站還是建得起來，避免把壞掉的快照送進 PR。
       - name: Verify build with new data
         if: steps.diff.outputs.changed == 'true'
@@ -82,6 +89,7 @@ jobs:
           npm run test:athome-rent
           npm run test:market-location
           npm run test:requirement-verdict
+          npm run test:refactor-contracts
           npm run build
 
       # 走 PR 而不是直接推 main：這些數字直接決定買賣圖紙健檢對客戶說
@@ -95,22 +103,27 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/data/mlitBuySnapshot.ts src/data/atHomeSaleSnapshot.ts src/data/atHomeNationwideRentSnapshot.ts
+          git add src/data/mlitBuySnapshot.ts src/data/atHomeSaleSnapshot.ts src/data/atHomeNationwideRentSnapshot.ts scripts/fixtures/refactor-baseline.json
           git commit -m "chore(data): 更新全國成交與公開開價快照"
           git push origin "$BRANCH"
-          gh pr create \
-            --title "chore(data): 更新全國成交與公開開價快照（${{ steps.diff.outputs.period }}）" \
-            --body "自動排程更新國土交通省成交實價與 At Home 公開開價快照。
+          cat > "$RUNNER_TEMP/pr-body.md" <<EOF
+          自動排程更新國土交通省成交實價與 At Home 公開開價快照。
 
           - 最新季別：\`${{ steps.diff.outputs.period }}\`
           - 分桶筆數：${{ steps.diff.outputs.rows }}
           - 公開開價市區町村：${{ steps.diff.outputs.listing_rows }}
           - 公開租金市區町村：${{ steps.diff.outputs.rent_rows }}
-          - 型別檢查、需求判定回歸測試與 production build 均已通過
+          - 型別檢查、需求判定回歸測試、試算基準與 production build 均已通過
 
-          這份快照是買賣圖紙健檢價格判定的基準。合併前建議快速看一下 diff：
+          這份快照是買賣圖紙健檢價格判定的基準。合併前建議快速看一下下面的變動報告：
           若某些行政區的中位數出現異常大的跳動，可能代表該區近期成交量少、
-          統計視窗滑動所致，而非行情真的劇烈變動。" \
+          統計視窗滑動所致，而非行情真的劇烈變動。
+
+          EOF
+          cat "$RUNNER_TEMP/data-change-report.md" >> "$RUNNER_TEMP/pr-body.md"
+          gh pr create \
+            --title "chore(data): 更新全國成交與公開開價快照（${{ steps.diff.outputs.period }}）" \
+            --body-file "$RUNNER_TEMP/pr-body.md" \
             --base main \
             --head "$BRANCH"
 
