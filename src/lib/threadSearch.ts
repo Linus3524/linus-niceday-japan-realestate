@@ -160,7 +160,8 @@ function scoreDocument(document: ThreadDocument, tokens: string[], rawQuery: str
   const coverage = matchedTokens / tokens.length;
   score += coverage * 30;
 
-  const normalizedQuery = rawQuery.trim().toLocaleLowerCase();
+  // 文章內容比對前已統一字形（審査→審查），搜尋字也要統一，兩種寫法的分數才會相同。
+  const normalizedQuery = normalizeSearchText(rawQuery.trim().toLocaleLowerCase());
   if (normalizedQuery.length >= 2) {
     if (document.titleText.indexOf(normalizedQuery) >= 0 && document.titleText.indexOf(normalizedQuery) < 28) score += 24;
     else if (document.leadingText.includes(normalizedQuery)) score += 14;

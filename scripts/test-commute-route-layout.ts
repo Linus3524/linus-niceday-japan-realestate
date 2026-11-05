@@ -37,6 +37,10 @@ const scrollClasses = scrollContainer[1].split(/\s+/);
 assert.ok(scrollClasses.includes("overflow-x-auto"), "路線超出卡片時應可水平捲動");
 assert.ok(scrollClasses.includes("touch-pan-x"), "觸控裝置應可左右滑動路線圖");
 assert.ok(scrollClasses.includes("overscroll-x-contain"), "水平滑動不應帶動外層頁面");
+// 站名往兩側伸出 16px，捲動容器要用 px-4 接住，否則左邊被裁、右邊憑空多一條捲軸。
+assert.ok(scrollClasses.includes("px-4"), "捲動容器應留出站名伸出的空間");
+assert.ok(component.includes("-mx-4"), "站名伸出量應與捲動容器的 px-4 相同");
+assert.ok(!component.includes("max-w-[64px] truncate"), "站名應完整顯示，不可截斷");
 
 console.log("✓ 路線圖左右滿版自適應伸展、全線連接線段均等等長（flex-1）、標籤與車站卡片對齊靜態測試通過。");
 

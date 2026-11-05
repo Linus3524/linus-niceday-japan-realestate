@@ -355,7 +355,9 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
   const [expanded, setExpanded] = useState<string | null>(null);
   const [expandedDistricts, setExpandedDistricts] = useState<string[]>([]);
   const [sortMode, setSortMode] = useState<SortMode>("recommended");
-  const sorted = sortRecommendations(recommendations, sortMode);
+  const requested = recommendations.filter(item => !item.isBudgetAlternative);
+  const sorted = sortRecommendations(requested, sortMode);
+  const alternatives = sortRecommendations(recommendations.filter(item => item.isBudgetAlternative), sortMode);
   const groups = Array.from(sorted.reduce((grouped, item) => {
     const current = grouped.get(item.district) || [];
     current.push(item);
@@ -378,7 +380,7 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2 font-sans">
         <p className="text-[10px] font-bold text-[#66736C]">
-          找到 {recommendations.length} 個合適車站・分布於 {groups.length} 個行政區
+          找到 {requested.length} 個合適車站・分布於 {groups.length} 個行政區
         </p>
         <div className="inline-flex items-center border border-[#DDE3DF] bg-white p-1">
           <span className="px-2 text-[9px] font-bold text-[#8A9590]">排序</span>
@@ -445,6 +447,30 @@ export function RentMarketReports({ recommendations, criteria, onApply }: Props)
           </section>
         );
       })}
+      {alternatives.length > 0 && (
+        <section data-budget-alternatives className="space-y-2 border-t border-[#DDE3DF] pt-4">
+          <div className="font-sans">
+            <h3 className="text-sm font-bold text-[#1A2A22]">預算內替代方向</h3>
+            <p className="mt-0.5 text-[10px] leading-relaxed text-[#66736C]">
+              你指定的範圍內沒有預算內車站。以下不在指定範圍內，是系統另外找到、預算內的方向，供你比較。
+            </p>
+          </div>
+          {alternatives.map((item, index) => {
+            const reportKey = `${item.district}-${item.station || "district"}`;
+            return (
+              <Report
+                key={reportKey}
+                item={item}
+                criteria={criteria}
+                index={sorted.length + index}
+                expanded={expanded === reportKey}
+                onToggle={() => setExpanded(expanded === reportKey ? null : reportKey)}
+                onApply={() => onApply(item)}
+              />
+            );
+          })}
+        </section>
+      )}
       {/* 共通說明全站只出現這一次；卡片內不再重複同樣的免責文字。 */}
       <p className="border-t border-[#DDE3DF] pt-3 font-sans text-[9px] leading-relaxed text-[#8A9590]">
         以上為行政區／車站層級的租金推估與趨勢，非即時空室資料。圖表呈現的是規格差異的方向性，實際物件仍依募集條件為準。

@@ -292,6 +292,69 @@ const scenarios: Array<{ name: string; run: () => void }> = [
     }
   },
   {
+    // 回報案例：選新宿・澀谷・目黑・文京＋千代田線，評估卻出現「足立區起跳價 12.9 萬」。
+    name: "已指定行政區時，路線不擴大評估範圍，起跳價對得上區名",
+    run: () => {
+      const criteria = {
+        ...base, district: null, roomType: "k1", minBudget: 80_000, maxBudget: 120_000,
+        districts: ["新宿區", "澀谷區", "目黑區", "文京區"], lines: ["東京メトロ千代田線"],
+        commuteStation: "代代木", commuteMinutes: 45, floorMin: 2, bidet: true, separateBath: true
+      } as RentSearchCriteria;
+      const scope = resolveSearchScope(criteria);
+      assert.equal(scope.districts.size, 4, "千代田線不應把足立區等未指定的區併進來");
+      const axis = buildAxisVerdicts(criteria, buildRentRecommendations(criteria)).find(item => item.key === "budget")!;
+      const text = JSON.stringify(axis);
+      assert.doesNotMatch(text, /足立/);
+      assert.match(axis.nextStep || "", /12\.9 萬円（文京區一帶的起跳價）/);
+    }
+  },
+  {
+    name: "有區買得起時，不再同時說低於起跳行情",
+    run: () => {
+      const criteria = {
+        ...base, district: null, roomType: "k1", maxBudget: 130_000,
+        districts: ["新宿區", "澀谷區", "目黑區", "文京區"], floorMin: 2, bidet: true, separateBath: true
+      } as RentSearchCriteria;
+      const axis = buildAxisVerdicts(criteria, buildRentRecommendations(criteria)).find(item => item.key === "budget")!;
+      assert.equal(axis.status, "部分符合");
+      assert.doesNotMatch(axis.headline, /低於/);
+    }
+  },
+  {
+    name: "同區優先挑最接近預算的車站，並保留一站在指定路線上",
+    run: () => {
+      const recs = buildRentRecommendations({
+        ...base, district: null, roomType: "k1", maxBudget: 120_000,
+        districts: ["文京區", "澀谷區"], lines: ["千代田線"], floorMin: 2, bidet: true, separateBath: true
+      } as RentSearchCriteria);
+      const inDistrict = (district: string) => recs.filter(item => item.district === district && !item.isBudgetAlternative);
+      const bunkyoHighest = Math.max(...inDistrict("文京區").map(item => item.estimate));
+      assert.equal(bunkyoHighest, 129_000, "文京區有三站 12.9 萬，不應再選更貴的車站");
+      assert.ok(inDistrict("澀谷區").some(item => item.lines.some(line => line.includes("千代田"))), "澀谷區應保留千代田線上的車站");
+      assert.ok(inDistrict("澀谷區").every(item => item.station !== "原宿"), "17.2 萬的原宿不應佔名額");
+    }
+  },
+  {
+    name: "指定範圍沒有預算內車站時才補替代，且標示清楚、不影響通勤判斷",
+    run: () => {
+      const criteria = {
+        ...base, district: null, roomType: "k1", maxBudget: 120_000,
+        districts: ["新宿區", "澀谷區", "目黑區", "文京區"], lines: ["千代田線"],
+        commuteStation: "代代木", floorMin: 2, bidet: true, separateBath: true
+      } as RentSearchCriteria;
+      const recs = buildRentRecommendations(criteria);
+      const alternatives = recs.filter(item => item.isBudgetAlternative);
+      assert.ok(alternatives.length > 0 && alternatives.length <= 3);
+      assert.ok(alternatives.every(item => item.recommendationType === "預算替代" && item.estimate <= 120_000));
+      assert.ok(alternatives.every(item => !criteria.districts!.includes(item.district)));
+      assert.ok(alternatives.some(item => item.station === "北千住"), "同線且預算內的北千住應列入");
+      assert.equal(recs.at(-1)?.isBudgetAlternative, true, "替代方向要排在指定範圍之後");
+
+      const roomy = buildRentRecommendations({ ...criteria, maxBudget: 130_000 });
+      assert.ok(roomy.every(item => !item.isBudgetAlternative), "範圍內已有預算內車站就不補替代");
+    }
+  },
+  {
     name: "複數路線都會納入搜尋範圍",
     run: () => {
       const scope = resolveSearchScope({ ...base, district: null, line: null, lines: ["東急東橫線", "山手線"] });

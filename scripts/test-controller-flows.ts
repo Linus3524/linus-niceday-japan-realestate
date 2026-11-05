@@ -222,6 +222,25 @@ try {
     return value;
   };
 
+  // 指定範圍內沒有預算內車站時，推薦清單尾端會多出「預算替代」。歷史 fixture 產生於此之前，
+  // 因此比對前先移除；只移除有明確標記的項目，指定範圍的結果仍須與 fixture 完全一致。
+  const budgetAlternatives: Array<Record<string, unknown>> = [];
+  const withoutBudgetAlternatives = (value: unknown): unknown => {
+    if (Array.isArray(value)) {
+      return value
+        .filter(item => {
+          const flagged = Boolean(item && typeof item === "object" && (item as Record<string, unknown>).isBudgetAlternative);
+          if (flagged) budgetAlternatives.push(item as Record<string, unknown>);
+          return !flagged;
+        })
+        .map(withoutBudgetAlternatives);
+    }
+    if (value && typeof value === "object") {
+      return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => [key, withoutBudgetAlternatives(item)]));
+    }
+    return value;
+  };
+
   // The historical fixture stays immutable. Only the explicitly fixed race
   // checkpoints use new assertions; unaffected form/API results keep the baseline.
   const changed = new Set(["preview-reverse-completion", "preview-completes-after-removal", "analysis-loading-guard-and-file-switch", "analysis-old-file-response", "analysis-current-file-response", "shared-unmount-ignores-rejection"]);
@@ -240,7 +259,14 @@ try {
       // 同一次修正也讓 PDF 匯出的 payload 帶上 safety；治安結果被清掉時它是 null。
       // 歷史 fixture 產生於此欄位存在之前，因此比對前先移除，與上面 state 的處理一致。
       assert.deepEqual(withoutOriginBus(withoutSafety(withoutStationLines(withoutSharedCommute(actual.pending)))), old.pending, name + " requests");
-    } else assert.deepEqual(withoutOriginBus(withoutStationLines(withoutSharedCommute(value))), expected.snapshots[name], name);
+    } else assert.deepEqual(withoutBudgetAlternatives(withoutOriginBus(withoutStationLines(withoutSharedCommute(value)))), expected.snapshots[name], name);
+  }
+
+  // 同上：確認替代方向真的有產生且標示正確，否則剝離會無聲通過。
+  assert.ok(budgetAlternatives.length > 0, "本地推薦的流程應產生預算替代");
+  for (const item of budgetAlternatives) {
+    assert.equal(item.recommendationType, "預算替代");
+    assert.equal(item.fit, "預算內");
   }
 
   // 上面把「沒有巴士」的預設值剝掉才能比對歷史 fixture，因此這裡必須確認該欄位

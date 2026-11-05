@@ -68,8 +68,14 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
 
   // 路線：一條線橫跨的行政區行情差距很大（西武池袋線從豐島區到所澤市），
   // 少了這段就會只用線上最貴的那一站當基準。
+  //
+  // 但已經指定行政區或車站時，路線只是偏好，不能再把範圍往外擴：
+  // 選「新宿區＋千代田線」的人沒有要住足立區，併進來只會讓評估拿使用者
+  // 沒選的區當行情基準，還與只看指定地點的推薦清單對不起來。
+  // 這時路線仍要比對，查不到的路線才會被標成待確認。
   const lineInputs = [...(criteria.lines || []), criteria.line]
     .filter((value): value is string => typeof value === "string" && value.trim().length > 0);
+  const lineExpandsScope = districts.size === 0;
   let matchedAnyLine = false;
   for (const lineInput of lineInputs) {
     const lineQuery = normalizeLine(lineInput);
@@ -80,7 +86,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
           const candidate = normalizeLine(line);
           return candidate.includes(lineQuery) || lineQuery.includes(candidate);
         }))) {
-          districts.add(normalize(district));
+          if (lineExpandsScope) districts.add(normalize(district));
           hit = true;
           matchedAnyLine = true;
         }
@@ -88,7 +94,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
     }
     if (!hit && !unresolvedLocations.includes(lineInput.trim())) unresolvedLocations.push(lineInput.trim());
   }
-  if (matchedAnyLine) sources.push("指定沿線");
+  if (matchedAnyLine && lineExpandsScope) sources.push("指定沿線");
 
   // 只給通勤目的地時，可住範圍就是「與該站有共同線路的行政區」——
   // 這正是推薦清單挑候選的規則，用同一條規則兩側才會一致。
