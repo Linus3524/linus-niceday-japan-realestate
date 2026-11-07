@@ -21,19 +21,21 @@ delete process.env.MLIT_REINFOLIB_API_KEY;
 
 let overpassCalls = 0;
 let failFirstCalls = 0;
+let responseElements: unknown[] = osmElements;
 
 globalThis.fetch = (async (input: RequestInfo | URL) => {
   const url = new URL(String(input));
   if (url.hostname === "msearch.gsi.go.jp") {
     const title = url.searchParams.get("q") || "";
     // 每個地址給不同座標，避免共用 Overpass 快取。
-    const offset = title.endsWith("11") ? 0.002 : 0;
-    return Response.json([{ geometry: { coordinates: [LON + offset, LAT] }, properties: { title } }]);
+    const offset = title.includes("2-10-11") ? 0.002 : 0;
+    const latOffset = title.endsWith(" 2") ? 0 : 0.0001;
+    return Response.json([{ geometry: { coordinates: [LON + offset, LAT + latOffset] }, properties: { title } }]);
   }
   if (url.pathname.endsWith("/interpreter")) {
     overpassCalls++;
     if (overpassCalls <= failFirstCalls) throw new DOMException("timed out", "TimeoutError");
-    return Response.json({ elements: osmElements });
+    return Response.json({ elements: responseElements });
   }
   throw new Error(`Unexpected request: ${url}`);
 }) as typeof fetch;
@@ -60,7 +62,22 @@ try {
   assert.equal(failed.amenities.length, 0);
   assert.ok(failed.notices.some(notice => notice.includes(NOTICE)), "兩輪都失敗必須提示使用者");
 
-  console.log("Overpass retry regression passed: retries once and reports unavailable amenities.");
+  // 同名連鎖店：回傳順序遠的在前，也必須留下最近的分店。
+  overpassCalls = 0;
+  failFirstCalls = 0;
+  responseElements = [
+    { type: "node", lat: LAT + 0.0054, lon: LON + 0.002, tags: { shop: "convenience", name: "ファミリーマート" } },
+    { type: "node", lat: LAT + 0.0055, lon: LON + 0.002, tags: { shop: "convenience", name: "セブン-イレブン" } },
+    { type: "node", lat: LAT + 0.0009, lon: LON + 0.002, tags: { shop: "convenience", name: "ファミリーマート" } },
+  ];
+  const chains = await getListingLocationContext("東京都北区田端新町2-10-11 2", [], []);
+  assert.ok(chains, "地址應可定位");
+  const stores = chains.amenities.filter(item => item.category === "convenience");
+  assert.equal(stores[0]?.name, "ファミリーマート", "最近的超商必須排第一");
+  assert.ok(stores[0].distanceMeters < 150, `應保留約 100m 的分店，實際 ${stores[0]?.distanceMeters}m`);
+  assert.equal(stores.length, 2, "同名分店只列最近一間");
+
+  console.log("Overpass regression passed: retries once, reports unavailable amenities, keeps the nearest chain store.");
 } finally {
   globalThis.fetch = originalFetch;
   console.warn = originalWarn;
