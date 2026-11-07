@@ -91,6 +91,7 @@ const OVERPASS_APIS = process.env.OVERPASS_API_URL
       "https://overpass-api.de/api/interpreter",
       "https://overpass.kumi.systems/api/interpreter",
     ];
+const OVERPASS_ATTEMPTS = 2;
 const FOOT_ROUTER = process.env.FOOT_ROUTER_URL || "https://routing.openstreetmap.de/routed-foot/route/v1/driving";
 const MLIT_API = "https://www.reinfolib.mlit.go.jp/ex-api/external";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -306,30 +307,36 @@ async function queryOsm(point: GeoPoint, includeAmenities: boolean): Promise<Osm
     nw(around:4000,${point.lat},${point.lon})[public_transport=station];
   );out center tags;`;
 
-  try {
-    const elements = await Promise.any(
-      OVERPASS_APIS.map(async (endpoint) => {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Accept": "application/json",
-            "User-Agent": APP_USER_AGENT,
-          },
-          body: new URLSearchParams({ data: query }),
-          signal: AbortSignal.timeout(30000),
-        });
-        if (!response.ok) throw new Error(`Overpass status ${response.status} from ${endpoint}`);
-        const data = await response.json();
-        if (!Array.isArray(data?.elements) || data.remark) throw new Error(`Incomplete elements from ${endpoint}`);
-        return data.elements as OsmElement[];
-      })
-    );
-    return remember(key, elements);
-  } catch (error) {
-    console.warn("All Overpass endpoints failed or timed out:", error);
-    throw error;
+  // 公開 Overpass 端點常同時塞車：實測東京同一查詢平常約 10 秒，但也出現過五個端點都超過 30 秒。
+  // 這種情況通常是暫時的，所以整輪失敗後再試一輪。
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= OVERPASS_ATTEMPTS; attempt++) {
+    try {
+      const elements = await Promise.any(
+        OVERPASS_APIS.map(async (endpoint) => {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json",
+              "User-Agent": APP_USER_AGENT,
+            },
+            body: new URLSearchParams({ data: query }),
+            signal: AbortSignal.timeout(30000),
+          });
+          if (!response.ok) throw new Error(`Overpass status ${response.status} from ${endpoint}`);
+          const data = await response.json();
+          if (!Array.isArray(data?.elements) || data.remark) throw new Error(`Incomplete elements from ${endpoint}`);
+          return data.elements as OsmElement[];
+        })
+      );
+      return remember(key, elements);
+    } catch (error) {
+      lastError = error;
+      console.warn(`All Overpass endpoints failed or timed out (attempt ${attempt}/${OVERPASS_ATTEMPTS}):`, error);
+    }
   }
+  throw lastError;
 }
 
 function nearestStation(elements: OsmElement[], origin: GeoPoint, requestedName?: string) {
@@ -906,6 +913,10 @@ export async function getListingLocationContext(
     mlitCareFacilityCount(geocoded.point).catch(() => 0),
   ]);
   const elements = osmResult || [];
+  // 超商、超市、藥妝、健身房只來自 OpenStreetMap。查詢失敗時要明說，否則看起來會像附近都沒有。
+  if (!osmResult) {
+    notices.push("地圖資料服務暫時沒有回應，這次查不到超商、超市、藥妝、健身房等生活機能，不代表附近沒有。請稍後重新分析一次。");
+  }
 
   const osmStations = osmStationPoints(elements, geocoded.point);
   let officialStations: StationPoint[] = [];
