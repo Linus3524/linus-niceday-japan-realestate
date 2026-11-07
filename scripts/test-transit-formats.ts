@@ -359,4 +359,20 @@ console.log("TransitLeg serialization invariants passed.");
   assert.equal(named[1].match.hasSurfaceRail, true, "総武線那條要對到在來線站體");
   console.log("Same-name distinct-body station seeding passed.");
 }
+
+// 圖紙只列 JR 時，最近的非地鐵站不可被較遠的地鐵站擠掉；不同型態的站只優先一個。
+{
+  const point = (name: string, distance: number, subway: boolean) => ({
+    name, distance, point: { lat: 35.74 + distance / 1_000_000, lon: 139.76 }, hasSubway: subway, hasSurfaceRail: !subway,
+  });
+  const stations = [
+    point("田端", 586, false), point("赤土小学校前", 365, false), point("新三河島", 657, false),
+    point("西日暮里", 808, true), point("町屋", 1171, true), point("千駄木", 1300, true), point("東尾久三丁目", 874, false),
+  ];
+  const names = selectStationWalkSeeds(["田端"], [10], stations, [], ["JR山手線"]).map(seed => seed.station);
+  assert.equal(names[0], "田端", "圖紙刊載站排第一");
+  assert.equal(names[1], "西日暮里", "最近的不同型態站優先一個");
+  assert.ok(names.slice(0, 5).includes("赤土小学校前"), `最近的站必須在前 5 名：${names.join("、")}`);
+  assert.deepEqual(names.slice(2, 5), ["赤土小学校前", "新三河島", "東尾久三丁目"], "其餘照距離排");
+}
 console.log("All transit format regression tests passed successfully! ✓");

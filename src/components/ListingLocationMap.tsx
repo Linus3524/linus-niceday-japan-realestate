@@ -496,7 +496,7 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
       <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#66736C]">
         <div className="flex items-center gap-1.5">
           <Info className="h-3.5 w-3.5 text-[#8A9590] shrink-0" />
-          <span>點擊或懸停下方項目可連動聚焦地圖；車站先列圖紙刊載站，再補足附近車站，合計最多 3 站；生活機能各類別取最近 3 處。</span>
+          <span>點擊或懸停下方項目可連動聚焦地圖；車站先列圖紙刊載站，再補足附近車站，合計最多 5 站；生活機能各類別取最近 5 處。</span>
         </div>
         <span className="text-[#8A9590]">※ 完整周邊店家請參考地圖實景</span>
       </div>

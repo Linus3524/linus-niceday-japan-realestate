@@ -1,3 +1,4 @@
+import { toJapaneseStationName } from "../src/lib/transit.js";
 import assert from "node:assert/strict";
 import { matchesAllTokens, tokenizeQuery, normalizeSearchText } from "../src/lib/search.js";
 import { searchThreads } from "../src/lib/threadSearch.js";
@@ -181,4 +182,7 @@ assert.equal(
   "搜尋『傢俱』應能命中『家具』"
 );
 
+for (const station of ["日暮里", "西日暮里", "千里中央", "今里"]) {
+  assert.equal(toJapaneseStationName(station), station, `${station} 的「里」不可被改字`);
+}
 console.log("All kanji normalization and vocabulary expansion search tests passed successfully!");

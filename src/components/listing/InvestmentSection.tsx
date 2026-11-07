@@ -121,7 +121,7 @@ export function InvestmentSection({ model }: InvestmentSectionProps) {
             <div className=" border border-[#9EE2CF] bg-[#F5F8F6] p-3">
               <p className="font-bold text-[#00A174]">
                 {saleAnalysis?.occupancyAssessment?.status === "vacant"
-                  ? (saleOccupancy(extracted || {}).renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對")
+                  ? saleAnalysis.occupancyAssessment.statusText
                   : saleAnalysis?.occupancyAssessment?.status === "occupied_owner" ? "現有屋主居住中（交屋期需協商）" : "現況未確認"}
               </p>
               <p className="mt-1 text-[11px] leading-relaxed text-[#3F5147]">

@@ -396,7 +396,7 @@ export function buildSaleAnalysis(params: {
     mlitComparison: audit.blocksComparison ? null : mlitComparison,
     occupancyAssessment: {
       status: propertyDetails.hospitality ? "hospitality" : isTenanted ? "tenanted_investment" : isOwnerOccupied ? "occupied_owner" : isVacant ? "vacant" : "unknown",
-      statusText: propertyDetails.hospitality ? (extracted.occupancyStatus || "住宿營業物件，現況待核對") : isTenanted ? "出租中（帶租約買賣／投資型）" : isOwnerOccupied ? "現有屋主居住中（交屋期需協商）" : isVacant ? (occupancy.renovating ? "現況空室／裝修中" : "現況空室，交屋條件待核對") : (statusRaw || "現況未載明，待確認"),
+      statusText: propertyDetails.hospitality ? (extracted.occupancyStatus || "住宿營業物件，現況待核對") : isTenanted ? "出租中（帶租約買賣／投資型）" : isOwnerOccupied ? "現有屋主居住中（交屋期需協商）" : isVacant ? (occupancy.renovating ? "現況空室／裝修中" : statusRaw.startsWith("預定空室交屋") ? statusRaw : "現況空室，交屋條件待核對") : (statusRaw || "現況未載明，待確認"),
       investmentYield: isTenanted && grossYield ? {
         monthlyRentYen: effectiveMonthlyRentYen ?? currentRentYen ?? Math.round((annualIncomeYen ?? 0) / 12),
         annualIncomeYen: effectiveAnnualIncomeYen ?? annualIncomeYen ?? 0,

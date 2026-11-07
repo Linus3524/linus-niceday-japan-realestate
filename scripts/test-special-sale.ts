@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { translateOccupancyStatus } from "../src/lib/equipmentParser.js";
 import { buildSaleAnalysis, type ExtractedListingFields } from "../api/analyze-listing.js";
 import { parseSalePrice, parseArea, parseAgeYears, assessRealEstateAcquisitionTax, calculateSaleInitialCosts } from "../src/lib/listingExtraction.js";
-import { buildSpecialSaleDetails, parseRevenueCalculationBasis, reconcileSpecialSaleFields, saleOccupancy, statedAnnualPropertyTax, statedCombinedAnnualPropertyTax } from "../src/lib/specialSaleAnalysis.js";
+import { buildSpecialSaleDetails, parseRevenueCalculationBasis, reconcileSpecialSaleFields, resolveVacantHandover, saleOccupancy, statedAnnualPropertyTax, statedCombinedAnnualPropertyTax } from "../src/lib/specialSaleAnalysis.js";
 
 // 六份使用者提供的圖紙，僅保存回歸所需的原文欄位，不含影像或仲介聯絡資料。
 const cases = [
@@ -139,4 +140,53 @@ assert.deepEqual(nagasakiRevenue, [
   { label: "圖紙刊載年營收", formula: "5,760,000 円 ＋ 1,050,000 円", value: "6,810,000 円" },
   { label: "圖紙刊載投報率", value: "9.00%" },
 ]);
+// 「賃貸中」但圖紙載明退去日期或可空室交屋：實際是空屋出售，不是帶租約。
+{
+  const analyzeTabata = (fields: object) => buildSaleAnalysis({
+    extracted: { propertyType: "区分マンション", salePrice: "6,380万円", area: "55.88㎡", layout: "2LDK", address: "東京都北区田端新町2-10-10", managementFee: "19,560円", repairReserve: "15,660円", ...fields } as ExtractedListingFields,
+    salePriceYen: 63_800_000, areaSqm: 55.88, stations: ["田端"], walkTimes: ["10"], layout: "2LDK",
+  });
+  const now = new Date(2026, 10, 7);
+  const tabata = resolveVacantHandover({
+    occupancyStatus: "賃貸中(2026/10/6退去予定)",
+    specialNotes: "空室にて引渡し可能\n現況有姿売買",
+    currentRent: "180,000円",
+    grossYield: "3.4%",
+  }, now);
+  assert.equal(tabata.occupancyStatus, "現況空室（圖紙載原租客 2026/10/6 退去，交屋前請再確認）");
+  assert.equal(tabata.currentRent, "", "空屋出售不可沿用即將失效的租金");
+  assert.equal(tabata.grossYield, "");
+  assert.equal(saleOccupancy(tabata).vacant, true);
+  assert.equal(translateOccupancyStatus(tabata.occupancyStatus), tabata.occupancyStatus, "現況要照實顯示退去資訊");
+
+  const sample = (occupancyStatus: string, specialNotes = "") => analyzeTabata(resolveVacantHandover({ occupancyStatus, specialNotes }, now));
+  const vacantResult = sample("出租中（2026/10/6 退去預定）", "可空屋交屋");
+  assert.equal(vacantResult.occupancyAssessment.status, "vacant");
+  assert.equal(sample("出租中（帶租約）", "空室にて引渡し可能").occupancyAssessment.status, "vacant", "現況被簡化時仍要看備考");
+  const delivered = resolveVacantHandover({ occupancyStatus: "賃貸中", handoverDetails: "2027年3月31日退去予定、空室引渡" }, now);
+  assert.equal(delivered.occupancyStatus, "預定空室交屋（圖紙載原租客預定 2027/3/31 退去）");
+  assert.equal(saleOccupancy(delivered).vacant, true);
+
+  const stayTenanted = [
+    { occupancyStatus: "賃貸中" },
+    { occupancyStatus: "賃貸中", specialNotes: "賃貸管理契約は引継ぎ" },
+    { occupancyStatus: "オーナーチェンジ", specialNotes: "空室にて引渡し可能" },
+    { occupancyStatus: "賃貸中", specialNotes: "空室渡し不可" },
+    { occupancyStatus: "賃貸中(2027/3/31退去予定)" },
+    { occupancyStatus: "賃貸中", currentRent: "120,000円" },
+  ];
+  for (const fields of stayTenanted) {
+    const resolved = resolveVacantHandover(fields, now);
+    assert.equal(resolved.occupancyStatus, fields.occupancyStatus, `不可誤判為空屋：${JSON.stringify(fields)}`);
+    assert.equal(resolved.currentRent, fields.currentRent);
+  }
+  const tenanted = sample("賃貸中");
+  assert.equal(tenanted.occupancyAssessment.status, "tenanted_investment");
+  assert.equal(analyzeTabata(delivered).occupancyAssessment.statusText, delivered.occupancyStatus, "退租日未到不可寫成可即刻交屋");
+  assert.ok(
+    vacantResult.mlitComparison!.expectedPriceMan > tenanted.mlitComparison!.expectedPriceMan,
+    "空屋出售的合理價不可套帶租約折價",
+  );
+}
+
 console.log("Special sale regression: 13 flyers and boundary checks passed.");

@@ -1175,6 +1175,7 @@ export function splitRenovationGroups(text: unknown): Array<{ heading: string; i
 export function translateOccupancyStatus(raw: unknown): string {
   if (typeof raw !== "string" || !raw.trim()) return "";
   const s = raw.trim();
+  if (/^(?:預定空室交屋|現況空室)（圖紙載|交屋條件待核對/.test(s)) return s;
   if (/居住中.*(?:相談|引渡)/.test(s) || /相談.*居住中/.test(s)) return "現有屋主居住中（交屋期需協商）";
   if (/居住中/.test(s)) return "現有屋主居住中";
   if (/賃貸中|オーナーチェンジ/.test(s)) return "出租中（帶租約買賣）";
