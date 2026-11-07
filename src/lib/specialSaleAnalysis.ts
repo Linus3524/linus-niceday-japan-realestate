@@ -20,6 +20,7 @@ export interface SpecialSaleFields {
   taxDetails?: string;
   occupancyStatus?: string;
   specialNotes?: string;
+  otherConditions?: string;
   annualIncome?: string;
   currentRent?: string;
   grossYield?: string;
@@ -109,6 +110,42 @@ export function parseRevenueCalculationBasis(raw?: string | null): RevenueCalcul
     .replace(/\s+/gu, " ")
     .trim();
   return [{ label: "圖紙計算記載", value: translated }];
+}
+
+const VACANT_HANDOVER = /(?:空室|空屋|空房|空家|空き家)(?:状態|狀態)?(?:にて|で|の)?(?:お?引き?渡|渡し|交屋|交付|點交|点交)/;
+const VACANT_HANDOVER_DENIED = /(?:不可|不能|無法|无法)(?:以)?(?:空室|空屋|空房|空家|空き家)|(?:空室|空屋|空房|空家|空き家)(?:状態|狀態)?(?:にて|で|の)?(?:お?引き?渡し?|渡し|交屋|交付|點交|点交)[^。\n]{0,6}(?:不可|できません|できない|不能|無法|无法)/;
+const TENANT_DEPARTED = /退去済|退去完了|已退租|已退去|已搬離/;
+const DEPARTURE_DATE = /(20\d{2})\s*[/年.-]\s*(\d{1,2})\s*[/月.-]\s*(\d{1,2})\s*日?[^。\n]{0,8}?(?:退去|退租|搬離|搬出)|(?:退去|退租|搬離|搬出)[^。\n]{0,8}?(20\d{2})\s*[/年.-]\s*(\d{1,2})\s*[/月.-]\s*(\d{1,2})/;
+
+/**
+ * 現況欄寫「賃貸中」不一定是帶租約出售：圖紙可能同時載明退去日期或可空室交屋。
+ * 這類物件賣給自住買方，不能套帶租約折價、收益還原或投資型稅務判斷。
+ * 所有下游都靠現況文字判斷，所以在這裡改寫現況並清掉即將失效的租金欄位。
+ */
+export function resolveVacantHandover<T extends SpecialSaleFields>(fields: T, now: Date = new Date()): T {
+  const status = (fields.occupancyStatus || "").normalize("NFKC");
+  if (!/賃貸中|出租中|帶租約|入居中/.test(status) || /オーナーチェンジ/.test(status)) return fields;
+
+  const text = [status, fields.handoverDetails, fields.specialNotes, fields.otherConditions]
+    .filter(Boolean).join("\n").normalize("NFKC");
+  if (VACANT_HANDOVER_DENIED.test(text)) return fields;
+
+  const dateMatch = DEPARTURE_DATE.exec(text);
+  const [year, month, day] = dateMatch
+    ? (dateMatch[1] ? dateMatch.slice(1, 4) : dateMatch.slice(4, 7)).map(Number)
+    : [];
+  const departureText = dateMatch ? `${year}/${month}/${day}` : "";
+  const departurePassed = dateMatch ? new Date(year, month - 1, day) <= now : false;
+  const vacantHandover = VACANT_HANDOVER.test(text);
+
+  let occupancyStatus: string;
+  if (departurePassed) occupancyStatus = `現況空室（圖紙載原租客 ${departureText} 退去，交屋前請再確認）`;
+  else if (TENANT_DEPARTED.test(text)) occupancyStatus = "現況空室（圖紙載原租客已退去）";
+  else if (vacantHandover && departureText) occupancyStatus = `預定空室交屋（圖紙載原租客預定 ${departureText} 退去）`;
+  else if (vacantHandover) occupancyStatus = "預定空室交屋（圖紙載可空室交屋，請確認退去日期）";
+  else return fields;
+
+  return { ...fields, occupancyStatus, currentRent: "", annualIncome: "", grossYield: "" };
 }
 
 /** 只修正能由欄位原文確認的矛盾，不能把投報率反算收入冒充刊載值。 */

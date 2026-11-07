@@ -35,6 +35,7 @@ import { buildSaleAnalysis } from '../src/lib/server/listing/saleAnalysis.js';
 import type { ExtractedListingFields } from '../src/lib/server/listing/types.js';
 import {
   reconcileSpecialSaleFields,
+  resolveVacantHandover,
   statedAnnualPropertyTax,
   statedCombinedAnnualPropertyTax,
 } from "../src/lib/specialSaleAnalysis.js";
@@ -471,6 +472,7 @@ async function verifySaleCoreCharges(
        - 土地權利種類（例如 "所有権"、"借地権"、"定期借地権"、"旧法賃借権"、"地上権" 等）。
     5. occupancyStatus（現況／引渡）：
        - 目前使用狀態（例如 "空室"、"賃貸中"、"オーナーチェンジ"、"居住中"、"即時引渡可" 等）。
+       - 括號內的退去日期要完整保留，例如 "賃貸中(2026/10/6退去予定)"。
   `;
 
   const imageFiles = files.filter(file => file.mimeType.startsWith("image/"));
@@ -899,6 +901,7 @@ async function extractListingFields(
     - repairFund（修繕積立基金／積立基金）：照原文，格式如 "○,○○○円"（有些物件每月另有積立基金）。若無則填空字串。
     - otherMonthlyFees（町会費／協力金／自治会費／其他每戶固定月費）：照原文，例如 "町会費 300円"、"協力金 2,000円"。停車場、駐輪場、バイク置場等只有使用者才付的選配費用不得填入。
     - occupancyStatus（現況）：請翻譯為繁體中文，例如 "現況空室"、"出租中（帶租約）"、"現有屋主居住中（交屋期需協商）"、"可立即交屋"。
+      圖紙寫的退去日期要完整保留，例如「賃貸中(2026/10/6退去予定)」要輸出「出租中（2026/10/6 退去預定）」，不可簡化成「出租中（帶租約）」。備考若寫「空室にて引渡し可能」，specialNotes 必須保留。
     - currentRent（現行家賃／月額収入，若為投資型／賃貸中）：照原文，格式如 "○○○,○○○円"。
     - annualIncome（年間収入／年額収入，若為投資型／賃貸中）：照原文，格式如 "○,○○○,○○○円"。
     - grossYield（利回り／表面利回り）：照原文，格式如 "○.○%" 或 "○%"。
@@ -1350,7 +1353,8 @@ export default async function handler(req: any, res: any) {
           after: verified,
         });
       }
-      extracted = { ...extracted, ...verified };
+      // 二次確認可能把現況改回「賃貸中」，所以空室交屋要在這之後判斷。
+      extracted = resolveVacantHandover({ ...extracted, ...verified });
     }
 
     const rent = parseYenAmount(extracted.rent);

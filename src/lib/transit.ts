@@ -311,7 +311,9 @@ const CJK_RADICAL_FOLD: Record<string, string> = {
 
 export function toJapanesePlaceName(value: string) {
   const folded = (value || "").replace(/[\u2E80-\u2EFF]/gu, char => CJK_RADICAL_FOLD[char] ?? char);
-  const base = openccConverter ? openccConverter(folded) : folded;
+  // OpenCC 會把地名的「里」轉成「裏」（日暮里→日暮裏），先保護再還原。
+  const protectedRi = folded.replace(/里/g, "");
+  const base = (openccConverter ? openccConverter(protectedRi) : protectedRi).replace(//g, "里");
   return base
     .replace(/[澀涉涩渉]/g, "渋")
     // 車部、車字旁

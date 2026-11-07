@@ -29,11 +29,11 @@ export function nearestByCategory(list: Array<{ category: string; label: string;
   return order.filter(k => nearest.has(k)).map(k => nearest.get(k)!);
 }
 
-/** 網站每類只列最近 3 處，這裡照同一個口徑，不然 PDF 與畫面會對不上。 */
+/** 網站每類只列最近 5 處，這裡照同一個口徑，不然 PDF 與畫面會對不上。 */
 export function amenitiesByCategory(list: Array<{ category: string; label: string; name: string; distanceMeters: number }>) {
   const sorted = [...list].sort((a, b) => a.distanceMeters - b.distanceMeters);
   return CATEGORY_ORDER
-    .map(cat => ({ ...cat, items: sorted.filter(a => a.category === cat.id).slice(0, 3) }))
+    .map(cat => ({ ...cat, items: sorted.filter(a => a.category === cat.id).slice(0, 5) }))
     .filter(cat => cat.items.length > 0);
 }
 
@@ -115,7 +115,7 @@ export function LocationCard({ locationContext, commute, transitLegs }: Location
         </Card>
       ) : null}
       {grouped.length ? (
-        <Card title="1.2 公里生活機能" tag={`每類列最近 3 處・共檢索到 ${amenities.length} 處`}>
+        <Card title="1.2 公里生活機能" tag={`每類列最近 5 處・共檢索到 ${amenities.length} 處`}>
           {grouped.map((cat, ci) => (
             <View
               key={cat.id}

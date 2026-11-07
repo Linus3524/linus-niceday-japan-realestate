@@ -29,7 +29,7 @@ globalThis.fetch = (async (input: RequestInfo | URL) => {
     const title = url.searchParams.get("q") || "";
     // 每個地址給不同座標，避免共用 Overpass 快取。
     const offset = title.includes("2-10-11") ? 0.002 : 0;
-    const latOffset = title.endsWith(" 2") ? 0 : 0.0001;
+    const latOffset = title.endsWith(" 2") ? 0 : title.includes("2-10-12") ? 0.0002 : 0.0001;
     return Response.json([{ geometry: { coordinates: [LON + offset, LAT + latOffset] }, properties: { title } }]);
   }
   if (url.pathname.endsWith("/interpreter")) {
@@ -76,6 +76,13 @@ try {
   assert.equal(stores[0]?.name, "ファミリーマート", "最近的超商必須排第一");
   assert.ok(stores[0].distanceMeters < 150, `應保留約 100m 的分店，實際 ${stores[0]?.distanceMeters}m`);
   assert.equal(stores.length, 2, "同名分店只列最近一間");
+
+  // 每類最多列 5 處。
+  responseElements = Array.from({ length: 7 }, (_, index) => (
+    { type: "node", lat: LAT + 0.0002 * (index + 1), lon: LON, tags: { shop: "convenience", name: `テストコンビニ${index}` } }
+  ));
+  const capped = await getListingLocationContext("東京都北区田端新町2-10-12", [], []);
+  assert.equal(capped?.amenities.filter(item => item.category === "convenience").length, 5);
 
   console.log("Overpass regression passed: retries once, reports unavailable amenities, keeps the nearest chain store.");
 } finally {

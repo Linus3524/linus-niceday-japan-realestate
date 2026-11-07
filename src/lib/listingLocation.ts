@@ -554,6 +554,8 @@ function mergeNearbyStationPoints(...groups: StationPoint[][]) {
 
 /** 附近補充站的一般步速上限（分）。 */
 const NEARBY_STATION_MAX_MINUTES = 20;
+const MAX_STATION_WALKS = 5;
+const MAX_AMENITIES_PER_CATEGORY = 5;
 
 export function selectStationWalkSeeds(
   stations: string[],
@@ -561,7 +563,8 @@ export function selectStationWalkSeeds(
   osmStations: StationPoint[],
   officialStations: StationPoint[],
   stationLines: string[] = [],
-  maximum = 4,
+  // 比顯示上限多留幾站當候補：路由後超過步行上限的站會被略過。
+  maximum = MAX_STATION_WALKS + 3,
 ) {
   const seeds: StationWalkSeed[] = [];
   const used = new Set<string>();
@@ -614,26 +617,24 @@ export function selectStationWalkSeeds(
     seeds.push({ station, advertisedMinutes: advertised, source: "flyer", match, lineName: line });
   }
 
-  // 圖紙不足三站時，以物件附近實際鐵路站補足，不把補充站冒充為圖紙刊載內容。
+  // 圖紙站數不足時，以物件附近實際鐵路站補足，不把補充站冒充為圖紙刊載內容。
   const listedMatches = seeds.map(seed => seed.match);
   const flyerIsSubwayOnly = listedMatches.length > 0
     && listedMatches.every(match => match.hasSubway && !match.hasSurfaceRail);
   const flyerIsSurfaceOnly = listedMatches.length > 0
     && listedMatches.every(match => match.hasSurfaceRail && !match.hasSubway);
-  const nearby = mergeNearbyStationPoints(osmStations, officialStations).sort((left, right) => {
-    // 附近補站優先提供不同運輸型態，再以距離排序，避免只列出功能重疊的相鄰地鐵站。
-    const leftAlternative = flyerIsSubwayOnly ? left.hasSurfaceRail : flyerIsSurfaceOnly ? left.hasSubway : false;
-    const rightAlternative = flyerIsSubwayOnly ? right.hasSurfaceRail : flyerIsSurfaceOnly ? right.hasSubway : false;
-    if (Boolean(leftAlternative) !== Boolean(rightAlternative)) return leftAlternative ? -1 : 1;
-    return left.distance - right.distance;
-  });
+  // 附近補站照距離排，只把最近一個不同運輸型態的站排到最前面。
+  // 不可讓整批不同型態的站都優先：田端（JR）旁 365m 的赤土小学校前，曾被 1km 外的地鐵站擠掉。
+  const nearby = mergeNearbyStationPoints(osmStations, officialStations).sort((left, right) => left.distance - right.distance);
+  const alternativeIndex = nearby.findIndex(point => flyerIsSubwayOnly ? point.hasSurfaceRail : flyerIsSurfaceOnly ? point.hasSubway : false);
+  if (alternativeIndex > 0) nearby.unshift(...nearby.splice(alternativeIndex, 1));
 
   // 補充站不可與任何已刊載站重複。刊載站的 used key 是「路線_站名」，
   // 因此這裡另外收集純站名與實體座標作為比對基準。
   const seededStationNames = new Set(seeds.map(seed => normalizeStation(seed.station)));
   const seededNodeKeys = new Set(seeds.map(seed => `${seed.match.point.lat.toFixed(5)},${seed.match.point.lon.toFixed(5)}`));
 
-  const nearbySlots = Math.max(0, 3 - seeds.length);
+  const nearbySlots = Math.max(0, MAX_STATION_WALKS - seeds.length);
   let nearbyCandidates = 0;
   for (const match of nearby) {
     if (nearbyCandidates >= nearbySlots + 4 || seeds.length >= maximum) break;
@@ -938,7 +939,7 @@ export async function getListingLocationContext(
 
   const stationSeeds = selectStationWalkSeeds(stations, advertisedMinutes, osmStations, officialStations, stationLines);
   const stationWalks: ListingStationWalk[] = [];
-  const maxWalks = Math.max(3, stationSeeds.filter(s => s.source === "flyer").length);
+  const maxWalks = Math.max(MAX_STATION_WALKS, stationSeeds.filter(s => s.source === "flyer").length);
   for (const seed of stationSeeds) {
       if (stationWalks.length >= maxWalks) break;
       let distance = seed.match.distance;
@@ -997,7 +998,7 @@ export async function getListingLocationContext(
   }
 
   const amenities = deduplicatedAmenities
-    .filter((item, index, all) => all.filter(other => other.category === item.category).indexOf(item) < 3);
+    .filter((item, index, all) => all.filter(other => other.category === item.category).indexOf(item) < MAX_AMENITIES_PER_CATEGORY);
 
   return {
     address,
