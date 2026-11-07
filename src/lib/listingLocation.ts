@@ -851,8 +851,7 @@ async function mlitFacilities(point: GeoPoint): Promise<ListingAmenity[]> {
 }
 
 function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[] {
-  const seen = new Set<string>();
-  return elements.flatMap(element => {
+  const amenities = elements.flatMap(element => {
     const facilityPoint = elementPoint(element);
     const tags = element.tags || {};
     const name = String(tags["name:ja"] || tags.name || "").trim();
@@ -871,9 +870,6 @@ function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[]
     else if (tags.amenity === "post_office") [category, label] = ["post_office", "郵局"];
     else if (tags.leisure === "park") [category, label] = ["park", "公園"];
     if (!category) return [];
-    const dedupe = `${category}:${name}`;
-    if (seen.has(dedupe)) return [];
-    seen.add(dedupe);
     return [
       {
         category,
@@ -886,6 +882,16 @@ function osmAmenities(elements: OsmElement[], point: GeoPoint): ListingAmenity[]
       },
     ];
   });
+  // 連鎖店分店同名，且 Overpass 不按距離回傳：先排序再去重，才會留下最近的一間。
+  const seen = new Set<string>();
+  return amenities
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .filter(item => {
+      const dedupe = `${item.category}:${item.name}`;
+      if (seen.has(dedupe)) return false;
+      seen.add(dedupe);
+      return true;
+    });
 }
 
 export async function getListingLocationContext(
