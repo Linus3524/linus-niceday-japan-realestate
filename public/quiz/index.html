@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noai, noimageai">
+<title>你是哪種東京區民？</title>
+<meta name="description" content="房租、通勤、離超商幾步路——挑選你最嚮往的生活模樣，看看東京哪一站正在等你下車。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LINUS 住好日">
+<meta property="og:url" content="https://quiz.linusniceday.com/">
+<link rel="canonical" href="https://quiz.linusniceday.com/">
+<meta property="og:title" content="東京居住人格診斷｜你適合住在東京哪裡？">
+<meta property="og:description" content="房租、通勤、離超商幾步路——挑選你最嚮往的生活模樣，看看東京哪一站正在等你下車。">
+<meta property="og:image" content="https://quiz.linusniceday.com/img/og/og-zh.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="東京居住人格診斷 Tokyo Resident Type">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+// 測驗已搬到 quiz.linusniceday.com。這頁留給舊連結：作答紀錄存在舊網域的 localStorage，
+// 伺服器轉址帶不走，所以用這段程式把紀錄放進網址 hash，由新網域的測驗讀取、合併。
+// 參數與 tokyo-living-persona 原本的搬家程式相同（#import、#next、tokyo-quiz-moved）；vercel.app 網域的訪客會帶 ?next= 來，搬完回主站。
+(function () {
+  var QUIZ = "https://quiz.linusniceday.com/";
+  var SITE = "https://linusniceday.com";
+  var params = new URLSearchParams(location.search);
+  var nextParam = params.get("next");
+  var next = nextParam && /^\/(?!\/)/.test(nextParam) ? nextParam : null;
+  var isJa = params.get("lang") === "ja";
+  var hash = location.hash.replace(/^#/, "");
+  var records = {};
+  var hasRecords = false;
+
+  params.delete("next");
+  if (isJa) params.delete("lang");
+  if (next && hash) {
+    next += "#" + hash;
+    hash = "";
+  }
+
+  try {
+    if (!localStorage.getItem("tokyo-quiz-moved")) {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (/^tokyo-quiz-/.test(key)) {
+          records[key] = localStorage.getItem(key);
+          hasRecords = true;
+        }
+      }
+      localStorage.setItem("tokyo-quiz-moved", "1");
+    }
+  } catch (error) {
+    // 無痕模式等情況讀不到 localStorage：沒有紀錄可搬，照常前往測驗。
+  }
+
+  if (next && !hasRecords) {
+    location.replace(SITE + next);
+    return;
+  }
+
+  var fragment = [
+    hash,
+    hasRecords ? "import=" + encodeURIComponent(JSON.stringify(records)) : "",
+    next ? "next=" + encodeURIComponent(next) : ""
+  ].filter(Boolean).join("&");
+  var query = params.toString();
+  location.replace(QUIZ + (isJa ? "ja/" : "") + (query ? "?" + query : "") + (fragment ? "#" + fragment : ""));
+})();
+</script>
+</head>
+<body>
+<p><a href="https://quiz.linusniceday.com/">前往「你是哪種東京區民？」</a></p>
+</body>
+</html>
