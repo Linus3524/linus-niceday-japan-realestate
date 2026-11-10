@@ -41,6 +41,22 @@
       "destination": "/api/listing-location"
     },
     {
+      "source": "/api/find-home",
+      "destination": "/api/find-home"
+    },
+    {
+      "source": "/api/leads",
+      "destination": "/api/leads"
+    },
+    {
+      "source": "/find-home",
+      "destination": "/find-home.html"
+    },
+    {
+      "source": "/find-home/",
+      "destination": "/find-home.html"
+    },
+    {
       "source": "/quiz/api/:path*",
       "destination": "https://tokyo-living-persona.vercel.app/api/:path*"
     }
@@ -83,6 +99,12 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/leads?task=purge",
+      "schedule": "0 18 * * *"
     }
   ]
 }

@@ -115,6 +115,7 @@ jobs:
         run: |
           npm run test:building-health
           npm run test:admin-metrics
+          npm run test:find-home
           npm run test:crime-safety
           npm run test:municipal-crime
           npm run test:prefecture-bar-chart

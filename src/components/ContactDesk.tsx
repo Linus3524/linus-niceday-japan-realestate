@@ -2,6 +2,7 @@
 // 電腦前的人最順的聯絡方式是「拿手機掃 QR」，所以 LINE／WeChat QR 直接攤開放第一屏，
 // 加好友連結（電腦多半沒裝 LINE）退為備用；問卷提供一鍵複製，方便貼到 LINE 傳給 Linus。
 import { useRef, useState } from "react";
+import { FindHomeCta } from "./FindHomeCta";
 import type * as React from "react";
 import { AlertCircle, AtSign, BadgeCheck, Building, Building2, CalendarX, Check, ClipboardList, Clock, Copy, ExternalLink, Facebook, Home, Instagram, Mail, MapPin, Phone, ShieldCheck, Train, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -161,6 +162,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
     // 兩欄各自往下排、不互相拉成同高，避免短內容（問卷）被長內容（地圖）撐出大片空白。
     <div className="contact-desk grid grid-cols-12 items-start gap-6 font-sans text-[#1A2A22]">
       <div className="col-span-5 space-y-6">
+        <FindHomeCta from="website" />
         <section className="border border-t-2 border-[#DDE3DF] border-t-[#00A174] bg-[linear-gradient(to_bottom,#F2FBF7,#fff_55%)] p-5" aria-labelledby="contact-desk-scan-title">
           <h3 id="contact-desk-scan-title" className="text-lg font-bold">用手機掃碼，直接加 Linus 好友</h3>
           <p className="mt-1.5 text-xs leading-relaxed text-[#66736C]">打開 LINE 或微信的「掃描 QR Code」對準下方圖案即可，全程中文一對一回覆。</p>
@@ -185,8 +187,11 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
           </div>
         </section>
 
-        <section className="border border-[#DDE3DF] bg-white p-5" aria-labelledby="contact-desk-form-title">
-          <h3 id="contact-desk-form-title" className="flex items-center gap-2 text-lg font-bold"><ClipboardList className="h-5 w-5 text-[#00A174]" />諮詢前先填好這幾題</h3>
+        <details className="group border border-[#DDE3DF] bg-white p-5" aria-labelledby="contact-desk-form-title">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2">
+            <h3 id="contact-desk-form-title" className="flex items-center gap-2 text-lg font-bold"><ClipboardList className="h-5 w-5 text-[#00A174]" />習慣傳文字？複製問卷</h3>
+            <span className="text-xs text-[#66736C] group-open:hidden">展開</span>
+          </summary>
           <p className="mt-1.5 text-xs leading-relaxed text-[#66736C]">複製問卷、填好後貼到 LINE 傳給我，就能更快幫您篩選房源、確認審查與貸款條件。</p>
           <div className="mt-4 grid grid-cols-2 border border-[#DDE3DF] bg-white" role="tablist" aria-label="問卷類型">
             {([["rent", Home, "租屋"], ["buy", Building, "買房"]] as const).map(([type, Icon, label], index) => (
@@ -214,7 +219,7 @@ export function ContactDesk({ contactFormType, setContactFormType, copiedLine, h
           {/* 「第 6 題」指租屋問卷的題號，買房問卷沒有這題，切到買房時不顯示 */}
           {contactFormType === "rent" && <p className="mt-2 text-center text-[11px] text-[#8A9590]">代問或代找也歡迎，請在第 6 題註明。</p>}
           {contactFormType === "buy" && <div className="mt-4"><BuyLoanNotice /></div>}
-        </section>
+        </details>
       </div>
 
       <div className="col-span-7 space-y-6">

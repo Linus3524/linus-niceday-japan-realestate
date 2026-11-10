@@ -8,7 +8,7 @@ Smile,
 Sparkles
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { FormEvent, useEffect, useRef, useState, type ReactNode } from "react";
+import { FormEvent, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
@@ -24,7 +24,6 @@ import { RentGuideTab } from "./components/RentGuideTab";
 import { SharedListingPage } from "./components/SharedListingPage";
 import { TermModal } from "./components/TermModal";
 import { ThreadsCarousel } from "./components/ThreadsCarousel";
-import { UsageDashboard } from "./components/UsageDashboard";
 import type { BuyModifierId } from "./data/buyHouseData";
 import {
 buyHouseDrawingTerms, buyHouseFeeTerms, buyHouseQAs
@@ -88,6 +87,9 @@ const DESK_PAGE_HEADS: Partial<Record<StagePage, { en: string; title: string; gh
   quiz: { en: "Quiz", title: "東京居住人格診斷", ghost: "Quiz", icon: <Sparkles /> },
 };
 const MOBILE_DOCK_BUTTON = new URL("../assets/hero/UI按鈕.png", import.meta.url).href;
+// 後台（網站統計＋客戶需求）延遲載入：一般訪客不會用到，不必跟著首頁一起下載。
+const AdminShell = lazy(() => import("./components/admin/AdminShell"));
+const isAdminHash = (hash = window.location.hash) => hash === "#admin" || hash.startsWith("#admin/");
 const POLICY_HASHES: PolicyPageId[] = ["site-policy", "privacy", "disclaimer", "cookie"];
 
 // 模組層級的 in-flight 請求快取，見下方 useEffect 內的說明：避免 StrictMode
@@ -255,7 +257,7 @@ export default function App() {
   const [isThreadsPage, setIsThreadsPage] = useState(() => isThreadsHash());
   const [policyPage, setPolicyPage] = useState<PolicyPageId | null>(() => getPolicyPageFromHash());
   // 後台使用量頁；沒有連結指向它，直接輸入 #admin 才會進來。
-  const [adminPage, setAdminPage] = useState(() => window.location.hash === "#admin");
+  const [adminPage, setAdminPage] = useState(() => isAdminHash());
   const [sharedListingId, setSharedListingId] = useState<string | null>(() => getSharedListingIdFromHash());
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   
@@ -322,7 +324,7 @@ export default function App() {
     const handleHashChange = () => {
       setIsThreadsPage(isThreadsHash());
       setPolicyPage(getPolicyPageFromHash());
-      setAdminPage(window.location.hash === "#admin");
+      setAdminPage(isAdminHash());
       setSharedListingId(getSharedListingIdFromHash());
       window.scrollTo({ top: 0, behavior: "auto" });
     };
@@ -819,7 +821,11 @@ export default function App() {
   }
 
   if (adminPage) {
-    return <UsageDashboard onBack={returnHome} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-[#F5F8F6] p-8 text-sm text-[#66736C]">後台載入中…</div>}>
+        <AdminShell onBack={returnHome} />
+      </Suspense>
+    );
   }
 
   if (sharedListingId) {
