@@ -17,6 +17,8 @@ import trackViewHandler from "./api/track-view";
 import analyzeListingHandler from "./api/analyze-listing";
 import listingShareHandler from "./api/listing-share";
 import listingLocationHandler from "./api/listing-location";
+import findHomeHandler from "./api/find-home";
+import leadsHandler from "./api/leads";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -172,6 +174,15 @@ app.all("/api/listing-share", async (req, res) => {
   await listingShareHandler(req, res);
 });
 
+// 找房問卷送出（公開）與後台客戶需求（需要 LEADS_ADMIN_TOKEN）。
+app.post("/api/find-home", async (req, res) => {
+  await findHomeHandler(req, res);
+});
+
+app.all("/api/leads", async (req, res) => {
+  await leadsHandler(req, res);
+});
+
 // Q&A and Chat endpoint
 // 直接複用 api/chat 的 handler（與 rent-analysis 同樣做法）。
 // 先前這裡另外維護了一份完整實作，persona 規則、離題攔截與財力證明防呆
@@ -183,6 +194,15 @@ app.post("/api/chat", async (req, res) => {
 
 // Boot server and set up Vite middleware in development
 async function startServer() {
+  // 找房問卷是獨立的 Vite 入口（find-home.html）；線上由 vercel.json 的 rewrite 對應，本機在這裡對應。
+  app.use((req, _res, next) => {
+    if (req.path === "/find-home" || req.path === "/find-home/") {
+      const query = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
+      req.url = `/find-home.html${query}`;
+    }
+    next();
+  });
+
   if (process.env.NODE_ENV !== "production") {
     console.log("Starting server in development mode with Vite middleware...");
     const vite = await createViteServer({

@@ -109,6 +109,18 @@ const CONTACT_CHANNELS: ContactChannelGroup[] = [
       { key: "email-copy", label: "點擊複製 Email", note: "物件分析 CTA 聯絡區" },
     ],
   },
+  {
+    id: "find-home",
+    name: "找房問卷",
+    badgeBg: "#FFF7ED",
+    badgeText: "#B13818",
+    badgeBorder: "#FDBA74",
+    actions: [
+      { key: "find-home-open", label: "點開問卷入口", note: "聯絡分頁 ＋ 物件分析 CTA" },
+      { key: "find-home-start", label: "開始填寫", note: "完成第 1 步" },
+      { key: "find-home-submit", label: "送出成功", note: "問卷完成頁" },
+    ],
+  },
 ];
 
 const SOURCE_LABEL: Record<string, string> = {

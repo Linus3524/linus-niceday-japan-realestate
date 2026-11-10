@@ -45,6 +45,8 @@ export function isTrackableView(value: unknown): value is TrackableView {
 export const TRACKABLE_ACTIONS = [
   // 聯絡意圖
   "line-add", "line-copy", "line-qr", "wechat-copy", "wechat-qr", "email-copy",
+  // 找房問卷：點入口 → 開始填 → 送出成功（漏斗）
+  "find-home-open", "find-home-start", "find-home-submit",
   // 物件圖紙健檢與報告
   "listing-check-sale", "listing-check-rent", "listing-share-create", "listing-share-view", "listing-pdf-download",
   // AI 需求分析

@@ -6,6 +6,7 @@ import { linusContact } from "../data/rentGuideData";
 import { PageIntroCard } from "./PageIntroCard";
 import { BUY_QUESTIONNAIRE, BuyLoanNotice, COMPANY_ROWS, ContactDesk, InfoRow, OFFICE_STATIONS, RENT_QUESTIONNAIRE, SELLING_POINTS, SOCIALS } from "./ContactDesk";
 import { OfficeStationMap } from "./OfficeStationMap";
+import { FindHomeCta } from "./FindHomeCta";
 
 interface ContactTabProps {
   contactFormType: "rent" | "buy";
@@ -73,6 +74,7 @@ export function ContactTab(props: ContactTabProps) {
               {/* 手機版（<768px）：上下順序照原本（名片 → LINE → WeChat → 問卷 → 公司資料與地圖），
                   加好友仍是「按鈕＋展開 QR」；外觀改成跟電腦版同一套輕量樣式（直角、細框、白底、不做 hover 浮起）。 */}
               <div className="contact-mobile space-y-4 font-sans text-[#1A2A22]" id="contact-business-layout">
+                <FindHomeCta from="website" compact />
                 <section className="border border-[#DDE3DF] bg-white p-4" id="meishi-card" aria-label="Linus 聯絡資訊">
                   <p className="text-[11px] tracking-widest text-[#66736C]">株式会社世嘉 Seika</p>
                   <div className="mt-1 flex items-baseline gap-2">
@@ -172,8 +174,12 @@ export function ContactTab(props: ContactTabProps) {
                   <p className="text-[11px] leading-relaxed text-[#66736C]">點綠色按鈕展開 QR Code 用微信掃碼；或複製 WeChat ID 後在微信搜尋並添加 Linus。</p>
                 </section>
 
-                <section className="border border-[#DDE3DF] bg-white p-4 text-xs">
-                  <h4 className="flex items-center gap-2 text-[15px] font-bold"><ClipboardList className="h-4 w-4 text-[#00A174]" />諮詢前先填好這幾題</h4>
+                {/* 線上問卷上線後，複製文字版收進折疊區保留給習慣傳訊息的客人（買房問卷目前只有這個版本）。 */}
+                <details className="group border border-[#DDE3DF] bg-white p-4 text-xs">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[15px] font-bold">
+                    <span className="flex items-center gap-2"><ClipboardList className="h-4 w-4 text-[#00A174]" />習慣傳文字？複製問卷</span>
+                    <span className="text-[11px] font-normal text-[#66736C] group-open:hidden">展開</span>
+                  </summary>
                   <p className="mt-1.5 leading-relaxed text-[#66736C]">
                     {contactFormType === "rent"
                       ? "為了更快幫您篩選房源並確認管理公司審查條件，歡迎複製以下租屋問卷，填好後傳給我。"
@@ -198,7 +204,7 @@ export function ContactTab(props: ContactTabProps) {
                   </div>
                   {contactFormType === "rent" && <p className="mt-2 text-center text-[11px] text-[#8A9590]">代問或代找也歡迎，請在第 6 題註明。</p>}
                   {contactFormType === "buy" && <div className="mt-3"><BuyLoanNotice /></div>}
-                </section>
+                </details>
 
                 <section className="contact-company-card border border-[#DDE3DF] bg-white p-4" aria-label="公司資料與地址">
                   <h4 className="text-[15px] font-bold">公司資料</h4>

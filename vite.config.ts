@@ -26,6 +26,16 @@ export default defineConfig(() => {
     optimizeDeps: {
       include: ['@google/genai', '@react-pdf/renderer', '@upstash/redis', '@vercel/analytics/react'],
     },
+    // 兩個入口：官網（index.html）與找房問卷（find-home.html）。
+    // 問卷單獨打包，從 LINE 點開不必下載首頁的大圖、地圖與 AI 功能。
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          findHome: path.resolve(__dirname, 'find-home.html'),
+        },
+      },
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

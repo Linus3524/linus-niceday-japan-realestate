@@ -116,6 +116,18 @@ export function ListingContactCta() {
 
       {/* ── 2. 主內容區域 ── */}
       <div className="p-4 sm:p-6 space-y-5">
+        {/* 想讓 Linus 主動聯絡的人：連到找房問卷（來源記為 listing） */}
+        <a
+          href="/find-home?from=listing"
+          onClick={() => trackAction("find-home-open")}
+          className="group flex items-center justify-between border border-[#00A174] bg-white p-3.5 text-[#1A2A22] transition-colors hover:bg-[#F0FAF6]"
+        >
+          <span className="min-w-0">
+            <span className="block text-sm font-bold">還在找房？留下需求，讓 Linus 聯絡你</span>
+            <span className="mt-0.5 block text-xs text-[#66736C]">約 3 分鐘、用綽號也可以</span>
+          </span>
+          <ArrowRight className="ml-2 h-5 w-5 shrink-0 text-[#00A174] transition-transform group-hover:translate-x-1" />
+        </a>
         {/* ── 2.1 三張主聯絡方式卡片（LINE、WeChat ID 複製、WeChat QR） ── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
         {/* 卡片 1：加 LINE 好友（LINE 官方綠底） */}
