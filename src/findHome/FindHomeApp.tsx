@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, ChevronDown, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, CircleHelp, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { applicationRoutes } from "../data/rentStaticSearchData";
 import { linusContact } from "../data/rentGuideData";
 import { requirementLines, requirementText } from "../lib/findHome/lead";
 import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
 import { trackAction, trackSource } from "../lib/trackView";
 import {
   ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
-  AGE_OPTIONS, AGE_RANGE_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
+  AGE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, MIN_AREA_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
   NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
   type ContactChannel, type FieldErrors, type Option, type StepId,
 } from "../lib/findHome/schema";
@@ -138,6 +139,59 @@ function ManInput({ value, onChange, placeholder, label, id }: { value: string; 
       />
       <span className="shrink-0 pr-3 text-[12px] text-[#66736C]">萬円</span>
     </label>
+  );
+}
+
+/** 申請方式複選，每一項可以點「說明」展開網站上「租屋指南 → 申請方式」的同一份解釋（電腦滑過也會顯示）。 */
+function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; onToggle: (id: string) => void }) {
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <div className="grid gap-2">
+      {APPLICATION_ROUTE_OPTIONS.map(option => {
+        const on = selected.includes(option.id);
+        const route = applicationRoutes.find(item => item.title === option.label);
+        const explanation = route ? `${route.condition}。${route.body}` : "";
+        return (
+          <div key={option.id} className={`border ${on ? "border-[#00A174] bg-[#F0FAF6]" : "border-[#DDE3DF] bg-white"}`}>
+            <div className="flex items-stretch">
+              <button
+                type="button"
+                aria-pressed={on}
+                onClick={() => onToggle(option.id)}
+                title={explanation}
+                className="flex min-h-11 flex-1 items-center gap-3 px-3.5 text-left"
+              >
+                <span className={`flex h-4 w-4 shrink-0 items-center justify-center border ${on ? "border-[#00A174] bg-[#00A174]" : "border-[#B7C0BB]"}`} aria-hidden="true">
+                  {on && <Check className="h-3 w-3 text-white" />}
+                </span>
+                <span className="min-w-0">
+                  <span className={`block text-[14px] ${on ? "font-bold text-[#1A2A22]" : "text-[#3F5147]"}`}>{option.label}</span>
+                  {route && <span className="block text-[12px] text-[#66736C]">{route.condition}・{route.note}</span>}
+                </span>
+              </button>
+              {route && (
+                <button
+                  type="button"
+                  aria-expanded={open === option.id}
+                  aria-label={`${option.label}是什麼？`}
+                  onClick={() => setOpen(current => (current === option.id ? null : option.id))}
+                  title={explanation}
+                  className="flex shrink-0 items-center gap-1 border-l border-[#DDE3DF] px-3 text-[12px] font-bold text-[#00A174]"
+                >
+                  <CircleHelp className="h-4 w-4" />說明
+                </button>
+              )}
+            </div>
+            {route && open === option.id && (
+              <div className="space-y-1.5 border-t border-[#DDE3DF] bg-white px-3.5 py-3 text-[12px] leading-relaxed text-[#3F5147]">
+                <p>{route.body}</p>
+                <p className="text-[#66736C]">例：{route.example}</p>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -374,22 +428,21 @@ export function FindHomeApp() {
               <Field id="commuteTarget" label="每天要去的地方" optional hint="公司、學校或最近的車站，Linus 會幫你看通勤時間。">
                 <input className={inputClass} maxLength={LIMITS.commuteTarget} value={r.commuteTarget} onChange={e => setReq({ commuteTarget: e.target.value })} placeholder="例：新宿站、早稻田大學" />
               </Field>
-              <Field id="occupants" label="幾個人住？" error={errors.occupants}>
-                <div className="flex w-40 items-stretch border border-[#C9D2CD] bg-white">
-                  <button type="button" aria-label="減少人數" onClick={() => setReq({ occupants: Math.max(1, r.occupants - 1) })} className="flex w-11 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Minus className="h-4 w-4" /></button>
-                  <span className="flex flex-1 items-center justify-center border-x border-[#DDE3DF] font-jost text-[16px]">{r.occupants} 人</span>
-                  <button type="button" aria-label="增加人數" onClick={() => setReq({ occupants: Math.min(LIMITS.maxOccupants, r.occupants + 1) })} className="flex h-11 w-11 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Plus className="h-4 w-4" /></button>
-                </div>
-              </Field>
               <Field id="layouts" label="想要的房型" hint="可複選。" error={errors.layouts}>
                 <Chips options={LAYOUT_OPTIONS} selected={r.layouts} onToggle={id => setReq({ layouts: toggle(r.layouts, id) })} />
               </Field>
-              <Field id="minAreaSqm" label="最小面積" optional error={errors.minAreaSqm}>
-                <label className="flex h-11 w-40 items-center border border-[#C9D2CD] bg-white focus-within:border-[#00A174]">
-                  <input inputMode="numeric" value={r.minAreaSqm} onChange={e => setReq({ minAreaSqm: e.target.value.replace(/\D/g, "").slice(0, 3) })} placeholder="20" className="h-full min-w-0 flex-1 bg-transparent px-3 text-right font-jost text-[16px] focus:outline-none" />
-                  <span className="pr-3 text-[12px] text-[#66736C]">㎡ 以上</span>
-                </label>
-              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field id="occupants" label="幾個人住？" error={errors.occupants}>
+                  <div className="flex h-11 items-stretch border border-[#C9D2CD] bg-white">
+                    <button type="button" aria-label="減少人數" onClick={() => setReq({ occupants: Math.max(1, r.occupants - 1) })} className="flex w-11 shrink-0 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Minus className="h-4 w-4" /></button>
+                    <span className="flex flex-1 items-center justify-center border-x border-[#DDE3DF] font-jost text-[16px]">{r.occupants} 人</span>
+                    <button type="button" aria-label="增加人數" onClick={() => setReq({ occupants: Math.min(LIMITS.maxOccupants, r.occupants + 1) })} className="flex w-11 shrink-0 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Plus className="h-4 w-4" /></button>
+                  </div>
+                </Field>
+                <Field id="minAreaSqm" label="最小面積" error={errors.minAreaSqm}>
+                  <SelectBox id="min-area" value={r.minAreaSqm || ""} options={MIN_AREA_OPTIONS} onChange={v => setReq({ minAreaSqm: v })} />
+                </Field>
+              </div>
             </>
           )}
 
@@ -466,6 +519,9 @@ export function FindHomeApp() {
             <>
               <Field id="onMatch" label="找到符合主要條件的房子時，你會？" error={errors.onMatch}>
                 <OptionList options={ON_MATCH_OPTIONS} value={d.onMatch} onChange={id => setDec({ onMatch: id })} />
+              </Field>
+              <Field id="applicationRoutes" label="可以接受哪些申請方式？" optional hint="可複選。熱門物件常常還沒退租就要先申請，能接受的方式越多，選擇越多。不確定可以先跳過，Linus 會再說明。">
+                <ApplicationRoutePicker selected={d.applicationRoutes || []} onToggle={id => setDec({ applicationRoutes: toggle(d.applicationRoutes || [], id) })} />
               </Field>
               <Field id="ifNotFound" label="如果一個月內還找不到？" optional>
                 <Chips options={IF_NOT_FOUND_OPTIONS} selected={d.ifNotFound ? [d.ifNotFound] : []} onToggle={id => setDec({ ifNotFound: d.ifNotFound === id ? undefined : id })} />

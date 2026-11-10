@@ -6,8 +6,9 @@ import assert from "node:assert/strict";
 import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
 import { criteriaToFindHomeDraft, requirementToCriteria } from "../src/lib/findHome/calculatorBridge";
-import { VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
+import { APPLICATION_ROUTE_OPTIONS, VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
 import { RENT_VISA_OPTIONS } from "../src/lib/calculator/options";
+import { applicationRoutes } from "../src/data/rentStaticSearchData";
 import {
   MemoryBackend, deleteLead, getLead, listLeads, patchLead, purgeExpiredContacts, removeContact, setLeadBackendForTests, submitLead,
 } from "../src/lib/leadStore";
@@ -32,7 +33,7 @@ const validInput = () => ({
     rentIdealMan: "8.5", rentMaxMan: "10", initialCostMaxMan: "", mustHaves: ["separate-bath", "elevator"],
     top3: ["elevator", "autolock"], walkMaxMin: "10", ageMaxYears: "20", structure: "non-wood", adjustable: ["budget", "area"],
   },
-  decision: { onMatch: "apply-asap", ifNotFound: "adjust", note: "" },
+  decision: { onMatch: "apply-asap", applicationRoutes: ["general", "advance-contract", "bogus"], ifNotFound: "adjust", note: "" },
 });
 
 function mockRes() {
@@ -132,6 +133,15 @@ await test("性別與年齡層必填；「還不確定」不再是簽證選項",
   assert.equal((VISA_TYPE_OPTIONS as readonly { id: string }[]).some(item => item.id === "unsure"), false);
   const ok = validateSubmission(validInput()).value!;
   assert.ok(requirementText(null, ok.requirement).includes("性別：女性\n年齡層：20–29 歲"));
+});
+
+await test("可接受申請方式：只收三種，顯示中文，說明文字對得到租屋指南", () => {
+  const value = validateSubmission(validInput()).value!;
+  assert.deepEqual(value.decision.applicationRoutes, ["general", "advance-contract"]);
+  assert.ok(requirementText(null, value.requirement, value.decision).includes("可接受申請方式：一般申請、先行契約"));
+  for (const option of APPLICATION_ROUTE_OPTIONS) {
+    assert.ok(applicationRoutes.some(route => route.title === option.label), option.label);
+  }
 });
 
 await test("簽證清單與費用試算共用：費用試算的每個身分問卷都有", () => {

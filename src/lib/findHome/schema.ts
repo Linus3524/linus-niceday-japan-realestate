@@ -146,6 +146,19 @@ export const ON_MATCH_OPTIONS = [
   { id: "market-only", label: "先了解行情就好" },
 ] as const satisfies readonly Option[];
 
+/** 可以接受的申請方式（說明文字用租屋指南的 applicationRoutes，標題必須一致）。 */
+export const APPLICATION_ROUTE_OPTIONS = [
+  { id: "general", label: "一般申請" },
+  { id: "advance-application", label: "先行申請" },
+  { id: "advance-contract", label: "先行契約" },
+] as const satisfies readonly Option[];
+
+/** 最小面積（㎡ 以上，"" = 不限）。 */
+export const MIN_AREA_OPTIONS = [
+  { id: "", label: "不限" },
+  ...[15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80].map(sqm => ({ id: String(sqm), label: `${sqm}㎡ 以上` })),
+] as readonly Option[];
+
 export const IF_NOT_FOUND_OPTIONS = [
   { id: "adjust", label: "調整條件" },
   { id: "reconsider", label: "再評估" },
@@ -187,6 +200,7 @@ export type Structure = Ids<typeof STRUCTURE_OPTIONS>;
 export type Adjustable = Ids<typeof ADJUSTABLE_OPTIONS>;
 export type OnMatch = Ids<typeof ON_MATCH_OPTIONS>;
 export type IfNotFound = Ids<typeof IF_NOT_FOUND_OPTIONS>;
+export type ApplicationRoute = Ids<typeof APPLICATION_ROUTE_OPTIONS>;
 export type OtherAgents = Ids<typeof OTHER_AGENTS_OPTIONS>;
 export type ContactChannel = Ids<typeof CONTACT_CHANNEL_OPTIONS>;
 export type ContactTime = Ids<typeof CONTACT_TIME_OPTIONS>;
@@ -223,6 +237,7 @@ export interface Requirement {
 
 export interface Decision {
   onMatch: OnMatch;
+  applicationRoutes?: ApplicationRoute[];
   ifNotFound?: IfNotFound;
   otherAgents?: OtherAgents;
   note?: string;
@@ -438,6 +453,8 @@ export function validateDecision(input: any, check = true): { value: Decision; e
   const value: Decision = { onMatch: input?.onMatch };
   if (!check) return { value, errors };
   if (!has(ON_MATCH_OPTIONS, input?.onMatch)) errors.onMatch = "請選擇找到合適物件時的打算。";
+  const routes = pickMany(APPLICATION_ROUTE_OPTIONS, input?.applicationRoutes);
+  if (routes.length) value.applicationRoutes = routes;
   if (has(IF_NOT_FOUND_OPTIONS, input?.ifNotFound)) value.ifNotFound = input.ifNotFound;
   if (has(OTHER_AGENTS_OPTIONS, input?.otherAgents)) value.otherAgents = input.otherAgents;
   const note = cleanMultiline(input?.note, LIMITS.note);

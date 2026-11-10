@@ -1,5 +1,5 @@
 import {
-  ADJUSTABLE_OPTIONS, AGE_RANGE_OPTIONS, GENDER_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
+  ADJUSTABLE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, GENDER_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
   OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
   type ContactChannel, type ContactTime, type Decision, type LeadSource, type Requirement,
 } from "./schema.js";
@@ -238,6 +238,7 @@ export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format
 
 export const DECISION_FIELDS: { key: keyof Decision; label: string; format: (d: Decision) => string }[] = [
   { key: "onMatch", label: "找到合適物件時", format: d => labelOf(ON_MATCH_OPTIONS, d.onMatch) },
+  { key: "applicationRoutes", label: "可接受申請方式", format: d => (d.applicationRoutes?.length ? labelsOf(APPLICATION_ROUTE_OPTIONS, d.applicationRoutes) : "—") },
   { key: "ifNotFound", label: "一個月內找不到", format: d => (d.ifNotFound ? labelOf(IF_NOT_FOUND_OPTIONS, d.ifNotFound) : "—") },
   { key: "otherAgents", label: "其他仲介", format: d => (d.otherAgents ? labelOf(OTHER_AGENTS_OPTIONS, d.otherAgents) : "—") },
   { key: "note", label: "補充說明", format: d => d.note || "—" },

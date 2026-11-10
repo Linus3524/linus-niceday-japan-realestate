@@ -16,7 +16,7 @@ export interface FindHomeFormState {
     rentIdealMan: string; rentMaxMan: string; initialCostMaxMan: string; walkMaxMin?: string; ageMaxYears?: string; structure?: string;
     mustHaves: string[]; top3: string[]; adjustable: string[];
   };
-  decision: { onMatch?: string; ifNotFound?: string; otherAgents?: string; note: string };
+  decision: { onMatch?: string; applicationRoutes?: string[]; ifNotFound?: string; otherAgents?: string; note: string };
   nickname: string;
   contact: { channel: ContactChannel; value: string };
   contactTimes: string[];
