@@ -3,7 +3,7 @@
  *   npm run test:find-home
  */
 import assert from "node:assert/strict";
-import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
+import { computeDimensions, diffRequirement, requirementPrompt, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
 import { criteriaToFindHomeDraft, requirementToCriteria, takeCalculatorHandoff } from "../src/lib/findHome/calculatorBridge";
 import { writeCalculatorHandoff } from "../src/lib/findHome/handoff";
@@ -256,6 +256,14 @@ await test("問卷完成頁 → 費用試算：交接資料放問卷格式，費
   store.set("linus-calculator-handoff", JSON.stringify({ requirement: value, label: "x", createdAt: Date.now() - 10 * 60 * 1000 }));
   assert.equal(takeCalculatorHandoff(), null); // 過期
   delete (globalThis as any).localStorage;
+});
+
+await test("帶進「描述需求」的文字照範例格式", () => {
+  const { value } = validateRequirement({ ...validInput().requirement, areas: "中野、高圓寺", commuteTarget: "新宿", minAreaSqm: "20" });
+  assert.equal(
+    requirementPrompt(value),
+    "預算含管理費 10 萬円（理想 8.5 萬円），想住中野、高圓寺，1K或1DK 20㎡以上，要乾濕分離、電梯，走路 10 分鐘內，屋齡 20 年內，不要木造，通勤到新宿，1 個月內入住，工作簽證，人在海外，2027-03-15 入境。",
+  );
 });
 
 console.log("lead store");

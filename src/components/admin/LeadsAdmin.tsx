@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { copyToClipboard } from "../../lib/clipboard";
 import { ArrowLeft, Calculator, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
-import { requirementToCriteria } from "../../lib/findHome/calculatorBridge";
 import { writeCalculatorHandoff } from "../../lib/findHome/handoff";
 import {
   DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
@@ -485,7 +484,7 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
               <button
                 type="button"
                 onClick={() => {
-                  if (!writeCalculatorHandoff({ criteria: requirementToCriteria(req), label: `${lead.refCode} ${lead.nickname}` })) { setError("瀏覽器無法暫存條件，請改用其他瀏覽器。"); return; }
+                  if (!writeCalculatorHandoff({ requirement: req, label: `${lead.refCode} ${lead.nickname}` })) { setError("瀏覽器無法暫存條件，請改用其他瀏覽器。"); return; }
                   window.open("/", "_blank", "noopener");
                 }}
                 className="flex min-h-10 w-full items-center justify-center gap-1.5 border border-[#00A174] text-sm font-bold text-[#00A174] hover:bg-[#F0FAF6]"

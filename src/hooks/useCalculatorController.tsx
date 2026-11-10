@@ -190,9 +190,16 @@ export function useCalculatorController(props: CalculatorTabProps) {
     if (!handoff) return;
     handoffApplied.current = true;
     setCalcMode("rent");
-    setRentInputMode("structured");
-    syncCriteriaToForm(handoff.criteria);
-    setAnalysisNotice(`已帶入「${handoff.label}」的條件。地區只會帶入認得出的行政區、路線與車站，請確認後按下方按鈕分析行情。`);
+    if (handoff.prompt) {
+      // 問卷帶來的條件：寫成一段描述放進「描述需求」，AI 會解析自由文字的地區與車站，比直接套表單準。
+      setRentInputMode("ai");
+      setAiPrompt(handoff.prompt);
+      setAnalysisNotice(`已把「${handoff.label}」的條件寫進下方描述，可以先修改，再按分析看行情。`);
+    } else {
+      setRentInputMode("structured");
+      syncCriteriaToForm(handoff.criteria);
+      setAnalysisNotice(`已帶入「${handoff.label}」的條件。地區只會帶入認得出的行政區、路線與車站，請確認後按下方按鈕分析行情。`);
+    }
     // 只在第一次掛載時檢查
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

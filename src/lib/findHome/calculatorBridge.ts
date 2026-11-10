@@ -3,6 +3,7 @@ import type { RentSearchCriteria, RoomType } from "../rentAnalysis.js";
 import { toJapanesePlaceName } from "../transit.js";
 import { emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft } from "./draft.js";
 import { CALCULATOR_HANDOFF_KEY, CALCULATOR_HANDOFF_TTL_MS, type RawCalculatorHandoff } from "./handoff.js";
+import { requirementPrompt } from "./lead.js";
 import { AGE_OPTIONS, VISA_TYPE_OPTIONS, WALK_OPTIONS, type MustHave, type Requirement } from "./schema.js";
 
 /**
@@ -17,7 +18,10 @@ import { AGE_OPTIONS, VISA_TYPE_OPTIONS, WALK_OPTIONS, type MustHave, type Requi
 export { CALCULATOR_HANDOFF_KEY } from "./handoff.js";
 
 export interface CalculatorHandoff {
+  /** 費用試算條件（結構化表單用）。 */
   criteria: RentSearchCriteria;
+  /** 有問卷需求時，寫成一段描述帶進「描述需求」。 */
+  prompt?: string;
   label: string;
 }
 
@@ -33,7 +37,7 @@ export function takeCalculatorHandoff(peek = false): CalculatorHandoff | null {
     const criteria = handoff.criteria
       ? (handoff.criteria as RentSearchCriteria)
       : requirementToCriteria(handoff.requirement as Requirement);
-    return { criteria, label: handoff.label };
+    return { criteria, prompt: handoff.requirement ? requirementPrompt(handoff.requirement) : undefined, label: handoff.label };
   } catch {
     return null;
   }
