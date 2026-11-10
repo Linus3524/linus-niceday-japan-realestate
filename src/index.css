@@ -6922,7 +6922,7 @@ button.ui-switch-large:focus-visible {
   .desk-app .about-page > .about-section.about-section--tools::before, .about-page .about-contact * { transition: none; }
 }
 
-/* LINE 名片與首頁場景同步：保留原圖比例，預載三張肖像後交叉淡入。 */
+/* LINE 名片與首頁場景同步：保留原圖比例，預載四張肖像後交叉淡入。 */
 .theme-contact-portrait { position: relative; display: block; width: 100%; height: 100%; }
 .contact-flip-face .theme-contact-portrait img {
   position: absolute;

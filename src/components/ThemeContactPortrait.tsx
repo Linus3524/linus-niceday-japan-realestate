@@ -1,12 +1,13 @@
 const PORTRAITS = [
   { key: "orange", src: "/logo.png?v=20261110" },
+  { key: "lemon", src: "/portrait-lemon.png" },
   { key: "apple", src: "/portrait-apple.png" },
   { key: "grape", src: "/portrait-grape.png" },
 ];
 
-/** LINE 名片的主題頭像；檸檬尚未有獨立頭像，沿用原本品牌肖像。 */
+/** LINE 名片的四組主題頭像，與首頁輪播同步。 */
 export function ThemeContactPortrait({ scene }: { scene: string }) {
-  const active = scene === "apple" || scene === "grape" ? scene : "orange";
+  const active = scene === "lemon" || scene === "apple" || scene === "grape" ? scene : "orange";
   return (
     <span className="theme-contact-portrait">
       {PORTRAITS.map(({ key, src }) => (
