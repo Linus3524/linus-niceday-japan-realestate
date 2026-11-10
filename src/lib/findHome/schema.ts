@@ -176,7 +176,6 @@ export const CONTACT_CHANNEL_OPTIONS = [
   { id: "line", label: "LINE" },
   { id: "wechat", label: "WeChat" },
   { id: "email", label: "Email" },
-  { id: "whatsapp", label: "WhatsApp" },
 ] as const satisfies readonly Option[];
 
 export const CONTACT_TIME_OPTIONS = [
@@ -202,7 +201,8 @@ export type OnMatch = Ids<typeof ON_MATCH_OPTIONS>;
 export type IfNotFound = Ids<typeof IF_NOT_FOUND_OPTIONS>;
 export type ApplicationRoute = Ids<typeof APPLICATION_ROUTE_OPTIONS>;
 export type OtherAgents = Ids<typeof OTHER_AGENTS_OPTIONS>;
-export type ContactChannel = Ids<typeof CONTACT_CHANNEL_OPTIONS>;
+/** whatsapp 已不再提供，只保留型別讓舊資料能正常顯示。 */
+export type ContactChannel = Ids<typeof CONTACT_CHANNEL_OPTIONS> | "whatsapp";
 export type ContactTime = Ids<typeof CONTACT_TIME_OPTIONS>;
 
 /** 客人填的需求（後台修改也是改這一包，變更紀錄比對的也是這一包）。 */

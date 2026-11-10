@@ -449,8 +449,8 @@ export function FindHomeApp() {
             <>
               <Field id="rentIdealMan" label="月租金（含管理費、共益費）" error={errors.rentIdealMan || errors.rentMaxMan}>
                 <div className="grid grid-cols-2 gap-2">
-                  <ManInput id="rent-ideal" label="理想" value={r.rentIdealMan} onChange={v => setReq({ rentIdealMan: v })} placeholder="8.5" />
-                  <ManInput id="rent-max" label="最高" value={r.rentMaxMan} onChange={v => setReq({ rentMaxMan: v })} placeholder="10" />
+                  <ManInput id="rent-ideal" label="理想" value={r.rentIdealMan} onChange={v => setReq({ rentIdealMan: v })} placeholder="11.5" />
+                  <ManInput id="rent-max" label="最高" value={r.rentMaxMan} onChange={v => setReq({ rentMaxMan: v })} placeholder="15" />
                 </div>
               </Field>
               <span id="field-rentMaxMan" />
@@ -541,7 +541,7 @@ export function FindHomeApp() {
                 <input className={inputClass} maxLength={LIMITS.nickname} value={form.nickname} onChange={e => setForm(prev => ({ ...prev, nickname: e.target.value }))} placeholder="例：小林" autoComplete="nickname" />
               </Field>
               <Field id="contact" label="用什麼聯絡你？" hint="選一種就好。" error={errors.contact}>
-                <div className="grid grid-cols-4 border border-[#DDE3DF]" role="tablist" aria-label="聯絡方式">
+                <div className="grid grid-cols-3 border border-[#DDE3DF]" role="tablist" aria-label="聯絡方式">
                   {CONTACT_CHANNEL_OPTIONS.map((option, index) => {
                     const on = form.contact.channel === option.id;
                     return (

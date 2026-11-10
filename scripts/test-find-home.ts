@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
 import { criteriaToFindHomeDraft, requirementToCriteria } from "../src/lib/findHome/calculatorBridge";
-import { APPLICATION_ROUTE_OPTIONS, VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
+import { APPLICATION_ROUTE_OPTIONS, CONTACT_CHANNEL_OPTIONS, VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
 import { RENT_VISA_OPTIONS } from "../src/lib/calculator/options";
 import { applicationRoutes } from "../src/data/rentStaticSearchData";
 import {
@@ -172,7 +172,8 @@ await test("缺稱呼、無效聯絡方式、沒勾同意都會被擋", () => {
 
 await test("聯絡方式正規化", () => {
   assert.equal(normalizeContact("email", " Foo@Example.COM "), "foo@example.com");
-  assert.equal(normalizeContact("whatsapp", "886 912-345-678"), "+886912345678");
+  assert.equal(normalizeContact("whatsapp", "886 912-345-678"), "+886912345678"); // 舊資料用
+  assert.equal(CONTACT_CHANNEL_OPTIONS.some(option => (option.id as string) === "whatsapp"), false);
   assert.equal(normalizeContact("line", "有空白 的 id"), "");
   assert.equal(normalizeLeadSource("IG"), "instagram");
   assert.equal(normalizeLeadSource("<script>"), "other");
