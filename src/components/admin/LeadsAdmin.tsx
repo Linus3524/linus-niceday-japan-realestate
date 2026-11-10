@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { copyToClipboard } from "../../lib/clipboard";
 import { ArrowLeft, Calculator, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
 import { CALCULATOR_HANDOFF_KEY, requirementToCriteria, type CalculatorHandoff } from "../../lib/findHome/calculatorBridge";
 import {
@@ -364,7 +365,10 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
                   <span className="min-w-0 break-all text-sm"><span className="text-[#66736C]">{CHANNEL_NAME[lead.contact.channel]}</span>　<b className="font-jost">{lead.contact.value}</b></span>
                   <button
                     type="button"
-                    onClick={async () => { try { await navigator.clipboard.writeText(lead.contact!.value); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* ignore */ } }}
+                    onClick={async () => {
+                      if (await copyToClipboard(lead.contact!.value)) { setCopied(true); setTimeout(() => setCopied(false), 2000); }
+                      else setError("這個瀏覽器不允許自動複製，請直接選取聯絡方式文字複製。");
+                    }}
                     className="flex shrink-0 items-center gap-1 text-xs font-bold text-[#3F5147] hover:text-[#00A174]"
                   >
                     {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}{copied ? "已複製" : "複製"}
@@ -458,8 +462,8 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
               <button
                 type="button"
                 onClick={async () => {
-                  try { await navigator.clipboard.writeText(requirementText(lead.refCode, req, lead.decision)); setNotice("需求已複製，可以貼到 LINE 跟客人確認"); }
-                  catch { setError("無法複製，請改用通知信裡的文字。"); }
+                  if (await copyToClipboard(requirementText(lead.refCode, req, lead.decision))) setNotice("需求已複製，可以貼到 LINE 跟客人確認");
+                  else setError("這個瀏覽器不允許自動複製，請改用通知信裡的文字。");
                 }}
                 className="flex items-center gap-1 text-xs font-bold text-[#3F5147] hover:text-[#00A174]"
               >
