@@ -6869,3 +6869,55 @@ button.ui-switch-large:focus-visible {
   #app-header { order: -2; }
   #primary-nav { order: -1; }
 }
+
+/* 頁尾共用首頁四組場景色；文字混入深墨色，讓藍／橘主題的小字也保持清晰。 */
+.desk-app {
+  --closing-accent: #00A174;
+  --closing-bg: color-mix(in srgb, var(--closing-accent) 7%, white);
+  --closing-ink: color-mix(in srgb, var(--closing-accent) 40%, #1A2A22);
+  --closing-secondary: color-mix(in srgb, var(--closing-accent) 22%, #3F5147);
+  --closing-line: color-mix(in srgb, var(--closing-accent) 24%, #DDE3DF);
+}
+.footer-theme--lemon { --closing-accent: #0099FF; }
+.footer-theme--apple { --closing-accent: #327509; }
+.footer-theme--grape { --closing-accent: #FF6A00; }
+.site-footer {
+  background-color: var(--closing-bg);
+  color: var(--closing-ink);
+  border-color: var(--closing-line);
+}
+.site-footer .footer-ink { color: var(--closing-ink); }
+.site-footer .footer-secondary { color: var(--closing-secondary); }
+.site-footer .footer-divider { background-color: var(--closing-line); }
+.site-footer .footer-rule { border-color: var(--closing-line); }
+.site-footer .footer-link:hover,
+.site-footer .footer-link:focus-visible { color: var(--closing-ink); text-decoration: underline; }
+.about-page .about-section--tools,
+.about-page .about-contact { color: var(--closing-ink); }
+.desk-app .about-page > .about-section.about-section--tools::before {
+  background: var(--closing-bg);
+  border-color: var(--closing-line);
+}
+.about-page .about-section--tools .about-section-title,
+.about-page .about-section--tools h3,
+.about-page .about-section--tools .about-tool-link,
+.about-page .about-contact .about-section-title,
+.about-page .about-contact .about-contact-btn { color: var(--closing-ink); }
+.about-page .about-section--tools .about-section-en,
+.about-page .about-section--tools .about-tool-icon,
+.about-page .about-contact .about-section-en { color: var(--closing-ink); }
+.about-page .about-section--tools li { border-color: var(--closing-line); }
+.about-page .about-section--tools li p { color: var(--closing-secondary); }
+.about-page .about-contact .about-contact-btn { border-color: var(--closing-ink); }
+.about-page .about-contact .about-contact-btn:hover,
+.about-page .about-contact .about-contact-btn:focus-visible { background: var(--closing-bg); }
+.site-footer, .site-footer *,
+.about-page .about-section--tools *,
+.desk-app .about-page > .about-section.about-section--tools::before,
+.about-page .about-contact * {
+  transition: color 1.2s ease, background-color 1.2s ease, border-color 1.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-footer, .site-footer *, .about-page .about-section--tools *,
+  .desk-app .about-page > .about-section.about-section--tools::before, .about-page .about-contact * { transition: none; }
+}

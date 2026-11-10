@@ -126,9 +126,9 @@ function AboutProfile({ visitorDisplay }: { visitorDisplay: string }) {
   );
 }
 
-function Section({ id, en, title, children }: { id?: string; en: string; title: string; children: ReactNode }) {
+function Section({ id, className = "", en, title, children }: { id?: string; className?: string; en: string; title: string; children: ReactNode }) {
   return (
-    <section className="about-section" id={id}>
+    <section className={`about-section ${className}`} id={id}>
       <header className="about-section-head">
         <p className="about-section-en">{en}</p>
         <h2 className="about-section-title">{title}</h2>
@@ -209,7 +209,7 @@ export function AboutPage({ onNavigate, visitorDisplay }: { onNavigate: (tab: Ap
         </ol>
       </Section>
 
-      <Section en="Free tools" title="免費工具">
+      <Section className="about-section--tools" en="Free tools" title="免費工具">
         <ul className="about-tools">
           <li>
             <ScanText className="about-tool-icon" aria-hidden="true" />

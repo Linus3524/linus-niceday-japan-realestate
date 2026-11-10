@@ -847,44 +847,44 @@ export default function App() {
 
   // 頁尾：手機在每頁底部；桌機只出現在首頁往下捲的「關於 Linus」最底部
   const renderFooter = (id: string) => (
-      <footer className="mt-12 border-t border-[#1A2A22] bg-[#F5F8F6]" id={id}>
+      <footer className="site-footer mt-12 border-t" id={id}>
         <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
           <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div>
-              <strong className="font-serif text-base font-semibold tracking-[0.04em] text-[#1A2A22]">LINUS 住好日</strong>
-              <p className="mt-1 font-sans text-xs text-[#66736C]">
+              <strong className="font-serif text-base font-semibold tracking-[0.04em] footer-ink">LINUS 住好日</strong>
+              <p className="mt-1 font-sans text-xs footer-secondary">
                 日本租屋・買房與在日生活的實務整理
               </p>
             </div>
             <div className="flex flex-col items-center gap-3 md:items-end">
-              <div className="flex items-center gap-4 font-sans text-xs font-semibold text-[#1A2A22]">
+              <div className="flex items-center gap-4 font-sans text-xs font-semibold footer-ink">
                 <a
                   href="https://www.threads.com/@linus3524"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 transition-colors hover:text-[#00A174]"
+                  className="flex items-center gap-1.5 transition-colors footer-link"
                 >
                   Threads
                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </a>
-                <span className="h-3 w-px bg-[#C9D2CD]" aria-hidden="true" />
+                <span className="h-3 w-px footer-divider" aria-hidden="true" />
                 <a
                   href={`mailto:${linusContact.email}`}
-                  className="transition-colors hover:text-[#00A174]"
+                  className="transition-colors footer-link"
                 >
                   聯絡信箱
                 </a>
               </div>
-              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold text-[#66736C]" aria-label="網站政策">
-                <a href="#site-policy" className="transition-colors hover:text-[#00A174]">網站使用條款</a>
-                <a href="#privacy" className="transition-colors hover:text-[#00A174]">隱私權政策</a>
-                <a href="#disclaimer" className="transition-colors hover:text-[#00A174]">資訊免責聲明</a>
-                <a href="#cookie" className="transition-colors hover:text-[#00A174]">Cookie 政策</a>
+              <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 font-sans text-xs font-semibold footer-secondary" aria-label="網站政策">
+                <a href="#site-policy" className="transition-colors footer-link">網站使用條款</a>
+                <a href="#privacy" className="transition-colors footer-link">隱私權政策</a>
+                <a href="#disclaimer" className="transition-colors footer-link">資訊免責聲明</a>
+                <a href="#cookie" className="transition-colors footer-link">Cookie 政策</a>
               </nav>
             </div>
           </div>
 
-          <p className="mt-6 border-t border-[#DDE3DF] pt-4 text-center font-jost text-[9px] tracking-[0.08em] text-[#8A9590] md:text-left">
+          <p className="mt-6 border-t footer-rule pt-4 text-center font-jost text-[9px] tracking-[0.08em] footer-secondary md:text-left">
             © 2026 LINUS 住好日 · CHANG CHIN WEI（Linus・@linus3524）· ALL RIGHTS RESERVED
           </p>
         </div>
@@ -892,7 +892,7 @@ export default function App() {
   );
 
   return (
-    <div className={`desk-app min-h-screen flex flex-col select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
+    <div className={`desk-app footer-theme--${HERO_SETS[heroSet].key} min-h-screen flex flex-col select-text ${isMobileHome ? "mobile-home-active" : "mobile-subpage-active"}`}>
       {/* Reading Progress Bar */}
       <div 
         className="fixed top-0 left-0 right-0 h-[3px] z-[100] transition-all duration-75"
