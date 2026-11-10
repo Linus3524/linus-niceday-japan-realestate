@@ -3,6 +3,7 @@ import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
+import { normalizeRentLocations } from "./rentLocations.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2" | "ldk3";
 
@@ -218,7 +219,9 @@ function matchStationsInText(text: string): string[] {
   for (const station of stations) {
     let start = normalizedText.indexOf(station.normalizedName);
     while (start >= 0) {
-      matches.push({ start, end: start + station.normalizedName.length, stationName: station.stationName });
+      const end = start + station.normalizedName.length;
+      // 「山手線」是路線，不能擷取成橫濱的「山手」站。
+      if (normalizedText[end] !== "線") matches.push({ start, end, stationName: station.stationName });
       start = normalizedText.indexOf(station.normalizedName, start + 1);
     }
   }
@@ -252,7 +255,7 @@ function mentionIntent(prompt: string, keyword: RegExp): "required" | "negated" 
  * 現居地的說法。這類句子講的是「現在住哪」，不是「想搬去哪」，
  * 掃描希望居住地區時必須整句排除，否則「現在住練馬區」會被當成想住練馬區。
  */
-const CURRENT_RESIDENCE_CUE = /(?:目前居住於|目前居住于|目前住在|現在住在|現在住|现在住|现住|現居|现居|目前人在|已在日本)/;
+const CURRENT_RESIDENCE_CUE = /(?:目前居住地|目前居住於|目前居住于|目前住在|現在住在|現在住|现在住|现住|現居|现居|目前人在|已在日本)/;
 
 /** 讓步語氣：「沒有也沒關係」「有更好」——條件是加分而非門檻。 */
 const CONCESSIVE = /(?:沒有也|没有也|沒有沒關係|没有没关系|也沒關係|也没关系|也可以|也行|不強求|不强求|不一定要|不是必須|不是必须|可有可無|可有可无|有更好|有的話更好|有的话更好|加分)/;
@@ -543,7 +546,10 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   }
 
   // 入住時間：舊版完全沒有擷取，但這是決定「什麼時候該開始看房」的關鍵。
-  if (!enriched.moveInTiming) {
+  // 問卷的明確欄位優先，避免模型把「入境日期」誤填成「入住時間」。
+  const declaredMoveIn = prompt.match(/^\s*入住時間\s*[:：]\s*([^\n。]+)/m);
+  if (declaredMoveIn?.[1]) enriched.moveInTiming = declaredMoveIn[1].trim();
+  else if (!enriched.moveInTiming) {
     const timingRange = prompt.match(/(\d{1,2})\s*月\s*(上旬|中旬|下旬|初|中|底)\s*(?:[~～〜－—\-]|至|到)\s*(上旬|中旬|下旬|初|中|底)/);
     const timing = prompt.match(/(\d{1,2})\s*月\s*(初|中|底|下旬|中旬|上旬)?/);
     if (timingRange) enriched.moveInTiming = `${timingRange[1]}月${timingRange[2]}～${timingRange[3]}`;
@@ -566,6 +572,8 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     const residence = prompt.match(new RegExp(`${CURRENT_RESIDENCE_CUE.source}\\s*[:：]?\\s*([^\\n。]+)`, "i"));
     if (residence?.[1]) enriched.currentResidence = residence[1].trim();
   }
+  const residenceChannel = prompt.match(/(?:目前居住地|目前居住於|目前居住于|目前住在|目前人在|人在)\s*[:：]?\s*(海外|國外|国外|日本)/i);
+  if (residenceChannel) enriched.applicationChannel = residenceChannel[1] === "日本" ? "domestic" : "overseas";
   if (!enriched.employmentStartTiming) {
     const employment = prompt.match(/(?:預計)?\s*(\d{1,2}\s*[\/／.-]\s*\d{1,2})\s*(?:入社|到職|到职)/i);
     if (employment?.[1]) enriched.employmentStartTiming = `${employment[1].replace(/\s/g, "")} 入社`;
@@ -602,11 +610,11 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   if (mentionedRoomTypes.length) {
     enriched.roomType = mentionedRoomTypes[0];
     if (mentionedRoomTypes.length > 1) {
-      // 房型取了最大的，預算就必須跟著取最大的，否則會配出「2LDK 卻只有 6 萬」的假矛盾。
-      // 上面的預算規則是「取第一個符合的寫法」，在多方案原文中會挑到較小的那個方案。
+      // 多方案只比對月租金額，不能把初期費用、押金或禮金當成月租上限。
+      // 上面的預算規則可能取到較小方案，因此在月租條件中取最高預算。
       const allAmounts = [
-        ...[...prompt.matchAll(/(\d+(?:\.\d+)?)\s*[萬万]/gi)].map(match => Math.round(Number(match[1]) * 10000)),
-        ...[...prompt.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓)/gi)].map(match => Number(match[1].replace(/,/g, "")))
+        ...[...promptWithoutInitialFees.matchAll(/(\d+(?:\.\d+)?)\s*[萬万]/gi)].map(match => Math.round(Number(match[1]) * 10000)),
+        ...[...promptWithoutInitialFees.matchAll(/(\d{1,3}(?:,\d{3})+|\d{5,7})\s*(?:日圓|日元|日幣|円|圓)/gi)].map(match => Number(match[1].replace(/,/g, "")))
       ].filter(amount => amount >= 20000 && amount <= 1000000);
       if (allAmounts.length > 1) {
         enriched.maxBudget = Math.max(...allAmounts);
@@ -635,6 +643,12 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     const intent = mentionIntent(prompt, pattern);
     if (intent === "required") (enriched as any)[field] = true;
     else if (intent === "negated") (enriched as any)[field] = false;
+  }
+  // 問卷提供、但沒有專屬欄位的條件仍須保留，避免模型漏填 otherNeeds。
+  for (const [pattern, label] of [[/室[內内]洗衣[機机]|室内洗濯機/, "室內洗衣機"], [/朝南|南向[き]?/, "朝南"]] as const) {
+    if (mentionIntent(prompt, pattern) === "required" && !(enriched.otherNeeds || []).some(need => pattern.test(need))) {
+      enriched.otherNeeds = [...(enriched.otherNeeds || []), label];
+    }
   }
   if (!enriched.walkMinutes) {
     // 必須真的出現「步行／徒步」字樣才算徒步時間。
@@ -674,7 +688,7 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     priorities[need] = inferPriority(sourceLine || need);
   }
   enriched.otherNeedPriorities = priorities;
-  return enriched;
+  return normalizeRentLocations(enriched);
 }
 
 function districtScale(district: string) {
@@ -766,6 +780,7 @@ const lineMatches = (left: string, right: string) => {
 };
 
 export function buildRentRecommendations(criteria: RentSearchCriteria): RentRecommendation[] {
+  criteria = normalizeRentLocations(criteria);
   const mods = getRentModifierIds(criteria);
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(value => normalize(value));
   const wantedStations = [...(criteria.stations || []), criteria.station].filter(Boolean).map(value => normalize(value));

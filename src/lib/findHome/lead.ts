@@ -262,33 +262,42 @@ export function requirementText(refCode: string | null, req: Requirement, decisi
   return [`【找房需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
 }
 
-/**
- * 把問卷需求寫成一段中文描述，帶進費用試算的「描述需求」（AI 會解析自由文字的地區、車站）。
- * 不放稱呼、聯絡方式、性別、年齡，只放找房條件。
- */
+/** 按費用試算的範例分行帶入找房條件；不含稱呼、聯絡方式、性別或年齡。 */
 export function requirementPrompt(req: Requirement): string {
-  // 照費用試算「描述需求」的範例格式：「預算含管理費 10 萬円，想住東急東橫線，1K 25㎡以上，要獨立洗面台、電梯，走路 10 分鐘內。」
-  const parts: string[] = [];
+  const lines: string[] = [];
+  const visa = req.visaType && req.visaType !== "other"
+    ? labelOf(VISA_TYPE_OPTIONS, req.visaType)
+    : req.visaTypeOther;
+  if (visa) lines.push(`簽證種類：${visa}`);
   if (req.rentMaxMan) {
-    const ideal = req.rentIdealMan && req.rentIdealMan !== req.rentMaxMan ? `（理想 ${req.rentIdealMan} 萬円）` : "";
-    parts.push(`預算含管理費 ${req.rentMaxMan} 萬円${ideal}`);
+    const ideal = req.rentIdealMan && req.rentIdealMan !== req.rentMaxMan ? `，理想 ¥${req.rentIdealMan}萬` : "";
+    lines.push(`期望預算：¥${req.rentMaxMan}萬以下（含管理費${ideal}）`);
   }
-  if (req.areas) parts.push(`想住${req.areas}`);
-  const layout = [req.layouts.length ? labelsOf(LAYOUT_OPTIONS, req.layouts).replace(/、/g, "或") : "", req.minAreaSqm ? `${req.minAreaSqm}㎡以上` : ""].filter(Boolean).join(" ");
-  if (layout) parts.push(layout);
-  if (req.mustHaves.length) parts.push(`要${labelsOf(MUST_HAVE_LABEL_OPTIONS, req.mustHaves)}`);
-  if (req.walkMaxMin) parts.push(`走路 ${req.walkMaxMin} 分鐘內`);
-  if (req.ageMaxYears) parts.push(`屋齡 ${req.ageMaxYears} 年內`);
-  if (req.structure && req.structure !== "any") parts.push(req.structure === "rc" ? "要 RC 或 SRC 造" : "不要木造");
-  if (req.commuteTarget) parts.push(`通勤到${req.commuteTarget}`);
-  if (req.initialCostMaxMan) parts.push(`初期費用 ${req.initialCostMaxMan} 萬円以內`);
-  if (req.moveIn === "date" && req.moveInDate) parts.push(`${req.moveInDate} 入住`);
-  else if (req.moveIn && req.moveIn !== "flexible" && req.moveIn !== "date") parts.push(`${labelOf(MOVE_IN_OPTIONS, req.moveIn)}入住`);
-  if (req.occupants > 1) parts.push(`${req.occupants} 人住`);
-  if (req.visaType && req.visaType !== "other") parts.push(`${labelOf(VISA_TYPE_OPTIONS, req.visaType)}簽證`.replace(/簽證簽證$/, "簽證").replace(/^日本籍簽證$/, "日本籍").replace(/^永住者／定住者簽證$/, "永住者"));
-  else if (req.visaTypeOther) parts.push(req.visaTypeOther);
-  if (req.residence === "overseas") parts.push(`人在海外${req.entryDate ? `，${req.entryDate} 入境` : ""}`);
-  return parts.join("，") + "。";
+  if (req.areas) lines.push(`期望地區：${req.areas}`);
+  if (req.walkMaxMin) lines.push(`期望車站：車站徒步 ${req.walkMaxMin} 分鐘內`);
+  const extraIds = new Set(["second-floor", "pets", "balcony", "two-burner", "no-key-money", "no-deposit"]);
+  const equipment = req.mustHaves.filter(id => !extraIds.has(id));
+  const room = [
+    req.layouts.length ? labelsOf(LAYOUT_OPTIONS, req.layouts).replace(/、/g, "或") : "",
+    req.structure === "rc" ? "RC/SRC造" : req.structure === "non-wood" ? "非木造（鐵骨造以上）" : "",
+    req.minAreaSqm ? `${req.minAreaSqm}平米以上` : "",
+    equipment.length ? labelsOf(MUST_HAVE_LABEL_OPTIONS, equipment) : "",
+  ].filter(Boolean);
+  if (room.length) lines.push(`房型設備：${room.join("、")}`);
+  if (req.commuteTarget) lines.push(`通勤地點：${req.commuteTarget}`);
+  const extra = req.mustHaves.filter(id => extraIds.has(id));
+  const other = [
+    extra.length ? labelsOf(MUST_HAVE_LABEL_OPTIONS, extra) : "",
+    req.ageMaxYears ? `屋齡 ${req.ageMaxYears} 年內` : "",
+    req.initialCostMaxMan ? `初期費用 ${req.initialCostMaxMan} 萬円以內` : "",
+    req.occupants > 0 ? `${req.occupants} 人住` : "",
+  ].filter(Boolean);
+  if (other.length) lines.push(`其他條件：${other.join("、")}`);
+  if (req.moveIn === "date" && req.moveInDate) lines.push(`入住時間：${req.moveInDate}`);
+  else if (req.moveIn && req.moveIn !== "date") lines.push(`入住時間：${labelOf(MOVE_IN_OPTIONS, req.moveIn)}`);
+  if (req.residence === "overseas") lines.push(`目前居住地：海外${req.entryDate ? `，${req.entryDate} 入境` : ""}`);
+  else if (req.residence === "japan") lines.push("目前居住地：日本");
+  return lines.join("\n");
 }
 
 /** 比對兩份需求，列出有變的欄位（前值、後值都是顯示用文字）。 */

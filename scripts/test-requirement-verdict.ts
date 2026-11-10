@@ -41,6 +41,82 @@ const assess = (criteria: RentSearchCriteria) => {
 
 const scenarios: Array<{ name: string; run: () => void }> = [
   {
+    name: "明確入住時間不會被 AI 誤填的入境日期覆蓋",
+    run: () => {
+      for (const timing of ["2 個月內", "2027-03-15", "不急"]) {
+        const criteria = enrichRentCriteriaFromPrompt({ ...base, moveInTiming: "2027-02-20" },
+          `入住時間：${timing}\n目前居住地：海外，2027-02-20 入境`);
+        assert.equal(criteria.moveInTiming, timing);
+      }
+    }
+  },
+  {
+    name: "問卷居住地保留境內／海外審查管道，獨居也保留人數",
+    run: () => {
+      for (const [residence, channel] of [["海外", "overseas"], ["日本", "domestic"]] as const) {
+        const criteria = enrichRentCriteriaFromPrompt(base, `目前居住地：${residence}\n其他條件：1 人住`);
+        assert.equal(criteria.applicationChannel, channel);
+        assert.equal(criteria.householdSize, 1);
+        assert.equal(criteria.currentResidence, residence);
+      }
+    }
+  },
+  {
+    name: "山手線不會被擷取成橫濱山手站，朝南與室內洗衣機不會遺失",
+    run: () => {
+      const criteria = enrichRentCriteriaFromPrompt({ ...base, district: null, districts: [], stations: [] },
+        "期望地區：中野 高圓寺 山手線 池袋 秋葉原\n房型設備：1K、朝南、室內洗衣機\n通勤地點：目黑");
+      assert.equal(criteria.stations?.includes("山手"), false);
+      assert.equal(criteria.districts?.includes("橫濱市中區"), false);
+      assert.ok(criteria.otherNeeds?.includes("朝南"));
+      assert.ok(criteria.otherNeeds?.includes("室內洗衣機"));
+      const station = enrichRentCriteriaFromPrompt({ ...base, district: null, stations: [] }, "期望車站：山手站");
+      assert.ok(station.stations?.includes("山手"), "真的指定山手站時仍要辨識");
+      const negated = enrichRentCriteriaFromPrompt(base, "不需要朝南，不需要室內洗衣機");
+      assert.equal(negated.otherNeeds?.includes("朝南") || false, false);
+      assert.equal(negated.otherNeeds?.includes("室內洗衣機") || false, false);
+    }
+  },
+  {
+    name: "多選房型不會把初期費用 100 萬覆蓋月租上限 25 萬",
+    run: () => {
+      const prompt = "簽證種類：日本籍\n期望預算：¥25萬以下（含管理費，理想 ¥15萬）\n期望地區：中野 高圓寺 山手線 池袋 秋葉原\n房型設備：1R或1K或1LDK或1DK、一樓門禁自動門、室內洗衣機、朝南、免費網路、電梯、乾濕分離、免治馬桶、家具家電、獨立洗面台、都市瓦斯\n通勤地點：目黑\n其他條件：2 樓以上、免押金、可養寵物、附陽台、爐具 2 口以上、免禮金、初期費用 100 萬円以內\n入住時間：1 個月內";
+      for (const text of [prompt, prompt.replace("100 萬円", "1,000,000 日圓")]) {
+        const criteria = enrichRentCriteriaFromPrompt({ ...base, maxBudget: 250000, minBudget: 150000, initialCostBudget: 1000000 }, text);
+        assert.equal(criteria.maxBudget, 250000);
+        assert.equal(criteria.minBudget, 150000);
+        assert.equal(criteria.initialCostBudget, 1000000);
+        assert.equal(criteria.roomType, "ldk1");
+        const axis = assess(criteria).axes.find(axis => axis.key === "initialCost");
+        assert.match(axis?.headline || "", /4\.0 倍/);
+        assert.doesNotMatch(axis?.headline || "", /1\.0 倍/);
+      }
+      const plans = enrichRentCriteriaFromPrompt({ ...base, maxBudget: 60000 }, "1K 預算 6萬，或 2LDK 預算 13萬，初期費用 100萬");
+      assert.equal(plans.maxBudget, 130000, "真正的多方案仍須保留較高的月租預算");
+      assert.equal(plans.minBudget, 60000);
+    }
+  },
+  {
+    name: "中野、高圓寺被 AI 放入行政區時，自動對應中野區與杉並區行情",
+    run: () => {
+      const prompt = "預算含管理費 9.5 萬円（理想 8 萬円），想住中野、高圓寺，1K 20㎡以上，要一樓門禁自動門、乾濕分離，走路 10 分鐘內，屋齡 20 年內，不要木造，通勤到新宿，1 個月內入住，留學（大學・專門學校）簽證。";
+      for (const districts of [["中野", "高圓寺"], ["中野区", "高円寺"], ["中野／高圓寺"]]) {
+        const raw = { ...base, district: districts[0], districts, station: null, stations: [], commuteStation: "新宿" };
+        const scope = resolveSearchScope(raw);
+        assert.deepEqual([...scope.districts].sort(), ["中野區", "杉並區"].sort());
+        assert.deepEqual(scope.unresolvedLocations, []);
+        assert.notEqual(assess(raw).axes.find(axis => axis.key === "budget")?.pendingReason, "no-market-data");
+        const enriched = enrichRentCriteriaFromPrompt(raw, prompt);
+        assert.deepEqual(enriched.districts?.sort(), ["中野區", "杉並區"].sort());
+        assert.ok(enriched.stations?.includes("高圓寺"));
+        assert.ok(buildRentRecommendations(enriched).some(item => item.station === "高圓寺"));
+        assert.deepEqual(resolveSearchScope(enriched).unresolvedLocations, []);
+      }
+      const mixed = resolveSearchScope({ ...base, district: "高圓寺、火星區" });
+      assert.deepEqual(mixed.unresolvedLocations, ["火星區"], "不能把真正未知的地點也消掉");
+    }
+  },
+  {
     name: "一般條件可行",
     run: () => assert.equal(assess({ ...base, areaMin: 22 }).overall.level, "可行")
   },

@@ -6,6 +6,7 @@ getRentModifierIds,
 type RentSearchCriteria
 } from "../rentAnalysis.js";
 import { toJapaneseStationName } from "../transit.js";
+import { normalizeRentLocations } from "../rentLocations.js";
 import { METRO_REGIONS, normalize, normalizeLine, normalizeStation } from './shared.js';
 import type { RentSegment, RequestedRentRange } from './types.js';
 
@@ -23,6 +24,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
   useMetroDefault: boolean;
   unresolvedLocations: string[];
 } {
+  criteria = normalizeRentLocations(criteria);
   const districts = new Set<string>();
   const sources: string[] = [];
   const unresolvedLocations: string[] = [];

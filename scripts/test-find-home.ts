@@ -217,6 +217,11 @@ await test("問卷需求 → 費用試算條件：地區辨識、預算換算、
   assert.equal(criteria.applicationChannel, "overseas");
 });
 
+await test("問卷 1DK 使用 1K／1DK 計價群組，不會誤用 1LDK", () => {
+  const { value } = validateRequirement({ ...validInput().requirement, layouts: ["1DK"] });
+  assert.equal(requirementToCriteria(value).roomType, "k1");
+});
+
 await test("費用試算條件 → 問卷草稿：可直接通過第 2 步驗證的欄位都帶入", () => {
   const draft = criteriaToFindHomeDraft({
     roomType: "ldk1", districts: ["中野区"], stations: ["高円寺"], minBudget: 120000, maxBudget: 140000, areaMin: 30,
@@ -258,11 +263,11 @@ await test("問卷完成頁 → 費用試算：交接資料放問卷格式，費
   delete (globalThis as any).localStorage;
 });
 
-await test("帶進「描述需求」的文字照範例格式", () => {
+await test("帶進「描述需求」的文字依範例分行，保留所有找房條件", () => {
   const { value } = validateRequirement({ ...validInput().requirement, areas: "中野、高圓寺", commuteTarget: "新宿", minAreaSqm: "20" });
   assert.equal(
     requirementPrompt(value),
-    "預算含管理費 10 萬円（理想 8.5 萬円），想住中野、高圓寺，1K或1DK 20㎡以上，要乾濕分離、電梯，走路 10 分鐘內，屋齡 20 年內，不要木造，通勤到新宿，1 個月內入住，工作簽證，人在海外，2027-03-15 入境。",
+    ["簽證種類：工作簽證", "期望預算：¥10萬以下（含管理費，理想 ¥8.5萬）", "期望地區：中野、高圓寺", "期望車站：車站徒步 10 分鐘內", "房型設備：1K或1DK、非木造（鐵骨造以上）、20平米以上、乾濕分離、電梯", "通勤地點：新宿", "其他條件：屋齡 20 年內、1 人住", "入住時間：1 個月內", "目前居住地：海外，2027-03-15 入境"].join("\n"),
   );
 });
 

@@ -3,6 +3,7 @@ import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentRecommendat
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 import { hasKnownCommuteStations, resolveSearchScope } from "../src/lib/requirementVerdict.js";
 import { lookupMarketRate } from "./market-lookup.js";
+import { normalizeRentLocations } from "../src/lib/rentLocations.js";
 import { SYSTEM_INSTRUCTION } from "./chat.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -334,6 +335,7 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
     // 使用者指定的地區不在 rentRates 裡（例如名古屋、福岡）。已經有基準值的地區
     // 再查一次只是多花時間與費用，數字也不會比自家基準更適合用來判斷。
     // 與通勤路線並行，避免延遲疊加。
+    criteria = normalizeRentLocations(criteria);
     const scope = resolveSearchScope(criteria);
     const requestedArea = scope.unresolvedLocations[0] || (scope.districts.size
       ? null

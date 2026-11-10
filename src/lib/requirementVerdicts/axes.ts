@@ -472,6 +472,8 @@ export function petAxis(criteria: RentSearchCriteria): AxisVerdict | null {
  * 沒有對應知識的條件不給樣板句——四行一樣的「待確認：逐項核對」等於沒講。
  */
 export const CONDITION_KNOWLEDGE: Array<{ pattern: RegExp; advice: string; impact: 0 | 1 | 2 }> = [
+  { pattern: /室[內内]洗衣[機机]|室内洗濯機/, advice: "確認間取り図的洗衣機置場位於室內，並核對可容納的機身尺寸。", impact: 0 },
+  { pattern: /朝南|南向/, advice: "以募集圖紙確認主採光面朝向，實際採光仍需考量樓層及前方遮蔽物。", impact: 1 },
   {
     pattern: /獨立出入口|单独出入口|單獨出入口|房中房|必經通道|必经通道|各室獨立|完全獨立房間/,
     advice: "看間取り図確認每個房間是否各自對走廊開門。2K／2DK／2LDK 有不少是「続き間（二間続き）」，房間相連、要穿過其中一間才能進另一間，這類要直接排除。",

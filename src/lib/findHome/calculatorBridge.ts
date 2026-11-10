@@ -44,7 +44,7 @@ export function takeCalculatorHandoff(peek = false): CalculatorHandoff | null {
 }
 
 const ROOM_TO_LAYOUT: Record<RoomType, string> = { r1: "1R", k1: "1K", ldk1: "1LDK", ldk2: "2LDK+", ldk3: "2LDK+" };
-const LAYOUT_TO_ROOM: Record<string, RoomType> = { "1R": "r1", "1K": "k1", "1DK": "ldk1", "1LDK": "ldk1", "2K+": "ldk1", "2LDK+": "ldk2" };
+const LAYOUT_TO_ROOM: Record<string, RoomType> = { "1R": "r1", "1K": "k1", "1DK": "k1", "1LDK": "ldk1", "2K+": "ldk1", "2LDK+": "ldk2" };
 
 /** 問卷條件 ↔ 費用試算條件旗標。 */
 const FLAG_MAP: { id: MustHave; read: (c: RentSearchCriteria) => boolean; write: (c: RentSearchCriteria) => void }[] = [
