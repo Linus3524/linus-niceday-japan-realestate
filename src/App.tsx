@@ -47,6 +47,7 @@ import { buildHaystack, matchesAllTokens, tokenizeQuery } from "./lib/search";
 import { sanitizeRelatedThreads, type RelatedThread } from "./lib/threadSearch";
 import { trackAction, trackSource, trackView, type TrackableView } from "./lib/trackView";
 import type { AppTab, TermDetail } from "./lib/uiTypes";
+import { takeCalculatorHandoff } from "./lib/findHome/calculatorBridge";
 
 // 首圖四組場景，每約 15 秒輪換：背景淡入淡出、人物浮現切換。
 const HERO_SETS = [
@@ -597,6 +598,14 @@ export default function App() {
       document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
+
+  // 後台「用這些條件開費用試算」：回到首頁時直接打開費用試算（條件由費用試算自己讀取並套用）。
+  useEffect(() => {
+    if (isAdminHash()) return;
+    if (takeCalculatorHandoff(true)) handleTabChange("calculator");
+    // 只在進站時檢查一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Copy Line ID
   const handleCopyLine = () => {

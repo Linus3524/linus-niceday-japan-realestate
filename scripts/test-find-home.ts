@@ -5,7 +5,9 @@
 import assert from "node:assert/strict";
 import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
-import { normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
+import { criteriaToFindHomeDraft, requirementToCriteria } from "../src/lib/findHome/calculatorBridge";
+import { VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
+import { RENT_VISA_OPTIONS } from "../src/lib/calculator/options";
 import {
   MemoryBackend, deleteLead, getLead, listLeads, patchLead, purgeExpiredContacts, removeContact, setLeadBackendForTests, submitLead,
 } from "../src/lib/leadStore";
@@ -25,10 +27,10 @@ const validInput = () => ({
   privacyAck: true,
   requirement: {
     moveIn: "1m", reasons: ["commute"], residence: "overseas", entryDate: "2027-03-15", visa: "issued",
-    visaType: "work", nationality: "台灣",
+    visaType: "技術・人文知識・國際業務", nationality: "台灣",
     areas: "中野、高圓寺", commuteTarget: "新宿站", occupants: 1, layouts: ["1K", "1DK"], minAreaSqm: "",
-    rentIdealMan: "8.5", rentMaxMan: "10", initialCostMaxMan: "", mustHaves: ["separate-bath", "near-station"],
-    top3: ["near-station", "autolock"], adjustable: ["budget", "area"],
+    rentIdealMan: "8.5", rentMaxMan: "10", initialCostMaxMan: "", mustHaves: ["separate-bath", "elevator"],
+    top3: ["elevator", "autolock"], walkMaxMin: "10", ageMaxYears: "20", structure: "non-wood", adjustable: ["budget", "area"],
   },
   decision: { onMatch: "apply-asap", ifNotFound: "adjust", note: "" },
 });
@@ -49,7 +51,9 @@ await test("合格的問卷通過驗證，未知選項與不在已選條件中�
   const result = validateSubmission(validInput());
   assert.equal(result.ok, true);
   assert.deepEqual(result.value!.contactTimes, ["weekday-evening"]);
-  assert.deepEqual(result.value!.requirement.top3, ["near-station"]);
+  assert.deepEqual(result.value!.requirement.top3, ["elevator"]);
+  assert.equal(result.value!.requirement.walkMaxMin, 10);
+  assert.equal(result.value!.requirement.structure, "non-wood");
   assert.equal(result.value!.contact.value, "Kobayashi_01");
   assert.equal(result.value!.requirement.rentMaxMan, 10);
 });
@@ -74,7 +78,7 @@ await test("簽證種類必填；其他要自填；海外要國籍；日籍與�
   (input.requirement as any).nationality = "台灣";
   result = validateSubmission(input);
   assert.ok(result.errors!.visaTypeOther);
-  (input.requirement as any).visaType = "permanent";
+  (input.requirement as any).visaType = "永住者";
   delete (input.requirement as any).visa;
   result = validateSubmission(input);
   assert.equal(result.ok, true);
@@ -95,6 +99,9 @@ await test("需求清單文字：略過沒填的欄位、含參考碼、不含�
   const text = requirementText("FH-TEST", value.requirement, value.decision);
   assert.ok(text.startsWith("【找房需求 FH-TEST】"));
   assert.ok(text.includes("簽證種類：工作簽證"));
+  assert.ok(text.includes("徒步到車站：10 分內"));
+  assert.ok(text.includes("建築結構：非木造（鐵骨造以上）"));
+  assert.ok(text.includes("想要的條件：乾濕分離、電梯"));
   assert.ok(text.includes("國籍：台灣"));
   assert.ok(text.includes("最高月租：¥100,000"));
   assert.equal(text.includes("最小面積"), false);
@@ -114,6 +121,20 @@ await test("通知信內文：完整需求、後台連結，不含稱呼與聯�
   assert.ok(mail.text.includes("/#admin/leads/ABCDEFGHJKMNPQRS"));
   assert.equal(mail.text.includes("小林"), false);
   assert.equal(mail.text.includes("Kobayashi"), false);
+});
+
+await test("簽證清單與費用試算共用：費用試算的每個身分問卷都有", () => {
+  for (const option of RENT_VISA_OPTIONS.filter(item => item.value)) {
+    assert.ok(VISA_TYPE_OPTIONS.some(item => item.id === option.value), option.value);
+  }
+});
+
+await test("後台修改舊資料：舊版條件代號保留、顯示中文", () => {
+  const old = { ...validInput().requirement, mustHaves: ["near-station", "elevator"], top3: ["near-station"] };
+  const { value } = validateRequirement(old, undefined, true);
+  assert.deepEqual(value.mustHaves, ["near-station", "elevator"]);
+  assert.ok(requirementText(null, value).includes("車站 10 分內"));
+  assert.deepEqual(validateRequirement(old).value.mustHaves, ["elevator"]);
 });
 
 await test("「維持原條件」與其他可調整項目互斥", () => {
@@ -152,6 +173,48 @@ await test("需求差異以顯示文字呈現前後值", () => {
   const { value } = validateRequirement(validInput().requirement);
   const changes = diffRequirement(value, { ...value, rentMaxMan: 11 });
   assert.deepEqual(changes, [{ field: "rentMaxMan", label: "最高月租", before: "¥100,000", after: "¥110,000" }]);
+});
+
+console.log("calculator bridge");
+
+await test("問卷需求 → 費用試算條件：地區辨識、預算換算、設備旗標、簽證代號", () => {
+  const { value } = validateRequirement(validInput().requirement);
+  const criteria = requirementToCriteria({ ...value, areas: "中野、高圓寺、中央線" });
+  assert.ok(criteria.districts!.includes("中野區"), JSON.stringify(criteria.districts));
+  assert.ok(criteria.stations!.includes("高圓寺"));
+  assert.deepEqual(criteria.lines, ["中央線"]);
+  assert.equal(criteria.maxBudget, 100000);
+  assert.equal(criteria.minBudget, 85000);
+  assert.equal(criteria.roomType, "k1");
+  assert.equal(criteria.walkMinutes, 10);
+  assert.equal(criteria.structure, "鐵骨造");
+  assert.equal(criteria.elevator, true);
+  assert.equal(criteria.separateBath, true);
+  assert.equal(criteria.visaType, "技術・人文知識・國際業務");
+  assert.equal(criteria.applicationChannel, "overseas");
+});
+
+await test("費用試算條件 → 問卷草稿：可直接通過第 2 步驗證的欄位都帶入", () => {
+  const draft = criteriaToFindHomeDraft({
+    roomType: "ldk1", districts: ["中野区"], stations: ["高円寺"], minBudget: 120000, maxBudget: 140000, areaMin: 30,
+    walkMinutes: 8, buildingAgeMax: 12, structure: "RC造", autoLock: true, floorMin: 2, applicationChannel: "domestic",
+    visaType: "留學", petsAllowed: true,
+  });
+  const req = draft.form.requirement;
+  assert.equal(draft.prefilledFrom, "calculator");
+  assert.equal(req.areas, "中野区、高円寺");
+  assert.deepEqual(req.layouts, ["1LDK"]);
+  assert.equal(req.rentIdealMan, "12");
+  assert.equal(req.rentMaxMan, "14");
+  assert.equal(req.walkMaxMin, "10");
+  assert.equal(req.ageMaxYears, "15");
+  assert.equal(req.structure, "rc");
+  assert.deepEqual(req.mustHaves.sort(), ["autolock", "pets", "second-floor"]);
+  assert.equal(req.residence, "japan");
+  assert.equal(req.visaType, "留學");
+  // 帶入的欄位要能通過問卷驗證（第 2 步只差「可以調整」由客人自己選）
+  const step2 = validateRequirement({ ...req, adjustable: ["budget"] }, 2);
+  assert.deepEqual(step2.errors, {});
 });
 
 console.log("lead store");

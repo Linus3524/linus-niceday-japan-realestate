@@ -1,5 +1,6 @@
 import { toJapaneseLineName } from '../transit.js';
 import type { RentSearchFilter } from './types.js';
+import { VISA_TYPES } from '../visaOptions.js';
 export const rentSearchFilterOptions: Array<{ key: RentSearchFilter; label: string; note: string; pressure: number }> = [
   { key: "pets", label: "可養寵物", note: "物件規約與追加敷金須逐間確認", pressure: 3 },
   { key: "freeInternet", label: "免費網路／網路費包含", note: "確認速度、線路、初裝費與另簽約要求", pressure: 1.5 },
@@ -41,15 +42,8 @@ export const normalizeRentBudgetSelection = (value: number) =>
   Math.min(RENT_BUDGET_MAX, Math.max(RENT_BUDGET_OPTIONS[0], Math.round(value / 5000) * 5000));
 
 
-export const RENT_VISA_OPTIONS = [
+// 簽證清單與找房問卷共用（src/lib/visaOptions.ts），這裡只加上「不指定」。
+export const RENT_VISA_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "不指定 / 尚未確認" },
-  { value: "日本籍", label: "日本籍（本國人）" },
-  { value: "永住者", label: "永住者 / 定住者" },
-  { value: "技術・人文知識・國際業務", label: "工作簽證（就勞 / 技人國 / 正社員）" },
-  { value: "高度人才", label: "高度人才簽證（高薪 / 專業評分）" },
-  { value: "留學", label: "留學簽證（大學 / 大學院 / 專門學校）" },
-  { value: "留學（日本語學校）", label: "留學簽證（日本語學校）" },
-  { value: "打工度假", label: "打工度假簽證（Working Holiday）" },
-  { value: "家族滯在", label: "家族滯在 / 配偶簽證" },
-  { value: "經營管理", label: "經營管理簽證 / 日本法人代表" },
+  ...VISA_TYPES.map(({ value, label }) => ({ value, label })),
 ];

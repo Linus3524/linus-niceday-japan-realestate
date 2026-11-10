@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Copy, Minus, Plus, QrCode, X } from "lucide-react";
 import { linusContact } from "../data/rentGuideData";
 import { requirementLines, requirementText } from "../lib/findHome/lead";
+import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
 import { trackAction, trackSource } from "../lib/trackView";
 import {
   ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
-  LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
+  AGE_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
   NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
   type ContactChannel, type FieldErrors, type Option, type StepId,
 } from "../lib/findHome/schema";
@@ -18,42 +19,14 @@ import {
  * 伺服器收不到時不丟資料：保留填好的內容，並提供「複製內容改用 LINE 傳送」。
  */
 
-const DRAFT_KEY = "linus-find-home-draft-v1";
+const DRAFT_KEY = FIND_HOME_DRAFT_KEY;
 const LINE_URL = `https://line.me/ti/p/~${linusContact.lineId}`;
 const STEP_TITLES: Record<StepId, string> = { 1: "找房基本資訊", 2: "預算與條件", 3: "找房進度", 4: "怎麼聯絡你" };
 
-interface FormState {
-  requirement: {
-    moveIn?: string; moveInDate?: string; reasons: string[]; reasonOther?: string;
-    residence?: string; entryDate?: string; visa?: string; visaType?: string; visaTypeOther?: string; nationality?: string;
-    areas: string; commuteTarget: string; occupants: number; layouts: string[]; minAreaSqm: string;
-    rentIdealMan: string; rentMaxMan: string; initialCostMaxMan: string;
-    mustHaves: string[]; top3: string[]; adjustable: string[];
-  };
-  decision: { onMatch?: string; ifNotFound?: string; otherAgents?: string; note: string };
-  nickname: string;
-  contact: { channel: ContactChannel; value: string };
-  contactTimes: string[];
-  privacyAck: boolean;
-}
-
-interface Draft { form: FormState; step: StepId; idempotencyKey: string; startedAt: number }
-
-const emptyForm = (): FormState => ({
-  requirement: {
-    reasons: [], areas: "", commuteTarget: "", occupants: 1, layouts: [], minAreaSqm: "",
-    rentIdealMan: "", rentMaxMan: "", initialCostMaxMan: "", mustHaves: [], top3: [], adjustable: [],
-  },
-  decision: { note: "" },
-  nickname: "",
-  contact: { channel: "line", value: "" },
-  contactTimes: [],
-  privacyAck: false,
-});
-
-function newKey() {
-  try { return crypto.randomUUID().replace(/-/g, ""); } catch { return `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`.padEnd(20, "x"); }
-}
+type FormState = FindHomeFormState;
+type Draft = FindHomeDraft;
+const emptyForm = emptyFindHomeForm;
+const newKey = newIdempotencyKey;
 
 function loadDraft(): Draft | null {
   try {
@@ -168,6 +141,17 @@ function ManInput({ value, onChange, placeholder, label, id }: { value: string; 
   );
 }
 
+function SelectBox({ id, value, options, onChange }: { id: string; value: string; options: readonly Option[]; onChange: (value: string) => void }) {
+  return (
+    <div className="relative">
+      <select id={id} value={value} onChange={e => onChange(e.target.value)} className="h-11 w-full appearance-none border border-[#C9D2CD] bg-white pl-3 pr-9 text-[15px] text-[#1A2A22] focus:border-[#00A174] focus:outline-none">
+        {options.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#66736C]" aria-hidden="true" />
+    </div>
+  );
+}
+
 function LineButton({ label = "點我加 LINE 好友", small }: { label?: string; small?: boolean }) {
   return (
     <a
@@ -191,6 +175,7 @@ export function FindHomeApp() {
   const [idempotencyKey] = useState(() => restored?.idempotencyKey ?? newKey());
   const [startedAt] = useState(() => restored?.startedAt ?? Date.now());
   const [showResume, setShowResume] = useState(Boolean(restored && (restored.step > 1 || restored.form.requirement.areas)));
+  const prefilledFromCalculator = restored?.prefilledFrom === "calculator";
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -200,7 +185,9 @@ export function FindHomeApp() {
   const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { trackSource(); }, []);
-  useEffect(() => { if (!refCode) saveDraft({ form, step, idempotencyKey, startedAt }); }, [form, step, idempotencyKey, startedAt, refCode]);
+  useEffect(() => {
+    if (!refCode) saveDraft({ form, step, idempotencyKey, startedAt, ...(prefilledFromCalculator ? { prefilledFrom: "calculator" as const } : {}) });
+  }, [form, step, idempotencyKey, startedAt, refCode, prefilledFromCalculator]);
 
   const r = form.requirement;
   const d = form.decision;
@@ -319,7 +306,7 @@ export function FindHomeApp() {
 
         {showResume && (
           <div className="mb-4 flex items-center justify-between gap-3 border border-[#DDE3DF] bg-white px-3.5 py-2.5 text-[12px] text-[#3F5147]">
-            <span>已幫你接著上次填寫的內容。</span>
+            <span>{prefilledFromCalculator ? "已帶入你在費用試算選的條件，請確認並補上其他題目。" : "已幫你接著上次填寫的內容。"}</span>
             <button type="button" onClick={startOver} className="shrink-0 font-bold text-[#66736C] underline">重新開始</button>
           </div>
         )}
@@ -412,6 +399,17 @@ export function FindHomeApp() {
               <Field id="initialCostMaxMan" label="初期費用上限" optional hint="押金、禮金、仲介費等搬入時一次付清的費用。" error={errors.initialCostMaxMan}>
                 <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="40" /></div>
               </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field id="walkMaxMin" label="徒步到車站">
+                  <SelectBox id="walk-max" value={r.walkMaxMin || "0"} options={WALK_OPTIONS} onChange={v => setReq({ walkMaxMin: v })} />
+                </Field>
+                <Field id="ageMaxYears" label="屋齡上限">
+                  <SelectBox id="age-max" value={r.ageMaxYears || "0"} options={AGE_OPTIONS} onChange={v => setReq({ ageMaxYears: v })} />
+                </Field>
+              </div>
+              <Field id="structure" label="建築結構" hint="怕吵或在意隔音，建議選非木造以上。">
+                <SelectBox id="structure" value={r.structure || "any"} options={STRUCTURE_OPTIONS} onChange={v => setReq({ structure: v })} />
+              </Field>
               <Field id="mustHaves" label="想要的條件" optional hint="可複選。">
                 <Chips
                   options={MUST_HAVE_OPTIONS}
@@ -438,7 +436,7 @@ export function FindHomeApp() {
                           className={`flex min-h-10 items-center gap-1.5 border px-3 text-[13px] disabled:opacity-40 ${on ? "border-[#00A174] bg-[#F0FAF6] font-bold text-[#00A174]" : "border-[#DDE3DF] text-[#3F5147]"}`}
                         >
                           {on && <span className="flex h-4 w-4 items-center justify-center bg-[#00A174] font-jost text-[11px] text-white">{order + 1}</span>}
-                          {labelOf(MUST_HAVE_OPTIONS, id)}
+                          {labelOf(MUST_HAVE_LABEL_OPTIONS, id)}
                         </button>
                       );
                     })}

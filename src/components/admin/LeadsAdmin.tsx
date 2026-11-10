@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
+import { ArrowLeft, Calculator, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
+import { CALCULATOR_HANDOFF_KEY, requirementToCriteria, type CalculatorHandoff } from "../../lib/findHome/calculatorBridge";
 import {
   DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
   type Lead, type LeadSummary, type Level,
@@ -475,6 +476,18 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
                 onSave={async next => { const body = await patch({ requirement: next }, "需求已更新，已記錄變更"); if (body) setEditing(false); }}
               />
             ) : (
+              <>
+              <button
+                type="button"
+                onClick={() => {
+                  const handoff: CalculatorHandoff = { criteria: requirementToCriteria(req), label: `${lead.refCode} ${lead.nickname}`, createdAt: Date.now() };
+                  try { localStorage.setItem(CALCULATOR_HANDOFF_KEY, JSON.stringify(handoff)); } catch { setError("瀏覽器無法暫存條件，請改用其他瀏覽器。"); return; }
+                  window.open("/", "_blank", "noopener");
+                }}
+                className="flex min-h-10 w-full items-center justify-center gap-1.5 border border-[#00A174] text-sm font-bold text-[#00A174] hover:bg-[#F0FAF6]"
+              >
+                <Calculator className="h-4 w-4" />用這些條件開費用試算
+              </button>
               <dl className="divide-y divide-[#ECEFEC] text-[13px]">
                 {[...REQUIREMENT_FIELDS.map(field => [field.label, field.format(req)]), ...DECISION_FIELDS.map(field => [field.label, field.format(lead.decision)])].map(([label, value]) => (
                   <div key={label} className="grid grid-cols-[7.5em_minmax(0,1fr)] gap-2 py-1.5">
@@ -483,6 +496,7 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
                   </div>
                 ))}
               </dl>
+              </>
             )}
           </Section>
 

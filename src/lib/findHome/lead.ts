@@ -1,5 +1,5 @@
 import {
-  ADJUSTABLE_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_OPTIONS, ON_MATCH_OPTIONS,
+  ADJUSTABLE_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
   OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
   type ContactChannel, type ContactTime, type Decision, type LeadSource, type Requirement,
 } from "./schema.js";
@@ -223,11 +223,14 @@ export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format
   { key: "occupants", label: "入住人數", format: r => `${r.occupants} 人` },
   { key: "layouts", label: "房型", format: r => labelsOf(LAYOUT_OPTIONS, r.layouts) },
   { key: "minAreaSqm", label: "最小面積", format: r => (r.minAreaSqm ? `${r.minAreaSqm} ㎡` : "—") },
+  { key: "walkMaxMin", label: "徒步到車站", format: r => (r.walkMaxMin ? `${r.walkMaxMin} 分內` : "—") },
+  { key: "ageMaxYears", label: "屋齡上限", format: r => (r.ageMaxYears ? `${r.ageMaxYears} 年內` : "—") },
+  { key: "structure", label: "建築結構", format: r => (r.structure && r.structure !== "any" ? labelOf(STRUCTURE_OPTIONS, r.structure) : "—") },
   { key: "rentIdealMan", label: "理想月租", format: r => yen(r.rentIdealMan) },
   { key: "rentMaxMan", label: "最高月租", format: r => yen(r.rentMaxMan) },
   { key: "initialCostMaxMan", label: "初期費用上限", format: r => yen(r.initialCostMaxMan) },
-  { key: "mustHaves", label: "想要的條件", format: r => labelsOf(MUST_HAVE_OPTIONS, r.mustHaves) },
-  { key: "top3", label: "最不能妥協", format: r => labelsOf(MUST_HAVE_OPTIONS, r.top3) },
+  { key: "mustHaves", label: "想要的條件", format: r => labelsOf(MUST_HAVE_LABEL_OPTIONS, r.mustHaves) },
+  { key: "top3", label: "最不能妥協", format: r => labelsOf(MUST_HAVE_LABEL_OPTIONS, r.top3) },
   { key: "adjustable", label: "可以調整", format: r => labelsOf(ADJUSTABLE_OPTIONS, r.adjustable) },
 ];
 

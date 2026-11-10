@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { createAvailabilityAssessment } from '../lib/calculator/availability';
+import { takeCalculatorHandoff } from '../lib/findHome/calculatorBridge';
 import { calculateBuyAffordability, createBuyEstimator } from '../lib/calculator/buyBudget';
 import { createRentEstimator } from '../lib/calculator/rentEstimate';
 import type { CalculatorTabProps } from '../lib/calculator/types';
@@ -179,6 +181,22 @@ export function useCalculatorController(props: CalculatorTabProps) {
     setGuidedVisaType,
     setGuidedApplicationChannel,
   });
+  // 後台「用這些條件開費用試算」：條件放在 sessionStorage，只套用一次就清掉。
+  // 不自動送出分析（會呼叫付費 API），讓你確認條件後自己按。
+  const handoffApplied = useRef(false);
+  useEffect(() => {
+    if (handoffApplied.current) return;
+    const handoff = takeCalculatorHandoff();
+    if (!handoff) return;
+    handoffApplied.current = true;
+    setCalcMode("rent");
+    setRentInputMode("structured");
+    syncCriteriaToForm(handoff.criteria);
+    setAnalysisNotice(`已帶入 ${handoff.label} 的問卷條件。地區只會帶入認得出的行政區、路線與車站，請確認後按下方按鈕分析行情。`);
+    // 只在第一次掛載時檢查
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const {
     analyzeStructuredRent,
     analyzeNaturalLanguageRent,
