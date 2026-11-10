@@ -3,6 +3,7 @@ import { ArrowLeft, Check, ChevronDown, CircleHelp, Copy, Minus, Plus, QrCode, X
 import { applicationRoutes } from "../data/rentStaticSearchData";
 import { linusContact } from "../data/rentGuideData";
 import { requirementLines, requirementText } from "../lib/findHome/lead";
+import { copyToClipboard } from "../lib/clipboard";
 import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
 import { trackAction, trackSource } from "../lib/trackView";
 import {
@@ -58,9 +59,6 @@ function buildSummary(form: FormState, refCode: string | null = null) {
   return requirementText(refCode, requirement, decision);
 }
 
-async function copyText(text: string) {
-  try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
-}
 
 // ───────────────────────── 小元件 ─────────────────────────
 
@@ -640,19 +638,40 @@ export function FindHomeApp() {
   );
 }
 
+/** 複製按鈕。瀏覽器擋住複製時，改顯示文字框讓客人長按複製，不會「按了沒反應」。 */
 function CopyButton({ text, label }: { text: string; label: string }) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "manual">("idle");
   return (
-    <button
-      type="button"
-      onClick={async () => {
-        if (await copyText(text)) { setCopied(true); window.setTimeout(() => setCopied(false), 2000); }
-      }}
-      className="flex min-h-10 items-center gap-1.5 border border-[#00A174] bg-white px-4 text-[13px] font-bold text-[#00A174]"
-    >
-      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-      {copied ? "已複製" : label}
-    </button>
+    <div className={`flex flex-col gap-2 ${state === "manual" ? "w-full basis-full" : ""}`}>
+      <button
+        type="button"
+        onClick={async () => {
+          if (await copyToClipboard(text)) {
+            setState("copied");
+            window.setTimeout(() => setState("idle"), 2000);
+          } else {
+            setState("manual");
+          }
+        }}
+        className="flex min-h-10 items-center justify-center gap-1.5 self-start border border-[#00A174] bg-white px-4 text-[13px] font-bold text-[#00A174]"
+      >
+        {state === "copied" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+        {state === "copied" ? "已複製" : label}
+      </button>
+      {state === "manual" && (
+        <div className="space-y-1.5 text-left">
+          <p className="text-[12px] text-[#854D0E]">這個瀏覽器不允許自動複製，請長按下面的文字，選「全選」再「拷貝」。</p>
+          <textarea
+            readOnly
+            value={text}
+            rows={Math.min(10, text.split("\n").length + 1)}
+            onFocus={e => e.currentTarget.select()}
+            className="w-full border border-[#C9D2CD] bg-[#FAFCFB] p-2.5 text-[13px] leading-relaxed text-[#1A2A22]"
+            aria-label="要複製的文字"
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -691,7 +710,7 @@ function SuccessView({ refCode, nickname, channel, lines, copyText: summary }: {
         </section>
 
         <section className="space-y-3 border border-[#DDE3DF] bg-white p-5" aria-labelledby="my-requirements">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 id="my-requirements" className="text-[16px] font-bold">你填的找房需求</h2>
             <CopyButton text={summary} label="複製" />
           </div>
