@@ -9,9 +9,10 @@ import { PRIVACY_POLICY_VERSION, type Decision, type FindHomeSubmission, type Le
 /**
  * 客戶需求（找房問卷）的儲存。
  *
- * 用「獨立的」Upstash Redis 資料庫（LEADS_REDIS_REST_URL / LEADS_REDIS_REST_TOKEN），
- * 不和統計、限流共用同一個資料庫：統計那邊的 token 外洩不會連帶外洩客戶資料，
- * 備份與刪除也能分開處理。
+ * 連線用獨立的環境變數（LEADS_REDIS_REST_URL / LEADS_REDIS_REST_TOKEN）。
+ * Upstash 免費版只能有一個資料庫，目前填的是和統計同一個資料庫（鍵名 lead: 與 linus: 不衝突）；
+ * 之後升級付費方案，只要把這兩個值換成新資料庫就能分開，程式不用改。
+ * 刻意不沿用 UPSTASH_REDIS_REST_*：本機 .env.local 有那組值，沿用的話本機測試會寫進正式資料庫。
  *
  * 結構（每筆客戶一份完整 JSON，量小，列表一次讀完在前端篩選即可）：
  *   lead:doc:{id}        → Lead JSON

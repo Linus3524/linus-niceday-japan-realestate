@@ -29,7 +29,7 @@
 | 問卷頁（獨立入口，單獨打包） | `find-home.html`、`src/findHome/` |
 | 欄位、選項、驗證（前後端共用） | `src/lib/findHome/schema.ts` |
 | 狀態、維度規則、變更比對 | `src/lib/findHome/lead.ts` |
-| 儲存（獨立 Upstash 資料庫；本機沒設定時用記憶體） | `src/lib/leadStore.ts` |
+| 儲存（Upstash；本機沒設定 `LEADS_REDIS_*` 時用記憶體，不會寫到正式資料庫） | `src/lib/leadStore.ts` |
 | 通知信（Resend） | `src/lib/leadNotify.ts` |
 | 送出 API（公開） | `api/find-home.ts` |
 | 後台 API（`x-admin-token`） | `api/leads.ts` |
@@ -44,7 +44,7 @@
 
 | 變數 | 用途 | 沒設定會怎樣 |
 |---|---|---|
-| `LEADS_REDIS_REST_URL`／`LEADS_REDIS_REST_TOKEN` | 客戶資料庫（**另一個** Upstash 資料庫） | 問卷送出回「系統暫時無法收件」，畫面提供複製內容改用 LINE |
+| `LEADS_REDIS_REST_URL`／`LEADS_REDIS_REST_TOKEN` | 客戶資料庫。Upstash 免費版只能有一個資料庫，所以目前填的是和統計**同一個**資料庫的值（鍵名用 `lead:` 開頭，和統計的 `linus:` 不衝突）；升級付費方案後可換成獨立資料庫，只要改這兩個值 | 問卷送出回「系統暫時無法收件」，畫面提供複製內容改用 LINE |
 | `LEADS_ADMIN_TOKEN` | 後台「客戶需求」密碼（和 `ANALYTICS_TOKEN` 分開） | 客戶需求後台進不去 |
 | `RESEND_API_KEY`／`LEADS_NOTIFY_TO` | 新客通知信；收件人必須是註冊 Resend 的信箱 | 不寄信，後台顯示「通知未寄出」 |
 | `CRON_SECRET` | 每日刪除過期聯絡方式的排程驗證 | 排程被拒；後台開列表時仍會補做 |
