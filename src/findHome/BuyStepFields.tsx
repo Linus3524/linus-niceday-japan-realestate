@@ -86,7 +86,7 @@ export function BuyStepFields({
         <Field
           id="visaType"
           label="你的日本簽證種類"
-          hint="協助確認購屋及貸款諮詢方向；沒有日本簽證也可以填寫。"
+          hint="協助確認購屋及貸款諮詢方向；其他身分或沒有日本簽證請選「其他」。"
           error={errors.visaType}
         >
           {one("visaType", BUY_VISA_OPTIONS)}
@@ -100,6 +100,7 @@ export function BuyStepFields({
                 aria-label="其他簽證種類"
                 className={inputClass}
                 maxLength={LIMITS.visaTypeOther}
+                placeholder="例：沒有日本簽證、其他在留資格"
                 value={r.visaTypeOther || ""}
                 onChange={(e) => select("visaTypeOther", e.target.value)}
               />
@@ -209,7 +210,7 @@ export function BuyStepFields({
             label="理想"
             value={r.budgetIdealMan}
             onChange={(v) => select("budgetIdealMan", v)}
-            placeholder="3000"
+            placeholder="5000"
           />
           <ManInput
             maxDigits={7}
@@ -217,7 +218,7 @@ export function BuyStepFields({
             label="最高"
             value={r.budgetMaxMan}
             onChange={(v) => select("budgetMaxMan", v)}
-            placeholder="5000"
+            placeholder="7000"
           />
         </div>
         <span id="field-budgetMaxMan" />

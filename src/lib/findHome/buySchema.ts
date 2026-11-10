@@ -5,7 +5,6 @@ import {
   GENDER_OPTIONS,
   LIMITS,
   RESIDENCE_OPTIONS,
-  VISA_TYPE_OPTIONS,
   WALK_OPTIONS,
   validateContactStep,
   validateDecision,
@@ -57,10 +56,23 @@ export const BUY_LOAN_OPTIONS = [
   { id: "preapproved", label: "已取得事前審查結果" },
 ] as const;
 export const BUY_VISA_OPTIONS: readonly Option[] = [
-  ...VISA_TYPE_OPTIONS,
-  { id: "none", label: "沒有日本簽證" },
-  { id: "unsure", label: "還不確定" },
+  { id: "日本籍", label: "日本籍" },
+  { id: "技術・人文知識・國際業務", label: "工作簽證" },
+  { id: "永住者", label: "永住" },
+  { id: "經營管理", label: "經營管理簽證" },
+  { id: "留學", label: "留學簽證" },
+  { id: "other", label: "其他" },
 ];
+/** 舊草稿與既有買房需求轉到六分類，保留原本的身分說明。 */
+export function normalizeBuyVisa(visaType = "", visaTypeOther = "") {
+  if (visaType === "留學（日本語學校）") return { visaType: "留學" };
+  const legacy: Record<string, string> = {
+    none: "沒有日本簽證", unsure: "尚未確定", 高度人才: "高度人才",
+    打工度假: "打工度假", 家族滯在: "家族滯在／配偶",
+  };
+  if (Object.hasOwn(legacy, visaType)) return { visaType: "other", visaTypeOther: visaTypeOther || legacy[visaType] };
+  return { visaType, ...(visaType === "other" ? { visaTypeOther } : {}) };
+}
 export const BUY_LAYOUT_OPTIONS: readonly Option[] = [
   "1R",
   "1K",
@@ -172,7 +184,7 @@ export function validateBuyRequirement(
     gender: input?.gender,
     ageRange: input?.ageRange,
     residence: input?.residence,
-    visaType: text(input?.visaType, 50),
+    ...normalizeBuyVisa(text(input?.visaType, 50), text(input?.visaTypeOther, LIMITS.visaTypeOther)),
     funding: input?.funding,
     viewing: input?.viewing,
     purchaseTiming: input?.purchaseTiming,
@@ -196,10 +208,9 @@ export function validateBuyRequirement(
     if (!has(RESIDENCE_OPTIONS, value.residence))
       errors.residence = "請選擇目前住在日本或海外。";
     if (!has(BUY_VISA_OPTIONS, value.visaType))
-      errors.visaType = "請選擇簽證種類，沒有日本簽證也可以填寫。";
+      errors.visaType = "請選擇簽證種類。";
     if (value.visaType === "other") {
-      value.visaTypeOther = text(input?.visaTypeOther, LIMITS.visaTypeOther);
-      if (!value.visaTypeOther) errors.visaTypeOther = "請填寫簽證種類。";
+      if (!value.visaTypeOther) errors.visaTypeOther = "請說明其他身分或簽證種類。";
     }
     if (value.residence === "overseas") {
       value.nationality = text(input?.nationality, LIMITS.nationality);

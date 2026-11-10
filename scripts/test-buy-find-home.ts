@@ -3,6 +3,7 @@ import {
   validateBuyRequirement,
   validateBuySubmission,
   isBuyRequirement,
+  BUY_VISA_OPTIONS,
   type BuyFindHomeSubmission,
 } from "../src/lib/findHome/buySchema";
 import {
@@ -54,7 +55,8 @@ export const buyInput = () => ({
     ageRange: "30s",
     residence: "overseas",
     nationality: "台灣",
-    visaType: "none",
+    visaType: "other",
+    visaTypeOther: "沒有日本簽證",
     funding: "cash",
     viewing: "in-person",
     visitTiming: "明年 3 月來日本",
@@ -103,11 +105,22 @@ function res() {
   };
 }
 const valid = () => validateBuySubmission(buyInput()).value!;
+await test("買房簽證只有指定六項，其他需說明；舊資料保留原身分", () => {
+  assert.deepEqual(BUY_VISA_OPTIONS.map(o => o.label), ["日本籍", "工作簽證", "永住", "經營管理簽證", "留學簽證", "其他"]);
+  const input = buyInput().requirement;
+  assert.ok(validateBuyRequirement({ ...input, visaType: "other", visaTypeOther: "" }).errors.visaTypeOther);
+  const old = validateBuyRequirement({ ...input, visaType: "none", visaTypeOther: "" }).value;
+  assert.equal(old.visaType, "other");
+  assert.equal(old.visaTypeOther, "沒有日本簽證");
+  assert.equal(validateBuyRequirement({ ...input, visaType: "留學（日本語學校）" }).value.visaType, "留學");
+  assert.match(requirementText(null, old), /簽證種類：沒有日本簽證/);
+});
 await test("原買房七題加性別、年齡、簽證可完整驗證；沒有簽證的海外買家可填", () => {
   const p = validateBuySubmission(buyInput());
   assert.equal(p.ok, true, JSON.stringify(p.errors));
   assert.equal(p.value!.requirement.budgetMaxMan, 5000);
-  assert.equal(p.value!.requirement.visaType, "none");
+  assert.equal(p.value!.requirement.visaType, "other");
+  assert.equal(p.value!.requirement.visaTypeOther, "沒有日本簽證");
   assert.equal(p.value!.requirement.floorMin, 2);
   assert.equal(p.value!.requirement.visitTiming, "明年 3 月來日本");
   assert.equal(p.value!.decision.applicationRoutes, undefined);

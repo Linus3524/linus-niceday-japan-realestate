@@ -20,6 +20,7 @@ import {
   BUY_TIMING_OPTIONS,
   BUY_VIEWING_OPTIONS,
   BUY_VISA_OPTIONS,
+  normalizeBuyVisa,
   type BuyRequirement,
 } from "./buySchema.js";
 import type { Dimensions } from "./lead.js";
@@ -50,10 +51,10 @@ export const BUY_REQUIREMENT_FIELDS: {
   {
     key: "visaType",
     label: "簽證種類",
-    format: (r) =>
-      r.visaType === "other"
-        ? r.visaTypeOther || "其他"
-        : labelOf(BUY_VISA_OPTIONS, r.visaType),
+    format: (r) => {
+      const visa = normalizeBuyVisa(r.visaType, r.visaTypeOther);
+      return visa.visaType === "other" ? visa.visaTypeOther || "其他" : labelOf(BUY_VISA_OPTIONS, visa.visaType);
+    },
   },
   {
     key: "funding",

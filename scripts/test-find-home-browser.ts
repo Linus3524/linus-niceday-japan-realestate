@@ -164,7 +164,9 @@ try {
   await choice("gender", "女性");
   await choice("ageRange", "30–39 歲");
   await choice("residence", "海外");
-  await choice("visaType", "沒有日本簽證");
+  assert.deepEqual(await page.locator("#field-visaType > div").first().getByRole("button").allTextContents(), ["日本籍", "工作簽證", "永住", "經營管理簽證", "留學簽證", "其他"]);
+  await choice("visaType", "其他");
+  await page.getByRole("textbox", { name: "其他簽證種類", exact: true }).fill("沒有日本簽證");
   await page.getByRole("textbox", { name: "國籍", exact: true }).fill("台灣");
   await choice("funding", "全款現金");
   await choice("viewing", "會來日本實地看房");
@@ -179,6 +181,8 @@ try {
     fullPage: true,
   });
   await next();
+  assert.equal(await page.locator("#buy-budget-ideal").getAttribute("placeholder"), "5000");
+  assert.equal(await page.locator("#buy-budget-max").getAttribute("placeholder"), "7000");
   await page.locator("#buy-budget-ideal").fill("3000");
   await page.locator("#buy-budget-max").fill("5000");
   await choice("budgetScope", "含購屋費用的總預算");
