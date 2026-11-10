@@ -455,7 +455,7 @@ export function FindHomeApp() {
               </Field>
               <span id="field-rentMaxMan" />
               <Field id="initialCostMaxMan" label="初期費用上限" optional hint="押金、禮金、仲介費等搬入時一次付清的費用。" error={errors.initialCostMaxMan}>
-                <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="40" /></div>
+                <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="80" /></div>
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field id="walkMaxMin" label="徒步到車站">
