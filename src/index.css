@@ -6923,7 +6923,7 @@ button.ui-switch-large:focus-visible {
 }
 
 /* LINE 名片與首頁場景同步：保留原圖比例，預載四張肖像後交叉淡入。 */
-.theme-contact-portrait { position: relative; display: block; width: 100%; height: 100%; }
+.theme-contact-portrait { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; }
 .contact-flip-face .theme-contact-portrait img {
   position: absolute;
   inset: 0;
@@ -6934,6 +6934,11 @@ button.ui-switch-large:focus-visible {
   transition: opacity 1.2s ease;
 }
 .contact-flip-face .theme-contact-portrait img.is-active { opacity: 1; }
+/* 以頭部份量與眼睛高度校準視覺重心；胸口超出的部分由共用外框齊底裁切。 */
+.theme-contact-portrait .theme-contact-portrait--orange { transform: translate(-3%, 7%) scale(1.1); }
+.theme-contact-portrait .theme-contact-portrait--lemon { transform: translate(-4%, 5%) scale(1.22); }
+.theme-contact-portrait .theme-contact-portrait--apple { transform: translate(-2%, 4%); }
+.theme-contact-portrait .theme-contact-portrait--grape { transform: translateX(5%); }
 .desk-app .about-profile-line,
 .desk-app #add-line-btn-hero {
   background-color: var(--closing-accent);
