@@ -6951,3 +6951,31 @@ button.ui-switch-large:focus-visible {
   .contact-flip-face .theme-contact-portrait img,
   .desk-app .about-profile-line, .desk-app #add-line-btn-hero { transition: none; }
 }
+
+/* 手機／平板中段與首頁場景同步，避免沿用介紹區原本固定的綠色。 */
+@media not all and (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  .about-flow { --hero-accent: var(--closing-accent); }
+  .about-flow .about-section-en,
+  .about-flow .about-numbers strong,
+  .about-flow .about-card-no span,
+  .about-flow .about-card-label,
+  .about-flow .about-facts dt,
+  .about-flow .about-reason-no,
+  .about-flow .about-step-no,
+  .about-flow .about-card-icon,
+  .about-flow .about-reason-icon,
+  .about-flow .about-profile-copy:hover,
+  .about-flow .about-card-link:hover {
+    color: var(--closing-accent);
+    transition: color 1.2s ease;
+  }
+  .about-flow .about-page > .about-section:nth-of-type(2)::before,
+  .about-flow .about-page > .about-section:nth-of-type(5)::before {
+    background: var(--closing-bg);
+    border-color: var(--closing-line);
+    transition: background-color 1.2s ease, border-color 1.2s ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-flow *, .about-flow *::before { transition: none; }
+}
