@@ -1,6 +1,6 @@
 import {
   ADJUSTABLE_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_OPTIONS, ON_MATCH_OPTIONS,
-  OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, labelOf, labelsOf,
+  OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
   type ContactChannel, type ContactTime, type Decision, type LeadSource, type Requirement,
 } from "./schema.js";
 
@@ -214,8 +214,10 @@ export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format
   { key: "moveIn", label: "入住時間", format: r => (r.moveIn === "date" ? `指定 ${r.moveInDate ?? "—"}` : labelOf(MOVE_IN_OPTIONS, r.moveIn)) },
   { key: "reasons", label: "搬家原因", format: r => labelsOf(REASON_OPTIONS, r.reasons) + (r.reasonOther ? `（${r.reasonOther}）` : "") },
   { key: "residence", label: "目前住在", format: r => labelOf(RESIDENCE_OPTIONS, r.residence) },
+  { key: "visaType", label: "簽證種類", format: r => (r.visaType ? (r.visaType === "other" ? `其他（${r.visaTypeOther || "—"}）` : labelOf(VISA_TYPE_OPTIONS, r.visaType)) : "—") },
+  { key: "nationality", label: "國籍", format: r => r.nationality || "—" },
   { key: "entryDate", label: "預計入境", format: r => r.entryDate || "—" },
-  { key: "visa", label: "簽證狀態", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
+  { key: "visa", label: "簽證辦理進度", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
   { key: "areas", label: "希望地區", format: r => r.areas || "—" },
   { key: "commuteTarget", label: "每天要去", format: r => r.commuteTarget || "—" },
   { key: "occupants", label: "入住人數", format: r => `${r.occupants} 人` },
@@ -235,6 +237,24 @@ export const DECISION_FIELDS: { key: keyof Decision; label: string; format: (d: 
   { key: "otherAgents", label: "其他仲介", format: d => (d.otherAgents ? labelOf(OTHER_AGENTS_OPTIONS, d.otherAgents) : "—") },
   { key: "note", label: "補充說明", format: d => d.note || "—" },
 ];
+
+/**
+ * 需求清單文字：通知信、客人完成頁的「複製我的需求」、後台的「複製需求」共用。
+ * 沒填的欄位略過，貼到 LINE 比較精簡。不含稱呼與聯絡方式。
+ */
+export function requirementLines(req: Requirement, decision?: Decision): string[] {
+  const lines = REQUIREMENT_FIELDS
+    .map(field => [field.label, field.format(req)] as const)
+    .filter(([, value]) => value && value !== "—");
+  const decisionLines = decision
+    ? DECISION_FIELDS.map(field => [field.label, field.format(decision)] as const).filter(([, value]) => value && value !== "—")
+    : [];
+  return [...lines, ...decisionLines].map(([label, value]) => `${label}：${value}`);
+}
+
+export function requirementText(refCode: string | null, req: Requirement, decision?: Decision): string {
+  return [`【找房需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
+}
 
 /** 比對兩份需求，列出有變的欄位（前值、後值都是顯示用文字）。 */
 export function diffRequirement(before: Requirement, after: Requirement, beforeDecision?: Decision, afterDecision?: Decision): Revision["changes"] {

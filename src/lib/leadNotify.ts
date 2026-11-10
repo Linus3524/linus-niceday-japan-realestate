@@ -1,5 +1,5 @@
 import { LEAD_SOURCE_LABEL, MOVE_IN_OPTIONS, labelOf } from "./findHome/schema.js";
-import type { Lead } from "./findHome/lead.js";
+import { requirementText, type Lead } from "./findHome/lead.js";
 
 /**
  * 新客通知信（Resend）。
@@ -22,19 +22,27 @@ export function leadNotifyConfigured() {
 export function buildLeadEmail(lead: Lead, kind: "new" | "updated") {
   const req = lead.requirement;
   const moveIn = req.moveIn === "date" ? `指定 ${req.moveInDate}` : labelOf(MOVE_IN_OPTIONS, req.moveIn);
-  const residence = req.residence === "overseas" ? `海外${req.entryDate ? `，${req.entryDate.slice(5).replace("-", "/")} 入境` : ""}` : "日本";
-  const subject = kind === "new" ? `【住好日】新的找房需求 ${lead.refCode}` : `【住好日】找房需求更新 ${lead.refCode}`;
+  const subject = kind === "new"
+    ? `【住好日】新的找房需求 ${lead.refCode}｜${moveIn}・${req.areas.slice(0, 20)}`
+    : `【住好日】找房需求更新 ${lead.refCode}`;
   const link = `${SITE_URL}/#admin/leads/${lead.id}`;
+  const submittedAt = new Intl.DateTimeFormat("zh-TW", {
+    timeZone: "Asia/Tokyo", year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
+  }).format(new Date(lead.updatedAt || lead.createdAt));
+  const latest = kind === "updated" ? lead.revisions[0] : undefined;
   const text = [
-    kind === "new" ? "有新的找房需求。" : "同一位客人重新填寫了問卷，需求可能有變。",
+    kind === "new" ? "有新的找房需求。" : "同一位客人重新填寫了問卷。",
+    `來源：${LEAD_SOURCE_LABEL[lead.source] ?? lead.source}　送出：${submittedAt}（東京時間）`,
     "",
-    `參考碼：${lead.refCode}`,
-    `來源：${LEAD_SOURCE_LABEL[lead.source] ?? lead.source}`,
-    `入住：${moveIn}（${residence}）`,
-    `地區：${req.areas}`,
-    `預算：最高 ${req.rentMaxMan} 萬円`,
+    ...(latest?.changes.length
+      ? ["這次改了：", ...latest.changes.map(change => `・${change.label}：${change.before} → ${change.after}`), ""]
+      : []),
+    "下面這段可以直接複製到 LINE 跟客人確認：",
+    "────────",
+    requirementText(lead.refCode, req, lead.decision),
+    "────────",
     "",
-    `查看完整需求：${link}`,
+    `後台（看聯絡方式、標記進度）：${link}`,
     "（信中不含客人的稱呼與聯絡方式）",
   ].join("\n");
   return { subject, text };

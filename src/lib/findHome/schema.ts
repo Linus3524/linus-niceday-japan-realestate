@@ -34,6 +34,20 @@ export const RESIDENCE_OPTIONS = [
   { id: "overseas", label: "海外" },
 ] as const satisfies readonly Option[];
 
+/** 簽證種類（在留資格）。在日本或海外都要填；日籍、永住者不必再問辦理進度。 */
+export const VISA_TYPE_OPTIONS = [
+  { id: "work", label: "工作簽證" },
+  { id: "student", label: "留學簽證" },
+  { id: "working-holiday", label: "打工度假簽證" },
+  { id: "japanese", label: "日籍" },
+  { id: "permanent", label: "永住者" },
+  { id: "other", label: "其他" },
+] as const satisfies readonly Option[];
+
+/** 不需要再問簽證辦理進度的身分。 */
+export const NO_VISA_PROCESS: readonly string[] = ["japanese", "permanent"];
+
+/** 簽證辦理進度（海外、且需要辦簽證時才問）。 */
 export const VISA_OPTIONS = [
   { id: "issued", label: "已核發" },
   { id: "applying", label: "申請中" },
@@ -112,6 +126,7 @@ export type MoveIn = Ids<typeof MOVE_IN_OPTIONS>;
 export type Reason = Ids<typeof REASON_OPTIONS>;
 export type Residence = Ids<typeof RESIDENCE_OPTIONS>;
 export type Visa = Ids<typeof VISA_OPTIONS>;
+export type VisaType = Ids<typeof VISA_TYPE_OPTIONS>;
 export type Layout = Ids<typeof LAYOUT_OPTIONS>;
 export type MustHave = Ids<typeof MUST_HAVE_OPTIONS>;
 export type Adjustable = Ids<typeof ADJUSTABLE_OPTIONS>;
@@ -129,7 +144,10 @@ export interface Requirement {
   reasonOther?: string;
   residence: Residence;
   entryDate?: string; // YYYY-MM-DD，海外必填
-  visa?: Visa; // 海外必填
+  visaType?: VisaType; // 必填（舊資料可能沒有）
+  visaTypeOther?: string; // visaType = other 時必填
+  nationality?: string; // 海外必填
+  visa?: Visa; // 海外且需要辦簽證時必填
   areas: string;
   commuteTarget?: string;
   occupants: number;
@@ -165,13 +183,15 @@ export interface FindHomeSubmission {
 }
 
 /** 隱私權政策版本：條文改了就改這裡，同意紀錄會存下當時的版本。 */
-export const PRIVACY_POLICY_VERSION = "2026-11-10";
+export const PRIVACY_POLICY_VERSION = "2026-11-10.2";
 
 export const LIMITS = {
   nickname: 30,
   areas: 120,
   commuteTarget: 120,
   reasonOther: 80,
+  visaTypeOther: 40,
+  nationality: 30,
   note: 500,
   contact: 100,
   maxOccupants: 8,
@@ -256,7 +276,10 @@ export const CONTACT_ERROR: Record<ContactChannel, string> = {
 /** 每一步要檢查的欄位，前端按「下一步」時只驗證這一步。 */
 export type StepId = 1 | 2 | 3 | 4;
 
-export function validateRequirement(input: any, step?: StepId): { value: Requirement; errors: FieldErrors } {
+/**
+ * lenient：後台修改用。舊資料沒有後來才加的欄位（簽證種類、國籍），後台改其他欄位時不因此被擋。
+ */
+export function validateRequirement(input: any, step?: StepId, lenient = false): { value: Requirement; errors: FieldErrors } {
   const errors: FieldErrors = {};
   const check = (s: StepId) => step === undefined || step === s;
 
@@ -297,11 +320,23 @@ export function validateRequirement(input: any, step?: StepId): { value: Require
       if (other) value.reasonOther = other;
     }
     if (!residence) errors.residence = "請選擇目前住在日本或海外。";
+    if (has(VISA_TYPE_OPTIONS, input?.visaType)) value.visaType = input.visaType;
+    else if (!lenient) errors.visaType = "請選擇簽證種類。";
+    if (value.visaType === "other") {
+      const other = cleanText(input?.visaTypeOther, LIMITS.visaTypeOther);
+      if (other) value.visaTypeOther = other;
+      else if (!lenient) errors.visaTypeOther = "請填寫簽證種類。";
+    }
     if (residence === "overseas") {
+      const nationality = cleanText(input?.nationality, LIMITS.nationality);
+      if (nationality) value.nationality = nationality;
+      else if (!lenient) errors.nationality = "請填寫國籍。";
       if (isValidDate(input?.entryDate)) value.entryDate = input.entryDate;
-      else errors.entryDate = "請選擇預計入境日期（大概的日期也可以）。";
-      if (has(VISA_OPTIONS, input?.visa)) value.visa = input.visa;
-      else errors.visa = "請選擇簽證狀態。";
+      else if (!lenient || input?.entryDate) errors.entryDate = "請選擇預計入境日期（大概的日期也可以）。";
+      if (!value.visaType || !NO_VISA_PROCESS.includes(value.visaType)) {
+        if (has(VISA_OPTIONS, input?.visa)) value.visa = input.visa;
+        else if (!lenient) errors.visa = "請選擇簽證辦理進度。";
+      }
     }
     if (!value.areas) errors.areas = "請填想住的地區、路線或車站。";
     const commute = cleanText(input?.commuteTarget, LIMITS.commuteTarget);
@@ -379,7 +414,7 @@ export function validateSubmission(input: any): { ok: boolean; value?: FindHomeS
 
 /** 欄位屬於哪一步：後端回傳錯誤時，前端跳回第一個有錯的步驟。 */
 export const FIELD_STEP: Record<string, StepId> = {
-  moveIn: 1, moveInDate: 1, residence: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
+  moveIn: 1, moveInDate: 1, residence: 1, visaType: 1, visaTypeOther: 1, nationality: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
   rentIdealMan: 2, rentMaxMan: 2, initialCostMaxMan: 2, adjustable: 2,
   onMatch: 3,
   nickname: 4, contact: 4, privacyAck: 4,

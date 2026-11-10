@@ -3,7 +3,8 @@
  *   npm run test:find-home
  */
 import assert from "node:assert/strict";
-import { computeDimensions, diffRequirement } from "../src/lib/findHome/lead";
+import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
+import { buildLeadEmail } from "../src/lib/leadNotify";
 import { normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
 import {
   MemoryBackend, deleteLead, getLead, listLeads, patchLead, purgeExpiredContacts, removeContact, setLeadBackendForTests, submitLead,
@@ -24,6 +25,7 @@ const validInput = () => ({
   privacyAck: true,
   requirement: {
     moveIn: "1m", reasons: ["commute"], residence: "overseas", entryDate: "2027-03-15", visa: "issued",
+    visaType: "work", nationality: "台灣",
     areas: "中野、高圓寺", commuteTarget: "新宿站", occupants: 1, layouts: ["1K", "1DK"], minAreaSqm: "",
     rentIdealMan: "8.5", rentMaxMan: "10", initialCostMaxMan: "", mustHaves: ["separate-bath", "near-station"],
     top3: ["near-station", "autolock"], adjustable: ["budget", "area"],
@@ -60,6 +62,58 @@ await test("海外必填入境日期與簽證；最高月租不能低於理想",
   assert.equal(result.ok, false);
   assert.ok(result.errors!.entryDate);
   assert.ok(result.errors!.rentMaxMan);
+});
+
+await test("簽證種類必填；其他要自填；海外要國籍；日籍與永住者不問辦理進度", () => {
+  const input = validInput();
+  delete (input.requirement as any).visaType;
+  delete (input.requirement as any).nationality;
+  let result = validateSubmission(input);
+  assert.ok(result.errors!.visaType && result.errors!.nationality);
+  (input.requirement as any).visaType = "other";
+  (input.requirement as any).nationality = "台灣";
+  result = validateSubmission(input);
+  assert.ok(result.errors!.visaTypeOther);
+  (input.requirement as any).visaType = "permanent";
+  delete (input.requirement as any).visa;
+  result = validateSubmission(input);
+  assert.equal(result.ok, true);
+  assert.equal(result.value!.requirement.visa, undefined);
+  // 在日本：不問國籍
+  const japan = validInput();
+  japan.requirement.residence = "japan";
+  delete (japan.requirement as any).nationality;
+  assert.equal(validateSubmission(japan).ok, true);
+  // 後台修改舊資料（沒有簽證種類）不會被擋
+  const old = validInput().requirement as any;
+  delete old.visaType; delete old.nationality;
+  assert.deepEqual(validateRequirement(old, undefined, true).errors, {});
+});
+
+await test("需求清單文字：略過沒填的欄位、含參考碼、不含聯絡方式", () => {
+  const value = validateSubmission(validInput()).value!;
+  const text = requirementText("FH-TEST", value.requirement, value.decision);
+  assert.ok(text.startsWith("【找房需求 FH-TEST】"));
+  assert.ok(text.includes("簽證種類：工作簽證"));
+  assert.ok(text.includes("國籍：台灣"));
+  assert.ok(text.includes("最高月租：¥100,000"));
+  assert.equal(text.includes("最小面積"), false);
+  assert.equal(text.includes("Kobayashi"), false);
+});
+
+await test("通知信內文：完整需求、後台連結，不含稱呼與聯絡方式", () => {
+  const value = validateSubmission(validInput()).value!;
+  const lead: any = {
+    id: "ABCDEFGHJKMNPQRS", refCode: "FH-TEST", createdAt: "2026-11-10T03:00:00Z", updatedAt: "2026-11-10T03:00:00Z",
+    source: "line", nickname: "小林", contact: value.contact, requirement: value.requirement, decision: value.decision, revisions: [],
+  };
+  const mail = buildLeadEmail(lead, "new");
+  assert.ok(mail.subject.includes("FH-TEST"));
+  assert.ok(mail.text.includes("希望地區：中野、高圓寺"));
+  assert.ok(mail.text.includes("找到合適物件時：想儘快申請"));
+  assert.ok(mail.text.includes("/#admin/leads/ABCDEFGHJKMNPQRS"));
+  assert.equal(mail.text.includes("小林"), false);
+  assert.equal(mail.text.includes("Kobayashi"), false);
 });
 
 await test("「維持原條件」與其他可調整項目互斥", () => {

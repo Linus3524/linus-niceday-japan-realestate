@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowLeft, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
 import {
-  DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, tokyoToday,
+  DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
   type Lead, type LeadSummary, type Level,
 } from "../../lib/findHome/lead";
 import {
@@ -452,7 +452,21 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
         </div>
 
         <div className="space-y-4">
-          <Section title="找房需求" aside={!editing && <button type="button" onClick={() => setEditing(true)} className="text-xs font-bold text-[#00A174]">修改需求</button>}>
+          <Section title="找房需求" aside={!editing && (
+            <span className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={async () => {
+                  try { await navigator.clipboard.writeText(requirementText(lead.refCode, req, lead.decision)); setNotice("需求已複製，可以貼到 LINE 跟客人確認"); }
+                  catch { setError("無法複製，請改用通知信裡的文字。"); }
+                }}
+                className="flex items-center gap-1 text-xs font-bold text-[#3F5147] hover:text-[#00A174]"
+              >
+                <Copy className="h-3.5 w-3.5" />複製需求
+              </button>
+              <button type="button" onClick={() => setEditing(true)} className="text-xs font-bold text-[#00A174]">修改需求</button>
+            </span>
+          )}>
             {editing ? (
               <RequirementEditor
                 requirement={req}
