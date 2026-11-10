@@ -6937,11 +6937,9 @@ button.ui-switch-large:focus-visible {
 .desk-app .about-profile-line,
 .desk-app #add-line-btn-hero {
   background-color: var(--closing-accent);
-  color: var(--closing-button-ink, #fff);
+  color: #fff;
   transition: background-color 1.2s ease, color 1.2s ease;
 }
-/* 亮藍與橘色底配深墨色，維持按鈕小字的對比。 */
-.footer-theme--lemon, .footer-theme--grape { --closing-button-ink: #1A2A22; }
 .desk-app .about-profile-line:hover,
 .desk-app #add-line-btn-hero:hover { box-shadow: inset 0 0 0 2px var(--closing-ink); }
 @media (prefers-reduced-motion: reduce) {
