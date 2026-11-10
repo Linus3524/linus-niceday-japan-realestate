@@ -150,7 +150,7 @@ function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; on
       {APPLICATION_ROUTE_OPTIONS.map(option => {
         const on = selected.includes(option.id);
         const route = applicationRoutes.find(item => item.title === option.label);
-        const explanation = route ? `${route.condition}。${route.body}` : "";
+        const explanation = route ? `${route.condition}。${route.body}\n房源：${route.availability}。${route.market}` : "";
         return (
           <div key={option.id} className={`border ${on ? "border-[#00A174] bg-[#F0FAF6]" : "border-[#DDE3DF] bg-white"}`}>
             <div className="flex items-stretch">
@@ -166,7 +166,7 @@ function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; on
                 </span>
                 <span className="min-w-0">
                   <span className={`block text-[14px] ${on ? "font-bold text-[#1A2A22]" : "text-[#3F5147]"}`}>{option.label}</span>
-                  {route && <span className="block text-[12px] text-[#66736C]">{route.condition}・{route.note}</span>}
+                  {route && <span className="block text-[12px] text-[#66736C]">{route.condition}・{route.availability}</span>}
                 </span>
               </button>
               {route && (
@@ -186,6 +186,7 @@ function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; on
               <div className="space-y-1.5 border-t border-[#DDE3DF] bg-white px-3.5 py-3 text-[12px] leading-relaxed text-[#3F5147]">
                 <p>{route.body}</p>
                 <p className="text-[#66736C]">例：{route.example}</p>
+                <p><b className="text-[#1A2A22]">房源多寡：</b>{route.market}</p>
               </div>
             )}
           </div>
@@ -520,7 +521,7 @@ export function FindHomeApp() {
               <Field id="onMatch" label="找到符合主要條件的房子時，你會？" error={errors.onMatch}>
                 <OptionList options={ON_MATCH_OPTIONS} value={d.onMatch} onChange={id => setDec({ onMatch: id })} />
               </Field>
-              <Field id="applicationRoutes" label="可以接受哪些申請方式？" optional hint="可複選。熱門物件常常還沒退租就要先申請，能接受的方式越多，選擇越多。不確定可以先跳過，Linus 會再說明。">
+              <Field id="applicationRoutes" label="可以接受哪些申請方式？" optional hint="可複選。租金合理、地段好的熱門物件，多半在前租客退租前就以「先行契約」租出；只接受一般申請，能選的房子會少很多。不確定可以先跳過，Linus 會再說明。">
                 <ApplicationRoutePicker selected={d.applicationRoutes || []} onToggle={id => setDec({ applicationRoutes: toggle(d.applicationRoutes || [], id) })} />
               </Field>
               <Field id="ifNotFound" label="如果一個月內還找不到？" optional>
