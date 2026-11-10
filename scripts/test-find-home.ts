@@ -224,4 +224,26 @@ await test("/api/leads?task=purge 需要 CRON_SECRET", async () => {
   assert.equal(ok.statusCode, 200);
 });
 
+await test("/api/leads：沒設 LEADS_ADMIN_TOKEN 時沿用 ANALYTICS_TOKEN", async () => {
+  delete process.env.LEADS_ADMIN_TOKEN;
+  process.env.ANALYTICS_TOKEN = "stats-token-456";
+  const res = mockRes();
+  await leadsHandler({ method: "GET", headers: { "x-admin-token": "stats-token-456" }, query: {} }, res);
+  assert.equal(res.statusCode, 200);
+});
+
+await test("沒設 CRON_SECRET：只接受 Vercel Cron，且一小時內只跑一次", async () => {
+  delete process.env.CRON_SECRET;
+  const outsider = mockRes();
+  await leadsHandler({ method: "GET", headers: { "user-agent": "curl/8" }, query: { task: "purge" } }, outsider);
+  assert.equal(outsider.statusCode, 401);
+  const first = mockRes();
+  await leadsHandler({ method: "GET", headers: { "user-agent": "vercel-cron/1.0" }, query: { task: "purge" } }, first);
+  assert.equal(first.statusCode, 200);
+  assert.equal(first.body.skipped, undefined);
+  const second = mockRes();
+  await leadsHandler({ method: "GET", headers: { "user-agent": "vercel-cron/1.0" }, query: { task: "purge" } }, second);
+  assert.equal(second.body.skipped, true);
+});
+
 console.log(`\n${passed} passed`);

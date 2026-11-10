@@ -42,11 +42,15 @@
 
 ## 環境變數（Vercel → Settings → Environment Variables）
 
-| 變數 | 用途 | 沒設定會怎樣 |
-|---|---|---|
-| `LEADS_REDIS_REST_URL`／`LEADS_REDIS_REST_TOKEN` | 客戶資料庫。Upstash 免費版只能有一個資料庫，所以目前填的是和統計**同一個**資料庫的值（鍵名用 `lead:` 開頭，和統計的 `linus:` 不衝突）；升級付費方案後可換成獨立資料庫，只要改這兩個值 | 問卷送出回「系統暫時無法收件」，畫面提供複製內容改用 LINE |
-| `LEADS_ADMIN_TOKEN` | 後台「客戶需求」密碼（和 `ANALYTICS_TOKEN` 分開） | 客戶需求後台進不去 |
-| `RESEND_API_KEY`／`LEADS_NOTIFY_TO` | 新客通知信；收件人必須是註冊 Resend 的信箱 | 不寄信，後台顯示「通知未寄出」 |
-| `CRON_SECRET` | 每日刪除過期聯絡方式的排程驗證 | 排程被拒；後台開列表時仍會補做 |
+目前設定：**只需要另外加 `RESEND_API_KEY` 與 `LEADS_NOTIFY_TO`**，其他都沿用既有設定。
 
-改完環境變數要 Redeploy 才生效。本機開發把同樣的變數放 `.env.local`（`LEADS_REDIS_*` 不設就用記憶體，重開伺服器資料會消失）。
+| 變數 | 用途 | 沒設定時 |
+|---|---|---|
+| `RESEND_API_KEY`／`LEADS_NOTIFY_TO` | 新客通知信；收件人必須是註冊 Resend 的信箱 | 不寄信，後台顯示「通知未寄出」 |
+| `LEADS_REDIS_REST_URL`／`LEADS_REDIS_REST_TOKEN`（選填） | 客戶資料庫 | 線上沿用統計的 `UPSTASH_REDIS_REST_*`（Upstash 免費版只能有一個資料庫；鍵名 `lead:` 與統計的 `linus:` 不衝突）。升級後想分開，只要設這兩個 |
+| `LEADS_ADMIN_TOKEN`（選填） | 後台「客戶需求」密碼 | 沿用統計後台的 `ANALYTICS_TOKEN`，同一組密碼 |
+| `CRON_SECRET`（選填） | 每日刪除過期聯絡方式的排程驗證 | 只接受 Vercel Cron 的請求，且每小時最多執行一次 |
+
+改完環境變數要 Redeploy 才生效。
+
+本機開發：`.env.local` 不要設 `LEADS_REDIS_*`，本機會用記憶體（重開伺服器資料就消失），不會沿用統計資料庫，測試資料不會寫進正式站。本機需要 `LEADS_ADMIN_TOKEN` 才進得了客戶需求後台。

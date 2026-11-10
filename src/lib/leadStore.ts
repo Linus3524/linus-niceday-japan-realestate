@@ -12,7 +12,7 @@ import { PRIVACY_POLICY_VERSION, type Decision, type FindHomeSubmission, type Le
  * 連線用獨立的環境變數（LEADS_REDIS_REST_URL / LEADS_REDIS_REST_TOKEN）。
  * Upstash 免費版只能有一個資料庫，目前填的是和統計同一個資料庫（鍵名 lead: 與 linus: 不衝突）；
  * 之後升級付費方案，只要把這兩個值換成新資料庫就能分開，程式不用改。
- * 刻意不沿用 UPSTASH_REDIS_REST_*：本機 .env.local 有那組值，沿用的話本機測試會寫進正式資料庫。
+ * 沒設定 LEADS_REDIS_* 時：線上自動沿用 UPSTASH_REDIS_REST_*；本機不沿用（.env.local 有那組值，沿用會把測試資料寫進正式資料庫）。
  *
  * 結構（每筆客戶一份完整 JSON，量小，列表一次讀完在前端篩選即可）：
  *   lead:doc:{id}        → Lead JSON
@@ -113,8 +113,10 @@ const devMemory = new MemoryBackend();
 
 function resolveBackend(): LeadBackend | null {
   if (backend !== undefined) return backend;
-  const url = process.env.LEADS_REDIS_REST_URL;
-  const token = process.env.LEADS_REDIS_REST_TOKEN;
+  // 沒另外設定時，線上（NODE_ENV=production）沿用統計那組 Upstash；本機開發不沿用，避免測試資料寫進正式資料庫。
+  const shareStats = process.env.NODE_ENV === "production";
+  const url = process.env.LEADS_REDIS_REST_URL || (shareStats ? process.env.UPSTASH_REDIS_REST_URL : undefined);
+  const token = process.env.LEADS_REDIS_REST_TOKEN || (shareStats ? process.env.UPSTASH_REDIS_REST_TOKEN : undefined);
   if (url && token) backend = new RedisBackend(new Redis({ url, token }));
   else backend = process.env.NODE_ENV === "production" ? null : devMemory;
   return backend;
@@ -392,6 +394,11 @@ export async function setNotifyStatus(id: string, status: Lead["notify"], now = 
     lead.notify = { ...status, at: nowIso(now) };
     return lead;
   }, now);
+}
+
+/** 每日排程的節流鎖：同一段時間只跑一次，避免沒有 CRON_SECRET 時被外部反覆觸發。 */
+export async function tryAcquirePurgeLock(seconds = 3600): Promise<boolean> {
+  return store().set("lead:purge-lock", Date.now(), { nx: true, ex: seconds });
 }
 
 /** 客人要求刪除時用：整筆資料（含索引、參考碼、聯絡方式比對鍵）全部刪除。 */

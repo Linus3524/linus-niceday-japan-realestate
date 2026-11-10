@@ -10,10 +10,11 @@ import {
 
 /**
  * 後台：客戶需求（#admin/leads、#admin/leads/{id}）。
- * 密碼與統計後台分開（LEADS_ADMIN_TOKEN），一樣存在 sessionStorage，關分頁就忘。
+ * 密碼預設和網站統計同一組（伺服器端沒設 LEADS_ADMIN_TOKEN 時沿用 ANALYTICS_TOKEN），存在 sessionStorage，關分頁就忘。
  */
 
 const TOKEN_KEY = "linus-leads-admin-token";
+const STATS_TOKEN_KEY = "linus-analytics-token";
 const STATUS_LABEL = Object.fromEntries(LEAD_STATUSES.map(item => [item.id, item.label])) as Record<string, string>;
 const FEAS_LABEL = Object.fromEntries(FEASIBILITY_OPTIONS.map(item => [item.id, item.label])) as Record<string, string>;
 const CHANNEL_NAME: Record<string, string> = { line: "LINE", wechat: "WeChat", email: "Email", whatsapp: "WhatsApp" };
@@ -83,7 +84,10 @@ function DimBadges({ dims }: { dims: Record<"urgency" | "readiness" | "flexibili
 }
 
 export function LeadsAdmin({ leadId, onOpen, onBackToList }: { leadId: string | null; onOpen: (id: string) => void; onBackToList: () => void }) {
-  const [token, setToken] = useState(() => { try { return sessionStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; } });
+  // 和網站統計共用同一組密碼時，統計那邊登入過就不用再輸入一次。
+  const [token, setToken] = useState(() => {
+    try { return sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(STATS_TOKEN_KEY) || ""; } catch { return ""; }
+  });
   const [tokenInput, setTokenInput] = useState("");
   const [authError, setAuthError] = useState<string | null>(null);
   const logout = useCallback(() => {
@@ -104,13 +108,13 @@ export function LeadsAdmin({ leadId, onOpen, onBackToList }: { leadId: string | 
     return (
       <div className="mx-auto max-w-md border border-[#DDE3DF] bg-white p-8">
         <h2 className="font-serif text-xl font-bold">客戶需求</h2>
-        <p className="mt-1.5 text-xs text-[#3F5147]">這裡看得到客人的聯絡方式，密碼和網站統計分開。</p>
+        <p className="mt-1.5 text-xs text-[#3F5147]">輸入後台密碼（和網站統計同一組）。這裡看得到客人的聯絡方式，請勿在別人的電腦上登入。</p>
         <input
           type="password"
           value={tokenInput}
           onChange={e => setTokenInput(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter") submit(); }}
-          placeholder="貼上客戶需求後台密碼後按 Enter"
+          placeholder="貼上後台密碼後按 Enter"
           className="mt-5 h-11 w-full border border-[#C9D2CD] bg-[#FAFCFB] px-3.5 text-sm focus:border-[#00A174] focus:bg-white focus:outline-none"
           aria-label="客戶需求後台密碼"
         />
@@ -178,7 +182,7 @@ function LeadList({ api, onOpen, onLogout }: { api: Api; onOpen: (id: string) =>
 
   const exportCsv = async () => {
     try {
-      const token = sessionStorage.getItem(TOKEN_KEY) || "";
+      const token = sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(STATS_TOKEN_KEY) || "";
       const response = await fetch("/api/leads?export=csv", { headers: { "x-admin-token": token } });
       if (!response.ok) throw new Error(`匯出失敗（HTTP ${response.status}）`);
       const blob = await response.blob();

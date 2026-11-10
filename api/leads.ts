@@ -8,14 +8,14 @@ import {
 import { LEAD_SOURCE_LABEL, LIMITS, validateDecision, validateRequirement } from "../src/lib/findHome/schema.js";
 import {
   addEvent, deleteLead, getLead, isValidLeadId, leadStoreConfigured, listLeads, patchLead, purgeExpiredContacts,
-  removeContact, setNotifyStatus, type AdminPatch,
+  removeContact, setNotifyStatus, tryAcquirePurgeLock, type AdminPatch,
 } from "../src/lib/leadStore.js";
 import { leadNotifyConfigured, sendLeadEmail } from "../src/lib/leadNotify.js";
 
 /**
  * 後台：客戶需求（需要 LEADS_ADMIN_TOKEN，放 x-admin-token 標頭）。
  *
- * 密碼刻意和統計後台的 ANALYTICS_TOKEN 分開：這裡看得到客人的聯絡方式，外洩的後果比統計數字大得多。
+ * 可以另設 LEADS_ADMIN_TOKEN；沒設時沿用統計後台的 ANALYTICS_TOKEN（同一組密碼）。
  *
  * GET    /api/leads                    → { leads, notifyConfigured }
  * GET    /api/leads?id=X               → { lead }
@@ -129,16 +129,20 @@ export default async function handler(req: any, res: any) {
 
   // 每日排程：只做「刪除過期聯絡方式」，用 Vercel 的 CRON_SECRET 驗證。
   if (req.method === "GET" && req.query?.task === "purge") {
+    // 有設 CRON_SECRET 就驗證；沒設時只接受 Vercel Cron 的請求，並且每小時最多跑一次。
+    // 這個排程只會刪除「送出滿 30 天」的聯絡方式，本來就該刪，被外部觸發也不會多刪任何東西。
     const secret = process.env.CRON_SECRET;
-    if (!secret || !safeEqual(String(req.headers?.authorization || ""), `Bearer ${secret}`)) {
+    if (secret ? !safeEqual(String(req.headers?.authorization || ""), `Bearer ${secret}`) : !/vercel-cron/i.test(String(req.headers?.["user-agent"] || ""))) {
       return res.status(401).json({ error: "Unauthorized." });
     }
     if (!leadStoreConfigured()) return res.status(503).json({ error: "Lead storage is not configured." });
+    if (!secret && !(await tryAcquirePurgeLock())) return res.json({ purged: 0, skipped: true });
     const purged = await purgeExpiredContacts();
     return res.json({ purged });
   }
 
-  const expected = process.env.LEADS_ADMIN_TOKEN;
+  // 沒另外設定客戶需求密碼時，沿用統計後台的 ANALYTICS_TOKEN（使用者選擇共用一組密碼）。
+  const expected = process.env.LEADS_ADMIN_TOKEN || process.env.ANALYTICS_TOKEN;
   if (!expected) return res.status(503).json({ error: "LEADS_ADMIN_TOKEN is not configured." });
 
   const ip = String(req.headers?.["x-forwarded-for"] || req.headers?.["x-real-ip"] || "unknown").split(",")[0].trim();
