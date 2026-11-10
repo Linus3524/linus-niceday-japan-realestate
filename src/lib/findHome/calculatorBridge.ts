@@ -2,6 +2,7 @@ import { rentRates } from "../../data/housingMarket.js";
 import type { RentSearchCriteria, RoomType } from "../rentAnalysis.js";
 import { toJapanesePlaceName } from "../transit.js";
 import { emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft } from "./draft.js";
+import { CALCULATOR_HANDOFF_KEY, CALCULATOR_HANDOFF_TTL_MS, type RawCalculatorHandoff } from "./handoff.js";
 import { AGE_OPTIONS, VISA_TYPE_OPTIONS, WALK_OPTIONS, type MustHave, type Requirement } from "./schema.js";
 
 /**
@@ -13,28 +14,26 @@ import { AGE_OPTIONS, VISA_TYPE_OPTIONS, WALK_OPTIONS, type MustHave, type Requi
  * 問卷的「地區」是自由文字，轉進費用試算時盡量辨識成行政區、路線與車站，認不出的就略過。
  */
 
-export const CALCULATOR_HANDOFF_KEY = "linus-calculator-handoff";
+export { CALCULATOR_HANDOFF_KEY } from "./handoff.js";
 
-/**
- * 後台開新分頁到費用試算時的交接資料。新分頁拿不到原分頁的 sessionStorage，所以放 localStorage，
- * 只在 2 分鐘內有效、讀到就刪除。
- */
 export interface CalculatorHandoff {
   criteria: RentSearchCriteria;
-  label: string; // 顯示在費用試算的提示，例如「FH-7K3Q 小林」
-  createdAt: number;
+  label: string;
 }
-export const CALCULATOR_HANDOFF_TTL_MS = 2 * 60 * 1000;
 
-/** 讀出並刪除交接資料；過期或格式不對回 null。peek = true 時只看不刪。 */
+/** 讀出並刪除交接資料（問卷格式會在這裡轉成費用試算條件）；過期或格式不對回 null。peek = true 時只看不刪。 */
 export function takeCalculatorHandoff(peek = false): CalculatorHandoff | null {
   try {
     const raw = localStorage.getItem(CALCULATOR_HANDOFF_KEY);
     if (!raw) return null;
-    const handoff = JSON.parse(raw) as CalculatorHandoff;
-    const fresh = handoff?.criteria && Date.now() - Number(handoff.createdAt) < CALCULATOR_HANDOFF_TTL_MS;
+    const handoff = JSON.parse(raw) as RawCalculatorHandoff;
+    const fresh = (handoff?.criteria || handoff?.requirement) && Date.now() - Number(handoff.createdAt) < CALCULATOR_HANDOFF_TTL_MS;
     if (!peek || !fresh) localStorage.removeItem(CALCULATOR_HANDOFF_KEY);
-    return fresh ? handoff : null;
+    if (!fresh) return null;
+    const criteria = handoff.criteria
+      ? (handoff.criteria as RentSearchCriteria)
+      : requirementToCriteria(handoff.requirement as Requirement);
+    return { criteria, label: handoff.label };
   } catch {
     return null;
   }

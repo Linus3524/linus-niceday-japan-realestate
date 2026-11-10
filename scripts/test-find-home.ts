@@ -5,7 +5,8 @@
 import assert from "node:assert/strict";
 import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
-import { criteriaToFindHomeDraft, requirementToCriteria } from "../src/lib/findHome/calculatorBridge";
+import { criteriaToFindHomeDraft, requirementToCriteria, takeCalculatorHandoff } from "../src/lib/findHome/calculatorBridge";
+import { writeCalculatorHandoff } from "../src/lib/findHome/handoff";
 import { APPLICATION_ROUTE_OPTIONS, CONTACT_CHANNEL_OPTIONS, VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
 import { RENT_VISA_OPTIONS } from "../src/lib/calculator/options";
 import { applicationRoutes } from "../src/data/rentStaticSearchData";
@@ -237,6 +238,24 @@ await test("費用試算條件 → 問卷草稿：可直接通過第 2 步驗證
   // 帶入的欄位要能通過問卷驗證（第 2 步只差「可以調整」由客人自己選）
   const step2 = validateRequirement({ ...req, adjustable: ["budget"] }, 2);
   assert.deepEqual(step2.errors, {});
+});
+
+await test("問卷完成頁 → 費用試算：交接資料放問卷格式，費用試算端轉換；過期就丟掉", () => {
+  const store = new Map<string, string>();
+  (globalThis as any).localStorage = {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => { store.set(key, value); },
+    removeItem: (key: string) => { store.delete(key); },
+  };
+  const { value } = validateRequirement({ ...validInput().requirement, areas: "中野" });
+  assert.equal(writeCalculatorHandoff({ requirement: value, label: "你的找房需求 FH-TEST" }), true);
+  const peeked = takeCalculatorHandoff(true);
+  assert.ok(peeked && peeked.criteria.maxBudget === 100000 && peeked.criteria.districts!.includes("中野區"));
+  assert.ok(takeCalculatorHandoff());
+  assert.equal(takeCalculatorHandoff(), null); // 讀過就刪
+  store.set("linus-calculator-handoff", JSON.stringify({ requirement: value, label: "x", createdAt: Date.now() - 10 * 60 * 1000 }));
+  assert.equal(takeCalculatorHandoff(), null); // 過期
+  delete (globalThis as any).localStorage;
 });
 
 console.log("lead store");

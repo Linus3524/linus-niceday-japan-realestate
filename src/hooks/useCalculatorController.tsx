@@ -192,7 +192,7 @@ export function useCalculatorController(props: CalculatorTabProps) {
     setCalcMode("rent");
     setRentInputMode("structured");
     syncCriteriaToForm(handoff.criteria);
-    setAnalysisNotice(`已帶入 ${handoff.label} 的問卷條件。地區只會帶入認得出的行政區、路線與車站，請確認後按下方按鈕分析行情。`);
+    setAnalysisNotice(`已帶入「${handoff.label}」的條件。地區只會帶入認得出的行政區、路線與車站，請確認後按下方按鈕分析行情。`);
     // 只在第一次掛載時檢查
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

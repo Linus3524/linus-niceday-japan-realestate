@@ -221,7 +221,7 @@ export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format
   { key: "entryDate", label: "預計入境", format: r => r.entryDate || "—" },
   { key: "visa", label: "簽證辦理進度", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
   { key: "areas", label: "希望地區", format: r => r.areas || "—" },
-  { key: "commuteTarget", label: "每天要去", format: r => r.commuteTarget || "—" },
+  { key: "commuteTarget", label: "通勤地點", format: r => r.commuteTarget || "—" },
   { key: "occupants", label: "入住人數", format: r => `${r.occupants} 人` },
   { key: "layouts", label: "房型", format: r => labelsOf(LAYOUT_OPTIONS, r.layouts) },
   { key: "minAreaSqm", label: "最小面積", format: r => (r.minAreaSqm ? `${r.minAreaSqm} ㎡` : "—") },
