@@ -1055,7 +1055,7 @@ export default function App() {
               >
                 <span className="contact-flip-inner">
                   <span className="contact-flip-face">
-                    <img src="/logo.png" alt="LINUS 住好日" />
+                    <img src="/logo.png?v=20261110" alt="LINUS 住好日" />
                   </span>
                   <span className="contact-flip-face contact-flip-back">
                     <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" />

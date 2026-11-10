@@ -95,7 +95,7 @@ function AboutProfile({ visitorDisplay }: { visitorDisplay: string }) {
         className={`contact-flip about-profile-avatar ${showQr ? "is-flipped" : ""}`}
       >
         <span className="contact-flip-inner">
-          <span className="contact-flip-face"><img src="/logo.png" alt="LINUS 住好日" /></span>
+          <span className="contact-flip-face"><img src="/logo.png?v=20261110" alt="LINUS 住好日" /></span>
           <span className="contact-flip-face contact-flip-back"><img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" /></span>
         </span>
       </button>

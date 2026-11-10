@@ -27,7 +27,7 @@ export function ContactPage({ assetBase }: { assetBase: string }) {
   return (
     <View wrap={false}>
       <View style={styles.contactHero}>
-        <Image src={src("/logo.png")} style={styles.contactLogo} />
+        <Image src={src("/logo.png?v=20261110")} style={styles.contactLogo} />
         <View style={{ flex: 1 }}>
           <Text style={styles.contactTitle}>有問題？直接找 Linus 聊聊</Text>
           <Text style={styles.contactLead}>

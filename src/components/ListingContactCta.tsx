@@ -59,7 +59,7 @@ export function ListingContactCta() {
         {/* 左側：貼齊左上邊角，高度隨容器自動 100% 貼齊 */}
         <div className="shrink-0 flex items-start self-stretch select-none pointer-events-none">
           <img
-            src="/cta-left.webp"
+            src="/logo.png?v=20261110"
             alt={linusContact.name}
             className="h-full w-auto object-contain object-left-top max-w-[125px] sm:max-w-[145px] md:max-w-[160px] lg:max-w-[175px]"
           />
@@ -94,7 +94,7 @@ export function ListingContactCta() {
       <div className="sm:hidden flex items-stretch border-b border-[#ECEFEC] bg-white relative overflow-hidden">
         <div className="shrink-0 flex items-start self-stretch select-none pointer-events-none">
           <img
-            src="/cta-left.webp"
+            src="/logo.png?v=20261110"
             alt={linusContact.name}
             className="h-full w-auto object-contain object-left-top max-w-[95px]"
           />
