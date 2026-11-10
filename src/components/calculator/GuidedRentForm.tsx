@@ -271,7 +271,12 @@ export function GuidedRentForm({ model }: GuidedRentFormProps) {
         {aiResult && <RequirementAssessment criteria={aiResult.criteria} recommendations={aiResult.recommendations} />}
       </>
     ) : (
-      <GuidedNaturalLanguageFields aiPrompt={aiPrompt} setAiPrompt={setAiPrompt} analyzeNaturalLanguageRent={analyzeNaturalLanguageRent} aiInputLoading={aiInputLoading} aiResult={aiResult} aiInputError={aiInputError} />
+      <>
+        {analysisNotice && (
+          <p className="border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-[11px] leading-relaxed text-[#1A2A22]" role="status">{analysisNotice}</p>
+        )}
+        <GuidedNaturalLanguageFields aiPrompt={aiPrompt} setAiPrompt={setAiPrompt} analyzeNaturalLanguageRent={analyzeNaturalLanguageRent} aiInputLoading={aiInputLoading} aiResult={aiResult} aiInputError={aiInputError} />
+      </>
     )}
   </div>);
 }

@@ -4,13 +4,14 @@ import { applicationRoutes } from "../data/rentStaticSearchData";
 import { linusContact } from "../data/rentGuideData";
 import { requirementLines, requirementText } from "../lib/findHome/lead";
 import { copyToClipboard } from "../lib/clipboard";
+import { writeCalculatorHandoff } from "../lib/findHome/handoff";
 import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
 import { trackAction, trackSource } from "../lib/trackView";
 import {
   ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
   AGE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, MIN_AREA_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
   NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
-  type ContactChannel, type FieldErrors, type Option, type StepId,
+  type ContactChannel, type FieldErrors, type Option, type Requirement, type StepId,
 } from "../lib/findHome/schema";
 
 /**
@@ -335,6 +336,7 @@ export function FindHomeApp() {
         channel={form.contact.channel}
         lines={requirementLines(requirement, decision)}
         copyText={requirementText(refCode, requirement, decision)}
+        requirement={requirement}
       />
     );
   }
@@ -424,7 +426,7 @@ export function FindHomeApp() {
               <Field id="areas" label="想住哪裡？" hint="地區、路線或車站都可以，例如：中野、高圓寺、中央線。" error={errors.areas}>
                 <input className={inputClass} maxLength={LIMITS.areas} value={r.areas} onChange={e => setReq({ areas: e.target.value })} placeholder="例：中野、中央線沿線" />
               </Field>
-              <Field id="commuteTarget" label="每天要去的地方" optional hint="公司、學校或最近的車站，Linus 會幫你看通勤時間。">
+              <Field id="commuteTarget" label="通勤地點" optional hint="公司、學校或最近的車站，Linus 會幫你看通勤時間。">
                 <input className={inputClass} maxLength={LIMITS.commuteTarget} value={r.commuteTarget} onChange={e => setReq({ commuteTarget: e.target.value })} placeholder="例：新宿站、早稻田大學" />
               </Field>
               <Field id="layouts" label="想要的房型" hint="可複選。" error={errors.layouts}>
@@ -455,7 +457,7 @@ export function FindHomeApp() {
               </Field>
               <span id="field-rentMaxMan" />
               <Field id="initialCostMaxMan" label="初期費用上限" optional hint="押金、禮金、仲介費等搬入時一次付清的費用。" error={errors.initialCostMaxMan}>
-                <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="40" /></div>
+                <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="80" /></div>
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field id="walkMaxMin" label="徒步到車站">
@@ -677,7 +679,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 
 const CHANNEL_NAME: Record<ContactChannel, string> = { line: "LINE", wechat: "WeChat", email: "Email", whatsapp: "WhatsApp" };
 
-function SuccessView({ refCode, nickname, channel, lines, copyText: summary }: { refCode: string; nickname: string; channel: ContactChannel; lines: string[]; copyText: string }) {
+function SuccessView({ refCode, nickname, channel, lines, copyText: summary, requirement }: { refCode: string; nickname: string; channel: ContactChannel; lines: string[]; copyText: string; requirement: Requirement }) {
   const [showWechat, setShowWechat] = useState(false);
   return (
     <div className="min-h-screen bg-[#F5F8F6] font-sans text-[#1A2A22]" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
@@ -726,6 +728,21 @@ function SuccessView({ refCode, nickname, channel, lines, copyText: summary }: {
             })}
           </ul>
           <p className="text-[12px] text-[#66736C]">可以複製下來自己留存，或貼到 LINE 跟 Linus 確認。</p>
+        </section>
+
+        <section className="space-y-3 border border-[#DDE3DF] bg-white p-5" aria-labelledby="check-market">
+          <h2 id="check-market" className="text-[16px] font-bold">等 Linus 聯絡前，先看看行情</h2>
+          <p className="text-[13px] leading-relaxed text-[#3F5147]">把你的條件帶進網站的「租屋預算健檢」，看看這個預算在你想住的地區合不合理、哪些條件會讓房子變少。</p>
+          <button
+            type="button"
+            onClick={() => {
+              writeCalculatorHandoff({ requirement, label: `你的找房需求 ${refCode}` });
+              window.location.assign("/");
+            }}
+            className="flex min-h-11 w-full items-center justify-center gap-2 border border-[#00A174] text-[14px] font-bold text-[#00A174] hover:bg-[#F0FAF6]"
+          >
+            用這些條件看行情
+          </button>
         </section>
 
         <p className="text-[13px] leading-relaxed text-[#66736C]">條件有變的話，直接在 LINE 告訴 Linus 就可以。</p>

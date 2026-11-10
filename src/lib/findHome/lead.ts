@@ -221,7 +221,7 @@ export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format
   { key: "entryDate", label: "預計入境", format: r => r.entryDate || "—" },
   { key: "visa", label: "簽證辦理進度", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
   { key: "areas", label: "希望地區", format: r => r.areas || "—" },
-  { key: "commuteTarget", label: "每天要去", format: r => r.commuteTarget || "—" },
+  { key: "commuteTarget", label: "通勤地點", format: r => r.commuteTarget || "—" },
   { key: "occupants", label: "入住人數", format: r => `${r.occupants} 人` },
   { key: "layouts", label: "房型", format: r => labelsOf(LAYOUT_OPTIONS, r.layouts) },
   { key: "minAreaSqm", label: "最小面積", format: r => (r.minAreaSqm ? `${r.minAreaSqm} ㎡` : "—") },
@@ -260,6 +260,35 @@ export function requirementLines(req: Requirement, decision?: Decision): string[
 
 export function requirementText(refCode: string | null, req: Requirement, decision?: Decision): string {
   return [`【找房需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
+}
+
+/**
+ * 把問卷需求寫成一段中文描述，帶進費用試算的「描述需求」（AI 會解析自由文字的地區、車站）。
+ * 不放稱呼、聯絡方式、性別、年齡，只放找房條件。
+ */
+export function requirementPrompt(req: Requirement): string {
+  // 照費用試算「描述需求」的範例格式：「預算含管理費 10 萬円，想住東急東橫線，1K 25㎡以上，要獨立洗面台、電梯，走路 10 分鐘內。」
+  const parts: string[] = [];
+  if (req.rentMaxMan) {
+    const ideal = req.rentIdealMan && req.rentIdealMan !== req.rentMaxMan ? `（理想 ${req.rentIdealMan} 萬円）` : "";
+    parts.push(`預算含管理費 ${req.rentMaxMan} 萬円${ideal}`);
+  }
+  if (req.areas) parts.push(`想住${req.areas}`);
+  const layout = [req.layouts.length ? labelsOf(LAYOUT_OPTIONS, req.layouts).replace(/、/g, "或") : "", req.minAreaSqm ? `${req.minAreaSqm}㎡以上` : ""].filter(Boolean).join(" ");
+  if (layout) parts.push(layout);
+  if (req.mustHaves.length) parts.push(`要${labelsOf(MUST_HAVE_LABEL_OPTIONS, req.mustHaves)}`);
+  if (req.walkMaxMin) parts.push(`走路 ${req.walkMaxMin} 分鐘內`);
+  if (req.ageMaxYears) parts.push(`屋齡 ${req.ageMaxYears} 年內`);
+  if (req.structure && req.structure !== "any") parts.push(req.structure === "rc" ? "要 RC 或 SRC 造" : "不要木造");
+  if (req.commuteTarget) parts.push(`通勤到${req.commuteTarget}`);
+  if (req.initialCostMaxMan) parts.push(`初期費用 ${req.initialCostMaxMan} 萬円以內`);
+  if (req.moveIn === "date" && req.moveInDate) parts.push(`${req.moveInDate} 入住`);
+  else if (req.moveIn && req.moveIn !== "flexible" && req.moveIn !== "date") parts.push(`${labelOf(MOVE_IN_OPTIONS, req.moveIn)}入住`);
+  if (req.occupants > 1) parts.push(`${req.occupants} 人住`);
+  if (req.visaType && req.visaType !== "other") parts.push(`${labelOf(VISA_TYPE_OPTIONS, req.visaType)}簽證`.replace(/簽證簽證$/, "簽證").replace(/^日本籍簽證$/, "日本籍").replace(/^永住者／定住者簽證$/, "永住者"));
+  else if (req.visaTypeOther) parts.push(req.visaTypeOther);
+  if (req.residence === "overseas") parts.push(`人在海外${req.entryDate ? `，${req.entryDate} 入境` : ""}`);
+  return parts.join("，") + "。";
 }
 
 /** 比對兩份需求，列出有變的欄位（前值、後值都是顯示用文字）。 */

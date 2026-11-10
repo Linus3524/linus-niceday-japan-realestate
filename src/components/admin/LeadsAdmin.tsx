@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { copyToClipboard } from "../../lib/clipboard";
 import { ArrowLeft, Calculator, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
-import { CALCULATOR_HANDOFF_KEY, requirementToCriteria, type CalculatorHandoff } from "../../lib/findHome/calculatorBridge";
+import { writeCalculatorHandoff } from "../../lib/findHome/handoff";
 import {
   DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
   type Lead, type LeadSummary, type Level,
@@ -484,8 +484,7 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
               <button
                 type="button"
                 onClick={() => {
-                  const handoff: CalculatorHandoff = { criteria: requirementToCriteria(req), label: `${lead.refCode} ${lead.nickname}`, createdAt: Date.now() };
-                  try { localStorage.setItem(CALCULATOR_HANDOFF_KEY, JSON.stringify(handoff)); } catch { setError("瀏覽器無法暫存條件，請改用其他瀏覽器。"); return; }
+                  if (!writeCalculatorHandoff({ requirement: req, label: `${lead.refCode} ${lead.nickname}` })) { setError("瀏覽器無法暫存條件，請改用其他瀏覽器。"); return; }
                   window.open("/", "_blank", "noopener");
                 }}
                 className="flex min-h-10 w-full items-center justify-center gap-1.5 border border-[#00A174] text-sm font-bold text-[#00A174] hover:bg-[#F0FAF6]"
@@ -582,7 +581,7 @@ function RequirementEditor({ requirement, busy, onSave, onCancel }: { requiremen
         <label className="block space-y-1"><span className="font-bold">入住日期</span><input type="date" value={draft.moveInDate || ""} onChange={e => set({ moveInDate: e.target.value })} className={input} /></label>
       )}
       <label className="block space-y-1"><span className="font-bold">希望地區</span><input value={draft.areas} onChange={e => set({ areas: e.target.value })} className={input} /></label>
-      <label className="block space-y-1"><span className="font-bold">每天要去</span><input value={draft.commuteTarget || ""} onChange={e => set({ commuteTarget: e.target.value })} className={input} /></label>
+      <label className="block space-y-1"><span className="font-bold">通勤地點</span><input value={draft.commuteTarget || ""} onChange={e => set({ commuteTarget: e.target.value })} className={input} /></label>
       <div className="grid grid-cols-2 gap-2">
         <label className="block space-y-1"><span className="font-bold">理想月租（萬）</span><input inputMode="decimal" value={String(draft.rentIdealMan)} onChange={e => set({ rentIdealMan: e.target.value as any })} className={input} /></label>
         <label className="block space-y-1"><span className="font-bold">最高月租（萬）</span><input inputMode="decimal" value={String(draft.rentMaxMan)} onChange={e => set({ rentMaxMan: e.target.value as any })} className={input} /></label>

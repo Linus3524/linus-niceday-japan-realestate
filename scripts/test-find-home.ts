@@ -3,9 +3,10 @@
  *   npm run test:find-home
  */
 import assert from "node:assert/strict";
-import { computeDimensions, diffRequirement, requirementText } from "../src/lib/findHome/lead";
+import { computeDimensions, diffRequirement, requirementPrompt, requirementText } from "../src/lib/findHome/lead";
 import { buildLeadEmail } from "../src/lib/leadNotify";
-import { criteriaToFindHomeDraft, requirementToCriteria } from "../src/lib/findHome/calculatorBridge";
+import { criteriaToFindHomeDraft, requirementToCriteria, takeCalculatorHandoff } from "../src/lib/findHome/calculatorBridge";
+import { writeCalculatorHandoff } from "../src/lib/findHome/handoff";
 import { APPLICATION_ROUTE_OPTIONS, CONTACT_CHANNEL_OPTIONS, VISA_TYPE_OPTIONS, normalizeContact, normalizeLeadSource, validateRequirement, validateSubmission } from "../src/lib/findHome/schema";
 import { RENT_VISA_OPTIONS } from "../src/lib/calculator/options";
 import { applicationRoutes } from "../src/data/rentStaticSearchData";
@@ -237,6 +238,32 @@ await test("費用試算條件 → 問卷草稿：可直接通過第 2 步驗證
   // 帶入的欄位要能通過問卷驗證（第 2 步只差「可以調整」由客人自己選）
   const step2 = validateRequirement({ ...req, adjustable: ["budget"] }, 2);
   assert.deepEqual(step2.errors, {});
+});
+
+await test("問卷完成頁 → 費用試算：交接資料放問卷格式，費用試算端轉換；過期就丟掉", () => {
+  const store = new Map<string, string>();
+  (globalThis as any).localStorage = {
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => { store.set(key, value); },
+    removeItem: (key: string) => { store.delete(key); },
+  };
+  const { value } = validateRequirement({ ...validInput().requirement, areas: "中野" });
+  assert.equal(writeCalculatorHandoff({ requirement: value, label: "你的找房需求 FH-TEST" }), true);
+  const peeked = takeCalculatorHandoff(true);
+  assert.ok(peeked && peeked.criteria.maxBudget === 100000 && peeked.criteria.districts!.includes("中野區"));
+  assert.ok(takeCalculatorHandoff());
+  assert.equal(takeCalculatorHandoff(), null); // 讀過就刪
+  store.set("linus-calculator-handoff", JSON.stringify({ requirement: value, label: "x", createdAt: Date.now() - 10 * 60 * 1000 }));
+  assert.equal(takeCalculatorHandoff(), null); // 過期
+  delete (globalThis as any).localStorage;
+});
+
+await test("帶進「描述需求」的文字照範例格式", () => {
+  const { value } = validateRequirement({ ...validInput().requirement, areas: "中野、高圓寺", commuteTarget: "新宿", minAreaSqm: "20" });
+  assert.equal(
+    requirementPrompt(value),
+    "預算含管理費 10 萬円（理想 8.5 萬円），想住中野、高圓寺，1K或1DK 20㎡以上，要乾濕分離、電梯，走路 10 分鐘內，屋齡 20 年內，不要木造，通勤到新宿，1 個月內入住，工作簽證，人在海外，2027-03-15 入境。",
+  );
 });
 
 console.log("lead store");
