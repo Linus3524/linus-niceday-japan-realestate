@@ -6935,8 +6935,8 @@ button.ui-switch-large:focus-visible {
 }
 .contact-flip-face .theme-contact-portrait img.is-active { opacity: 1; }
 /* 以頭部份量與眼睛高度校準視覺重心；胸口超出的部分由共用外框齊底裁切。 */
-.theme-contact-portrait .theme-contact-portrait--orange { transform: translate(-3%, 7%) scale(1.1); }
-.theme-contact-portrait .theme-contact-portrait--lemon { transform: translate(-4%, 5%) scale(1.22); }
+.theme-contact-portrait .theme-contact-portrait--orange { transform: translate(-3%, 6.5%) scale(1.06); }
+.theme-contact-portrait .theme-contact-portrait--lemon { transform: translate(-3%, 8.5%) scale(1.2); }
 .theme-contact-portrait .theme-contact-portrait--apple { transform: translate(-2%, 4%); }
 .theme-contact-portrait .theme-contact-portrait--grape { transform: translateX(5%); }
 .desk-app .about-profile-line,

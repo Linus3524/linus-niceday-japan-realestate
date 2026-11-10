@@ -1,6 +1,6 @@
 const PORTRAITS = [
   { key: "orange", src: "/logo.png?v=20261110" },
-  { key: "lemon", src: "/portrait-lemon.png?v=20261110-selected" },
+  { key: "lemon", src: "/portrait-lemon.png?v=20261111-v5b" },
   { key: "apple", src: "/portrait-apple.png?v=20261110-flat" },
   { key: "grape", src: "/portrait-grape.png" },
 ];
