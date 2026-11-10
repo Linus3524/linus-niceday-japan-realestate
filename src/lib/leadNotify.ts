@@ -1,3 +1,4 @@
+import { isBuyRequirement, BUY_TIMING_OPTIONS } from "./findHome/buySchema.js";
 import { LEAD_SOURCE_LABEL, MOVE_IN_OPTIONS, labelOf } from "./findHome/schema.js";
 import { requirementText, type Lead } from "./findHome/lead.js";
 
@@ -21,10 +22,12 @@ export function leadNotifyConfigured() {
 
 export function buildLeadEmail(lead: Lead, kind: "new" | "updated") {
   const req = lead.requirement;
-  const moveIn = req.moveIn === "date" ? `指定 ${req.moveInDate}` : labelOf(MOVE_IN_OPTIONS, req.moveIn);
+  const moveIn = isBuyRequirement(req) ? (req.purchaseTiming === "date" ? req.purchaseDate : labelOf(BUY_TIMING_OPTIONS, req.purchaseTiming))
+    : req.moveIn === "date" ? `指定 ${req.moveInDate}` : labelOf(MOVE_IN_OPTIONS, req.moveIn);
+  const dealLabel = isBuyRequirement(req) ? "買房" : "找房";
   const subject = kind === "new"
-    ? `【住好日】新的找房需求 ${lead.refCode}｜${moveIn}・${req.areas.slice(0, 20)}`
-    : `【住好日】找房需求更新 ${lead.refCode}`;
+    ? `【住好日】新的${dealLabel}需求 ${lead.refCode}｜${moveIn}・${req.areas.slice(0, 20)}`
+    : `【住好日】${dealLabel}需求更新 ${lead.refCode}`;
   const link = `${SITE_URL}/#admin/leads/${lead.id}`;
   const submittedAt = new Intl.DateTimeFormat("zh-TW", {
     timeZone: "Asia/Tokyo", year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,

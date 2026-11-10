@@ -16,7 +16,7 @@ export function FindHomeHandoffCta({ criteria }: { criteria: RentSearchCriteria 
     } catch {
       /* 存不進去（無痕模式等）就直接開空白問卷 */
     }
-    window.location.assign("/find-home?from=calculator");
+    window.location.assign("/find-home?type=rent&from=calculator");
   };
   return (
     <section className="mt-4 border-2 border-[#00A174] bg-white p-4" aria-labelledby="calc-find-home-cta">

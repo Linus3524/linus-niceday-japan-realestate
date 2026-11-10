@@ -1,10 +1,11 @@
+import { isBuyRequirement, type AnyFindHomeSubmission, type AnyRequirement } from "./findHome/buySchema.js";
 import { Redis } from "@upstash/redis";
 import { createHash, randomBytes } from "crypto";
 import {
   CONTACT_RETENTION_DAYS, LEAD_STATUSES, computeDimensions, diffRequirement, toSummary,
   type ContactEvent, type Feasibility, type Lead, type LeadStatus, type LeadSummary, type LeadTag, type Level,
 } from "./findHome/lead.js";
-import { PRIVACY_POLICY_VERSION, type Decision, type FindHomeSubmission, type LeadSource, type Requirement } from "./findHome/schema.js";
+import { PRIVACY_POLICY_VERSION, type Decision, type LeadSource } from "./findHome/schema.js";
 
 /**
  * 客戶需求（找房問卷）的儲存。
@@ -148,9 +149,9 @@ export const REF_CODE_PATTERN = /^FH-[A-HJ-NP-Z2-9]{4}$/;
 const ID_PATTERN = /^[A-HJ-NP-Z2-9]{16}$/;
 export const isValidLeadId = (value: unknown): value is string => typeof value === "string" && ID_PATTERN.test(value);
 
-function contactKey(channel: string, value: string) {
+function contactKey(channel: string, value: string, dealType: "rent" | "buy" = "rent") {
   const normalized = `${channel}:${value.toLowerCase()}`;
-  return CONTACT + createHash("sha256").update(normalized).digest("hex");
+  return CONTACT + (dealType === "buy" ? "buy:" : "") + createHash("sha256").update(normalized).digest("hex");
 }
 
 const nowIso = (now = new Date()) => now.toISOString();
@@ -163,19 +164,20 @@ export type SubmitResult = { refCode: string; leadId: string; merged: boolean; d
  * - 同一組聯絡方式 30 天內再填：更新需求並記一筆變更紀錄，參考碼不變。
  */
 export async function submitLead(
-  input: FindHomeSubmission,
+  input: AnyFindHomeSubmission,
   meta: { source: LeadSource; idempotencyKey: string },
   now = new Date(),
 ): Promise<SubmitResult> {
   const db = store();
-  const idemKey = `${IDEM}${meta.idempotencyKey}`;
+  const dealType = isBuyRequirement(input.requirement) ? "buy" : "rent";
+  const idemKey = `${IDEM}${dealType === "buy" ? "buy:" : ""}${meta.idempotencyKey}`;
   const seen = await db.get<{ refCode: string; leadId: string }>(idemKey);
   if (seen) {
     const lead = await db.get<Lead>(`${DOC}${seen.leadId}`);
     if (lead) return { ...seen, merged: false, duplicate: true, lead };
   }
 
-  const dedupeKey = contactKey(input.contact.channel, input.contact.value);
+  const dedupeKey = contactKey(input.contact.channel, input.contact.value, dealType);
   const existingId = await db.get<string>(dedupeKey);
   if (existingId) {
     const merged = await mergeResubmission(existingId, input, now);
@@ -201,7 +203,7 @@ export async function submitLead(
     createdAt: at,
     updatedAt: at,
     source: meta.source,
-    dealType: "rent",
+    dealType,
     nickname: input.nickname,
     contact: { ...input.contact },
     contactTimes: input.contactTimes,
@@ -223,9 +225,9 @@ export async function submitLead(
   return { refCode, leadId: id, merged: false, duplicate: false, lead };
 }
 
-async function mergeResubmission(id: string, input: FindHomeSubmission, now: Date): Promise<Lead | null> {
+async function mergeResubmission(id: string, input: AnyFindHomeSubmission, now: Date): Promise<Lead | null> {
   const current = await store().get<Lead>(`${DOC}${id}`);
-  if (!current?.contact) return null; // 找不到或聯絡方式已刪：當成新客人，另開一筆
+  if (!current?.contact || isBuyRequirement(current.requirement) !== isBuyRequirement(input.requirement)) return null; // 找不到或聯絡方式已刪：當成新客人，另開一筆
   return updateLead(id, null, lead => {
     const changes = diffRequirement(lead.requirement, input.requirement, lead.decision, input.decision);
     const at = nowIso(now);
@@ -296,7 +298,7 @@ export async function removeContact(id: string, reason: "contacted" | "expired",
   let removedKey: string | null = null;
   const result = await updateLeadChecked(id, expectedVer, lead => {
     if (!lead.contact) return null;
-    removedKey = contactKey(lead.contact.channel, lead.contact.value);
+    removedKey = contactKey(lead.contact.channel, lead.contact.value, lead.dealType);
     const at = nowIso(now);
     lead.contact = null;
     lead.contactRemovedAt = at;
@@ -339,7 +341,7 @@ export interface AdminPatch {
   tags?: LeadTag[];
   notes?: string;
   dimsOverride?: Partial<Record<"urgency" | "readiness" | "flexibility", Level | null>>;
-  requirement?: Requirement;
+  requirement?: AnyRequirement;
   decision?: Decision;
   nickname?: string;
 }
@@ -347,6 +349,7 @@ export interface AdminPatch {
 /** 後台修改。需求欄位有變時自動寫一筆變更紀錄（修改者：admin）。 */
 export async function patchLead(id: string, expectedVer: number, patch: AdminPatch, now = new Date()) {
   return updateLeadChecked(id, expectedVer, lead => {
+    if (patch.requirement && isBuyRequirement(patch.requirement) !== isBuyRequirement(lead.requirement)) throw new Error("需求類型不能在修改時變更。");
     const at = nowIso(now);
     if (patch.status && patch.status !== lead.admin.status) {
       const label = LEAD_STATUSES.find(item => item.id === patch.status)?.label ?? patch.status;
@@ -407,7 +410,7 @@ export async function deleteLead(id: string): Promise<boolean> {
   const lead = await db.get<Lead>(`${DOC}${id}`);
   if (!lead) return false;
   const keys = [`${DOC}${id}`, `${VER}${id}`, `${REF}${lead.refCode}`];
-  if (lead.contact) keys.push(contactKey(lead.contact.channel, lead.contact.value));
+  if (lead.contact) keys.push(contactKey(lead.contact.channel, lead.contact.value, lead.dealType));
   await db.del(...keys);
   await db.zrem(INDEX, id);
   return true;

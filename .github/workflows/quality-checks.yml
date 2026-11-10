@@ -116,6 +116,8 @@ jobs:
           npm run test:building-health
           npm run test:admin-metrics
           npm run test:find-home
+          npm run test:buy-find-home
+          npm run test:find-home-browser
           npm run test:questionnaire-analysis
           npm run test:crime-safety
           npm run test:municipal-crime

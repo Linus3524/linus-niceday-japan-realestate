@@ -1,9 +1,11 @@
+import { BuyRequirementEditor } from "./BuyRequirementEditor";
+import { isBuyRequirement } from "../../lib/findHome/buySchema";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { copyToClipboard } from "../../lib/clipboard";
 import { ArrowLeft, Calculator, Check, Copy, Download, RefreshCw, Search } from "lucide-react";
 import { writeCalculatorHandoff } from "../../lib/findHome/handoff";
 import {
-  DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
+  formattedRequirementFields, formattedDecisionFields, DECISION_FIELDS, FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, LEVEL_LABEL, REQUIREMENT_FIELDS, effectiveDims, requirementText, tokyoToday,
   type Lead, type LeadSummary, type Level,
 } from "../../lib/findHome/lead";
 import {
@@ -35,9 +37,11 @@ const STATUS_STYLE: Record<string, string> = {
   paused: "bg-[#EEF2F0] text-[#66736C]",
 };
 
-type Filter = "all" | "new" | "follow-up" | "overseas" | "contact" | "notify";
+type Filter = "rent" | "buy" | "all" | "new" | "follow-up" | "overseas" | "contact" | "notify";
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "全部" },
+  { id: "rent", label: "租房" },
+  { id: "buy", label: "買房" },
   { id: "new", label: "新進" },
   { id: "follow-up", label: "今天要追蹤" },
   { id: "contact", label: "還沒聯絡上" },
@@ -161,6 +165,8 @@ function LeadList({ api, onOpen, onLogout }: { api: Api; onOpen: (id: string) =>
     const list = leads ?? [];
     return {
       all: list.length,
+      rent: list.filter(lead => lead.dealType !== "buy").length,
+      buy: list.filter(lead => lead.dealType === "buy").length,
       new: list.filter(lead => lead.status === "new").length,
       "follow-up": list.filter(lead => lead.nextFollowUpAt && lead.nextFollowUpAt <= today).length,
       contact: list.filter(lead => lead.hasContact).length,
@@ -172,6 +178,8 @@ function LeadList({ api, onOpen, onLogout }: { api: Api; onOpen: (id: string) =>
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (leads ?? []).filter(lead => {
+      if (filter === "rent" && lead.dealType === "buy") return false;
+      if (filter === "buy" && lead.dealType !== "buy") return false;
       if (filter === "new" && lead.status !== "new") return false;
       if (filter === "follow-up" && !(lead.nextFollowUpAt && lead.nextFollowUpAt <= today)) return false;
       if (filter === "contact" && !lead.hasContact) return false;
@@ -247,7 +255,7 @@ function LeadList({ api, onOpen, onLogout }: { api: Api; onOpen: (id: string) =>
               <Pill className={STATUS_STYLE[lead.status]}>{STATUS_LABEL[lead.status]}</Pill>
             </div>
             <p className="text-[13px] leading-relaxed text-[#3F5147]">
-              {lead.moveIn}・{lead.residence === "overseas" ? `海外${lead.entryDate ? ` ${lead.entryDate.slice(5).replace("-", "/")} 入境` : ""}` : "日本"}・{lead.areas}・{lead.layouts}・<span className="font-jost">≤{lead.rentMaxMan} 萬</span>
+              <b className="text-[#00A174]">{lead.dealType === "buy" ? "買房" : "租房"}</b>・{lead.moveIn}・{lead.residence === "overseas" ? `海外${lead.entryDate ? ` ${lead.entryDate.slice(5).replace("-", "/")} 入境` : ""}` : "日本"}・{lead.areas}・{lead.layouts}・<span className="font-jost">≤{lead.budgetMaxMan ?? lead.rentMaxMan} 萬</span>
             </p>
             <div className="flex flex-wrap items-center gap-1">
               <DimBadges dims={lead.dims} />
@@ -457,7 +465,7 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
         </div>
 
         <div className="space-y-4">
-          <Section title="找房需求" aside={!editing && (
+          <Section title={isBuyRequirement(req) ? "買房需求" : "租房需求"} aside={!editing && (
             <span className="flex items-center gap-3">
               <button
                 type="button"
@@ -472,15 +480,19 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
               <button type="button" onClick={() => setEditing(true)} className="text-xs font-bold text-[#00A174]">修改需求</button>
             </span>
           )}>
-            {editing ? (
+            {editing ? (isBuyRequirement(req) ? (
+              <BuyRequirementEditor requirement={req} busy={busy} onCancel={() => setEditing(false)}
+                onSave={async next => { const body = await patch({ requirement: next }, "買房需求已更新，已記錄變更"); if (body) setEditing(false); }} />
+            ) : (
               <RequirementEditor
                 requirement={req}
                 busy={busy}
                 onCancel={() => setEditing(false)}
                 onSave={async next => { const body = await patch({ requirement: next }, "需求已更新，已記錄變更"); if (body) setEditing(false); }}
               />
-            ) : (
+            )) : (
               <>
+              {!isBuyRequirement(req) && (
               <button
                 type="button"
                 onClick={() => {
@@ -491,8 +503,9 @@ function LeadDetail({ id, api, onBack }: { id: string; api: Api; onBack: () => v
               >
                 <Calculator className="h-4 w-4" />用這些條件開費用試算
               </button>
+              )}
               <dl className="divide-y divide-[#ECEFEC] text-[13px]">
-                {[...REQUIREMENT_FIELDS.map(field => [field.label, field.format(req)]), ...DECISION_FIELDS.map(field => [field.label, field.format(lead.decision)])].map(([label, value]) => (
+                {[...formattedRequirementFields(req).map(field => [field.label, field.value]), ...formattedDecisionFields(req, lead.decision).map(field => [field.label, field.value])].map(([label, value]) => (
                   <div key={label} className="grid grid-cols-[7.5em_minmax(0,1fr)] gap-2 py-1.5">
                     <dt className="text-[#66736C]">{label}</dt>
                     <dd className="whitespace-pre-wrap break-words">{value}</dd>

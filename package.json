@@ -83,7 +83,9 @@
     "test:tokyo-bar-chart": "tsx scripts/test-tokyo-bar-chart.ts",
     "test:quiz-metrics": "tsx scripts/test-quiz-metrics.ts",
     "test:find-home": "tsx scripts/test-find-home.ts",
-    "test:questionnaire-analysis": "tsx scripts/test-questionnaire-analysis.ts"
+    "test:questionnaire-analysis": "tsx scripts/test-questionnaire-analysis.ts",
+    "test:buy-find-home": "tsx scripts/test-buy-find-home.ts",
+    "test:find-home-browser": "tsx scripts/test-find-home-browser.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

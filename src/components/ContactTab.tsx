@@ -174,7 +174,7 @@ export function ContactTab(props: ContactTabProps) {
                   <p className="text-[11px] leading-relaxed text-[#66736C]">點綠色按鈕展開 QR Code 用微信掃碼；或複製 WeChat ID 後在微信搜尋並添加 Linus。</p>
                 </section>
 
-                {/* 線上問卷上線後，複製文字版收進折疊區保留給習慣傳訊息的客人（買房問卷目前只有這個版本）。 */}
+                {/* 線上問卷上線後，複製文字版收進折疊區保留給習慣傳訊息的客人。 */}
                 <details className="group border border-[#DDE3DF] bg-white p-4 text-xs">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[15px] font-bold">
                     <span className="flex items-center gap-2"><ClipboardList className="h-4 w-4 text-[#00A174]" />習慣傳文字？複製問卷</span>

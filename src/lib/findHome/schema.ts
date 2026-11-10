@@ -258,7 +258,7 @@ export interface FindHomeSubmission {
 }
 
 /** 隱私權政策版本：條文改了就改這裡，同意紀錄會存下當時的版本。 */
-export const PRIVACY_POLICY_VERSION = "2026-11-10.3";
+export const PRIVACY_POLICY_VERSION = "2026-11-10.4";
 
 export const LIMITS = {
   nickname: 30,

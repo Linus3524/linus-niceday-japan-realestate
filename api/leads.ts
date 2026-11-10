@@ -1,8 +1,10 @@
+import { isBuyRequirement, validateBuyRequirement } from "../src/lib/findHome/buySchema.js";
+import { BUY_REQUIREMENT_FIELDS } from "../src/lib/findHome/buyLead.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { timingSafeEqual } from "crypto";
 import {
-  FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, REQUIREMENT_FIELDS, DECISION_FIELDS, effectiveDims,
+  FEASIBILITY_OPTIONS, LEAD_STATUSES, LEAD_TAGS, REQUIREMENT_FIELDS, DECISION_FIELDS, effectiveDims, formattedDecisionFields,
   type Lead, type Level,
 } from "../src/lib/findHome/lead.js";
 import { LEAD_SOURCE_LABEL, LIMITS, validateDecision, validateRequirement } from "../src/lib/findHome/schema.js";
@@ -48,7 +50,7 @@ function parseBody(body: unknown): any {
 const LEVELS: Level[] = ["high", "mid", "low"];
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-function readPatch(input: any): { patch: AdminPatch; error?: string } {
+function readPatch(input: any, dealType: "rent" | "buy" = "rent"): { patch: AdminPatch; error?: string } {
   const patch: AdminPatch = {};
   if (!input || typeof input !== "object") return { patch, error: "沒有要修改的內容。" };
   if (input.status !== undefined) {
@@ -85,13 +87,14 @@ function readPatch(input: any): { patch: AdminPatch; error?: string } {
     patch.dimsOverride = next;
   }
   if (input.requirement !== undefined) {
-    const { value, errors } = validateRequirement(input.requirement, undefined, true);
+    const { value, errors } = dealType === "buy" ? validateBuyRequirement(input.requirement) : validateRequirement(input.requirement, undefined, true);
     if (Object.keys(errors).length) return { patch, error: Object.values(errors)[0] };
     patch.requirement = value;
   }
   if (input.decision !== undefined) {
     const { value, errors } = validateDecision(input.decision);
     if (Object.keys(errors).length) return { patch, error: Object.values(errors)[0] };
+    if (dealType === "buy") delete value.applicationRoutes;
     patch.decision = value;
   }
   return { patch };
@@ -105,17 +108,19 @@ function csvCell(value: unknown) {
 }
 
 function toCsv(leads: Lead[]) {
-  const header = ["參考碼", "建立時間", "來源", "稱呼", "狀態", "市場可行性", "急迫", "準備", "彈性", "下次追蹤",
-    ...REQUIREMENT_FIELDS.map(field => field.label), ...DECISION_FIELDS.map(field => field.label), "聯絡方式狀態"];
+  const header = ["參考碼", "租房／買房", "建立時間", "來源", "稱呼", "狀態", "市場可行性", "急迫", "準備", "彈性", "下次追蹤",
+    ...REQUIREMENT_FIELDS.map(field => field.label), ...BUY_REQUIREMENT_FIELDS.map(field => `買房｜${field.label}`), ...DECISION_FIELDS.map(field => field.label), "聯絡方式狀態"];
   const rows = leads.map(lead => {
     const dims = effectiveDims(lead);
+    const decisions = new Map(formattedDecisionFields(lead.requirement, lead.decision).map(field => [field.key, field.value]));
     return [
-      lead.refCode, lead.createdAt, LEAD_SOURCE_LABEL[lead.source], lead.nickname,
+      lead.refCode, lead.dealType === "buy" ? "買房" : "租房", lead.createdAt, LEAD_SOURCE_LABEL[lead.source], lead.nickname,
       LEAD_STATUSES.find(item => item.id === lead.admin.status)?.label,
       FEASIBILITY_OPTIONS.find(item => item.id === lead.admin.feasibility)?.label,
       dims.urgency, dims.readiness, dims.flexibility, lead.admin.nextFollowUpAt,
-      ...REQUIREMENT_FIELDS.map(field => field.format(lead.requirement)),
-      ...DECISION_FIELDS.map(field => field.format(lead.decision)),
+      ...REQUIREMENT_FIELDS.map(field => isBuyRequirement(lead.requirement) ? "" : field.format(lead.requirement)),
+      ...BUY_REQUIREMENT_FIELDS.map(field => isBuyRequirement(lead.requirement) ? field.format(lead.requirement) : ""),
+      ...DECISION_FIELDS.map(field => decisions.get(field.key) || ""),
       // 匯出檔不放聯絡方式：檔案會被下載、轉傳，留副本就違反「聯絡上就刪除」的承諾。
       lead.contact ? "保留中（未匯出）" : "已刪除",
     ];
@@ -182,7 +187,9 @@ export default async function handler(req: any, res: any) {
     if (req.method === "PATCH") {
       const ver = Number(body.ver);
       if (!Number.isInteger(ver)) return res.status(400).json({ error: "缺少版本號，請重新整理。" });
-      const { patch, error } = readPatch(body.patch);
+      const current = await getLead(id);
+      if (!current) return res.status(404).json({ error: "找不到這筆資料。" });
+      const { patch, error } = readPatch(body.patch, current.dealType);
       if (error) return res.status(400).json({ error });
       const result = await patchLead(id, ver, patch);
       if (result === "not-found") return res.status(404).json({ error: "找不到這筆資料。" });

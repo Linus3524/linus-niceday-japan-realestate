@@ -12,7 +12,7 @@ export function FindHomeCta({ from, compact }: { from: string; compact?: boolean
       <h3 id={`find-home-cta-${from}`} className={`mt-1 flex items-center gap-2 font-bold ${compact ? "text-[15px]" : "text-lg"}`}>
         <ClipboardList className="h-5 w-5 shrink-0 text-[#00A174]" />告訴我你的日本找房需求
       </h3>
-      <p className="mt-1.5 text-xs leading-relaxed text-[#66736C]">約 3 分鐘、用綽號也可以。填好入住時間、地區和預算，Linus 會主動聯絡你。</p>
+      <p className="mt-1.5 text-xs leading-relaxed text-[#66736C]">約 3 分鐘、用綽號也可以。選擇租房或買房，填好地區、預算與計畫，Linus 會主動聯絡你。</p>
       <a
         href={`/find-home?from=${from}`}
         onClick={() => trackAction("find-home-open")}

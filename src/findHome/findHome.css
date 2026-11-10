@@ -1,0 +1,5 @@
+/* 問卷為獨立入口，不需要官網手機底部導覽預留的空白。 */
+body.find-home-page {
+  padding-bottom: 0;
+  background: #f5f8f6;
+}

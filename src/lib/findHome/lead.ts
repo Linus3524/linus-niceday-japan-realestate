@@ -1,3 +1,5 @@
+import { isBuyRequirement, BUY_LAYOUT_OPTIONS, BUY_ON_MATCH_OPTIONS, BUY_TIMING_OPTIONS, type AnyRequirement } from "./buySchema.js";
+import { BUY_REQUIREMENT_FIELDS, computeBuyDimensions } from "./buyLead.js";
 import {
   ADJUSTABLE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, GENDER_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
   OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
@@ -77,14 +79,14 @@ export interface Lead {
   createdAt: string;
   updatedAt: string;
   source: LeadSource;
-  dealType: "rent";
+  dealType: "rent" | "buy";
   nickname: string;
   /** 聯絡方式：聯絡上或送出 30 天後刪除，刪除後為 null。 */
   contact: { channel: ContactChannel; value: string } | null;
   contactRemovedAt?: string;
   contactRemovedReason?: "contacted" | "expired";
   contactTimes: ContactTime[];
-  requirement: Requirement;
+  requirement: AnyRequirement;
   decision: Decision;
   admin: {
     status: LeadStatus;
@@ -105,6 +107,8 @@ export interface Lead {
 
 /** 給後台列表用的摘要（不含聯絡方式的值，只標示有沒有）。 */
 export interface LeadSummary {
+  dealType: "rent" | "buy";
+  budgetMaxMan: number;
   id: string;
   refCode: string;
   createdAt: string;
@@ -124,7 +128,7 @@ export interface LeadSummary {
   entryDate?: string;
   areas: string;
   layouts: string;
-  rentMaxMan: number;
+  rentMaxMan?: number;
 }
 
 export const CONTACT_RETENTION_DAYS = 30;
@@ -143,7 +147,8 @@ function daysBetween(fromDate: string, toDate: string): number {
  * 系統建議的三個維度。只是提醒，不是成交機率；每個判斷都附原因，後台可以手動改。
  * 規則改了就改 DIMENSION_RULE_VERSION，舊資料保留當時的判斷與版本。
  */
-export function computeDimensions(req: Requirement, decision: Decision, now = new Date()): Dimensions {
+export function computeDimensions(req: AnyRequirement, decision: Decision, now = new Date()): Dimensions {
+  if (isBuyRequirement(req)) return computeBuyDimensions(req, decision, now);
   const reasons: string[] = [];
 
   let urgency: Level;
@@ -198,12 +203,15 @@ export function toSummary(lead: Lead): LeadSummary {
     tags: lead.admin.tags,
     dims: effectiveDims(lead),
     notifyStatus: lead.notify.status,
-    moveIn: req.moveIn === "date" && req.moveInDate ? req.moveInDate : labelOf(MOVE_IN_OPTIONS, req.moveIn),
+    dealType: isBuyRequirement(req) ? "buy" : "rent",
+    budgetMaxMan: isBuyRequirement(req) ? req.budgetMaxMan : req.rentMaxMan,
+    moveIn: isBuyRequirement(req) ? (req.purchaseTiming === "date" ? req.purchaseDate || "—" : labelOf(BUY_TIMING_OPTIONS, req.purchaseTiming))
+      : req.moveIn === "date" && req.moveInDate ? req.moveInDate : labelOf(MOVE_IN_OPTIONS, req.moveIn),
     residence: req.residence,
-    entryDate: req.entryDate,
+    entryDate: isBuyRequirement(req) ? undefined : req.entryDate,
     areas: req.areas,
-    layouts: labelsOf(LAYOUT_OPTIONS, req.layouts),
-    rentMaxMan: req.rentMaxMan,
+    layouts: labelsOf(isBuyRequirement(req) ? BUY_LAYOUT_OPTIONS : LAYOUT_OPTIONS, req.layouts),
+    rentMaxMan: isBuyRequirement(req) ? undefined : req.rentMaxMan,
   };
 }
 
@@ -248,18 +256,32 @@ export const DECISION_FIELDS: { key: keyof Decision; label: string; format: (d: 
  * 需求清單文字：通知信、客人完成頁的「複製我的需求」、後台的「複製需求」共用。
  * 沒填的欄位略過，貼到 LINE 比較精簡。不含稱呼與聯絡方式。
  */
-export function requirementLines(req: Requirement, decision?: Decision): string[] {
-  const lines = REQUIREMENT_FIELDS
-    .map(field => [field.label, field.format(req)] as const)
+export function formattedRequirementFields(req: AnyRequirement): { key: string; label: string; value: string }[] {
+  return isBuyRequirement(req)
+    ? BUY_REQUIREMENT_FIELDS.map(f => ({ key: f.key, label: f.label, value: f.format(req) }))
+    : REQUIREMENT_FIELDS.map(f => ({ key: f.key, label: f.label, value: f.format(req) }));
+}
+
+export function formattedDecisionFields(req: AnyRequirement, decision: Decision) {
+  if (!isBuyRequirement(req)) return DECISION_FIELDS.map(f => ({ key: f.key, label: f.label, value: f.format(decision) }));
+  return DECISION_FIELDS.filter(f => f.key !== "applicationRoutes").map(f => ({ key: f.key,
+    label: f.key === "ifNotFound" ? "找不到合適物件時" : f.label,
+    value: f.key === "onMatch" ? labelOf(BUY_ON_MATCH_OPTIONS, decision.onMatch) : f.format(decision),
+  }));
+}
+
+export function requirementLines(req: AnyRequirement, decision?: Decision): string[] {
+  const lines = formattedRequirementFields(req)
+    .map(field => [field.label, field.value] as const)
     .filter(([, value]) => value && value !== "—");
   const decisionLines = decision
-    ? DECISION_FIELDS.map(field => [field.label, field.format(decision)] as const).filter(([, value]) => value && value !== "—")
+    ? formattedDecisionFields(req, decision).map(field => [field.label, field.value] as const).filter(([, value]) => value && value !== "—")
     : [];
   return [...lines, ...decisionLines].map(([label, value]) => `${label}：${value}`);
 }
 
-export function requirementText(refCode: string | null, req: Requirement, decision?: Decision): string {
-  return [`【找房需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
+export function requirementText(refCode: string | null, req: AnyRequirement, decision?: Decision): string {
+  return [`【${isBuyRequirement(req) ? "買房" : "找房"}需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
 }
 
 /** 按費用試算的範例分行帶入找房條件；不含稱呼、聯絡方式、性別或年齡。 */
@@ -301,19 +323,13 @@ export function requirementPrompt(req: Requirement): string {
 }
 
 /** 比對兩份需求，列出有變的欄位（前值、後值都是顯示用文字）。 */
-export function diffRequirement(before: Requirement, after: Requirement, beforeDecision?: Decision, afterDecision?: Decision): Revision["changes"] {
+export function diffRequirement(before: AnyRequirement, after: AnyRequirement, beforeDecision?: Decision, afterDecision?: Decision): Revision["changes"] {
   const changes: Revision["changes"] = [];
-  for (const field of REQUIREMENT_FIELDS) {
-    const a = field.format(before);
-    const b = field.format(after);
-    if (a !== b) changes.push({ field: field.key, label: field.label, before: a, after: b });
-  }
-  if (beforeDecision && afterDecision) {
-    for (const field of DECISION_FIELDS) {
-      const a = field.format(beforeDecision);
-      const b = field.format(afterDecision);
-      if (a !== b) changes.push({ field: field.key, label: field.label, before: a, after: b });
-    }
+  const oldFields = [...formattedRequirementFields(before), ...(beforeDecision ? formattedDecisionFields(before, beforeDecision) : [])];
+  const newFields = [...formattedRequirementFields(after), ...(afterDecision ? formattedDecisionFields(after, afterDecision) : [])];
+  for (const field of newFields) {
+    const old = oldFields.find(f => f.key === field.key)?.value || "—";
+    if (old !== field.value) changes.push({ field: field.key, label: field.label, before: old, after: field.value });
   }
   return changes;
 }

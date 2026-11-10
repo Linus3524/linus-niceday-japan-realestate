@@ -1,3 +1,4 @@
+import { validateBuySubmission } from "../src/lib/findHome/buySchema.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { normalizeLeadSource, validateSubmission } from "../src/lib/findHome/schema.js";
@@ -70,7 +71,8 @@ export default async function handler(req: any, res: any) {
     }
   }
 
-  const validated = validateSubmission(body);
+  if (body.dealType !== undefined && body.dealType !== "rent" && body.dealType !== "buy") return res.status(400).json({ error: "找房類型不正確。" });
+  const validated = body.dealType === "buy" ? validateBuySubmission(body) : validateSubmission(body);
   if (!validated.ok || !validated.value) return res.status(400).json({ fieldErrors: validated.errors });
 
   if (!leadStoreConfigured()) return res.status(503).json({ error: "系統暫時無法收件。" });

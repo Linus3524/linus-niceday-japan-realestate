@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, ChevronDown, CircleHelp, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { Field, Chips, OptionList, inputClass, ManInput, SelectBox, LineButton, CopyButton, ContactStep } from "./FormFields";
+import { QuestionnaireSwitch } from "./QuestionnaireSwitch";
+import { isBuyRequirement, type AnyRequirement } from "../lib/findHome/buySchema";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Check, CircleHelp, Minus, Plus, QrCode, X } from "lucide-react";
 import { applicationRoutes } from "../data/rentStaticSearchData";
 import { linusContact } from "../data/rentGuideData";
 import { requirementLines, requirementText } from "../lib/findHome/lead";
-import { copyToClipboard } from "../lib/clipboard";
 import { writeCalculatorHandoff } from "../lib/findHome/handoff";
 import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
-import { trackAction, trackSource } from "../lib/trackView";
+import { trackAction } from "../lib/trackView";
 import {
-  ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
+  ADJUSTABLE_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
   AGE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, MIN_AREA_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
   NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
   type ContactChannel, type FieldErrors, type Option, type Requirement, type StepId,
@@ -62,84 +64,6 @@ function buildSummary(form: FormState, refCode: string | null = null) {
 
 
 // ───────────────────────── 小元件 ─────────────────────────
-
-function Field({ label, optional, hint, error, children, id }: { label: string; optional?: boolean; hint?: string; error?: string; children: ReactNode; id: string }) {
-  return (
-    <div className="space-y-2" id={`field-${id}`} data-error={error ? "true" : undefined}>
-      <p className="text-[14px] font-bold text-[#1A2A22]">
-        {label}
-        {optional && <span className="ml-1 text-[12px] font-normal text-[#66736C]">（選填）</span>}
-      </p>
-      {children}
-      {hint && !error && <p className="text-[12px] leading-relaxed text-[#66736C]">{hint}</p>}
-      {error && <p className="text-[12px] font-bold text-[#B42318]" role="alert">{error}</p>}
-    </div>
-  );
-}
-
-function Chips({ options, selected, onToggle, disabled }: { options: readonly Option[]; selected: string[]; onToggle: (id: string) => void; disabled?: (id: string) => boolean }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map(option => {
-        const on = selected.includes(option.id);
-        return (
-          <button
-            key={option.id}
-            type="button"
-            aria-pressed={on}
-            disabled={disabled?.(option.id)}
-            onClick={() => onToggle(option.id)}
-            className={`min-h-10 border px-3.5 text-[13px] transition-colors disabled:opacity-40 ${on ? "border-[#00A174] bg-[#F0FAF6] font-bold text-[#00A174]" : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#00A174]"}`}
-          >
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function OptionList({ options, value, onChange }: { options: readonly Option[]; value?: string; onChange: (id: string) => void }) {
-  return (
-    <div className="grid gap-2" role="radiogroup">
-      {options.map(option => {
-        const on = value === option.id;
-        return (
-          <button
-            key={option.id}
-            type="button"
-            role="radio"
-            aria-checked={on}
-            onClick={() => onChange(option.id)}
-            className={`flex min-h-11 items-center gap-3 border px-3.5 text-left text-[14px] transition-colors ${on ? "border-[#00A174] bg-[#F0FAF6] font-bold text-[#1A2A22]" : "border-[#DDE3DF] bg-white text-[#3F5147] hover:border-[#00A174]"}`}
-          >
-            <span className={`h-3.5 w-3.5 shrink-0 border ${on ? "border-[4px] border-[#00A174]" : "border-[#B7C0BB]"}`} aria-hidden="true" />
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-const inputClass = "h-11 w-full border border-[#C9D2CD] bg-white px-3 text-[15px] text-[#1A2A22] placeholder:text-[#9AA59F] focus:border-[#00A174] focus:outline-none";
-
-function ManInput({ value, onChange, placeholder, label, id }: { value: string; onChange: (v: string) => void; placeholder: string; label?: string; id: string }) {
-  return (
-    <label className="flex h-11 items-center border border-[#C9D2CD] bg-white focus-within:border-[#00A174]" htmlFor={id}>
-      {label && <span className="shrink-0 pl-3 text-[12px] text-[#66736C]">{label}</span>}
-      <input
-        id={id}
-        inputMode="decimal"
-        value={value}
-        onChange={e => onChange(e.target.value.replace(/[^\d.]/g, "").slice(0, 6))}
-        placeholder={placeholder}
-        className="h-full min-w-0 flex-1 bg-transparent px-3 text-right font-jost text-[16px] text-[#1A2A22] placeholder:text-[#9AA59F] focus:outline-none"
-      />
-      <span className="shrink-0 pr-3 text-[12px] text-[#66736C]">萬円</span>
-    </label>
-  );
-}
 
 /** 申請方式複選，每一項可以點「說明」展開網站上「租屋指南 → 申請方式」的同一份解釋（電腦滑過也會顯示）。 */
 function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; onToggle: (id: string) => void }) {
@@ -195,31 +119,6 @@ function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; on
   );
 }
 
-function SelectBox({ id, value, options, onChange }: { id: string; value: string; options: readonly Option[]; onChange: (value: string) => void }) {
-  return (
-    <div className="relative">
-      <select id={id} value={value} onChange={e => onChange(e.target.value)} className="h-11 w-full appearance-none border border-[#C9D2CD] bg-white pl-3 pr-9 text-[15px] text-[#1A2A22] focus:border-[#00A174] focus:outline-none">
-        {options.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
-      </select>
-      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#66736C]" aria-hidden="true" />
-    </div>
-  );
-}
-
-function LineButton({ label = "點我加 LINE 好友", small }: { label?: string; small?: boolean }) {
-  return (
-    <a
-      href={LINE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => trackAction("line-add")}
-      className={`flex items-center justify-center bg-[#00A174] font-bold text-white transition-colors hover:bg-[#008F67] ${small ? "min-h-10 px-4 text-[13px]" : "min-h-12 px-5 text-[15px]"}`}
-    >
-      {label}
-    </a>
-  );
-}
-
 // ───────────────────────── 主畫面 ─────────────────────────
 
 export function FindHomeApp() {
@@ -238,7 +137,6 @@ export function FindHomeApp() {
   const source = useMemo(readSource, []);
   const topRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { trackSource(); }, []);
   useEffect(() => {
     if (!refCode) saveDraft({ form, step, idempotencyKey, startedAt, ...(prefilledFromCalculator ? { prefilledFrom: "calculator" as const } : {}) });
   }, [form, step, idempotencyKey, startedAt, refCode, prefilledFromCalculator]);
@@ -352,9 +250,10 @@ export function FindHomeApp() {
       </header>
 
       <main className="mx-auto max-w-[560px] px-4 pb-32 pt-5" ref={topRef}>
+        <QuestionnaireSwitch selected="rent" />
         {step === 1 && (
           <div className="mb-5 space-y-2">
-            <h1 className="font-serif text-[22px] font-bold leading-snug">告訴我你的日本找房需求，<br />讓 Linus 協助確認方向</h1>
+            <h1 className="font-serif text-[22px] font-bold leading-snug">告訴我你的日本租房需求，<br />讓 Linus 協助確認方向</h1>
             <p className="text-[13px] leading-relaxed text-[#3F5147]">約 3 分鐘，用綽號也可以。填完 Linus 會主動聯絡你；不想填，也可以按右上角直接加 LINE。</p>
           </div>
         )}
@@ -537,82 +436,7 @@ export function FindHomeApp() {
             </>
           )}
 
-          {step === 4 && (
-            <>
-              <Field id="nickname" label="怎麼稱呼你？" hint="用綽號也可以。" error={errors.nickname}>
-                <input className={inputClass} maxLength={LIMITS.nickname} value={form.nickname} onChange={e => setForm(prev => ({ ...prev, nickname: e.target.value }))} placeholder="例：小林" autoComplete="nickname" />
-              </Field>
-              <Field id="contact" label="用什麼聯絡你？" hint="選一種就好。" error={errors.contact}>
-                <div className="grid grid-cols-3 border border-[#DDE3DF]" role="tablist" aria-label="聯絡方式">
-                  {CONTACT_CHANNEL_OPTIONS.map((option, index) => {
-                    const on = form.contact.channel === option.id;
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        role="tab"
-                        aria-selected={on}
-                        onClick={() => setForm(prev => ({ ...prev, contact: { channel: option.id, value: "" } }))}
-                        className={`min-h-10 text-[12px] sm:text-[13px] ${index ? "border-l border-[#DDE3DF]" : ""} ${on ? "bg-[#F0FAF6] font-bold text-[#00A174]" : "text-[#3F5147]"}`}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                <input
-                  className={inputClass}
-                  value={form.contact.value}
-                  maxLength={LIMITS.contact}
-                  onChange={e => setForm(prev => ({ ...prev, contact: { ...prev.contact, value: e.target.value } }))}
-                  placeholder={CONTACT_PLACEHOLDER[form.contact.channel]}
-                  inputMode={form.contact.channel === "email" ? "email" : form.contact.channel === "whatsapp" ? "tel" : "text"}
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                />
-                {form.contact.channel === "line" && (
-                  <p className="text-[12px] leading-relaxed text-[#66736C]">LINE ID 在「主頁 → 設定 → 個人檔案」。如果你關掉了「允許利用 ID 加入好友」，Linus 會搜尋不到，建議送出後直接加 Linus 的 LINE。</p>
-                )}
-              </Field>
-              <Field id="contactTimes" label="方便聯絡的時間" optional>
-                <Chips options={CONTACT_TIME_OPTIONS} selected={form.contactTimes} onToggle={id => setForm(prev => ({ ...prev, contactTimes: toggle(prev.contactTimes, id) }))} />
-              </Field>
-
-              {/* 給機器人填的欄位：真人看不到，有值就當成機器人 */}
-              <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-                <label>網站<input tabIndex={-1} autoComplete="off" value={honeypot} onChange={e => setHoneypot(e.target.value)} name="website" /></label>
-              </div>
-
-              <div className="space-y-3 border-t border-[#DDE3DF] pt-5">
-                <p className="bg-[#F0FAF6] px-3.5 py-3 text-[12px] leading-relaxed text-[#3F5147]">
-                  聯絡方式只用來和你聯絡找房。<b>聯絡上之後，系統會刪除你的聯絡方式</b>，只保留稱呼和找房需求；送出 30 天內沒聯絡上，也會自動刪除。
-                </p>
-                <div id="field-privacyAck">
-                  <label className="flex cursor-pointer items-start gap-2.5 text-[13px] leading-relaxed">
-                    <input
-                      type="checkbox"
-                      checked={form.privacyAck}
-                      onChange={e => setForm(prev => ({ ...prev, privacyAck: e.target.checked }))}
-                      className="mt-1 h-4 w-4 shrink-0 accent-[#00A174]"
-                    />
-                    <span>我已閱讀<a href="/#privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-[#00A174] underline">隱私權政策</a>，同意 Linus 用以上資料聯絡我找房。</span>
-                  </label>
-                  {errors.privacyAck && <p className="mt-1.5 text-[12px] font-bold text-[#B42318]" role="alert">{errors.privacyAck}</p>}
-                </div>
-              </div>
-
-              {submitError && (
-                <div className="space-y-3 border border-[#FDE047] bg-[#FEF9C3] p-4 text-[13px] text-[#854D0E]" role="alert">
-                  <p><b>{submitError}</b>你填的內容都還在，可以稍後再按一次送出；或是複製內容，直接用 LINE 傳給 Linus。</p>
-                  <div className="flex flex-wrap gap-2">
-                    <CopyButton text={buildSummary(form)} label="複製填好的內容" />
-                    <LineButton small label="加 LINE 傳給 Linus" />
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+          {step === 4 && <ContactStep form={form} setForm={setForm} errors={errors} honeypot={honeypot} setHoneypot={setHoneypot} submitError={submitError} summary={buildSummary(form)} />}
         </div>
 
         {step === 4 && (
@@ -640,53 +464,16 @@ export function FindHomeApp() {
   );
 }
 
-/** 複製按鈕。瀏覽器擋住複製時，改顯示文字框讓客人長按複製，不會「按了沒反應」。 */
-function CopyButton({ text, label }: { text: string; label: string }) {
-  const [state, setState] = useState<"idle" | "copied" | "manual">("idle");
-  return (
-    <div className={`flex flex-col gap-2 ${state === "manual" ? "w-full basis-full" : ""}`}>
-      <button
-        type="button"
-        onClick={async () => {
-          if (await copyToClipboard(text)) {
-            setState("copied");
-            window.setTimeout(() => setState("idle"), 2000);
-          } else {
-            setState("manual");
-          }
-        }}
-        className="flex min-h-10 items-center justify-center gap-1.5 self-start border border-[#00A174] bg-white px-4 text-[13px] font-bold text-[#00A174]"
-      >
-        {state === "copied" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-        {state === "copied" ? "已複製" : label}
-      </button>
-      {state === "manual" && (
-        <div className="space-y-1.5 text-left">
-          <p className="text-[12px] text-[#854D0E]">這個瀏覽器不允許自動複製，請長按下面的文字，選「全選」再「拷貝」。</p>
-          <textarea
-            readOnly
-            value={text}
-            rows={Math.min(10, text.split("\n").length + 1)}
-            onFocus={e => e.currentTarget.select()}
-            className="w-full border border-[#C9D2CD] bg-[#FAFCFB] p-2.5 text-[13px] leading-relaxed text-[#1A2A22]"
-            aria-label="要複製的文字"
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
 const CHANNEL_NAME: Record<ContactChannel, string> = { line: "LINE", wechat: "WeChat", email: "Email", whatsapp: "WhatsApp" };
 
-function SuccessView({ refCode, nickname, channel, lines, copyText: summary, requirement }: { refCode: string; nickname: string; channel: ContactChannel; lines: string[]; copyText: string; requirement: Requirement }) {
+export function SuccessView({ refCode, nickname, channel, lines, copyText: summary, requirement }: { refCode: string; nickname: string; channel: ContactChannel; lines: string[]; copyText: string; requirement: AnyRequirement }) {
   const [showWechat, setShowWechat] = useState(false);
   return (
     <div className="min-h-screen bg-[#F5F8F6] font-sans text-[#1A2A22]" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
       <main className="mx-auto max-w-[560px] space-y-4 px-4 py-8">
         <div className="space-y-2">
           <span className="flex h-10 w-10 items-center justify-center bg-[#00A174] text-white"><Check className="h-5 w-5" /></span>
-          <h1 className="font-serif text-[24px] font-bold">已收到你的找房需求</h1>
+          <h1 className="font-serif text-[24px] font-bold">已收到你的{isBuyRequirement(requirement) ? "買房" : "租房"}需求</h1>
           <p className="text-[14px] leading-relaxed text-[#3F5147]">{nickname || "你"}好，Linus 會用你留下的 {CHANNEL_NAME[channel]} 和你聯絡。</p>
         </div>
 
@@ -730,6 +517,7 @@ function SuccessView({ refCode, nickname, channel, lines, copyText: summary, req
           <p className="text-[12px] text-[#66736C]">可以複製下來自己留存，或貼到 LINE 跟 Linus 確認。</p>
         </section>
 
+        {!isBuyRequirement(requirement) && (
         <section className="space-y-3 border border-[#DDE3DF] bg-white p-5" aria-labelledby="check-market">
           <h2 id="check-market" className="text-[16px] font-bold">等 Linus 聯絡前，先看看行情</h2>
           <p className="text-[13px] leading-relaxed text-[#3F5147]">把你的條件帶進網站的「租屋預算健檢」，看看這個預算在你想住的地區合不合理、哪些條件會讓房子變少。</p>
@@ -744,6 +532,7 @@ function SuccessView({ refCode, nickname, channel, lines, copyText: summary, req
             用這些條件看行情
           </button>
         </section>
+        )}
 
         <p className="text-[13px] leading-relaxed text-[#66736C]">條件有變的話，直接在 LINE 告訴 Linus 就可以。</p>
         <a href="/" className="inline-block text-[13px] font-bold text-[#00A174] underline">回到 LINUS 住好日首頁</a>
