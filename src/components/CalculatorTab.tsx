@@ -10,6 +10,7 @@ import { AdvancedCalculatorInputs } from './calculator/AdvancedCalculatorInputs'
 import { AdvancedCalculatorResults } from './calculator/AdvancedCalculatorResults';
 import { BuyBudgetPanel } from './calculator/BuyBudgetPanel';
 import { GuidedRentForm } from './calculator/GuidedRentForm';
+import { FindHomeHandoffCta } from './calculator/FindHomeHandoffCta';
 
 import { motion } from "motion/react";
 
@@ -168,6 +169,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                                 {appliedNotice}
                               </p>
                             )}
+                            <FindHomeHandoffCta criteria={aiResult.criteria} />
                           </div>
                         )
                       ) : (
@@ -193,6 +195,7 @@ export function CalculatorTab(props: CalculatorTabProps) {
                               {appliedNotice && (
                                 <p className="mt-3 border border-[#9ee2cf] bg-[#e6f6f1] px-3 py-2 text-xs font-bold text-[#00a174]" role="status">{appliedNotice}</p>
                               )}
+                              <FindHomeHandoffCta criteria={aiResult.criteria} />
                             </div>
                           )}
                         </>

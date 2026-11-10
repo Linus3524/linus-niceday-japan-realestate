@@ -1,6 +1,6 @@
 import {
-  ADJUSTABLE_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_OPTIONS, ON_MATCH_OPTIONS,
-  OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, labelOf, labelsOf,
+  ADJUSTABLE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, GENDER_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
+  OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
   type ContactChannel, type ContactTime, type Decision, type LeadSource, type Requirement,
 } from "./schema.js";
 
@@ -211,30 +211,56 @@ const yen = (man: number | undefined) => (man ? `¥${Math.round(man * 10000).toL
 
 /** 需求欄位的顯示方式：變更紀錄與後台個案頁共用。 */
 export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format: (req: Requirement) => string }[] = [
+  { key: "gender", label: "性別", format: r => (r.gender ? labelOf(GENDER_OPTIONS, r.gender) : "—") },
+  { key: "ageRange", label: "年齡層", format: r => (r.ageRange ? labelOf(AGE_RANGE_OPTIONS, r.ageRange) : "—") },
   { key: "moveIn", label: "入住時間", format: r => (r.moveIn === "date" ? `指定 ${r.moveInDate ?? "—"}` : labelOf(MOVE_IN_OPTIONS, r.moveIn)) },
   { key: "reasons", label: "搬家原因", format: r => labelsOf(REASON_OPTIONS, r.reasons) + (r.reasonOther ? `（${r.reasonOther}）` : "") },
   { key: "residence", label: "目前住在", format: r => labelOf(RESIDENCE_OPTIONS, r.residence) },
+  { key: "visaType", label: "簽證種類", format: r => (r.visaType ? (r.visaType === "other" ? `其他（${r.visaTypeOther || "—"}）` : labelOf(VISA_TYPE_OPTIONS, r.visaType)) : "—") },
+  { key: "nationality", label: "國籍", format: r => r.nationality || "—" },
   { key: "entryDate", label: "預計入境", format: r => r.entryDate || "—" },
-  { key: "visa", label: "簽證狀態", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
+  { key: "visa", label: "簽證辦理進度", format: r => (r.visa ? labelOf(VISA_OPTIONS, r.visa) : "—") },
   { key: "areas", label: "希望地區", format: r => r.areas || "—" },
   { key: "commuteTarget", label: "每天要去", format: r => r.commuteTarget || "—" },
   { key: "occupants", label: "入住人數", format: r => `${r.occupants} 人` },
   { key: "layouts", label: "房型", format: r => labelsOf(LAYOUT_OPTIONS, r.layouts) },
   { key: "minAreaSqm", label: "最小面積", format: r => (r.minAreaSqm ? `${r.minAreaSqm} ㎡` : "—") },
+  { key: "walkMaxMin", label: "徒步到車站", format: r => (r.walkMaxMin ? `${r.walkMaxMin} 分內` : "—") },
+  { key: "ageMaxYears", label: "屋齡上限", format: r => (r.ageMaxYears ? `${r.ageMaxYears} 年內` : "—") },
+  { key: "structure", label: "建築結構", format: r => (r.structure && r.structure !== "any" ? labelOf(STRUCTURE_OPTIONS, r.structure) : "—") },
   { key: "rentIdealMan", label: "理想月租", format: r => yen(r.rentIdealMan) },
   { key: "rentMaxMan", label: "最高月租", format: r => yen(r.rentMaxMan) },
   { key: "initialCostMaxMan", label: "初期費用上限", format: r => yen(r.initialCostMaxMan) },
-  { key: "mustHaves", label: "想要的條件", format: r => labelsOf(MUST_HAVE_OPTIONS, r.mustHaves) },
-  { key: "top3", label: "最不能妥協", format: r => labelsOf(MUST_HAVE_OPTIONS, r.top3) },
+  { key: "mustHaves", label: "想要的條件", format: r => labelsOf(MUST_HAVE_LABEL_OPTIONS, r.mustHaves) },
+  { key: "top3", label: "最不能妥協", format: r => labelsOf(MUST_HAVE_LABEL_OPTIONS, r.top3) },
   { key: "adjustable", label: "可以調整", format: r => labelsOf(ADJUSTABLE_OPTIONS, r.adjustable) },
 ];
 
 export const DECISION_FIELDS: { key: keyof Decision; label: string; format: (d: Decision) => string }[] = [
   { key: "onMatch", label: "找到合適物件時", format: d => labelOf(ON_MATCH_OPTIONS, d.onMatch) },
+  { key: "applicationRoutes", label: "可接受申請方式", format: d => (d.applicationRoutes?.length ? labelsOf(APPLICATION_ROUTE_OPTIONS, d.applicationRoutes) : "—") },
   { key: "ifNotFound", label: "一個月內找不到", format: d => (d.ifNotFound ? labelOf(IF_NOT_FOUND_OPTIONS, d.ifNotFound) : "—") },
   { key: "otherAgents", label: "其他仲介", format: d => (d.otherAgents ? labelOf(OTHER_AGENTS_OPTIONS, d.otherAgents) : "—") },
   { key: "note", label: "補充說明", format: d => d.note || "—" },
 ];
+
+/**
+ * 需求清單文字：通知信、客人完成頁的「複製我的需求」、後台的「複製需求」共用。
+ * 沒填的欄位略過，貼到 LINE 比較精簡。不含稱呼與聯絡方式。
+ */
+export function requirementLines(req: Requirement, decision?: Decision): string[] {
+  const lines = REQUIREMENT_FIELDS
+    .map(field => [field.label, field.format(req)] as const)
+    .filter(([, value]) => value && value !== "—");
+  const decisionLines = decision
+    ? DECISION_FIELDS.map(field => [field.label, field.format(decision)] as const).filter(([, value]) => value && value !== "—")
+    : [];
+  return [...lines, ...decisionLines].map(([label, value]) => `${label}：${value}`);
+}
+
+export function requirementText(refCode: string | null, req: Requirement, decision?: Decision): string {
+  return [`【找房需求${refCode ? ` ${refCode}` : ""}】`, ...requirementLines(req, decision)].join("\n");
+}
 
 /** 比對兩份需求，列出有變的欄位（前值、後值都是顯示用文字）。 */
 export function diffRequirement(before: Requirement, after: Requirement, beforeDecision?: Decision, afterDecision?: Decision): Revision["changes"] {

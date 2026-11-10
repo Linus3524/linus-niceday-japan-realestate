@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, CircleHelp, Copy, Minus, Plus, QrCode, X } from "lucide-react";
+import { applicationRoutes } from "../data/rentStaticSearchData";
 import { linusContact } from "../data/rentGuideData";
+import { requirementLines, requirementText } from "../lib/findHome/lead";
+import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHomeDraft, type FindHomeFormState } from "../lib/findHome/draft";
 import { trackAction, trackSource } from "../lib/trackView";
 import {
   ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
-  LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
-  RESIDENCE_OPTIONS, VISA_OPTIONS, labelOf, labelsOf, validateContactStep, validateDecision, validateRequirement,
+  AGE_OPTIONS, AGE_RANGE_OPTIONS, APPLICATION_ROUTE_OPTIONS, MIN_AREA_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
+  NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
   type ContactChannel, type FieldErrors, type Option, type StepId,
 } from "../lib/findHome/schema";
 
@@ -17,42 +20,14 @@ import {
  * 伺服器收不到時不丟資料：保留填好的內容，並提供「複製內容改用 LINE 傳送」。
  */
 
-const DRAFT_KEY = "linus-find-home-draft-v1";
+const DRAFT_KEY = FIND_HOME_DRAFT_KEY;
 const LINE_URL = `https://line.me/ti/p/~${linusContact.lineId}`;
 const STEP_TITLES: Record<StepId, string> = { 1: "找房基本資訊", 2: "預算與條件", 3: "找房進度", 4: "怎麼聯絡你" };
 
-interface FormState {
-  requirement: {
-    moveIn?: string; moveInDate?: string; reasons: string[]; reasonOther?: string;
-    residence?: string; entryDate?: string; visa?: string;
-    areas: string; commuteTarget: string; occupants: number; layouts: string[]; minAreaSqm: string;
-    rentIdealMan: string; rentMaxMan: string; initialCostMaxMan: string;
-    mustHaves: string[]; top3: string[]; adjustable: string[];
-  };
-  decision: { onMatch?: string; ifNotFound?: string; otherAgents?: string; note: string };
-  nickname: string;
-  contact: { channel: ContactChannel; value: string };
-  contactTimes: string[];
-  privacyAck: boolean;
-}
-
-interface Draft { form: FormState; step: StepId; idempotencyKey: string; startedAt: number }
-
-const emptyForm = (): FormState => ({
-  requirement: {
-    reasons: [], areas: "", commuteTarget: "", occupants: 1, layouts: [], minAreaSqm: "",
-    rentIdealMan: "", rentMaxMan: "", initialCostMaxMan: "", mustHaves: [], top3: [], adjustable: [],
-  },
-  decision: { note: "" },
-  nickname: "",
-  contact: { channel: "line", value: "" },
-  contactTimes: [],
-  privacyAck: false,
-});
-
-function newKey() {
-  try { return crypto.randomUUID().replace(/-/g, ""); } catch { return `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`.padEnd(20, "x"); }
-}
+type FormState = FindHomeFormState;
+type Draft = FindHomeDraft;
+const emptyForm = emptyFindHomeForm;
+const newKey = newIdempotencyKey;
 
 function loadDraft(): Draft | null {
   try {
@@ -76,25 +51,11 @@ function readSource() {
   return params.get("from") || params.get("source") || params.get("utm_source") || "direct";
 }
 
-/** 送不出去時給客人複製、改用 LINE 傳的文字。 */
-function buildSummary(form: FormState) {
-  const r = form.requirement;
-  const d = form.decision;
-  return [
-    "【找房需求】",
-    `稱呼：${form.nickname || "—"}`,
-    `入住：${r.moveIn === "date" ? r.moveInDate || "—" : labelOf(MOVE_IN_OPTIONS, r.moveIn)}`,
-    `目前住在：${labelOf(RESIDENCE_OPTIONS, r.residence)}${r.residence === "overseas" ? `（入境 ${r.entryDate || "—"}，簽證${labelOf(VISA_OPTIONS, r.visa)}）` : ""}`,
-    `地區：${r.areas || "—"}`,
-    r.commuteTarget ? `每天要去：${r.commuteTarget}` : "",
-    `人數／房型：${r.occupants} 人，${labelsOf(LAYOUT_OPTIONS, r.layouts)}`,
-    `月租（含管理費）：理想 ${r.rentIdealMan || "—"} 萬，最高 ${r.rentMaxMan || "—"} 萬`,
-    `想要的條件：${labelsOf(MUST_HAVE_OPTIONS, r.mustHaves)}`,
-    `最不能妥協：${labelsOf(MUST_HAVE_OPTIONS, r.top3)}`,
-    `可以調整：${labelsOf(ADJUSTABLE_OPTIONS, r.adjustable)}`,
-    `找到時：${labelOf(ON_MATCH_OPTIONS, d.onMatch)}`,
-    d.note ? `補充：${d.note}` : "",
-  ].filter(Boolean).join("\n");
+/** 客人複製用的需求清單（送不出去時、完成頁都用同一份格式，與通知信一致）。 */
+function buildSummary(form: FormState, refCode: string | null = null) {
+  const requirement = validateRequirement(form.requirement, undefined, true).value;
+  const decision = validateDecision(form.decision).value;
+  return requirementText(refCode, requirement, decision);
 }
 
 async function copyText(text: string) {
@@ -181,6 +142,71 @@ function ManInput({ value, onChange, placeholder, label, id }: { value: string; 
   );
 }
 
+/** 申請方式複選，每一項可以點「說明」展開網站上「租屋指南 → 申請方式」的同一份解釋（電腦滑過也會顯示）。 */
+function ApplicationRoutePicker({ selected, onToggle }: { selected: string[]; onToggle: (id: string) => void }) {
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <div className="grid gap-2">
+      {APPLICATION_ROUTE_OPTIONS.map(option => {
+        const on = selected.includes(option.id);
+        const route = applicationRoutes.find(item => item.title === option.label);
+        const explanation = route ? `${route.condition}。${route.body}\n房源：${route.availability}。${route.market}` : "";
+        return (
+          <div key={option.id} className={`border ${on ? "border-[#00A174] bg-[#F0FAF6]" : "border-[#DDE3DF] bg-white"}`}>
+            <div className="flex items-stretch">
+              <button
+                type="button"
+                aria-pressed={on}
+                onClick={() => onToggle(option.id)}
+                title={explanation}
+                className="flex min-h-11 flex-1 items-center gap-3 px-3.5 text-left"
+              >
+                <span className={`flex h-4 w-4 shrink-0 items-center justify-center border ${on ? "border-[#00A174] bg-[#00A174]" : "border-[#B7C0BB]"}`} aria-hidden="true">
+                  {on && <Check className="h-3 w-3 text-white" />}
+                </span>
+                <span className="min-w-0">
+                  <span className={`block text-[14px] ${on ? "font-bold text-[#1A2A22]" : "text-[#3F5147]"}`}>{option.label}</span>
+                  {route && <span className="block text-[12px] text-[#66736C]">{route.condition}・{route.availability}</span>}
+                </span>
+              </button>
+              {route && (
+                <button
+                  type="button"
+                  aria-expanded={open === option.id}
+                  aria-label={`${option.label}是什麼？`}
+                  onClick={() => setOpen(current => (current === option.id ? null : option.id))}
+                  title={explanation}
+                  className="flex shrink-0 items-center gap-1 border-l border-[#DDE3DF] px-3 text-[12px] font-bold text-[#00A174]"
+                >
+                  <CircleHelp className="h-4 w-4" />說明
+                </button>
+              )}
+            </div>
+            {route && open === option.id && (
+              <div className="space-y-1.5 border-t border-[#DDE3DF] bg-white px-3.5 py-3 text-[12px] leading-relaxed text-[#3F5147]">
+                <p>{route.body}</p>
+                <p className="text-[#66736C]">例：{route.example}</p>
+                <p><b className="text-[#1A2A22]">房源多寡：</b>{route.market}</p>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SelectBox({ id, value, options, onChange }: { id: string; value: string; options: readonly Option[]; onChange: (value: string) => void }) {
+  return (
+    <div className="relative">
+      <select id={id} value={value} onChange={e => onChange(e.target.value)} className="h-11 w-full appearance-none border border-[#C9D2CD] bg-white pl-3 pr-9 text-[15px] text-[#1A2A22] focus:border-[#00A174] focus:outline-none">
+        {options.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#66736C]" aria-hidden="true" />
+    </div>
+  );
+}
+
 function LineButton({ label = "點我加 LINE 好友", small }: { label?: string; small?: boolean }) {
   return (
     <a
@@ -204,6 +230,7 @@ export function FindHomeApp() {
   const [idempotencyKey] = useState(() => restored?.idempotencyKey ?? newKey());
   const [startedAt] = useState(() => restored?.startedAt ?? Date.now());
   const [showResume, setShowResume] = useState(Boolean(restored && (restored.step > 1 || restored.form.requirement.areas)));
+  const prefilledFromCalculator = restored?.prefilledFrom === "calculator";
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -213,7 +240,9 @@ export function FindHomeApp() {
   const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { trackSource(); }, []);
-  useEffect(() => { if (!refCode) saveDraft({ form, step, idempotencyKey, startedAt }); }, [form, step, idempotencyKey, startedAt, refCode]);
+  useEffect(() => {
+    if (!refCode) saveDraft({ form, step, idempotencyKey, startedAt, ...(prefilledFromCalculator ? { prefilledFrom: "calculator" as const } : {}) });
+  }, [form, step, idempotencyKey, startedAt, refCode, prefilledFromCalculator]);
 
   const r = form.requirement;
   const d = form.decision;
@@ -298,7 +327,19 @@ export function FindHomeApp() {
     setShowResume(false);
   };
 
-  if (refCode) return <SuccessView refCode={refCode} nickname={form.nickname} channel={form.contact.channel} />;
+  if (refCode) {
+    const requirement = validateRequirement(form.requirement, undefined, true).value;
+    const decision = validateDecision(form.decision).value;
+    return (
+      <SuccessView
+        refCode={refCode}
+        nickname={form.nickname}
+        channel={form.contact.channel}
+        lines={requirementLines(requirement, decision)}
+        copyText={requirementText(refCode, requirement, decision)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F5F8F6] font-sans text-[#1A2A22]">
@@ -320,7 +361,7 @@ export function FindHomeApp() {
 
         {showResume && (
           <div className="mb-4 flex items-center justify-between gap-3 border border-[#DDE3DF] bg-white px-3.5 py-2.5 text-[12px] text-[#3F5147]">
-            <span>已幫你接著上次填寫的內容。</span>
+            <span>{prefilledFromCalculator ? "已帶入你在費用試算選的條件，請確認並補上其他題目。" : "已幫你接著上次填寫的內容。"}</span>
             <button type="button" onClick={startOver} className="shrink-0 font-bold text-[#66736C] underline">重新開始</button>
           </div>
         )}
@@ -333,6 +374,12 @@ export function FindHomeApp() {
         <div className="space-y-7 border border-[#DDE3DF] bg-white p-4 sm:p-6">
           {step === 1 && (
             <>
+              <Field id="gender" label="性別" hint="部分房東對入住者有條件，Linus 會先幫你確認。" error={errors.gender}>
+                <Chips options={GENDER_OPTIONS} selected={r.gender ? [r.gender] : []} onToggle={id => setReq({ gender: id })} />
+              </Field>
+              <Field id="ageRange" label="年齡層" error={errors.ageRange}>
+                <Chips options={AGE_RANGE_OPTIONS} selected={r.ageRange ? [r.ageRange] : []} onToggle={id => setReq({ ageRange: id })} />
+              </Field>
               <Field id="moveIn" label="預計什麼時候入住？" error={errors.moveIn}>
                 <Chips options={MOVE_IN_OPTIONS} selected={r.moveIn ? [r.moveIn] : []} onToggle={id => setReq({ moveIn: id })} />
               </Field>
@@ -352,14 +399,28 @@ export function FindHomeApp() {
               <Field id="residence" label="你現在住在" error={errors.residence}>
                 <Chips options={RESIDENCE_OPTIONS} selected={r.residence ? [r.residence] : []} onToggle={id => setReq({ residence: id })} />
               </Field>
+              <Field id="visaType" label="你的簽證種類" hint="入住審查會看在留資格。還在申請中，就選預計拿到的簽證。" error={errors.visaType}>
+                <Chips options={VISA_TYPE_OPTIONS} selected={r.visaType ? [r.visaType] : []} onToggle={id => setReq({ visaType: id })} />
+                {r.visaType === "other" && (
+                  <div id="field-visaTypeOther" className="space-y-1.5">
+                    <input className={inputClass} maxLength={LIMITS.visaTypeOther} value={r.visaTypeOther || ""} onChange={e => setReq({ visaTypeOther: e.target.value })} placeholder="例：配偶簽證、經營管理簽證" aria-label="其他簽證種類" />
+                    {errors.visaTypeOther && <p className="text-[12px] font-bold text-[#B42318]" role="alert">{errors.visaTypeOther}</p>}
+                  </div>
+                )}
+              </Field>
               {r.residence === "overseas" && (
                 <div className="space-y-6 border-l-2 border-[#00A174] pl-3">
+                  <Field id="nationality" label="國籍" error={errors.nationality}>
+                    <input className={inputClass} maxLength={LIMITS.nationality} value={r.nationality || ""} onChange={e => setReq({ nationality: e.target.value })} placeholder="例：台灣" />
+                  </Field>
                   <Field id="entryDate" label="預計入境日期" hint="大概的日期也可以。海外入住的審查條件跟入境時間有關。" error={errors.entryDate}>
                     <input type="date" className={inputClass} value={r.entryDate || ""} onChange={e => setReq({ entryDate: e.target.value })} />
                   </Field>
-                  <Field id="visa" label="簽證狀態" error={errors.visa}>
-                    <Chips options={VISA_OPTIONS} selected={r.visa ? [r.visa] : []} onToggle={id => setReq({ visa: id })} />
-                  </Field>
+                  {!(r.visaType && NO_VISA_PROCESS.includes(r.visaType)) && (
+                    <Field id="visa" label="簽證辦理進度" error={errors.visa}>
+                      <Chips options={VISA_OPTIONS} selected={r.visa ? [r.visa] : []} onToggle={id => setReq({ visa: id })} />
+                    </Field>
+                  )}
                 </div>
               )}
               <Field id="areas" label="想住哪裡？" hint="地區、路線或車站都可以，例如：中野、高圓寺、中央線。" error={errors.areas}>
@@ -368,22 +429,21 @@ export function FindHomeApp() {
               <Field id="commuteTarget" label="每天要去的地方" optional hint="公司、學校或最近的車站，Linus 會幫你看通勤時間。">
                 <input className={inputClass} maxLength={LIMITS.commuteTarget} value={r.commuteTarget} onChange={e => setReq({ commuteTarget: e.target.value })} placeholder="例：新宿站、早稻田大學" />
               </Field>
-              <Field id="occupants" label="幾個人住？" error={errors.occupants}>
-                <div className="flex w-40 items-stretch border border-[#C9D2CD] bg-white">
-                  <button type="button" aria-label="減少人數" onClick={() => setReq({ occupants: Math.max(1, r.occupants - 1) })} className="flex w-11 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Minus className="h-4 w-4" /></button>
-                  <span className="flex flex-1 items-center justify-center border-x border-[#DDE3DF] font-jost text-[16px]">{r.occupants} 人</span>
-                  <button type="button" aria-label="增加人數" onClick={() => setReq({ occupants: Math.min(LIMITS.maxOccupants, r.occupants + 1) })} className="flex h-11 w-11 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Plus className="h-4 w-4" /></button>
-                </div>
-              </Field>
               <Field id="layouts" label="想要的房型" hint="可複選。" error={errors.layouts}>
                 <Chips options={LAYOUT_OPTIONS} selected={r.layouts} onToggle={id => setReq({ layouts: toggle(r.layouts, id) })} />
               </Field>
-              <Field id="minAreaSqm" label="最小面積" optional error={errors.minAreaSqm}>
-                <label className="flex h-11 w-40 items-center border border-[#C9D2CD] bg-white focus-within:border-[#00A174]">
-                  <input inputMode="numeric" value={r.minAreaSqm} onChange={e => setReq({ minAreaSqm: e.target.value.replace(/\D/g, "").slice(0, 3) })} placeholder="20" className="h-full min-w-0 flex-1 bg-transparent px-3 text-right font-jost text-[16px] focus:outline-none" />
-                  <span className="pr-3 text-[12px] text-[#66736C]">㎡ 以上</span>
-                </label>
-              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field id="occupants" label="幾個人住？" error={errors.occupants}>
+                  <div className="flex h-11 items-stretch border border-[#C9D2CD] bg-white">
+                    <button type="button" aria-label="減少人數" onClick={() => setReq({ occupants: Math.max(1, r.occupants - 1) })} className="flex w-11 shrink-0 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Minus className="h-4 w-4" /></button>
+                    <span className="flex flex-1 items-center justify-center border-x border-[#DDE3DF] font-jost text-[16px]">{r.occupants} 人</span>
+                    <button type="button" aria-label="增加人數" onClick={() => setReq({ occupants: Math.min(LIMITS.maxOccupants, r.occupants + 1) })} className="flex w-11 shrink-0 items-center justify-center text-[#3F5147] hover:text-[#00A174]"><Plus className="h-4 w-4" /></button>
+                  </div>
+                </Field>
+                <Field id="minAreaSqm" label="最小面積" error={errors.minAreaSqm}>
+                  <SelectBox id="min-area" value={r.minAreaSqm || ""} options={MIN_AREA_OPTIONS} onChange={v => setReq({ minAreaSqm: v })} />
+                </Field>
+              </div>
             </>
           )}
 
@@ -398,6 +458,17 @@ export function FindHomeApp() {
               <span id="field-rentMaxMan" />
               <Field id="initialCostMaxMan" label="初期費用上限" optional hint="押金、禮金、仲介費等搬入時一次付清的費用。" error={errors.initialCostMaxMan}>
                 <div className="w-48"><ManInput id="initial-cost" value={r.initialCostMaxMan} onChange={v => setReq({ initialCostMaxMan: v })} placeholder="40" /></div>
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field id="walkMaxMin" label="徒步到車站">
+                  <SelectBox id="walk-max" value={r.walkMaxMin || "0"} options={WALK_OPTIONS} onChange={v => setReq({ walkMaxMin: v })} />
+                </Field>
+                <Field id="ageMaxYears" label="屋齡上限">
+                  <SelectBox id="age-max" value={r.ageMaxYears || "0"} options={AGE_OPTIONS} onChange={v => setReq({ ageMaxYears: v })} />
+                </Field>
+              </div>
+              <Field id="structure" label="建築結構" hint="怕吵或在意隔音，建議選非木造以上。">
+                <SelectBox id="structure" value={r.structure || "any"} options={STRUCTURE_OPTIONS} onChange={v => setReq({ structure: v })} />
               </Field>
               <Field id="mustHaves" label="想要的條件" optional hint="可複選。">
                 <Chips
@@ -425,7 +496,7 @@ export function FindHomeApp() {
                           className={`flex min-h-10 items-center gap-1.5 border px-3 text-[13px] disabled:opacity-40 ${on ? "border-[#00A174] bg-[#F0FAF6] font-bold text-[#00A174]" : "border-[#DDE3DF] text-[#3F5147]"}`}
                         >
                           {on && <span className="flex h-4 w-4 items-center justify-center bg-[#00A174] font-jost text-[11px] text-white">{order + 1}</span>}
-                          {labelOf(MUST_HAVE_OPTIONS, id)}
+                          {labelOf(MUST_HAVE_LABEL_OPTIONS, id)}
                         </button>
                       );
                     })}
@@ -449,6 +520,9 @@ export function FindHomeApp() {
             <>
               <Field id="onMatch" label="找到符合主要條件的房子時，你會？" error={errors.onMatch}>
                 <OptionList options={ON_MATCH_OPTIONS} value={d.onMatch} onChange={id => setDec({ onMatch: id })} />
+              </Field>
+              <Field id="applicationRoutes" label="可以接受哪些申請方式？" optional hint="可複選。租金合理、地段好的熱門物件，多半在前租客退租前就以「先行契約」租出；只接受一般申請，能選的房子會少很多。不確定可以先跳過，Linus 會再說明。">
+                <ApplicationRoutePicker selected={d.applicationRoutes || []} onToggle={id => setDec({ applicationRoutes: toggle(d.applicationRoutes || [], id) })} />
               </Field>
               <Field id="ifNotFound" label="如果一個月內還找不到？" optional>
                 <Chips options={IF_NOT_FOUND_OPTIONS} selected={d.ifNotFound ? [d.ifNotFound] : []} onToggle={id => setDec({ ifNotFound: d.ifNotFound === id ? undefined : id })} />
@@ -584,7 +658,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 
 const CHANNEL_NAME: Record<ContactChannel, string> = { line: "LINE", wechat: "WeChat", email: "Email", whatsapp: "WhatsApp" };
 
-function SuccessView({ refCode, nickname, channel }: { refCode: string; nickname: string; channel: ContactChannel }) {
+function SuccessView({ refCode, nickname, channel, lines, copyText: summary }: { refCode: string; nickname: string; channel: ContactChannel; lines: string[]; copyText: string }) {
   const [showWechat, setShowWechat] = useState(false);
   return (
     <div className="min-h-screen bg-[#F5F8F6] font-sans text-[#1A2A22]" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
@@ -614,6 +688,25 @@ function SuccessView({ refCode, nickname, channel }: { refCode: string; nickname
               <span className="text-[12px] text-[#66736C]">WeChat ID：{linusContact.wechatId}</span>
             </div>
           )}
+        </section>
+
+        <section className="space-y-3 border border-[#DDE3DF] bg-white p-5" aria-labelledby="my-requirements">
+          <div className="flex items-center justify-between gap-2">
+            <h2 id="my-requirements" className="text-[16px] font-bold">你填的找房需求</h2>
+            <CopyButton text={summary} label="複製" />
+          </div>
+          <ul className="divide-y divide-[#ECEFEC] text-[13px] leading-relaxed">
+            {lines.map(line => {
+              const index = line.indexOf("：");
+              return (
+                <li key={line} className="grid grid-cols-[6.5em_minmax(0,1fr)] gap-2 py-1.5">
+                  <span className="text-[#66736C]">{line.slice(0, index)}</span>
+                  <span className="whitespace-pre-wrap break-words">{line.slice(index + 1)}</span>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="text-[12px] text-[#66736C]">可以複製下來自己留存，或貼到 LINE 跟 Linus 確認。</p>
         </section>
 
         <p className="text-[13px] leading-relaxed text-[#66736C]">條件有變的話，直接在 LINE 告訴 Linus 就可以。</p>

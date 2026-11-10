@@ -1,3 +1,5 @@
+import { VISA_TYPES, VISA_TYPES_WITHOUT_PROCESS } from "../visaOptions.js";
+
 /**
  * 找房需求問卷（/find-home）的欄位定義與驗證。
  *
@@ -34,6 +36,34 @@ export const RESIDENCE_OPTIONS = [
   { id: "overseas", label: "海外" },
 ] as const satisfies readonly Option[];
 
+/**
+ * 簽證種類（在留資格）：和費用試算共用 src/lib/visaOptions.ts 的清單（代號一致，之後可直接帶進費用試算），
+ * 問卷另外多「其他（自填）」。
+ */
+export const VISA_TYPE_OPTIONS = [
+  ...VISA_TYPES.map(({ value, shortLabel }) => ({ id: value, label: shortLabel })),
+  { id: "other", label: "其他" },
+] as const satisfies readonly Option[];
+
+export const GENDER_OPTIONS = [
+  { id: "male", label: "男性" },
+  { id: "female", label: "女性" },
+  { id: "no-answer", label: "其他／不想回答" },
+] as const satisfies readonly Option[];
+
+export const AGE_RANGE_OPTIONS = [
+  { id: "under-20", label: "未滿 20 歲" },
+  { id: "20s", label: "20–29 歲" },
+  { id: "30s", label: "30–39 歲" },
+  { id: "40s", label: "40–49 歲" },
+  { id: "50s", label: "50–59 歲" },
+  { id: "60plus", label: "60 歲以上" },
+] as const satisfies readonly Option[];
+
+/** 不需要再問簽證辦理進度的身分。 */
+export const NO_VISA_PROCESS: readonly string[] = VISA_TYPES_WITHOUT_PROCESS;
+
+/** 簽證辦理進度（海外、且需要辦簽證時才問）。 */
 export const VISA_OPTIONS = [
   { id: "issued", label: "已核發" },
   { id: "applying", label: "申請中" },
@@ -50,17 +80,53 @@ export const LAYOUT_OPTIONS = [
   { id: "2LDK+", label: "2LDK 以上" },
 ] as const satisfies readonly Option[];
 
+/** 想要的條件：和費用試算的設備項目一致（中文），另加室內洗衣機、朝南。 */
 export const MUST_HAVE_OPTIONS = [
-  { id: "separate-bath", label: "バストイレ別" },
   { id: "second-floor", label: "2 樓以上" },
-  { id: "indoor-washer", label: "室內洗衣機" },
-  { id: "washbasin", label: "獨立洗面台" },
-  { id: "near-station", label: "車站 10 分內" },
-  { id: "autolock", label: "オートロック" },
   { id: "pets", label: "可養寵物" },
-  { id: "newer-building", label: "屋齡 20 年內" },
+  { id: "washbasin", label: "獨立洗面台" },
+  { id: "bidet", label: "免治馬桶" },
+  { id: "autolock", label: "一樓門禁自動門" },
+  { id: "elevator", label: "電梯" },
+  { id: "separate-bath", label: "乾濕分離" },
+  { id: "furnished", label: "家具家電" },
+  { id: "no-key-money", label: "免禮金" },
+  { id: "no-deposit", label: "免押金" },
+  { id: "free-internet", label: "免費網路" },
+  { id: "balcony", label: "附陽台" },
+  { id: "two-burner", label: "爐具 2 口以上" },
+  { id: "city-gas", label: "都市瓦斯" },
+  { id: "indoor-washer", label: "室內洗衣機" },
   { id: "south-facing", label: "朝南" },
-  { id: "two-burner", label: "兩口爐" },
+] as const satisfies readonly Option[];
+
+/** 舊版問卷用過、現在改由下拉選單處理的條件：只用於顯示舊資料，不再出現在問卷上。 */
+export const LEGACY_MUST_HAVE_OPTIONS = [
+  { id: "near-station", label: "車站 10 分內" },
+  { id: "newer-building", label: "屋齡 20 年內" },
+] as const satisfies readonly Option[];
+export const MUST_HAVE_LABEL_OPTIONS: readonly Option[] = [...MUST_HAVE_OPTIONS, ...LEGACY_MUST_HAVE_OPTIONS];
+
+/** 徒步到車站（分鐘上限，0 = 不限）。 */
+export const WALK_OPTIONS = [
+  { id: "0", label: "不限" },
+  { id: "5", label: "5 分內" },
+  { id: "10", label: "10 分內" },
+  { id: "15", label: "15 分內" },
+  { id: "20", label: "20 分內" },
+] as const satisfies readonly Option[];
+
+/** 屋齡上限（年，0 = 不限），與費用試算相同的級距。 */
+export const AGE_OPTIONS = [
+  { id: "0", label: "不限" },
+  ...[3, 5, 7, 10, 15, 20, 25, 30, 40, 50].map(year => ({ id: String(year), label: `${year} 年內` })),
+] as readonly Option[];
+
+/** 建築結構：問「最低接受到哪一種」。 */
+export const STRUCTURE_OPTIONS = [
+  { id: "any", label: "不限" },
+  { id: "non-wood", label: "非木造（鐵骨造以上）" },
+  { id: "rc", label: "鋼筋混凝土以上（RC・SRC 造）" },
 ] as const satisfies readonly Option[];
 
 export const ADJUSTABLE_OPTIONS = [
@@ -79,6 +145,19 @@ export const ON_MATCH_OPTIONS = [
   { id: "compare", label: "想多比較幾間" },
   { id: "market-only", label: "先了解行情就好" },
 ] as const satisfies readonly Option[];
+
+/** 可以接受的申請方式（說明文字用租屋指南的 applicationRoutes，標題必須一致）。 */
+export const APPLICATION_ROUTE_OPTIONS = [
+  { id: "general", label: "一般申請" },
+  { id: "advance-application", label: "先行申請" },
+  { id: "advance-contract", label: "先行契約" },
+] as const satisfies readonly Option[];
+
+/** 最小面積（㎡ 以上，"" = 不限）。 */
+export const MIN_AREA_OPTIONS = [
+  { id: "", label: "不限" },
+  ...[15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80].map(sqm => ({ id: String(sqm), label: `${sqm}㎡ 以上` })),
+] as readonly Option[];
 
 export const IF_NOT_FOUND_OPTIONS = [
   { id: "adjust", label: "調整條件" },
@@ -112,29 +191,42 @@ export type MoveIn = Ids<typeof MOVE_IN_OPTIONS>;
 export type Reason = Ids<typeof REASON_OPTIONS>;
 export type Residence = Ids<typeof RESIDENCE_OPTIONS>;
 export type Visa = Ids<typeof VISA_OPTIONS>;
+export type VisaType = Ids<typeof VISA_TYPE_OPTIONS>;
+export type Gender = Ids<typeof GENDER_OPTIONS>;
+export type AgeRange = Ids<typeof AGE_RANGE_OPTIONS>;
 export type Layout = Ids<typeof LAYOUT_OPTIONS>;
-export type MustHave = Ids<typeof MUST_HAVE_OPTIONS>;
+export type MustHave = Ids<typeof MUST_HAVE_OPTIONS> | Ids<typeof LEGACY_MUST_HAVE_OPTIONS>;
+export type Structure = Ids<typeof STRUCTURE_OPTIONS>;
 export type Adjustable = Ids<typeof ADJUSTABLE_OPTIONS>;
 export type OnMatch = Ids<typeof ON_MATCH_OPTIONS>;
 export type IfNotFound = Ids<typeof IF_NOT_FOUND_OPTIONS>;
+export type ApplicationRoute = Ids<typeof APPLICATION_ROUTE_OPTIONS>;
 export type OtherAgents = Ids<typeof OTHER_AGENTS_OPTIONS>;
 export type ContactChannel = Ids<typeof CONTACT_CHANNEL_OPTIONS>;
 export type ContactTime = Ids<typeof CONTACT_TIME_OPTIONS>;
 
 /** 客人填的需求（後台修改也是改這一包，變更紀錄比對的也是這一包）。 */
 export interface Requirement {
+  gender?: Gender; // 必填（舊資料可能沒有）
+  ageRange?: AgeRange; // 必填（舊資料可能沒有）
   moveIn: MoveIn;
   moveInDate?: string; // YYYY-MM-DD，moveIn = date 時必填
   reasons: Reason[];
   reasonOther?: string;
   residence: Residence;
   entryDate?: string; // YYYY-MM-DD，海外必填
-  visa?: Visa; // 海外必填
+  visaType?: VisaType; // 必填（舊資料可能沒有）
+  visaTypeOther?: string; // visaType = other 時必填
+  nationality?: string; // 海外必填
+  visa?: Visa; // 海外且需要辦簽證時必填
   areas: string;
   commuteTarget?: string;
   occupants: number;
   layouts: Layout[];
   minAreaSqm?: number;
+  walkMaxMin?: number; // 徒步到車站上限（分），0 或沒有 = 不限
+  ageMaxYears?: number; // 屋齡上限（年），0 或沒有 = 不限
+  structure?: Structure;
   rentIdealMan: number; // 萬円，含管理費
   rentMaxMan: number;
   initialCostMaxMan?: number;
@@ -145,6 +237,7 @@ export interface Requirement {
 
 export interface Decision {
   onMatch: OnMatch;
+  applicationRoutes?: ApplicationRoute[];
   ifNotFound?: IfNotFound;
   otherAgents?: OtherAgents;
   note?: string;
@@ -165,13 +258,15 @@ export interface FindHomeSubmission {
 }
 
 /** 隱私權政策版本：條文改了就改這裡，同意紀錄會存下當時的版本。 */
-export const PRIVACY_POLICY_VERSION = "2026-11-10";
+export const PRIVACY_POLICY_VERSION = "2026-11-10.3";
 
 export const LIMITS = {
   nickname: 30,
   areas: 120,
   commuteTarget: 120,
   reasonOther: 80,
+  visaTypeOther: 40,
+  nationality: 30,
   note: 500,
   contact: 100,
   maxOccupants: 8,
@@ -256,7 +351,10 @@ export const CONTACT_ERROR: Record<ContactChannel, string> = {
 /** 每一步要檢查的欄位，前端按「下一步」時只驗證這一步。 */
 export type StepId = 1 | 2 | 3 | 4;
 
-export function validateRequirement(input: any, step?: StepId): { value: Requirement; errors: FieldErrors } {
+/**
+ * lenient：後台修改用。舊資料沒有後來才加的欄位（簽證種類、國籍），後台改其他欄位時不因此被擋。
+ */
+export function validateRequirement(input: any, step?: StepId, lenient = false): { value: Requirement; errors: FieldErrors } {
   const errors: FieldErrors = {};
   const check = (s: StepId) => step === undefined || step === s;
 
@@ -267,7 +365,8 @@ export function validateRequirement(input: any, step?: StepId): { value: Require
   const rentIdeal = toNumber(input?.rentIdealMan);
   const rentMax = toNumber(input?.rentMaxMan);
   const initialCost = toNumber(input?.initialCostMaxMan);
-  const mustHaves = pickMany(MUST_HAVE_OPTIONS, input?.mustHaves);
+  // 後台修改舊資料時保留舊版條件代號，避免被當成「客人刪掉了」而記成變更。
+  const mustHaves = pickMany(lenient ? MUST_HAVE_LABEL_OPTIONS : MUST_HAVE_OPTIONS, input?.mustHaves) as MustHave[];
   let adjustable = pickMany(ADJUSTABLE_OPTIONS, input?.adjustable);
   if (adjustable.includes("keep") && adjustable.length > 1) adjustable = ["keep"];
 
@@ -282,11 +381,15 @@ export function validateRequirement(input: any, step?: StepId): { value: Require
     rentMaxMan: rentMax ?? 0,
     mustHaves,
     // 最不能妥協只能從已勾選的條件挑，最多 3 項；取消勾選某條件時自動剔除。
-    top3: pickMany(MUST_HAVE_OPTIONS, input?.top3).filter(id => mustHaves.includes(id)).slice(0, 3),
+    top3: (pickMany(MUST_HAVE_LABEL_OPTIONS, input?.top3) as MustHave[]).filter(id => mustHaves.includes(id)).slice(0, 3),
     adjustable,
   };
 
   if (check(1)) {
+    if (has(GENDER_OPTIONS, input?.gender)) value.gender = input.gender;
+    else if (!lenient) errors.gender = "請選擇性別。";
+    if (has(AGE_RANGE_OPTIONS, input?.ageRange)) value.ageRange = input.ageRange;
+    else if (!lenient) errors.ageRange = "請選擇年齡層。";
     if (!moveIn) errors.moveIn = "請選擇預計入住時間。";
     if (moveIn === "date") {
       if (isValidDate(input?.moveInDate)) value.moveInDate = input.moveInDate;
@@ -297,11 +400,23 @@ export function validateRequirement(input: any, step?: StepId): { value: Require
       if (other) value.reasonOther = other;
     }
     if (!residence) errors.residence = "請選擇目前住在日本或海外。";
+    if (has(VISA_TYPE_OPTIONS, input?.visaType)) value.visaType = input.visaType;
+    else if (!lenient) errors.visaType = "請選擇簽證種類。";
+    if (value.visaType === "other") {
+      const other = cleanText(input?.visaTypeOther, LIMITS.visaTypeOther);
+      if (other) value.visaTypeOther = other;
+      else if (!lenient) errors.visaTypeOther = "請填寫簽證種類。";
+    }
     if (residence === "overseas") {
+      const nationality = cleanText(input?.nationality, LIMITS.nationality);
+      if (nationality) value.nationality = nationality;
+      else if (!lenient) errors.nationality = "請填寫國籍。";
       if (isValidDate(input?.entryDate)) value.entryDate = input.entryDate;
-      else errors.entryDate = "請選擇預計入境日期（大概的日期也可以）。";
-      if (has(VISA_OPTIONS, input?.visa)) value.visa = input.visa;
-      else errors.visa = "請選擇簽證狀態。";
+      else if (!lenient || input?.entryDate) errors.entryDate = "請選擇預計入境日期（大概的日期也可以）。";
+      if (!value.visaType || !NO_VISA_PROCESS.includes(value.visaType)) {
+        if (has(VISA_OPTIONS, input?.visa)) value.visa = input.visa;
+        else if (!lenient) errors.visa = "請選擇簽證辦理進度。";
+      }
     }
     if (!value.areas) errors.areas = "請填想住的地區、路線或車站。";
     const commute = cleanText(input?.commuteTarget, LIMITS.commuteTarget);
@@ -322,6 +437,11 @@ export function validateRequirement(input: any, step?: StepId): { value: Require
       if (initialCost <= 0 || initialCost > 1000) errors.initialCostMaxMan = "初期費用請填 1–1000 萬円，或留空。";
       else value.initialCostMaxMan = initialCost;
     }
+    const walk = toNumber(input?.walkMaxMin);
+    if (walk !== null && WALK_OPTIONS.some(option => option.id === String(walk)) && walk > 0) value.walkMaxMin = walk;
+    const age = toNumber(input?.ageMaxYears);
+    if (age !== null && AGE_OPTIONS.some(option => option.id === String(age)) && age > 0) value.ageMaxYears = age;
+    if (has(STRUCTURE_OPTIONS, input?.structure) && input.structure !== "any") value.structure = input.structure;
     if (adjustable.length === 0) errors.adjustable = "請至少選一項；都不想調整就選「維持原條件」。";
   }
 
@@ -333,6 +453,8 @@ export function validateDecision(input: any, check = true): { value: Decision; e
   const value: Decision = { onMatch: input?.onMatch };
   if (!check) return { value, errors };
   if (!has(ON_MATCH_OPTIONS, input?.onMatch)) errors.onMatch = "請選擇找到合適物件時的打算。";
+  const routes = pickMany(APPLICATION_ROUTE_OPTIONS, input?.applicationRoutes);
+  if (routes.length) value.applicationRoutes = routes;
   if (has(IF_NOT_FOUND_OPTIONS, input?.ifNotFound)) value.ifNotFound = input.ifNotFound;
   if (has(OTHER_AGENTS_OPTIONS, input?.otherAgents)) value.otherAgents = input.otherAgents;
   const note = cleanMultiline(input?.note, LIMITS.note);
@@ -379,7 +501,7 @@ export function validateSubmission(input: any): { ok: boolean; value?: FindHomeS
 
 /** 欄位屬於哪一步：後端回傳錯誤時，前端跳回第一個有錯的步驟。 */
 export const FIELD_STEP: Record<string, StepId> = {
-  moveIn: 1, moveInDate: 1, residence: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
+  gender: 1, ageRange: 1, moveIn: 1, moveInDate: 1, residence: 1, visaType: 1, visaTypeOther: 1, nationality: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
   rentIdealMan: 2, rentMaxMan: 2, initialCostMaxMan: 2, adjustable: 2,
   onMatch: 3,
   nickname: 4, contact: 4, privacyAck: 4,
@@ -395,7 +517,7 @@ export function labelsOf(options: readonly Option[], ids: readonly string[] | un
 }
 
 /** 來源標記白名單（網址 ?from= 或 ?source=）；其他字串一律記成 other，避免任意字串寫進資料。 */
-export const LEAD_SOURCES = ["website", "line", "instagram", "threads", "facebook", "listing", "ai", "wechat", "qr", "direct", "other"] as const;
+export const LEAD_SOURCES = ["website", "line", "instagram", "threads", "facebook", "listing", "calculator", "ai", "wechat", "qr", "direct", "other"] as const;
 export type LeadSource = (typeof LEAD_SOURCES)[number];
 
 export function normalizeLeadSource(value: unknown): LeadSource {
@@ -408,5 +530,5 @@ export function normalizeLeadSource(value: unknown): LeadSource {
 
 export const LEAD_SOURCE_LABEL: Record<LeadSource, string> = {
   website: "官網", line: "LINE", instagram: "Instagram", threads: "Threads", facebook: "Facebook",
-  listing: "圖紙分析", ai: "AI 顧問", wechat: "WeChat", qr: "QR Code", direct: "直接開啟", other: "其他",
+  listing: "圖紙分析", calculator: "費用試算", ai: "AI 顧問", wechat: "WeChat", qr: "QR Code", direct: "直接開啟", other: "其他",
 };

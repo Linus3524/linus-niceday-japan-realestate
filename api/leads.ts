@@ -85,7 +85,7 @@ function readPatch(input: any): { patch: AdminPatch; error?: string } {
     patch.dimsOverride = next;
   }
   if (input.requirement !== undefined) {
-    const { value, errors } = validateRequirement(input.requirement);
+    const { value, errors } = validateRequirement(input.requirement, undefined, true);
     if (Object.keys(errors).length) return { patch, error: Object.values(errors)[0] };
     patch.requirement = value;
   }
