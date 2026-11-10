@@ -6921,3 +6921,30 @@ button.ui-switch-large:focus-visible {
   .site-footer, .site-footer *, .about-page .about-section--tools *,
   .desk-app .about-page > .about-section.about-section--tools::before, .about-page .about-contact * { transition: none; }
 }
+
+/* LINE 名片與首頁場景同步：保留原圖比例，預載三張肖像後交叉淡入。 */
+.theme-contact-portrait { position: relative; display: block; width: 100%; height: 100%; }
+.contact-flip-face .theme-contact-portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.contact-flip-face .theme-contact-portrait img.is-active { opacity: 1; }
+.desk-app .about-profile-line,
+.desk-app #add-line-btn-hero {
+  background-color: var(--closing-accent);
+  color: var(--closing-button-ink, #fff);
+  transition: background-color 1.2s ease, color 1.2s ease;
+}
+/* 亮藍與橘色底配深墨色，維持按鈕小字的對比。 */
+.footer-theme--lemon, .footer-theme--grape { --closing-button-ink: #1A2A22; }
+.desk-app .about-profile-line:hover,
+.desk-app #add-line-btn-hero:hover { box-shadow: inset 0 0 0 2px var(--closing-ink); }
+@media (prefers-reduced-motion: reduce) {
+  .contact-flip-face .theme-contact-portrait img,
+  .desk-app .about-profile-line, .desk-app #add-line-btn-hero { transition: none; }
+}

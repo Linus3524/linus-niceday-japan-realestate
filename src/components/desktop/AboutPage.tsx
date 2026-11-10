@@ -1,3 +1,4 @@
+import { ThemeContactPortrait } from "../ThemeContactPortrait";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Bot, Calculator, Clock, FileSearch, House, KeyRound, Languages, PenTool, ScanText, Sparkles, TrendingUp, UsersRound, type LucideIcon } from "lucide-react";
 import { linusContact } from "../../data/rentGuideData";
@@ -48,7 +49,7 @@ const STEPS = [
 ];
 
 // 左欄名片：頭像點一下翻面成 LINE QR，下方加好友、複製 ID（與首屏聯絡卡同一套互動），最後是兩個數字。
-function AboutProfile({ visitorDisplay }: { visitorDisplay: string }) {
+function AboutProfile({ visitorDisplay, scene }: { visitorDisplay: string; scene: string }) {
   const [showQr, setShowQr] = useState(false);
   const [copied, setCopied] = useState(false);
   const avatarRef = useRef<HTMLButtonElement>(null);
@@ -95,7 +96,7 @@ function AboutProfile({ visitorDisplay }: { visitorDisplay: string }) {
         className={`contact-flip about-profile-avatar ${showQr ? "is-flipped" : ""}`}
       >
         <span className="contact-flip-inner">
-          <span className="contact-flip-face"><img src="/logo.png?v=20261110" alt="LINUS 住好日" /></span>
+          <span className="contact-flip-face"><ThemeContactPortrait scene={scene} /></span>
           <span className="contact-flip-face contact-flip-back"><img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" /></span>
         </span>
       </button>
@@ -138,13 +139,13 @@ function Section({ id, className = "", en, title, children }: { id?: string; cla
   );
 }
 
-export function AboutPage({ onNavigate, visitorDisplay }: { onNavigate: (tab: AppTab) => void; visitorDisplay: string }) {
+export function AboutPage({ onNavigate, visitorDisplay, scene }: { onNavigate: (tab: AppTab) => void; visitorDisplay: string; scene: string }) {
   return (
     <div className="about-page" id="about-linus" aria-label="關於 Linus">
       {/* 標題放進右欄，左欄名片上緣與標題對齊 */}
       <section className="about-section about-section--me">
         <div className="about-grid">
-          <AboutProfile visitorDisplay={visitorDisplay} />
+          <AboutProfile visitorDisplay={visitorDisplay} scene={scene} />
           <div className="about-story">
             <header className="about-section-head">
               <p className="about-section-en">About me</p>

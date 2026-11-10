@@ -12,6 +12,7 @@ import { FormEvent, Suspense, lazy, useEffect, useRef, useState, type ReactNode 
 import { BuyGuideTab } from "./components/BuyGuideTab";
 import { CalculatorTab } from "./components/CalculatorTab";
 import { ChatTab } from "./components/ChatTab";
+import { ThemeContactPortrait } from "./components/ThemeContactPortrait";
 import { AboutPage } from "./components/desktop/AboutPage";
 import { DesktopStage, type StagePage } from "./components/desktop/DesktopStage";
 import { useIsDesktop } from "./hooks/useIsDesktop";
@@ -920,7 +921,7 @@ export default function App() {
         onShowQuiz={() => showDeskPage("quiz")}
         below={
           <>
-            <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} />
+            <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} scene={HERO_SETS[heroSet].key} />
             {renderFooter("stage-footer")}
           </>
         }
@@ -1055,7 +1056,7 @@ export default function App() {
               >
                 <span className="contact-flip-inner">
                   <span className="contact-flip-face">
-                    <img src="/logo.png?v=20261110" alt="LINUS 住好日" />
+                    <ThemeContactPortrait scene={HERO_SETS[heroSet].key} />
                   </span>
                   <span className="contact-flip-face contact-flip-back">
                     <img src="/line-add-friend-qr-branded.svg" alt="LINE 加好友 QR Code" />
@@ -1132,7 +1133,7 @@ export default function App() {
       {/* 手機／平板首頁：電腦版首頁往下捲的「關於 Linus」介紹也放進來，排在 Threads 精選文之後（桌機已經在 DesktopStage 的 below 裡） */}
       {!isDesktop && (
         <div className="about-flow">
-          <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} />
+          <AboutPage onNavigate={handleTabChange} visitorDisplay={visitorDisplay} scene={HERO_SETS[heroSet].key} />
         </div>
       )}
 
