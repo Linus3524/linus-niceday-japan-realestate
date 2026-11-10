@@ -28,9 +28,9 @@ const STATUS_STYLE: Record<string, string> = {
   waiting: "bg-[#FEF9C3] text-[#854D0E]",
   applying: "bg-[#00A174] text-white",
   won: "bg-[#1A2A22] text-white",
-  closed: "bg-[#EEF1EF] text-[#66736C]",
+  closed: "bg-[#EEF2F0] text-[#66736C]",
   unreachable: "bg-[#FDECEA] text-[#B42318]",
-  paused: "bg-[#EEF1EF] text-[#66736C]",
+  paused: "bg-[#EEF2F0] text-[#66736C]",
 };
 
 type Filter = "all" | "new" | "follow-up" | "overseas" | "contact" | "notify";
