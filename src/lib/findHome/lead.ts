@@ -1,5 +1,5 @@
 import {
-  ADJUSTABLE_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
+  ADJUSTABLE_OPTIONS, AGE_RANGE_OPTIONS, GENDER_OPTIONS, IF_NOT_FOUND_OPTIONS, LAYOUT_OPTIONS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, ON_MATCH_OPTIONS, STRUCTURE_OPTIONS,
   OTHER_AGENTS_OPTIONS, REASON_OPTIONS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, labelsOf,
   type ContactChannel, type ContactTime, type Decision, type LeadSource, type Requirement,
 } from "./schema.js";
@@ -211,6 +211,8 @@ const yen = (man: number | undefined) => (man ? `¥${Math.round(man * 10000).toL
 
 /** 需求欄位的顯示方式：變更紀錄與後台個案頁共用。 */
 export const REQUIREMENT_FIELDS: { key: keyof Requirement; label: string; format: (req: Requirement) => string }[] = [
+  { key: "gender", label: "性別", format: r => (r.gender ? labelOf(GENDER_OPTIONS, r.gender) : "—") },
+  { key: "ageRange", label: "年齡層", format: r => (r.ageRange ? labelOf(AGE_RANGE_OPTIONS, r.ageRange) : "—") },
   { key: "moveIn", label: "入住時間", format: r => (r.moveIn === "date" ? `指定 ${r.moveInDate ?? "—"}` : labelOf(MOVE_IN_OPTIONS, r.moveIn)) },
   { key: "reasons", label: "搬家原因", format: r => labelsOf(REASON_OPTIONS, r.reasons) + (r.reasonOther ? `（${r.reasonOther}）` : "") },
   { key: "residence", label: "目前住在", format: r => labelOf(RESIDENCE_OPTIONS, r.residence) },

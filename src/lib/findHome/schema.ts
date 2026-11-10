@@ -38,12 +38,26 @@ export const RESIDENCE_OPTIONS = [
 
 /**
  * 簽證種類（在留資格）：和費用試算共用 src/lib/visaOptions.ts 的清單（代號一致，之後可直接帶進費用試算），
- * 問卷另外多「其他（自填）」與「還不確定」。
+ * 問卷另外多「其他（自填）」。
  */
 export const VISA_TYPE_OPTIONS = [
   ...VISA_TYPES.map(({ value, shortLabel }) => ({ id: value, label: shortLabel })),
   { id: "other", label: "其他" },
-  { id: "unsure", label: "還不確定" },
+] as const satisfies readonly Option[];
+
+export const GENDER_OPTIONS = [
+  { id: "male", label: "男性" },
+  { id: "female", label: "女性" },
+  { id: "no-answer", label: "其他／不想回答" },
+] as const satisfies readonly Option[];
+
+export const AGE_RANGE_OPTIONS = [
+  { id: "under-20", label: "未滿 20 歲" },
+  { id: "20s", label: "20–29 歲" },
+  { id: "30s", label: "30–39 歲" },
+  { id: "40s", label: "40–49 歲" },
+  { id: "50s", label: "50–59 歲" },
+  { id: "60plus", label: "60 歲以上" },
 ] as const satisfies readonly Option[];
 
 /** 不需要再問簽證辦理進度的身分。 */
@@ -165,6 +179,8 @@ export type Reason = Ids<typeof REASON_OPTIONS>;
 export type Residence = Ids<typeof RESIDENCE_OPTIONS>;
 export type Visa = Ids<typeof VISA_OPTIONS>;
 export type VisaType = Ids<typeof VISA_TYPE_OPTIONS>;
+export type Gender = Ids<typeof GENDER_OPTIONS>;
+export type AgeRange = Ids<typeof AGE_RANGE_OPTIONS>;
 export type Layout = Ids<typeof LAYOUT_OPTIONS>;
 export type MustHave = Ids<typeof MUST_HAVE_OPTIONS> | Ids<typeof LEGACY_MUST_HAVE_OPTIONS>;
 export type Structure = Ids<typeof STRUCTURE_OPTIONS>;
@@ -177,6 +193,8 @@ export type ContactTime = Ids<typeof CONTACT_TIME_OPTIONS>;
 
 /** 客人填的需求（後台修改也是改這一包，變更紀錄比對的也是這一包）。 */
 export interface Requirement {
+  gender?: Gender; // 必填（舊資料可能沒有）
+  ageRange?: AgeRange; // 必填（舊資料可能沒有）
   moveIn: MoveIn;
   moveInDate?: string; // YYYY-MM-DD，moveIn = date 時必填
   reasons: Reason[];
@@ -225,7 +243,7 @@ export interface FindHomeSubmission {
 }
 
 /** 隱私權政策版本：條文改了就改這裡，同意紀錄會存下當時的版本。 */
-export const PRIVACY_POLICY_VERSION = "2026-11-10.2";
+export const PRIVACY_POLICY_VERSION = "2026-11-10.3";
 
 export const LIMITS = {
   nickname: 30,
@@ -353,6 +371,10 @@ export function validateRequirement(input: any, step?: StepId, lenient = false):
   };
 
   if (check(1)) {
+    if (has(GENDER_OPTIONS, input?.gender)) value.gender = input.gender;
+    else if (!lenient) errors.gender = "請選擇性別。";
+    if (has(AGE_RANGE_OPTIONS, input?.ageRange)) value.ageRange = input.ageRange;
+    else if (!lenient) errors.ageRange = "請選擇年齡層。";
     if (!moveIn) errors.moveIn = "請選擇預計入住時間。";
     if (moveIn === "date") {
       if (isValidDate(input?.moveInDate)) value.moveInDate = input.moveInDate;
@@ -462,7 +484,7 @@ export function validateSubmission(input: any): { ok: boolean; value?: FindHomeS
 
 /** 欄位屬於哪一步：後端回傳錯誤時，前端跳回第一個有錯的步驟。 */
 export const FIELD_STEP: Record<string, StepId> = {
-  moveIn: 1, moveInDate: 1, residence: 1, visaType: 1, visaTypeOther: 1, nationality: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
+  gender: 1, ageRange: 1, moveIn: 1, moveInDate: 1, residence: 1, visaType: 1, visaTypeOther: 1, nationality: 1, entryDate: 1, visa: 1, areas: 1, occupants: 1, layouts: 1, minAreaSqm: 1,
   rentIdealMan: 2, rentMaxMan: 2, initialCostMaxMan: 2, adjustable: 2,
   onMatch: 3,
   nickname: 4, contact: 4, privacyAck: 4,

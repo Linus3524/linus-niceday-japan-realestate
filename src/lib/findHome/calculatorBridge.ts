@@ -138,7 +138,7 @@ export function requirementToCriteria(req: Requirement): RentSearchCriteria {
     householdSize: req.occupants || null,
     initialCostBudget: req.initialCostMaxMan ? Math.round(req.initialCostMaxMan * 10000) : null,
     applicationChannel: req.residence === "overseas" ? "overseas" : "domestic",
-    visaType: req.visaType && req.visaType !== "other" && req.visaType !== "unsure" ? req.visaType : null,
+    visaType: req.visaType && req.visaType !== "other" ? req.visaType : null,
   };
   for (const flag of FLAG_MAP) if (req.mustHaves.includes(flag.id)) flag.write(criteria);
   return criteria;

@@ -6,7 +6,7 @@ import { FIND_HOME_DRAFT_KEY, emptyFindHomeForm, newIdempotencyKey, type FindHom
 import { trackAction, trackSource } from "../lib/trackView";
 import {
   ADJUSTABLE_OPTIONS, CONTACT_CHANNEL_OPTIONS, CONTACT_PLACEHOLDER, CONTACT_TIME_OPTIONS, FIELD_STEP, IF_NOT_FOUND_OPTIONS,
-  AGE_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
+  AGE_OPTIONS, AGE_RANGE_OPTIONS, GENDER_OPTIONS, LAYOUT_OPTIONS, LIMITS, MOVE_IN_OPTIONS, MUST_HAVE_LABEL_OPTIONS, MUST_HAVE_OPTIONS, STRUCTURE_OPTIONS, WALK_OPTIONS, ON_MATCH_OPTIONS, OTHER_AGENTS_OPTIONS, REASON_OPTIONS,
   NO_VISA_PROCESS, RESIDENCE_OPTIONS, VISA_OPTIONS, VISA_TYPE_OPTIONS, labelOf, validateContactStep, validateDecision, validateRequirement,
   type ContactChannel, type FieldErrors, type Option, type StepId,
 } from "../lib/findHome/schema";
@@ -319,6 +319,12 @@ export function FindHomeApp() {
         <div className="space-y-7 border border-[#DDE3DF] bg-white p-4 sm:p-6">
           {step === 1 && (
             <>
+              <Field id="gender" label="性別" hint="部分房東對入住者有條件，Linus 會先幫你確認。" error={errors.gender}>
+                <Chips options={GENDER_OPTIONS} selected={r.gender ? [r.gender] : []} onToggle={id => setReq({ gender: id })} />
+              </Field>
+              <Field id="ageRange" label="年齡層" error={errors.ageRange}>
+                <Chips options={AGE_RANGE_OPTIONS} selected={r.ageRange ? [r.ageRange] : []} onToggle={id => setReq({ ageRange: id })} />
+              </Field>
               <Field id="moveIn" label="預計什麼時候入住？" error={errors.moveIn}>
                 <Chips options={MOVE_IN_OPTIONS} selected={r.moveIn ? [r.moveIn] : []} onToggle={id => setReq({ moveIn: id })} />
               </Field>

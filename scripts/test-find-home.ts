@@ -27,7 +27,7 @@ const validInput = () => ({
   privacyAck: true,
   requirement: {
     moveIn: "1m", reasons: ["commute"], residence: "overseas", entryDate: "2027-03-15", visa: "issued",
-    visaType: "技術・人文知識・國際業務", nationality: "台灣",
+    visaType: "技術・人文知識・國際業務", nationality: "台灣", gender: "female", ageRange: "20s",
     areas: "中野、高圓寺", commuteTarget: "新宿站", occupants: 1, layouts: ["1K", "1DK"], minAreaSqm: "",
     rentIdealMan: "8.5", rentMaxMan: "10", initialCostMaxMan: "", mustHaves: ["separate-bath", "elevator"],
     top3: ["elevator", "autolock"], walkMaxMin: "10", ageMaxYears: "20", structure: "non-wood", adjustable: ["budget", "area"],
@@ -121,6 +121,17 @@ await test("通知信內文：完整需求、後台連結，不含稱呼與聯�
   assert.ok(mail.text.includes("/#admin/leads/ABCDEFGHJKMNPQRS"));
   assert.equal(mail.text.includes("小林"), false);
   assert.equal(mail.text.includes("Kobayashi"), false);
+});
+
+await test("性別與年齡層必填；「還不確定」不再是簽證選項", () => {
+  const input = validInput() as any;
+  delete input.requirement.gender;
+  input.requirement.ageRange = "teen";
+  const result = validateSubmission(input);
+  assert.ok(result.errors!.gender && result.errors!.ageRange);
+  assert.equal((VISA_TYPE_OPTIONS as readonly { id: string }[]).some(item => item.id === "unsure"), false);
+  const ok = validateSubmission(validInput()).value!;
+  assert.ok(requirementText(null, ok.requirement).includes("性別：女性\n年齡層：20–29 歲"));
 });
 
 await test("簽證清單與費用試算共用：費用試算的每個身分問卷都有", () => {

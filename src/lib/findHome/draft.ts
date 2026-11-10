@@ -9,6 +9,7 @@ export const FIND_HOME_DRAFT_KEY = "linus-find-home-draft-v1";
 
 export interface FindHomeFormState {
   requirement: {
+    gender?: string; ageRange?: string;
     moveIn?: string; moveInDate?: string; reasons: string[]; reasonOther?: string;
     residence?: string; entryDate?: string; visa?: string; visaType?: string; visaTypeOther?: string; nationality?: string;
     areas: string; commuteTarget: string; occupants: number; layouts: string[]; minAreaSqm: string;
