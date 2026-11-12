@@ -63,6 +63,11 @@
   ],
   "redirects": [
     {
+      "source": "/quiz/:path*",
+      "destination": "https://quiz.linusniceday.com/:path*",
+      "statusCode": 301
+    },
+    {
       "source": "/:file((?!quiz(?:/|$)|api/|assets/).*\\.[a-zA-Z0-9]+)",
       "has": [
         {
@@ -83,11 +88,6 @@
       ],
       "destination": "/quiz/?next=/:path",
       "permanent": false
-    },
-    {
-      "source": "/quiz",
-      "destination": "/quiz/",
-      "permanent": true
     }
   ],
   "headers": [
