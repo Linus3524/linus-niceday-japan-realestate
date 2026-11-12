@@ -95,12 +95,54 @@ export const BUY_MUST_HAVE_OPTIONS = [
   { id: "south-facing", label: "朝南" },
   { id: "balcony", label: "陽台" },
   { id: "parking", label: "停車位" },
+  { id: "two-toilets", label: "兩間以上廁所" },
+  { id: "vacant-land", label: "更地（無建物）" },
+  { id: "no-building-condition", label: "無指定建商限制" },
+  { id: "regular-plot", label: "整形地" },
   { id: "renovated", label: "已翻新" },
   { id: "vacant", label: "空屋／可自住" },
   { id: "leased", label: "可接受帶租約" },
   { id: "new-seismic", label: "新耐震基準" },
   { id: "freehold", label: "所有權土地" },
 ] as const;
+/** 依物件類型顯示需求，混選取聯集；未定時保留各類選項並加註用途。 */
+export function buyPropertyRules(types: readonly string[]) {
+  const active = !types.length || types.includes("undecided") ? ["condo", "house", "building", "land"] : types;
+  const hasBuilding = active.some(type => type !== "land");
+  const hasCondo = active.includes("condo");
+  const applies: Record<string, readonly string[]> = {
+    elevator: ["condo", "building"], autolock: ["condo", "building"], pets: ["condo"],
+    "two-toilets": ["house"], "vacant-land": ["land"], "no-building-condition": ["land"], "regular-plot": ["land"],
+    "south-facing": ["condo", "house", "building"], balcony: ["condo", "house", "building"],
+    parking: ["condo", "house", "building"], renovated: ["condo", "house", "building"],
+    vacant: ["condo", "house", "building"], leased: ["condo", "house", "building"],
+    "new-seismic": ["condo", "house", "building"], freehold: ["condo", "house", "building", "land"],
+  };
+  const options = BUY_MUST_HAVE_OPTIONS.filter(option => applies[option.id].some(type => active.includes(type))).map(option => {
+    const restricted = active.some(type => !applies[option.id].includes(type));
+    const scope = option.id === "two-toilets" ? "一戶建" : ["vacant-land", "no-building-condition", "regular-plot"].includes(option.id) ? "土地" : option.id === "pets" ? "公寓規約" : ["elevator", "autolock"].includes(option.id) ? "公寓／整棟" : "有建物物件";
+    const label = option.id === "parking" && active.length === 1 && active[0] === "house" ? "有停車空間" : option.label;
+    return { ...option, label: restricted ? `${label}（${scope}）` : label };
+  });
+  const adjustableOptions = ADJUSTABLE_OPTIONS.filter(option => hasBuilding || option.id !== "age").map(option => ({ ...option, label: !hasBuilding && option.id === "equipment" ? "放寬土地條件" : option.label }));
+  return { hasBuilding, hasCondo, hasLayouts: active.some(type => type === "condo" || type === "house"), landOnly: !hasBuilding, options, adjustableOptions };
+}
+
+/** 前後台、草稿與 API 共用；不適用的條件不允許殘留在送出的需求。 */
+export function sanitizeBuyPropertyConditions<T extends { propertyTypes?: readonly string[]; mustHaves?: readonly string[]; layouts?: readonly string[]; adjustable?: readonly string[]; ageMaxYears?: unknown; floorMin?: unknown; structure?: unknown }>(input: T): T {
+  const rules = buyPropertyRules(input.propertyTypes || []);
+  const allowed = new Set<string>(rules.options.map(option => option.id));
+  const next = { ...input, mustHaves: (input.mustHaves || []).filter(id => allowed.has(id)) };
+  if (!rules.hasLayouts) next.layouts = [];
+  if (!rules.hasCondo) next.floorMin = typeof input.floorMin === "string" ? "" : undefined;
+  if (!rules.hasBuilding) {
+    next.ageMaxYears = typeof input.ageMaxYears === "string" ? "0" : undefined;
+    next.structure = undefined;
+    if (input.adjustable) next.adjustable = input.adjustable.filter(id => id !== "age");
+  }
+  return next as T;
+}
+
 export const BUY_ON_MATCH_OPTIONS = [
   { id: "apply-asap", label: "條件確認後，準備出價洽談" },
   { id: "view-first", label: "想先看房，再決定" },
@@ -268,6 +310,8 @@ export function validateBuyRequirement(
       ["minAreaSqm", 10000],
       ["floorMin", 100],
     ] as const) {
+      const applicable = field === "floorMin" ? buyPropertyRules(value.propertyTypes).hasCondo : true;
+      if (!applicable) continue;
       const n = number(input?.[field]);
       if (
         n === null &&
@@ -286,6 +330,7 @@ export function validateBuyRequirement(
       ["walkMaxMin", WALK_OPTIONS],
       ["ageMaxYears", AGE_OPTIONS],
     ] as const) {
+      if (field === "ageMaxYears" && !buyPropertyRules(value.propertyTypes).hasBuilding) continue;
       const n = number(input?.[field]);
       if (
         n === null &&
@@ -306,7 +351,8 @@ export function validateBuyRequirement(
     )
       value.structure = input.structure;
   }
-  return { value, errors };
+  const clean = sanitizeBuyPropertyConditions(value);
+  return { value: clean, errors };
 }
 export function validateBuySubmission(input: any): {
   ok: boolean;

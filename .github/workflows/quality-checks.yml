@@ -119,6 +119,8 @@ jobs:
           npm run test:buy-find-home
           npm run test:find-home-browser
           npm run test:questionnaire-analysis
+          npm run test:low-budget-rent
+          npm run test:buy-property-conditions
           npm run test:crime-safety
           npm run test:municipal-crime
           npm run test:prefecture-bar-chart

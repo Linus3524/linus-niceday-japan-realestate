@@ -1,5 +1,5 @@
 import { newIdempotencyKey, type FindHomeFormState } from "./draft.js";
-import { normalizeBuyVisa, type BuyRequirement } from "./buySchema.js";
+import { sanitizeBuyPropertyConditions, normalizeBuyVisa, type BuyRequirement } from "./buySchema.js";
 import type { StepId } from "./schema.js";
 export const BUY_HOME_DRAFT_KEY = "linus-buy-home-draft-v1";
 export type BuyFormRequirement = Omit<
@@ -93,7 +93,7 @@ export function loadBuyDraft(): BuyDraft {
       !Array.isArray(draft.form.requirement.propertyTypes)
     )
       return fresh();
-    draft.form.requirement = { ...draft.form.requirement, ...normalizeBuyVisa(draft.form.requirement.visaType, draft.form.requirement.visaTypeOther) };
+    draft.form.requirement = sanitizeBuyPropertyConditions({ ...draft.form.requirement, ...normalizeBuyVisa(draft.form.requirement.visaType, draft.form.requirement.visaTypeOther) });
     return draft;
   } catch {
     return fresh();

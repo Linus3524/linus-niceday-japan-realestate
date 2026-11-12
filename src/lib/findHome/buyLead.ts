@@ -1,5 +1,4 @@
 import {
-  ADJUSTABLE_OPTIONS,
   AGE_RANGE_OPTIONS,
   GENDER_OPTIONS,
   RESIDENCE_OPTIONS,
@@ -8,6 +7,7 @@ import {
   type Decision,
 } from "./schema.js";
 import {
+  buyPropertyRules,
   BUY_BUDGET_SCOPE_OPTIONS,
   BUY_FUNDING_OPTIONS,
   BUY_LAYOUT_OPTIONS,
@@ -155,7 +155,7 @@ export const BUY_REQUIREMENT_FIELDS: {
   {
     key: "adjustable",
     label: "可以調整",
-    format: (r) => labelsOf(ADJUSTABLE_OPTIONS, r.adjustable),
+    format: (r) => labelsOf(buyPropertyRules(r.propertyTypes).adjustableOptions, r.adjustable),
   },
 ];
 export function computeBuyDimensions(
@@ -203,7 +203,7 @@ export function computeBuyDimensions(
     reasons: [
       `急迫：目標${req.purchaseTiming === "date" ? req.purchaseDate : labelOf(BUY_TIMING_OPTIONS, req.purchaseTiming)}`,
       `準備：${labelOf(BUY_ON_MATCH_OPTIONS, decision.onMatch)}`,
-      `彈性：預算差 ${Math.round(gap * 100)}%，${req.adjustable.length ? labelsOf(ADJUSTABLE_OPTIONS, req.adjustable) : "尚未指定可調整條件"}`,
+      `彈性：預算差 ${Math.round(gap * 100)}%，${req.adjustable.length ? labelsOf(buyPropertyRules(req.propertyTypes).adjustableOptions, req.adjustable) : "尚未指定可調整條件"}`,
     ],
   };
 }

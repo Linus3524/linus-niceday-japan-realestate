@@ -1,5 +1,4 @@
 import {
-  ADJUSTABLE_OPTIONS,
   AGE_OPTIONS,
   AGE_RANGE_OPTIONS,
   GENDER_OPTIONS,
@@ -14,7 +13,8 @@ import {
   BUY_FUNDING_OPTIONS,
   BUY_LAYOUT_OPTIONS,
   BUY_LOAN_OPTIONS,
-  BUY_MUST_HAVE_OPTIONS,
+  buyPropertyRules,
+  sanitizeBuyPropertyConditions,
   BUY_PROPERTY_OPTIONS,
   BUY_PURPOSE_OPTIONS,
   BUY_STRUCTURE_OPTIONS,
@@ -36,6 +36,7 @@ export function BuyStepFields({
   onChange: (patch: Partial<BuyFormRequirement>) => void;
   errors: FieldErrors;
 }) {
+  const rules = buyPropertyRules(r.propertyTypes);
   const select = (field: keyof BuyFormRequirement, value: string) =>
     onChange({ [field]: value } as Partial<BuyFormRequirement>);
   const one = (field: keyof BuyFormRequirement, options: readonly Option[]) => (
@@ -62,7 +63,12 @@ export function BuyStepFields({
           : id === exclusive
             ? [id]
             : [...old.filter((v) => v !== exclusive), id];
-        onChange({ [field]: next } as Partial<BuyFormRequirement>);
+        if (field === "propertyTypes") {
+          const nextTypes = next as BuyFormRequirement["propertyTypes"];
+          const areaChanged = buyPropertyRules(nextTypes).landOnly !== rules.landOnly;
+          onChange(sanitizeBuyPropertyConditions({ ...r, propertyTypes: nextTypes, minAreaSqm: areaChanged ? "" : r.minAreaSqm }));
+        }
+        else onChange({ [field]: next } as Partial<BuyFormRequirement>);
       }}
     />
   );
@@ -257,7 +263,7 @@ export function BuyStepFields({
           placeholder="例：中野、山手線沿線、橫濱"
         />
       </Field>
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid ${rules.hasBuilding ? "grid-cols-2" : "grid-cols-1"} gap-3`}>
         <Field id="walkMaxMin" label="徒步到車站" error={errors.walkMaxMin}>
           <SelectBox
             id="buy-walk"
@@ -266,32 +272,32 @@ export function BuyStepFields({
             onChange={(v) => select("walkMaxMin", v)}
           />
         </Field>
-        <Field id="ageMaxYears" label="屋齡上限" error={errors.ageMaxYears}>
+        {rules.hasBuilding && <Field id="ageMaxYears" label="屋齡上限" error={errors.ageMaxYears}>
           <SelectBox
             id="buy-age"
             value={r.ageMaxYears}
             options={AGE_OPTIONS}
             onChange={(v) => select("ageMaxYears", v)}
           />
-        </Field>
+        </Field>}
       </div>
-      <Field
+      {rules.hasLayouts && <Field
         id="layouts"
         label="希望房型"
         optional
         hint="可複選。整棟或土地需求可先略過。"
       >
         {multiple("layouts", BUY_LAYOUT_OPTIONS)}
-      </Field>
-      <div className="grid grid-cols-2 gap-3">
+      </Field>}
+      <div className={`grid ${rules.hasCondo ? "grid-cols-2" : "grid-cols-1"} gap-3`}>
         <Field
           id="minAreaSqm"
-          label="最小面積（㎡）"
+          label={rules.landOnly ? "最小土地面積（㎡）" : "最小面積（㎡）"}
           optional
           error={errors.minAreaSqm}
         >
           <input
-            aria-label="最小面積（㎡）"
+            aria-label={rules.landOnly ? "最小土地面積（㎡）" : "最小面積（㎡）"}
             inputMode="numeric"
             className={inputClass}
             placeholder="例：50"
@@ -301,7 +307,7 @@ export function BuyStepFields({
             }
           />
         </Field>
-        <Field id="floorMin" label="最低樓層" optional error={errors.floorMin}>
+        {rules.hasCondo && <Field id="floorMin" label="公寓最低樓層" optional error={errors.floorMin}>
           <input
             aria-label="最低樓層"
             inputMode="numeric"
@@ -312,26 +318,26 @@ export function BuyStepFields({
               select("floorMin", e.target.value.replace(/\D/g, ""))
             }
           />
-        </Field>
+        </Field>}
       </div>
-      <Field id="structure" label="建築結構">
+      {rules.hasBuilding && <Field id="structure" label="建築結構">
         <SelectBox
           id="buy-structure"
           value={r.structure || "any"}
           options={BUY_STRUCTURE_OPTIONS}
           onChange={(v) => select("structure", v)}
         />
-      </Field>
+      </Field>}
       <Field
         id="mustHaves"
-        label="其他對房子的要求"
+        label={rules.landOnly ? "對土地的要求" : "其他物件要求"}
         optional
-        hint="可複選，詳細需求也可以在下一步補充。"
+        hint="可複選，選項會隨物件類型調整；切換類型時會清除不適用的條件。"
       >
-        {multiple("mustHaves", BUY_MUST_HAVE_OPTIONS)}
+        {multiple("mustHaves", rules.options)}
       </Field>
       <Field id="adjustable" label="找不到合適物件時，可以調整哪些？" optional>
-        {multiple("adjustable", ADJUSTABLE_OPTIONS, "keep")}
+        {multiple("adjustable", rules.adjustableOptions, "keep")}
       </Field>
     </>
   );
