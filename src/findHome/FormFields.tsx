@@ -364,10 +364,10 @@ export function ContactStep<T extends ContactForm>({
           spellCheck={false}
         />
         {form.contact.channel === "line" && (
-          <p className="text-[12px] leading-relaxed text-[#66736C]">
-            LINE ID 在「主頁 → 設定 → 個人檔案」。如果你關掉了「允許利用 ID
-            加入好友」，Linus 會搜尋不到，建議送出後直接加 Linus 的 LINE。
-          </p>
+          <div className="space-y-2 text-[12px] leading-relaxed text-[#66736C]">
+            <p>LINE ID 在「主頁 → 設定 → 個人檔案」。若未開啟「允許利用 ID 加入好友」，Linus 可能無法搜尋到你。</p>
+            <p>送出後請留意 Linus 的好友與訊息通知。若開啟「阻擋訊息」，可能收不到非好友的訊息；建議先加 Linus 好友，再傳送問卷參考碼。</p>
+          </div>
         )}
       </Field>
       <Field id="contactTimes" label="方便聯絡的時間" optional>

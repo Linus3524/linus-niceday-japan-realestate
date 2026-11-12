@@ -475,6 +475,7 @@ export function SuccessView({ refCode, nickname, channel, lines, copyText: summa
           <span className="flex h-10 w-10 items-center justify-center bg-[#00A174] text-white"><Check className="h-5 w-5" /></span>
           <h1 className="font-serif text-[24px] font-bold">已收到你的{isBuyRequirement(requirement) ? "買房" : "租房"}需求</h1>
           <p className="text-[14px] leading-relaxed text-[#3F5147]">{nickname || "你"}好，Linus 會用你留下的 {CHANNEL_NAME[channel]} 和你聯絡。</p>
+          <p className="text-[12px] leading-relaxed text-[#66736C]">此頁即為送出確認，系統不會另外寄送確認信。建議複製參考碼，方便後續聯絡。</p>
         </div>
 
         <section className="border border-[#DDE3DF] bg-white p-5 text-center">
@@ -484,8 +485,15 @@ export function SuccessView({ refCode, nickname, channel, lines, copyText: summa
         </section>
 
         <section className="space-y-3 border-2 border-[#00A174] bg-white p-5">
-          <h2 className="text-[16px] font-bold">想更快開始？</h2>
-          <p className="text-[13px] leading-relaxed text-[#3F5147]">加 Linus 的 LINE，把參考碼傳過去，Linus 就知道你填了什麼。</p>
+          <h2 className="text-[16px] font-bold">{channel === "line" ? "下一步：加 LINE，避免漏接訊息" : "想更快開始？"}</h2>
+          <p className="text-[13px] leading-relaxed text-[#3F5147]">加 Linus 的 LINE，再把參考碼傳過去，就能對上你的問卷，接著確認找房需求。</p>
+          {channel === "line" && (
+            <div className="space-y-2 border-l-2 border-[#00A174] bg-[#F5F8F6] px-3 py-3 text-left text-[13px] leading-relaxed text-[#3F5147]">
+              <p className="font-bold">請留意好友與訊息通知</p>
+              <p>Linus 會依你留下的 LINE ID 嘗試加入好友並聯絡。若你開啟「阻擋訊息」，可能收不到非好友的訊息。</p>
+              <p>建議先主動加入 Linus 好友，傳送上方參考碼；若一直沒收到聯絡，也可以直接傳訊息詢問。</p>
+            </div>
+          )}
           <LineButton label="加 LINE 好友" />
           <button type="button" onClick={() => setShowWechat(value => !value)} aria-expanded={showWechat} className="flex min-h-11 w-full items-center justify-center gap-2 border border-[#00A174] text-[14px] font-bold text-[#00A174]">
             <QrCode className="h-4 w-4" />WeChat 掃碼加好友
