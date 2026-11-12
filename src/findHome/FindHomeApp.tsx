@@ -475,7 +475,6 @@ export function SuccessView({ refCode, nickname, channel, lines, copyText: summa
           <span className="flex h-10 w-10 items-center justify-center bg-[#00A174] text-white"><Check className="h-5 w-5" /></span>
           <h1 className="font-serif text-[24px] font-bold">已收到你的{isBuyRequirement(requirement) ? "買房" : "租房"}需求</h1>
           <p className="text-[14px] leading-relaxed text-[#3F5147]">{nickname || "你"}好，Linus 會用你留下的 {CHANNEL_NAME[channel]} 和你聯絡。</p>
-          <p className="text-[12px] leading-relaxed text-[#66736C]">此頁即為送出確認，系統不會另外寄送確認信。建議複製參考碼，方便後續聯絡。</p>
         </div>
 
         <section className="border border-[#DDE3DF] bg-white p-5 text-center">
