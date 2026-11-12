@@ -96,8 +96,8 @@
           "value": "linus-niceday-japan-realestate.vercel.app"
         }
       ],
-      "destination": "/quiz/?next=/:path",
-      "permanent": false
+      "destination": "https://linusniceday.com/:path",
+      "statusCode": 301
     }
   ],
   "headers": [
