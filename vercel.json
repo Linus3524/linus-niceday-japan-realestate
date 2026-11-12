@@ -63,6 +63,16 @@
   ],
   "redirects": [
     {
+      "source": "/quiz/",
+      "destination": "https://quiz.linusniceday.com/",
+      "statusCode": 301
+    },
+    {
+      "source": "/quiz/:path*/",
+      "destination": "https://quiz.linusniceday.com/:path*/",
+      "statusCode": 301
+    },
+    {
       "source": "/quiz/:path*",
       "destination": "https://quiz.linusniceday.com/:path*",
       "statusCode": 301
