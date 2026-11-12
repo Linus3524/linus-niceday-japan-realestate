@@ -244,7 +244,7 @@ export function FindHomeApp() {
       <header className="sticky top-0 z-10 border-b border-[#DDE3DF] bg-white" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
         <div className="mx-auto flex h-12 max-w-[560px] items-center justify-between px-4">
           <a href="/" className="flex items-center gap-1 text-[13px] text-[#66736C] hover:text-[#00A174]"><X className="h-4 w-4" />離開</a>
-          <span className="font-serif text-[14px] font-bold">LINUS 住好日</span>
+          <img src="/logo-text.svg" alt="LINUS 住好日" width={144} height={22} className="h-auto w-36 shrink-0" />
           <a href={LINE_URL} target="_blank" rel="noopener noreferrer" onClick={() => trackAction("line-add")} className="text-[13px] font-bold text-[#00A174]">直接 LINE 我</a>
         </div>
       </header>

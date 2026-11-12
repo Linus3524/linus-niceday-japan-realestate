@@ -180,7 +180,7 @@ export function BuyHomeApp() {
             <X className="h-4 w-4" />
             離開
           </a>
-          <span className="font-serif text-[14px] font-bold">LINUS 住好日</span>
+          <img src="/logo-text.svg" alt="LINUS 住好日" width={144} height={22} className="h-auto w-36 shrink-0" />
           <a
             href={LINE_URL}
             target="_blank"

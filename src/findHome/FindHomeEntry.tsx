@@ -25,8 +25,8 @@ export function FindHomeEntry() {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-14 max-w-[560px] items-center justify-between px-4">
-          <a href="/" className="font-serif text-[15px] font-bold">
-            LINUS 住好日
+          <a href="/" className="inline-flex shrink-0">
+            <img src="/logo-text.svg" alt="LINUS 住好日" width={144} height={22} className="h-auto w-36 shrink-0" />
           </a>
           <a
             href={LINE_URL}
