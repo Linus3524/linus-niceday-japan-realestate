@@ -1,3 +1,4 @@
+import { normalizeRentPrefecture } from "../rentLocations.js";
 import { rentRates } from "../../data/housingMarket.js";
 import type { RentSearchCriteria, RoomType } from "../rentAnalysis.js";
 import { toJapanesePlaceName } from "../transit.js";
@@ -110,6 +111,8 @@ export function parseAreas(areas: string): { districts: string[]; lines: string[
   const lines: string[] = [];
   const stations: string[] = [];
   for (const token of tokens) {
+    const prefecture = normalizeRentPrefecture(token);
+    if (prefecture) { districts.push(prefecture); continue; }
     const jp = toJapanesePlaceName(token);
     const candidates = [token, jp, `${token}区`, `${jp}区`, `${token}市`, `${jp}市`].map(normalizeDistrict);
     const district = candidates.map(candidate => DISTRICT_NAMES.get(candidate)).find(Boolean);

@@ -640,9 +640,17 @@ export async function attachCommuteRoutes(criteria: RentSearchCriteria, recommen
   try {
     // Each card is searched independently. A multi-origin prompt is faster, but Gemini can
     // omit otherwise valid routes from a long answer and then all omitted cards look broken.
-    const routes = await resolveRoutes(origins, destination);
+    const destinations = criteria.commuteDestinationsAreAlternatives
+      ? [...new Set([...(criteria.commuteStations || []), ...criteria.commuteStation.split(/[、,，/／或|・]/)].map(value => value.trim()).filter(Boolean))]
+      : [destination];
+    const localAlternatives = criteria.commuteDestinationsAreAlternatives
+      ? origins.flatMap(origin => destinations.map(target => findLocalTransitRoute(origin.station, target, origin.context)).filter((route): route is CommuteRouteDetails => Boolean(route)))
+      : [];
+    const unresolvedOrigins = origins.filter(origin => !localAlternatives.some(route => normalizedStation(route.originStation) === normalizedStation(origin.station)));
+    // 本地班表已能比較擇一進城方向時，不必對每站、每個目的地重複發外部查詢。
+    const routes = [...localAlternatives, ...await resolveRoutes(unresolvedOrigins, destination)];
     return recommendations.map(recommendation => {
-      const commuteRoute = routes.find(route => normalizedStation(route.originStation) === normalizedStation(recommendation.station || ""));
+      const commuteRoute = routes.filter(route => normalizedStation(route.originStation) === normalizedStation(recommendation.station || "")).sort((a, b) => a.totalDurationMinutes - b.totalDurationMinutes)[0];
       if (!commuteRoute) return { ...recommendation, commuteRoute: null };
       const verifiedCommuteReason = commuteRoute.transfers === 0
         ? `實際班表為前往 ${commuteRoute.destinationStation} 的直達路線`

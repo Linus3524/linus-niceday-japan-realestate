@@ -35,7 +35,7 @@ export function resolveSearchScope(criteria: RentSearchCriteria): {
     let hit = false;
     for (const input of districtInputs) {
       const query = normalize(input);
-      const matches = rentRates.filter(rate => normalize(rate.district).includes(query) || query.includes(normalize(rate.district)));
+      const matches = rentRates.filter(rate => normalize(rate.region) === query || normalize(rate.district).includes(query) || query.includes(normalize(rate.district)));
       if (matches.length) {
         matches.forEach(rate => districts.add(normalize(rate.district)));
         hit = true;

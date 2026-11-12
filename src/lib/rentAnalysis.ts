@@ -1,9 +1,10 @@
+import { findLocalTransitRoute } from "./localTransitRoute.js";
 import { getBudgetModifier, getBudgetModifierPrice, type BudgetModifierId } from "../data/rentGuideData.js";
 import type { StationInfo } from "../data/stationData.js";
 import { rentRates, districtStations } from "../data/housingMarket.js";
 import { TAMA_CITIES } from "./calcRules.js";
 import { toJapanesePlaceName, toJapaneseStationName } from "./transit.js";
-import { normalizeRentLocations } from "./rentLocations.js";
+import { normalizeRentLocations, normalizeRentPrefecture } from "./rentLocations.js";
 
 export type RoomType = "r1" | "k1" | "ldk1" | "ldk2" | "ldk3";
 
@@ -50,6 +51,8 @@ export interface RentSearchCriteria {
   walkMinutes?: number | null;
   commuteStation?: string | null;
   commuteStations?: string[];
+  /** 進城方向可擇一，例如「所沢至池袋、生田至新宿」。 */
+  commuteDestinationsAreAlternatives?: boolean;
   commuteMinutes?: number | null;
   /** 理想通勤時間；commuteMinutes 保留為最長可接受時間。 */
   commutePreferredMinutes?: number | null;
@@ -390,6 +393,8 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
       enriched.maxBudget = val < 1000 ? Math.round(val * 10000) + Number(monthlyAmount[2] || 0) * 1000 : val;
     }
   }
+  const idealBudget = prompt.match(/(?:理想|希望月租)\s*[¥￥]?\s*(\d+(?:\.\d+)?)\s*[萬万]/);
+  if (idealBudget) enriched.minBudget = Math.round(Number(idealBudget[1]) * 10000);
   const promptWithoutInitialFees = promptClauses
     .filter(clause => !/初期費用|初期费用|禮金|礼金|押金|敷金|頭金/.test(clause))
     .join(" ");
@@ -457,7 +462,19 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     : undefined);
   const commuteLine = rawCommuteLine;
   if (commuteLine) {
-    const inferredDestinations = matchStationsInText(commuteLine);
+    const routeParts = commuteLine.split(/至|到|→/);
+    const hasExampleRoutes = /例如|比如|(?:^|\s)如\s/.test(commuteLine) && routeParts.length > 1;
+    const inferredDestinations = hasExampleRoutes
+      ? [...new Set(routeParts.slice(1).flatMap((part, i, parts) => {
+          const matches = matchStationsInText(part);
+          return i === parts.length - 1 ? matches : matches.slice(0, 1);
+        }))]
+      : matchStationsInText(commuteLine);
+    if (hasExampleRoutes && inferredDestinations.length) {
+      enriched.commuteStations = inferredDestinations;
+      enriched.commuteStation = inferredDestinations.join("／");
+      enriched.commuteDestinationsAreAlternatives = true;
+    }
     const displayDestinations = inferredDestinations.map(station => station.replace(/澀谷/g, "渋谷"));
     if (!(enriched.commuteStations || []).length && displayDestinations.length) enriched.commuteStations = displayDestinations;
     if (!enriched.commuteStation && displayDestinations.length) enriched.commuteStation = displayDestinations.join("／");
@@ -469,7 +486,8 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
       const prefix = commuteLine.slice(Math.max(0, idx - 8), idx);
       return !/(?:徒步|步行|走路|歩|距離車站|離車站|車站|駅)/.test(prefix);
     });
-    const commuteValues = commuteMatches.map(match => Number(match[1]));
+    const range = commuteLine.match(/(\d{1,3})\s*[~～〜－—-]\s*(\d{1,3})\s*(?:分鐘|分)/);
+    const commuteValues = range ? [Number(range[1]), Number(range[2])] : commuteMatches.map(match => Number(match[1]));
     if (commuteValues.length >= 2) {
       enriched.commutePreferredMinutes = Math.min(...commuteValues);
       enriched.commuteMinutes = Math.max(...commuteValues);
@@ -490,6 +508,18 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
   const residenceText = [commuteLine, currentResidenceLine]
     .filter(Boolean)
     .reduce<string>((text, exclude) => text.split(exclude as string).join(" "), prompt);
+  const areaDeclaration = prompt.match(/^\s*(?:期望地區|希望地區|希望地区|居住地區)\s*[:：]\s*([^\n]+)/m)?.[1];
+  const declaredArea = areaDeclaration ? normalizeRentLocations({
+    roomType: enriched.roomType, districts: [areaDeclaration], stations: [], lines: [],
+  }) : null;
+  // 明確的都縣欄位優先，不能讓 AI 將「東京」改成「千代田區」。
+  const declaredPrefectures = (declaredArea?.districts || []).filter(value => normalizeRentPrefecture(value));
+  if (declaredPrefectures.length) {
+    enriched.districts = declaredArea!.districts;
+    enriched.district = declaredArea!.district;
+    enriched.stations = declaredArea!.stations;
+    enriched.station = declaredArea!.station;
+  }
   const normalizedResidence = normalize(residenceText);
   const matchedDistricts = [...new Set(
     rentRates
@@ -502,7 +532,8 @@ export function enrichRentCriteriaFromPrompt(criteria: RentSearchCriteria, promp
     .filter(Boolean)
     .flatMap(station => stationEntityAliases(station)));
   const matchedStations = matchStationsInText(residenceText)
-    .filter(station => !stationEntityAliases(station).some(alias => commuteNames.has(alias)));
+    .filter(station => !stationEntityAliases(station).some(alias => commuteNames.has(alias)))
+    .filter(station => !declaredPrefectures.some(region => normalizeRentPrefecture(station) === region));
   const rawStationCandidates = [...(enriched.stations || []), enriched.station, ...matchedStations].filter(Boolean) as string[];
   const seenStationNorms = new Set<string>();
   enriched.stations = rawStationCandidates.filter(st => {
@@ -783,6 +814,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   criteria = normalizeRentLocations(criteria);
   const mods = getRentModifierIds(criteria);
   const districtQueries = [...(criteria.districts || []), criteria.district].filter(Boolean).map(value => normalize(value));
+  const regionQueries = new Set(districtQueries.filter(query => rentRates.some(rate => normalize(rate.region) === query)));
   const wantedStations = [...(criteria.stations || []), criteria.station].filter(Boolean).map(value => normalize(value));
   const wantedLines = [...(criteria.lines || []), criteria.line]
     .filter((value): value is string => Boolean(value?.trim()));
@@ -817,7 +849,7 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
       station.lines.some(line => destination.lines.some(destinationLine => lineMatches(line, destinationLine)))
     ));
     const budgetScore = criteria.maxBudget
-      ? Math.max(0, 30 - Math.abs(estimate - criteria.maxBudget) / 10000 * 3)
+      ? Math.max(0, 30 - Math.abs(estimate - (regionQueries.size && criteria.minBudget ? criteria.minBudget : criteria.maxBudget)) / 10000 * 3)
       : Math.max(0, 20 - estimate / 20000);
     const score = (exactStation ? 120 : 0) + (exactDistrictMatch ? 80 : districtMatch ? 45 : 0) + (requestedLineMatch ? 50 : 0) + (directCommute ? 35 : 0) + budgetScore;
     const recommendationType: RentRecommendation["recommendationType"] = exactStation
@@ -885,13 +917,14 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   const atStation = wantedStations.length
     ? ranked.filter(item => item.station && wantedStations.some(wanted => normalize(item.station!) === wanted))
     : [];
-  const requested = [...inDistrict, ...atStation.filter(item => !inDistrict.includes(item))];
+  const inRegion = regionQueries.size ? ranked.filter(item => regionQueries.has(normalize(item.region))) : [];
+  const requested = [...inRegion, ...inDistrict, ...atStation.filter(item => !inDistrict.includes(item))];
   // 指定的地點排前面，其餘候選留在後面備用。
   // 不能只留 requested：使用者只指定兩個車站時，清單就只剩兩筆，
   // 反而比不填任何地點得到的資訊還少。後面的候選會標成「預算替代」等類型，
   // 使用者看得出哪些是他指定的、哪些是系統補的。
   const geographicPool = requested.length
-    ? [...requested, ...ranked.filter(item => !requested.includes(item))]
+    ? regionQueries.size ? requested : [...requested, ...ranked.filter(item => !requested.includes(item))]
     : ranked;
   const directCandidates = criteria.commuteDirectRequired && criteria.commuteStation
     ? geographicPool.filter(item => item.commuteFit === "直達線路")
@@ -901,9 +934,27 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   // 的符合度作為品質基準；後面的車站若落差太大便停止列入。沒有地理條件時，
   // 才以預算相近度提供最多六個起始方向。
   const sorted = pool
-    .sort((a, b) => b.score - a.score || a.estimate - b.estimate)
+    .sort((a, b) => {
+      if (regionQueries.size && criteria.maxBudget) {
+        const gap = Math.max(0, a.estimate - criteria.maxBudget) - Math.max(0, b.estimate - criteria.maxBudget);
+        if (gap) return gap;
+      }
+      return b.score - a.score || a.estimate - b.estimate;
+    })
     .filter((item, index, all) => all.findIndex(candidate =>
       candidate.station === item.station && candidate.district === item.district) === index);
+
+  // 都縣皆可的搜尋沒有指定市區；先排除已知超過通勤上限的方向，再選前幾名。
+  // 多套進城例子是擇一目的地，不能只算清單第一站、把其他方向的近郊排掉。
+  if (regionQueries.size && criteria.commuteMinutes && commuteTargets.length) {
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const item = sorted[i];
+      if (!item.station || (criteria.maxBudget && item.estimate > criteria.maxBudget * 1.2)) continue;
+      const destinations = criteria.commuteDestinationsAreAlternatives ? commuteTargets : commuteTargets.slice(0, 1);
+      const routes = destinations.map(destination => findLocalTransitRoute(item.station!, destination, `${item.region} ${item.district}`)).filter(Boolean);
+      if (routes.length && Math.min(...routes.map(route => route!.totalDurationMinutes)) > criteria.commuteMinutes) sorted.splice(i, 1);
+    }
+  }
 
   const hasGeographicSignals = Boolean(
     districtQueries.length || wantedStations.length || wantedLines.length || commuteTargets.length
@@ -947,10 +998,15 @@ export function buildRentRecommendations(criteria: RentSearchCriteria): RentReco
   for (const item of [...districtPicks.map(picks => picks[0]), ...districtPicks.flatMap(picks => picks.slice(1))]) {
     if (item && !essentialCandidates.includes(item)) essentialCandidates.push(item);
   }
-  adaptiveCandidates = [
+  const regionPicks = [...regionQueries].flatMap(region => {
+    const best = sorted.find(item => normalize(item.region) === region && (!criteria.maxBudget || item.estimate <= criteria.maxBudget));
+    return best ? [best] : [];
+  });
+  adaptiveCandidates = [...new Set([
     ...essentialCandidates,
+    ...regionPicks,
     ...adaptiveCandidates.filter(item => !essentialCandidates.includes(item))
-  ].slice(0, RECOMMENDATION_LIMIT);
+  ])].slice(0, RECOMMENDATION_LIMIT);
 
   const perDistrict = new Map<string, number>();
   const picked: typeof sorted = [];

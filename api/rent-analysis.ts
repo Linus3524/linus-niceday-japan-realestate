@@ -3,7 +3,7 @@ import { buildRentRecommendations, enrichRentCriteriaFromPrompt, RentRecommendat
 import { attachCommuteRoutes } from "../src/lib/transitRouteApi.js";
 import { hasKnownCommuteStations, resolveSearchScope } from "../src/lib/requirementVerdict.js";
 import { lookupMarketRate } from "./market-lookup.js";
-import { normalizeRentLocations } from "../src/lib/rentLocations.js";
+import { normalizeRentLocations, normalizeRentPrefecture } from "../src/lib/rentLocations.js";
 import { SYSTEM_INSTRUCTION } from "./chat.js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -263,6 +263,8 @@ export default async function handler(req: any, res: any) {
         systemInstruction: `你是日本租屋需求理解器。使用者會用自由、模糊、跳號或口語的方式描述需求（例如「2.未定」「5.不知道」「可能需要含家具？」），請保留原意並合理結構化。
 
 最重要的規則：只能萃取使用者真的說過的條件。
+- 「東京、神奈川、埼玉、千葉皆可」是都縣範圍，保留為東京都、神奈川、埼玉、千葉，不可推成東京站、千葉站或千代田區、千葉市中央區。
+- 「如所沢至池袋、生田至新宿、船橋至上野」是進城路線例子；池袋、新宿、上野才是通勤目的地，前半是出發地，不要混在一起。
 - 使用者沒有提到的欄位一律回傳 null，不可猜測、不可補完、不可因為常見就填。
 - 布林欄位沒提到時必須回傳 null，不要回傳 false 充數；使用者明確說不需要才回傳 false。
 - 「不知道」「未定」「還沒想好」「再看看」代表未指定，對應欄位回傳 null，不要轉成任何條件。
@@ -357,8 +359,9 @@ otherNeedNotes 要為 otherNeeds 的每一項補上實務判讀，寫給要去�
     ]);
     // 預算替代是系統主動補的，查到路線後超過通勤上限就不該再推薦。
     // 使用者指定範圍內的車站則保留，由通勤判斷如實告知。
+    const broadScope = (criteria.districts || []).length > 0 && criteria.districts!.every(value => Boolean(normalizeRentPrefecture(value))) && !(criteria.stations || []).length;
     const recommendations = routedRecommendations.filter(item => !(
-      item.isBudgetAlternative && criteria.commuteMinutes && item.commuteRoute
+      (item.isBudgetAlternative || broadScope) && criteria.commuteMinutes && item.commuteRoute
       && item.commuteRoute.totalDurationMinutes > criteria.commuteMinutes
     ));
 
