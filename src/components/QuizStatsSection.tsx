@@ -2,12 +2,13 @@ import { Brain, Share2, Target } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import type { QuizSummary } from "../lib/quizMetrics";
 import { QUIZ_URL } from "../lib/quizUrl";
+import areaFallback from "../data/quizAreaFallback.json";
 
 /**
  * 後台「心理測驗」區塊（你是哪種東京區民？，網址 quiz.linusniceday.com）。
  *
- * 地區名稱與「系」不寫死在網站裡：測驗是另一個專案，增減地區時網站不必跟著改。
- * 讀測驗 API 的公開資料 /quiz/api/quiz?op=public（經 rewrite 轉接，與後台同源）；讀不到就顯示地區代號。
+ * 優先讀測驗 API 的公開資料 /quiz/api/quiz?op=public（經 rewrite 轉接，與後台同源）。
+ * 載入前或讀取失敗時使用中文備援；測驗新增地區仍會自動從 API 取得名稱。
  */
 
 interface AreaInfo { name: string; family: string }
@@ -56,17 +57,20 @@ function OptionBar({ counts, options }: { counts: Record<string, number>; option
 }
 
 function useQuizMeta() {
-  const [areas, setAreas] = useState<Record<string, AreaInfo>>({});
+  const [areas, setAreas] = useState<Record<string, AreaInfo>>(areaFallback);
   const [questions, setQuestions] = useState<QuestionInfo[]>([]);
   useEffect(() => {
     let alive = true;
     // 測驗的公開資料（地名、系、題目文字）：計分與結果文案不公開後，data/*.json 已不在網站上，改讀測驗 API
-    fetch("/quiz/api/quiz?op=public&lang=zh").then(r => r.json()).then(pub => {
+    fetch("/quiz/api/quiz?op=public&lang=zh").then(r => {
+      if (!r.ok) throw new Error(`Quiz metadata: ${r.status}`);
+      return r.json();
+    }).then(pub => {
       if (!alive) return;
       const familyOf = (id: string) =>
         (pub.families as { name: string; members: string[] }[]).find(f => f.members.includes(id))?.name ?? "";
-      const map: Record<string, AreaInfo> = { secret: { name: "隱藏結果", family: "" } };
-      for (const area of pub.areas) map[area.id] = { name: area.name_zh, family: familyOf(area.id) };
+      const map: Record<string, AreaInfo> = { ...areaFallback };
+      for (const area of pub.areas) map[area.id] = { name: area.name_zh || map[area.id]?.name || area.id, family: familyOf(area.id) || map[area.id]?.family || "" };
       setAreas(map);
       setQuestions((pub.questions as any[]).map(q => ({
         id: q.id,

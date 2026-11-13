@@ -98,11 +98,14 @@ AI 相關功能真正被使用的次數。
 
 測驗網址是 `https://quiz.linusniceday.com/`。測驗程式在另一個專案（tokyo-living-persona），統計事件跨網域送回本站 `/api/track-view`；測驗更新時網站不用重新部署。
 
-舊網址都會自動轉到新網址，玩家存在舊網址的作答與圖鑑會跟著搬過去：
+舊網址的轉址與作答紀錄（2026-11-13 檢查）：
 
-- `tokyo-living-persona.vercel.app`、`linusniceday.com/quiz/`、舊網站的 `/quiz/` → 測驗頁開頭的小程式把紀錄帶到 `quiz.linusniceday.com`（網址 `#import=`，只補不蓋）。
-- 舊網站 `linus-niceday-japan-realestate.vercel.app` 的其他網址 → 先暫時轉到舊網站的 `/quiz/?next=原路徑`，搬完紀錄再回到 `linusniceday.com` 的同一頁；之後再來就直接轉。圖片等檔案直接永久轉到新網域。
-- 舊網站仍保留 `/quiz/` 轉接（後台讀測驗公開資料也走這條）。過幾個月大部分人搬完後，可把暫時轉址改成永久轉址。
+- `linusniceday.com/quiz`、`/quiz/` 及舊網站的測驗頁以 301 直接轉到 `quiz.linusniceday.com`；路徑、查詢參數與分享用的 hash 保留。
+- 舊網站 `linus-niceday-japan-realestate.vercel.app` 的其他頁面直接轉到主網域的同一路徑，不再經過測驗頁搬移紀錄。
+- 上述 301 在舊網域的程式執行前就轉址，所以舊網域 localStorage 中的作答與圖鑑**不會自動搬移**。紀錄仍留在原網域，跨網域不能直接讀取。玩家可從測驗首頁或結果頁圖鑑區的「找回舊紀錄」主動搬移，不必改回舊轉址流程。
+- `/quiz-recover.html` 是專用搬移頁，主站與舊官網必須原網域回 200。玩家選擇舊來源後以頂層導覽讀取該來源的儲存空間，再回測驗新站合併；舊 `tokyo-quiz-moved` 不會阻擋重試。圖鑑合併去重、新作答與設定優先、答案碼與憑證配對，新站寫入前留備份；舊站資料不刪除。
+- 主站的 `public/quiz-recover.html` 由測驗專案 `scripts/build-recovery.mjs` 產生，改動時要重新產生。部署順序：主站先上線，再部署測驗的 Vercel 舊網域與 Cloudflare 正式網域。完整流程見測驗專案 `docs/record-recovery.md`。
+- `/quiz/api/:path*` 保留同源 rewrite，必須排除於測驗頁 301 規則之外，供後台取得區名、分類與題目文字。區名及分類另有中文備援（`src/data/quizAreaFallback.json`）。
 
 | 名稱 | 意思 |
 |---|---|

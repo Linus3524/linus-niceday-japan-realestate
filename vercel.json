@@ -63,22 +63,22 @@
   ],
   "redirects": [
     {
-      "source": "/quiz/",
+      "source": "/quiz",
       "destination": "https://quiz.linusniceday.com/",
       "statusCode": 301
     },
     {
-      "source": "/quiz/:path*/",
+      "source": "/quiz/:path((?!api(?:/|$)).*)/",
       "destination": "https://quiz.linusniceday.com/:path*/",
       "statusCode": 301
     },
     {
-      "source": "/quiz/:path*",
+      "source": "/quiz/:path((?!api(?:/|$)).*)",
       "destination": "https://quiz.linusniceday.com/:path*",
       "statusCode": 301
     },
     {
-      "source": "/:file((?!quiz(?:/|$)|api/|assets/).*\\.[a-zA-Z0-9]+)",
+      "source": "/:file((?!quiz(?:/|$)|quiz-recover\\.html(?:/|$)|api/|assets/).*\\.[a-zA-Z0-9]+)",
       "has": [
         {
           "type": "host",
@@ -89,7 +89,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!quiz(?:/|$)|api/|assets/).*)",
+      "source": "/:path((?!quiz(?:/|$)|quiz-recover\\.html(?:/|$)|api/|assets/).*)",
       "has": [
         {
           "type": "host",

@@ -1,0 +1,146 @@
+{
+  "chiyoda": {
+    "name": "千代田區",
+    "family": "都心系"
+  },
+  "chuo": {
+    "name": "中央區",
+    "family": "都心系"
+  },
+  "minato": {
+    "name": "港區",
+    "family": "名流系"
+  },
+  "shinjuku": {
+    "name": "新宿區",
+    "family": "大站系"
+  },
+  "bunkyo": {
+    "name": "文京區",
+    "family": "名門系"
+  },
+  "taito": {
+    "name": "台東區",
+    "family": "下町系"
+  },
+  "sumida": {
+    "name": "墨田區",
+    "family": "下町系"
+  },
+  "koto": {
+    "name": "江東區",
+    "family": "海灣系"
+  },
+  "shinagawa": {
+    "name": "品川區",
+    "family": "都心系"
+  },
+  "meguro": {
+    "name": "目黑區",
+    "family": "名流系"
+  },
+  "ota": {
+    "name": "大田區",
+    "family": "海灣系"
+  },
+  "setagaya": {
+    "name": "世田谷區",
+    "family": "名門系"
+  },
+  "shibuya": {
+    "name": "澀谷區",
+    "family": "名流系"
+  },
+  "nakano": {
+    "name": "中野區",
+    "family": "文化系"
+  },
+  "suginami": {
+    "name": "杉並區",
+    "family": "文化系"
+  },
+  "toshima": {
+    "name": "豐島區",
+    "family": "大站系"
+  },
+  "kita": {
+    "name": "北區",
+    "family": "城北系"
+  },
+  "arakawa": {
+    "name": "荒川區",
+    "family": "下町系"
+  },
+  "itabashi": {
+    "name": "板橋區",
+    "family": "城北系"
+  },
+  "nerima": {
+    "name": "練馬區",
+    "family": "城北系"
+  },
+  "adachi": {
+    "name": "足立區",
+    "family": "城北系"
+  },
+  "katsushika": {
+    "name": "葛飾區",
+    "family": "下町系"
+  },
+  "edogawa": {
+    "name": "江戶川區",
+    "family": "千葉系"
+  },
+  "kichijoji": {
+    "name": "吉祥寺",
+    "family": "文化系"
+  },
+  "mitaka": {
+    "name": "三鷹",
+    "family": "文化系"
+  },
+  "omiya": {
+    "name": "大宮",
+    "family": "郊外系"
+  },
+  "yokohama": {
+    "name": "橫濱",
+    "family": "港町系"
+  },
+  "kosugi": {
+    "name": "武藏小杉",
+    "family": "海灣系"
+  },
+  "kawasaki": {
+    "name": "川崎",
+    "family": "港町系"
+  },
+  "urayasu": {
+    "name": "浦安",
+    "family": "千葉系"
+  },
+  "funabashi": {
+    "name": "船橋",
+    "family": "千葉系"
+  },
+  "urawa": {
+    "name": "浦和",
+    "family": "名門系"
+  },
+  "tachikawa": {
+    "name": "立川",
+    "family": "郊外系"
+  },
+  "nagareyama": {
+    "name": "流山",
+    "family": "千葉系"
+  },
+  "machida": {
+    "name": "町田",
+    "family": "郊外系"
+  },
+  "secret": {
+    "name": "隱藏結果",
+    "family": ""
+  }
+}
