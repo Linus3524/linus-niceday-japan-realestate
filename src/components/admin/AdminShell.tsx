@@ -53,7 +53,6 @@ export default function AdminShell({ onBack }: { onBack: () => void }) {
               <div>
                 <button type="button" onClick={onBack} className="mb-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3F5147] hover:text-[#00A174]"><ArrowLeft className="h-3.5 w-3.5" /> 返回 LINUS 住好日</button>
                 <h1 className="font-serif text-2xl font-bold sm:text-3xl">客戶需求</h1>
-                <p className="mt-1 text-xs text-[#66736C]">找房問卷 linusniceday.com/find-home 送出的資料。聯絡上之後請按「已聯絡上」刪除聯絡方式。</p>
               </div>
             )}
             <LeadsAdmin leadId={route.leadId} onOpen={id => go(`admin/leads/${id}`)} onBackToList={() => go("admin/leads")} />
