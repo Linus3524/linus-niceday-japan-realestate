@@ -528,8 +528,8 @@ export function MoushikomiApp() {
       </div>
       {/* 草稿存在客人這個瀏覽器裡：換手機或換瀏覽器（例如 LINE 內建瀏覽器換成 Safari）就看不到。 */}
       <p className="mt-3 text-center text-[12px] leading-relaxed text-[#8A9590]">
-        填到一半關掉也不會遺失，已填的內容會自動存在這支手機。<br />
-        之後請用同一個瀏覽器打開這個連結接著填（從 LINE 點開的，下次也從 LINE 點開）。
+        填到一半關掉也不會遺失，已填的內容會自動存在這個瀏覽器。<br />
+        之後請用同一台手機或電腦、同一個瀏覽器打開這個連結接著填。
       </p>
     </Shell>
   );
