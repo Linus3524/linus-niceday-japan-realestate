@@ -19,6 +19,8 @@ import listingShareHandler from "./api/listing-share";
 import listingLocationHandler from "./api/listing-location";
 import findHomeHandler from "./api/find-home";
 import leadsHandler from "./api/leads";
+import moushikomiHandler from "./api/moushikomi";
+import moushikomiDriveHandler from "./api/moushikomi-drive";
 import { getVisitorCount, recordUniqueVisitor, visitorCounterConfigured } from "./src/lib/visitorCounter";
 
 // Initialize express app
@@ -35,7 +37,10 @@ const PORT = parseInt(process.env.PORT || "3000", 10);
 // 錯誤訊息與線上一致，而不是本機能過、線上才被平台層打回來。）
 const jsonParserDefault = express.json();
 const jsonParserLarge = express.json({ limit: "5mb" });
+// 申請文件上傳是原始二進位（application/octet-stream），handler 內另有 4MB 上限。
+const rawParserUpload = express.raw({ type: "application/octet-stream", limit: "4.5mb" });
 app.use((req, res, next) => {
+  if (req.path === "/api/moushikomi" && req.is("application/octet-stream")) return rawParserUpload(req, res, next);
   // listing-share 收整份分析結果 JSON（實測 20～60KB，偶爾超過 100kb），
   // handler 內另有 256KB 的自訂上限，這裡只是讓它先進得了門。
   if (req.path === "/api/analyze-listing" || req.path === "/api/listing-share") return jsonParserLarge(req, res, next);
@@ -183,6 +188,15 @@ app.all("/api/leads", async (req, res) => {
   await leadsHandler(req, res);
 });
 
+// 租屋申請資料（客人用專屬連結；後台與每日清除排程）與 Google Drive 授權導回。
+app.all("/api/moushikomi", async (req, res) => {
+  await moushikomiHandler(req, res);
+});
+
+app.get("/api/moushikomi-drive", async (req, res) => {
+  await moushikomiDriveHandler(req, res);
+});
+
 // Q&A and Chat endpoint
 // 直接複用 api/chat 的 handler（與 rent-analysis 同樣做法）。
 // 先前這裡另外維護了一份完整實作，persona 規則、離題攔截與財力證明防呆
@@ -194,11 +208,15 @@ app.post("/api/chat", async (req, res) => {
 
 // Boot server and set up Vite middleware in development
 async function startServer() {
-  // 找房問卷是獨立的 Vite 入口（find-home.html）；線上由 vercel.json 的 rewrite 對應，本機在這裡對應。
+  // 找房問卷（find-home.html）與租屋申請資料（moushikomi.html）是獨立的 Vite 入口；線上由 vercel.json 的 rewrite 對應，本機在這裡對應。
   app.use((req, _res, next) => {
     if (req.path === "/find-home" || req.path === "/find-home/") {
       const query = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
       req.url = `/find-home.html${query}`;
+    }
+    if (req.path === "/moushikomi" || req.path === "/moushikomi/") {
+      const query = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
+      req.url = `/moushikomi.html${query}`;
     }
     next();
   });

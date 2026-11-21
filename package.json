@@ -85,6 +85,7 @@
     "test:quiz-recovery-browser": "tsx scripts/test-quiz-recovery-browser.ts",
     "test:quiz-metrics": "tsx scripts/test-quiz-metrics.ts",
     "test:find-home": "tsx scripts/test-find-home.ts",
+    "test:moushikomi": "tsx scripts/test-moushikomi.ts",
     "test:low-budget-rent": "tsx scripts/test-low-budget-rent.ts",
     "test:buy-property-conditions": "tsx scripts/test-buy-property-conditions.ts",
     "test:questionnaire-analysis": "tsx scripts/test-questionnaire-analysis.ts",

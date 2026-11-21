@@ -49,6 +49,22 @@
       "destination": "/api/leads"
     },
     {
+      "source": "/api/moushikomi",
+      "destination": "/api/moushikomi"
+    },
+    {
+      "source": "/api/moushikomi-drive",
+      "destination": "/api/moushikomi-drive"
+    },
+    {
+      "source": "/moushikomi",
+      "destination": "/moushikomi.html"
+    },
+    {
+      "source": "/moushikomi/",
+      "destination": "/moushikomi.html"
+    },
+    {
       "source": "/find-home",
       "destination": "/find-home.html"
     },
@@ -115,6 +131,10 @@
     {
       "path": "/api/leads?task=purge",
       "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/moushikomi?task=purge",
+      "schedule": "30 18 * * *"
     }
   ]
 }
