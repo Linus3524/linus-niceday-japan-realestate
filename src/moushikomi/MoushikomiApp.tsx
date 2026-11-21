@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { ArrowLeft, Check, FileUp, Loader2, X } from "lucide-react";
-import { Field, inputClass, LINE_URL } from "../findHome/FormFields";
+import { ArrowLeft, Camera, Check, Clock, FileUp, Loader2, Plus, X } from "lucide-react";
+import { inputClass, LINE_URL } from "../findHome/FormFields";
 import { prepareUpload, uploadName } from "../lib/moushikomi/compress";
+import { AddressInput, DobInput } from "./AddressDobInputs";
+import { PREVIEW_FILES, PREVIEW_PRESETS, PREVIEW_TOKEN } from "./preview";
 import {
-  DOC_TIMING_OPTIONS, MAX_FILE_BYTES, cleanForm, displayValue, docsFor, stepsFor, validateStep,
+  DOC_TIMING_OPTIONS, MAX_FILE_BYTES, cleanForm, displayValue, docsFor, isBlank, stepsFor, validateStep,
   type DocDef, type FieldDef, type FieldErrors, type FormValues, type Option,
 } from "../lib/moushikomi/schema";
 
@@ -37,6 +39,21 @@ async function api(token: string, init: RequestInit = {}) {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw Object.assign(new Error(body.error || `連線失敗（HTTP ${response.status}）`), { status: response.status, body });
   return body;
+}
+
+/** 欄位標題：每一格都標「必填」或「選填」（灰色小字），客人一眼看得出哪些可以空著。 */
+function Field({ id, label, required, hint, error, children }: { id: string; label: string; required?: boolean; hint?: string; error?: string; children: ReactNode }) {
+  return (
+    <div className="space-y-2" id={`field-${id}`} data-error={error ? "true" : undefined}>
+      <p className="flex flex-wrap items-baseline gap-x-2 text-[14px] font-bold text-[#1A2A22]">
+        {label}
+        <span className={`border px-1 text-[11px] font-normal leading-[1.5] ${required ? "border-[#B7C0BB] text-[#66736C]" : "border-transparent text-[#8A9590]"}`}>{required ? "必填" : "選填"}</span>
+      </p>
+      {children}
+      {hint && !error && <p className="text-[12px] leading-relaxed text-[#66736C]">{hint}</p>}
+      {error && <p className="text-[12px] font-bold text-[#B42318]" role="alert">{error}</p>}
+    </div>
+  );
 }
 
 function Box({ on }: { on: boolean }) {
@@ -96,7 +113,9 @@ function FieldInput({ field, values, unknown, error, onValue, onUnknown }: {
   }
   const unk = field.req === "unk" && Boolean(unknown[field.id]);
   let control: ReactNode;
-  if (field.type === "chips") control = <ChoiceChips options={field.options || []} value={value} onPick={id => onValue(field.id, id)} stack={field.stack} label={field.label} />;
+  if (field.type === "dob") control = <DobInput id={field.id} value={value} onChange={v => onValue(field.id, v)} invalid={Boolean(error)} />;
+  else if (field.type === "address") control = <AddressInput field={field} values={values} disabled={unk} onValue={onValue} invalid={Boolean(error)} />;
+  else if (field.type === "chips") control = <ChoiceChips options={field.options || []} value={value} onPick={id => onValue(field.id, id)} stack={field.stack} label={field.label} />;
   else if (field.type === "textarea") control = (
     <textarea id={`in-${field.id}`} value={value} disabled={unk} rows={2} maxLength={300} placeholder={field.placeholder}
       onChange={e => onValue(field.id, e.target.value)}
@@ -111,7 +130,7 @@ function FieldInput({ field, values, unknown, error, onValue, onUnknown }: {
       className={`${inputClass} disabled:bg-[#F5F8F6] disabled:text-[#9AA59F] ${error ? "border-[#B42318] bg-[#FEF3F2]" : ""}`} />
   );
   return (
-    <Field id={field.id} label={field.label} optional={field.req === "opt"} hint={field.hint} error={error}>
+    <Field id={field.id} label={field.label} required={field.req !== "opt"} hint={field.hint} error={error}>
       {control}
       {field.req === "unk" && (
         <CheckRow id={`unk-${field.id}`} checked={unk} onChange={on => onUnknown(field.id, on)}>{field.unkLabel || "不知道"}</CheckRow>
@@ -125,22 +144,27 @@ function DocCard({ doc, files, later, uploading, error, onUpload, onRemove, onLa
   onUpload: (list: FileList) => void; onRemove: (file: ServerFile) => void; onLater: (on: boolean) => void;
 }) {
   const inputId = `file-${doc.id}`;
+  // 正反面的文件提醒兩面都要傳，避免客人傳了正面就以為沒地方傳背面。
+  const twoSided = /正反面|與護照/.test(doc.label);
+  const multiHint = twoSided ? "正面、背面各上傳一張。" : "";
   return (
     <div id={`field-doc:${doc.id}`} className={`border ${error ? "border-[#B42318]" : "border-[#DDE3DF]"} ${later ? "bg-[#F5F8F6]" : "bg-white"}`}>
       <div className="space-y-1 p-3">
         <p className="flex flex-wrap items-baseline gap-2 text-[14px] font-bold text-[#1A2A22]">
           {doc.label}
           <span className={`border px-1.5 text-[11px] ${doc.required ? "border-[#00A174] text-[#00A174]" : "border-[#B7C0BB] text-[#66736C]"}`}>{doc.required ? "必交" : "選交"}</span>
-          {files.length > 0 && <span className="text-[11px] text-[#00A174]">已上傳</span>}
+          {files.length > 0 && <span className="text-[11px] text-[#00A174]">已上傳 {files.length} 張</span>}
         </p>
-        {doc.hint && <p className="text-[12px] leading-relaxed text-[#66736C]">{doc.hint}</p>}
+        <DocHint doc={doc} />
+        {!readOnly && multiHint && <p className="text-[12px] leading-relaxed text-[#3F5147]">{multiHint}</p>}
         {error && <p className="text-[12px] font-bold text-[#B42318]" role="alert">{error}</p>}
       </div>
       {files.length > 0 && (
-        <ul className="flex flex-wrap gap-1.5 px-3 pb-2.5">
-          {files.map(file => (
-            <li key={file.driveFileId} className="flex max-w-full items-center gap-1.5 border border-[#00A174] bg-[#F0FAF6] px-2 py-0.5 text-[12px]">
-              <span className="truncate">{file.name}</span>
+        <ul className="grid gap-1.5 px-3 pb-2.5">
+          {files.map((file, index) => (
+            <li key={file.driveFileId} className="flex max-w-full items-center gap-2 border border-[#00A174] bg-[#F0FAF6] px-2 py-1 text-[12px]">
+              <span className="font-jost font-bold text-[#00A174]">{index + 1}</span>
+              <span className="min-w-0 flex-1 truncate">{file.name}</span>
               {!readOnly && <button type="button" onClick={() => onRemove(file)} aria-label={`移除 ${file.name}`} className="text-[#66736C] hover:text-[#B42318]"><X className="h-3.5 w-3.5" /></button>}
             </li>
           ))}
@@ -151,7 +175,7 @@ function DocCard({ doc, files, later, uploading, error, onUpload, onRemove, onLa
           <label htmlFor={inputId} className={`relative flex flex-1 cursor-pointer items-center justify-center gap-1.5 py-2.5 text-[13px] font-bold text-[#00A174] ${hideLater ? "" : "border-r border-[#DDE3DF]"}`}>
             <input id={inputId} type="file" multiple accept="image/*,application/pdf" className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
               onChange={e => { if (e.target.files?.length) onUpload(e.target.files); e.target.value = ""; }} />
-            {uploading > 0 ? <><Loader2 className="h-4 w-4 animate-spin" />上傳中…</> : <><FileUp className="h-4 w-4" />拍照或選檔案</>}
+            {uploading > 0 ? <><Loader2 className="h-4 w-4 animate-spin" />上傳中…</> : files.length ? <><Plus className="h-4 w-4" />再加一張</> : <><FileUp className="h-4 w-4" />拍照或選檔案（可多張）</>}
           </label>
           {!hideLater && <div className="flex flex-1 items-center justify-center px-2"><CheckRow id={`later-${doc.id}`} checked={later} onChange={onLater}>之後再補</CheckRow></div>}
         </div>
@@ -209,9 +233,26 @@ export function MoushikomiApp() {
   const [justSubmitted, setJustSubmitted] = useState(false);
   const [docsNotice, setDocsNotice] = useState<string | null>(null);
   const restored = useRef(false);
+  const preview = token === PREVIEW_TOKEN;
+  const [presetId, setPresetId] = useState(PREVIEW_PRESETS[0].id);
+
+  function applyPreset(id: string) {
+    const preset = PREVIEW_PRESETS.find(item => item.id === id) || PREVIEW_PRESETS[0];
+    setPresetId(preset.id);
+    setValues({ ...preset.values, docTiming: "now" });
+    setUnknown(preset.unknown || {});
+    setDocLater({});
+    setErrors({});
+  }
 
   useEffect(() => {
     if (!token) { setLoadError("missing"); return; }
+    if (token === PREVIEW_TOKEN) {
+      // 預覽：不連伺服器，直接放假資料；草稿也不存。
+      setServer({ refCode: "AP-DEMO", property: "", submitted: false, docTiming: "", docKeys: null, docLater: {}, files: PREVIEW_FILES });
+      applyPreset(PREVIEW_PRESETS[0].id);
+      return;
+    }
     // 隨機碼不要留在瀏覽紀錄的網址列以外的地方：不送 referrer（見 HTML），也不帶進分析。
     api(token).then((state: ServerState) => {
       setServer(state);
@@ -238,17 +279,28 @@ export function MoushikomiApp() {
   const setValue = useCallback((id: string, value: string) => {
     setValues(prev => ({ ...prev, [id]: value }));
     // 填了就把那一格的紅字拿掉，不用等下一次按「下一步」。
-    if (value.trim()) setErrors(prev => { if (!prev[id]) return prev; const next = { ...prev }; delete next[id]; return next; });
+    // 地址的子欄位（例如 AddressTown）填了，也把整格地址的紅字拿掉。
+    const parent = id.replace(/(Region|Zip|Pref|City|Town|Bldg|Overseas)$/, "");
+    if (value.trim()) setErrors(prev => {
+      if (!prev[id] && !prev[parent]) return prev;
+      const next = { ...prev }; delete next[id]; delete next[parent]; return next;
+    });
   }, []);
   const setUnknownFlag = useCallback((id: string, on: boolean) => {
     setUnknown(prev => ({ ...prev, [id]: on }));
-    if (on) { setValues(prev => ({ ...prev, [id]: "" })); setErrors(prev => { const next = { ...prev }; delete next[id]; return next; }); }
+    if (on) { setValues(prev => { const next = { ...prev, [id]: "" }; for (const key of ["Zip", "Pref", "City", "Town", "Bldg", "Overseas"]) delete next[`${id}${key}`]; return next; }); setErrors(prev => { const next = { ...prev }; delete next[id]; return next; }); }
   }, []);
 
   const filesFor = (docId: string) => (server?.files || []).filter(file => file.docId === docId);
 
   async function upload(doc: DocDef, list: FileList) {
     if (!server) return;
+    if (preview) {
+      const added = Array.from(list).map((file, i) => ({ docId: doc.id, name: file.name, driveFileId: `preview-${Date.now()}-${i}`, size: file.size }));
+      setServer({ ...server, files: [...server.files, ...added] });
+      setDocLater(prev => { const next = { ...prev }; delete next[doc.id]; return next; });
+      return;
+    }
     setUploadError(null);
     setErrors(prev => { const next = { ...prev }; delete next[`doc:${doc.id}`]; return next; });
     setDocLater(prev => { const next = { ...prev }; delete next[doc.id]; return next; });
@@ -272,6 +324,7 @@ export function MoushikomiApp() {
   }
 
   async function removeFile(file: ServerFile) {
+    if (preview && server) { setServer({ ...server, files: server.files.filter(item => item.driveFileId !== file.driveFileId) }); return; }
     try {
       const state: ServerState = await api(token, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "remove-file", driveFileId: file.driveFileId }) });
       setServer(state);
@@ -312,6 +365,10 @@ export function MoushikomiApp() {
       const stepErrors = validateStep(steps[i], values, unknown);
       if (Object.keys(stepErrors).length) { setStep(i); setErrors(stepErrors); scrollToFirstError(stepErrors); return; }
     }
+    if (preview && server) {
+      setServer({ ...server, submitted: true, docTiming: values.docTiming || "", docKeys: values });
+      setJustSubmitted(true); window.scrollTo({ top: 0 }); return;
+    }
     setSubmitting(true); setSubmitError(null);
     try {
       const form = cleanForm(values, unknown);
@@ -334,6 +391,7 @@ export function MoushikomiApp() {
   }
 
   async function notifyDocsDone() {
+    if (preview) { setDocsNotice("（預覽）實際使用時，這裡會寄信通知 Linus。"); return; }
     try {
       const state = await api(token, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "docs-done" }) });
       setServer(state);
@@ -346,11 +404,19 @@ export function MoushikomiApp() {
   if (loadError) return <Notice title="暫時連不上">{loadError}<br />請稍後重新整理，或直接用 LINE 聯絡 Linus。</Notice>;
   if (!server) return <Shell><div className="flex items-center gap-2 py-16 text-[14px] text-[#66736C]"><Loader2 className="h-4 w-4 animate-spin" />載入中…</div></Shell>;
 
+  const previewBar = preview ? (
+    <PreviewBar presetId={presetId} onPreset={id => { applyPreset(id); if (server.submitted) setServer({ ...server, submitted: false }); }}
+      steps={[...steps.map(s => s.title), "上傳文件", "確認並送出"]} step={server.submitted ? -1 : step}
+      onStep={i => { setServer({ ...server, submitted: false }); goTo(i); }}
+      onDone={() => { setServer({ ...server, submitted: true, docTiming: values.docTiming || "", docKeys: values }); setJustSubmitted(true); window.scrollTo({ top: 0 }); }} />
+  ) : null;
+
   // ── 已送出：顯示參考碼；文件還沒給的，可以在這裡補傳 ──────────
   if (server.submitted) {
     const missing = docs.filter(doc => doc.required && !filesFor(doc.id).length);
     return (
       <Shell>
+        {previewBar}
         <div className="space-y-5">
           <div className="space-y-2 border border-[#DDE3DF] bg-white p-5">
             <p className="text-[12px] font-bold tracking-[0.12em] text-[#00A174]">{justSubmitted ? "已收到你的申請資料" : "申請資料已送出"}</p>
@@ -362,7 +428,7 @@ export function MoushikomiApp() {
             <p className="text-[13px] leading-relaxed text-[#3F5147]">
               {missing.length ? `還有 ${missing.length} 份必交文件。之後隨時用同一個連結回來上傳，傳好按最下面的按鈕通知 Linus。` : "必交文件都齊了。要補其他檔案也可以在這裡上傳。"}
             </p>
-            <PhotoTips />
+            <UploadTips />
             {uploadError && <p className="text-[13px] font-bold text-[#B42318]" role="alert">{uploadError}</p>}
             {docs.map(doc => (
               <DocCard key={doc.id} doc={doc} files={filesFor(doc.id)} later={false} uploading={uploading[doc.id] || 0}
@@ -391,6 +457,7 @@ export function MoushikomiApp() {
 
   return (
     <Shell footer={footer}>
+      {previewBar}
       {step === 0 && (
         <div className="mb-5 space-y-2">
           <h1 className="font-serif text-[22px] font-bold leading-snug">租屋申請資料</h1>
@@ -416,7 +483,7 @@ export function MoushikomiApp() {
 
         {step === DOCS_STEP && (
           <div className="space-y-4">
-            <Field id="docTiming" label="文件什麼時候給 Linus？" error={errors.docTiming}>
+            <Field id="docTiming" label="文件什麼時候給 Linus？" required error={errors.docTiming}>
               <ChoiceChips options={DOC_TIMING_OPTIONS} value={values.docTiming || ""} stack label="文件什麼時候給 Linus" onPick={id => setValue("docTiming", id)} />
             </Field>
             {docTiming === "later" && (
@@ -425,15 +492,14 @@ export function MoushikomiApp() {
                 {docs.map(doc => (
                   <div key={doc.id} className="border border-[#DDE3DF] p-3">
                     <p className="flex flex-wrap items-baseline gap-2 text-[14px] font-bold">{doc.label}<span className={`border px-1.5 text-[11px] ${doc.required ? "border-[#00A174] text-[#00A174]" : "border-[#B7C0BB] text-[#66736C]"}`}>{doc.required ? "必交" : "選交"}</span></p>
-                    {doc.hint && <p className="mt-1 text-[12px] leading-relaxed text-[#66736C]">{doc.hint}</p>}
+                    <div className="mt-1"><DocHint doc={doc} /></div>
                   </div>
                 ))}
               </>
             )}
             {docTiming === "now" && (
               <>
-                <PhotoTips />
-                <p className="border-l-[3px] border-[#00A174] bg-[#F0FAF6] px-3 py-2.5 text-[13px] leading-relaxed">缺一兩份沒關係，先勾「之後再補」送出。因為缺資料拖到申請，很容易被別人搶走房子。</p>
+                <UploadTips showLater />
                 {uploadError && <p className="text-[13px] font-bold text-[#B42318]" role="alert">{uploadError}</p>}
                 {docs.map(doc => (
                   <DocCard key={doc.id} doc={doc} files={filesFor(doc.id)} later={Boolean(docLater[doc.id])} uploading={uploading[doc.id] || 0} error={errors[`doc:${doc.id}`]}
@@ -464,11 +530,47 @@ export function MoushikomiApp() {
   );
 }
 
-function PhotoTips() {
+function PreviewBar({ presetId, onPreset, steps, step, onStep, onDone }: {
+  presetId: string; onPreset: (id: string) => void; steps: string[]; step: number; onStep: (i: number) => void; onDone: () => void;
+}) {
+  const chip = (on: boolean) => `border px-2 py-1 text-[12px] ${on ? "border-[#1A2A22] bg-[#1A2A22] text-white" : "border-[#DDE3DF] bg-white text-[#3F5147]"}`;
   return (
-    <p className="border-l-[3px] border-[#8A5A00] bg-[#FFF8E6] px-3 py-2.5 text-[12.5px] leading-relaxed">
-      拍照或掃描時：四邊四角都要拍進去、不要出現手指、不要反光。不方便掃描，在光線充足的地方用手機拍也可以。
-    </p>
+    <div className="mb-4 space-y-2 border border-dashed border-[#B7C0BB] bg-white p-3">
+      <p className="text-[12px] font-bold text-[#8A5A00]">預覽模式：資料都是假的，不會送出。這個灰框客人看不到。</p>
+      <div className="flex flex-wrap gap-1.5">{PREVIEW_PRESETS.map(p => <button key={p.id} type="button" onClick={() => onPreset(p.id)} className={chip(p.id === presetId)}>{p.label}</button>)}</div>
+      <div className="flex flex-wrap gap-1.5">
+        {steps.map((title, i) => <button key={i} type="button" onClick={() => onStep(i)} className={chip(i === step)}>{i + 1} {title}</button>)}
+        <button type="button" onClick={onDone} className={chip(step === -1)}>送出後畫面</button>
+      </div>
+    </div>
+  );
+}
+
+function DocHint({ doc }: { doc: DocDef }) {
+  if (!doc.hint && !doc.points) return null;
+  return (
+    <div className="space-y-1 text-[12px] leading-relaxed text-[#66736C]">
+      {doc.hint && <p>{doc.hint}</p>}
+      {doc.points && (
+        <ul className="space-y-0.5">
+          {doc.points.map(point => <li key={point} className="flex gap-1.5"><span aria-hidden="true">・</span><span>{point}</span></li>)}
+        </ul>
+      )}
+      {doc.footnote && <p>{doc.footnote}</p>}
+    </div>
+  );
+}
+
+/** 上傳前的提醒：一個區塊、條列；用網站提醒的黃色（同租屋指南、圖紙分析的提醒框）。 */
+function UploadTips({ showLater }: { showLater?: boolean }) {
+  return (
+    <div className="border border-[#FDE047] bg-[#FEF9C3] px-3 py-2.5 text-[#854D0E]">
+      <p className="mb-1.5 text-[13px] font-bold">上傳前注意</p>
+      <ul className="space-y-1.5 text-[12.5px] leading-relaxed">
+        <li className="flex gap-2"><Camera className="mt-[3px] h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span>四邊四角都要入鏡，不要有手指、不要反光。沒有掃描機，在光線充足的地方用手機拍就可以。</span></li>
+        {showLater && <li className="flex gap-2"><Clock className="mt-[3px] h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span>缺一兩份沒關係，先勾「之後再補」送出；等資料齊了才申請，房子很容易被別人搶走。</span></li>}
+      </ul>
+    </div>
   );
 }
 
@@ -487,7 +589,7 @@ function Summary({ steps, values, unknown, docs, docTiming, filesFor, docLater, 
           </h3>
           <dl className="grid grid-cols-[8.5em_minmax(0,1fr)] gap-x-3 gap-y-1 px-3 py-2 text-[12.5px]">
             {step.skip ? <><dt className="text-[#66736C]">—</dt><dd>不用填</dd></> : step.fields.filter(f => f.type !== "check" || values[f.id]).map(f => {
-              const empty = !values[f.id] && !(f.req === "unk" && unknown[f.id]);
+              const empty = isBlank(f, values) && !(f.req === "unk" && unknown[f.id]);
               return (
                 <div key={f.id} className="contents">
                   <dt className="text-[#66736C]">{f.type === "check" ? "備註" : f.label}</dt>
