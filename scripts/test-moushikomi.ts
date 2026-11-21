@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { Readable } from "node:stream";
 import { MemoryBackend, setLeadBackendForTests } from "../src/lib/leadStore";
 import { MemoryDrive, setDriveForTests } from "../src/lib/moushikomi/drive";
-import { cleanForm, docsFor, stepsFor, toJapaneseSheet, validateForm, type FormValues } from "../src/lib/moushikomi/schema";
+import { addrRegion, cleanForm, docsFor, displayValue, normalizeDob, stepsFor, toJapaneseSheet, validateForm, type FormValues } from "../src/lib/moushikomi/schema";
 import { createApplication } from "../src/lib/moushikomi/store";
 import handler from "../api/moushikomi";
 
@@ -21,7 +21,18 @@ const docIds = (x: FormValues) => docsFor(x).map(d => d.id);
 assert.ok(ids({ identity: "student" }).includes("schoolType"), "留學生要問學校類型");
 assert.ok(!ids({ identity: "student" }).includes("capital"), "留學生不問資本額");
 assert.ok(ids({ identity: "worker", workerStatus: "over3" }).includes("capital"), "上班族要問資本額");
-assert.ok(ids({ identity: "worker", workerStatus: "offer" }).includes("startDate"), "已內定問預計入職日");
+assert.ok(ids({ identity: "worker", workerStatus: "offer" }).includes("startDate"), "尚未入職問預計入職日");
+assert.ok(ids({ identity: "worker", where: "overseas" }).includes("startDate"), "海外審查的工作簽證視為尚未入職");
+assert.ok(!ids({ identity: "worker", where: "overseas" }).includes("workerStatus"), "海外審查不問工作狀態");
+assert.ok(ids({ identity: "corporate" }).includes("capital"), "法人契約填公司資訊");
+assert.ok(ids({ identity: "corporate" }).includes("guNameEn") && !ids({ identity: "worker" }).includes("guNameEn"), "法人契約才有連帶保證人");
+const findField = (x: FormValues, id: string) => stepsFor(x).flatMap(s => s.fields).find(f => f.id === id)!;
+for (const id of ["Kana", "coKana", "homeKana"]) assert.equal(findField({ cohab: "spouse" }, id).req, "unk", `${id} 可以勾不會寫`);
+for (const id of ["jpKana", "guKana"]) assert.equal(findField({ identity: "corporate" }, id).req, "req", `${id} 必填、不能勾不會寫`);
+assert.ok(ids({ cohab: "other" }).includes("coNameEn"), "同居人選其他也要填資料");
+for (const key of ["jpNationality", "homeNationality"]) assert.ok(ids({}).includes(key), `${key} 要問國籍`);
+assert.ok(ids({ cohab: "spouse" }).includes("coNationality"));
+assert.equal(stepsFor({}).find(s => s.id === "jp")!.fields.find(f => f.id === "jpOrgName")!.req, "opt", "在日聯絡人的公司資訊選填");
 assert.equal(stepsFor({ identity: "wh", whJob: "no" })[2].skip !== undefined, true, "打工度假沒工作跳過公司");
 assert.ok(!ids({ identity: "student", where: "overseas" }).includes("yearsInJapan"), "人在海外不問來日年數");
 assert.ok(ids({ identity: "student" }).includes("rent") && !ids({ identity: "worker", workerStatus: "over3" }).includes("rent"));
@@ -29,12 +40,22 @@ assert.equal(stepsFor({ identity: "student" })[1].fields.find(f => f.id === "inc
 assert.ok(!ids({ jpNone: "1" }).includes("jpNameEn"), "勾在日沒人就不出現聯絡人欄位");
 assert.ok(ids({ cohab: "spouse" }).includes("coNameEn") && !ids({ cohab: "alone" }).includes("coNameEn"));
 
-assert.deepEqual(docIds({ identity: "student", where: "japan" }), ["zairyu", "passport", "insurance", "admission", "studentId", "bank"]);
-assert.deepEqual(docIds({ identity: "worker", workerStatus: "over3", where: "japan" }), ["zairyu", "passport", "insurance", "gensen", "pay3", "terms"]);
-assert.deepEqual(docIds({ identity: "worker", workerStatus: "changing", where: "japan" }), ["zairyu", "passport", "offer", "terms", "oldPay"]);
-assert.deepEqual(docIds({ identity: "wh", whJob: "no", where: "overseas" }), ["visa", "passport", "insurance", "bank"]);
-assert.equal(docsFor({ identity: "wh", whJob: "no", where: "overseas" }).find(d => d.id === "insurance")!.required, false, "海外健保卡選交");
-assert.match(docsFor({ identity: "student", rent: "85000" }).find(d => d.id === "bank")!.hint!, /約需 128 萬円/);
+// 文件對標官網「依身份準備的文件」。
+assert.deepEqual(docIds({ identity: "student", where: "japan" }), ["passport", "zairyu", "studentId", "bank", "remit"]);
+assert.deepEqual(docIds({ identity: "student", where: "overseas" }), ["passport", "coe", "admission", "bank"]);
+assert.deepEqual(docIds({ identity: "worker", workerStatus: "over3", where: "japan" }), ["zairyu", "passport", "insurance", "gensen", "pay3", "terms", "bank", "remit"]);
+assert.deepEqual(docIds({ identity: "worker", workerStatus: "changing", where: "japan" }), ["zairyu", "passport", "newOffer", "oldPay", "bank", "remit"]);
+assert.deepEqual(docIds({ identity: "worker", where: "overseas" }), ["passport", "coe", "offer", "bank", "remit"]);
+assert.deepEqual(docIds({ identity: "wh", whJob: "no", where: "overseas" }), ["passport", "visaSticker", "bank", "offer"]);
+assert.deepEqual(docIds({ identity: "corporate", where: "japan" }), ["corpRegistry", "corpFinancials", "corpSeal", "repSeal", "residentId", "employeeId", "corpProfile"]);
+const workerDocs = docsFor({ identity: "worker", workerStatus: "over3", where: "japan" });
+assert.equal(workerDocs.find(d => d.id === "bank")!.required, false, "上班族財力證明非必備");
+assert.match(workerDocs.find(d => d.id === "terms")!.hint!, /蓋有公司社章/, "帶入官網的補充說明");
+assert.equal(docsFor({ identity: "worker", workerStatus: "changing", where: "japan" }).find(d => d.id === "oldPay")!.required, false, "視個案算選交");
+const bankDoc = docsFor({ identity: "student", rent: "85000" }).find(d => d.id === "bank")!;
+assert.match(bankDoc.hint!, /約需 128 萬円/);
+assert.ok(bankDoc.points!.some(point => /需顯示戶名跟帳號/.test(point)), "財力證明形式條列");
+assert.equal(bankDoc.footnote, "留學生可以用自己或父母的。");
 assert.ok(docIds({ identity: "worker", workerStatus: "under3", cohab: "partner" }).includes("coId"));
 
 // 切換身份後，舊身份的欄位不會被存下來。
@@ -46,11 +67,13 @@ assert.deepEqual(switched.unknown, {});
 const student: FormValues = {
   identity: "student", where: "japan", property: "中野 1K", rent: "80000",
   NameEn: "WANG XIAOMING", NameKanji: "王小明", Birthday: "2001-04-05", Gender: "m", nationality: "台灣",
-  Phone: "+81 90-1234-5678", Email: "wang@example.com", Address: "東京都中野区1-2-3", housing: "rent", currentRent: "70000",
+  Phone: "+81 90-1234-5678", Email: "wang@example.com",
+  AddressZip: "1640001", AddressPref: "東京都", AddressCity: "中野区", AddressTown: "中野 1-2-3", AddressBldg: "中野ハイツ 201",
+  housing: "rent", currentRent: "70000",
   yearsAtAddress: "1 年", yearsInJapan: "2 年", income: "每月 15 萬円",
   schoolType: "lang", orgName: "東京日本語学校",
   jpNone: "1",
-  homeNameEn: "WANG DAMING", homeBirthday: "1970-01-01", homeGender: "m", homeRelation: "father", homePhone: "+886 912-345-678", homeEmail: "dad@example.com", homeAddress: "台北市",
+  homeNameEn: "WANG DAMING", homeBirthday: "1970-01-01", homeGender: "m", homeRelation: "father", homePhone: "+886 912-345-678", homeEmail: "dad@example.com", homeNationality: "台灣", homeAddressOverseas: "台北市大安區忠孝東路四段 1 號",
   cohab: "alone", docTiming: "now",
 };
 const studentUnknown = { Kana: true, orgAddress: true, orgPhone: true, homeKana: true };
@@ -59,9 +82,29 @@ const missing = validateForm(cleanForm({ ...student, Phone: "", Email: "bad" }, 
 assert.equal(missing.Phone, "請填寫這一格");
 assert.equal(missing.Email, "Email 格式看起來不對");
 assert.ok(validateForm(cleanForm(student, {})).Kana, "片假名沒勾不知道就必填");
+// 地址：日本拆行、海外一行；母國聯絡人預設海外，申請人跟著「人在哪裡」。
+const homeAddr = stepsFor({}).find(s => s.id === "home")!.fields.find(f => f.id === "homeAddress")!;
+const applicantAddr = stepsFor({}).find(s => s.id === "applicant")!.fields.find(f => f.id === "Address")!;
+assert.equal(addrRegion(homeAddr, {}), "overseas");
+assert.equal(addrRegion(applicantAddr, {}), "jp");
+assert.equal(addrRegion(applicantAddr, { where: "overseas" }), "overseas");
+assert.equal(addrRegion(applicantAddr, { where: "overseas", AddressRegion: "jp" }), "jp", "客人手動切換優先");
+const studentForm = cleanForm(student, studentUnknown);
+assert.equal(displayValue(applicantAddr, studentForm), "〒164-0001 東京都中野区中野 1-2-3 中野ハイツ 201");
+assert.equal(displayValue(homeAddr, studentForm, "ja"), "（海外）台北市大安區忠孝東路四段 1 號");
+assert.equal(validateForm(cleanForm({ ...student, AddressTown: "" }, studentUnknown)).Address, "請把都道府縣、市區町村、町名與番地填完整");
+assert.equal(validateForm(cleanForm({ ...student, AddressZip: "16400" }, studentUnknown)).Address, "郵遞區號是 7 位數字");
+assert.equal(cleanForm({ ...student, AddressRegion: "overseas", AddressOverseas: "Taipei" }, studentUnknown).values.AddressPref, undefined, "切到海外就不留日本欄位");
+// 生日：三格輸入可能沒補零，存的時候補齊；不存在的日期擋掉。
+assert.equal(normalizeDob("1995-6-1"), "1995-06-01");
+assert.equal(normalizeDob("1995-2-30"), null);
+assert.equal(cleanForm({ ...student, Birthday: "2001-4-5" }, studentUnknown).values.Birthday, "2001-04-05");
+assert.ok(validateForm(cleanForm({ ...student, Birthday: "2001--" }, studentUnknown)).Birthday, "沒填完的生日要擋");
 const sheet = toJapaneseSheet(cleanForm(student, studentUnknown), "AP-TEST");
 assert.match(sheet, /氏名（ローマ字）：WANG XIAOMING/);
 assert.match(sheet, /フリガナ：（確認中）/);
+assert.match(sheet, /生年月日：2001年4月5日/);
+assert.match(sheet, /現住所：〒164-0001 東京都中野区中野 1-2-3 中野ハイツ 201/);
 assert.match(sheet, /■ 緊急連絡先（日本）\nなし（要相談）/);
 assert.match(sheet, /■ 同居人\nなし（単身入居）/);
 
@@ -112,7 +155,7 @@ assert.equal(noConsent.code, 400);
 const missingDocs = await call({ method: "POST", headers: tok, body: { action: "submit", values: student, unknown: studentUnknown, privacyAck: true, shareConsent: true } });
 assert.equal(missingDocs.code, 400);
 assert.ok(missingDocs.data.fieldErrors["doc:zairyu"], "必交文件沒傳也沒勾之後再補要擋");
-const later = { zairyu: true, insurance: true, admission: true, studentId: true, bank: true };
+const later = { zairyu: true, studentId: true, bank: true, remit: true };
 const submitted = await call({ method: "POST", headers: tok, body: { action: "submit", values: student, unknown: studentUnknown, docLater: later, privacyAck: true, shareConsent: true } });
 assert.equal(submitted.code, 201, JSON.stringify(submitted.data));
 assert.equal(submitted.data.submitted, true);

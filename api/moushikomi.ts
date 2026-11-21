@@ -4,7 +4,7 @@ import { clientIp, requireAdmin, safeEqual } from "../src/lib/adminAuth.js";
 import { beginAuth, driveStatus, getDrive, DriveError } from "../src/lib/moushikomi/drive.js";
 import { buildDocsEmail, buildSubmittedEmail, notifyConfigured, sendEmail } from "../src/lib/moushikomi/notify.js";
 import {
-  ACCEPTED_MIME, DOC_KEYS, MAX_FILE_BYTES, MAX_FILES_PER_DOC, MAX_FILES_TOTAL,
+  ACCEPTED_MIME, ALL_DOC_IDS, DOC_KEYS, MAX_FILE_BYTES, MAX_FILES_PER_DOC, MAX_FILES_TOTAL,
   cleanForm, docsFor, validateForm,
 } from "../src/lib/moushikomi/schema.js";
 import {
@@ -40,10 +40,7 @@ const actionLimiter = statsRedis
   ? new Ratelimit({ redis: statsRedis, limiter: Ratelimit.slidingWindow(30, "3600 s"), prefix: "linus-apply-action" })
   : null;
 
-const ALL_DOC_IDS = new Set([
-  "visa", "zairyu", "passport", "insurance", "admission", "studentId", "bank", "offer", "terms", "gensen", "pay3", "pay", "oldPay",
-  "visaDoc", "incomeDoc", "coId", "coIncomeDoc",
-]);
+
 
 function parseBody(body: unknown): any {
   if (typeof body !== "string") return body;
