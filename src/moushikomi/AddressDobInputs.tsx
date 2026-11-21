@@ -126,7 +126,7 @@ export function AddressInput({ field, values, disabled, onValue, invalid }: {
           {row("都道府縣", <input value={get("Pref")} disabled={disabled} autoComplete="address-level1" placeholder="東京都" onChange={e => set("Pref", e.target.value)} className={`${box} border-[#C9D2CD]`} />)}
           {row("市區町村", <input value={get("City")} disabled={disabled} autoComplete="address-level2" placeholder="新宿区" onChange={e => set("City", e.target.value)} className={`${box} border-[#C9D2CD]`} />)}
           {row("町名・番地", <input ref={townRef} value={get("Town")} disabled={disabled} autoComplete="address-line1" placeholder="西新宿 1-2-3" onChange={e => set("Town", e.target.value)} className={`${box} border-[#C9D2CD]`} />)}
-          {row("建物名・房號", <input value={get("Bldg")} disabled={disabled} autoComplete="address-line2" placeholder="○○マンション 101" onChange={e => set("Bldg", e.target.value)} className={`${box} border-[#C9D2CD]`} />, true)}
+          {row("建物名・房號", <input value={get("Bldg")} disabled={disabled} autoComplete="address-line2" placeholder="○○マンション 101（獨棟填「一戶建」）" onChange={e => set("Bldg", e.target.value)} className={`${box} border-[#C9D2CD]`} />)}
         </div>
       )}
     </div>

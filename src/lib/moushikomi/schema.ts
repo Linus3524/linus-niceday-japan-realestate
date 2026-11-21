@@ -152,11 +152,11 @@ export function addrRegion(f: FieldDef, x: FormValues): "jp" | "overseas" {
 
 const part = (f: FieldDef, x: FormValues, key: string) => (x[`${f.id}${key}`] ?? "").trim();
 
-/** 必填的部分都有了嗎（日本：都道府縣＋市區町村＋町名番地；海外：一整行）。 */
+/** 必填的部分都有了嗎（日本：都道府縣＋市區町村＋町名番地＋建物名房號；海外：一整行）。 */
 export function addrComplete(f: FieldDef, x: FormValues) {
   return addrRegion(f, x) === "overseas"
     ? Boolean(part(f, x, "Overseas"))
-    : Boolean(part(f, x, "Pref") && part(f, x, "City") && part(f, x, "Town"));
+    : Boolean(part(f, x, "Pref") && part(f, x, "City") && part(f, x, "Town") && part(f, x, "Bldg"));
 }
 function addrAny(f: FieldDef, x: FormValues) {
   return addrRegion(f, x) === "overseas" ? Boolean(part(f, x, "Overseas")) : JP_PARTS.some(key => part(f, x, key));
@@ -436,7 +436,7 @@ export function validateStep(step: StepDef, values: FormValues, unknown: Record<
     if (f.type === "address") {
       const zip = (values[`${f.id}Zip`] ?? "").replace(/\D/g, "");
       if (addrRegion(f, values) === "jp" && zip && zip.length !== 7) errors[f.id] = "郵遞區號是 7 位數字";
-      else if (!addrComplete(f, values)) errors[f.id] = addrRegion(f, values) === "jp" ? "請把都道府縣、市區町村、町名與番地填完整" : "請填寫地址";
+      else if (!addrComplete(f, values)) errors[f.id] = addrRegion(f, values) === "jp" ? "請把都道府縣、市區町村、町名番地、建物名房號填完整" : "請填寫地址";
       continue;
     }
     if (f.type === "dob") { if (!normalizeDob(value)) errors[f.id] = "請填完整的出生年月日（例：1995 年 6 月 1 日）"; continue; }

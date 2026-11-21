@@ -92,7 +92,8 @@ assert.equal(addrRegion(applicantAddr, { where: "overseas", AddressRegion: "jp" 
 const studentForm = cleanForm(student, studentUnknown);
 assert.equal(displayValue(applicantAddr, studentForm), "〒164-0001 東京都中野区中野 1-2-3 中野ハイツ 201");
 assert.equal(displayValue(homeAddr, studentForm, "ja"), "（海外）台北市大安區忠孝東路四段 1 號");
-assert.equal(validateForm(cleanForm({ ...student, AddressTown: "" }, studentUnknown)).Address, "請把都道府縣、市區町村、町名與番地填完整");
+assert.equal(validateForm(cleanForm({ ...student, AddressTown: "" }, studentUnknown)).Address, "請把都道府縣、市區町村、町名番地、建物名房號填完整");
+assert.ok(validateForm(cleanForm({ ...student, AddressBldg: "" }, studentUnknown)).Address, "建物名房號必填");
 assert.equal(validateForm(cleanForm({ ...student, AddressZip: "16400" }, studentUnknown)).Address, "郵遞區號是 7 位數字");
 assert.equal(cleanForm({ ...student, AddressRegion: "overseas", AddressOverseas: "Taipei" }, studentUnknown).values.AddressPref, undefined, "切到海外就不留日本欄位");
 // 生日：三格輸入可能沒補零，存的時候補齊；不存在的日期擋掉。
