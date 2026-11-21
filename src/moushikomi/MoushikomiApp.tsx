@@ -461,7 +461,7 @@ export function MoushikomiApp() {
       {step === 0 && (
         <div className="mb-5 space-y-2">
           <h1 className="font-serif text-[22px] font-bold leading-snug">租屋申請資料</h1>
-          <p className="text-[13px] leading-relaxed text-[#3F5147]">照順序一格一格填，大約 10 分鐘。填到一半關掉也沒關係，用同一個連結回來會接著填。</p>
+          <p className="text-[13px] leading-relaxed text-[#3F5147]">照順序一格一格填，大約 10 分鐘。</p>
         </div>
       )}
       <div className="mb-4 space-y-1.5" aria-label={`第 ${step + 1} 步，共 ${total} 步`}>
@@ -526,6 +526,11 @@ export function MoushikomiApp() {
           </Summary>
         )}
       </div>
+      {/* 草稿存在客人這個瀏覽器裡：換手機或換瀏覽器（例如 LINE 內建瀏覽器換成 Safari）就看不到。 */}
+      <p className="mt-3 text-center text-[12px] leading-relaxed text-[#8A9590]">
+        填到一半關掉也不會遺失，已填的內容會自動存在這支手機。<br />
+        之後請用同一個瀏覽器打開這個連結接著填（從 LINE 點開的，下次也從 LINE 點開）。
+      </p>
     </Shell>
   );
 }

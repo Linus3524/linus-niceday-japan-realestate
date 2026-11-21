@@ -17,7 +17,9 @@ const fmt = (iso?: string) => iso
   ? new Intl.DateTimeFormat("zh-TW", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso))
   : "—";
 const fmtDate = (iso: string) => new Intl.DateTimeFormat("zh-TW", { timeZone: "Asia/Tokyo", year: "numeric", month: "numeric", day: "numeric" }).format(new Date(iso));
-const applyLink = (token: string) => `${window.location.origin}/moushikomi#${token}`;
+// openExternalBrowser=1：LINE 的官方參數，客人在 LINE 點開會改用手機預設瀏覽器（Safari／Chrome），
+// 草稿才不會因為一下在 LINE、一下在 Safari 打開而找不到。
+const applyLink = (token: string) => `${window.location.origin}/moushikomi?openExternalBrowser=1#${token}`;
 
 function readToken() {
   try { return sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(STATS_TOKEN_KEY) || ""; } catch { return ""; }
