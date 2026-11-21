@@ -128,6 +128,9 @@ export function setLeadBackendForTests(next: LeadBackend | null) { backend = nex
 
 export function leadStoreConfigured() { return resolveBackend() !== null; }
 
+/** 租屋申請資料（/moushikomi）共用同一個資料庫，鍵名用 app: 開頭。 */
+export function sharedLeadBackend(): LeadBackend { return store(); }
+
 function store(): LeadBackend {
   const resolved = resolveBackend();
   if (!resolved) throw new Error("Lead storage is not configured.");

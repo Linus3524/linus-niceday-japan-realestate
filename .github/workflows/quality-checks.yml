@@ -116,6 +116,7 @@ jobs:
           npm run test:building-health
           npm run test:admin-metrics
           npm run test:find-home
+          npm run test:moushikomi
           npm run test:buy-find-home
           npm run test:find-home-browser
           npm run test:questionnaire-analysis
