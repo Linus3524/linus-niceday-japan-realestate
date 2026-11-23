@@ -30,7 +30,7 @@ export const overseasScreeningDocuments: ScreeningDocumentProfile[] = [
     ]
   },
   {
-    profile: "打工度假簽證",
+    profile: "打工度假／J-Find 簽證",
     documents: ["護照照片頁", "日本簽證貼紙", "銀行財力或餘額證明*1", "僱傭條件通知書或內定書（非必備）*2"],
     availability: "最少",
     notes: [
@@ -86,7 +86,7 @@ export const domesticScreeningDocuments: ScreeningDocumentProfile[] = [
     ]
   },
   {
-    profile: "打工度假簽證",
+    profile: "打工度假／J-Find 簽證",
     documents: ["護照照片頁", "在留卡正反面", "銀行財力或餘額證明*1", "僱傭條件通知書或內定書（非必備）*2"],
     availability: "最少",
     notes: [
@@ -124,9 +124,9 @@ export const overseasSop = {
   badge: "海外審查",
   title: "飛日前提前申請流程",
   description:
-    "適合已取得《在留資格認定證明書》(COE) 或打工度假貼紙，人尚未入境日本的人。能省去入境後的租屋等待期，好處是落地即入住！",
+    "適合已取得《在留資格認定證明書》(COE) 或打工度假／J-Find 簽證貼紙，人尚未入境日本的人。能省去入境後的租屋等待期，好處是落地即入住！",
   steps: [
-    "領取在留資格認定書／打工度假簽證貼紙",
+    "領取在留資格認定書／打工度假・J-Find 簽證貼紙",
     "開始找房",
     "遞交個人資料",
     "提出租屋申請",

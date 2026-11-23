@@ -587,7 +587,7 @@ export const VISA_COPY: Record<VisaCategory, { headline: string; drivers: string
     drivers: ["常備資料是入學證明、在留卡與財力證明", "多數需要日本國內的緊急聯絡人或連帶保證人"]
   },
   workingHoliday: {
-    headline: "打工度假可申請長期租賃，但需篩選接受該簽證的管理公司。",
+    headline: "打工度假／J-Find 可申請長期租賃，但需篩選接受該簽證的管理公司。",
     drivers: [
       "若尚未在日找到工作，審查通常需準備存款餘額證明（財力證明）",
       "市場上接受的長期物件較少，需提前由仲介鎖定可申請的物件"
@@ -625,7 +625,7 @@ export function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
   const drivers = [...copy.drivers];
   if (isOverseas) {
     if (category === "workingHoliday") {
-      drivers.push("打工度假＋海外審查為高難度組合：需挑選少數接受 1 年短簽且支援跨國送審之物業");
+      drivers.push("打工度假／J-Find＋海外審查為高難度組合：需挑選少數接受 1～2 年短簽且支援跨國送審之物業");
       drivers.push("審查通常嚴格要求租金 12～15 個月以上之存款餘額證明");
     } else if (category === "student") {
       drivers.push("留學生海外跨國審查：需挑選接受未入境留學生之管理公司，必備入學許可與 COE");
@@ -660,7 +660,7 @@ export function visaAxis(criteria: RentSearchCriteria): AxisVerdict {
     if (category === "unknown") {
       headline = "人在海外申請需先釐清在留資格，以便挑選對應的審查通道。";
     } else if (category === "workingHoliday") {
-      headline = "打工度假海外審查門檻較高，需嚴格篩選接受 1 年短簽與海外送件之管理公司。";
+      headline = "打工度假／J-Find 海外審查門檻較高，需嚴格篩選接受 1～2 年短簽與海外送件之管理公司。";
     } else {
       headline = `${copy.headline}（海外跨國審查通道）`;
     }

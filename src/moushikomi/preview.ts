@@ -29,7 +29,7 @@ export const PREVIEW_PRESETS: { id: string; label: string; values: FormValues; u
       orgAddressRegion: "jp", orgAddressZip: "1690075", orgAddressPref: "東京都", orgAddressCity: "新宿区", orgAddressTown: "高田馬場 1-2-3", orgAddressBldg: "高田馬場ビル 3F", orgPhone: "03-3333-4444" },
   },
   {
-    id: "wh", label: "打工度假・海外審查",
+    id: "wh", label: "打工度假／J-Find・海外審查",
     values: { ...common, identity: "wh", whJob: "no", where: "overseas", rent: "70000", income: "每月 10 萬円",
       AddressRegion: "overseas", AddressOverseas: "台中市西屯區台灣大道三段 99 號", yearsInJapan: "" },
   },

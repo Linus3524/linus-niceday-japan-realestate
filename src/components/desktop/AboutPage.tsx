@@ -13,7 +13,7 @@ import { QUIZ_URL, openQuizInline } from "../../lib/quizUrl";
 const SERVICES: Array<{ no: string; en: string; icon: LucideIcon; title: string; who: string; what: string; tab: AppTab }> = [
   {
     no: "01", icon: KeyRound, en: "Rent", title: "日本租屋", tab: "cards",
-    who: "留學、打工度假、工作簽，或人還在台灣、尚未入境的你",
+    who: "留學、打工度假／J-Find、工作簽，或人還在台灣、尚未入境的你",
     what: "整理需求、配對公開與未公開房源、確認外國人審查條件，陪同內見、申請到簽約入住。",
   },
   {

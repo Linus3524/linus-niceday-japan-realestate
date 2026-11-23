@@ -2,7 +2,7 @@
  * 租屋申請資料（/moushikomi）的欄位定義。
  *
  * 前端表單、後端驗證、通知信、後台與「複製成日文申込書」都讀這一份，
- * 身份分支（留學生／打工度假／上班族／其他、人在日本或海外）只寫在這裡。
+ * 身份分支（留學生／打工度假・J-Find／上班族／其他、人在日本或海外）只寫在這裡。
  *
  * 表單值一律是字串（勾選框用 "1"），存成扁平的 Record，方便草稿保存與比對。
  */
@@ -74,7 +74,7 @@ const HOUSING: Option[] = [{ id: "rent", label: "租的", ja: "賃貸" }, { id: 
 export const IDENTITY_OPTIONS: Option[] = [
   { id: "worker", label: "工作簽證（上班族）", ja: "就労ビザ（会社員）", note: "尚未入職、入職未滿或滿三個月、轉職中" },
   { id: "student", label: "留學簽證", ja: "留学ビザ", note: "語言學校、專門學校、大學" },
-  { id: "wh", label: "打工度假簽證", ja: "ワーキングホリデービザ" },
+  { id: "wh", label: "打工度假／J-Find 簽證", ja: "ワーキングホリデー／J-Find（未来創造人材）ビザ" },
   { id: "corporate", label: "法人契約（社員入住）", ja: "法人契約（社宅）", note: "由公司名義承租，你是入住的員工" },
   { id: "other", label: "其他簽證", ja: "その他", note: "家族滯在、配偶等，Linus 會再跟你確認文件" },
 ];
@@ -312,7 +312,7 @@ export function stepsFor(x: FormValues): StepDef[] {
     {
       id: "org", title: orgTitle, ja: is.student(x) ? "学校" : "勤務先", fields: is.whNoJob(x) ? [] : orgFields,
       intro: is.other(x) ? "有在工作或上學的話再填，沒有可以直接下一步。" : is.changing(x) ? "請填要去的新公司。" : undefined,
-      skip: is.whNoJob(x) ? "打工度假還沒找到工作，這一步不用填，直接下一步。" : undefined,
+      skip: is.whNoJob(x) ? "打工度假／J-Find 還沒找到工作，這一步不用填，直接下一步。" : undefined,
     },
     ...(is.corporate(x) ? [{ id: "guarantor", title: "連帶保證人", ja: "連帯保証人", intro: "法人契約需要一位連帶保證人，請照對方的護照或在留卡填寫。", fields: guarantor } as StepDef] : []),
     { id: "jp", title: "在日緊急聯絡人", ja: "緊急連絡先（日本）", intro: "有日本朋友優先填日本人；沒有的話，填在日本的親戚、朋友或同學也可以。", fields: jpContact },
@@ -362,7 +362,7 @@ export function screeningProfileFor(x: FormValues): ScreeningDocumentProfile | n
   const find = (name: string) => list.find(p => p.profile === name) ?? domesticScreeningDocuments.find(p => p.profile === name) ?? null;
   if (is.corporate(x)) return find("法人契約（社員入住）");
   if (is.student(x)) return find("留學簽證");
-  if (is.wh(x)) return find("打工度假簽證");
+  if (is.wh(x)) return find("打工度假／J-Find 簽證");
   if (is.worker(x)) {
     if (overseas) return find("工作簽證");
     const status = v(x, "workerStatus");

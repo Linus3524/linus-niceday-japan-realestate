@@ -48,7 +48,7 @@ export function BuyLoanNotice() {
 
 export const SELLING_POINTS = [
   "誠實仲介、專業把關，介紹物件最放心",
-  "熟悉打工度假與外國人租屋審查，協助生活服務開通",
+  "熟悉打工度假、J-Find 與外國人租屋審查，協助生活服務開通",
   "買房貸款協助、資料準備與總價議價完整支援",
 ];
 

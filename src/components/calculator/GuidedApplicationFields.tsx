@@ -38,7 +38,7 @@ export function GuidedApplicationFields({ setGuidedApplicationChannel, guidedApp
               {!guidedVisaType ? (
                 <span>人在海外申請租屋時，管理公司需先確認在留資格種類才能判定受理審查；建議先於上方選擇您的身分／簽證種類。</span>
               ) : guidedVisaType.includes("打工度假") ? (
-                <span>打工度假簽證期限多為 1 年，走海外審查通常嚴格要求租金 12～15 個月以上之存款餘額證明，且強烈建議等物件審查通過後再行訂購機票。</span>
+                <span>打工度假簽證期限多為 1 年（J-Find 最長 2 年），走海外審查通常嚴格要求租金 12～15 個月以上之存款餘額證明，且強烈建議等物件審查通過後再行訂購機票。</span>
               ) : guidedVisaType.includes("留學") ? (
                 <span>留學生海外審查需備妥入學許可書、在留資格認定證明書（COE）與經費支付人財力證明，建議提早由顧問協助鎖定學生友善物件。</span>
               ) : guidedVisaType.includes("日本籍") || guidedVisaType.includes("永住") ? (

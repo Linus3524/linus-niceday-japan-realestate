@@ -351,7 +351,7 @@ export type VisaCategory = "work" | "student" | "workingHoliday" | "family" | "l
 const VISA_RULES: Array<[VisaCategory, RegExp, string]> = [
   ["student", /留學|留学|留学生|語言學校|语言学校|語学学校|就學|就学|學生簽|学生签/, "留學簽證"],
   ["work", /技人[國国]|技術[・·／/]?人文知識|人文知識|國際業務|国际业务|就[勞劳]|工作簽|工作签|正社員|轉職簽|经营管理|經營管理|高度人材|企業內轉勤|企业内转勤/, "技術・人文知識・國際業務簽證（技人國）"],
-  ["workingHoliday", /打工度假|打工渡假|working\s*holiday|ワーホリ|ワーキングホリデー/i, "打工度假簽證"],
+  ["workingHoliday", /打工度假|打工渡假|working\s*holiday|ワーホリ|ワーキングホリデー|j-?find|未來創造|未来創造/i, "打工度假／J-Find 簽證"],
   ["family", /家族滯在|家族滞在|家族滞留|配偶者|眷屬簽|眷属签|依親/, "家族滯在簽證"],
   ["longTerm", /永住|定住|歸化|归化|日本國籍|日本国籍|日本籍/, "永住・定住・日本籍"]
 ];

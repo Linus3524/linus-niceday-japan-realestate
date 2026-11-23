@@ -304,7 +304,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>在留資格認定證明書 (COE)：</strong>或打工度假簽證證明。</span>
+                            <span><strong>在留資格認定證明書 (COE)：</strong>或打工度假／J-Find 簽證證明。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
@@ -312,7 +312,7 @@ export function RentProcessSection({ isSearchActive, showProcessSection, showSop
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>
-                            <span><strong>存款餘額證明：</strong>打工度假或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
+                            <span><strong>存款餘額證明：</strong>打工度假、J-Find 或預算有限者，保證公司通常要求提供等值 12 至 15 個月房租的個人存款證明（台幣或日幣均可）。提供海外帳戶的「網路銀行餘額截圖（含帳號）」加「存摺封面」即可，正式的銀行餘額證明也可以，不需要英文版本。</span>
                           </li>
                           <li className="flex items-start gap-1.5">
                             <span className="text-[#00a174] font-bold">•</span>

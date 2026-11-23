@@ -274,7 +274,7 @@ export default async function handler(req: any, res: any) {
 
 入住時間、目前居住地、入社時間、同住人數與初期費用上限要分別放入 moveInTiming、currentResidence、employmentStartTiming、householdSize、initialCostBudget；「獨居」等於 householdSize 1。
 
-visaType 請照原文的在留資格填寫（留學、技人國、打工度假、家族滯在、永住等），不要把留學生和工作簽混用。
+visaType 請照原文的在留資格填寫（留學、技人國、打工度假、J-Find、家族滯在、永住等），不要把留學生和工作簽混用。
 
 otherNeeds 只收「其他欄位真的裝不下」的需求，且必須是短詞。不要把已經有欄位的東西（預算、通勤、格局、屋齡、設備、寵物）重複塞進來，也不要寫成句子或加上任何說明、理由與免責語氣。
 

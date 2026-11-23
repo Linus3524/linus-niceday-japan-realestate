@@ -12,7 +12,8 @@ export const VISA_TYPES = [
   { value: "高度人才", label: "高度人才簽證（高薪 / 專業評分）", shortLabel: "高度人才" },
   { value: "留學", label: "留學簽證（大學 / 大學院 / 專門學校）", shortLabel: "留學（大學・專門學校）" },
   { value: "留學（日本語學校）", label: "留學簽證（日本語學校）", shortLabel: "留學（語言學校）" },
-  { value: "打工度假", label: "打工度假簽證（Working Holiday）", shortLabel: "打工度假" },
+  // J-Find（未來創造人才簽證）審查條件跟打工度假相近（短期、可先求職），並列在同一個選項
+  { value: "打工度假", label: "打工度假／J-Find 簽證（Working Holiday・未來創造人才）", shortLabel: "打工度假／J-Find" },
   { value: "家族滯在", label: "家族滯在 / 配偶簽證", shortLabel: "家族滯在／配偶" },
   { value: "經營管理", label: "經營管理簽證 / 日本法人代表", shortLabel: "經營管理" },
 ] as const;
