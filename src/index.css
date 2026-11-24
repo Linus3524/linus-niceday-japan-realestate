@@ -5197,7 +5197,8 @@ h1[lang="ja"], h2[lang="ja"], h3[lang="ja"], h4[lang="ja"], h5[lang="ja"], h6[la
     font-weight: 700;
     vertical-align: super;
   }
-  .doc-matrix-table td .doc-matrix-mark sup { position: absolute; transform: translate(14px, -6px); color: #00A174; }
+  /* 註記貼在記號右側、頂端對齊，不往上超出這一列（否則會壓到上面的分隔線）。 */
+  .doc-matrix-table td .doc-matrix-mark sup { position: absolute; top: 0; left: 100%; margin-left: 3px; line-height: 1; vertical-align: baseline; color: #00A174; }
   .doc-matrix-table td .doc-matrix-mark { position: relative; }
 
   /* 法人契約：同「申請方式」的卡片（綠色上框、淺底） */
