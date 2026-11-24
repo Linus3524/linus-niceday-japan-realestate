@@ -53,6 +53,9 @@ assert.deepEqual(docIds({ identity: "worker", workerStatus: "over3", where: "jap
 assert.deepEqual(docIds({ identity: "worker", workerStatus: "changing", where: "japan" }), ["zairyu", "passport", "newOffer", "oldPay", "bank", "remit"]);
 assert.deepEqual(docIds({ identity: "worker", where: "overseas" }), ["passport", "coe", "offer", "bank", "remit"]);
 assert.deepEqual(docIds({ identity: "wh", whJob: "no", where: "overseas" }), ["passport", "visaSticker", "bank", "offer"]);
+assert.deepEqual(docIds({ identity: "wh", whJob: "school", where: "overseas" }), ["passport", "visaSticker", "bank", "offer", "admission"]);
+assert.deepEqual(docIds({ identity: "wh", whJob: "school", where: "japan" }), ["passport", "zairyu", "bank", "offer", "studentId"]);
+assert.equal(docsFor({ identity: "wh", whJob: "school", where: "japan" }).find(d => d.id === "studentId")!.required, false);
 assert.deepEqual(docIds({ identity: "corporate", where: "japan" }), ["corpRegistry", "corpFinancials", "corpSeal", "repSeal", "residentId", "employeeId", "corpProfile"]);
 const workerDocs = docsFor({ identity: "worker", workerStatus: "over3", where: "japan" });
 assert.equal(workerDocs.find(d => d.id === "bank")!.required, false, "上班族財力證明非必備");

@@ -418,6 +418,12 @@ export function docsFor(x: FormValues): DocDef[] {
     if (!is.overseas(x)) d.push({ id: "passport", label: "護照照片頁", required: true });
     d.push({ id: "visaDoc", label: EXTRA_DOCS.visaDoc, required: false }, { id: "incomeDoc", label: EXTRA_DOCS.incomeDoc, required: false });
   }
+  // 打工度假／J-Find 在上學：官網那欄沒有，表單自己補上學校的證明。
+  if (is.whSchool(x)) {
+    d.push(is.overseas(x)
+      ? { id: "admission", label: "入學通知書", required: false, hint: "已經報名學校的話附上，讓審查方知道你來日本後在哪裡上學。" }
+      : { id: "studentId", label: "學生證", required: false, hint: "也可以用學校開的在學證明。" });
+  }
   if (is.living(x)) d.push({ id: "coId", label: EXTRA_DOCS.coId, required: true }, { id: "coIncomeDoc", label: EXTRA_DOCS.coIncomeDoc, required: false });
   return d;
 }
