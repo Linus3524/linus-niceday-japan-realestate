@@ -34,6 +34,12 @@ for (const key of ["jpNationality", "homeNationality"]) assert.ok(ids({}).includ
 assert.ok(ids({ cohab: "spouse" }).includes("coNationality"));
 assert.equal(stepsFor({}).find(s => s.id === "jp")!.fields.find(f => f.id === "jpOrgName")!.req, "opt", "在日聯絡人的公司資訊選填");
 assert.equal(stepsFor({ identity: "wh", whJob: "no" })[2].skip !== undefined, true, "打工度假沒工作跳過公司");
+assert.ok(ids({ identity: "wh", whJob: "yes" }).includes("jobYears"), "打工度假在工作問年資");
+assert.ok(ids({ identity: "wh", whJob: "offer" }).includes("startDate") && !ids({ identity: "wh", whJob: "offer" }).includes("jobYears"), "打工度假還沒入職問入職日");
+assert.equal(findField({ identity: "wh", whJob: "offer" }, "income").label, "新公司預定月薪（稅前）");
+assert.ok(ids({ identity: "wh", whJob: "school" }).includes("schoolType") && !ids({ identity: "wh", whJob: "school" }).includes("capital"), "打工度假在上學填學校");
+assert.equal(stepsFor({ identity: "wh", whJob: "school" })[2].ja, "学校");
+assert.equal(findField({ identity: "wh", whJob: "school" }, "income").label, "家人每月從海外寄來的生活費");
 assert.ok(!ids({ identity: "student", where: "overseas" }).includes("yearsInJapan"), "人在海外不問來日年數");
 assert.ok(ids({ identity: "student" }).includes("rent") && !ids({ identity: "worker", workerStatus: "over3" }).includes("rent"));
 assert.equal(stepsFor({ identity: "student" })[1].fields.find(f => f.id === "income")!.label, "家人每月從海外寄來的生活費");

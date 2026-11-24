@@ -34,6 +34,11 @@ export const PREVIEW_PRESETS: { id: string; label: string; values: FormValues; u
       AddressRegion: "overseas", AddressOverseas: "台中市西屯區台灣大道三段 99 號", yearsInJapan: "" },
   },
   {
+    id: "whSchool", label: "打工度假／J-Find・在上學",
+    values: { ...common, identity: "wh", whJob: "school", where: "japan", rent: "70000", income: "每月 12 萬円", schoolType: "lang", orgName: "東京日本語学校",
+      orgAddressRegion: "jp", orgAddressZip: "1690075", orgAddressPref: "東京都", orgAddressCity: "新宿区", orgAddressTown: "高田馬場 1-2-3", orgPhone: "03-3333-4444" },
+  },
+  {
     id: "worker", label: "入職三個月以上・與伴侶同住",
     values: { ...common, identity: "worker", workerStatus: "over3", income: "32 萬円",
       orgName: "株式会社テックサンプル", orgAddressRegion: "jp", orgAddressZip: "1066108", orgAddressPref: "東京都", orgAddressCity: "港区", orgAddressTown: "六本木 6-10-1", orgAddressBldg: "六本木ヒルズ森タワー 20F",

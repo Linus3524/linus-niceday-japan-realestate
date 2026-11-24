@@ -84,7 +84,13 @@ export const WORKER_STATUS_OPTIONS: Option[] = [
   { id: "over3", label: "入職三個月以上", ja: "在職3ヶ月以上" },
   { id: "changing", label: "轉職中", ja: "転職中" },
 ];
-const WH_JOB_OPTIONS: Option[] = [{ id: "yes", label: "已經找到", ja: "就職先あり" }, { id: "no", label: "還沒有", ja: "就職先なし" }];
+/** id 存進紀錄裡：yes／no 是舊版就有的值，不能改。 */
+const WH_JOB_OPTIONS: Option[] = [
+  { id: "yes", label: "已經在工作", ja: "就業中" },
+  { id: "offer", label: "找到工作，還沒入職", ja: "入社予定" },
+  { id: "school", label: "在上學（語言學校等）", ja: "在学中" },
+  { id: "no", label: "還沒工作也沒上學", ja: "就職先・在学先なし" },
+];
 const WHERE_OPTIONS: Option[] = [
   { id: "japan", label: "日本境內審查", ja: "日本在住（国内審査）", note: "人已經在日本，有在留卡" },
   { id: "overseas", label: "海外審查", ja: "海外在住（海外審査）", note: "人還在海外，還沒拿到在留卡" },
@@ -125,16 +131,20 @@ export const is = {
   worker: (x: FormValues) => v(x, "identity") === "worker",
   other: (x: FormValues) => v(x, "identity") === "other",
   whNoJob: (x: FormValues) => v(x, "identity") === "wh" && v(x, "whJob") === "no",
-  whJob: (x: FormValues) => v(x, "identity") === "wh" && v(x, "whJob") === "yes",
+  whJob: (x: FormValues) => v(x, "identity") === "wh" && ["yes", "offer"].includes(v(x, "whJob")),
+  whSchool: (x: FormValues) => v(x, "identity") === "wh" && v(x, "whJob") === "school",
+  /** 填學校表單：留學生，或打工度假在上學。 */
+  school: (x: FormValues) => v(x, "identity") === "student" || (v(x, "identity") === "wh" && v(x, "whJob") === "school"),
   corporate: (x: FormValues) => v(x, "identity") === "corporate",
   overseas: (x: FormValues) => v(x, "where") === "overseas",
   /** 海外審查的工作簽證都還沒入職，不用再問工作狀態。 */
-  offer: (x: FormValues) => v(x, "identity") === "worker" && (v(x, "where") === "overseas" || v(x, "workerStatus") === "offer"),
+  offer: (x: FormValues) => (v(x, "identity") === "worker" && (v(x, "where") === "overseas" || v(x, "workerStatus") === "offer"))
+    || (v(x, "identity") === "wh" && v(x, "whJob") === "offer"),
   changing: (x: FormValues) => v(x, "identity") === "worker" && v(x, "where") !== "overseas" && v(x, "workerStatus") === "changing",
-  company: (x: FormValues) => ["worker", "corporate"].includes(v(x, "identity")) || (v(x, "identity") === "wh" && v(x, "whJob") === "yes"),
+  company: (x: FormValues) => ["worker", "corporate"].includes(v(x, "identity")) || (v(x, "identity") === "wh" && ["yes", "offer"].includes(v(x, "whJob"))),
   living: (x: FormValues) => Boolean(v(x, "cohab")) && v(x, "cohab") !== "alone",
   /** 收入欄改問「家人每月寄來的生活費」。 */
-  allowance: (x: FormValues) => v(x, "identity") === "student" || (v(x, "identity") === "wh" && v(x, "whJob") === "no"),
+  allowance: (x: FormValues) => v(x, "identity") === "student" || (v(x, "identity") === "wh" && ["no", "school"].includes(v(x, "whJob"))),
 };
 
 // ── 地址 ──────────────────────────────────────────────────
@@ -220,7 +230,7 @@ export function stepsFor(x: FormValues): StepDef[] {
     { id: "where", label: "審查地點", ja: "審査区分", type: "chips", req: "req", stack: true, options: WHERE_OPTIONS },
     { id: "identity", label: "你的身份", ja: "身分", type: "chips", req: "req", stack: true, options: IDENTITY_OPTIONS },
     ...(is.worker(x) && !is.overseas(x) ? [{ id: "workerStatus", label: "工作狀態", ja: "就業状況", type: "chips", req: "req", stack: true, options: WORKER_STATUS_OPTIONS } as FieldDef] : []),
-    ...(is.wh(x) ? [{ id: "whJob", label: "在日本找到工作了嗎？", ja: "就職先", type: "chips", req: "req", options: WH_JOB_OPTIONS } as FieldDef] : []),
+    ...(is.wh(x) ? [{ id: "whJob", label: "現在在日本是工作還是上學？", ja: "就業・就学状況", type: "chips", req: "req", options: WH_JOB_OPTIONS } as FieldDef] : []),
     { id: "property", label: "要申請的房子", ja: "申込物件", type: "text", req: "opt", placeholder: "物件名稱或網址", hint: "還沒決定可以先空著，Linus 之後幫你補。", max: LONG_MAX },
     ...(is.allowance(x) ? [{ id: "rent", label: "這間房子的月租＋管理費（円）", ja: "賃料＋管理費", type: "text", req: "opt", placeholder: "例：85000", hint: "填了會幫你算財力證明要準備多少（15 個月份）。", max: 12 } as FieldDef] : []),
   ];
@@ -239,7 +249,7 @@ export function stepsFor(x: FormValues): StepDef[] {
 
   let orgTitle = "工作或學校";
   let orgFields: FieldDef[];
-  if (is.student(x)) {
+  if (is.school(x)) {
     orgTitle = "學校資訊";
     orgFields = [
       { id: "schoolType", label: "學校類型", ja: "学校種別", type: "chips", req: "req", options: SCHOOL_TYPE_OPTIONS },
@@ -310,9 +320,9 @@ export function stepsFor(x: FormValues): StepDef[] {
     { id: "identity", title: "你的身份", ja: "申込区分", intro: "先選審查地點和身份，後面只會出現你需要填的欄位和文件。", fields: identity },
     { id: "applicant", title: "申請人資料", ja: "申込者", intro: "請照護照上的拼法填寫，送給管理公司的資料不能有錯字。", fields: applicant },
     {
-      id: "org", title: orgTitle, ja: is.student(x) ? "学校" : "勤務先", fields: is.whNoJob(x) ? [] : orgFields,
+      id: "org", title: orgTitle, ja: is.school(x) ? "学校" : "勤務先", fields: is.whNoJob(x) ? [] : orgFields,
       intro: is.other(x) ? "有在工作或上學的話再填，沒有可以直接下一步。" : is.changing(x) ? "請填要去的新公司。" : undefined,
-      skip: is.whNoJob(x) ? "打工度假／J-Find 還沒找到工作，這一步不用填，直接下一步。" : undefined,
+      skip: is.whNoJob(x) ? "打工度假／J-Find 還沒工作也沒上學，這一步不用填，直接下一步。" : undefined,
     },
     ...(is.corporate(x) ? [{ id: "guarantor", title: "連帶保證人", ja: "連帯保証人", intro: "法人契約需要一位連帶保證人，請照對方的護照或在留卡填寫。", fields: guarantor } as StepDef] : []),
     { id: "jp", title: "在日緊急聯絡人", ja: "緊急連絡先（日本）", intro: "有日本朋友優先填日本人；沒有的話，填在日本的親戚、朋友或同學也可以。", fields: jpContact },
@@ -532,7 +542,7 @@ export function displayValue(f: FieldDef, form: CleanForm, lang: "zh" | "ja" = "
 export function identitySummary(values: FormValues): string {
   const parts = [IDENTITY_OPTIONS.find(o => o.id === values.identity)?.label ?? "未選身份"];
   if (is.worker(values)) parts.push(WORKER_STATUS_OPTIONS.find(o => o.id === values.workerStatus)?.label ?? "");
-  if (is.wh(values)) parts.push(values.whJob === "yes" ? "已找到工作" : values.whJob === "no" ? "還沒找到工作" : "");
+  if (is.wh(values)) parts.push(WH_JOB_OPTIONS.find(o => o.id === values.whJob)?.label ?? "");
   if (values.where) parts.push(values.where === "overseas" ? "人在海外" : "在日本");
   return parts.filter(Boolean).join("・");
 }
