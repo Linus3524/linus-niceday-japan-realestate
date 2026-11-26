@@ -75,6 +75,24 @@ function getStationPoint(
   return [center.lat + dLat, center.lon + dLon];
 }
 
+/**
+ * 把被點的地點（連同上方的說明框）移到地圖框正中間。
+ * 說明框關掉 Leaflet 的自動平移（autoPan），由這裡統一算位置，才不會置中後又被推偏。
+ */
+function focusMarker(map: L.Map, marker: L.Marker, zoom = map.getZoom()) {
+  if (!marker.isPopupOpen()) marker.openPopup();
+  const popupHeight = marker.getPopup()?.getElement()?.offsetHeight ?? 0;
+  // 標記與說明框整組的中心，大約在標記上方「說明框高度＋箭頭」的一半。
+  const target = map.project(marker.getLatLng(), zoom).subtract([0, (popupHeight + 16) / 2]);
+  map.setView(map.unproject(target, zoom), zoom, { animate: true });
+}
+
+function noAutoPan(marker: L.Marker) {
+  const popup = marker.getPopup();
+  if (popup) popup.options.autoPan = false;
+  return marker;
+}
+
 export function ListingLocationMap({ context }: ListingLocationMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -157,6 +175,8 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
           <span style="color: #333; font-weight: 500;">${matchedAddress}</span>
         </div>`
       );
+    noAutoPan(propertyMarker);
+    propertyMarker.on("click", () => { if (propertyMarker.isPopupOpen()) focusMarker(map, propertyMarker); });
     markerMapRef.current.set("property", propertyMarker);
 
     // 2. 車站 Marker（僅在「全部」或「車站」分頁顯示，避免在其他生活機能分頁重疊遮蔽其他設施）
@@ -195,13 +215,16 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
             </div>`
           );
 
+        // 滑鼠經過只高亮，說明框要點了才開（Leaflet 的 bindPopup 預設點擊開啟）。
         marker.on("mouseover", () => {
           setHoveredId(stationKey);
-          marker.openPopup();
         });
         marker.on("mouseout", () => {
           setHoveredId(null);
         });
+        noAutoPan(marker);
+        // 點標記：Leaflet 先開（或關掉）說明框，開著的話再移到地圖中間。
+        marker.on("click", () => { if (marker.isPopupOpen()) focusMarker(map, marker); });
 
         markerMapRef.current.set(stationKey, marker);
       });
@@ -251,12 +274,13 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
 
       marker.on("mouseover", () => {
         setHoveredId(amenityKey);
-        marker.openPopup();
       });
       marker.on("mouseout", () => {
         setHoveredId(null);
       });
+      noAutoPan(marker);
       marker.on("click", () => {
+        if (marker.isPopupOpen()) focusMarker(map, marker);
         const cardEl = document.getElementById(`card-${amenityKey}`);
         if (cardEl) {
           cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -299,23 +323,15 @@ export function ListingLocationMap({ context }: ListingLocationMapProps) {
     };
   }, [coordinate?.lat, coordinate?.lon, matchedAddress, stationWalks, amenities, mapMode, activeCategory, hasValidCoordinate]);
 
-  // 滑鼠懸停下方卡片：僅開啟氣球與高亮，不平移地圖以杜絕抖動跳動
+  // 滑鼠經過下方卡片：只高亮地圖上的標記，不開說明框（以前經過就開、移開又不關，要手動按叉叉）。
   const handleCardHover = (key: string | null) => {
     setHoveredId(key);
-    if (!key) return;
-    const marker = markerMapRef.current.get(key);
-    if (marker) {
-      marker.openPopup();
-    }
   };
 
-  // 點擊下方卡片時才平滑移動置中
+  // 點下方卡片：打開說明框，並把這個地點連同說明框移到地圖中間
   const handleCardClick = (key: string) => {
     const marker = markerMapRef.current.get(key);
-    if (marker && mapInstanceRef.current) {
-      mapInstanceRef.current.setView(marker.getLatLng(), 17, { animate: true });
-      marker.openPopup();
-    }
+    if (marker && mapInstanceRef.current) focusMarker(mapInstanceRef.current, marker, 17);
   };
 
   const resetView = () => {
